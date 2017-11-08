@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Builders\Rocket.Surgery.Builders.csproj" />
+      <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+    </ItemGroup>
+</Project>
