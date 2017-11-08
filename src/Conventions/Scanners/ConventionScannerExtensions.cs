@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
-    /// Class ContributionScannerExtensions.
+    /// Class ConventionScannerExtensions.
     /// </summary>
-    /// TODO Edit XML Comment Template for ContributionScannerExtensions
-    public static class ContributionScannerExtensions
+    /// TODO Edit XML Comment Template for ConventionScannerExtensions
+    public static class ConventionScannerExtensions
     {
         /// <summary>
         /// Excepts the convention.
@@ -17,7 +17,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="conventions">The conventions.</param>
         /// <returns>T.</returns>
         /// TODO Edit XML Comment Template for ExceptConvention`1
-        public static T AddContribution<T>(this T scanner, params IConvention[] conventions)
+        public static T AddConvention<T>(this T scanner, params IConvention[] conventions)
             where T : IConventionScanner
         {
             foreach (var type in conventions)
@@ -35,7 +35,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="types">The conventions.</param>
         /// <returns>T.</returns>
         /// TODO Edit XML Comment Template for ExceptConvention`1
-        public static T AddContribution<T>(this T scanner, IEnumerable<IConvention> types)
+        public static T AddConvention<T>(this T scanner, IEnumerable<IConvention> types)
             where T : IConventionScanner
         {
             foreach (var type in types)
@@ -50,15 +50,33 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="scanner">The scanner.</param>
-        /// <param name="contributions">The conventions.</param>
+        /// <param name="delegates">The conventions.</param>
         /// <returns>T.</returns>
         /// TODO Edit XML Comment Template for ExceptConvention`1
-        public static T AddContribution<T>(this T scanner, params Delegate[] contributions)
+        public static T AddDelegate<T>(this T scanner, params Delegate[] delegates)
             where T : IConventionScanner
         {
-            foreach (var type in contributions)
+            foreach (var type in delegates)
             {
-                scanner.AddContribution(type);
+                scanner.AddDelegate(type);
+            }
+            return scanner;
+        }
+
+        /// <summary>
+        /// Excepts the convention.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>T.</returns>
+        /// TODO Edit XML Comment Template for ExceptConvention`1
+        public static T AddDelegate<T>(this T scanner, IEnumerable<Delegate> delegates)
+            where T : IConventionScanner
+        {
+            foreach (var type in delegates)
+            {
+                scanner.AddDelegate(type);
             }
             return scanner;
         }
@@ -71,25 +89,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="types">The conventions.</param>
         /// <returns>T.</returns>
         /// TODO Edit XML Comment Template for ExceptConvention`1
-        public static T AddContribution<T>(this T scanner, IEnumerable<Delegate> types)
-            where T : IConventionScanner
-        {
-            foreach (var type in types)
-            {
-                scanner.AddContribution(type);
-            }
-            return scanner;
-        }
-
-        /// <summary>
-        /// Excepts the convention.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="scanner">The scanner.</param>
-        /// <param name="types">The conventions.</param>
-        /// <returns>T.</returns>
-        /// TODO Edit XML Comment Template for ExceptConvention`1
-        public static T ExceptContribution<T>(this T scanner, params Type[] types)
+        public static T ExceptConvention<T>(this T scanner, params Type[] types)
             where T : IConventionScanner
         {
             foreach (var type in types)
@@ -107,7 +107,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="types">The conventions.</param>
         /// <returns>T.</returns>
         /// TODO Edit XML Comment Template for ExceptConvention`1
-        public static T ExceptContribution<T>(this T scanner, IEnumerable<Type> types)
+        public static T ExceptConvention<T>(this T scanner, IEnumerable<Type> types)
             where T : IConventionScanner
         {
             foreach (var type in types)

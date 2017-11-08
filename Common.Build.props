@@ -6,7 +6,7 @@
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup>
-        <RSG_Build_Version>1.0.2</RSG_Build_Version>
+        <RSG_Build_Version>1.0.3</RSG_Build_Version>
         <Microsoft_Extensions_Logging_Version>2.0.0</Microsoft_Extensions_Logging_Version>
         <Microsoft_Extensions_DependencyModel_Version>2.0.0</Microsoft_Extensions_DependencyModel_Version>
         <SourceLink_Version>2.4.0</SourceLink_Version>

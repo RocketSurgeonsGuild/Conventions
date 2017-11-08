@@ -17,16 +17,16 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         ///
         /// </summary>
-        protected readonly List<object> IncludeContributions = new List<object>();
+        protected readonly List<object> IncludeConventions = new List<object>();
 
         /// <summary>
         ///
         /// </summary>
-        protected readonly List<Type> ExceptContributions = new List<Type>();
+        protected readonly List<Type> ExceptConventions = new List<Type>();
 
-        private static readonly ConcurrentDictionary<Assembly, List<Type>> Contributions = new ConcurrentDictionary<Assembly, List<Type>>();
+        private static readonly ConcurrentDictionary<Assembly, List<Type>> Conventions = new ConcurrentDictionary<Assembly, List<Type>>();
         private IConventionProvider _provider;
-        private readonly List<Assembly> _exceptAssemblyContributions = new List<Assembly>();
+        private readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
         private readonly IAssemblyCandidateFinder _assemblyCandidateFinder;
 
         /// <summary>
@@ -43,21 +43,20 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// Gets the assembly conventions.
         /// </summary>
         /// <returns>IEnumerable&lt;Type&gt;.</returns>
-        /// TODO Edit XML Comment Template for GetAssemblyContributions
-        protected IEnumerable<Type> GetAssemblyContributions()
+        /// TODO Edit XML Comment Template for GetAssemblyConventions
+        protected IEnumerable<Type> GetAssemblyConventions()
         {
             var assemblies = _assemblyCandidateFinder.GetCandidateAssemblies(
-                "ReadySelect.Abstractions",
-                "ReadySelect.Core.Abstractions",
-                "ReadySelect.AspNetCore.Abstractions");
-            foreach (var assembly in assemblies.Except(_exceptAssemblyContributions))
+                "Rocket.Surgery.Conventions.Abstractions",
+                "Rocket.Surgery.Conventions");
+            foreach (var assembly in assemblies.Except(_exceptAssemblyConventions))
             {
-                if (!Contributions.TryGetValue(assembly, out var types))
+                if (!Conventions.TryGetValue(assembly, out var types))
                 {
-                    types = assembly.GetCustomAttributes<ContributionAttribute>()
+                    types = assembly.GetCustomAttributes<ConventionAttribute>()
                         .Select(x => x.Type)
                         .ToList();
-                    Contributions.TryAdd(assembly, types);
+                    Conventions.TryAdd(assembly, types);
                 }
 
                 foreach (var item in types)
@@ -75,7 +74,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         public void AddDelegate(Delegate @delegate)
         {
             _provider = null;
-            IncludeContributions.Add(@delegate);
+            IncludeConventions.Add(@delegate);
         }
 
         /// <summary>
@@ -88,7 +87,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         public void AddConvention(IConvention convention)
         {
             _provider = null;
-            IncludeContributions.Add(convention);
+            IncludeConventions.Add(convention);
         }
 
         /// <summary>
@@ -99,7 +98,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         public void ExceptConvention(Type conventionType)
         {
             _provider = null;
-            ExceptContributions.Add(conventionType);
+            ExceptConventions.Add(conventionType);
         }
 
         /// <summary>
@@ -107,10 +106,10 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="assembly">Assembly containing the conventions to exclude.</param>
         /// TODO Edit XML Comment Template for ExceptConvention
-        public void ExceptContribution(Assembly assembly)
+        public void ExceptConvention(Assembly assembly)
         {
             _provider = null;
-            _exceptAssemblyContributions.Add(assembly);
+            _exceptAssemblyConventions.Add(assembly);
         }
 
         /// <summary>
@@ -130,12 +129,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// TODO Edit XML Comment Template for Get
         protected virtual IConventionProvider CreateProvider()
         {
-            var contributionTypes = GetAssemblyContributions()
-                .Except(IncludeContributions.Select(x => x.GetType()))
+            var contributionTypes = GetAssemblyConventions()
+                .Except(IncludeConventions.Select(x => x.GetType()))
                 .Select(Activator.CreateInstance)
                 .Cast<IConvention>();
 
-            return new ConventionProvider(contributionTypes, ExceptContributions, IncludeContributions);
+            return new ConventionProvider(contributionTypes, ExceptConventions, IncludeConventions);
         }
     }
 }

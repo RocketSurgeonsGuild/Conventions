@@ -7,7 +7,7 @@ using Rocket.Surgery.Conventions.Scanners;
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Contribution base compose, that calls all methods on register.
+    /// Convention base compose, that calls all methods on register.
     /// </summary>
     /// <typeparam name="TContext"></typeparam>
     /// <typeparam name="TContribution"></typeparam>
@@ -39,20 +39,20 @@ namespace Rocket.Surgery.Conventions
                 .Get<TContribution, TDelegate>()
                 .ToList();
 
-            _logger.LogInformation("Found {Count} conventions or delegates of {Type} for {Contribution}", items.Count, typeof(TDelegate).FullName, typeof(TContribution).FullName);
+            _logger.LogInformation("Found {Count} conventions or delegates of {Type} for {Convention}", items.Count, typeof(TDelegate).FullName, typeof(TContribution).FullName);
 
             foreach (var item in items)
             {
                 if (item == DelegateOrConvention<TContribution, TDelegate>.None)
                 {
-                    _logger.LogError("Contribution or Delege not available for one of the items from {Type}", typeof(TContribution).FullName);
+                    _logger.LogError("Convention or Delege not available for one of the items from {Type}", typeof(TContribution).FullName);
                     continue;
                 }
 
-                if (item.Contribution != null)
+                if (item.Convention != null)
                 {
-                    _logger.LogDebug("Executing Contribution {TypeName} from {AssemblyName}", item.Contribution.GetType().FullName, item.Contribution.GetType().GetTypeInfo().Assembly.GetName().Name);
-                    item.Contribution.Register(context);
+                    _logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}", item.Convention.GetType().FullName, item.Convention.GetType().GetTypeInfo().Assembly.GetName().Name);
+                    item.Convention.Register(context);
                 }
 
                 // ReSharper disable once UseNullPropagation

@@ -10,7 +10,7 @@ using Rocket.Surgery.Conventions.Tests;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Xunit;
 
-[assembly: Contribution(typeof(AssemblyCandidateResolverTests.Contrib))]
+[assembly: Convention(typeof(AssemblyCandidateResolverTests.Contrib))]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
@@ -20,6 +20,16 @@ namespace Rocket.Surgery.Conventions.Tests
             public void Register(ServiceConventionContext context)
             {
             }
+        }
+
+        [Fact]
+        public void FindsAssembliesInCandidates_ShortCircuts()
+        {
+            var resolver = new AssemblyCandidateFinder(DependencyContext.Load(typeof(AssemblyCandidateResolverTests).GetTypeInfo().Assembly), A.Fake<ILogger>());
+            var items = resolver.GetCandidateAssemblies();
+            items
+                .Should()
+                .BeEmpty();
         }
 
         [Fact]

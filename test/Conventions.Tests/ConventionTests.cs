@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using FakeItEasy;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Xunit;
@@ -9,6 +12,12 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionTests
     {
+        [Fact]
+        public void ConventionAttributeThrowsIfNonConventionGiven()
+        {
+            Action a = () => new ConventionAttribute(typeof(object));
+            a.Should().Throw<NotSupportedException>();
+        }
 
         [Fact]
         public void ComposerCallsValuesAsExpected()

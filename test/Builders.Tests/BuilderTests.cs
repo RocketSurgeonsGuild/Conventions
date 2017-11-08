@@ -50,5 +50,28 @@ namespace Rocket.Surgery.Builders.Tests
             var container = new TestGenericValueContainer();
             container.Set("abc").Should().Be(container);
         }
+
+        class ChildBuilder : Builder<TestGenericValueContainer>
+        {
+            public ChildBuilder(TestGenericValueContainer parent) : base(parent)
+            {
+            }
+        }
+
+        [Fact]
+        public void ShouldHaveAParent()
+        {
+            var parent = new TestGenericValueContainer();
+            var builder = new ChildBuilder(parent);
+            builder.Parent.Should().BeSameAs(parent);
+        }
+
+        [Fact]
+        public void ShouldExitProperly()
+        {
+            var parent = new TestGenericValueContainer();
+            var builder = new ChildBuilder(parent);
+            builder.Exit().Should().BeSameAs(parent);
+        }
     }
 }

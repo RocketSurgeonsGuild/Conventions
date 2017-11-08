@@ -19,10 +19,10 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         /// Create a convention
         /// </summary>
-        /// <param name="contribution"></param>
-        public DelegateOrConvention(TContribution contribution)
+        /// <param name="convention"></param>
+        public DelegateOrConvention(TContribution convention)
         {
-            Contribution = contribution;
+            Convention = convention;
         }
 
         /// <summary>
@@ -35,12 +35,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         }
 
         /// <summary>
-        /// The convention, only Contribution or Delegate are available
+        /// The convention, only Convention or Delegate are available
         /// </summary>
-        public TContribution Contribution { get; }
+        public TContribution Convention { get; }
         
         /// <summary>
-        /// The delegate, only Contribution or Delegate are available
+        /// The delegate, only Convention or Delegate are available
         /// </summary>
         public Delegate Delegate { get; }
 
@@ -50,7 +50,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="delegateOrContribution"></param>
         public static implicit operator TContribution(DelegateOrConvention<TContribution, TDelegate> delegateOrContribution)
         {
-            return delegateOrContribution.Contribution;
+            return delegateOrContribution.Convention;
         }
 
         /// <summary>
