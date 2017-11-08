@@ -1,4 +1,4 @@
-# Rocket Surgeons Guild Build [![Build status](https://ci.appveyor.com/api/projects/status/0jgtcj4rsmusu3py/branch/master?svg=true)](https://ci.appveyor.com/project/david-driscoll/build) [![codecov](https://codecov.io/gh/RocketSurgeonsGuild/Build/branch/master/graph/badge.svg)](https://codecov.io/gh/RocketSurgeonsGuild/Build)
+# Rocket Surgeons Guild Conventions [![Build status](https://ci.appveyor.com/api/projects/status/kc7f36cbo4bo1nij/branch/master?svg=true)](https://ci.appveyor.com/project/david-driscoll/conventions) [![codecov](https://codecov.io/gh/RocketSurgeonsGuild/Conventions/branch/master/graph/badge.svg)](https://codecov.io/gh/RocketSurgeonsGuild/Conventions)
 
 This is a set of libraries to help in creating code conventions, and allow for code discovery without doing a full assembly scan.
 
