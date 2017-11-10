@@ -28,7 +28,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var scanner = new SimpleConventionScanner(finder);
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
-                .Returns(new[] { typeof(ConventionScannerTests).Assembly });
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
 
             var provider = scanner.BuildProvider();
 
@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var scanner = new SimpleConventionScanner(finder);
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
-                .Returns(new[] { typeof(ConventionScannerTests).Assembly });
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
 
             var provider = scanner.BuildProvider();
             var provider2 = scanner.BuildProvider();
@@ -129,7 +129,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var convention = A.Fake<IServiceConvention>();
 
             scanner.AddConvention(convention);
-            scanner.ExceptConvention(typeof(ConventionScannerTests).Assembly);
+            scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
             var provider = scanner.BuildProvider();
 
