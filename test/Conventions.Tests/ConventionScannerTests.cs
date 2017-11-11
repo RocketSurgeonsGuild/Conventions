@@ -91,7 +91,7 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Returns(new Assembly[0]);
 
             IConvention Convention = A.Fake<IServiceConvention>();
-            IConvention Convention2 = A.Fake<ConventionComposerTests.ITestConvention>();
+            IConvention Convention2 = A.Fake<ITestConvention>();
 
             scanner.AddConvention(Convention, Convention2);
 

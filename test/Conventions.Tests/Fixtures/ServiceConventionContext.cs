@@ -1,6 +1,11 @@
 ﻿namespace Rocket.Surgery.Conventions.Tests.Fixtures
 {
-    public class ServiceConventionContext : ConventionContext
+    public interface IServiceConventionContext : IConventionContext
+    {
+
+    }
+
+    public class ServiceConventionContext : ConventionContext, IServiceConventionContext
     {
 
     }

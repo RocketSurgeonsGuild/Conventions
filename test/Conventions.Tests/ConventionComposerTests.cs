@@ -3,82 +3,89 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
+using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Xunit;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionComposerTests
     {
-        public interface ITestConventionContext : IConventionContext { }
-        public interface ITestConvention : IConvention<ITestConventionContext> { }
-
-        public delegate void TestContributionDelegate(ITestConventionContext context);
-
-        public class TestConventionComposer : ConventionComposer<ITestConventionContext, ITestConvention, TestContributionDelegate> { public TestConventionComposer(IConventionScanner scanner, ILogger logger) : base(scanner, logger) { } }
-        public class NotADelegateComposer : ConventionComposer<ITestConventionContext, ITestConvention, String> { public NotADelegateComposer(IConventionScanner scanner, ILogger logger) : base(scanner, logger) { } }
 
         [Fact]
         public void ShouldConstructComposer()
         {
             var scanner = A.Fake<IConventionScanner>();
-            var composer = new TestConventionComposer(scanner, A.Fake<ILogger>());
+            var composer = new ConventionComposer(scanner, A.Fake<ILogger>());
 
             composer.Should().NotBeNull();
         }
 
         [Fact]
-        public void ShouldThrowIfDelegateIsNotADelegate()
-        {
-            var scanner = A.Fake<IConventionScanner>();
-            Action action = () => new NotADelegateComposer(scanner, A.Fake<ILogger>());
-            action.Should().Throw<ArgumentException>();
-        }
-
-        [Fact]
-        public void RegisterShouldCallContribution()
+        public void RegisterShouldCallConvention()
         {
             var scanner = A.Fake<IConventionScanner>();
             var scannerProvider = A.Fake<IConventionProvider>();
-            var contribution = A.Fake<ITestConvention>();
+            var convention = A.Fake<ITestConvention>();
             var context = A.Fake<ITestConventionContext>();
-            var composer = new TestConventionComposer(scanner, A.Fake<ILogger>());
+            var composer = new ConventionComposer(scanner, A.Fake<ILogger>());
 
             A.CallTo(() => scanner.BuildProvider())
                 .Returns(scannerProvider);
-            A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>())
-                .Returns(new[] { new DelegateOrConvention<ITestConvention, TestContributionDelegate>(contribution) });
+            A.CallTo(() => scannerProvider.GetAll())
+                .Returns(new[] { new DelegateOrConvention(convention) });
 
             composer.Register(context);
 
-            A.CallTo(() => contribution.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [Fact]
-        public void RegisterShouldCallContributions()
+        public void RegisterShouldCallBothConvention()
         {
             var scanner = A.Fake<IConventionScanner>();
             var scannerProvider = A.Fake<IConventionProvider>();
-            var contribution1 = A.Fake<ITestConvention>();
-            var contribution2 = A.Fake<ITestConvention>();
-            var contribution3 = A.Fake<ITestConvention>();
-            var context = A.Fake<ITestConventionContext>();
-            var composer = new TestConventionComposer(scanner, A.Fake<ILogger>());
+            var convention = A.Fake<ITestConvention>();
+            var convention2 = A.Fake<IServiceConvention>();
+            var context = A.Fake<IConventionContext>(c => c.Implements<ITestConventionContext>().Implements<IServiceConventionContext>());
+            var composer = new ConventionComposer(scanner, A.Fake<ILogger>());
 
             A.CallTo(() => scanner.BuildProvider())
                 .Returns(scannerProvider);
-            A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>())
+            A.CallTo(() => scannerProvider.GetAll())
+                .Returns(new[] { new DelegateOrConvention(convention), new DelegateOrConvention(convention2),  });
+
+            composer.Register(context);
+
+            A.CallTo(() => convention.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention2.Register(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+        }
+
+        [Fact]
+        public void RegisterShouldCallConventions()
+        {
+            var scanner = A.Fake<IConventionScanner>();
+            var scannerProvider = A.Fake<IConventionProvider>();
+            var convention1 = A.Fake<ITestConvention>();
+            var convention2 = A.Fake<ITestConvention>();
+            var convention3 = A.Fake<ITestConvention>();
+            var context = A.Fake<ITestConventionContext>();
+            var composer = new ConventionComposer(scanner, A.Fake<ILogger>());
+
+            A.CallTo(() => scanner.BuildProvider())
+                .Returns(scannerProvider);
+            A.CallTo(() => scannerProvider.GetAll())
                 .Returns(new[]
                 {
-                    new DelegateOrConvention<ITestConvention, TestContributionDelegate>(contribution1),
-                    new DelegateOrConvention<ITestConvention, TestContributionDelegate>(contribution2),
-                    new DelegateOrConvention<ITestConvention, TestContributionDelegate>(contribution3)
+                    new DelegateOrConvention(convention1),
+                    new DelegateOrConvention(convention2),
+                    new DelegateOrConvention(convention3)
                 });
 
             composer.Register(context);
 
-            A.CallTo(() => contribution1.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => contribution2.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => contribution3.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention1.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention2.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention3.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [Fact]
@@ -86,14 +93,14 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var scanner = A.Fake<IConventionScanner>();
             var scannerProvider = A.Fake<IConventionProvider>();
-            var @delegate = A.Fake<TestContributionDelegate>();
+            var @delegate = A.Fake<TestConventionDelegate>();
             var context = A.Fake<ITestConventionContext>();
-            var composer = new TestConventionComposer(scanner, A.Fake<ILogger>());
+            var composer = new ConventionComposer(scanner, A.Fake<ILogger>());
 
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
             // A.CallTo(() => scannerProvider.Get<ITestConvention>()).Returns(new[] { convention });
-            A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>())
-                .Returns(new DelegateOrConvention<ITestConvention, TestContributionDelegate>[] { @delegate });
+            A.CallTo(() => scannerProvider.GetAll())
+                .Returns(new DelegateOrConvention[] { @delegate });
 
             composer.Register(context);
 
@@ -105,18 +112,19 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var scanner = A.Fake<IConventionScanner>();
             var scannerProvider = A.Fake<IConventionProvider>();
-            var delegate1 = A.Fake<TestContributionDelegate>();
-            var delegate2 = A.Fake<TestContributionDelegate>();
-            var delegate3 = A.Fake<TestContributionDelegate>();
+            var delegate1 = A.Fake<TestConventionDelegate>();
+            var delegate2 = A.Fake<TestConventionDelegate>();
+            var delegate3 = A.Fake<TestConventionDelegate>();
             var context = A.Fake<ITestConventionContext>();
-            var composer = new TestConventionComposer(scanner, A.Fake<ILogger>());
+            var composer = new ConventionComposer(scanner, A.Fake<ILogger>());
 
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
             // A.CallTo(() => scannerProvider.Get<ITestConvention>()).Returns(new[] { convention });
-            A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>())
-                .Returns(new[] { new DelegateOrConvention<ITestConvention, TestContributionDelegate>(delegate2),
-                    new DelegateOrConvention<ITestConvention, TestContributionDelegate>(delegate1),
-                    new DelegateOrConvention<ITestConvention, TestContributionDelegate>(delegate3 )
+            A.CallTo(() => scannerProvider.GetAll())
+                .Returns(new[] {
+                    new DelegateOrConvention(delegate2),
+                    new DelegateOrConvention(delegate1),
+                    new DelegateOrConvention(delegate3 )
                 });
 
             composer.Register(context);
@@ -127,25 +135,26 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
-        public void RegisterShouldCallContributionsAndDelegates()
+        public void RegisterShouldCallConventionsAndDelegates()
         {
             var scanner = A.Fake<IConventionScanner>();
             var scannerProvider = A.Fake<IConventionProvider>();
-            var contribution = A.Fake<ITestConvention>();
-            var @delegate = A.Fake<TestContributionDelegate>();
+            var convention = A.Fake<ITestConvention>();
+            var @delegate = A.Fake<TestConventionDelegate>();
             var context = A.Fake<ITestConventionContext>();
-            var composer = new TestConventionComposer(scanner, A.Fake<ILogger>());
+            var composer = new ConventionComposer(scanner, A.Fake<ILogger>());
 
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
             // A.CallTo(() => scannerProvider.Get<ITestConvention>()).Returns(new[] { convention });
-            A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>())
-                .Returns(new[] { new DelegateOrConvention<ITestConvention, TestContributionDelegate>(@delegate),
-                    new DelegateOrConvention<ITestConvention, TestContributionDelegate>(contribution )
+            A.CallTo(() => scannerProvider.GetAll())
+                .Returns(new[] {
+                    new DelegateOrConvention(@delegate),
+                    new DelegateOrConvention(convention )
                 });
 
             composer.Register(context);
 
-            A.CallTo(() => contribution.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
     }

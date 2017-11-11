@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
@@ -64,6 +65,68 @@ namespace Rocket.Surgery.Conventions
                     item.Delegate.DynamicInvoke(context);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Convention base compose, that calls all methods on register.
+    /// </summary>
+    public class ConventionComposer : IConventionComposer
+    {
+        private readonly ILogger _logger;
+        private readonly IConventionScanner _scanner;
+
+        /// <summary>
+        /// A base compose that does the composing of conventions and delegates
+        /// </summary>
+        /// <param name="scanner"></param>
+        /// <param name="logger"></param>
+        public ConventionComposer(IConventionScanner scanner, ILogger logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
+        }
+
+        public void Register(IConventionContext context)
+        {
+            var items = _scanner.BuildProvider().GetAll().ToList();
+
+            _logger.LogInformation("Found {Count} conventions or delegates", items.Count);
+
+            foreach (var item in items)
+            {
+                if (item == DelegateOrConvention.None)
+                {
+                    _logger.LogError("Convention or Delege not available for one of the items");
+                    continue;
+                }
+
+                if (item.Convention != null)
+                {
+                    _logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}", item.Convention.GetType().FullName, item.Convention.GetType().GetTypeInfo().Assembly.GetName().Name);
+                    Register(item.Convention, context);
+                }
+
+                // ReSharper disable once UseNullPropagation
+                // ReSharper disable once InvertIf
+                if (item.Delegate != null)
+                {
+                    _logger.LogDebug("Executing Delegate {TypeName}", item.Delegate.GetType().FullName);
+                    item.Delegate.DynamicInvoke(context);
+                }
+            }
+        }
+
+        private readonly ConcurrentDictionary<Type, MethodInfo> _registerMethodCache = new ConcurrentDictionary<Type, MethodInfo>();
+
+        private void Register(IConvention convention, IConventionContext context)
+        {
+            if (!_registerMethodCache.TryGetValue(convention.GetType(), out var method))
+            {
+                method = convention.GetType().GetTypeInfo().GetDeclaredMethod(nameof(Register));
+                _registerMethodCache.TryAdd(convention.GetType(), method);
+            }
+            method.Invoke(convention, new object[] { context });
         }
     }
 }

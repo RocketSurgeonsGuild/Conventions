@@ -11,4 +11,9 @@
         where TContext : IConventionContext
     {
     }
+
+    public interface IConventionComposer
+    {
+        void Register(IConventionContext context);
+    }
 }

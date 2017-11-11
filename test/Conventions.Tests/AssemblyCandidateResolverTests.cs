@@ -16,8 +16,9 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class AssemblyCandidateResolverTests
     {
-        internal class Contrib : IServiceConvention{
-            public void Register(ServiceConventionContext context)
+        internal class Contrib : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context)
             {
             }
         }
