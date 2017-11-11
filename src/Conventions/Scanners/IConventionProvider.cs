@@ -16,5 +16,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <returns>DelegateOrConvention&lt;TContribution, TDelegate&gt;</returns>
         /// TODO Edit XML Comment Template for Get`1
         IEnumerable<DelegateOrConvention<TContribution, TDelegate>> Get<TContribution, TDelegate>();
+
+        IEnumerable<DelegateOrConvention> GetAll();
     }
 }

@@ -2,11 +2,6 @@ using System;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="TContribution"></typeparam>
-    /// <typeparam name="TDelegate"></typeparam>
     public class DelegateOrConvention<TContribution, TDelegate>
     {
         /// <summary>
@@ -15,7 +10,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         public static DelegateOrConvention<TContribution, TDelegate> None { get; } = new DelegateOrConvention<TContribution, TDelegate>();
 
         private DelegateOrConvention() { }
-        
+
         /// <summary>
         /// Create a convention
         /// </summary>
@@ -38,7 +33,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// The convention, only Convention or Delegate are available
         /// </summary>
         public TContribution Convention { get; }
-        
+
         /// <summary>
         /// The delegate, only Convention or Delegate are available
         /// </summary>
@@ -79,5 +74,43 @@ namespace Rocket.Surgery.Conventions.Scanners
         {
             return new DelegateOrConvention<TContribution, TDelegate>(@delegate);
         }
+    }
+
+    public class DelegateOrConvention
+    {
+        /// <summary>
+        /// A nether case, if no delegate is found
+        /// </summary>
+        public static DelegateOrConvention None { get; } = new DelegateOrConvention();
+
+        private DelegateOrConvention() { }
+
+        /// <summary>
+        /// Create a convention
+        /// </summary>
+        /// <param name="convention"></param>
+        public DelegateOrConvention(IConvention convention)
+        {
+            Convention = convention;
+        }
+
+        /// <summary>
+        /// Create a delegate
+        /// </summary>
+        /// <param name="delegate"></param>
+        public DelegateOrConvention(Delegate @delegate)
+        {
+            Delegate = @delegate;
+        }
+
+        /// <summary>
+        /// The convention, only Convention or Delegate are available
+        /// </summary>
+        public IConvention Convention { get; }
+
+        /// <summary>
+        /// The delegate, only Convention or Delegate are available
+        /// </summary>
+        public Delegate Delegate { get; }
     }
 }

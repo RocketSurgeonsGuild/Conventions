@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
@@ -60,7 +61,7 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
-        public void ShouldScanAddedContributions()
+        public void ShouldScanAddedConventions()
         {
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
@@ -68,19 +69,20 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
                 .Returns(new Assembly[0]);
 
-            var contribution = A.Fake<IServiceConvention>();
+            var Convention = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(contribution);
+            scanner.AddConvention(Convention);
 
             var provider = scanner.BuildProvider();
 
             provider.Get<IServiceConvention, ServiceConventionDelegate>()
                 .Select(x => x.Convention)
                 .Should()
-                .Contain(contribution);
+                .Contain(Convention);
         }
+
         [Fact]
-        public void ShouldScanExcludeContributionTypes()
+        public void ShouldReturnAllConventions()
         {
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
@@ -88,9 +90,53 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
                 .Returns(new Assembly[0]);
 
-            var contribution = A.Fake<IServiceConvention>();
+            IConvention Convention = A.Fake<IServiceConvention>();
+            IConvention Convention2 = A.Fake<ConventionComposerTests.ITestConvention>();
 
-            scanner.AddConvention(contribution);
+            scanner.AddConvention(Convention, Convention2);
+
+            var provider = scanner.BuildProvider();
+
+            var result = provider.GetAll()
+                .Select(x => x.Convention);
+
+            result.Should().Contain(Convention).And.Contain(Convention2);
+        }
+
+        [Fact]
+        public void ShouldReturnAllDelegates()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+
+            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+                .Returns(new Assembly[0]);
+
+            Delegate Delegate2 = A.Fake<ServiceConventionDelegate>();
+            Delegate Delegate = A.Fake<Action>();
+
+            scanner.AddDelegate(Delegate, Delegate2);
+
+            var provider = scanner.BuildProvider();
+
+            var result = provider.GetAll()
+                .Select(x => x.Delegate);
+
+            result.Should().Contain(Delegate).And.Contain(Delegate2);
+        }
+
+        [Fact]
+        public void ShouldScanExcludeConventionTypes()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+
+            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+                .Returns(new Assembly[0]);
+
+            var Convention = A.Fake<IServiceConvention>();
+
+            scanner.AddConvention(Convention);
             scanner.ExceptConvention(typeof(ConventionScannerTests));
 
             var provider = scanner.BuildProvider();
@@ -102,7 +148,7 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
-        public void ShouldScanExcludeContributionAssemblies()
+        public void ShouldScanExcludeConventionAssemblies()
         {
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
@@ -110,9 +156,9 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
                 .Returns(new Assembly[0]);
 
-            var contribution = A.Fake<IServiceConvention>();
+            var Convention = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(contribution);
+            scanner.AddConvention(Convention);
             scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
             var provider = scanner.BuildProvider();
