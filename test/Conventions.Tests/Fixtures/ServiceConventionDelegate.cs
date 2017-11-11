@@ -1,4 +1,4 @@
 ﻿namespace Rocket.Surgery.Conventions.Tests.Fixtures
 {
-    public delegate void ServiceConventionDelegate(ServiceConventionContext context);
+    public delegate void ServiceConventionDelegate(IServiceConventionContext context);
 }

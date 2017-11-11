@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
@@ -87,9 +88,20 @@ namespace Rocket.Surgery.Conventions
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }
 
-        public void Register(IConventionContext context)
+        public void Register(IConventionContext context, Type type, params Type[] types)
+        {
+            Register(context, new[] { type }.Concat(types));
+        }
+
+        public void Register(IConventionContext context, IEnumerable<Type> types)
         {
             var items = _scanner.BuildProvider().GetAll().ToList();
+
+            var enumerable = types as Type[] ?? types.ToArray();
+            if (enumerable.Length == 0) return;
+
+            var delegateTypes = enumerable.Where(typeof(Delegate).IsAssignableFrom).ToArray();
+            var conventionTypes = enumerable.Except(delegateTypes).ToArray();
 
             _logger.LogInformation("Found {Count} conventions or delegates", items.Count);
 
@@ -97,12 +109,14 @@ namespace Rocket.Surgery.Conventions
             {
                 if (item == DelegateOrConvention.None)
                 {
-                    _logger.LogError("Convention or Delege not available for one of the items");
+                    _logger.LogError("Convention or Delegate not available for one of the items");
                     continue;
                 }
 
                 if (item.Convention != null)
                 {
+                    if (!conventionTypes.Any(type => type.IsInstanceOfType(item.Convention))) continue;
+
                     _logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}", item.Convention.GetType().FullName, item.Convention.GetType().GetTypeInfo().Assembly.GetName().Name);
                     Register(item.Convention, context);
                 }
@@ -111,6 +125,8 @@ namespace Rocket.Surgery.Conventions
                 // ReSharper disable once InvertIf
                 if (item.Delegate != null)
                 {
+                    if (!delegateTypes.Any(type => type.IsInstanceOfType(item.Delegate))) continue;
+
                     _logger.LogDebug("Executing Delegate {TypeName}", item.Delegate.GetType().FullName);
                     item.Delegate.DynamicInvoke(context);
                 }
