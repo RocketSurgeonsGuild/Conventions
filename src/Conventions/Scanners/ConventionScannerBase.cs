@@ -8,48 +8,48 @@ using Rocket.Surgery.Conventions.Reflection;
 namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
-    /// Class ConventionScannerBase.
+    /// Base class for various scanners
     /// </summary>
-    /// <seealso cref="IConventionScanner" />
-    /// TODO Edit XML Comment Template for ConventionScannerBase
     public abstract class ConventionScannerBase : IConventionScanner
     {
         /// <summary>
-        ///
+        /// Conventions to the included explictly.
         /// </summary>
         protected readonly List<object> IncludeConventions = new List<object>();
 
         /// <summary>
-        ///
+        /// Conventions to be excluded
         /// </summary>
         protected readonly List<Type> ExceptConventions = new List<Type>();
 
+        /// <summary>
+        /// The assemblys to exclude conventions
+        /// </summary>
+        protected readonly List<Assembly> ExceptAssemblyConventions = new List<Assembly>();
+
         private static readonly ConcurrentDictionary<Assembly, List<Type>> Conventions = new ConcurrentDictionary<Assembly, List<Type>>();
         private IConventionProvider _provider;
-        private readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
         private readonly IAssemblyCandidateFinder _assemblyCandidateFinder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConventionScannerBase"/> class.
+        /// Default constructor for the scanner
         /// </summary>
-        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        /// TODO Edit XML Comment Template for #ctor
+        /// <param name="assemblyCandidateFinder">The assembly candidate finder</param>
         protected ConventionScannerBase(IAssemblyCandidateFinder assemblyCandidateFinder)
         {
             _assemblyCandidateFinder = assemblyCandidateFinder;
         }
 
         /// <summary>
-        /// Gets the assembly conventions.
+        /// Gets all the assemblies by convention.
         /// </summary>
-        /// <returns>IEnumerable&lt;Type&gt;.</returns>
-        /// TODO Edit XML Comment Template for GetAssemblyConventions
+        /// <returns></returns>
         protected IEnumerable<Type> GetAssemblyConventions()
         {
             var assemblies = _assemblyCandidateFinder.GetCandidateAssemblies(
                 "Rocket.Surgery.Conventions.Abstractions",
                 "Rocket.Surgery.Conventions");
-            foreach (var assembly in assemblies.Except(_exceptAssemblyConventions))
+            foreach (var assembly in assemblies.Except(ExceptAssemblyConventions))
             {
                 if (!Conventions.TryGetValue(assembly, out var types))
                 {
@@ -66,67 +66,45 @@ namespace Rocket.Surgery.Conventions.Scanners
             }
         }
 
-        /// <summary>
-        /// Add delegate, also removes the provider if it has been built
-        /// </summary>
-        /// <param name="delegate"></param>
 
+        /// <inheritdoc />
         public void AddDelegate(Delegate @delegate)
         {
             _provider = null;
             IncludeConventions.Add(@delegate);
         }
 
-        /// <summary>
-        /// Adds the convention.
-        /// </summary>
-        /// <param name="convention">The convention.</param>
-        /// <returns>IEnumerable&lt;IServiceConvention&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        /// TODO Edit XML Comment Template for AddConvention
+        /// <inheritdoc />
         public void AddConvention(IConvention convention)
         {
             _provider = null;
             IncludeConventions.Add(convention);
         }
 
-        /// <summary>
-        /// Excepts the convention.
-        /// </summary>
-        /// <param name="conventionType">Type of the convention.</param>
-        /// TODO Edit XML Comment Template for ExceptConvention
-        public void ExceptConvention(Type conventionType)
+        /// <inheritdoc />
+        public void ExceptConvention(Type type)
         {
             _provider = null;
-            ExceptConventions.Add(conventionType);
+            ExceptConventions.Add(type);
         }
 
-        /// <summary>
-        /// Excepts the convention.
-        /// </summary>
-        /// <param name="assembly">Assembly containing the conventions to exclude.</param>
-        /// TODO Edit XML Comment Template for ExceptConvention
+        /// <inheritdoc />
         public void ExceptConvention(Assembly assembly)
         {
             _provider = null;
-            _exceptAssemblyConventions.Add(assembly);
+            ExceptAssemblyConventions.Add(assembly);
         }
 
-        /// <summary>
-        /// Builds the provider.
-        /// </summary>
-        /// <returns>IConventionProvider.</returns>
-        /// TODO Edit XML Comment Template for BuildProvider
+        /// <inheritdoc />
         public IConventionProvider BuildProvider()
         {
             return _provider ?? (_provider = CreateProvider());
         }
 
         /// <summary>
-        /// Gets the conventions.
+        /// Method used to create a convention provider
         /// </summary>
-        /// <returns>IEnumerable&lt;IServiceConvention&gt;.</returns>
-        /// TODO Edit XML Comment Template for Get
+        /// <returns></returns>
         protected virtual IConventionProvider CreateProvider()
         {
             var contributionTypes = GetAssemblyConventions()

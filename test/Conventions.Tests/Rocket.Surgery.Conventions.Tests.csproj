@@ -3,6 +3,7 @@
         <TargetFrameworks>netcoreapp1.1;netcoreapp2.0;net461</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <PackageReference Include="Rocket.Surgery.Builders" Version="$(RSG_Builders_Version)" />
+        <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
     </ItemGroup>
 </Project>

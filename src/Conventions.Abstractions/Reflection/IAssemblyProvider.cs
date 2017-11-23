@@ -4,16 +4,14 @@ using System.Reflection;
 namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
-    /// Interface IAssemblyProvider
+    /// A provider that gets a list of assemblies for a given context
     /// </summary>
-    /// TODO Edit XML Comment Template for IAssemblyProvider
     public interface IAssemblyProvider
     {
         /// <summary>
-        /// Gets the assemblies.
+        /// Get the full list of assemblies
         /// </summary>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
-        /// TODO Edit XML Comment Template for GetAssemblies
+        /// <returns></returns>
         IEnumerable<Assembly> GetAssemblies();
     }
 }

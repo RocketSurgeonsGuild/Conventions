@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
-    /// Class AssemblyCandidateFinder.
+    /// Default assembly candidate finder that uses <see cref="DependencyContext"/>
     /// </summary>
-    /// TODO Edit XML Comment Template for AssemblyCandidateFinder
     public class AssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         private readonly DependencyContext _dependencyContext;
@@ -24,19 +24,16 @@ namespace Rocket.Surgery.Conventions.Reflection
         public AssemblyCandidateFinder(DependencyContext dependencyContext, ILogger logger)
         {
             _dependencyContext = dependencyContext;
-            _logger = logger;
+            _logger = logger ?? NullLogger.Instance;
         }
 
-        public IEnumerable<Assembly> GetCandidateAssemblies(params string[] candidates)
+        /// <inheritdoc />
+        public IEnumerable<Assembly> GetCandidateAssemblies(string candidate, params string[] candidates)
         {
-            return GetCandidateAssemblies(candidates.AsEnumerable());
+            return GetCandidateAssemblies(new [] { candidate }.Concat(candidates));
         }
 
-        /// <summary>
-        /// Gets the candidate assemblies.
-        /// </summary>
-        /// <param name="candidates"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
             return GetCandidateLibraries(candidates.ToArray())
@@ -45,7 +42,7 @@ namespace Rocket.Surgery.Conventions.Reflection
                 .Select(TryLoad)
                 .Where(x => x != null);
         }
-        
+
         internal IEnumerable<RuntimeLibrary> GetCandidateLibraries(string[] candidates)
         {
             if (!candidates.Any())
@@ -64,10 +61,10 @@ namespace Rocket.Surgery.Conventions.Reflection
             {
                 return Assembly.Load(assemblyName);
             }
-            catch
+            catch (Exception e)
             {
-                _logger.LogWarning("Failed to load assembly {Assembly}", assemblyName.Name);
-                return null;
+                _logger.LogWarning(0, e, "Failed to load assembly {Assembly}", assemblyName.Name);
+                return default;
             }
         }
     }

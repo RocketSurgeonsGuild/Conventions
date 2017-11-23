@@ -1,20 +1,21 @@
 ﻿namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Marker interface for a convention
+    /// A marker interface to indicate a type is a convention
     /// </summary>
-    /// TODO Edit XML Comment Template for IConvention
     public interface IConvention { }
 
     /// <summary>
-    /// Contribution with a context type
+    /// A default interface that can be used to create a convention with a known context type
+    /// context is used to house all the data that the convention requires to do it's job
+    /// This can be things like a service collection, container builder, logger, etc.
     /// </summary>
-    /// <typeparam name="TContext"></typeparam>
+    /// <typeparam name="TContext">The convention type that contains all the values for this convention to work</typeparam>
     public interface IConvention<in TContext> : IConvention
         where TContext : IConventionContext
     {
         /// <summary>
-        /// Calls the convention to activate it
+        /// A method that is called to register a given convention at runtime.
         /// </summary>
         /// <param name="context"></param>
         void Register(TContext context);

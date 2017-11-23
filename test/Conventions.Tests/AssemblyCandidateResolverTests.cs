@@ -24,16 +24,6 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
-        public void FindsAssembliesInCandidates_ShortCircuts()
-        {
-            var resolver = new AssemblyCandidateFinder(DependencyContext.Load(typeof(AssemblyCandidateResolverTests).GetTypeInfo().Assembly), A.Fake<ILogger>());
-            var items = resolver.GetCandidateAssemblies();
-            items
-                .Should()
-                .BeEmpty();
-        }
-
-        [Fact]
         public void FindsAssembliesInCandidates_Params()
         {
             var resolver = new AssemblyCandidateFinder(DependencyContext.Load(typeof(AssemblyCandidateResolverTests).GetTypeInfo().Assembly), A.Fake<ILogger>());

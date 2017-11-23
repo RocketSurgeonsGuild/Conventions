@@ -3,17 +3,14 @@
 namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
-    /// Class SimpleConventionScanner.
+    /// A simple convention scanner that scans using the provided assembly candidate finder
     /// </summary>
-    /// <seealso cref="IConventionScanner" />
-    /// TODO Edit XML Comment Template for SimpleConventionScanner
     public class SimpleConventionScanner : ConventionScannerBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleConventionScanner" /> class.
+        /// The default constructor
         /// </summary>
-        /// <param name="assemblyCandidateFinder">The assembly provider.</param>
-        /// TODO Edit XML Comment Template for #ctor
+        /// <param name="assemblyCandidateFinder">The assembly candidate finder</param>
         public SimpleConventionScanner(IAssemblyCandidateFinder assemblyCandidateFinder)
             : base(assemblyCandidateFinder)
         {

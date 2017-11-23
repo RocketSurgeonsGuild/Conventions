@@ -4,10 +4,8 @@ using System.Collections.Generic;
 namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
-    /// Class BasicConventionScanner.
+    /// A basic convention scanner that doesn't scan any assemblies it only composes provided conventions.
     /// </summary>
-    /// <seealso cref="IConventionScanner" />
-    /// TODO Edit XML Comment Template for BasicConventionScanner
     public class BasicConventionScanner : IConventionScanner
     {
         private readonly List<IConvention> _contributions = new List<IConvention>();
@@ -16,32 +14,22 @@ namespace Rocket.Surgery.Conventions.Scanners
         private IConventionProvider _provider;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BasicConventionScanner"/> class.
+        /// The default constructor
         /// </summary>
-        /// <param name="conventions">The conventions.</param>
-        /// TODO Edit XML Comment Template for #ctor
+        /// <param name="conventions">The initial list of conventions</param>
         public BasicConventionScanner(params IConvention[] conventions)
         {
             _contributions.AddRange(conventions);
         }
 
-        /// <summary>
-        /// Excepts the convention.
-        /// </summary>
-        /// <param name="conventionType">Type of the convention.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
-        /// TODO Edit XML Comment Template for ExceptConvention
-        public void ExceptConvention(Type conventionType)
+        /// <inheritdoc />
+        public void ExceptConvention(Type type)
         {
             _provider = null;
-            _exceptContributions.Add(conventionType);
+            _exceptContributions.Add(type);
         }
 
-        /// <summary>
-        /// Gets the contributors.
-        /// </summary>
-        /// <returns>IEnumerable&lt;IServiceConvention&gt;.</returns>
-        /// TODO Edit XML Comment Template for Get
+        /// <inheritdoc />
         public IConventionProvider BuildProvider()
         {
             if (_provider is null)
@@ -51,23 +39,14 @@ namespace Rocket.Surgery.Conventions.Scanners
             return _provider;
         }
 
-        /// <summary>
-        /// Add delegate, also removes the provider if it has been built
-        /// </summary>
-        /// <param name="delegate"></param>
+        /// <inheritdoc />
         public void AddDelegate(Delegate @delegate)
         {
             _provider = null;
             _delegates.Add(@delegate);
         }
 
-        /// <summary>
-        /// Adds the convention.
-        /// </summary>
-        /// <param name="convention">The convention.</param>
-        /// <returns>IEnumerable&lt;IServiceConvention&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        /// TODO Edit XML Comment Template for AddConvention
+        /// <inheritdoc />
         public void AddConvention(IConvention convention)
         {
             _provider = null;

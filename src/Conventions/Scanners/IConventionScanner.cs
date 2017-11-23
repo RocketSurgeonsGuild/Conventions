@@ -1,39 +1,36 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
-    /// Interface IConventionScanner
+    /// The convention scanner interface is used to find conventions
+    ///     and return those conventions in order they are added.
     /// </summary>
-    /// TODO Edit XML Comment Template for IConventionScanner
     public interface IConventionScanner
     {
         /// <summary>
-        /// Adds a delgate to be part of the scan
+        /// Add a delegate to the scanner
         /// </summary>
-        /// <param name="delegate"></param>
+        /// <param name="delegate">The delegate</param>
         void AddDelegate(Delegate @delegate);
 
         /// <summary>
-        /// Adds the convention.
+        /// Adds a convention to the scanner.
         /// </summary>
-        /// <param name="convention">The convention.</param>
-        /// <returns>IEnumerable&lt;IServiceConvention&gt;.</returns>
-        /// TODO Edit XML Comment Template for AddConvention
+        /// <param name="convention">The convention</param>
         void AddConvention(IConvention convention);
 
         /// <summary>
-        /// Excepts the convention.
+        /// Exclude certian conventions by their implemented type.
         /// </summary>
-        /// <param name="conventionType">Type of the convention.</param>
-        /// TODO Edit XML Comment Template for ExceptConvention
-        void ExceptConvention(Type conventionType);
+        /// <param name="type">The type to exclude</param>
+        void ExceptConvention(Type type);
 
         /// <summary>
-        /// To the provider.
+        /// Creates a provider that returns a set of convetions.
         /// </summary>
-        /// <returns>IConventionProvider.</returns>
-        /// TODO Edit XML Comment Template for ToProvider
+        /// <returns></returns>
         IConventionProvider BuildProvider();
     }
 }

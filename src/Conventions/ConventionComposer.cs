@@ -12,9 +12,9 @@ namespace Rocket.Surgery.Conventions
     /// <summary>
     /// Convention base compose, that calls all methods on register.
     /// </summary>
-    /// <typeparam name="TContext"></typeparam>
-    /// <typeparam name="TContribution"></typeparam>
-    /// <typeparam name="TDelegate"></typeparam>
+    /// <typeparam name="TContext">The context type</typeparam>
+    /// <typeparam name="TContribution">The contribution type</typeparam>
+    /// <typeparam name="TDelegate">The delegate type</typeparam>
     public abstract class ConventionComposer<TContext, TContribution, TDelegate> : IConventionComposer<TContext, TContribution, TDelegate>
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
@@ -35,7 +35,7 @@ namespace Rocket.Surgery.Conventions
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }
 
-        /// <inheritdoc cref="IConventionComposerventionComposer{TContext,TContribution,TDelegate}"/>
+        /// <inheritdoc />
         public void Register(TContext context)
         {
             var items = _scanner.BuildProvider()
@@ -52,7 +52,7 @@ namespace Rocket.Surgery.Conventions
                     continue;
                 }
 
-                if (item.Convention != null)
+                if (!EqualityComparer<TContribution>.Default.Equals(item.Convention, default))
                 {
                     _logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}", item.Convention.GetType().FullName, item.Convention.GetType().GetTypeInfo().Assembly.GetName().Name);
                     item.Convention.Register(context);
@@ -88,11 +88,13 @@ namespace Rocket.Surgery.Conventions
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }
 
+        /// <inheritdoc />
         public void Register(IConventionContext context, Type type, params Type[] types)
         {
             Register(context, new[] { type }.Concat(types));
         }
 
+        /// <inheritdoc />
         public void Register(IConventionContext context, IEnumerable<Type> types)
         {
             var items = _scanner.BuildProvider().GetAll().ToList();

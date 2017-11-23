@@ -4,25 +4,21 @@ using System.Reflection;
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Class ServiceContributionAttribute. This class cannot be inherited.
+    /// An attribute that defines a convention for this entire assembly
+    /// The type attached to the convention must implement <see cref="IConvention"/> but may also implement other interfaces
     /// </summary>
-    /// TODO Edit XML Comment Template for ServiceContributionAttribute
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    // ReSharper disable once CheckNamespace
     public sealed class ConventionAttribute : Attribute
     {
         /// <summary>
-        /// The type that derives from <see cref="IConvention"/>
+        /// The convention type
         /// </summary>
-        /// <value>The type.</value>
-        /// TODO Edit XML Comment Template for Type
         public Type Type { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConventionAttribute"/> class.
+        /// The type to be used with the convention type
         /// </summary>
-        /// <param name="type">The type.</param>
-        /// TODO Edit XML Comment Template for #ctor
+        /// <param name="type"></param>
         public ConventionAttribute(Type type)
         {
             if (!typeof(IConvention).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))

@@ -4,14 +4,13 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
-    /// Class DefaultAssemblyProvider.
+    /// Default assembly provider that uses <see cref="DependencyContext"/>
     /// </summary>
-    /// <seealso cref="IAssemblyProvider" />
-    /// TODO Edit XML Comment Template for DefaultAssemblyProvider
     public class DefaultAssemblyProvider : IAssemblyProvider
     {
         private readonly ILogger _logger;
@@ -20,12 +19,11 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultAssemblyProvider" /> class.
         /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="logger">The logger.</param>
-        /// <exception cref="System.ArgumentNullException">context</exception>
-        public DefaultAssemblyProvider(DependencyContext context, ILogger logger)
+        /// <param name="context">The dependency contenxt to list assemblies for.</param>
+        /// <param name="logger">The logger to log out diagnostic information.</param>
+        public DefaultAssemblyProvider(DependencyContext context, ILogger logger = null)
         {
-            _logger = logger;
+            _logger = logger ?? NullLogger.Instance;
             _assembles = new Lazy<IEnumerable<Assembly>>(() =>
                 context.GetDefaultAssemblyNames()
                     .Select(TryLoad)
@@ -46,10 +44,10 @@ namespace Rocket.Surgery.Conventions.Reflection
             {
                 return Assembly.Load(assemblyName);
             }
-            catch
+            catch (Exception e)
             {
-                _logger.LogWarning("Failed to load assembly {Assembly}", assemblyName.Name);
-                return null;
+                _logger.LogWarning(0, e, "Failed to load assembly {Assembly}", assemblyName.Name);
+                return default;
             }
         }
     }

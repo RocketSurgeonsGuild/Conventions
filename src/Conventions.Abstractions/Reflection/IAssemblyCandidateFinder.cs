@@ -4,24 +4,24 @@ using System.Reflection;
 namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
-    /// Interface IAssemblyCandidateFinder
+    /// An assembly candidate finders
+    /// Users a given name of an assembly to find other assemblies that reference it.
     /// </summary>
-    /// TODO Edit XML Comment Template for IAssemblyCandidateFinder
     public interface IAssemblyCandidateFinder
     {
         /// <summary>
-        /// Gets the candidate assemblies.
+        /// Get the candidates for a given set
         /// </summary>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
-        /// TODO Edit XML Comment Template for GetCandidateAssemblies
-        IEnumerable<Assembly> GetCandidateAssemblies(params string[] candidates);
+        /// <param name="candidate">The first candidate to find</param>
+        /// <param name="candidates">The candidates as an array</param>
+        /// <returns></returns>
+        IEnumerable<Assembly> GetCandidateAssemblies(string candidate, params string[] candidates);
 
         /// <summary>
-        /// Gets the candidate assemblies.
+        /// Get the candidates for a given set
         /// </summary>
-        /// <param name="candidates">The candidates.</param>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
-        /// TODO Edit XML Comment Template for GetCandidateAssemblies
+        /// <param name="candidates">The candidates as an enumerable</param>
+        /// <returns></returns>
         IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates);
     }
 }

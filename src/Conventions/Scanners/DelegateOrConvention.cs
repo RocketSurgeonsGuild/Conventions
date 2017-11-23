@@ -2,6 +2,11 @@ using System;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
+    /// <summary>
+    /// A pattern match class that is used to determine if a type is a <see cref="IConvention"/>, a <see cref="Delegate"/> or <see cref="None"/>
+    /// </summary>
+    /// <typeparam name="TConvention">The convention type</typeparam>
+    /// <typeparam name="TDelegate">The delegate type</typeparam>
     public class DelegateOrConvention<TConvention, TDelegate>
     {
         /// <summary>
@@ -76,6 +81,9 @@ namespace Rocket.Surgery.Conventions.Scanners
         }
     }
 
+    /// <summary>
+    /// A pattern match class that is used to determine if a type is a <see cref="IConvention"/>, a <see cref="Delegate"/> or <see cref="None"/>
+    /// </summary>
     public class DelegateOrConvention
     {
         /// <summary>
