@@ -1,19 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27019.1
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Builders", "src\Builders\Rocket.Surgery.Builders.csproj", "{B8E6E98E-C72B-400B-9EFE-F5AC78E0D073}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Builders.Abstractions", "src\Builders.Abstractions\Rocket.Surgery.Builders.Abstractions.csproj", "{A45C4DF3-B218-4788-AA19-9861AF20D197}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Conventions", "src\Conventions\Rocket.Surgery.Conventions.csproj", "{1D4F9E90-D854-40C7-9A8F-522658FD7241}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Conventions.Abstractions", "src\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj", "{1689E10C-A577-49FC-B37E-8F05971CF064}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Conventions.Tests", "test\Conventions.Tests\Rocket.Surgery.Conventions.Tests.csproj", "{4775A627-4562-4C55-8EE9-50544E49B20D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Builders.Tests", "test\Builders.Tests\Rocket.Surgery.Builders.Tests.csproj", "{5B8672D8-1FE1-41C8-B6B8-F6EB24BB5F65}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{1E56F8EA-0A93-4EA5-9EC6-400B24CAC531}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,10 +16,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{1E56
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		.gitmodules = .gitmodules
+		.travis.yml = .travis.yml
 		cake.config = cake.config
 		GitVersion.yml = GitVersion.yml
 		global.json = global.json
 		NuGet.config = NuGet.config
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{2D7895AC-3F01-45F6-9F26-85F09B6F7E62}"
@@ -52,14 +48,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B8E6E98E-C72B-400B-9EFE-F5AC78E0D073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8E6E98E-C72B-400B-9EFE-F5AC78E0D073}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8E6E98E-C72B-400B-9EFE-F5AC78E0D073}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8E6E98E-C72B-400B-9EFE-F5AC78E0D073}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A45C4DF3-B218-4788-AA19-9861AF20D197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A45C4DF3-B218-4788-AA19-9861AF20D197}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A45C4DF3-B218-4788-AA19-9861AF20D197}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A45C4DF3-B218-4788-AA19-9861AF20D197}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1D4F9E90-D854-40C7-9A8F-522658FD7241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1D4F9E90-D854-40C7-9A8F-522658FD7241}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D4F9E90-D854-40C7-9A8F-522658FD7241}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -72,21 +60,14 @@ Global
 		{4775A627-4562-4C55-8EE9-50544E49B20D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4775A627-4562-4C55-8EE9-50544E49B20D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4775A627-4562-4C55-8EE9-50544E49B20D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B8672D8-1FE1-41C8-B6B8-F6EB24BB5F65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B8672D8-1FE1-41C8-B6B8-F6EB24BB5F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B8672D8-1FE1-41C8-B6B8-F6EB24BB5F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B8672D8-1FE1-41C8-B6B8-F6EB24BB5F65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B8E6E98E-C72B-400B-9EFE-F5AC78E0D073} = {52F62811-7776-42E4-921F-E1F9202F8074}
-		{A45C4DF3-B218-4788-AA19-9861AF20D197} = {52F62811-7776-42E4-921F-E1F9202F8074}
 		{1D4F9E90-D854-40C7-9A8F-522658FD7241} = {52F62811-7776-42E4-921F-E1F9202F8074}
 		{1689E10C-A577-49FC-B37E-8F05971CF064} = {52F62811-7776-42E4-921F-E1F9202F8074}
 		{4775A627-4562-4C55-8EE9-50544E49B20D} = {F2329C11-7A3F-4D18-A665-6FA91A922DBF}
-		{5B8672D8-1FE1-41C8-B6B8-F6EB24BB5F65} = {F2329C11-7A3F-4D18-A665-6FA91A922DBF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7EF3BE50-98BC-4A67-A514-EF6078B1DA37}
