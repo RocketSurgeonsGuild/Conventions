@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FakeItEasy;
@@ -34,7 +35,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
 
-            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+            A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
 
             var provider = scanner.BuildProvider();
@@ -51,7 +52,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
 
-            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+            A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
 
             var provider = scanner.BuildProvider();
@@ -66,7 +67,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
 
-            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+            A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new Assembly[0]);
 
             var Convention = A.Fake<IServiceConvention>();
@@ -87,7 +88,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
 
-            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+            A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new Assembly[0]);
 
             IConvention Convention = A.Fake<IServiceConvention>();
@@ -109,7 +110,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
 
-            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+            A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new Assembly[0]);
 
             Delegate Delegate2 = A.Fake<ServiceConventionDelegate>();
@@ -131,7 +132,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
 
-            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+            A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new Assembly[0]);
 
             var Convention = A.Fake<IServiceConvention>();
@@ -153,7 +154,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = A.Fake<IAssemblyCandidateFinder>();
             var scanner = new Scanner(finder);
 
-            A.CallTo(() => finder.GetCandidateAssemblies(A<string[]>._))
+            A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new Assembly[0]);
 
             var Convention = A.Fake<IServiceConvention>();

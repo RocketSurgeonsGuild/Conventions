@@ -7,19 +7,19 @@ namespace Rocket.Surgery.Conventions.Scanners
 {
     internal class ConventionProvider : IConventionProvider
     {
-        private readonly IEnumerable<object> _contributionsOrDelegates;
-        private readonly IEnumerable<IConvention> _contributions;
+        private readonly IEnumerable<object> _conventionsOrDelegates;
+        private readonly IEnumerable<IConvention> _conventions;
 
         public ConventionProvider(IEnumerable<IConvention> contributions, IEnumerable<Type> exceptContributions, IEnumerable<object> contributionsOrDelegates)
         {
-            _contributionsOrDelegates = contributionsOrDelegates.ToArray();
-            _contributions = contributions.Where(z => exceptContributions.All(x => x != z.GetType())).ToArray();
+            _conventionsOrDelegates = contributionsOrDelegates.ToArray();
+            _conventions = contributions.Where(z => exceptContributions.All(x => x != z.GetType())).ToArray();
         }
 
         public IEnumerable<DelegateOrConvention<TContribution, TDelegate>> Get<TContribution, TDelegate>()
         {
-            return _contributions
-                .Union(_contributionsOrDelegates)
+            return _conventions
+                .Union(_conventionsOrDelegates)
                 .Select(x =>
                 {
                     if (x is TContribution a)
@@ -38,20 +38,16 @@ namespace Rocket.Surgery.Conventions.Scanners
 
         public IEnumerable<DelegateOrConvention> GetAll()
         {
-            return _contributions
-                .Union(_contributionsOrDelegates)
+            return _conventions
+                .Union(_conventionsOrDelegates)
                 .Select(x =>
                 {
-                    if (x is IConvention a)
+                    switch (x)
                     {
-                        return new DelegateOrConvention(a);
+                        case IConvention a: return new DelegateOrConvention(a);
+                        case Delegate d: return new DelegateOrConvention(d);
+                        default: return DelegateOrConvention.None;
                     }
-                    // ReSharper disable once ConvertIfStatementToReturnStatement
-                    if (x is Delegate d)
-                    {
-                        return new DelegateOrConvention(d);
-                    }
-                    return DelegateOrConvention.None;
                 })
                 .Where(x => x != DelegateOrConvention.None);
         }

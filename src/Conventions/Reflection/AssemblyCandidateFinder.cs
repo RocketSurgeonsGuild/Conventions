@@ -28,12 +28,6 @@ namespace Rocket.Surgery.Conventions.Reflection
         }
 
         /// <inheritdoc />
-        public IEnumerable<Assembly> GetCandidateAssemblies(string candidate, params string[] candidates)
-        {
-            return GetCandidateAssemblies(new [] { candidate }.Concat(candidates));
-        }
-
-        /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
             return GetCandidateLibraries(candidates.ToArray())

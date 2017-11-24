@@ -88,7 +88,10 @@ namespace Rocket.Surgery.Conventions.Scanners
             ExceptConventions.Add(type);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Excludes an assembly from the convention
+        /// </summary>
+        /// <param name="assembly"></param>
         public void ExceptConvention(Assembly assembly)
         {
             _provider = null;

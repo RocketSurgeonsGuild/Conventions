@@ -12,16 +12,9 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <summary>
         /// Get the candidates for a given set
         /// </summary>
-        /// <param name="candidate">The first candidate to find</param>
-        /// <param name="candidates">The candidates as an array</param>
-        /// <returns></returns>
-        IEnumerable<Assembly> GetCandidateAssemblies(string candidate, params string[] candidates);
-
-        /// <summary>
-        /// Get the candidates for a given set
-        /// </summary>
         /// <param name="candidates">The candidates as an enumerable</param>
         /// <returns></returns>
         IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates);
     }
 }
+
