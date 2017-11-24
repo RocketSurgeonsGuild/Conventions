@@ -5,7 +5,7 @@
 
     }
 
-    public class ServiceConventionContext : IServiceConventionContext
+    public class ServiceConventionContext : ConventionContext, IServiceConventionContext
     {
 
     }

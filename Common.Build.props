@@ -13,7 +13,7 @@
         <SourceLink_Version>2.6.0</SourceLink_Version>
         <Microsoft_NET_Test_Sdk_Version>15.5.0</Microsoft_NET_Test_Sdk_Version>
         <xunit_Version>2.3.1</xunit_Version>
-        <FluentAssertions_Version>5.0.0-beta0003</FluentAssertions_Version>
+        <FluentAssertions_Version>5.0.0-beta0004</FluentAssertions_Version>
         <FakeItEasy_Version>4.1.1</FakeItEasy_Version>
     </PropertyGroup>
     <!-- Overrides -->
