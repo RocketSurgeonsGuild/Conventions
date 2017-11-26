@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyModel;
 namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
-    /// Default assembly provider that uses <see cref="DependencyContext"/>
+    /// Assembly provider that uses <see cref="AppDomain"/>
     /// </summary>
     public class AppDomainAssemblyProvider : IAssemblyProvider
     {

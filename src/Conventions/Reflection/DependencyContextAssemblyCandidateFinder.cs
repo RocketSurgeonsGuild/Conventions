@@ -9,19 +9,19 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
-    /// Default assembly candidate finder that uses <see cref="DependencyContext"/>
+    /// Assembly candidate finder that uses <see cref="DependencyContext"/>
     /// </summary>
-    public class AssemblyCandidateFinder : IAssemblyCandidateFinder
+    public class DependencyContextAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         private readonly DependencyContext _dependencyContext;
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssemblyCandidateFinder" /> class.
+        /// Initializes a new instance of the <see cref="DependencyContextAssemblyCandidateFinder" /> class.
         /// </summary>
         /// <param name="dependencyContext">The dependency context.</param>
         /// <param name="logger">The logger.</param>
-        public AssemblyCandidateFinder(DependencyContext dependencyContext, ILogger logger)
+        public DependencyContextAssemblyCandidateFinder(DependencyContext dependencyContext, ILogger logger = null)
         {
             _dependencyContext = dependencyContext;
             _logger = logger ?? NullLogger.Instance;
@@ -44,7 +44,7 @@ namespace Rocket.Surgery.Conventions.Reflection
                 return Enumerable.Empty<RuntimeLibrary>();
             }
 
-            var candidatesResolver = new CandidateResolver(_dependencyContext.RuntimeLibraries, new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase));
+            var candidatesResolver = new RuntimeLibraryCandidateResolver(_dependencyContext.RuntimeLibraries, new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase));
             return candidatesResolver.GetCandidates();
         }
 

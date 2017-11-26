@@ -36,7 +36,7 @@ namespace Rocket.Surgery.Conventions.Tests
             provider.Get<IServiceConvention, ServiceConventionDelegate>()
                 .Select(x => x.Convention)
                 .Should()
-                .Contain(x => x.GetType() == typeof(AssemblyCandidateResolverTests.Contrib));
+                .Contain(x => x.GetType() == typeof(Contrib));
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace Rocket.Surgery.Conventions.Tests
             provider.Get<IServiceConvention, ServiceConventionDelegate>()
                 .Select(x => x.Convention)
                 .Should()
-                .NotContain(x => x.GetType() == typeof(AssemblyCandidateResolverTests.Contrib));
+                .NotContain(x => x.GetType() == typeof(Contrib));
         }
 
         [Fact]
@@ -137,7 +137,7 @@ namespace Rocket.Surgery.Conventions.Tests
             provider.Get<IServiceConvention, ServiceConventionDelegate>()
                 .Select(x => x.Convention)
                 .Should()
-                .NotContain(x => x.GetType() == typeof(AssemblyCandidateResolverTests.Contrib));
+                .NotContain(x => x.GetType() == typeof(Contrib));
         }
     }
 }

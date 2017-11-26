@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyModel;
 
 namespace Rocket.Surgery.Conventions.Reflection
 {
-    class CandidateResolver
+    class RuntimeLibraryCandidateResolver
     {
         private readonly IDictionary<string, Dependency> _dependencies;
 
-        public CandidateResolver(IReadOnlyList<RuntimeLibrary> runtimeDependencies, ISet<string> referenceAssemblies)
+        public RuntimeLibraryCandidateResolver(IReadOnlyList<RuntimeLibrary> runtimeDependencies, ISet<string> referenceAssemblies)
         {
             var dependenciesWithNoDuplicates = new Dictionary<string, Dependency>(StringComparer.OrdinalIgnoreCase);
             foreach (var dependency in runtimeDependencies)
@@ -93,4 +93,5 @@ namespace Rocket.Surgery.Conventions.Reflection
             Reference = 3
         }
     }
+
 }
