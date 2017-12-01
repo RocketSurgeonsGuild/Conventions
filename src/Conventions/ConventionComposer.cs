@@ -19,7 +19,6 @@ namespace Rocket.Surgery.Conventions
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
     {
-        private readonly ILogger _logger;
         private readonly IConventionScanner _scanner;
 
         /// <summary>
@@ -27,11 +26,10 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="scanner"></param>
         /// <param name="logger"></param>
-        protected ConventionComposer(IConventionScanner scanner, ILogger logger)
+        protected ConventionComposer(IConventionScanner scanner)
         {
             if (!typeof(Delegate).GetTypeInfo().IsAssignableFrom(typeof(TDelegate).GetTypeInfo()))
                 throw new ArgumentException("TDelegate is not a Delegate");
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }
 
@@ -42,19 +40,19 @@ namespace Rocket.Surgery.Conventions
                 .Get<TContribution, TDelegate>()
                 .ToList();
 
-            _logger.LogInformation("Found {Count} conventions or delegates of {Type} for {Convention}", items.Count, typeof(TDelegate).FullName, typeof(TContribution).FullName);
+            context.Logger.LogInformation("Found {Count} conventions or delegates of {Type} for {Convention}", items.Count, typeof(TDelegate).FullName, typeof(TContribution).FullName);
 
             foreach (var item in items)
             {
                 if (item == DelegateOrConvention<TContribution, TDelegate>.None)
                 {
-                    _logger.LogError("Convention or Delege not available for one of the items from {Type}", typeof(TContribution).FullName);
+                    context.Logger.LogError("Convention or Delege not available for one of the items from {Type}", typeof(TContribution).FullName);
                     continue;
                 }
 
                 if (!EqualityComparer<TContribution>.Default.Equals(item.Convention, default))
                 {
-                    _logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}", item.Convention.GetType().FullName, item.Convention.GetType().GetTypeInfo().Assembly.GetName().Name);
+                    context.Logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}", item.Convention.GetType().FullName, item.Convention.GetType().GetTypeInfo().Assembly.GetName().Name);
                     item.Convention.Register(context);
                 }
 
@@ -62,7 +60,7 @@ namespace Rocket.Surgery.Conventions
                 // ReSharper disable once InvertIf
                 if (item.Delegate != null)
                 {
-                    _logger.LogDebug("Executing Delegate {TypeName}", typeof(TDelegate).FullName);
+                    context.Logger.LogDebug("Executing Delegate {TypeName}", typeof(TDelegate).FullName);
                     item.Delegate.DynamicInvoke(context);
                 }
             }
@@ -74,7 +72,6 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     public class ConventionComposer : IConventionComposer
     {
-        private readonly ILogger _logger;
         private readonly IConventionScanner _scanner;
 
         /// <summary>
@@ -82,9 +79,8 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="scanner"></param>
         /// <param name="logger"></param>
-        public ConventionComposer(IConventionScanner scanner, ILogger logger)
+        public ConventionComposer(IConventionScanner scanner)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }
 
@@ -105,13 +101,13 @@ namespace Rocket.Surgery.Conventions
             var delegateTypes = enumerable.Where(typeof(Delegate).IsAssignableFrom).ToArray();
             var conventionTypes = enumerable.Except(delegateTypes).ToArray();
 
-            _logger.LogInformation("Found {Count} conventions or delegates", items.Count);
+            context.Logger.LogInformation("Found {Count} conventions or delegates", items.Count);
 
             foreach (var item in items)
             {
                 if (item == DelegateOrConvention.None)
                 {
-                    _logger.LogError("Convention or Delegate not available for one of the items");
+                    context.Logger.LogError("Convention or Delegate not available for one of the items");
                     continue;
                 }
 
@@ -119,7 +115,7 @@ namespace Rocket.Surgery.Conventions
                 {
                     if (!conventionTypes.Any(type => type.IsInstanceOfType(item.Convention))) continue;
 
-                    _logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}", item.Convention.GetType().FullName, item.Convention.GetType().GetTypeInfo().Assembly.GetName().Name);
+                    context.Logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}", item.Convention.GetType().FullName, item.Convention.GetType().GetTypeInfo().Assembly.GetName().Name);
                     Register(item.Convention, context);
                 }
 
@@ -129,7 +125,7 @@ namespace Rocket.Surgery.Conventions
                 {
                     if (!delegateTypes.Any(type => type.IsInstanceOfType(item.Delegate))) continue;
 
-                    _logger.LogDebug("Executing Delegate {TypeName}", item.Delegate.GetType().FullName);
+                    context.Logger.LogDebug("Executing Delegate {TypeName}", item.Delegate.GetType().FullName);
                     item.Delegate.DynamicInvoke(context);
                 }
             }

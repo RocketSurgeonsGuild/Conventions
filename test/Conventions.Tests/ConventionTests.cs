@@ -6,12 +6,18 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
+using Rocket.Surgery.Extensions.Testing;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    public class ConventionTests
+    public class ConventionTests : AutoTestBase
     {
+        public ConventionTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        {
+        }
+
         [Fact]
         public void ConventionAttributeThrowsIfNonConventionGiven()
         {
@@ -39,10 +45,10 @@ namespace Rocket.Surgery.Conventions.Tests
                     new DelegateOrConvention<IServiceConvention, ServiceConventionDelegate>(dele),
                     new DelegateOrConvention<IServiceConvention, ServiceConventionDelegate>(dele2),
                 }.AsEnumerable());
-            var composer = new ServiceConventionComposer(scanner, A.Fake<ILogger>());
+            var composer = new ServiceConventionComposer(scanner);
 
-            composer.Register(new ServiceConventionContext());
-            composer.Register(new ServiceConventionContext());
+            composer.Register(new ServiceConventionContext(Logger));
+            composer.Register(new ServiceConventionContext(Logger));
             A.CallTo(() => dele.Invoke(A<ServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Twice);
             A.CallTo(() => dele2.Invoke(A<ServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Twice);
             A.CallTo(() => contrib.Register(A<ServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Twice);

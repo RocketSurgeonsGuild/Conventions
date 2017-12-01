@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -10,6 +11,15 @@ namespace Rocket.Surgery.Conventions
         private readonly IDictionary<object, object> _items = new Dictionary<object, object>();
 
         /// <summary>
+        /// Creates a base context
+        /// </summary>
+        /// <param name="logger"></param>
+        protected ConventionContext(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        /// <summary>
         /// The indexer that contains the items
         /// </summary>
         /// <param name="item"></param>
@@ -19,5 +29,8 @@ namespace Rocket.Surgery.Conventions
             get => _items.TryGetValue(item, out object value) ? value : null;
             set => _items[item] = value;
         }
+
+        /// <inheritdoc />
+        public ILogger Logger { get; }
     }
 }

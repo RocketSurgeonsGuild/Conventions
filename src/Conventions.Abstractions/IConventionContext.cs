@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
@@ -9,5 +11,10 @@ namespace Rocket.Surgery.Conventions
         /// Allows a context to hold additional information for conventions to consume such as configuration objects
         /// </summary>
         object this[object item] { get; set; }
+
+        /// <summary>
+        /// A logger that is configured to work with each convention item
+        /// </summary>
+        ILogger Logger { get; }
     }
 }

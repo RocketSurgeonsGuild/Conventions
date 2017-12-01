@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions
         class ComposerImpl<TContext, TContribution, TDelegate> : ConventionComposer<TContext, TContribution, TDelegate>
             where TContribution : IConvention<TContext>
             where TContext : IConventionContext
-        { public ComposerImpl(IConventionScanner scanner, ILogger logger) : base(scanner, logger) { } }
+        { public ComposerImpl(IConventionScanner scanner) : base(scanner) { } }
 
         /// <summary>
         /// Calls register on the any items found from the scanner that match either TContribution or TDelegate.
@@ -24,12 +24,11 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context"></param>
         public static void Register<TContext, TContribution, TDelegate>(
             IConventionScanner scanner,
-            ILogger logger,
             TContext context)
             where TContribution : IConvention<TContext>
             where TContext : IConventionContext
         {
-            new ComposerImpl<TContext, TContribution, TDelegate>(scanner, logger).Register(context);
+            new ComposerImpl<TContext, TContribution, TDelegate>(scanner).Register(context);
         }
     }
 }

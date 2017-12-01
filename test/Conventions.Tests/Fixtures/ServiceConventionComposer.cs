@@ -5,7 +5,7 @@ namespace Rocket.Surgery.Conventions.Tests.Fixtures
 {
     public class ServiceConventionComposer : ConventionComposer<ServiceConventionContext, IServiceConvention, ServiceConventionDelegate>
     {
-        public ServiceConventionComposer(IConventionScanner scanner, ILogger logger) : base(scanner, logger)
+        public ServiceConventionComposer(IConventionScanner scanner) : base(scanner)
         {
         }
     }

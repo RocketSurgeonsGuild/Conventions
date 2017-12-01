@@ -1,19 +1,28 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Extensions.Testing;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    public class ConventionContextTests
+    public class ConventionContextTests : AutoTestBase
     {
-        class TestGenericValueContainer : ConventionContext
+        public ConventionContextTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
 
+        class TestGenericValueContainer : ConventionContext
+        {
+            public TestGenericValueContainer(ILogger logger) : base(logger)
+            {
+            }
+        }
 
         [Fact]
         public void ReturnsNullOfNoValue()
         {
-            var container = new TestGenericValueContainer();
+            var container = new TestGenericValueContainer(Logger);
 
             container[typeof(string)].Should().BeNull();
         }
@@ -22,7 +31,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void SetAValue()
         {
-            var container = new TestGenericValueContainer();
+            var container = new TestGenericValueContainer(Logger);
 
             container[typeof(string)] = "abc";
 
@@ -31,7 +40,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void GetAStronglyTypedValue()
         {
-            var container = new TestGenericValueContainer();
+            var container = new TestGenericValueContainer(Logger);
             container[typeof(string)] = "abc";
             container.Get<string>().Should().Be("abc");
         }
@@ -39,7 +48,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void SetAStronglyTypedValue()
         {
-            var container = new TestGenericValueContainer();
+            var container = new TestGenericValueContainer(Logger);
             container.Set("abc");
             container.Get<string>().Should().Be("abc");
         }
@@ -47,7 +56,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void SetShouldChain()
         {
-            var container = new TestGenericValueContainer();
+            var container = new TestGenericValueContainer(Logger);
             container.Set("abc").Should().Be(container);
         }
     }
