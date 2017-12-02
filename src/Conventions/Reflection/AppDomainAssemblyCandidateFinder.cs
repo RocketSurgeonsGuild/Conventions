@@ -46,14 +46,6 @@ namespace Rocket.Surgery.Conventions.Reflection
             // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
             var candidatesResolver = new AssemblyCandidateResolver(_appDomain.GetAssemblies(), new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase), _logger);
             return candidatesResolver.GetCandidates().Select(x => x.Assembly).ToArray();
-            //var resolvedCandidates = candidatesResolver.GetCandidates().Select(x => x.Assembly).ToArray();
-
-            //Assembly[] reresolvedCandidates;
-            //do
-            //{
-            //    reresolvedCandidates = candidatesResolver.GetCandidates().Select(x => x.Assembly).ToArray();
-            //} while (resolvedCandidates.Length != reresolvedCandidates.Length);
-            //return reresolvedCandidates;
         }
     }
 }

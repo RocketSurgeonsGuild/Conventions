@@ -28,7 +28,7 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Should()
                 .Contain(new[] {
                     "Sample.DependencyOne",
-                    "Sample.DependencyTwo",
+                    //"Sample.DependencyTwo",
                     "Sample.DependencyThree",
                     "Rocket.Surgery.Conventions.Tests",
                 });
@@ -56,7 +56,7 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Should()
                 .Contain(new[] {
                     "Sample.DependencyOne",
-                    "Sample.DependencyTwo",
+                    //"Sample.DependencyTwo",
                     "Sample.DependencyThree",
                     "Rocket.Surgery.Conventions.Tests",
                 });
