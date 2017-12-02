@@ -43,6 +43,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F2329C11-7
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{C4335B9B-E327-4B83-A228-735873972363}"
+	ProjectSection(SolutionItems) = preProject
+		sample\Directory.Build.props = sample\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.DependencyOne", "sample\Sample.DependencyOne\Sample.DependencyOne.csproj", "{0AE273C5-B6D1-451D-BBE8-EC004AE90ED5}"
 EndProject
