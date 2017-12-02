@@ -84,14 +84,6 @@ namespace Rocket.Surgery.Conventions.Reflection
                 return $"Library: {Library.Name}, Classification: {Classification}";
             }
         }
-
-        private enum DependencyClassification
-        {
-            Unknown = 0,
-            Candidate = 1,
-            NotCandidate = 2,
-            Reference = 3
-        }
     }
 
 }
