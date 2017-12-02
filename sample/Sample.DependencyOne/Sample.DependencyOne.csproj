@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard1.3;net451;netstandard2.0;net461</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
+        <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+    </ItemGroup>
+
+</Project>

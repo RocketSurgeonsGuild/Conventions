@@ -34,7 +34,8 @@ namespace Rocket.Surgery.Conventions.Reflection
                 .SelectMany(library =>
                     library.GetDefaultAssemblyNames(_dependencyContext))
                 .Select(TryLoad)
-                .Where(x => x != null);
+                .Where(x => x != null)
+                .Reverse();
         }
 
         internal IEnumerable<RuntimeLibrary> GetCandidateLibraries(string[] candidates)

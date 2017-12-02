@@ -19,28 +19,52 @@ namespace Rocket.Surgery.Conventions.Tests
         public void FindsAssembliesInCandidates_Params()
         {
             var resolver = new AppDomainAssemblyCandidateFinder(AppDomain.CurrentDomain, Logger);
-            var items = resolver.GetCandidateAssemblies("Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions")
+            var items = resolver.GetCandidateAssemblies(new[] { "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions" })
                 .Select(x => x.GetName().Name)
                 .ToArray();
 
             foreach (var item in items) Logger.LogInformation(item);
             items
                 .Should()
-                .Contain("Rocket.Surgery.Conventions.Tests");
+                .Contain(new[] {
+                    "Sample.DependencyOne",
+                    //"Sample.DependencyTwo",
+                    "Sample.DependencyThree",
+                    "Rocket.Surgery.Conventions.Tests",
+                });
+            items
+                .Last()
+                .Should()
+                .Be("Rocket.Surgery.Conventions.Tests");
         }
 
         [Fact]
-        public void FindsAssembliesInCandidates_Enumerable()
+        public void FindsAssembliesInCandidates_Params_Multiples()
         {
             var resolver = new AppDomainAssemblyCandidateFinder(AppDomain.CurrentDomain, Logger);
-            var items = resolver.GetCandidateAssemblies(new[] { "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions" }.AsEnumerable())
+            var items = resolver.GetCandidateAssemblies(new[] { "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions" })
+                .Select(x => x.GetName().Name)
+                .ToArray();
+            var items2 = resolver.GetCandidateAssemblies("Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions")
                 .Select(x => x.GetName().Name)
                 .ToArray();
 
             foreach (var item in items) Logger.LogInformation(item);
+            foreach (var item in items2) Logger.LogInformation(item);
+
             items
                 .Should()
-                .Contain("Rocket.Surgery.Conventions.Tests");
+                .Contain(new[] {
+                    "Sample.DependencyOne",
+                    //"Sample.DependencyTwo",
+                    "Sample.DependencyThree",
+                    "Rocket.Surgery.Conventions.Tests",
+                });
+            items
+                .Last()
+                .Should()
+                .Be("Rocket.Surgery.Conventions.Tests");
+            items.Should().BeEquivalentTo(items2);
         }
 
         [Fact]

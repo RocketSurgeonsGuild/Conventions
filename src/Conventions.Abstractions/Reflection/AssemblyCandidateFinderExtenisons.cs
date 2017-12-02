@@ -18,7 +18,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <returns></returns>
         public static IEnumerable<Assembly> GetCandidateAssemblies(this IAssemblyCandidateFinder finder, string candidate, params string[] candidates)
         {
-            return finder.GetCandidateAssemblies(new[] {candidate}.Concat(candidates));
+            return finder.GetCandidateAssemblies(new[] {candidate}.Concat(candidates).ToArray());
         }
     }
 }

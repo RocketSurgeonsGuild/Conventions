@@ -32,7 +32,8 @@ namespace Rocket.Surgery.Conventions.Reflection
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
             return GetCandidateLibraries(candidates.ToArray())
-                .Where(x => x != null);
+                .Where(x => x != null)
+                .Reverse();
         }
 
         internal IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
@@ -42,8 +43,9 @@ namespace Rocket.Surgery.Conventions.Reflection
                 return Enumerable.Empty<Assembly>();
             }
 
-            var candidatesResolver = new AssemblyCandidateResolver(_appDomain.GetAssemblies(), new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase));
-            return candidatesResolver.GetCandidates();
+            // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
+            var candidatesResolver = new AssemblyCandidateResolver(_appDomain.GetAssemblies(), new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase), _logger);
+            return candidatesResolver.GetCandidates().Select(x => x.Assembly).ToArray();
         }
     }
 }
