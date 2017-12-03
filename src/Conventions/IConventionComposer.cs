@@ -24,13 +24,6 @@ namespace Rocket.Surgery.Conventions
         /// Uses all the conventions and calls the register method for all of them.
         /// </summary>
         /// <param name="context">The valid context for the types</param>
-        /// <param name="type">The first type to compose with.  This type will either be a <see cref="Delegate"/> that takes <see cref="IConventionContext"/>, or a type that implements <see cref="IConvention{IConventionContext}"/></param>
-        /// <param name="types">The other types to compose with.  This type will either be a <see cref="Delegate"/> that takes <see cref="IConventionContext"/>, or a type that implements <see cref="IConvention{IConventionContext}"/></param>
-        void Register(IConventionContext context, Type type, params Type[] types);
-        /// <summary>
-        /// Uses all the conventions and calls the register method for all of them.
-        /// </summary>
-        /// <param name="context">The valid context for the types</param>
         /// <param name="types">The types to compose with.  This type will either be a <see cref="Delegate"/> that takes <see cref="IConventionContext"/>, or a type that implements <see cref="IConvention{IConventionContext}"/></param>
         void Register(IConventionContext context, IEnumerable<Type> types);
     }

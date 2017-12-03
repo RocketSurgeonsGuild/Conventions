@@ -16,7 +16,8 @@ namespace Rocket.Surgery.Conventions.Scanners
             _conventions = contributions.Where(z => exceptContributions.All(x => x != z.GetType())).ToArray();
         }
 
-        public IEnumerable<DelegateOrConvention<TContribution, TDelegate>> Get<TContribution, TDelegate>()
+        public IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
+            where TContribution : IConvention
         {
             return _conventions
                 .Union(_conventionsOrDelegates)
@@ -24,16 +25,16 @@ namespace Rocket.Surgery.Conventions.Scanners
                 {
                     if (x is TContribution a)
                     {
-                        return new DelegateOrConvention<TContribution, TDelegate>(a);
+                        return new DelegateOrConvention(a);
                     }
                     // ReSharper disable once ConvertIfStatementToReturnStatement
                     if (x.GetType() == typeof(TDelegate))
                     {
-                        return new DelegateOrConvention<TContribution, TDelegate>((TDelegate)x);
+                        return new DelegateOrConvention((Delegate)x);
                     }
-                    return DelegateOrConvention<TContribution, TDelegate>.None;
+                    return DelegateOrConvention.None;
                 })
-                .Where(x => x != DelegateOrConvention<TContribution, TDelegate>.None);
+                .Where(x => x != DelegateOrConvention.None);
         }
 
         public IEnumerable<DelegateOrConvention> GetAll()

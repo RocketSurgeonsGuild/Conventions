@@ -15,7 +15,8 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <typeparam name="TDelegate"></typeparam>
         /// <returns>DelegateOrConvention&lt;TContribution, TDelegate&gt;</returns>
         /// TODO Edit XML Comment Template for Get`1
-        IEnumerable<DelegateOrConvention<TContribution, TDelegate>> Get<TContribution, TDelegate>();
+        IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
+            where TContribution : IConvention;
 
         /// <summary>
         /// Gets a all the conventions from the provider

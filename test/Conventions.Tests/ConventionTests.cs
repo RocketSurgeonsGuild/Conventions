@@ -40,10 +40,10 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => provider.Get<IServiceConvention, ServiceConventionDelegate>())
                 .Returns(new[]
                 {
-                    new DelegateOrConvention<IServiceConvention, ServiceConventionDelegate>(contrib),
-                    new DelegateOrConvention<IServiceConvention, ServiceConventionDelegate>(contrib2),
-                    new DelegateOrConvention<IServiceConvention, ServiceConventionDelegate>(dele),
-                    new DelegateOrConvention<IServiceConvention, ServiceConventionDelegate>(dele2),
+                    new DelegateOrConvention(contrib),
+                    new DelegateOrConvention(contrib2),
+                    new DelegateOrConvention(dele),
+                    new DelegateOrConvention(dele2),
                 }.AsEnumerable());
             var composer = new ServiceConventionComposer(scanner);
 

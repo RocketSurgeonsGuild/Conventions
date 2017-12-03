@@ -55,7 +55,7 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => scanner.BuildProvider())
                 .Returns(scannerProvider);
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestConventionDelegate>())
-                .Returns(new[] {new DelegateOrConvention<ITestConvention, TestConventionDelegate>(contribution)});
+                .Returns(new[] {new DelegateOrConvention(contribution)});
 
             composer.Register(context);
 
@@ -78,9 +78,9 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestConventionDelegate>())
                 .Returns(new[]
                 {
-                    new DelegateOrConvention<ITestConvention, TestConventionDelegate>(contribution1),
-                    new DelegateOrConvention<ITestConvention, TestConventionDelegate>(contribution2),
-                    new DelegateOrConvention<ITestConvention, TestConventionDelegate>(contribution3)
+                    new DelegateOrConvention(contribution1),
+                    new DelegateOrConvention(contribution2),
+                    new DelegateOrConvention(contribution3)
                 });
 
             composer.Register(context);
@@ -102,7 +102,7 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
             // A.CallTo(() => scannerProvider.Get<ITestConvention>()).Returns(new[] { convention });
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestConventionDelegate>())
-                .Returns(new DelegateOrConvention<ITestConvention, TestConventionDelegate>[] {@delegate});
+                .Returns(new DelegateOrConvention[] {@delegate});
 
             composer.Register(context);
 
@@ -125,9 +125,9 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestConventionDelegate>())
                 .Returns(new[]
                 {
-                    new DelegateOrConvention<ITestConvention, TestConventionDelegate>(delegate2),
-                    new DelegateOrConvention<ITestConvention, TestConventionDelegate>(delegate1),
-                    new DelegateOrConvention<ITestConvention, TestConventionDelegate>(delegate3)
+                    new DelegateOrConvention(delegate2),
+                    new DelegateOrConvention(delegate1),
+                    new DelegateOrConvention(delegate3)
                 });
 
             composer.Register(context);
@@ -152,8 +152,8 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestConventionDelegate>())
                 .Returns(new[]
                 {
-                    new DelegateOrConvention<ITestConvention, TestConventionDelegate>(@delegate),
-                    new DelegateOrConvention<ITestConvention, TestConventionDelegate>(contribution)
+                    new DelegateOrConvention(@delegate),
+                    new DelegateOrConvention(contribution)
                 });
 
             composer.Register(context);
