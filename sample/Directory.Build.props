@@ -1,14 +1,8 @@
 <Project>
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Common.Build.props', '$(MSBuildThisFileDirectory)../'))" />
     <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IsPackable>false</IsPackable>
-        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <RootNamespace>$(MSBuildProjectName.Replace('.Abstractions', ''))</RootNamespace>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Rocket.Surgery.Build.Metadata" Version="$(RSG_Build_Version)" PrivateAssets="All" />
-        <PackageReference Include="SourceLink.Create.CommandLine" Version="$(SourceLink_Version)" PrivateAssets="All" />
-        <DotNetCliToolReference Include="dotnet-sourcelink" Version="$(SourceLink_Version)" />
-    </ItemGroup>
 </Project>
