@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var scanner = A.Fake<IConventionScanner>();
             var scannerProvider = A.Fake<IConventionProvider>();
-            var convention = A.Fake<ITestConvention>();
+            var convention = A.Fake<IConvention>(c => c.Implements<ITestConvention>().Implements<IServiceConvention>());
             var convention2 = A.Fake<IServiceConvention>();
             var context = A.Fake<IConventionContext>(c => c.Implements<ITestConventionContext>().Implements<IServiceConventionContext>());
             var composer = new ConventionComposer(scanner);
@@ -57,7 +57,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, new [] { typeof(IServiceConvention), typeof(ServiceConventionDelegate), typeof(ITestConvention), typeof(TestConventionDelegate) });
 
-            A.CallTo(() => convention.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => ((ITestConvention)convention).Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => ((IServiceConvention)convention).Register(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => convention2.Register(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
