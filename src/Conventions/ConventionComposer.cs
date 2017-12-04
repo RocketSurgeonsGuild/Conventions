@@ -66,14 +66,38 @@ namespace Rocket.Surgery.Conventions
 
         private readonly ConcurrentDictionary<Type, MethodInfo> _registerMethodCache = new ConcurrentDictionary<Type, MethodInfo>();
 
+        private static readonly MethodInfo RegisterGenericMethod =
+            typeof(ConventionComposerBase).GetTypeInfo().GetDeclaredMethod(nameof(RegisterGeneric));
+
         private void Register(IConvention convention, IConventionContext context)
         {
-            if (!_registerMethodCache.TryGetValue(convention.GetType(), out var method))
+            var interfaces = convention.GetType().GetTypeInfo().ImplementedInterfaces
+                .Where(x => x.GetTypeInfo().IsGenericType)
+                .Where(x => x.GetTypeInfo().GetGenericTypeDefinition() == typeof(IConvention<>))
+                .Select(x => new { interfaceType = x, contextType = x.GetTypeInfo().GenericTypeArguments[0] });
+
+            var contextTypes = context.GetType().GetTypeInfo().ImplementedInterfaces
+                .Where(x => typeof(IConventionContext).IsAssignableFrom(x));
+
+            var typesToRegister = interfaces
+                .Join(contextTypes, x => x.contextType, x => x, (interfaceType, contextType) => contextType);
+
+            foreach (var item in typesToRegister)
             {
-                method = convention.GetType().GetTypeInfo().GetDeclaredMethod(nameof(Register));
-                _registerMethodCache.TryAdd(convention.GetType(), method);
+                if (!_registerMethodCache.TryGetValue(item, out var method))
+                {
+                    method = RegisterGenericMethod.MakeGenericMethod(item);
+                    _registerMethodCache.TryAdd(item, method);
+                }
+
+                method.Invoke(this, new object[] { convention, context });
             }
-            method.Invoke(convention, new object[] { context });
+        }
+
+        private void RegisterGeneric<T>(IConvention<T> convention, T context)
+            where T : IConventionContext
+        {
+            convention.Register(context);
         }
     }
 

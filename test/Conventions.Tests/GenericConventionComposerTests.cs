@@ -4,11 +4,13 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
+using Rocket.Surgery.Extensions.Testing;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    public class GenericConventionComposerTests
+    public class GenericConventionComposerTests : AutoTestBase
     {
 
         public class TestConventionComposer : ConventionComposer<ITestConventionContext, ITestConvention,
@@ -24,6 +26,10 @@ namespace Rocket.Surgery.Conventions.Tests
             public NotADelegateComposer(IConventionScanner scanner) : base(scanner)
             {
             }
+        }
+
+        public GenericConventionComposerTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        {
         }
 
         [Fact]
@@ -50,6 +56,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var scannerProvider = A.Fake<IConventionProvider>();
             var contribution = A.Fake<ITestConvention>();
             var context = A.Fake<ITestConventionContext>();
+            A.CallTo(() => context.Logger).Returns(Logger);
             var composer = new TestConventionComposer(scanner);
 
             A.CallTo(() => scanner.BuildProvider())
@@ -71,6 +78,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var contribution2 = A.Fake<ITestConvention>();
             var contribution3 = A.Fake<ITestConvention>();
             var context = A.Fake<ITestConventionContext>();
+            A.CallTo(() => context.Logger).Returns(Logger);
             var composer = new TestConventionComposer(scanner);
 
             A.CallTo(() => scanner.BuildProvider())
@@ -97,6 +105,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var scannerProvider = A.Fake<IConventionProvider>();
             var @delegate = A.Fake<TestConventionDelegate>();
             var context = A.Fake<ITestConventionContext>();
+            A.CallTo(() => context.Logger).Returns(Logger);
             var composer = new TestConventionComposer(scanner);
 
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
@@ -118,6 +127,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var delegate2 = A.Fake<TestConventionDelegate>();
             var delegate3 = A.Fake<TestConventionDelegate>();
             var context = A.Fake<ITestConventionContext>();
+            A.CallTo(() => context.Logger).Returns(Logger);
             var composer = new TestConventionComposer(scanner);
 
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
