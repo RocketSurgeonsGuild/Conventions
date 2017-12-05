@@ -29,7 +29,14 @@ namespace Rocket.Surgery.Conventions
 
                     if (item.Convention != null)
                     {
-                        if (!conventionTypes.Any(type => type.IsInstanceOfType(item.Convention))) continue;
+                        if (!conventionTypes.Any(type => type.IsInstanceOfType(item.Convention)))
+                        {
+                            context.Logger.LogDebug("Could not execute Convention {TypeName} from {AssemblyName} :: {@Types}",
+                                item.Convention?.GetType()?.FullName,
+                                item.Convention?.GetType()?.GetTypeInfo()?.Assembly?.GetName()?.Name,
+                                enumerable);
+                            continue;
+                        }
 
                         context.Logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}",
                             item.Convention?.GetType()?.FullName,
@@ -42,7 +49,13 @@ namespace Rocket.Surgery.Conventions
                     // ReSharper disable once InvertIf
                     if (item.Delegate != null)
                     {
-                        if (!delegateTypes.Any(type => type.IsInstanceOfType(item.Delegate))) continue;
+                        if (!delegateTypes.Any(type => type.IsInstanceOfType(item.Delegate)))
+                        {
+                            context.Logger.LogDebug("Could not execute Delegate {TypeName} :: {@Types}",
+                                item.Delegate.GetType()?.FullName,
+                                enumerable);
+                            continue;
+                        }
 
                         context.Logger.LogDebug("Executing Delegate {TypeName}", item.Delegate.GetType()?.FullName);
                         item.Delegate.DynamicInvoke(context);
