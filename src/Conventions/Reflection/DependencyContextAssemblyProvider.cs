@@ -23,11 +23,11 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="logger">The logger to log out diagnostic information.</param>
         public DependencyContextAssemblyProvider(DependencyContext context, ILogger logger = null)
         {
-            _logger = logger ?? NullLogger.Instance;
             _assembles = new Lazy<IEnumerable<Assembly>>(() =>
                 context.GetDefaultAssemblyNames()
                     .Select(TryLoad)
                     .Where(x => x != null));
+            _logger = logger ?? NullLogger.Instance;
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles.Value, LogValue);
 
         private void LogValue(Assembly value) =>
-            _logger?.LogDebug(0, "[{AssemblyProvider}] Found assembly {AssemblyName}",
+            _logger.LogDebug(0, "[{AssemblyProvider}] Found assembly {AssemblyName}",
                 typeof(DependencyContextAssemblyProvider),
                 value.GetName().Name
             );

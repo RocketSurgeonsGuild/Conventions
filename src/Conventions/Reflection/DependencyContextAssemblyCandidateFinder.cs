@@ -42,7 +42,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         }
 
         private Action<Assembly> LogValue(string[] candidates) =>
-            value => _logger?.LogDebug(0, "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
+            value => _logger.LogDebug(0, "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
                 typeof(DependencyContextAssemblyCandidateFinder),
                 value.GetName().Name,
                 candidates

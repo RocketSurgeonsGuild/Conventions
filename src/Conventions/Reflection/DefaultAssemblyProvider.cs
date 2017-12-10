@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Reflection
 {
@@ -23,8 +24,8 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="logger">The logger</param>
         public DefaultAssemblyProvider(IEnumerable<Assembly> assemblies, ILogger logger = null)
         {
-            _logger = logger;
             _assembles = assemblies.Where(x => x != null).ToArray();
+            _logger = logger ?? NullLogger.Instance;
         }
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles, LogValue);
 
         private void LogValue(Assembly value) =>
-            _logger?.LogDebug(0, "[{AssemblyProvider}] Found assembly {AssemblyName}",
+            _logger.LogDebug(0, "[{AssemblyProvider}] Found assembly {AssemblyName}",
                 typeof(DefaultAssemblyProvider),
                 value.GetName().Name
             );
