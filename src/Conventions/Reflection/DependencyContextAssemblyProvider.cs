@@ -35,7 +35,13 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
         /// TODO Edit XML Comment Template for GetAssemblies
-        public IEnumerable<Assembly> GetAssemblies() => _assembles.Value;
+        public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles.Value, LogValue);
+
+        private void LogValue(Assembly value) =>
+            _logger?.LogDebug(0, "[{AssemblyProvider}] Found assembly {AssemblyName}",
+                typeof(DependencyContextAssemblyProvider),
+                value.GetName().Name
+            );
 
         private Assembly TryLoad(AssemblyName assemblyName)
         {

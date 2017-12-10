@@ -31,10 +31,20 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
-            return GetCandidateLibraries(candidates.ToArray())
-                .Where(x => x != null)
-                .Reverse();
+            var enumerable = candidates as string[] ?? candidates.ToArray();
+            return LoggingEnumerable.Create(GetCandidateLibraries(enumerable.ToArray())
+                    .Where(x => x != null)
+                    .Reverse(),
+                LogValue(enumerable.ToArray())
+            );
         }
+
+        private Action<Assembly> LogValue(string[] candidates) =>
+            value => _logger?.LogDebug(0, "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
+                typeof(AppDomainAssemblyCandidateFinder),
+                value.GetName().Name,
+                candidates
+            );
 
         internal IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
         {

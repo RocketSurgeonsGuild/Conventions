@@ -30,13 +30,23 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
-            return GetCandidateLibraries(candidates.ToArray())
-                .SelectMany(library =>
-                    library.GetDefaultAssemblyNames(_dependencyContext))
-                .Select(TryLoad)
-                .Where(x => x != null)
-                .Reverse();
+            var enumerable = candidates as string[] ?? candidates.ToArray();
+            return LoggingEnumerable.Create(GetCandidateLibraries(candidates.ToArray())
+                    .SelectMany(library =>
+                        library.GetDefaultAssemblyNames(_dependencyContext))
+                    .Select(TryLoad)
+                    .Where(x => x != null)
+                    .Reverse(),
+                LogValue(enumerable.ToArray())
+            );
         }
+
+        private Action<Assembly> LogValue(string[] candidates) =>
+            value => _logger?.LogDebug(0, "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
+                typeof(DependencyContextAssemblyCandidateFinder),
+                value.GetName().Name,
+                candidates
+            );
 
         internal IEnumerable<RuntimeLibrary> GetCandidateLibraries(string[] candidates)
         {
