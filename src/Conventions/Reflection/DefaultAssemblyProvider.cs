@@ -37,7 +37,7 @@ namespace Rocket.Surgery.Conventions.Reflection
 
         private void LogValue(Assembly value) =>
             _logger.LogDebug(0, "[{AssemblyProvider}] Found assembly {AssemblyName}",
-                typeof(DefaultAssemblyProvider),
+                nameof(DefaultAssemblyProvider),
                 value.GetName().Name
             );
     }
