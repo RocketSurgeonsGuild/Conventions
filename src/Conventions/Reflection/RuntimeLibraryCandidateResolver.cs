@@ -31,7 +31,11 @@ namespace Rocket.Surgery.Conventions.Reflection
 
         private DependencyClassification ComputeClassification(string dependency)
         {
-            var candidateEntry = _dependencies[dependency];
+            if (!_dependencies.TryGetValue(dependency, out var candidateEntry))
+            {
+                return DependencyClassification.Unknown;
+            }
+
             if (candidateEntry.Classification != DependencyClassification.Unknown)
             {
                 return candidateEntry.Classification;
