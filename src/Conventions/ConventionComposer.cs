@@ -19,7 +19,7 @@ namespace Rocket.Surgery.Conventions
             var delegateTypes = enumerable.Where(typeof(Delegate).IsAssignableFrom).ToArray();
             var conventionTypes = enumerable.Except(delegateTypes).ToArray();
 
-            context.Logger.LogInformation("Found {Count} conventions or delegates", items.Count);
+            context.Logger.LogDebug("Found {Count} conventions or delegates", items.Count);
 
             foreach (var itemWithIndex in items.Select((item, index) => new { item, index }))
             {
