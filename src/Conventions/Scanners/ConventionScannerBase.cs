@@ -75,6 +75,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void PrependDelegate(Delegate @delegate)
         {
+            if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
             _provider = null;
             PrependedConventions.Add(@delegate);
         }
@@ -82,6 +83,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void PrependConvention(IConvention convention)
         {
+            if (convention == null) throw new ArgumentNullException(nameof(convention));
             _provider = null;
             PrependedConventions.Add(convention);
         }
@@ -89,6 +91,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void AppendDelegate(Delegate @delegate)
         {
+            if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
             _provider = null;
             AppendedConventions.Add(@delegate);
         }
@@ -96,6 +99,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void AppendConvention(IConvention convention)
         {
+            if (convention == null) throw new ArgumentNullException(nameof(convention));
             _provider = null;
             AppendedConventions.Add(convention);
         }
@@ -103,6 +107,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void ExceptConvention(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
             _provider = null;
             ExceptConventions.Add(type);
         }
@@ -113,6 +118,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="assembly"></param>
         public void ExceptConvention(Assembly assembly)
         {
+            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
             _provider = null;
             ExceptAssemblyConventions.Add(assembly);
         }

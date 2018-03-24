@@ -48,6 +48,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void PrependDelegate(Delegate @delegate)
         {
+            if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
             _provider = null;
             _prependContributions.Add(@delegate);
         }
@@ -55,6 +56,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void PrependConvention(IConvention convention)
         {
+            if (convention == null) throw new ArgumentNullException(nameof(convention));
             _provider = null;
             _prependContributions.Add(convention);
         }
@@ -62,6 +64,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void AppendDelegate(Delegate @delegate)
         {
+            if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
             _provider = null;
             _appendContributions.Add(@delegate);
         }
@@ -69,6 +72,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <inheritdoc />
         public void AppendConvention(IConvention convention)
         {
+            if (convention == null) throw new ArgumentNullException(nameof(convention));
             _provider = null;
             _appendContributions.Add(convention);
         }
