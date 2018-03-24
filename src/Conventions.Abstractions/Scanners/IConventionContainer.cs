@@ -1,4 +1,5 @@
 ﻿using System;
+using Rocket.Surgery.Builders;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
@@ -30,6 +31,8 @@ namespace Rocket.Surgery.Conventions.Scanners
     }
 
     public interface IConventionContainer<out TBuilder, in TConvention, in TDelegate>
+        where TConvention : IConvention
+        where TBuilder : IBuilder
     {
         /// <summary>
         /// Add a delegate to the scanner, that runs before scanning.

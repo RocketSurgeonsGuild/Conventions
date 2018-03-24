@@ -4,6 +4,7 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
+        <PackageReference Include="Rocket.Surgery.Builders" Version="$(RSG_Builders_Version)" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(Microsoft_Extensions_Logging_Version)" />
         <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(Microsoft_Extensions_DependencyModel_Version)" />
     </ItemGroup>
