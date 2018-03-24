@@ -15,7 +15,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         /// Conventions to the included explictly.
         /// </summary>
-        protected readonly List<object> IncludeConventions = new List<object>();
+        protected readonly List<object> PrependedConventions = new List<object>();
+
+        /// <summary>
+        /// Conventions to the included explictly.
+        /// </summary>
+        protected readonly List<object> AppendedConventions = new List<object>();
 
         /// <summary>
         /// Conventions to be excluded
@@ -68,17 +73,31 @@ namespace Rocket.Surgery.Conventions.Scanners
 
 
         /// <inheritdoc />
-        public void AddDelegate(Delegate @delegate)
+        public void PrependDelegate(Delegate @delegate)
         {
             _provider = null;
-            IncludeConventions.Add(@delegate);
+            PrependedConventions.Add(@delegate);
         }
 
         /// <inheritdoc />
-        public void AddConvention(IConvention convention)
+        public void PrependConvention(IConvention convention)
         {
             _provider = null;
-            IncludeConventions.Add(convention);
+            PrependedConventions.Add(convention);
+        }
+
+        /// <inheritdoc />
+        public void AppendDelegate(Delegate @delegate)
+        {
+            _provider = null;
+            AppendedConventions.Add(@delegate);
+        }
+
+        /// <inheritdoc />
+        public void AppendConvention(IConvention convention)
+        {
+            _provider = null;
+            AppendedConventions.Add(convention);
         }
 
         /// <inheritdoc />
@@ -111,11 +130,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         protected virtual IConventionProvider CreateProvider()
         {
             var contributionTypes = GetAssemblyConventions()
-                .Except(IncludeConventions.Select(x => x.GetType()))
+                .Except(PrependedConventions.Select(x => x.GetType()))
+                .Except(AppendedConventions.Select(x => x.GetType()))
                 .Select(Activator.CreateInstance)
                 .Cast<IConvention>();
 
-            return new ConventionProvider(contributionTypes, ExceptConventions, IncludeConventions);
+            return new ConventionProvider(contributionTypes, ExceptConventions, PrependedConventions, AppendedConventions);
         }
     }
 }

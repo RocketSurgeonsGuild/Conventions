@@ -17,12 +17,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="scanner">The scanner.</param>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>The scanner</returns>
-        public static T AddConvention<T>(this T scanner, params IConvention[] conventions)
+        public static T AppendConvention<T>(this T scanner, params IConvention[] conventions)
             where T : IConventionScanner
         {
             foreach (var type in conventions)
             {
-                scanner.AddConvention(type);
+                scanner.AppendConvention(type);
             }
             return scanner;
         }
@@ -34,12 +34,46 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="scanner">The scanner.</param>
         /// <param name="types">The conventions.</param>
         /// <returns>The scanner</returns>
-        public static T AddConvention<T>(this T scanner, IEnumerable<IConvention> types)
+        public static T AppendConvention<T>(this T scanner, IEnumerable<IConvention> types)
             where T : IConventionScanner
         {
             foreach (var type in types)
             {
-                scanner.AddConvention(type);
+                scanner.AppendConvention(type);
+            }
+            return scanner;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>The scanner</returns>
+        public static T PrependConvention<T>(this T scanner, params IConvention[] conventions)
+            where T : IConventionScanner
+        {
+            foreach (var type in conventions)
+            {
+                scanner.PrependConvention(type);
+            }
+            return scanner;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="types">The conventions.</param>
+        /// <returns>The scanner</returns>
+        public static T PrependConvention<T>(this T scanner, IEnumerable<IConvention> types)
+            where T : IConventionScanner
+        {
+            foreach (var type in types)
+            {
+                scanner.PrependConvention(type);
             }
             return scanner;
         }
@@ -51,12 +85,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="scanner">The scanner.</param>
         /// <param name="delegates">The additional delegates.</param>
         /// <returns>The scanner</returns>
-        public static T AddDelegate<T>(this T scanner, params Delegate[] delegates)
+        public static T PrependDelegate<T>(this T scanner, params Delegate[] delegates)
             where T : IConventionScanner
         {
             foreach (var type in delegates)
             {
-                scanner.AddDelegate(type);
+                scanner.PrependDelegate(type);
             }
             return scanner;
         }
@@ -68,12 +102,47 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="scanner">The scanner.</param>
         /// <param name="delegates">The conventions.</param>
         /// <returns>The scanner</returns>
-        public static T AddDelegate<T>(this T scanner, IEnumerable<Delegate> delegates)
+        public static T PrependDelegate<T>(this T scanner, IEnumerable<Delegate> delegates)
             where T : IConventionScanner
         {
             foreach (var type in delegates)
             {
-                scanner.AddDelegate(type);
+                scanner.PrependDelegate(type);
+            }
+            return scanner;
+        }
+
+
+        /// <summary>
+        /// Addes a set of delegates to the scanner
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="delegates">The additional delegates.</param>
+        /// <returns>The scanner</returns>
+        public static T AppendDelegate<T>(this T scanner, params Delegate[] delegates)
+            where T : IConventionScanner
+        {
+            foreach (var type in delegates)
+            {
+                scanner.AppendDelegate(type);
+            }
+            return scanner;
+        }
+
+        /// <summary>
+        /// Adds a set of delegates to the scanner
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>The scanner</returns>
+        public static T AppendDelegate<T>(this T scanner, IEnumerable<Delegate> delegates)
+            where T : IConventionScanner
+        {
+            foreach (var type in delegates)
+            {
+                scanner.AppendDelegate(type);
             }
             return scanner;
         }

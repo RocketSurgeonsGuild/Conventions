@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
@@ -8,9 +9,9 @@ namespace Rocket.Surgery.Conventions.Scanners
     /// </summary>
     public class BasicConventionScanner : IConventionScanner
     {
-        private readonly List<IConvention> _contributions = new List<IConvention>();
+        private readonly List<object> _prependContributions = new List<object>();
+        private readonly List<object> _appendContributions = new List<object>();
         private readonly List<Type> _exceptContributions = new List<Type>();
-        private readonly List<Delegate> _delegates = new List<Delegate>();
         private IConventionProvider _provider;
 
         /// <summary>
@@ -19,7 +20,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="conventions">The initial list of conventions</param>
         public BasicConventionScanner(params IConvention[] conventions)
         {
-            _contributions.AddRange(conventions);
+            _prependContributions.AddRange(conventions);
         }
 
         /// <inheritdoc />
@@ -34,23 +35,42 @@ namespace Rocket.Surgery.Conventions.Scanners
         {
             if (_provider is null)
             {
-                return _provider = new ConventionProvider(_contributions, _exceptContributions, _delegates);
+                return _provider = new ConventionProvider(
+                    Enumerable.Empty<IConvention>(),
+                    Enumerable.Empty<Type>(), 
+                    _prependContributions.Where(z => _exceptContributions.All(x => x != z.GetType())), 
+                    _appendContributions.Where(z => _exceptContributions.All(x => x != z.GetType()))
+                );
             }
             return _provider;
         }
 
         /// <inheritdoc />
-        public void AddDelegate(Delegate @delegate)
+        public void PrependDelegate(Delegate @delegate)
         {
             _provider = null;
-            _delegates.Add(@delegate);
+            _prependContributions.Add(@delegate);
         }
 
         /// <inheritdoc />
-        public void AddConvention(IConvention convention)
+        public void PrependConvention(IConvention convention)
         {
             _provider = null;
-            _contributions.Add(convention);
+            _prependContributions.Add(convention);
+        }
+
+        /// <inheritdoc />
+        public void AppendDelegate(Delegate @delegate)
+        {
+            _provider = null;
+            _appendContributions.Add(@delegate);
+        }
+
+        /// <inheritdoc />
+        public void AppendConvention(IConvention convention)
+        {
+            _provider = null;
+            _appendContributions.Add(convention);
         }
     }
 }

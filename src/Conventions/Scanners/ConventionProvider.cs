@@ -7,20 +7,23 @@ namespace Rocket.Surgery.Conventions.Scanners
 {
     internal class ConventionProvider : IConventionProvider
     {
-        private readonly IEnumerable<object> _conventionsOrDelegates;
+        private readonly IEnumerable<object> _prependedConventionsOrDelegates;
+        private readonly IEnumerable<object> _appendedConventionsOrDelegates;
         private readonly IEnumerable<IConvention> _conventions;
 
-        public ConventionProvider(IEnumerable<IConvention> contributions, IEnumerable<Type> exceptContributions, IEnumerable<object> contributionsOrDelegates)
+        public ConventionProvider(IEnumerable<IConvention> contributions, IEnumerable<Type> exceptContributions, IEnumerable<object> prependedContributionsOrDelegates, IEnumerable<object> appendedContributionsOrDelegates)
         {
-            _conventionsOrDelegates = contributionsOrDelegates.ToArray();
+            _prependedConventionsOrDelegates = prependedContributionsOrDelegates.ToArray();
+            _appendedConventionsOrDelegates = appendedContributionsOrDelegates.ToArray();
             _conventions = contributions.Where(z => exceptContributions.All(x => x != z.GetType())).ToArray();
         }
 
         public IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
             where TContribution : IConvention
         {
-            return _conventions
-                .Union(_conventionsOrDelegates)
+            return _prependedConventionsOrDelegates
+                .Union(_conventions)
+                .Union(_appendedConventionsOrDelegates)
                 .Select(x =>
                 {
                     if (x is TContribution a)
@@ -39,8 +42,9 @@ namespace Rocket.Surgery.Conventions.Scanners
 
         public IEnumerable<DelegateOrConvention> GetAll()
         {
-            return _conventions
-                .Union(_conventionsOrDelegates)
+            return _prependedConventionsOrDelegates
+                .Union(_conventions)
+                .Union(_appendedConventionsOrDelegates)
                 .Select(x =>
                 {
                     switch (x)

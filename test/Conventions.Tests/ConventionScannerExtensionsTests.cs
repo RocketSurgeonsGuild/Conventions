@@ -17,9 +17,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var convention2 = A.Fake<IConvention>();
             var convention3 = A.Fake<IConvention>();
 
-            scanner.AddConvention(convention1, convention2, convention3);
+            scanner.PrependConvention(convention1, convention2, convention3);
 
-            A.CallTo(() => scanner.AddConvention(A<IConvention>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.PrependConvention(A<IConvention>._)).MustHaveHappened(Repeated.Exactly.Times(3));
         }
 
         [Fact]
@@ -30,9 +30,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var convention2 = A.Fake<IConvention>();
             var convention3 = A.Fake<IConvention>();
 
-            scanner.AddConvention(new[] { convention1, convention2, convention3 }.AsEnumerable());
+            scanner.PrependConvention(new[] { convention1, convention2, convention3 }.AsEnumerable());
 
-            A.CallTo(() => scanner.AddConvention(A<IConvention>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.PrependConvention(A<IConvention>._)).MustHaveHappened(Repeated.Exactly.Times(3));
         }
 
         [Fact]
@@ -43,9 +43,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var d2 = new ServiceConventionDelegate(context => { });
             var d3 = new ServiceConventionDelegate(context => { });
 
-            scanner.AddDelegate(d1, d2, d3);
+            scanner.PrependDelegate(d1, d2, d3);
 
-            A.CallTo(() => scanner.AddDelegate(A<Delegate>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.PrependDelegate(A<Delegate>._)).MustHaveHappened(Repeated.Exactly.Times(3));
         }
 
         [Fact]
@@ -56,9 +56,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var d2 = new ServiceConventionDelegate(context => { });
             var d3 = new ServiceConventionDelegate(context => { });
 
-            scanner.AddDelegate(new[] { d1, d2, d3 }.AsEnumerable());
+            scanner.PrependDelegate(new[] { d1, d2, d3 }.AsEnumerable());
 
-            A.CallTo(() => scanner.AddDelegate(A<Delegate>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.PrependDelegate(A<Delegate>._)).MustHaveHappened(Repeated.Exactly.Times(3));
         }
 
         [Fact]

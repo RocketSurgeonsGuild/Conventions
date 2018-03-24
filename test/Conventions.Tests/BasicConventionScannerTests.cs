@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             var convention = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(convention);
+            scanner.PrependConvention(convention);
 
             var provider = scanner.BuildProvider();
 
@@ -62,7 +62,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             var @delegate = new ServiceConventionDelegate(context => { });
 
-            scanner.AddDelegate(@delegate);
+            scanner.PrependDelegate(@delegate);
 
             var provider = scanner.BuildProvider();
 
@@ -79,7 +79,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             var convention = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(convention);
+            scanner.PrependConvention(convention);
             scanner.ExceptConvention(convention.GetType());
 
             var provider = scanner.BuildProvider();

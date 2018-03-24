@@ -15,7 +15,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         public AggregateConventionScanner(IAssemblyCandidateFinder assemblyCandidateFinder, params IConvention[] conventions)
             : base(assemblyCandidateFinder)
         {
-            IncludeConventions.AddRange(conventions);
+            PrependedConventions.AddRange(conventions);
         }
     }
 }

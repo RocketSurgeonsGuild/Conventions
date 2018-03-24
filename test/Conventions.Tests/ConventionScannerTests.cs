@@ -80,8 +80,10 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Returns(new Assembly[0]);
 
             var convention = A.Fake<IServiceConvention>();
+            var convention2 = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(convention);
+            scanner.PrependConvention(convention);
+            scanner.AppendConvention(convention2);
 
             var provider = scanner.BuildProvider();
 
@@ -95,7 +97,7 @@ namespace Rocket.Surgery.Conventions.Tests
             items
                 .Select(x => x.Convention)
                 .Should()
-                .Contain(convention);
+                .ContainInOrder(convention, convention2);
         }
 
         [Fact]
@@ -109,15 +111,18 @@ namespace Rocket.Surgery.Conventions.Tests
 
             IConvention convention = A.Fake<IServiceConvention>();
             IConvention convention2 = A.Fake<ITestConvention>();
+            IConvention convention3 = A.Fake<IServiceConvention>();
+            IConvention convention4 = A.Fake<ITestConvention>();
 
-            scanner.AddConvention(convention, convention2);
+            scanner.PrependConvention(convention, convention2);
+            scanner.AppendConvention(convention3, convention4);
 
             var provider = scanner.BuildProvider();
 
             var result = provider.GetAll()
                 .Select(x => x.Convention);
 
-            result.Should().Contain(convention).And.Contain(convention2);
+            result.Should().ContainInOrder(convention, convention2, convention3, convention4);
         }
 
         [Fact]
@@ -132,7 +137,7 @@ namespace Rocket.Surgery.Conventions.Tests
             Delegate delegate2 = A.Fake<ServiceConventionDelegate>();
             Delegate Delegate = A.Fake<Action>();
 
-            scanner.AddDelegate(Delegate, delegate2);
+            scanner.PrependDelegate(Delegate, delegate2);
 
             var provider = scanner.BuildProvider();
 
@@ -153,7 +158,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             var convention = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(convention);
+            scanner.PrependConvention(convention);
             scanner.ExceptConvention(typeof(ConventionScannerTests));
 
             var provider = scanner.BuildProvider();
@@ -175,7 +180,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             var convention = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(convention);
+            scanner.PrependConvention(convention);
             scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
             var provider = scanner.BuildProvider();

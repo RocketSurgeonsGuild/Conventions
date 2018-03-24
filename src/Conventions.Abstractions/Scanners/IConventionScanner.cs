@@ -7,20 +7,8 @@ namespace Rocket.Surgery.Conventions.Scanners
     /// The convention scanner interface is used to find conventions
     ///     and return those conventions in order they are added.
     /// </summary>
-    public interface IConventionScanner
+    public interface IConventionScanner : IConventionContainer
     {
-        /// <summary>
-        /// Add a delegate to the scanner
-        /// </summary>
-        /// <param name="delegate">The delegate</param>
-        void AddDelegate(Delegate @delegate);
-
-        /// <summary>
-        /// Adds a convention to the scanner.
-        /// </summary>
-        /// <param name="convention">The convention</param>
-        void AddConvention(IConvention convention);
-
         /// <summary>
         /// Exclude certian conventions by their implemented type.
         /// </summary>

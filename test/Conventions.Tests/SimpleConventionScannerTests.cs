@@ -65,7 +65,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             var conventions = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(conventions);
+            scanner.PrependConvention(conventions);
 
             var provider = scanner.BuildProvider();
 
@@ -85,15 +85,17 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Returns(new Assembly[0]);
 
             var @delegate = new ServiceConventionDelegate(context => { });
+            var @delegate2 = new ServiceConventionDelegate(context => { });
 
-            scanner.AddDelegate(@delegate);
+            scanner.PrependDelegate(@delegate2);
+            scanner.AppendDelegate(@delegate);
 
             var provider = scanner.BuildProvider();
 
             provider.Get<IServiceConvention, ServiceConventionDelegate>()
                 .Select(x => x.Delegate)
                 .Should()
-                .Contain(@delegate);
+                .ContainInOrder(@delegate2, @delegate);
         }
 
         [Fact]
@@ -103,12 +105,14 @@ namespace Rocket.Surgery.Conventions.Tests
             var scanner = new SimpleConventionScanner(finder);
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-                .Returns(new Assembly[0]);
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
 
-            var convention = A.Fake<IServiceConvention>();
+            var contribution = A.Fake<IServiceConvention>();
+            var contribution2 = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(convention);
-            scanner.ExceptConvention(typeof(ConventionScannerTests));
+            scanner.AppendConvention(contribution);
+            scanner.PrependConvention(contribution2);
+            scanner.ExceptConvention(typeof(Contrib));
 
             var provider = scanner.BuildProvider();
 
@@ -116,6 +120,10 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Select(x => x.Convention)
                 .Should()
                 .NotContain(x => x.GetType() == typeof(Contrib));
+            provider.Get<IServiceConvention, ServiceConventionDelegate>()
+                .Select(x => x.Convention)
+                .Should()
+                .ContainInOrder(contribution2, contribution);
         }
 
         [Fact]
@@ -125,11 +133,11 @@ namespace Rocket.Surgery.Conventions.Tests
             var scanner = new SimpleConventionScanner(finder);
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-                .Returns(new Assembly[0]);
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
 
-            var convention = A.Fake<IServiceConvention>();
+            var contribution = A.Fake<IServiceConvention>();
 
-            scanner.AddConvention(convention);
+            scanner.PrependConvention(contribution);
             scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
             var provider = scanner.BuildProvider();
