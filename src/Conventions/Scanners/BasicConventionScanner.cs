@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
@@ -28,6 +29,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         {
             _provider = null;
             _exceptContributions.Add(type);
+        }
+
+        /// <inheritdoc />
+        public void ExceptConvention(Assembly assembly)
+        {
+            _provider = null;
         }
 
         /// <inheritdoc />

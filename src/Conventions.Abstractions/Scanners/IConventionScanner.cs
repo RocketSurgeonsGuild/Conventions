@@ -16,6 +16,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         void ExceptConvention(Type type);
 
         /// <summary>
+        /// Excludes an assembly from the convention
+        /// </summary>
+        /// <param name="assembly"></param>
+        void ExceptConvention(Assembly assembly);
+
+        /// <summary>
         /// Creates a provider that returns a set of convetions.
         /// </summary>
         /// <returns></returns>
