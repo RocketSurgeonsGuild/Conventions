@@ -180,5 +180,39 @@ namespace Rocket.Surgery.Conventions.Scanners
             }
             return scanner;
         }
+
+        /// <summary>
+        /// Adds an exception to the scanner to exclude a specific type
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="assemblies">The additional types to exclude.</param>
+        /// <returns>The scanner</returns>
+        public static T ExceptConvention<T>(this T scanner, params Assembly[] assemblies)
+            where T : IConventionScanner
+        {
+            foreach (var type in assemblies)
+            {
+                scanner.ExceptConvention(type);
+            }
+            return scanner;
+        }
+
+        /// <summary>
+        /// Adds an exception to the scanner to exclude a specific type
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="assemblies">The convention types to exclude.</param>
+        /// <returns>The scanner</returns>
+        public static T ExceptConvention<T>(this T scanner, IEnumerable<Assembly> assemblies)
+            where T : IConventionScanner
+        {
+            foreach (var type in assemblies)
+            {
+                scanner.ExceptConvention(type);
+            }
+            return scanner;
+        }
     }
 }
