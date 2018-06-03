@@ -21,13 +21,6 @@ namespace Rocket.Surgery.Conventions.Tests
             }
         }
 
-        public class NotADelegateComposer : ConventionComposer<ITestConventionContext, ITestConvention, string>
-        {
-            public NotADelegateComposer(IConventionScanner scanner) : base(scanner)
-            {
-            }
-        }
-
         public GenericConventionComposerTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
@@ -39,14 +32,6 @@ namespace Rocket.Surgery.Conventions.Tests
             var composer = new TestConventionComposer(scanner);
 
             composer.Should().NotBeNull();
-        }
-
-        [Fact]
-        public void ShouldThrowIfDelegateIsNotADelegate()
-        {
-            var scanner = A.Fake<IConventionScanner>();
-            Action action = () => new NotADelegateComposer(scanner);
-            action.Should().Throw<ArgumentException>();
         }
 
         [Fact]

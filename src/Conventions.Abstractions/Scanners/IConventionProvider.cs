@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Rocket.Surgery.Conventions.Scanners
@@ -16,7 +17,8 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <returns>DelegateOrConvention&lt;TContribution, TDelegate&gt;</returns>
         /// TODO Edit XML Comment Template for Get`1
         IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
-            where TContribution : IConvention;
+            where TContribution : IConvention
+            where TDelegate : Delegate;
 
         /// <summary>
         /// Gets a all the conventions from the provider

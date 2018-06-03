@@ -12,6 +12,7 @@ namespace Rocket.Surgery.Conventions
     public interface IConventionComposer<TContext, TContribution, TDelegate> : IConvention<TContext>
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
+        where TDelegate : Delegate
     {
     }
 

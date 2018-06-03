@@ -1,5 +1,4 @@
-﻿#if !NETSTANDARD1_3
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -57,4 +56,3 @@ namespace Rocket.Surgery.Conventions.Reflection
         }
     }
 }
-#endif

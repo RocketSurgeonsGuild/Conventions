@@ -124,6 +124,7 @@ namespace Rocket.Surgery.Conventions
     public abstract class ConventionComposer<TContext, TContribution, TDelegate> : ConventionComposerBase, IConventionComposer<TContext, TContribution, TDelegate>
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
+        where TDelegate : Delegate
     {
         private readonly IConventionScanner _scanner;
 

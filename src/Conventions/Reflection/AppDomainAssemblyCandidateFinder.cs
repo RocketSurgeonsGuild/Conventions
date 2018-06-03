@@ -1,5 +1,4 @@
-﻿#if !NETSTANDARD1_3
-using Microsoft.Extensions.DependencyModel;
+﻿using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -59,4 +58,3 @@ namespace Rocket.Surgery.Conventions.Reflection
         }
     }
 }
-#endif

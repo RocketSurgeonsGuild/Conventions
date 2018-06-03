@@ -33,6 +33,7 @@ namespace Rocket.Surgery.Conventions.Scanners
     public interface IConventionContainer<out TBuilder, in TConvention, in TDelegate>
         where TConvention : IConvention
         where TBuilder : IBuilder
+        where TDelegate : Delegate
     {
         /// <summary>
         /// Add a delegate to the scanner, that runs before scanning.

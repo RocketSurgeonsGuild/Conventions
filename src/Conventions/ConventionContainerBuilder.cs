@@ -7,6 +7,7 @@ namespace Rocket.Surgery.Conventions
     public abstract class ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : Builder, IConventionContainer<TBuilder, TConvention, TDelegate>
         where TBuilder : IBuilder
         where TConvention : IConvention
+        where TDelegate : Delegate
     {
         protected readonly IConventionScanner Scanner;
 

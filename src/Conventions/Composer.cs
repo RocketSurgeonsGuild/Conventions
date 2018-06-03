@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
 
@@ -11,6 +12,7 @@ namespace Rocket.Surgery.Conventions
         class ComposerImpl<TContext, TContribution, TDelegate> : ConventionComposer<TContext, TContribution, TDelegate>
             where TContribution : IConvention<TContext>
             where TContext : IConventionContext
+            where TDelegate : Delegate
         { public ComposerImpl(IConventionScanner scanner) : base(scanner) { } }
 
         /// <summary>
@@ -27,6 +29,7 @@ namespace Rocket.Surgery.Conventions
             TContext context)
             where TContribution : IConvention<TContext>
             where TContext : IConventionContext
+            where TDelegate : Delegate
         {
             new ComposerImpl<TContext, TContribution, TDelegate>(scanner).Register(context);
         }

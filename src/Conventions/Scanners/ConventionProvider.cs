@@ -20,6 +20,7 @@ namespace Rocket.Surgery.Conventions.Scanners
 
         public IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
             where TContribution : IConvention
+            where TDelegate : Delegate
         {
             return _prependedConventionsOrDelegates
                 .Union(_conventions)
@@ -31,9 +32,9 @@ namespace Rocket.Surgery.Conventions.Scanners
                         return new DelegateOrConvention(a);
                     }
                     // ReSharper disable once ConvertIfStatementToReturnStatement
-                    if (x.GetType() == typeof(TDelegate))
+                    if (x is Delegate d)
                     {
-                        return new DelegateOrConvention((Delegate)x);
+                        return new DelegateOrConvention(d);
                     }
                     return DelegateOrConvention.None;
                 })

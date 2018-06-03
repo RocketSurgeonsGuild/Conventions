@@ -19,7 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{1E56
 		.travis.yml = .travis.yml
 		cake.config = cake.config
 		GitVersion.yml = GitVersion.yml
-		global.json = global.json
 		NuGet.config = NuGet.config
 		Readme.md = Readme.md
 	EndProjectSection
@@ -47,7 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{C4335B
 		sample\Directory.Build.props = sample\Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.DependencyOne", "sample\Sample.DependencyOne\Sample.DependencyOne.csproj", "{0AE273C5-B6D1-451D-BBE8-EC004AE90ED5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.DependencyOne", "sample\Sample.DependencyOne\Sample.DependencyOne.csproj", "{0AE273C5-B6D1-451D-BBE8-EC004AE90ED5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.DependencyThree", "sample\Sample.DependencyThree\Sample.DependencyThree.csproj", "{95BE10B9-389E-4709-A359-76143AF3800C}"
 EndProject

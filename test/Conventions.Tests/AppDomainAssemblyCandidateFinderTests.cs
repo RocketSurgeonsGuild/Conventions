@@ -1,5 +1,4 @@
-﻿#if !NETCOREAPP1_1
-using System;
+﻿using System;
 using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
@@ -51,4 +50,3 @@ namespace Rocket.Surgery.Conventions.Tests
         }
     }
 }
-#endif

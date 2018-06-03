@@ -1,5 +1,4 @@
-﻿#if !NETCOREAPP1_1
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -94,4 +93,3 @@ namespace Rocket.Surgery.Conventions.Tests
         }
     }
 }
-#endif
