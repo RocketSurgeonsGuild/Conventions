@@ -1,4 +1,6 @@
-﻿namespace Rocket.Surgery.Conventions
+﻿using System.Collections.Generic;
+
+namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// A marker interface to indicate a type is a convention

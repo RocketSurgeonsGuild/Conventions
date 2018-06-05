@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Rocket.Surgery.Builders;
 using Rocket.Surgery.Conventions.Scanners;
 
@@ -11,7 +12,7 @@ namespace Rocket.Surgery.Conventions
     {
         protected readonly IConventionScanner Scanner;
 
-        protected ConventionContainerBuilder(IConventionScanner scanner)
+        protected ConventionContainerBuilder(IConventionScanner scanner, IDictionary<object, object> properties) : base(properties)
         {
             Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }

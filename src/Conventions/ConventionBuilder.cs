@@ -2,6 +2,7 @@ using System;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Builders;
+using System.Collections.Generic;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -10,7 +11,7 @@ namespace Rocket.Surgery.Conventions
         where TConvention : IConvention
         where TDelegate : Delegate
     {
-        protected ConventionBuilder(IConventionScanner scanner, IAssemblyProvider assemblyProvider, IAssemblyCandidateFinder assemblyCandidateFinder) : base(scanner)
+        protected ConventionBuilder(IConventionScanner scanner, IAssemblyProvider assemblyProvider, IAssemblyCandidateFinder assemblyCandidateFinder, IDictionary<object, object> properties) : base(scanner, properties)
         {
             AssemblyProvider = assemblyProvider ?? throw new ArgumentNullException(nameof(assemblyProvider));
             AssemblyCandidateFinder = assemblyCandidateFinder ?? throw new ArgumentNullException(nameof(assemblyCandidateFinder));

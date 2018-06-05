@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Extensions.Testing;
@@ -14,7 +15,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
         class TestGenericValueContainer : ConventionContext
         {
-            public TestGenericValueContainer(ILogger logger) : base(logger)
+            public TestGenericValueContainer(ILogger logger) : base(logger, new Dictionary<object, object>())
             {
             }
         }

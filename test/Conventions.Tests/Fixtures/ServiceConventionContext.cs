@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions.Tests.Fixtures
 {
@@ -9,7 +10,7 @@ namespace Rocket.Surgery.Conventions.Tests.Fixtures
 
     public class ServiceConventionContext : ConventionContext, IServiceConventionContext
     {
-        public ServiceConventionContext(ILogger logger) : base(logger)
+        public ServiceConventionContext(ILogger logger) : base(logger, new Dictionary<object, object>())
         {
         }
     }
