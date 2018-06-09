@@ -29,7 +29,7 @@ namespace Rocket.Surgery.Conventions
             _diagnosticSource.Write(GetName(logLevel), new
             {
                 eventId,
-                state,
+                state = (object)state,
                 exception,
                 message = formatter(state, exception)
             });
