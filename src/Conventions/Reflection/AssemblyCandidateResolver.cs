@@ -66,7 +66,10 @@ namespace Rocket.Surgery.Conventions.Reflection
         private DependencyClassification ComputeClassification(string dependency)
         {
             // Prevents issues with looking at system assemblies
-            if (dependency.StartsWith("System.") || dependency.StartsWith("mscorlib") || dependency.StartsWith("Microsoft."))
+            if (dependency.StartsWith("System.") || 
+                dependency.StartsWith("mscorlib") || 
+                dependency.StartsWith("Microsoft.") ||
+                dependency.StartsWith("DynamicProxyGenAssembly"))
             {
                 return DependencyClassification.NotCandidate;
             }

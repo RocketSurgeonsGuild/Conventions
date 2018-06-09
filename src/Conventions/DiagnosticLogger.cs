@@ -9,7 +9,7 @@ namespace Rocket.Surgery.Conventions
     public class DiagnosticLogger : ILogger
     {
         private readonly DiagnosticSource _diagnosticSource;
-        private static readonly IReadOnlyDictionary<LogLevel, string> Names =
+        internal static readonly IReadOnlyDictionary<LogLevel, string> Names =
             Enum.GetValues(typeof(LogLevel))
                 .Cast<LogLevel>()
                 .ToDictionary(x => x, x => $"Log.{x}");
@@ -28,6 +28,7 @@ namespace Rocket.Surgery.Conventions
         {
             _diagnosticSource.Write(GetName(logLevel), new
             {
+                logLevel,
                 eventId,
                 state = (object)state,
                 exception,

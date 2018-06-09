@@ -36,8 +36,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, new [] { typeof(ITestConvention), typeof(TestConventionDelegate) });
 
-            A.CallTo(() => ((ITestConvention)convention).Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => ((IServiceConvention)convention).Register(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => ((ITestConvention)convention).Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => ((IServiceConvention)convention).Register(A<IServiceConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -57,9 +57,9 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, new [] { typeof(IServiceConvention), typeof(ServiceConventionDelegate), typeof(ITestConvention), typeof(TestConventionDelegate) });
 
-            A.CallTo(() => ((ITestConvention)convention).Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => ((IServiceConvention)convention).Register(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => convention2.Register(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => ((ITestConvention)convention).Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => ((IServiceConvention)convention).Register(A<IServiceConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => convention2.Register(A<IServiceConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -79,8 +79,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, typeof(IServiceConvention), typeof(ServiceConventionDelegate), typeof(ITestConvention), typeof(TestConventionDelegate));
 
-            A.CallTo(() => @delegate(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => delegate2(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => @delegate(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => delegate2(A<IServiceConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -108,10 +108,10 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, typeof(IServiceConvention), typeof(ServiceConventionDelegate), typeof(ITestConvention), typeof(TestConventionDelegate));
 
-            A.CallTo(() => convention.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => convention2.Register(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => @delegate(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => delegate2(A<IServiceConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => convention2.Register(A<IServiceConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => @delegate(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => delegate2(A<IServiceConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -137,9 +137,9 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, new[] { typeof(ITestConvention), typeof(TestConventionDelegate) });
 
-            A.CallTo(() => convention1.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => convention2.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => convention3.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention1.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => convention2.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => convention3.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, new[] { typeof(ITestConvention), typeof(TestConventionDelegate) });
 
-            A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -183,9 +183,9 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, new[] { typeof(ITestConvention), typeof(TestConventionDelegate) });
 
-            A.CallTo(() => @delegate1.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => @delegate2.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => @delegate3.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => @delegate1.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => @delegate2.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => @delegate3.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -208,8 +208,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context, new[] { typeof(ITestConvention), typeof(TestConventionDelegate) });
 
-            A.CallTo(() => convention.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => convention.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
     }
 }
