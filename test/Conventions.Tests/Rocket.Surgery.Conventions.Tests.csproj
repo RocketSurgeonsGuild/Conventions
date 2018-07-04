@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netcoreapp2.0;netcoreapp2.1;net461</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Rocket.Surgery.Builders" />
         <ProjectReference Include="..\..\sample\Sample.DependencyOne\Sample.DependencyOne.csproj" />
         <ProjectReference Include="..\..\sample\Sample.DependencyThree\Sample.DependencyThree.csproj" />
         <ProjectReference Include="..\..\sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <PackageReference Include="Rocket.Surgery.Builders" />
     </ItemGroup>
 </Project>

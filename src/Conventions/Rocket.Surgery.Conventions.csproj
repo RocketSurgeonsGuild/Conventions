@@ -1,13 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
-        <PackageReference Include="Rocket.Surgery.Builders" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.DependencyModel" />
-        <PackageReference Include="System.Diagnostics.DiagnosticSource" />
         <PackageReference Include="Microsoft.Extensions.DiagnosticAdapter" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Rocket.Surgery.Builders" />
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" />
     </ItemGroup>
 </Project>
