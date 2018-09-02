@@ -36,7 +36,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles, LogValue);
 
         private void LogValue(Assembly value) =>
-            _logger.LogDebug(0, "[{AssemblyProvider}] Found assembly {AssemblyName}",
+            _logger.LogDebug("[{AssemblyProvider}] Found assembly {AssemblyName}",
                 nameof(DefaultAssemblyProvider),
                 value.GetName().Name
             );
