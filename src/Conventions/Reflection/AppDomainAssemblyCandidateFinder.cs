@@ -30,11 +30,11 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
-            var enumerable = candidates as string[] ?? candidates.ToArray();
-            return LoggingEnumerable.Create(GetCandidateLibraries(enumerable.ToArray())
+            var value = candidates as string[] ?? candidates?.ToArray() ?? Array.Empty<string>();
+            return LoggingEnumerable.Create(GetCandidateLibraries(value)
                     .Where(x => x != null)
                     .Reverse(),
-                LogValue(enumerable.ToArray())
+                LogValue(value)
             );
         }
 
@@ -47,7 +47,7 @@ namespace Rocket.Surgery.Conventions.Reflection
 
         internal IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
         {
-            if (!candidates.Any())
+            if (candidates == null || !candidates.Any())
             {
                 return Enumerable.Empty<Assembly>();
             }
