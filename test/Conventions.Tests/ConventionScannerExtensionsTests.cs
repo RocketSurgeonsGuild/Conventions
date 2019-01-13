@@ -19,7 +19,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             scanner.PrependConvention(convention1, convention2, convention3);
 
-            A.CallTo(() => scanner.PrependConvention(A<IConvention>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.PrependConvention(A<IConvention>._)).MustHaveHappened(3, Times.Exactly);
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             scanner.PrependConvention(new[] { convention1, convention2, convention3 }.AsEnumerable());
 
-            A.CallTo(() => scanner.PrependConvention(A<IConvention>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.PrependConvention(A<IConvention>._)).MustHaveHappened(3, Times.Exactly);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             scanner.PrependDelegate(d1, d2, d3);
 
-            A.CallTo(() => scanner.PrependDelegate(A<Delegate>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.PrependDelegate(A<Delegate>._)).MustHaveHappened(3, Times.Exactly);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             scanner.PrependDelegate(new[] { d1, d2, d3 }.AsEnumerable());
 
-            A.CallTo(() => scanner.PrependDelegate(A<Delegate>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.PrependDelegate(A<Delegate>._)).MustHaveHappened(3, Times.Exactly);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             scanner.ExceptConvention(d1, d2, d3);
 
-            A.CallTo(() => scanner.ExceptConvention(A<Type>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.ExceptConvention(A<Type>._)).MustHaveHappened(3, Times.Exactly);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             scanner.ExceptConvention(new[] { d1, d2, d3 }.AsEnumerable());
 
-            A.CallTo(() => scanner.ExceptConvention(A<Type>._)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => scanner.ExceptConvention(A<Type>._)).MustHaveHappened(3, Times.Exactly);
         }
     }
 }

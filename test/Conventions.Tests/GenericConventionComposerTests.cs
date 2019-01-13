@@ -51,7 +51,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context);
 
-            A.CallTo(() => contribution.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => contribution.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -78,9 +78,9 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context);
 
-            A.CallTo(() => contribution1.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => contribution2.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => contribution3.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => contribution1.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => contribution2.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => contribution3.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context);
 
-            A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -127,9 +127,9 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context);
 
-            A.CallTo(() => @delegate1.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => @delegate2.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => @delegate3.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => @delegate1.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => @delegate2.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => @delegate3.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -153,8 +153,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             composer.Register(context);
 
-            A.CallTo(() => contribution.Register(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => contribution.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
     }
 }
