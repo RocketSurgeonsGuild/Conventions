@@ -1,7 +1,7 @@
 ﻿using System;
 using Rocket.Surgery.Builders;
 
-namespace Rocket.Surgery.Conventions.Scanners
+namespace Rocket.Surgery.Conventions
 {
     public interface IConventionContainer
     {

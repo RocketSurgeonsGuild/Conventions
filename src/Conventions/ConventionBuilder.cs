@@ -15,9 +15,11 @@ namespace Rocket.Surgery.Conventions
         {
             AssemblyProvider = assemblyProvider ?? throw new ArgumentNullException(nameof(assemblyProvider));
             AssemblyCandidateFinder = assemblyCandidateFinder ?? throw new ArgumentNullException(nameof(assemblyCandidateFinder));
+            Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }
 
         public IAssemblyProvider AssemblyProvider { get; }
         public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+        public IConventionScanner Scanner { get; }
     }
 }

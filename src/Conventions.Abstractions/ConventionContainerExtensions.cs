@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Rocket.Surgery.Builders;
 
-namespace Rocket.Surgery.Conventions.Scanners
+namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// Class ConventionScannerExtensions.
     /// </summary>
     /// TODO Edit XML Comment Template for ConventionScannerExtensions
-    public static class ConventionScannerExtensions
+    public static class ConventionContainerExtensions
     {
         /// <summary>
         /// Adds a set of conventions to the scanner
@@ -18,7 +19,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>The scanner</returns>
         public static T AppendConvention<T>(this T scanner, params IConvention[] conventions)
-            where T : IConventionScanner
+            where T : IConventionContainer
         {
             foreach (var type in conventions)
             {
@@ -35,7 +36,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="types">The conventions.</param>
         /// <returns>The scanner</returns>
         public static T AppendConvention<T>(this T scanner, IEnumerable<IConvention> types)
-            where T : IConventionScanner
+            where T : IConventionContainer
         {
             foreach (var type in types)
             {
@@ -52,7 +53,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>The scanner</returns>
         public static T PrependConvention<T>(this T scanner, params IConvention[] conventions)
-            where T : IConventionScanner
+            where T : IConventionContainer
         {
             foreach (var type in conventions)
             {
@@ -69,7 +70,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="types">The conventions.</param>
         /// <returns>The scanner</returns>
         public static T PrependConvention<T>(this T scanner, IEnumerable<IConvention> types)
-            where T : IConventionScanner
+            where T : IConventionContainer
         {
             foreach (var type in types)
             {
@@ -86,7 +87,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="delegates">The additional delegates.</param>
         /// <returns>The scanner</returns>
         public static T PrependDelegate<T>(this T scanner, params Delegate[] delegates)
-            where T : IConventionScanner
+            where T : IConventionContainer
         {
             foreach (var type in delegates)
             {
@@ -103,7 +104,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="delegates">The conventions.</param>
         /// <returns>The scanner</returns>
         public static T PrependDelegate<T>(this T scanner, IEnumerable<Delegate> delegates)
-            where T : IConventionScanner
+            where T : IConventionContainer
         {
             foreach (var type in delegates)
             {
@@ -121,7 +122,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="delegates">The additional delegates.</param>
         /// <returns>The scanner</returns>
         public static T AppendDelegate<T>(this T scanner, params Delegate[] delegates)
-            where T : IConventionScanner
+            where T : IConventionContainer
         {
             foreach (var type in delegates)
             {
@@ -138,7 +139,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="delegates">The conventions.</param>
         /// <returns>The scanner</returns>
         public static T AppendDelegate<T>(this T scanner, IEnumerable<Delegate> delegates)
-            where T : IConventionScanner
+            where T : IConventionContainer
         {
             foreach (var type in delegates)
             {
@@ -148,69 +149,162 @@ namespace Rocket.Surgery.Conventions.Scanners
         }
 
         /// <summary>
-        /// Adds an exception to the scanner to exclude a specific type
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="builder">The scanner.</param>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>The scanner</returns>
+        public static T AppendConvention<T, TBuilder, TConvention, TDelegate>(this T builder, params TConvention[] conventions)
+            where T : IConventionContainer<TBuilder, TConvention, TDelegate>
+            where TBuilder : IBuilder
+            where TConvention : IConvention
+            where TDelegate : Delegate
+        {
+            foreach (var type in conventions)
+            {
+                builder.AppendConvention(type);
+            }
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
         /// </summary>
         /// <typeparam name="T">The scanner</typeparam>
         /// <param name="scanner">The scanner.</param>
-        /// <param name="types">The additional types to exclude.</param>
+        /// <param name="types">The conventions.</param>
         /// <returns>The scanner</returns>
-        public static T ExceptConvention<T>(this T scanner, params Type[] types)
-            where T : IConventionScanner
+        public static T AppendConvention<T, TBuilder, TConvention, TDelegate>(this T scanner, IEnumerable<TConvention> types)
+            where T : IConventionContainer<TBuilder, TConvention, TDelegate>
+            where TBuilder : IBuilder
+            where TConvention : IConvention
+            where TDelegate : Delegate
         {
             foreach (var type in types)
             {
-                scanner.ExceptConvention(type);
+                scanner.AppendConvention(type);
             }
             return scanner;
         }
 
         /// <summary>
-        /// Adds an exception to the scanner to exclude a specific type
+        /// Adds a set of conventions to the scanner
         /// </summary>
         /// <typeparam name="T">The scanner</typeparam>
         /// <param name="scanner">The scanner.</param>
-        /// <param name="types">The convention types to exclude.</param>
+        /// <param name="conventions">The additional conventions.</param>
         /// <returns>The scanner</returns>
-        public static T ExceptConvention<T>(this T scanner, IEnumerable<Type> types)
-            where T : IConventionScanner
+        public static T PrependConvention<T, TBuilder, TConvention, TDelegate>(this T scanner, params TConvention[] conventions)
+           where T : IConventionContainer<TBuilder, TConvention, TDelegate>
+            where TBuilder : IBuilder
+            where TConvention : IConvention
+            where TDelegate : Delegate
+        {
+            foreach (var type in conventions)
+            {
+                scanner.PrependConvention(type);
+            }
+            return scanner;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="types">The conventions.</param>
+        /// <returns>The scanner</returns>
+        public static T PrependConvention<T, TBuilder, TConvention, TDelegate>(this T scanner, IEnumerable<TConvention> types)
+            where T : IConventionContainer<TBuilder, TConvention, TDelegate>
+            where TBuilder : IBuilder
+            where TConvention : IConvention
+            where TDelegate : Delegate
         {
             foreach (var type in types)
             {
-                scanner.ExceptConvention(type);
+                scanner.PrependConvention(type);
             }
             return scanner;
         }
 
         /// <summary>
-        /// Adds an exception to the scanner to exclude a specific type
+        /// Addes a set of delegates to the scanner
         /// </summary>
         /// <typeparam name="T">The scanner</typeparam>
         /// <param name="scanner">The scanner.</param>
-        /// <param name="assemblies">The additional types to exclude.</param>
+        /// <param name="delegates">The additional delegates.</param>
         /// <returns>The scanner</returns>
-        public static T ExceptConvention<T>(this T scanner, params Assembly[] assemblies)
-            where T : IConventionScanner
+        public static T PrependDelegate<T, TBuilder, TConvention, TDelegate>(this T scanner, params TDelegate[] delegates)
+            where T : IConventionContainer<TBuilder, TConvention, TDelegate>
+            where TBuilder : IBuilder
+            where TConvention : IConvention
+            where TDelegate : Delegate
         {
-            foreach (var type in assemblies)
+            foreach (var type in delegates)
             {
-                scanner.ExceptConvention(type);
+                scanner.PrependDelegate(type);
             }
             return scanner;
         }
 
         /// <summary>
-        /// Adds an exception to the scanner to exclude a specific type
+        /// Adds a set of delegates to the scanner
         /// </summary>
         /// <typeparam name="T">The scanner</typeparam>
         /// <param name="scanner">The scanner.</param>
-        /// <param name="assemblies">The convention types to exclude.</param>
+        /// <param name="delegates">The conventions.</param>
         /// <returns>The scanner</returns>
-        public static T ExceptConvention<T>(this T scanner, IEnumerable<Assembly> assemblies)
-            where T : IConventionScanner
+        public static T PrependDelegate<T, TBuilder, TConvention, TDelegate>(this T scanner, IEnumerable<TDelegate> delegates)
+            where T : IConventionContainer<TBuilder, TConvention, TDelegate>
+            where TBuilder : IBuilder
+            where TConvention : IConvention
+            where TDelegate : Delegate
         {
-            foreach (var type in assemblies)
+            foreach (var type in delegates)
             {
-                scanner.ExceptConvention(type);
+                scanner.PrependDelegate(type);
+            }
+            return scanner;
+        }
+
+
+        /// <summary>
+        /// Addes a set of delegates to the scanner
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="delegates">The additional delegates.</param>
+        /// <returns>The scanner</returns>
+        public static T AppendDelegate<T, TBuilder, TConvention, TDelegate>(this T scanner, params TDelegate[] delegates)
+            where T : IConventionContainer<TBuilder, TConvention, TDelegate>
+            where TBuilder : IBuilder
+            where TConvention : IConvention
+            where TDelegate : Delegate
+        {
+            foreach (var type in delegates)
+            {
+                scanner.AppendDelegate(type);
+            }
+            return scanner;
+        }
+
+        /// <summary>
+        /// Adds a set of delegates to the scanner
+        /// </summary>
+        /// <typeparam name="T">The scanner</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>The scanner</returns>
+        public static T AppendDelegate<T, TBuilder, TConvention, TDelegate>(this T scanner, IEnumerable<TDelegate> delegates)
+            where T : IConventionContainer<TBuilder, TConvention, TDelegate>
+            where TBuilder : IBuilder
+            where TConvention : IConvention
+            where TDelegate : Delegate
+        {
+            foreach (var type in delegates)
+            {
+                scanner.AppendDelegate(type);
             }
             return scanner;
         }

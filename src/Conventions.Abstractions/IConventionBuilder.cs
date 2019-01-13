@@ -12,5 +12,6 @@ namespace Rocket.Surgery.Conventions
     {
         IAssemblyProvider AssemblyProvider { get; }
         IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+        IConventionScanner Scanner { get; }
     }
 }
