@@ -6,7 +6,7 @@ using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {
-    public interface IConventionHostBuilder : IConventionContainer, IBuilder
+    public interface IConventionHostBuilder : IBuilder
     {
         IConventionScanner Scanner { get; }
         IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
