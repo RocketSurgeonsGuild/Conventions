@@ -5,6 +5,5 @@
     <ItemGroup>
         <ProjectReference Include="..\Builders.Abstractions\Rocket.Surgery.Builders.Abstractions.csproj" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-        <PackageReference Include="System.Diagnostics.DiagnosticSource" />
     </ItemGroup>
 </Project>

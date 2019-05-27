@@ -7,6 +7,6 @@
         <PackageReference Include="Microsoft.Extensions.DependencyModel" />
         <PackageReference Include="Microsoft.Extensions.DiagnosticAdapter" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-        <PackageReference Include="Rocket.Surgery.Builders" />
+        <ProjectReference Include="..\Builders\Rocket.Surgery.Builders.csproj" />
     </ItemGroup>
 </Project>
