@@ -14,13 +14,14 @@ resources:
     - repository: rsg
       type: github
       name: RocketSurgeonsGuild/AzureDevopsTemplates
-      ref: refs/tags/v0.5.1
+      ref: refs/tags/v0.5.2
       endpoint: github
 
 variables:
   Configuration: Release
   Verbosity: Normal
-  DotNetVersion: "3.0.100-preview5-011568"
+  DotNetVersion: "2.2.300"
+  DotNet3Version: "3.0.100-preview5-011568"
   CakeVersion: "0.33.0"
   NuGetVersion: "5.1.0"
   Coverage: "$(Agent.BuildDirectory)/c"
@@ -35,5 +36,6 @@ jobs:
       Configuration: $(Configuration)
       Verbosity: $(Verbosity)
       DotNetVersion: $(DotNetVersion)
+      DotNet3Version: $(DotNet3Version)
       CakeVersion: $(CakeVersion)
       NuGetVersion: $(NuGetVersion)
