@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Extensions.Testing;
@@ -23,7 +24,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ReturnsNullOfNoValue()
         {
-            var container = new TestGenericValueContainer(new RocketEnvironment(RocketEnvironments.Development, "Test"), Logger);
+            var container = new TestGenericValueContainer(A.Fake<IRocketEnvironment>(), Logger);
 
             container[typeof(string)].Should().BeNull();
         }
@@ -32,7 +33,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void SetAValue()
         {
-            var container = new TestGenericValueContainer(new RocketEnvironment(RocketEnvironments.Development, "Test"), Logger);
+            var container = new TestGenericValueContainer(A.Fake<IRocketEnvironment>(), Logger);
 
             container[typeof(string)] = "abc";
 
@@ -41,7 +42,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void GetAStronglyTypedValue()
         {
-            var container = new TestGenericValueContainer(new RocketEnvironment(RocketEnvironments.Development, "Test"), Logger);
+            var container = new TestGenericValueContainer(A.Fake<IRocketEnvironment>(), Logger);
             container[typeof(string)] = "abc";
             container.Get<string>().Should().Be("abc");
         }
@@ -49,7 +50,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void SetAStronglyTypedValue()
         {
-            var container = new TestGenericValueContainer(new RocketEnvironment  (RocketEnvironments.Development, "Test"), Logger);
+            var container = new TestGenericValueContainer(A.Fake<IRocketEnvironment>(), Logger);
             container.Set("abc");
             container.Get<string>().Should().Be("abc");
         }

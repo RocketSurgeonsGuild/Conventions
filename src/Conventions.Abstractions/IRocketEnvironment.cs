@@ -1,4 +1,6 @@
-﻿namespace Rocket.Surgery.Conventions
+﻿using Microsoft.Extensions.FileProviders;
+
+namespace Rocket.Surgery.Conventions
 {
     public interface IRocketEnvironment
     {
@@ -13,5 +15,17 @@
         /// the application entry point.
         /// </summary>
         string ApplicationName { get; }
+
+        /// <summary>
+        /// Gets or sets the absolute path to the directory that contains the application
+        /// content files.
+        /// </summary>
+        string ContentRootPath { get; }
+
+        /// <summary>
+        ///  Gets or sets an Microsoft.Extensions.FileProviders.IFileProvider pointing
+        ///  at Microsoft.Extensions.Hosting.IHostingEnvironment.ContentRootPath.
+        /// </summary>
+        IFileProvider ContentRootFileProvider { get; }
     }
 }

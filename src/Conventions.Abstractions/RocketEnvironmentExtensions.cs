@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Hosting;
+using System;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -72,5 +73,15 @@ namespace Rocket.Surgery.Conventions
                 environmentName,
                 StringComparison.OrdinalIgnoreCase);
         }
+        public static IRocketEnvironment Convert(this IHostingEnvironment environment)
+        {
+            return new RocketEnvironment(environment);
+        }
+#if NETCOREAPP3_0
+        public static IRocketEnvironment Convert(this IHostEnvironment environment)
+        {
+            return new RocketEnvironment(environment);            
+        }
+#endif
     }
 }
