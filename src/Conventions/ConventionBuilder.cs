@@ -13,7 +13,7 @@ namespace Rocket.Surgery.Conventions
         where TDelegate : Delegate
     {
         protected ConventionBuilder(
-            IConventionEnvironment environment,
+            IRocketEnvironment environment,
             IConventionScanner scanner,
             IAssemblyProvider assemblyProvider,
             IAssemblyCandidateFinder assemblyCandidateFinder,

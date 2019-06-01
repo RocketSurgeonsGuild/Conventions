@@ -12,7 +12,7 @@ namespace Rocket.Surgery.Conventions
         where TDelegate : Delegate
     {
         protected ConventionContainerBuilder(
-            IConventionEnvironment environment, 
+            IRocketEnvironment environment, 
             IConventionScanner scanner, 
             IDictionary<object, object> properties)
         {
@@ -38,7 +38,7 @@ namespace Rocket.Surgery.Conventions
         public IDictionary<object, object> Properties { get; }
 
         public IConventionScanner Scanner { get; }
-        public IConventionEnvironment Environment { get; }
+        public IRocketEnvironment Environment { get; }
 
         public TBuilder AppendConvention(params TConvention[] conventions)
         {

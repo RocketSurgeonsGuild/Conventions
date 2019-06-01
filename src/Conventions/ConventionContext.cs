@@ -16,7 +16,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="environment"></param>
         /// <param name="logger"></param>
         /// <param name="properties"></param>
-        protected ConventionContext(IConventionEnvironment environment, ILogger logger, IDictionary<object, object> properties)
+        protected ConventionContext(IRocketEnvironment environment, ILogger logger, IDictionary<object, object> properties)
         {
             Environment = environment ?? throw new ArgumentNullException(nameof(environment));
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -43,6 +43,6 @@ namespace Rocket.Surgery.Conventions
         public ILogger Logger { get; }
 
         /// <inheritdoc />
-        public IConventionEnvironment Environment { get; }
+        public IRocketEnvironment Environment { get; }
     }
 }

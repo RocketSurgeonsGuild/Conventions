@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions
         where TDelegate : Delegate
     {
         IConventionScanner Scanner { get; }
-        IConventionEnvironment Environment { get; }
+        IRocketEnvironment Environment { get; }
 
         /// <summary>
         /// Adds a set of conventions to the scanner

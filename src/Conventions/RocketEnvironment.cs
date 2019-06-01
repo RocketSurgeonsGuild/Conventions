@@ -1,8 +1,8 @@
 ﻿namespace Rocket.Surgery.Conventions
 {
-    public class ConventionEnvironment : IConventionEnvironment
+    public class RocketEnvironment : IRocketEnvironment
     {
-        public ConventionEnvironment(string environmentName, string applicationName)
+        public RocketEnvironment(string environmentName, string applicationName)
         {
             EnvironmentName = environmentName;
             ApplicationName = applicationName;

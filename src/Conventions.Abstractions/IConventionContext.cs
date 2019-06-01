@@ -28,6 +28,6 @@ namespace Rocket.Surgery.Conventions
         /// 
         /// Based on IHostEnvironment / IHostingEnvironment
         /// </summary>
-        IConventionEnvironment Environment { get; }
+        IRocketEnvironment Environment { get; }
     }
 }

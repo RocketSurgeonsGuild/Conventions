@@ -1,6 +1,6 @@
 ﻿namespace Rocket.Surgery.Conventions
 {
-    public interface IConventionEnvironment
+    public interface IRocketEnvironment
     {
         /// <summary>
         /// Gets or sets the name of the environment. The host automatically sets this property to the value of the
