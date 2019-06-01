@@ -8,20 +8,26 @@ namespace Rocket.Surgery.Builders
     /// </summary>
     public abstract class Builder : IBuilder
     {
-        private readonly IDictionary<object, object> _items;
-
         protected Builder(IDictionary<object, object> properties)
         {
-            _items = properties ?? new Dictionary<object, object>();
+            Properties = properties ?? new Dictionary<object, object>();
         }
 
+        /// <summary>
+        /// A central location for sharing state between components during the convention building process.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public virtual object this[object item]
         {
-            get => _items.TryGetValue(item, out var value) ? value : null;
-            set => _items[item] = value;
+            get => Properties.TryGetValue(item, out object value) ? value : null;
+            set => Properties[item] = value;
         }
 
-        public IDictionary<object, object> Properties => _items;
+        /// <summary>
+        /// A central location for sharing state between components during the convention building process.
+        /// </summary>
+        public IDictionary<object, object> Properties { get; }
     }
 
     /// <summary>

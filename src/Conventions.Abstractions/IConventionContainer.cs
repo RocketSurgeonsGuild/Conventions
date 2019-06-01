@@ -1,62 +1,74 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rocket.Surgery.Builders;
+using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
-{
-    public interface IConventionContainer
-    {
-        /// <summary>
-        /// Add a delegate to the scanner, that runs before scanning.
-        /// </summary>
-        /// <param name="delegate">The delegate</param>
-        void PrependDelegate(Delegate @delegate);
-
-        /// <summary>
-        /// Adds a convention to the scanner, that runs before scanning.
-        /// </summary>
-        /// <param name="convention">The convention</param>
-        void PrependConvention(IConvention convention);
-
-        /// <summary>
-        /// Add a delegate to the scanner, that runs after scanning.
-        /// </summary>
-        /// <param name="delegate">The delegate</param>
-        void AppendDelegate(Delegate @delegate);
-
-        /// <summary>
-        /// Adds a convention to the scanner, that runs after scanning.
-        /// </summary>
-        /// <param name="convention">The convention</param>
-        void AppendConvention(IConvention convention);
-    }
-
+{ 
     public interface IConventionContainer<out TBuilder, in TConvention, in TDelegate>
+        where TBuilder : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention
-        where TBuilder : IBuilder
         where TDelegate : Delegate
     {
-        /// <summary>
-        /// Add a delegate to the scanner, that runs before scanning.
-        /// </summary>
-        /// <param name="delegate">The delegate</param>
-        TBuilder PrependDelegate(TDelegate @delegate);
+        IConventionScanner Scanner { get; }
+        IConventionEnvironment Environment { get; }
 
         /// <summary>
-        /// Adds a convention to the scanner, that runs before scanning.
+        /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <param name="convention">The convention</param>
-        TBuilder PrependConvention(TConvention convention);
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>The scanner</returns>
+        TBuilder AppendConvention(params TConvention[] conventions);
 
         /// <summary>
-        /// Add a delegate to the scanner, that runs after scanning.
+        /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <param name="delegate">The delegate</param>
-        TBuilder AppendDelegate(TDelegate @delegate);
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>The scanner</returns>
+        TBuilder AppendConvention(IEnumerable<TConvention> conventions);
 
         /// <summary>
-        /// Adds a convention to the scanner, that runs after scanning.
+        /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <param name="convention">The convention</param>
-        TBuilder AppendConvention(TConvention convention);
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>The scanner</returns>
+        TBuilder PrependConvention(params TConvention[] conventions);
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>The scanner</returns>
+        TBuilder PrependConvention(IEnumerable<TConvention> conventions);
+
+
+        /// <summary>
+        /// Addes a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The additional delegates.</param>
+        /// <returns>The scanner</returns>
+        TBuilder PrependDelegate(params TDelegate[] delegates);
+
+        /// <summary>
+        /// Adds a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>The scanner</returns>
+        TBuilder PrependDelegate(IEnumerable<TDelegate> delegates);
+
+
+        /// <summary>
+        /// Addes a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The additional delegates.</param>
+        /// <returns>The scanner</returns>
+        TBuilder AppendDelegate(params TDelegate[] delegates);
+
+        /// <summary>
+        /// Adds a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>The scanner</returns>
+        TBuilder AppendDelegate(IEnumerable<TDelegate> delegates);
     }
 }

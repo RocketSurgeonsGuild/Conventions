@@ -22,5 +22,12 @@ namespace Rocket.Surgery.Conventions
         /// A logger that is configured to work with each convention item
         /// </summary>
         ILogger Logger { get; }
+
+        /// <summary>
+        /// The environment that this convention is running
+        /// 
+        /// Based on IHostEnvironment / IHostingEnvironment
+        /// </summary>
+        IConventionEnvironment Environment { get; }
     }
 }
