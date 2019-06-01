@@ -8,7 +8,7 @@ using System.Diagnostics;
 namespace Rocket.Surgery.Conventions
 {
     public abstract class ConventionHostBuilder<TSelf> : IConventionHostBuilder<TSelf>
-        where TSelf : ConventionHostBuilder<TSelf>, IConventionHostBuilder<TSelf>
+        where TSelf : IConventionHostBuilder<TSelf>
     {
         public ConventionHostBuilder(
             IConventionScanner scanner,
@@ -56,7 +56,7 @@ namespace Rocket.Surgery.Conventions
         public TSelf AppendConvention(params IConvention[] conventions)
         {
             Scanner.AppendConvention(conventions);
-            return (TSelf)this;
+            return (TSelf)(object)this;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Rocket.Surgery.Conventions
         public TSelf AppendConvention(IEnumerable<IConvention> conventions)
         {
             Scanner.AppendConvention(conventions);
-            return (TSelf)this;
+            return (TSelf)(object)this;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Rocket.Surgery.Conventions
         public TSelf PrependConvention(params IConvention[] conventions)
         {
             Scanner.PrependConvention(conventions);
-            return (TSelf)this;
+            return (TSelf)(object)this;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Rocket.Surgery.Conventions
         public TSelf PrependConvention(IEnumerable<IConvention> conventions)
         {
             Scanner.PrependConvention(conventions);
-            return (TSelf)this;
+            return (TSelf)(object)this;
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Rocket.Surgery.Conventions
         public TSelf PrependDelegate(params Delegate[] delegates)
         {
             Scanner.PrependDelegate(delegates);
-            return (TSelf)this;
+            return (TSelf)(object)this;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Rocket.Surgery.Conventions
         public TSelf PrependDelegate(IEnumerable<Delegate> delegates)
         {
             Scanner.PrependDelegate(delegates);
-            return (TSelf)this;
+            return (TSelf)(object)this;
         }
 
 
@@ -135,7 +135,7 @@ namespace Rocket.Surgery.Conventions
         public TSelf AppendDelegate(params Delegate[] delegates)
         {
             Scanner.AppendDelegate(delegates);
-            return (TSelf)this;
+            return (TSelf)(object)this;
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Rocket.Surgery.Conventions
         public TSelf AppendDelegate(IEnumerable<Delegate> delegates)
         {
             Scanner.AppendDelegate(delegates);
-            return (TSelf)this;
+            return (TSelf)(object)this;
         }
     }
 }

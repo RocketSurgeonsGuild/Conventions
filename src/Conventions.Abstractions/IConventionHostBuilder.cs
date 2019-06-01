@@ -16,7 +16,7 @@ namespace Rocket.Surgery.Conventions
     }
 
     public interface IConventionHostBuilder<out TSelf> : IConventionHostBuilder
-        where TSelf : IConventionHostBuilder
+        where TSelf : IConventionHostBuilder<TSelf>
     {
         /// <summary>
         /// Adds a set of conventions to the scanner

@@ -7,7 +7,7 @@ using Rocket.Surgery.Conventions.Scanners;
 namespace Rocket.Surgery.Conventions
 {
     public abstract class ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : IConventionContainer<TBuilder, TConvention, TDelegate>
-        where TBuilder : ConventionContainerBuilder<TBuilder, TConvention, TDelegate>
+        where TBuilder : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention
         where TDelegate : Delegate
     {
@@ -43,49 +43,49 @@ namespace Rocket.Surgery.Conventions
         public TBuilder AppendConvention(params TConvention[] conventions)
         {
             Scanner.AppendConvention(conventions.Cast<IConvention>());
-            return (TBuilder)this;
+            return (TBuilder)(object)this;
         }
 
         public TBuilder AppendConvention(IEnumerable<TConvention> conventions)
         {
             Scanner.AppendConvention(conventions.Cast<IConvention>());
-            return (TBuilder)this;
+            return (TBuilder)(object)this;
         }
 
         public TBuilder AppendDelegate(params TDelegate[] delegates)
         {
             Scanner.AppendDelegate(delegates);
-            return (TBuilder)this;
+            return (TBuilder)(object)this;
         }
 
         public TBuilder AppendDelegate(IEnumerable<TDelegate> delegates)
         {
             Scanner.AppendDelegate(delegates);
-            return (TBuilder)this;
+            return (TBuilder)(object)this;
         }
 
         public TBuilder PrependConvention(params TConvention[] conventions)
         {
             Scanner.PrependConvention(conventions.Cast<IConvention>());
-            return (TBuilder)this;
+            return (TBuilder)(object)this;
         }
 
         public TBuilder PrependConvention(IEnumerable<TConvention> conventions)
         {
             Scanner.PrependConvention(conventions.Cast<IConvention>());
-            return (TBuilder)this;
+            return (TBuilder)(object)this;
         }
 
         public TBuilder PrependDelegate(params TDelegate[] delegates)
         {
             Scanner.PrependDelegate(delegates);
-            return (TBuilder)this;
+            return (TBuilder)(object)this;
         }
 
         public TBuilder PrependDelegate(IEnumerable<TDelegate> delegates)
         {
             Scanner.PrependDelegate(delegates);
-            return (TBuilder)this;
+            return (TBuilder)(object)this;
         }
     }
 }
