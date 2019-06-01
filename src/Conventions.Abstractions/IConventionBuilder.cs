@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Rocket.Surgery.Builders;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 
