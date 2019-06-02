@@ -13,12 +13,10 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Creates a base context
         /// </summary>
-        /// <param name="environment"></param>
         /// <param name="logger"></param>
         /// <param name="properties"></param>
-        protected ConventionContext(IRocketEnvironment environment, ILogger logger, IDictionary<object, object> properties)
+        protected ConventionContext(ILogger logger, IDictionary<object, object> properties)
         {
-            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             Properties = properties ?? new Dictionary<object, object>();
         }
@@ -41,8 +39,5 @@ namespace Rocket.Surgery.Conventions
 
         /// <inheritdoc />
         public ILogger Logger { get; }
-
-        /// <inheritdoc />
-        public IRocketEnvironment Environment { get; }
     }
 }

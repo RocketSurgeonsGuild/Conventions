@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using Rocket.Surgery.Builders;
 
 namespace Rocket.Surgery.Conventions.Tests.Fixtures
 {
-    public class ServicesBuilder : Builder
+    public class ServicesBuilder
     {
-        protected ServicesBuilder() : base(new Dictionary<object, object>())
+        protected ServicesBuilder()
         {
         }
     }

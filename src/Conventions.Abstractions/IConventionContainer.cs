@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
-{ 
+{
     public interface IConventionContainer<out TBuilder, in TConvention, in TDelegate>
         where TBuilder : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention
         where TDelegate : Delegate
     {
         IConventionScanner Scanner { get; }
-        IRocketEnvironment Environment { get; }
 
         /// <summary>
         /// Adds a set of conventions to the scanner

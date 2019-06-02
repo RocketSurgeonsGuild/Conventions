@@ -47,8 +47,8 @@ namespace Rocket.Surgery.Conventions.Tests
                 }.AsEnumerable());
             var composer = new ServiceConventionComposer(scanner);
 
-            composer.Register(new ServiceConventionContext(A.Fake<IRocketEnvironment>(), Logger));
-            composer.Register(new ServiceConventionContext(A.Fake<IRocketEnvironment>(), Logger));
+            composer.Register(new ServiceConventionContext(Logger));
+            composer.Register(new ServiceConventionContext(Logger));
             A.CallTo(() => dele.Invoke(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
             A.CallTo(() => dele2.Invoke(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
             A.CallTo(() => contrib.Register(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();

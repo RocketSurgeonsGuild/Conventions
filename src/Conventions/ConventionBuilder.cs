@@ -12,12 +12,11 @@ namespace Rocket.Surgery.Conventions
         where TDelegate : Delegate
     {
         protected ConventionBuilder(
-            IRocketEnvironment environment,
             IConventionScanner scanner,
             IAssemblyProvider assemblyProvider,
             IAssemblyCandidateFinder assemblyCandidateFinder,
             IDictionary<object, object> properties
-        ) : base(environment, scanner, properties)
+        ) : base(scanner, properties)
         {
             AssemblyProvider = assemblyProvider ?? throw new ArgumentNullException(nameof(assemblyProvider));
             AssemblyCandidateFinder = assemblyCandidateFinder ?? throw new ArgumentNullException(nameof(assemblyCandidateFinder));

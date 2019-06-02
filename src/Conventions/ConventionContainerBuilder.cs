@@ -11,11 +11,9 @@ namespace Rocket.Surgery.Conventions
         where TDelegate : Delegate
     {
         protected ConventionContainerBuilder(
-            IRocketEnvironment environment, 
-            IConventionScanner scanner, 
+            IConventionScanner scanner,
             IDictionary<object, object> properties)
         {
-            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
             Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
             Properties = properties ?? new Dictionary<object, object>();
         }
@@ -37,7 +35,6 @@ namespace Rocket.Surgery.Conventions
         public IDictionary<object, object> Properties { get; }
 
         public IConventionScanner Scanner { get; }
-        public IRocketEnvironment Environment { get; }
 
         public TBuilder AppendConvention(params TConvention[] conventions)
         {

@@ -10,7 +10,7 @@ namespace Rocket.Surgery.Conventions.Tests.Fixtures
 
     public class ServiceConventionContext : ConventionContext, IServiceConventionContext
     {
-        public ServiceConventionContext(IRocketEnvironment environment, ILogger logger) : base(environment, logger, new Dictionary<object, object>())
+        public ServiceConventionContext(ILogger logger) : base(logger, new Dictionary<object, object>())
         {
         }
     }
