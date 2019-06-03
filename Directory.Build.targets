@@ -4,15 +4,14 @@
         <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
         <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
         <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="2.1.0" />
+        <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.5.1" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
         <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview5.19227.9" />
         <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview5.19227.9" />
         <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="3.0.0-preview5-27626-15" />
         <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.0.0-preview5.19227.9" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.5.1" />
+        <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.6.0-preview5.19224.8" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Rocket.Surgery.Build.Metadata" Version="3.3.0" PrivateAssets="All" />
