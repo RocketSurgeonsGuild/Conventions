@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Extensions.Testing;
@@ -52,13 +53,6 @@ namespace Rocket.Surgery.Conventions.Tests
             var container = new TestGenericValueContainer(Logger);
             container.Set("abc");
             container.Get<string>().Should().Be("abc");
-        }
-
-        [Fact]
-        public void SetShouldChain()
-        {
-            var container = new TestGenericValueContainer(Logger);
-            container.Set("abc").Should().Be(container);
         }
     }
 }

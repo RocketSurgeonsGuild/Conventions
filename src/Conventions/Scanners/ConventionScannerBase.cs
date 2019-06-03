@@ -71,58 +71,6 @@ namespace Rocket.Surgery.Conventions.Scanners
             }
         }
 
-
-        /// <inheritdoc />
-        public void PrependDelegate(Delegate @delegate)
-        {
-            if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
-            _provider = null;
-            PrependedConventions.Add(@delegate);
-        }
-
-        /// <inheritdoc />
-        public void PrependConvention(IConvention convention)
-        {
-            if (convention == null) throw new ArgumentNullException(nameof(convention));
-            _provider = null;
-            PrependedConventions.Add(convention);
-        }
-
-        /// <inheritdoc />
-        public void AppendDelegate(Delegate @delegate)
-        {
-            if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
-            _provider = null;
-            AppendedConventions.Add(@delegate);
-        }
-
-        /// <inheritdoc />
-        public void AppendConvention(IConvention convention)
-        {
-            if (convention == null) throw new ArgumentNullException(nameof(convention));
-            _provider = null;
-            AppendedConventions.Add(convention);
-        }
-
-        /// <inheritdoc />
-        public void ExceptConvention(Type type)
-        {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-            _provider = null;
-            ExceptConventions.Add(type);
-        }
-
-        /// <summary>
-        /// Excludes an assembly from the convention
-        /// </summary>
-        /// <param name="assembly"></param>
-        public void ExceptConvention(Assembly assembly)
-        {
-            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
-            _provider = null;
-            ExceptAssemblyConventions.Add(assembly);
-        }
-
         /// <inheritdoc />
         public IConventionProvider BuildProvider()
         {
@@ -142,6 +90,102 @@ namespace Rocket.Surgery.Conventions.Scanners
                 .Cast<IConvention>();
 
             return new ConventionProvider(contributionTypes, ExceptConventions, PrependedConventions, AppendedConventions);
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner AppendConvention(params IConvention[] conventions)
+        {
+            _provider = null;
+            AppendedConventions.AddRange(conventions);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner AppendConvention(IEnumerable<IConvention> conventions)
+        {
+            _provider = null;
+            AppendedConventions.AddRange(conventions);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner PrependConvention(params IConvention[] conventions)
+        {
+            _provider = null;
+            PrependedConventions.AddRange(conventions);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner PrependConvention(IEnumerable<IConvention> conventions)
+        {
+            _provider = null;
+            PrependedConventions.AddRange(conventions);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner PrependDelegate(params Delegate[] delegates)
+        {
+            _provider = null;
+            PrependedConventions.AddRange(delegates);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner PrependDelegate(IEnumerable<Delegate> delegates)
+        {
+            _provider = null;
+            PrependedConventions.AddRange(delegates);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner AppendDelegate(params Delegate[] delegates)
+        {
+            _provider = null;
+            AppendedConventions.AddRange(delegates);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner AppendDelegate(IEnumerable<Delegate> delegates)
+        {
+            _provider = null;
+            AppendedConventions.AddRange(delegates);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner ExceptConvention(params Type[] types)
+        {
+            _provider = null;
+            ExceptConventions.AddRange(types);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner ExceptConvention(IEnumerable<Type> types)
+        {
+            _provider = null;
+            ExceptConventions.AddRange(types);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner ExceptConvention(params Assembly[] assemblies)
+        {
+            _provider = null;
+            ExceptAssemblyConventions.AddRange(assemblies);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConventionScanner ExceptConvention(IEnumerable<Assembly> assemblies)
+        {
+            _provider = null;
+            ExceptAssemblyConventions.AddRange(assemblies);
+            return this;
         }
     }
 }

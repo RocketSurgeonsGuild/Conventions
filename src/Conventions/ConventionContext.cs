@@ -10,16 +10,15 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     public abstract class ConventionContext : IConventionContext
     {
-        private readonly IDictionary<object, object> _items;
-
         /// <summary>
         /// Creates a base context
         /// </summary>
         /// <param name="logger"></param>
+        /// <param name="properties"></param>
         protected ConventionContext(ILogger logger, IDictionary<object, object> properties)
         {
-            Logger = logger;
-            _items = properties ?? new Dictionary<object, object>();
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            Properties = properties ?? new Dictionary<object, object>();
         }
 
         /// <summary>
@@ -29,14 +28,14 @@ namespace Rocket.Surgery.Conventions
         /// <returns></returns>
         public virtual object this[object item]
         {
-            get => _items.TryGetValue(item, out object value) ? value : null;
-            set => _items[item] = value;
+            get => Properties.TryGetValue(item, out object value) ? value : null;
+            set => Properties[item] = value;
         }
 
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
-        public IDictionary<object, object> Properties => _items;
+        public IDictionary<object, object> Properties { get; }
 
         /// <inheritdoc />
         public ILogger Logger { get; }

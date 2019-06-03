@@ -1,46 +1,87 @@
 using System;
 using System.Collections.Generic;
-using Rocket.Surgery.Builders;
+using System.Linq;
 using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {
-    public abstract class ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : Builder, IConventionContainer<TBuilder, TConvention, TDelegate>
-        where TBuilder : IBuilder
+    public abstract class ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : IConventionContainer<TBuilder, TConvention, TDelegate>
+        where TBuilder : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention
         where TDelegate : Delegate
     {
-        protected readonly IConventionScanner Scanner;
-
-        protected ConventionContainerBuilder(IConventionScanner scanner, IDictionary<object, object> properties) : base(properties)
+        protected ConventionContainerBuilder(
+            IConventionScanner scanner,
+            IDictionary<object, object> properties)
         {
             Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
+            Properties = properties ?? new Dictionary<object, object>();
         }
 
-        protected abstract TBuilder GetBuilder();
-
-        public TBuilder PrependDelegate(TDelegate @delegate)
+        /// <summary>
+        /// A central location for sharing state between components during the convention building process.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public virtual object this[object item]
         {
-            Scanner.PrependDelegate(@delegate as Delegate);
-            return GetBuilder();
+            get => Properties.TryGetValue(item, out object value) ? value : null;
+            set => Properties[item] = value;
         }
 
-        public TBuilder PrependConvention(TConvention convention)
+        /// <summary>
+        /// A central location for sharing state between components during the convention building process.
+        /// </summary>
+        public IDictionary<object, object> Properties { get; }
+
+        public IConventionScanner Scanner { get; }
+
+        public TBuilder AppendConvention(params TConvention[] conventions)
         {
-            Scanner.PrependConvention(convention);
-            return GetBuilder();
+            Scanner.AppendConvention(conventions.Cast<IConvention>());
+            return (TBuilder)(object)this;
         }
 
-        public TBuilder AppendDelegate(TDelegate @delegate)
+        public TBuilder AppendConvention(IEnumerable<TConvention> conventions)
         {
-            Scanner.AppendDelegate(@delegate as Delegate);
-            return GetBuilder();
+            Scanner.AppendConvention(conventions.Cast<IConvention>());
+            return (TBuilder)(object)this;
         }
 
-        public TBuilder AppendConvention(TConvention convention)
+        public TBuilder AppendDelegate(params TDelegate[] delegates)
         {
-            Scanner.AppendConvention(convention);
-            return GetBuilder();
+            Scanner.AppendDelegate(delegates);
+            return (TBuilder)(object)this;
+        }
+
+        public TBuilder AppendDelegate(IEnumerable<TDelegate> delegates)
+        {
+            Scanner.AppendDelegate(delegates);
+            return (TBuilder)(object)this;
+        }
+
+        public TBuilder PrependConvention(params TConvention[] conventions)
+        {
+            Scanner.PrependConvention(conventions.Cast<IConvention>());
+            return (TBuilder)(object)this;
+        }
+
+        public TBuilder PrependConvention(IEnumerable<TConvention> conventions)
+        {
+            Scanner.PrependConvention(conventions.Cast<IConvention>());
+            return (TBuilder)(object)this;
+        }
+
+        public TBuilder PrependDelegate(params TDelegate[] delegates)
+        {
+            Scanner.PrependDelegate(delegates);
+            return (TBuilder)(object)this;
+        }
+
+        public TBuilder PrependDelegate(IEnumerable<TDelegate> delegates)
+        {
+            Scanner.PrependDelegate(delegates);
+            return (TBuilder)(object)this;
         }
     }
 }

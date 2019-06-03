@@ -14,19 +14,22 @@ namespace Rocket.Surgery.Conventions.Reflection
         public AssemblyCandidateResolver(IReadOnlyList<Assembly> assemblies, ISet<string> referenceAssemblies, ILogger logger)
         {
             _logger = logger;
+            var processedAssemblies = new HashSet<Assembly>();
             var dependenciesWithNoDuplicates = new Dictionary<string, Dependency>(StringComparer.OrdinalIgnoreCase);
             foreach (var assembly in assemblies)
             {
-                RecursiveAddDependencies(assembly, referenceAssemblies, dependenciesWithNoDuplicates);
+                RecursiveAddDependencies(assembly, referenceAssemblies, dependenciesWithNoDuplicates, processedAssemblies);
             }
             _dependencies = dependenciesWithNoDuplicates;
         }
 
-        private void RecursiveAddDependencies(
-            Assembly assembly,
+        private void RecursiveAddDependencies(Assembly assembly,
             ISet<string> referenceAssemblies,
-            IDictionary<string, Dependency> dependenciesWithNoDuplicates)
+            IDictionary<string, Dependency> dependenciesWithNoDuplicates,
+            ISet<Assembly> processedAssemblies)
         {
+            if (processedAssemblies.Contains(assembly)) return;
+            processedAssemblies.Add(assembly);
             var key = assembly.GetName().Name;
             if (!dependenciesWithNoDuplicates.ContainsKey(key))
             {
@@ -48,7 +51,7 @@ namespace Rocket.Surgery.Conventions.Reflection
                     _logger.LogWarning(0, e, "Unable to load assembly {Name}", dependency.Name);
                     continue;
                 }
-                RecursiveAddDependencies(dependentAssembly, referenceAssemblies, dependenciesWithNoDuplicates);
+                RecursiveAddDependencies(dependentAssembly, referenceAssemblies, dependenciesWithNoDuplicates, processedAssemblies);
             }
         }
 
@@ -63,11 +66,12 @@ namespace Rocket.Surgery.Conventions.Reflection
             return new Dependency(library, classification);
         }
 
-        private DependencyClassification ComputeClassification(string dependency)
+        private DependencyClassification ComputeClassification(string dependency, ISet<string> processedAssemblies)
         {
+            processedAssemblies.Add(dependency);
             // Prevents issues with looking at system assemblies
-            if (dependency.StartsWith("System.") || 
-                dependency.StartsWith("mscorlib") || 
+            if (dependency.StartsWith("System.") ||
+                dependency.StartsWith("mscorlib") ||
                 dependency.StartsWith("Microsoft.") ||
                 dependency.StartsWith("DynamicProxyGenAssembly"))
             {
@@ -88,7 +92,11 @@ namespace Rocket.Surgery.Conventions.Reflection
 
             foreach (var candidateDependency in candidateEntry.Assembly.GetReferencedAssemblies())
             {
-                var dependencyClassification = ComputeClassification(candidateDependency.Name);
+                if (processedAssemblies.Contains(candidateDependency.Name))
+                {
+                    continue;
+                }
+                var dependencyClassification = ComputeClassification(candidateDependency.Name, processedAssemblies);
                 if (dependencyClassification == DependencyClassification.Candidate ||
                     dependencyClassification == DependencyClassification.Reference)
                 {
@@ -106,7 +114,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         {
             foreach (var dependency in _dependencies)
             {
-                if (ComputeClassification(dependency.Key) == DependencyClassification.Candidate && dependency.Value.Assembly != null)
+                if (ComputeClassification(dependency.Key, new HashSet<string>()) == DependencyClassification.Candidate && dependency.Value.Assembly != null)
                 {
                     yield return dependency.Value;
                 }

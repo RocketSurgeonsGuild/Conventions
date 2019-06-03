@@ -22,7 +22,6 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="TContribution"></typeparam>
         /// <typeparam name="TDelegate"></typeparam>
         /// <param name="scanner"></param>
-        /// <param name="logger"></param>
         /// <param name="context"></param>
         public static void Register<TContext, TContribution, TDelegate>(
             IConventionScanner scanner,

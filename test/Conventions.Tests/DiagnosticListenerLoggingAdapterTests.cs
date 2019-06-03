@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETCOREAPP3_0
+using System;
 using System.Diagnostics;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
@@ -109,3 +110,4 @@ namespace Rocket.Surgery.Conventions.Tests
         }
     }
 }
+#endif

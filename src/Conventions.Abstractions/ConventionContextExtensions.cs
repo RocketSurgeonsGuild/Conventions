@@ -27,30 +27,24 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Get a value by type from the context
         /// </summary>
-        /// <typeparam name="TContext">The context type</typeparam>
         /// <typeparam name="T">The type of the value</typeparam>
         /// <param name="context">The context</param>
         /// <param name="value">The value to save</param>
-        public static TContext Set<TContext, T>(this TContext context, T value)
-            where TContext : IConventionContext
+        public static void Set<T>(this IConventionContext context, T value)
         {
             context[typeof(T)] = value;
-            return context;
         }
 
         /// <summary>
         /// Get a value by type from the context
         /// </summary>
-        /// <typeparam name="TContext">The context type</typeparam>
         /// <typeparam name="T">The type of the value</typeparam>
         /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="value">The value to save</param>
-        public static TContext Set<TContext, T>(this TContext context, string key, T value)
-            where TContext : IConventionContext
+        public static void Set<T>(this IConventionContext context, string key, T value)
         {
             context[key] = value;
-            return context;
         }
     }
 }
