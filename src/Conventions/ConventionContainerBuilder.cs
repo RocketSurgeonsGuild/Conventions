@@ -20,10 +20,13 @@ namespace Rocket.Surgery.Conventions
     {
         protected ConventionContainerBuilder(
             IConventionScanner scanner,
-            IDictionary<object, object> properties)
+            IServiceProviderDictionary serviceProperties)
         {
             Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
-            Properties = properties ?? new Dictionary<object, object>();
+            ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
+
+            if (!Properties.TryGetValue(typeof(IConventionScanner), out var _))
+                Properties[typeof(IConventionScanner)] = Scanner;
         }
 
         /// <summary>
@@ -41,7 +44,13 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        public IDictionary<object, object> Properties { get; }
+        public IServiceProviderDictionary ServiceProperties { get; }
+
+        /// <summary>
+        /// A central location for sharing state between components during the convention building process.
+        /// </summary>
+        /// <value>The properties.</value>
+        public IDictionary<object, object> Properties => ServiceProperties;
 
         /// <summary>
         /// Gets the scanner.
@@ -76,7 +85,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TBuilder.</returns>
-        public TBuilder AppendConvention<T>() where T : TConvention, new()
+        public TBuilder AppendConvention<T>() where T : TConvention
         {
             Scanner.AppendConvention<T>();
             return (TBuilder)(object)this;
@@ -131,7 +140,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TBuilder.</returns>
-        public TBuilder PrependConvention<T>() where T : TConvention, new()
+        public TBuilder PrependConvention<T>() where T : TConvention
         {
             Scanner.PrependConvention<T>();
             return (TBuilder)(object)this;

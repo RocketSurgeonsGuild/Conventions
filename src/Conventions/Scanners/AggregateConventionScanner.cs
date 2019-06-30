@@ -1,4 +1,5 @@
-﻿using Rocket.Surgery.Conventions.Reflection;
+﻿using System;
+using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
@@ -13,11 +14,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// The default constructor
         /// </summary>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder</param>
+        /// <param name="serviceProvider">The service provider for creating instances of conventions (usually a <see cref="IServiceProviderDictionary" />.</param>
         /// <param name="conventions">The additional conventions to start with</param>
-        public AggregateConventionScanner(IAssemblyCandidateFinder assemblyCandidateFinder, params IConvention[] conventions)
-            : base(assemblyCandidateFinder)
+        public AggregateConventionScanner(IAssemblyCandidateFinder assemblyCandidateFinder, IServiceProvider serviceProvider, params IConvention[] conventions)
+            : base(assemblyCandidateFinder, serviceProvider)
         {
-            PrependedConventions.AddRange(conventions);
+            PrependConvention(conventions);
         }
     }
 }

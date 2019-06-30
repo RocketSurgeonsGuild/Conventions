@@ -46,7 +46,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>IConventionScanner.</returns>
-        IConventionScanner AppendConvention<T>() where T : IConvention, new();
+        IConventionScanner AppendConvention<T>() where T : IConvention;
 
         /// <summary>
         /// Adds a set of conventions to the scanner
@@ -84,7 +84,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>IConventionScanner.</returns>
-        IConventionScanner PrependConvention<T>() where T : IConvention, new();
+        IConventionScanner PrependConvention<T>() where T : IConvention;
 
         /// <summary>
         /// Adds a set of delegates to the scanner

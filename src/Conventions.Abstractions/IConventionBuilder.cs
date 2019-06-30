@@ -6,7 +6,7 @@ using Rocket.Surgery.Conventions.Scanners;
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Interface IConventionBuilder
+    ///  IConventionBuilder
     /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionContainer{TBuilder, TConvention, TDelegate}" />
     /// </summary>
     /// <typeparam name="TBuilder">The type of the t builder.</typeparam>

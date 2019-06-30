@@ -19,7 +19,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
         private class CCBuilder : ConventionContainerBuilder<CCBuilder, IServiceConvention, ServiceConventionDelegate>
         {
-            public CCBuilder(IConventionScanner scanner, IDictionary<object, object> properties) : base(scanner, properties)
+            public CCBuilder(IConventionScanner scanner, IServiceProviderDictionary properties) : base(scanner, properties)
             {
             }
         }
@@ -35,8 +35,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldConstruct()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var builder = AutoFake.Resolve<CCBuilder>();
 
             builder.Should().NotBeNull();
@@ -51,8 +51,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendConventions()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var builder = AutoFake.Resolve<CCBuilder>();
 
             var conventionsArray = Enumerable.Range(0, 10).Select(x => A.Fake<IServiceConvention>()).ToArray();
@@ -71,8 +71,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendDelegates()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var builder = AutoFake.Resolve<CCBuilder>();
 
             var conventionsArray = Enumerable.Range(0, 10).Select(x => A.Fake<ServiceConventionDelegate>()).ToArray();
@@ -90,8 +90,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependConventions()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var builder = AutoFake.Resolve<CCBuilder>();
 
             var conventionsArray = Enumerable.Range(0, 10).Select(x => A.Fake<IServiceConvention>()).ToArray();
@@ -110,8 +110,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependDelegates()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var builder = AutoFake.Resolve<CCBuilder>();
 
             var conventionsArray = Enumerable.Range(0, 10).Select(x => A.Fake<ServiceConventionDelegate>()).ToArray();

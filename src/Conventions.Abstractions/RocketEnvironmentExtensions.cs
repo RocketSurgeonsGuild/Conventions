@@ -93,7 +93,7 @@ namespace Rocket.Surgery.Conventions
 #if NETCOREAPP3_0
         public static IRocketEnvironment Convert(this IHostEnvironment environment)
         {
-            return new RocketEnvironment(environment);            
+            return new RocketEnvironment(environment);
         }
 #endif
     }

@@ -3,7 +3,7 @@
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Interface IRocketEnvironment
+    ///  IRocketEnvironment
     /// </summary>
     public interface IRocketEnvironment
     {

@@ -22,20 +22,32 @@ namespace Rocket.Surgery.Conventions
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
         /// <param name="assemblyProvider">The assembly provider.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <param name="properties">The properties.</param>
+        /// <param name="serviceProperties">The properties.</param>
         public ConventionHostBuilder(
             IConventionScanner scanner,
             IAssemblyCandidateFinder assemblyCandidateFinder,
             IAssemblyProvider assemblyProvider,
             DiagnosticSource diagnosticSource,
-            IDictionary<object, object> properties
+            IServiceProviderDictionary serviceProperties
         )
         {
             Scanner = scanner;
             AssemblyCandidateFinder = assemblyCandidateFinder;
             AssemblyProvider = assemblyProvider;
             DiagnosticSource = diagnosticSource;
-            Properties = properties ?? new Dictionary<object, object>();
+            ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
+
+            if (!Properties.TryGetValue(typeof(IConventionScanner), out var _))
+                Properties[typeof(IConventionScanner)] = Scanner;
+
+            if (!Properties.TryGetValue(typeof(IAssemblyProvider), out var _))
+                Properties[typeof(IAssemblyProvider)] = AssemblyProvider;
+
+            if (!Properties.TryGetValue(typeof(IAssemblyCandidateFinder), out var _))
+                Properties[typeof(IAssemblyCandidateFinder)] = AssemblyCandidateFinder;
+
+            if (!Properties.TryGetValue(typeof(DiagnosticSource), out var _))
+                Properties[typeof(DiagnosticSource)] = DiagnosticSource;
         }
 
         /// <summary>
@@ -53,7 +65,13 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        public IDictionary<object, object> Properties { get; }
+        public IServiceProviderDictionary ServiceProperties { get; }
+
+        /// <summary>
+        /// A central location for sharing state between components during the convention building process.
+        /// </summary>
+        /// <value>The properties.</value>
+        public IDictionary<object, object> Properties => ServiceProperties;
         /// <summary>
         /// Gets the scanner.
         /// </summary>
@@ -129,7 +147,7 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T"></typeparam>
         /// <returns>TSelf.</returns>
 
-        public TSelf AppendConvention<T>() where T : IConvention, new()
+        public TSelf AppendConvention<T>() where T : IConvention
         {
             Scanner.AppendConvention<T>();
             return (TSelf)(object)this;
@@ -189,7 +207,7 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T"></typeparam>
         /// <returns>TSelf.</returns>
 
-        public TSelf PrependConvention<T>() where T : IConvention, new()
+        public TSelf PrependConvention<T>() where T : IConvention
         {
             Scanner.PrependConvention<T>();
             return (TSelf)(object)this;

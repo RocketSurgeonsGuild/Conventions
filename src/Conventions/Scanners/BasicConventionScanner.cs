@@ -27,7 +27,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         }
 
         /// <summary>
-        /// Creates a provider that returns a set of convetions.
+        /// Creates a provider that returns a set of conventions.
         /// </summary>
         /// <returns>IConventionProvider.</returns>
         /// <inheritdoc />
@@ -37,8 +37,7 @@ namespace Rocket.Surgery.Conventions.Scanners
             {
                 return _provider = new ConventionProvider(
                     Enumerable.Empty<IConvention>(),
-                    new List<Type>(), 
-                    _prependContributions.Where(z => _exceptContributions.All(x => x != z.GetType())).ToList(), 
+                    _prependContributions.Where(z => _exceptContributions.All(x => x != z.GetType())).ToList(),
                     _appendContributions.Where(z => _exceptContributions.All(x => x != z.GetType())).ToList()
                 );
             }
@@ -93,17 +92,17 @@ namespace Rocket.Surgery.Conventions.Scanners
         public IConventionScanner AppendConvention(params Type[] conventions)
         {
             _provider = null;
-            _appendContributions.AddRange(conventions);
+            _appendContributions.AddRange(conventions.Select(Activator.CreateInstance).Cast<IConvention>());
             return this;
         }
 
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <param name="conventions">The conventions.</param>
+        /// <typeparam name="T"></typeparam>
         /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner AppendConvention<T>() where T : IConvention, new()
+        public IConventionScanner AppendConvention<T>() where T : IConvention
         {
             _provider = null;
             _appendContributions.Add(Activator.CreateInstance<T>());
@@ -158,17 +157,17 @@ namespace Rocket.Surgery.Conventions.Scanners
         public IConventionScanner PrependConvention(params Type[] conventions)
         {
             _provider = null;
-            _prependContributions.AddRange(conventions);
+            _prependContributions.AddRange(conventions.Select(Activator.CreateInstance).Cast<IConvention>());
             return this;
         }
 
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <param name="conventions">The conventions.</param>
+        /// <typeparam name="T"></typeparam>
         /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner PrependConvention<T>() where T : IConvention, new()
+        public IConventionScanner PrependConvention<T>() where T : IConvention
         {
             _provider = null;
             _prependContributions.Add(Activator.CreateInstance<T>());

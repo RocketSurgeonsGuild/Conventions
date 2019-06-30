@@ -7,7 +7,7 @@ using Rocket.Surgery.Conventions.Scanners;
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Interface IConventionHostBuilder
+    ///  IConventionHostBuilder
     /// </summary>
     public interface IConventionHostBuilder
     {
@@ -21,6 +21,12 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <value>The assembly candidate finder.</value>
         IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+
+        /// <summary>
+        /// A central location for sharing state between components during the convention building process.
+        /// </summary>
+        /// <value>The properties.</value>
+        IServiceProviderDictionary ServiceProperties { get; }
         /// <summary>
         /// Gets the assembly provider.
         /// </summary>
@@ -34,7 +40,7 @@ namespace Rocket.Surgery.Conventions
     }
 
     /// <summary>
-    /// Interface IConventionHostBuilder
+    ///  IConventionHostBuilder
     /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionHostBuilder" />
     /// </summary>
     /// <typeparam name="TSelf">The type of the t self.</typeparam>
@@ -77,7 +83,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TSelf.</returns>
-        TSelf AppendConvention<T>() where T : IConvention, new();
+        TSelf AppendConvention<T>() where T : IConvention;
 
         /// <summary>
         /// Adds a set of conventions to the scanner
@@ -115,7 +121,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TSelf.</returns>
-        TSelf PrependConvention<T>() where T : IConvention, new();
+        TSelf PrependConvention<T>() where T : IConvention;
 
         /// <summary>
         /// Adds a set of delegates to the scanner

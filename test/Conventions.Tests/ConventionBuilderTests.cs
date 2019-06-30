@@ -17,7 +17,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
         private class CCBuilder : ConventionBuilder<CCBuilder, IServiceConvention, ServiceConventionDelegate>
         {
-            public CCBuilder(IConventionScanner scanner, IAssemblyProvider assemblyProvider, IAssemblyCandidateFinder assemblyCandidateFinder, IDictionary<object, object> properties) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
+            public CCBuilder(IConventionScanner scanner, IAssemblyProvider assemblyProvider, IAssemblyCandidateFinder assemblyCandidateFinder, IServiceProviderDictionary properties) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
             {
             }
         }
@@ -25,8 +25,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldConstruct()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var builder = AutoFake.Resolve<CCBuilder>();
 
             builder.Should().NotBeNull();

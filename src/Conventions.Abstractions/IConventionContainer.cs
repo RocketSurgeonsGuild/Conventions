@@ -5,7 +5,7 @@ using Rocket.Surgery.Conventions.Scanners;
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Interface IConventionContainer
+    ///  IConventionContainer
     /// </summary>
     /// <typeparam name="TBuilder">The type of the t builder.</typeparam>
     /// <typeparam name="TConvention">The type of the t convention.</typeparam>
@@ -42,7 +42,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TBuilder.</returns>
-        TBuilder AppendConvention<T>() where T : TConvention, new();
+        TBuilder AppendConvention<T>() where T : TConvention;
 
         /// <summary>
         /// Adds a set of conventions to the scanner
@@ -65,7 +65,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TBuilder.</returns>
-        TBuilder PrependConvention<T>() where T : TConvention, new();
+        TBuilder PrependConvention<T>() where T : TConvention;
 
 
         /// <summary>

@@ -25,11 +25,17 @@ namespace Rocket.Surgery.Conventions
             IConventionScanner scanner,
             IAssemblyProvider assemblyProvider,
             IAssemblyCandidateFinder assemblyCandidateFinder,
-            IDictionary<object, object> properties
-        ) : base(scanner, properties)
+            IServiceProviderDictionary serviceProperties
+        ) : base(scanner, serviceProperties)
         {
             AssemblyProvider = assemblyProvider ?? throw new ArgumentNullException(nameof(assemblyProvider));
             AssemblyCandidateFinder = assemblyCandidateFinder ?? throw new ArgumentNullException(nameof(assemblyCandidateFinder));
+
+            if (!Properties.TryGetValue(typeof(IAssemblyProvider), out var _))
+                Properties[typeof(IAssemblyProvider)] = AssemblyProvider;
+
+            if (!Properties.TryGetValue(typeof(IAssemblyCandidateFinder), out var _))
+                Properties[typeof(IAssemblyCandidateFinder)] = AssemblyCandidateFinder;
         }
 
         /// <summary>

@@ -6,17 +6,23 @@ using FluentAssertions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
+using Rocket.Surgery.Extensions.Testing;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    public class AggregateConventionScannerTests
+    public class AggregateConventionScannerTests : AutoTestBase
     {
+        public AggregateConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        {
+        }
+        
         [Fact]
         public void ShouldConstruct()
         {
-            var finder = A.Fake<IAssemblyCandidateFinder>();
-            var scanner = new AggregateConventionScanner(finder);
+            var scanner = AutoFake.Resolve<AggregateConventionScanner>();
+            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             scanner.Should().NotBeNull();
         }
@@ -24,8 +30,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldBuildAProvider()
         {
-            var finder = A.Fake<IAssemblyCandidateFinder>();
-            var scanner = new AggregateConventionScanner(finder);
+            var scanner = AutoFake.Resolve<AggregateConventionScanner>();
+            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
@@ -41,8 +47,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldCacheTheProvider()
         {
-            var finder = A.Fake<IAssemblyCandidateFinder>();
-            var scanner = new AggregateConventionScanner(finder);
+            var scanner = AutoFake.Resolve<AggregateConventionScanner>();
+            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
@@ -56,8 +62,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldScanAddedContributions()
         {
-            var finder = A.Fake<IAssemblyCandidateFinder>();
-            var scanner = new AggregateConventionScanner(finder);
+            var scanner = AutoFake.Resolve<AggregateConventionScanner>();
+            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new Assembly[0]);
@@ -79,8 +85,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldIncludeAddedDelegates()
         {
-            var finder = A.Fake<IAssemblyCandidateFinder>();
-            var scanner = new AggregateConventionScanner(finder);
+            var scanner = AutoFake.Resolve<AggregateConventionScanner>();
+            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new Assembly[0]);
@@ -102,8 +108,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldScanExcludeContributionTypes()
         {
-            var finder = A.Fake<IAssemblyCandidateFinder>();
-            var scanner = new AggregateConventionScanner(finder);
+            var scanner = AutoFake.Resolve<AggregateConventionScanner>();
+            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
@@ -130,8 +136,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldScanExcludeContributionAssemblies()
         {
-            var finder = A.Fake<IAssemblyCandidateFinder>();
-            var scanner = new AggregateConventionScanner(finder);
+            var scanner = AutoFake.Resolve<AggregateConventionScanner>();
+            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                 .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });

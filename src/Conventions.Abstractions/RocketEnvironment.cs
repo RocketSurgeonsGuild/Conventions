@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions
     public class RocketEnvironment : IRocketEnvironment
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RocketEnvironment"/> class.
+        /// Initializes a new instance of the <see cref="RocketEnvironment" /> class.
         /// </summary>
         /// <param name="environmentName">Name of the environment.</param>
         /// <param name="applicationName">Name of the application.</param>
@@ -25,7 +25,7 @@ namespace Rocket.Surgery.Conventions
             ContentRootFileProvider = contentRootFileProvider;
         }
         /// <summary>
-        /// Initializes a new instance of the <see cref="RocketEnvironment"/> class.
+        /// Initializes a new instance of the <see cref="RocketEnvironment" /> class.
         /// </summary>
         /// <param name="environment">The environment.</param>
         public RocketEnvironment(IHostingEnvironment environment)

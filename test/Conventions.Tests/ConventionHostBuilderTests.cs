@@ -21,7 +21,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
         private class CCBuilder : ConventionHostBuilder<CCBuilder>
         {
-            public CCBuilder(IConventionScanner scanner, IAssemblyCandidateFinder assemblyCandidateFinder, IAssemblyProvider assemblyProvider, DiagnosticSource diagnosticSource, IDictionary<object, object> properties) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties)
+            public CCBuilder(IConventionScanner scanner, IAssemblyCandidateFinder assemblyCandidateFinder, IAssemblyProvider assemblyProvider, DiagnosticSource diagnosticSource, IServiceProviderDictionary properties) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties)
             {
             }
         }
@@ -53,8 +53,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldConstruct()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource= new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -73,8 +73,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendConventions_AsASingle()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -88,8 +88,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendConventions_AsAnArray()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -107,8 +107,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendConventions_AsAnEnumerable()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -126,8 +126,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendConventions_AsAType()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -140,8 +140,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendConventions_AsAnArrayOfTypes()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -154,8 +154,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendConventions_AsAnEnumerableOfTypes()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -168,8 +168,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendDelegates_AsAnArray()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -188,8 +188,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldAppendDelegates_AsAnEnumerable()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -208,8 +208,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependConventions_AsASingle()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -223,8 +223,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependConventions_AsAnArray()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -243,8 +243,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependConventions_AsAnEnumerable()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -263,8 +263,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependConventions_AsAType()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -278,8 +278,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependConventions_AsAnArrayOfTypes()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -293,8 +293,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependConventions_AsAnEnumerableOfTypes()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -308,8 +308,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependDelegates_AsAnArray()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
@@ -328,8 +328,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldPrependDelegates_AsAnEnumerable()
         {
-            var properties = new Dictionary<object, object>();
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProviderDictionary>(properties);
             var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();

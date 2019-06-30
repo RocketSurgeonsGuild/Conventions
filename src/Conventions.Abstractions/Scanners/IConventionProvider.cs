@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
-    /// Interface IConventionProvider
+    ///  IConventionProvider
     /// </summary>
     public interface IConventionProvider
     {
