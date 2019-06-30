@@ -20,12 +20,12 @@ namespace Rocket.Surgery.Conventions
     {
         protected ConventionContainerBuilder(
             IConventionScanner scanner,
-            IServiceProviderDictionary serviceProperties)
+            IDictionary<object, object> properties)
         {
             Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
-            ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
+            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
 
-            if (!Properties.TryGetValue(typeof(IConventionScanner), out var _))
+            if (!Properties.TryGetValue(typeof(IConventionScanner), out _))
                 Properties[typeof(IConventionScanner)] = Scanner;
         }
 
@@ -44,13 +44,7 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        public IServiceProviderDictionary ServiceProperties { get; }
-
-        /// <summary>
-        /// A central location for sharing state between components during the convention building process.
-        /// </summary>
-        /// <value>The properties.</value>
-        public IDictionary<object, object> Properties => ServiceProperties;
+        public IDictionary<object, object> Properties { get; }
 
         /// <summary>
         /// Gets the scanner.
