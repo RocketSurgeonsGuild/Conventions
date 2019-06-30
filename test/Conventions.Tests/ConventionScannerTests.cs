@@ -11,6 +11,9 @@ using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
+using Sample.DependencyOne;
+using Sample.DependencyThree;
+using Sample.DependencyTwo;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,13 +21,13 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionScannerTests : AutoTestBase
     {
-        public ConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
+        public ConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Trace)
         {
         }
 
         private class Scanner : ConventionScannerBase
         {
-            public Scanner(IAssemblyCandidateFinder assemblyCandidateFinder, IServiceProvider serviceProvider) : base(assemblyCandidateFinder, serviceProvider)
+            public Scanner(IAssemblyCandidateFinder assemblyCandidateFinder, IServiceProvider serviceProvider, ILogger logger) : base(assemblyCandidateFinder, serviceProvider, logger)
             {
             }
         }
@@ -507,6 +510,33 @@ namespace Rocket.Surgery.Conventions.Tests
             (item as F).Scanner.Should().NotBeNull();
             (item as F).Scanner.Should().BeSameAs(scanner);
             (item as F).Service.Should().BeSameAs(fakeService);
+        }
+
+        [Fact]
+        public void ShouldExcludeScannedItemsIfAddedManually()
+        {
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProvider>(properties);
+            var scanner = AutoFake.Resolve<Scanner>();
+            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+
+            var myConvention1 = new Class1();
+            var myConvention2 = new Class2();
+            var myConvention3 = new Class3();
+
+            A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly, typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly });
+
+            scanner.AppendConvention(myConvention1, myConvention3, myConvention2);
+            scanner.ExceptConvention(typeof(ConventionScannerTests).Assembly);
+
+            var provider = scanner.BuildProvider();
+
+            var result = provider.GetAll()
+                .Select(x => x.Convention)
+                .ToArray();
+
+            result.Should().ContainInOrder(myConvention1, myConvention3, myConvention2);
         }
     }
 }

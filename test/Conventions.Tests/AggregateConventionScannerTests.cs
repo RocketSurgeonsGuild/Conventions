@@ -3,10 +3,15 @@ using System.Linq;
 using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
+using Sample.DependencyOne;
+using Sample.DependencyThree;
+using Sample.DependencyTwo;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -17,7 +22,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public AggregateConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
-        
+
         [Fact]
         public void ShouldConstruct()
         {
@@ -34,7 +39,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly, typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly });
 
             var provider = scanner.BuildProvider();
 
@@ -51,7 +56,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly, typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly });
 
             var provider = scanner.BuildProvider();
             var provider2 = scanner.BuildProvider();
@@ -112,7 +117,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly, typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly });
 
             var contribution = A.Fake<IServiceConvention>();
             var contribution2 = A.Fake<IServiceConvention>();
@@ -140,7 +145,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly });
+                .Returns(new[] { typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly, typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly });
 
             var contribution = A.Fake<IServiceConvention>();
 

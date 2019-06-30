@@ -13,7 +13,7 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class DefaultAssemblyCandidateFinderTests : AutoTestBase
     {
-        public DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
+        public DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Trace) { }
 
         [Fact]
         public void FindsAssembliesInCandidates_Params()
@@ -34,11 +34,9 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Contain(new[] {
                     "Sample.DependencyOne",
                     "Sample.DependencyThree",
+                    "Sample.DependencyTwo",
                     "Rocket.Surgery.Conventions.Tests",
                 });
-            items
-                .Should()
-                .NotContain("Sample.DependencyTwo");
             items
                 .Last()
                 .Should()
@@ -68,11 +66,9 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Contain(new[] {
                     "Sample.DependencyOne",
                     "Sample.DependencyThree",
+                    "Sample.DependencyTwo",
                     "Rocket.Surgery.Conventions.Tests",
                 });
-            items
-                .Should()
-                .NotContain("Sample.DependencyTwo");
             items
                 .Last()
                 .Should()

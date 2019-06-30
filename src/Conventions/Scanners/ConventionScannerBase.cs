@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Scanners
@@ -24,6 +25,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         private IConventionProvider _provider;
         private readonly IAssemblyCandidateFinder _assemblyCandidateFinder;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger _logger;
         private bool _updatedConventionCollections = false;
 
         /// <summary>
@@ -31,10 +33,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder</param>
         /// <param name="serviceProvider">The service provider for creating instances of conventions (usually a <see cref="IServiceProviderDictionary"/>.</param>
-        protected ConventionScannerBase(IAssemblyCandidateFinder assemblyCandidateFinder, IServiceProvider serviceProvider)
+        /// <param name="loggerFactory">A diagnostic logger factory</param>
+        protected ConventionScannerBase(IAssemblyCandidateFinder assemblyCandidateFinder, IServiceProvider serviceProvider, ILogger logger)
         {
             _assemblyCandidateFinder = assemblyCandidateFinder ?? throw new ArgumentNullException(nameof(assemblyCandidateFinder));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _logger = logger;
         }
 
         /// <summary>
@@ -45,10 +49,25 @@ namespace Rocket.Surgery.Conventions.Scanners
         {
             var assemblies = _assemblyCandidateFinder.GetCandidateAssemblies(
                 "Rocket.Surgery.Conventions.Abstractions",
-                "Rocket.Surgery.Conventions");
+                "Rocket.Surgery.Conventions"
+            ).ToArray();
 
-            var prependedConventionTypes = new Lazy<List<Type>>(() => _prependedConventions.Select(x => x.GetType()).Distinct().ToList());
-            var appendedConventionTypes = new Lazy<List<Type>>(() => _appendedConventions.Select(x => x.GetType()).Distinct().ToList());
+            var prependedConventionTypes = new Lazy<HashSet<Type>>(() => 
+                new HashSet<Type>(_prependedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()));
+            var appendedConventionTypes = new Lazy<HashSet<Type>>(() =>
+                new HashSet<Type>(_appendedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()));
+
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("Scanning for conventions in assemblies: {Assemblies}",
+                    assemblies.Select(x => x.GetName().Name));
+                if (_exceptAssemblyConventions.Any())
+                {
+                    _logger.LogDebug("Skipping conventions in assemblies: {Assemblies}", _exceptAssemblyConventions.Select(x => x.GetName().Name));
+                }
+
+                _logger.LogDebug("Skipping existing convention types: {Types}", prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName));
+            }
 
             foreach (var assembly in assemblies.Except(_exceptAssemblyConventions))
             {
@@ -57,15 +76,43 @@ namespace Rocket.Surgery.Conventions.Scanners
                     types = assembly.GetCustomAttributes<ConventionAttribute>()
                         .Select(x => x.Type)
                         .Distinct()
-                        .Except(prependedConventionTypes.Value)
-                        .Except(appendedConventionTypes.Value)
                         .Select(type => ActivatorUtilities.CreateInstance(_serviceProvider, type))
                         .Cast<IConvention>()
                         .ToList();
                     Conventions.TryAdd(assembly, types);
                 }
+                else if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug("Conventions from Assembly {Assembly} have already been scanned and activated!", assembly.GetName().Name);
+                }
 
-                foreach (var item in types)
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug("Found conventions in Assembly {Assembly} ({@Conventions})", assembly.GetName().Name, types.Select(z => z.GetType().FullName));
+                }
+
+                foreach (var item in types
+                    .Select(x =>
+                    {
+                        if (_logger.IsEnabled(LogLevel.Trace))
+                        {
+                            _logger.LogTrace("Scanning => Prefilter: {Assembly} / {Type}", assembly.GetName().Name,
+                                x.GetType().FullName);
+                        }
+
+                        return x;
+                    })
+                    .Where(type => !prependedConventionTypes.Value.Contains(type.GetType()) && !appendedConventionTypes.Value.Contains(type.GetType()))
+                    .Select(x =>
+                    {
+                        if (_logger.IsEnabled(LogLevel.Trace))
+                        {
+                            _logger.LogTrace("Scanning => Postfilter: {Assembly} / {Type}", assembly.GetName().Name,
+                                x.GetType().FullName);
+                        }
+
+                        return x;
+                    }))
                 {
                     yield return item;
                 }
@@ -77,7 +124,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <returns>IConventionProvider.</returns>
         /// <inheritdoc />
-        public IConventionProvider  BuildProvider()
+        public IConventionProvider BuildProvider()
         {
             return _provider ??= CreateProvider();
         }
