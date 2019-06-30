@@ -7,7 +7,9 @@ namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// Base convention context that allos for stashing items in index keys
+    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionContext" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.IConventionContext" />
     public abstract class ConventionContext : IConventionContext
     {
         /// <summary>
@@ -24,8 +26,8 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">The item.</param>
+        /// <returns>System.Object.</returns>
         public virtual object this[object item]
         {
             get => Properties.TryGetValue(item, out object value) ? value : null;
@@ -35,8 +37,13 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
+        /// <value>The properties.</value>
         public IDictionary<object, object> Properties { get; }
 
+        /// <summary>
+        /// A logger that is configured to work with each convention item
+        /// </summary>
+        /// <value>The logger.</value>
         /// <inheritdoc />
         public ILogger Logger { get; }
     }

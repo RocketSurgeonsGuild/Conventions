@@ -8,7 +8,9 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Get a value by type from the context
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="context">The context</param>
+        /// <returns>T.</returns>
         public static T Get<T>(this IConventionContext context)
         {
             return (T)context[typeof(T)];
@@ -17,8 +19,10 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Get a value by key from the context
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
+        /// <returns>T.</returns>
         public static T Get<T>(this IConventionContext context, string key)
         {
             return (T)context[key];

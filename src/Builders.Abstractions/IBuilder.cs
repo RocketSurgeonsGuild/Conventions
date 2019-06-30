@@ -11,6 +11,7 @@ namespace Rocket.Surgery.Builders
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
+        /// <value>The properties.</value>
         IDictionary<object, object> Properties { get; }
     }
 }

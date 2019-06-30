@@ -5,9 +5,15 @@ namespace Rocket.Surgery.Builders
 {
     /// <summary>
     /// Abstract base class for implementing a builder
+    /// Implements the <see cref="Rocket.Surgery.Builders.IBuilder" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Builders.IBuilder" />
     public abstract class Builder : IBuilder
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="properties">The properties.</param>
         protected Builder(IDictionary<object, object> properties)
         {
             Properties = properties ?? new Dictionary<object, object>();
@@ -16,8 +22,9 @@ namespace Rocket.Surgery.Builders
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">The item.</param>
+        /// <returns>System.Object.</returns>
+
         public virtual object this[object item]
         {
             get => Properties.TryGetValue(item, out object value) ? value : null;
@@ -27,14 +34,17 @@ namespace Rocket.Surgery.Builders
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
+        /// <value>The properties.</value>
         public IDictionary<object, object> Properties { get; }
     }
 
     /// <summary>
     /// Abstract base class for creating builders that are attached to some parent builder
     /// Useful for creating sub builds that live for a short period to augment the parent.
+    /// Implements the <see cref="Rocket.Surgery.Builders.Builder" />
     /// </summary>
-    /// <typeparam name="TBuilder"></typeparam>
+    /// <typeparam name="TBuilder">The type of the t builder.</typeparam>
+    /// <seealso cref="Rocket.Surgery.Builders.Builder" />
     public abstract class Builder<TBuilder> : Builder
         where TBuilder : class
     {
@@ -50,12 +60,13 @@ namespace Rocket.Surgery.Builders
         /// <summary>
         /// Get the parent value from this builder
         /// </summary>
+        /// <value>The parent.</value>
         public TBuilder Parent { get; }
 
         /// <summary>
         /// Exit the current builder and return the parent
         /// </summary>
-        /// <returns></returns>
+        /// <returns>TBuilder.</returns>
         public virtual TBuilder Exit()
         {
             return Parent;

@@ -11,9 +11,16 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// <summary>
     /// Default assembly candidate finder that uses a list of assemblies
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder" />
     public class DefaultAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
+        /// <summary>
+        /// The assemblies
+        /// </summary>
         private readonly List<Assembly> _assemblies;
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger _logger;
 
         /// <summary>
@@ -27,6 +34,11 @@ namespace Rocket.Surgery.Conventions.Reflection
             _logger = logger ?? NullLogger.Instance;
         }
 
+        /// <summary>
+        /// Get the candidates for a given set
+        /// </summary>
+        /// <param name="candidates">The candidates as an enumerable</param>
+        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
         /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
@@ -43,8 +55,7 @@ namespace Rocket.Surgery.Conventions.Reflection
                 value.GetName().Name,
                 candidates
             );
-
-        internal IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
+        private IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
         {
             if (candidates == null || !candidates.Any())
             {

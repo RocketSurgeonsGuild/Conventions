@@ -9,8 +9,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
-    /// Assembly candidate finder that uses <see cref="AppDomain"/>
+    /// Assembly candidate finder that uses <see cref="AppDomain" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder" />
     public class AppDomainAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         private readonly AppDomain _appDomain;
@@ -27,7 +28,12 @@ namespace Rocket.Surgery.Conventions.Reflection
             _logger = logger ?? NullLogger.Instance;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Get the candidates for a given set
+        /// </summary>
+        /// <param name="candidates">The candidates as an enumerable</param>
+        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
+
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
             var value = candidates as string[] ?? candidates?.ToArray() ?? Array.Empty<string>();
@@ -45,7 +51,7 @@ namespace Rocket.Surgery.Conventions.Reflection
                 candidates
             );
 
-        internal IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
+        private IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
         {
             if (candidates == null || !candidates.Any())
             {

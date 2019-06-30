@@ -6,16 +6,14 @@ namespace Rocket.Surgery.Conventions.Scanners
     /// <summary>
     /// Interface IConventionProvider
     /// </summary>
-    /// TODO Edit XML Comment Template for IConventionProvider
     public interface IConventionProvider
     {
         /// <summary>
-        /// Gets the conventions.
+        /// Gets this instance.
         /// </summary>
-        /// <typeparam name="TContribution"></typeparam>
-        /// <typeparam name="TDelegate"></typeparam>
-        /// <returns>DelegateOrConvention&lt;TContribution, TDelegate&gt;</returns>
-        /// TODO Edit XML Comment Template for Get`1
+        /// <typeparam name="TContribution">The type of the contribution.</typeparam>
+        /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
+        /// <returns>IEnumerable&lt;DelegateOrConvention&gt;.</returns>
         IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
             where TContribution : IConvention
             where TDelegate : Delegate;
@@ -23,7 +21,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         /// Gets a all the conventions from the provider
         /// </summary>
-        /// <returns></returns>
+        /// <returns>IEnumerable&lt;DelegateOrConvention&gt;.</returns>
         IEnumerable<DelegateOrConvention> GetAll();
     }
 }

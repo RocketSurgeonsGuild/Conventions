@@ -3,8 +3,10 @@
 namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
-    /// A convention provider that is bootstrapped with a set of conventions that allow for manual inalization of the initial conventions. 
+    /// A convention provider that is bootstrapped with a set of conventions that allow for manual inalization of the initial conventions.
+    /// Implements the <see cref="Rocket.Surgery.Conventions.Scanners.ConventionScannerBase" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.Scanners.ConventionScannerBase" />
     public class AggregateConventionScanner : ConventionScannerBase
     {
         /// <summary>

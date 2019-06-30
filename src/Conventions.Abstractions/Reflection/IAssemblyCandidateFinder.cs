@@ -13,7 +13,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// Get the candidates for a given set
         /// </summary>
         /// <param name="candidates">The candidates as an enumerable</param>
-        /// <returns></returns>
+        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
         IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates);
     }
 }

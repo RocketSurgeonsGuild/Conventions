@@ -8,6 +8,9 @@ using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {
+    /// <summary>
+    /// ConventionComposerBase.
+    /// </summary>
     public abstract class ConventionComposerBase
     {
         protected void ExecuteRegister(IConventionContext context, List<DelegateOrConvention> items, IEnumerable<Type> types)

@@ -9,8 +9,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
-    /// Assembly provider that uses <see cref="DependencyContext"/>
+    /// Assembly provider that uses <see cref="DependencyContext" />
+    /// Implements the <see cref="Rocket.Surgery.Conventions.Reflection.IAssemblyProvider" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyProvider" />
     public class DependencyContextAssemblyProvider : IAssemblyProvider
     {
         private readonly ILogger _logger;
@@ -34,7 +36,6 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// Gets the assemblies.
         /// </summary>
         /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
-        /// TODO Edit XML Comment Template for GetAssemblies
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles.Value, LogValue);
 
         private void LogValue(Assembly value) =>

@@ -1,9 +1,21 @@
 ﻿namespace Rocket.Surgery.Conventions
 {
+    /// <summary>
+    /// Rocket Environments.
+    /// </summary>
     public static class RocketEnvironments
     {
-        public static readonly string Development = "Development";
-        public static readonly string Staging = "Staging";
-        public static readonly string Production = "Production";
+        /// <summary>
+        /// Development
+        /// </summary>
+        public const string Development = "Development";
+        /// <summary>
+        /// Staging
+        /// </summary>
+        public const string Staging = "Staging";
+        /// <summary>
+        /// Production
+        /// </summary>
+        public const string Production = "Production";
     }
 }

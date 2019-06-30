@@ -6,9 +6,23 @@ using System.Diagnostics;
 
 namespace Rocket.Surgery.Conventions
 {
+    /// <summary>
+    /// ConventionHostBuilder.
+    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionHostBuilder{TSelf}" />
+    /// </summary>
+    /// <typeparam name="TSelf">The type of the t self.</typeparam>
+    /// <seealso cref="Rocket.Surgery.Conventions.IConventionHostBuilder{TSelf}" />
     public abstract class ConventionHostBuilder<TSelf> : IConventionHostBuilder<TSelf>
         where TSelf : IConventionHostBuilder<TSelf>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConventionHostBuilder{TSelf}" /> class.
+        /// </summary>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
+        /// <param name="assemblyProvider">The assembly provider.</param>
+        /// <param name="diagnosticSource">The diagnostic source.</param>
+        /// <param name="properties">The properties.</param>
         public ConventionHostBuilder(
             IConventionScanner scanner,
             IAssemblyCandidateFinder assemblyCandidateFinder,
@@ -27,8 +41,8 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">The item.</param>
+        /// <returns>System.Object.</returns>
         public virtual object this[object item]
         {
             get => Properties.TryGetValue(item, out object value) ? value : null;
@@ -38,20 +52,35 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
+        /// <value>The properties.</value>
         public IDictionary<object, object> Properties { get; }
-
+        /// <summary>
+        /// Gets the scanner.
+        /// </summary>
+        /// <value>The scanner.</value>
         public virtual IConventionScanner Scanner { get; }
+        /// <summary>
+        /// Gets the assembly candidate finder.
+        /// </summary>
+        /// <value>The assembly candidate finder.</value>
         public virtual IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+        /// <summary>
+        /// Gets the assembly provider.
+        /// </summary>
+        /// <value>The assembly provider.</value>
         public virtual IAssemblyProvider AssemblyProvider { get; }
+        /// <summary>
+        /// Gets the diagnostic source.
+        /// </summary>
+        /// <value>The diagnostic source.</value>
         public virtual DiagnosticSource DiagnosticSource { get; }
 
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <typeparam name="T">The scanner</typeparam>
-        /// <param name="builder">The builder.</param>
         /// <param name="conventions">The additional conventions.</param>
-        /// <returns>The scanner</returns>
+        /// <returns>TSelf.</returns>
+
         public TSelf AppendConvention(params IConvention[] conventions)
         {
             Scanner.AppendConvention(conventions);
@@ -61,10 +90,9 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <typeparam name="T">The scanner</typeparam>
-        /// <param name="builder">The scanner.</param>
         /// <param name="conventions">The conventions.</param>
-        /// <returns>The scanner</returns>
+        /// <returns>TSelf.</returns>
+
         public TSelf AppendConvention(IEnumerable<IConvention> conventions)
         {
             Scanner.AppendConvention(conventions);
@@ -74,10 +102,45 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <typeparam name="T">The scanner</typeparam>
-        /// <param name="builder">The scanner.</param>
         /// <param name="conventions">The additional conventions.</param>
-        /// <returns>The scanner</returns>
+        /// <returns>TSelf.</returns>
+
+        public TSelf AppendConvention(params Type[] conventions)
+        {
+            Scanner.AppendConvention(conventions);
+            return (TSelf)(object)this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        public TSelf AppendConvention(IEnumerable<Type> conventions)
+        {
+            Scanner.AppendConvention(conventions);
+            return (TSelf)(object)this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>TSelf.</returns>
+
+        public TSelf AppendConvention<T>() where T : IConvention, new()
+        {
+            Scanner.AppendConvention<T>();
+            return (TSelf)(object)this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>TSelf.</returns>
+
         public TSelf PrependConvention(params IConvention[] conventions)
         {
             Scanner.PrependConvention(conventions);
@@ -87,10 +150,9 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <typeparam name="T">The scanner</typeparam>
-        /// <param name="builder">The scanner.</param>
         /// <param name="conventions">The conventions.</param>
-        /// <returns>The scanner</returns>
+        /// <returns>TSelf.</returns>
+
         public TSelf PrependConvention(IEnumerable<IConvention> conventions)
         {
             Scanner.PrependConvention(conventions);
@@ -98,12 +160,47 @@ namespace Rocket.Surgery.Conventions
         }
 
         /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        public TSelf PrependConvention(params Type[] conventions)
+        {
+            Scanner.PrependConvention(conventions);
+            return (TSelf)(object)this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        public TSelf PrependConvention(IEnumerable<Type> conventions)
+        {
+            Scanner.PrependConvention(conventions);
+            return (TSelf)(object)this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>TSelf.</returns>
+
+        public TSelf PrependConvention<T>() where T : IConvention, new()
+        {
+            Scanner.PrependConvention<T>();
+            return (TSelf)(object)this;
+        }
+
+        /// <summary>
         /// Addes a set of delegates to the scanner
         /// </summary>
-        /// <typeparam name="T">The scanner</typeparam>
-        /// <param name="builder">The scanner.</param>
         /// <param name="delegates">The additional delegates.</param>
-        /// <returns>The scanner</returns>
+        /// <returns>TSelf.</returns>
+
         public TSelf PrependDelegate(params Delegate[] delegates)
         {
             Scanner.PrependDelegate(delegates);
@@ -113,10 +210,9 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Adds a set of delegates to the scanner
         /// </summary>
-        /// <typeparam name="T">The scanner</typeparam>
-        /// <param name="builder">The scanner.</param>
         /// <param name="delegates">The conventions.</param>
-        /// <returns>The scanner</returns>
+        /// <returns>TSelf.</returns>
+
         public TSelf PrependDelegate(IEnumerable<Delegate> delegates)
         {
             Scanner.PrependDelegate(delegates);
@@ -127,10 +223,9 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Addes a set of delegates to the scanner
         /// </summary>
-        /// <typeparam name="T">The scanner</typeparam>
-        /// <param name="builder">The scanner.</param>
         /// <param name="delegates">The additional delegates.</param>
-        /// <returns>The scanner</returns>
+        /// <returns>TSelf.</returns>
+
         public TSelf AppendDelegate(params Delegate[] delegates)
         {
             Scanner.AppendDelegate(delegates);
@@ -140,10 +235,9 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Adds a set of delegates to the scanner
         /// </summary>
-        /// <typeparam name="T">The scanner</typeparam>
-        /// <param name="builder">The scanner.</param>
         /// <param name="delegates">The conventions.</param>
-        /// <returns>The scanner</returns>
+        /// <returns>TSelf.</returns>
+
         public TSelf AppendDelegate(IEnumerable<Delegate> delegates)
         {
             Scanner.AppendDelegate(delegates);

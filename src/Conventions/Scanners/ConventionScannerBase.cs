@@ -9,16 +9,18 @@ namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
     /// Base class for various scanners
+    /// Implements the <see cref="Rocket.Surgery.Conventions.Scanners.IConventionScanner" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.Scanners.IConventionScanner" />
     public abstract class ConventionScannerBase : IConventionScanner
     {
         /// <summary>
-        /// Conventions to the included explictly.
+        /// Conventions to the included explicitly.
         /// </summary>
         protected readonly List<object> PrependedConventions = new List<object>();
 
         /// <summary>
-        /// Conventions to the included explictly.
+        /// Conventions to the included explicitly.
         /// </summary>
         protected readonly List<object> AppendedConventions = new List<object>();
 
@@ -71,6 +73,10 @@ namespace Rocket.Surgery.Conventions.Scanners
             }
         }
 
+        /// <summary>
+        /// Creates a provider that returns a set of convetions.
+        /// </summary>
+        /// <returns>IConventionProvider.</returns>
         /// <inheritdoc />
         public IConventionProvider BuildProvider()
         {
@@ -92,14 +98,11 @@ namespace Rocket.Surgery.Conventions.Scanners
             return new ConventionProvider(contributionTypes, ExceptConventions, PrependedConventions, AppendedConventions);
         }
 
-        /// <inheritdoc />
-        public IConventionScanner AppendConvention(params IConvention[] conventions)
-        {
-            _provider = null;
-            AppendedConventions.AddRange(conventions);
-            return this;
-        }
-
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
         public IConventionScanner AppendConvention(IEnumerable<IConvention> conventions)
         {
@@ -108,14 +111,63 @@ namespace Rocket.Surgery.Conventions.Scanners
             return this;
         }
 
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner PrependConvention(params IConvention[] conventions)
+        public IConventionScanner AppendConvention(IEnumerable<Type> conventions)
         {
             _provider = null;
-            PrependedConventions.AddRange(conventions);
+            AppendedConventions.AddRange(conventions.Select(Activator.CreateInstance).Cast<IConvention>());
             return this;
         }
 
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>IConventionScanner.</returns>
+        /// <inheritdoc />
+        public IConventionScanner AppendConvention(params IConvention[] conventions)
+        {
+            _provider = null;
+            AppendedConventions.AddRange(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>IConventionScanner.</returns>
+        /// <inheritdoc />
+        public IConventionScanner AppendConvention(params Type[] conventions)
+        {
+            _provider = null;
+            AppendedConventions.AddRange(conventions.Select(Activator.CreateInstance).Cast<IConvention>());
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
+        /// <inheritdoc />
+        public IConventionScanner AppendConvention<T>() where T : IConvention, new()
+        {
+            _provider = null;
+            AppendedConventions.Add(Activator.CreateInstance<T>());
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
         public IConventionScanner PrependConvention(IEnumerable<IConvention> conventions)
         {
@@ -124,30 +176,63 @@ namespace Rocket.Surgery.Conventions.Scanners
             return this;
         }
 
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner PrependDelegate(params Delegate[] delegates)
+        public IConventionScanner PrependConvention(IEnumerable<Type> conventions)
         {
             _provider = null;
-            PrependedConventions.AddRange(delegates);
+            PrependedConventions.AddRange(conventions.Select(Activator.CreateInstance).Cast<IConvention>());
             return this;
         }
 
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner PrependDelegate(IEnumerable<Delegate> delegates)
+        public IConventionScanner PrependConvention(params IConvention[] conventions)
         {
             _provider = null;
-            PrependedConventions.AddRange(delegates);
+            PrependedConventions.AddRange(conventions);
             return this;
         }
 
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner AppendDelegate(params Delegate[] delegates)
+        public IConventionScanner PrependConvention(params Type[] conventions)
         {
             _provider = null;
-            AppendedConventions.AddRange(delegates);
+            PrependedConventions.AddRange(conventions.Select(Activator.CreateInstance).Cast<IConvention>());
             return this;
         }
 
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
+        /// <inheritdoc />
+        public IConventionScanner PrependConvention<T>() where T : IConvention, new()
+        {
+            _provider = null;
+            PrependedConventions.Add(Activator.CreateInstance<T>());
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
         public IConventionScanner AppendDelegate(IEnumerable<Delegate> delegates)
         {
@@ -156,14 +241,50 @@ namespace Rocket.Surgery.Conventions.Scanners
             return this;
         }
 
+        /// <summary>
+        /// Addes a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The additional delegates.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner ExceptConvention(params Type[] types)
+        public IConventionScanner AppendDelegate(params Delegate[] delegates)
         {
             _provider = null;
-            ExceptConventions.AddRange(types);
+            AppendedConventions.AddRange(delegates);
             return this;
         }
 
+        /// <summary>
+        /// Adds a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>IConventionScanner.</returns>
+        /// <inheritdoc />
+        public IConventionScanner PrependDelegate(IEnumerable<Delegate> delegates)
+        {
+            _provider = null;
+            PrependedConventions.AddRange(delegates);
+            return this;
+        }
+
+        /// <summary>
+        /// Addes a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The additional delegates.</param>
+        /// <returns>IConventionScanner.</returns>
+        /// <inheritdoc />
+        public IConventionScanner PrependDelegate(params Delegate[] delegates)
+        {
+            _provider = null;
+            PrependedConventions.AddRange(delegates);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an exception to the scanner to exclude a specific type
+        /// </summary>
+        /// <param name="types">The convention types to exclude.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
         public IConventionScanner ExceptConvention(IEnumerable<Type> types)
         {
@@ -172,16 +293,39 @@ namespace Rocket.Surgery.Conventions.Scanners
             return this;
         }
 
+        /// <summary>
+        /// Adds an exception to the scanner to exclude a specific type
+        /// </summary>
+        /// <param name="types">The additional types to exclude.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner ExceptConvention(params Assembly[] assemblies)
+        public IConventionScanner ExceptConvention(params Type[] types)
+        {
+            _provider = null;
+            ExceptConventions.AddRange(types);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an exception to the scanner to exclude a specific type
+        /// </summary>
+        /// <param name="assemblies">The convention types to exclude.</param>
+        /// <returns>IConventionScanner.</returns>
+        /// <inheritdoc />
+        public IConventionScanner ExceptConvention(IEnumerable<Assembly> assemblies)
         {
             _provider = null;
             ExceptAssemblyConventions.AddRange(assemblies);
             return this;
         }
 
+        /// <summary>
+        /// Adds an exception to the scanner to exclude a specific type
+        /// </summary>
+        /// <param name="assemblies">The additional types to exclude.</param>
+        /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner ExceptConvention(IEnumerable<Assembly> assemblies)
+        public IConventionScanner ExceptConvention(params Assembly[] assemblies)
         {
             _provider = null;
             ExceptAssemblyConventions.AddRange(assemblies);

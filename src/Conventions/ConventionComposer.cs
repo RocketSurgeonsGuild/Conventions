@@ -10,10 +10,14 @@ namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// Convention base compose, that calls all methods on register.
+    /// Implements the <see cref="Rocket.Surgery.Conventions.ConventionComposerBase" />
+    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionComposer{TContext, TContribution, TDelegate}" />
     /// </summary>
     /// <typeparam name="TContext">The context type</typeparam>
     /// <typeparam name="TContribution">The contribution type</typeparam>
     /// <typeparam name="TDelegate">The delegate type</typeparam>
+    /// <seealso cref="Rocket.Surgery.Conventions.ConventionComposerBase" />
+    /// <seealso cref="Rocket.Surgery.Conventions.IConventionComposer{TContext, TContribution, TDelegate}" />
     public abstract class ConventionComposer<TContext, TContribution, TDelegate> : ConventionComposerBase, IConventionComposer<TContext, TContribution, TDelegate>
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
@@ -32,6 +36,10 @@ namespace Rocket.Surgery.Conventions
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }
 
+        /// <summary>
+        /// Registers the specified context.
+        /// </summary>
+        /// <param name="context">The context.</param>
         /// <inheritdoc />
         public void Register(TContext context)
         {
@@ -45,7 +53,11 @@ namespace Rocket.Surgery.Conventions
 
     /// <summary>
     /// Convention base compose, that calls all methods on register.
+    /// Implements the <see cref="Rocket.Surgery.Conventions.ConventionComposerBase" />
+    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionComposer{TContext, TContribution, TDelegate}" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.ConventionComposerBase" />
+    /// <seealso cref="Rocket.Surgery.Conventions.IConventionComposer{TContext, TContribution, TDelegate}" />
     public class ConventionComposer : ConventionComposerBase, IConventionComposer
     {
         private readonly IConventionScanner _scanner;
@@ -53,29 +65,22 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// A base compose that does the composing of conventions and delegates
         /// </summary>
-        /// <param name="scanner"></param>
+        /// <param name="scanner">The scanner.</param>
         public ConventionComposer(IConventionScanner scanner)
         {
             _scanner = scanner;
         }
 
+        /// <summary>
+        /// Uses all the conventions and calls the register method for all of them.
+        /// </summary>
+        /// <param name="context">The valid context for the types</param>
+        /// <param name="types">The types to compose with.  This type will either be a <see cref="T:System.Delegate" /> that takes <see cref="T:Rocket.Surgery.Conventions.IConventionContext" />, or a type that implements <see cref="T:Rocket.Surgery.Conventions.IConvention`1" /></param>
         /// <inheritdoc />
         public void Register(IConventionContext context, IEnumerable<Type> types)
         {
             var items = _scanner.BuildProvider().GetAll().ToList();
             ExecuteRegister(context, items, types);
-        }
-
-        private readonly ConcurrentDictionary<Type, MethodInfo> _registerMethodCache = new ConcurrentDictionary<Type, MethodInfo>();
-
-        private void Register(IConvention convention, IConventionContext context)
-        {
-            if (!_registerMethodCache.TryGetValue(convention.GetType(), out var method))
-            {
-                method = convention.GetType().GetTypeInfo().GetDeclaredMethod(nameof(Register));
-                _registerMethodCache.TryAdd(convention.GetType(), method);
-            }
-            method.Invoke(convention, new object[] { context });
         }
     }
 }

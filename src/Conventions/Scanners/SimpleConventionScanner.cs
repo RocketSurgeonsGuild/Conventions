@@ -4,7 +4,9 @@ namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
     /// A simple convention scanner that scans using the provided assembly candidate finder
+    /// Implements the <see cref="Rocket.Surgery.Conventions.Scanners.ConventionScannerBase" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.Scanners.ConventionScannerBase" />
     public class SimpleConventionScanner : ConventionScannerBase
     {
         /// <summary>

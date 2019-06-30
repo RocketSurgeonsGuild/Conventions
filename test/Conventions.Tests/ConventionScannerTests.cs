@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.ComTypes;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
@@ -25,6 +26,30 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             public Scanner(IAssemblyCandidateFinder assemblyCandidateFinder) : base(assemblyCandidateFinder)
             {
+            }
+        }
+
+        class C : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        class D : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        class E : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context)
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -190,6 +215,256 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Select(x => x.Convention)
                 .Should()
                 .NotContain(x => x.GetType() == typeof(Contrib));
+        }
+
+        [Fact]
+        public void ShouldAppendConventions_AsASingle()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<IServiceConvention>();
+
+            scanner.AppendConvention(convention);
+
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+            result.Count().Should().Be(1);
+            result.Select(x => x.Convention).Should().Contain(convention);
+        }
+
+        [Fact]
+        public void ShouldAppendConventions_AsAnArray()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<IServiceConvention>(x => x.Named("convention"));
+            var convention2 = A.Fake<IServiceConvention>(x => x.Named("convention2"));
+            var convention3 = A.Fake<IServiceConvention>(x => x.Named("convention3"));
+
+            var conventions = new[] { convention3, convention, convention2 };
+
+            scanner.AppendConvention(conventions);
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Convention).Should().ContainInOrder(conventions);
+        }
+
+        [Fact]
+        public void ShouldAppendConventions_AsAnEnumerable()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<IServiceConvention>(x => x.Named("convention"));
+            var convention2 = A.Fake<IServiceConvention>(x => x.Named("convention2"));
+            var convention3 = A.Fake<IServiceConvention>(x => x.Named("convention3"));
+
+            var conventions = new[] { convention3, convention, convention2 }.AsEnumerable();
+
+            scanner.AppendConvention(conventions);
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Convention).Should().ContainInOrder(conventions);
+        }
+
+        [Fact]
+        public void ShouldAppendConventions_AsAType()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+
+            scanner.AppendConvention<C>();
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(1);
+            result.Select(x => x.Convention).Should().AllBeOfType(typeof(C));
+        }
+
+        [Fact]
+        public void ShouldAppendConventions_AsAnArrayOfTypes()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+
+            scanner.AppendConvention(typeof(C), typeof(E), typeof(D));
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+        }
+
+        [Fact]
+        public void ShouldAppendConventions_AsAnEnumerableOfTypes()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+
+            scanner.AppendConvention(new[] { typeof(C), typeof(E), typeof(D) }.AsEnumerable());
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+        }
+
+        [Fact]
+        public void ShouldAppendDelegates_AsAnArray()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<ServiceConventionDelegate>(x => x.Named("convention"));
+            var convention2 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention2"));
+            var convention3 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention3"));
+
+            var conventions = new[] { convention3, convention, convention2 };
+
+            scanner.AppendDelegate(conventions);
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
+        }
+
+        [Fact]
+        public void ShouldAppendDelegates_AsAnEnumerable()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<ServiceConventionDelegate>(x => x.Named("convention"));
+            var convention2 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention2"));
+            var convention3 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention3"));
+
+            var conventions = new[] { convention3, convention, convention2 }.AsEnumerable();
+
+            scanner.AppendDelegate(conventions);
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
+        }
+
+        [Fact]
+        public void ShouldPrependConventions_AsASingle()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<IServiceConvention>();
+
+            scanner.PrependConvention(convention);
+
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+            result.Count().Should().Be(1);
+            result.Select(x => x.Convention).Should().Contain(convention);
+        }
+
+        [Fact]
+        public void ShouldPrependConventions_AsAnArray()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<IServiceConvention>(x => x.Named("convention"));
+            var convention2 = A.Fake<IServiceConvention>(x => x.Named("convention2"));
+            var convention3 = A.Fake<IServiceConvention>(x => x.Named("convention3"));
+
+            var conventions = new[] { convention3, convention, convention2 };
+
+            scanner.PrependConvention(conventions);
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Convention).Should().ContainInOrder(conventions);
+        }
+
+        [Fact]
+        public void ShouldPrependConventions_AsAnEnumerable()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<IServiceConvention>(x => x.Named("convention"));
+            var convention2 = A.Fake<IServiceConvention>(x => x.Named("convention2"));
+            var convention3 = A.Fake<IServiceConvention>(x => x.Named("convention3"));
+
+            var conventions = new[] { convention3, convention, convention2 }.AsEnumerable();
+
+            scanner.PrependConvention(conventions);
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Convention).Should().ContainInOrder(conventions);
+        }
+
+        [Fact]
+        public void ShouldPrependConventions_AsAType()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+
+            scanner.PrependConvention<C>();
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(1);
+            result.Select(x => x.Convention).Should().AllBeOfType(typeof(C));
+        }
+
+        [Fact]
+        public void ShouldPrependConventions_AsAnArrayOfTypes()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+
+            scanner.PrependConvention(typeof(C), typeof(E), typeof(D));
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+        }
+
+        [Fact]
+        public void ShouldPrependConventions_AsAnEnumerableOfTypes()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+
+            scanner.PrependConvention(new[] { typeof(C), typeof(E), typeof(D) }.AsEnumerable());
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+        }
+
+        [Fact]
+        public void ShouldPrependDelegates_AsAnArray()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<ServiceConventionDelegate>(x => x.Named("convention"));
+            var convention2 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention2"));
+            var convention3 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention3"));
+
+            var conventions = new[] { convention3, convention, convention2 };
+
+            scanner.PrependDelegate(conventions);
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
+        }
+
+        [Fact]
+        public void ShouldPrependDelegates_AsAnEnumerable()
+        {
+            var finder = A.Fake<IAssemblyCandidateFinder>();
+            var scanner = new Scanner(finder);
+            var convention = A.Fake<ServiceConventionDelegate>(x => x.Named("convention"));
+            var convention2 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention2"));
+            var convention3 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention3"));
+
+            var conventions = new[] { convention3, convention, convention2 }.AsEnumerable();
+
+            scanner.PrependDelegate(conventions);
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            result.Count().Should().Be(3);
+            result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
         }
     }
 }

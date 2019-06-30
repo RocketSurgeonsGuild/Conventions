@@ -9,6 +9,14 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     public static class Composer
     {
+        /// <summary>
+        /// ComposerImpl.
+        /// Implements the <see cref="Rocket.Surgery.Conventions.ConventionComposer{TContext, TContribution, TDelegate}" />
+        /// </summary>
+        /// <typeparam name="TContext">The type of the t context.</typeparam>
+        /// <typeparam name="TContribution">The type of the t contribution.</typeparam>
+        /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
+        /// <seealso cref="Rocket.Surgery.Conventions.ConventionComposer{TContext, TContribution, TDelegate}" />
         class ComposerImpl<TContext, TContribution, TDelegate> : ConventionComposer<TContext, TContribution, TDelegate>
             where TContribution : IConvention<TContext>
             where TContext : IConventionContext
@@ -18,11 +26,11 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Calls register on the any items found from the scanner that match either TContribution or TDelegate.
         /// </summary>
-        /// <typeparam name="TContext"></typeparam>
-        /// <typeparam name="TContribution"></typeparam>
-        /// <typeparam name="TDelegate"></typeparam>
-        /// <param name="scanner"></param>
-        /// <param name="context"></param>
+        /// <typeparam name="TContext">The type of the t context.</typeparam>
+        /// <typeparam name="TContribution">The type of the t contribution.</typeparam>
+        /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="context">The context.</param>
         public static void Register<TContext, TContribution, TDelegate>(
             IConventionScanner scanner,
             TContext context)

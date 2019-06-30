@@ -11,7 +11,9 @@ namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
     /// Default assembly provider that uses a list of assemblies
+    /// Implements the <see cref="Rocket.Surgery.Conventions.Reflection.IAssemblyProvider" />
     /// </summary>
+    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyProvider" />
     public class DefaultAssemblyProvider : IAssemblyProvider
     {
         private readonly ILogger _logger;
@@ -32,7 +34,6 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// Gets the assemblies.
         /// </summary>
         /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
-        /// TODO Edit XML Comment Template for GetAssemblies
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles, LogValue);
 
         private void LogValue(Assembly value) =>

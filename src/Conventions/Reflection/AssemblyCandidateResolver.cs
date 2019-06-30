@@ -6,11 +6,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions.Reflection
 {
+    /// <summary>
+    /// AssemblyCandidateResolver.
+    /// </summary>
     class AssemblyCandidateResolver
     {
         private readonly ILogger _logger;
         private readonly IDictionary<string, Dependency> _dependencies;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssemblyCandidateResolver" /> class.
+        /// </summary>
+        /// <param name="assemblies">The assemblies.</param>
+        /// <param name="referenceAssemblies">The reference assemblies.</param>
+        /// <param name="logger">The logger.</param>
         public AssemblyCandidateResolver(IReadOnlyList<Assembly> assemblies, ISet<string> referenceAssemblies, ILogger logger)
         {
             _logger = logger;
@@ -110,6 +119,10 @@ namespace Rocket.Surgery.Conventions.Reflection
             return classification;
         }
 
+        /// <summary>
+        /// Gets the candidates.
+        /// </summary>
+        /// <returns>IEnumerable&lt;Dependency&gt;.</returns>
         public IEnumerable<Dependency> GetCandidates()
         {
             foreach (var dependency in _dependencies)
@@ -121,18 +134,38 @@ namespace Rocket.Surgery.Conventions.Reflection
             }
         }
 
+        /// <summary>
+        /// Dependency.
+        /// </summary>
         internal class Dependency
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Dependency" /> class.
+            /// </summary>
+            /// <param name="assemblyName">Name of the assembly.</param>
+            /// <param name="classification">The classification.</param>
             public Dependency(Assembly assemblyName, DependencyClassification classification)
             {
                 Assembly = assemblyName;
                 Classification = classification;
             }
 
+            /// <summary>
+            /// Gets the assembly.
+            /// </summary>
+            /// <value>The assembly.</value>
             public Assembly Assembly { get; }
 
+            /// <summary>
+            /// Gets or sets the classification.
+            /// </summary>
+            /// <value>The classification.</value>
             public DependencyClassification Classification { get; set; }
 
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
             public override string ToString()
             {
                 return $"AssemblyName: {Assembly.GetName().Name}, Classification: {Classification}";
