@@ -21,11 +21,7 @@ namespace Rocket.Surgery.Conventions
         /// <returns>System.Object.</returns>
         public object this[object key]
         {
-            get
-            {
-                return key is Type t && _services.TryGetValue(t, out var v) ? v : _values[key];
-
-            }
+            get => key is Type t && _services.TryGetValue(t, out var v) ? v : _values.TryGetValue(key, out var b) ? b : null;
             set
             {
                 if (key is Type t)

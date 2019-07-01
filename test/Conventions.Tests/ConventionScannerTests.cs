@@ -76,6 +76,22 @@ namespace Rocket.Surgery.Conventions.Tests
             }
         }
 
+        class F_WithDefault : IServiceConvention
+        {
+            public IConventionScanner Scanner { get; }
+            public IService Service { get; }
+
+            public F_WithDefault(IConventionScanner scanner, IService service = null)
+            {
+                this.Scanner = scanner;
+                Service = service;
+            }
+
+            public void Register(IServiceConventionContext context)
+            {
+            }
+        }
+
         [Fact]
         public void ShouldConstruct()
         {
@@ -510,6 +526,26 @@ namespace Rocket.Surgery.Conventions.Tests
             (item as F).Scanner.Should().NotBeNull();
             (item as F).Scanner.Should().BeSameAs(scanner);
             (item as F).Service.Should().BeSameAs(fakeService);
+        }
+
+        [Fact]
+        public void ShouldResolveConventionsUsingTheServiceProvider_IgnoringDefaultValues()
+        {
+            var properties = new ServiceProviderDictionary();
+            AutoFake.Provide<IServiceProvider>(properties);
+            var scanner = AutoFake.Resolve<Scanner>();
+            properties.Add(typeof(IConventionScanner), scanner);
+
+            scanner.AppendConvention<F_WithDefault>();
+
+            var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
+
+            var item = result.First().Convention;
+
+            item.Should().BeOfType<F_WithDefault>();
+            (item as F_WithDefault).Scanner.Should().NotBeNull();
+            (item as F_WithDefault).Scanner.Should().BeSameAs(scanner);
+            (item as F_WithDefault).Service.Should().BeNull();
         }
 
         [Fact]

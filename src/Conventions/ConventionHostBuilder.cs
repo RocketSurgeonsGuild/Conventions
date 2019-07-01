@@ -3,6 +3,7 @@ using Rocket.Surgery.Conventions.Scanners;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -38,16 +39,19 @@ namespace Rocket.Surgery.Conventions
             ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
 
             if (!Properties.TryGetValue(typeof(IConventionScanner), out var _))
-                Properties[typeof(IConventionScanner)] = Scanner;
+                Properties[typeof(IConventionScanner)] = scanner;
 
             if (!Properties.TryGetValue(typeof(IAssemblyProvider), out var _))
-                Properties[typeof(IAssemblyProvider)] = AssemblyProvider;
+                Properties[typeof(IAssemblyProvider)] = assemblyProvider;
 
             if (!Properties.TryGetValue(typeof(IAssemblyCandidateFinder), out var _))
-                Properties[typeof(IAssemblyCandidateFinder)] = AssemblyCandidateFinder;
+                Properties[typeof(IAssemblyCandidateFinder)] = assemblyCandidateFinder;
 
             if (!Properties.TryGetValue(typeof(DiagnosticSource), out var _))
-                Properties[typeof(DiagnosticSource)] = DiagnosticSource;
+                Properties[typeof(DiagnosticSource)] = diagnosticSource;
+
+            if (!Properties.TryGetValue(typeof(ILogger), out var _))
+                Properties[typeof(ILogger)] = new DiagnosticLogger(diagnosticSource);
         }
 
         /// <summary>
@@ -76,22 +80,22 @@ namespace Rocket.Surgery.Conventions
         /// Gets the scanner.
         /// </summary>
         /// <value>The scanner.</value>
-        public virtual IConventionScanner Scanner { get; }
+        public IConventionScanner Scanner { get; }
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>
         /// <value>The assembly candidate finder.</value>
-        public virtual IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+        public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
         /// <summary>
         /// Gets the assembly provider.
         /// </summary>
         /// <value>The assembly provider.</value>
-        public virtual IAssemblyProvider AssemblyProvider { get; }
+        public IAssemblyProvider AssemblyProvider { get; }
         /// <summary>
         /// Gets the diagnostic source.
         /// </summary>
         /// <value>The diagnostic source.</value>
-        public virtual DiagnosticSource DiagnosticSource { get; }
+        public DiagnosticSource DiagnosticSource { get; }
 
         /// <summary>
         /// Adds a set of conventions to the scanner
