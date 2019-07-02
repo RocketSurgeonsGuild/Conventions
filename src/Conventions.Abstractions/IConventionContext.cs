@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {

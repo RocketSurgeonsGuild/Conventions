@@ -13,6 +13,12 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     public abstract class ConventionComposerBase
     {
+        /// <summary>
+        /// Executes the register.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="items">The items.</param>
+        /// <param name="types">The types.</param>
         protected void ExecuteRegister(IConventionContext context, List<DelegateOrConvention> items, IEnumerable<Type> types)
         {
             var enumerable = types as Type[] ?? types.ToArray();
@@ -34,15 +40,15 @@ namespace Rocket.Surgery.Conventions
                         if (!conventionTypes.Any(type => type.IsInstanceOfType(item.Convention)))
                         {
                             context.Logger.LogDebug("Could not execute Convention {TypeName} from {AssemblyName} :: {@Types}",
-                                item.Convention?.GetType()?.FullName,
-                                item.Convention?.GetType()?.GetTypeInfo()?.Assembly?.GetName()?.Name,
+                                item.Convention?.GetType().FullName,
+                                item.Convention?.GetType().GetTypeInfo().Assembly.GetName().Name,
                                 enumerable);
                             continue;
                         }
 
                         context.Logger.LogDebug("Executing Convention {TypeName} from {AssemblyName}",
-                            item.Convention?.GetType()?.FullName,
-                            item.Convention?.GetType()?.GetTypeInfo()?.Assembly?.GetName()?.Name);
+                            item.Convention?.GetType().FullName,
+                            item.Convention?.GetType().GetTypeInfo().Assembly.GetName().Name);
                         Register(item.Convention, context);
                         continue;
                     }
@@ -54,12 +60,12 @@ namespace Rocket.Surgery.Conventions
                         if (!delegateTypes.Any(type => type.IsInstanceOfType(item.Delegate)))
                         {
                             context.Logger.LogDebug("Could not execute Delegate {TypeName} :: {@Types}",
-                                item.Delegate.GetType()?.FullName,
+                                item.Delegate.GetType().FullName,
                                 enumerable);
                             continue;
                         }
 
-                        context.Logger.LogDebug("Executing Delegate {TypeName}", item.Delegate.GetType()?.FullName);
+                        context.Logger.LogDebug("Executing Delegate {TypeName}", item.Delegate.GetType().FullName);
                         item.Delegate.DynamicInvoke(context);
                         continue;
                     }
@@ -69,7 +75,7 @@ namespace Rocket.Surgery.Conventions
                 catch (Exception e)
                 {
                     if (item.Convention != null)
-                        context.Logger.LogError(0, e, "Error invoking Convention {Convention}", item.Convention?.GetType()?.FullName);
+                        context.Logger.LogError(0, e, "Error invoking Convention {Convention}", item.Convention.GetType().FullName);
                     else if (item.Delegate != null)
                         context.Logger.LogError(0, e, "Error invoking Delegate at index {Index}", itemWithIndex.index);
                     else

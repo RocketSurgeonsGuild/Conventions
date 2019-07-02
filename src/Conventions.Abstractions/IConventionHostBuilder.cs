@@ -41,10 +41,10 @@ namespace Rocket.Surgery.Conventions
 
     /// <summary>
     ///  IConventionHostBuilder
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionHostBuilder" />
+    /// Implements the <see cref="IConventionHostBuilder" />
     /// </summary>
     /// <typeparam name="TSelf">The type of the t self.</typeparam>
-    /// <seealso cref="Rocket.Surgery.Conventions.IConventionHostBuilder" />
+    /// <seealso cref="IConventionHostBuilder" />
     public interface IConventionHostBuilder<out TSelf> : IConventionHostBuilder
         where TSelf : IConventionHostBuilder<TSelf>
     {

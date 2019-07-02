@@ -14,7 +14,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             public void Register(IServiceConventionContext context)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -90,8 +90,9 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.AppendConvention(convention);
 
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
-            result.Count().Should().Be(1);
-            result.Select(x => x.Convention).Should().Contain(convention);
+            var delegateOrConventions = result as DelegateOrConvention[] ?? result.ToArray();
+            delegateOrConventions.Count().Should().Be(1);
+            delegateOrConventions.Select(x => x.Convention).Should().Contain(convention);
         }
 
         [Fact]

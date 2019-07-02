@@ -5,9 +5,9 @@ namespace Rocket.Surgery.Builders
 {
     /// <summary>
     /// Abstract base class for implementing a builder
-    /// Implements the <see cref="Rocket.Surgery.Builders.IBuilder" />
+    /// Implements the <see cref="IBuilder" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Builders.IBuilder" />
+    /// <seealso cref="IBuilder" />
     public abstract class Builder : IBuilder
     {
         /// <summary>
@@ -27,7 +27,7 @@ namespace Rocket.Surgery.Builders
 
         public virtual object this[object item]
         {
-            get => Properties.TryGetValue(item, out object value) ? value : null;
+            get => Properties.TryGetValue(item, out var value) ? value : null;
             set => Properties[item] = value;
         }
 
@@ -41,17 +41,18 @@ namespace Rocket.Surgery.Builders
     /// <summary>
     /// Abstract base class for creating builders that are attached to some parent builder
     /// Useful for creating sub builds that live for a short period to augment the parent.
-    /// Implements the <see cref="Rocket.Surgery.Builders.Builder" />
+    /// Implements the <see cref="Builder" />
     /// </summary>
     /// <typeparam name="TBuilder">The type of the t builder.</typeparam>
-    /// <seealso cref="Rocket.Surgery.Builders.Builder" />
+    /// <seealso cref="Builder" />
     public abstract class Builder<TBuilder> : Builder
         where TBuilder : class
     {
         /// <summary>
-        /// Constructs a Builder&lt;TBuilder&gt; with the parent instance
+        /// Constructs a Builder{TBuilder} with the parent instance
         /// </summary>
         /// <param name="parent">The parent builder TBuilder</param>
+        /// <param name="properties">The properties</param>
         protected Builder(TBuilder parent, IDictionary<object, object> properties) : base(properties)
         {
             Parent = parent ?? throw new ArgumentNullException(nameof(parent));

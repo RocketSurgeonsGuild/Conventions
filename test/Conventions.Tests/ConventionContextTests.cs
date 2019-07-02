@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Extensions.Testing;

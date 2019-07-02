@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Sample.DependencyThree;
-using Sample.DependencyTwo;
 using Xunit;
 using Xunit.Abstractions;
 

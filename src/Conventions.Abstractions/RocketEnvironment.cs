@@ -5,9 +5,9 @@ namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// RocketEnvironment.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IRocketEnvironment" />
+    /// Implements the <see cref="IRocketEnvironment" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.IRocketEnvironment" />
+    /// <seealso cref="IRocketEnvironment" />
     public class RocketEnvironment : IRocketEnvironment
     {
         /// <summary>
@@ -28,7 +28,9 @@ namespace Rocket.Surgery.Conventions
         /// Initializes a new instance of the <see cref="RocketEnvironment" /> class.
         /// </summary>
         /// <param name="environment">The environment.</param>
+#pragma warning disable 618
         public RocketEnvironment(IHostingEnvironment environment)
+#pragma warning restore 618
         {
             EnvironmentName = environment.EnvironmentName;
             ApplicationName = environment.ApplicationName;

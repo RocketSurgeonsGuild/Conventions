@@ -7,15 +7,15 @@ namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     ///  ServiceProviderDictionary.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IServiceProviderDictionary" />
+    /// Implements the <see cref="IServiceProviderDictionary" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.IServiceProviderDictionary" />
+    /// <seealso cref="IServiceProviderDictionary" />
     public class ServiceProviderDictionary : IServiceProviderDictionary
     {
         private readonly IDictionary<object, object> _values = new Dictionary<Object, object>();
         private readonly IDictionary<Type, object> _services = new Dictionary<Type, object>();
         /// <summary>
-        /// Gets or sets the <see cref="System.Object"/> with the specified key.
+        /// Gets or sets the <see cref="object"/> with the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>System.Object.</returns>
@@ -149,7 +149,7 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Gets the enumerator.
         /// </summary>
-        /// <returns>IEnumerator&lt;KeyValuePair&lt;System.Object, System.Object&gt;&gt;.</returns>
+        /// <returns>IEnumerator{KeyValuePair{System.Object, System.Object}}.</returns>
         public IEnumerator<KeyValuePair<object, object>> GetEnumerator()
         {
             return _values.Concat(_services.Select(z => new KeyValuePair<Object, object>(z.Key, z.Value))).GetEnumerator();

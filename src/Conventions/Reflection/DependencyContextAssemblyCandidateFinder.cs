@@ -10,9 +10,9 @@ namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
     /// Assembly candidate finder that uses <see cref="DependencyContext" />
-    /// Implements the <see cref="Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder" />
+    /// Implements the <see cref="IAssemblyCandidateFinder" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder" />
+    /// <seealso cref="IAssemblyCandidateFinder" />
     public class DependencyContextAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         private readonly DependencyContext _dependencyContext;
@@ -33,7 +33,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// Get the candidates for a given set
         /// </summary>
         /// <param name="candidates">The candidates as an enumerable</param>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
+        /// <returns>IEnumerable{Assembly}.</returns>
         /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {

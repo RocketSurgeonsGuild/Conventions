@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Scanners;
+﻿using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions.Tests.Fixtures
 {

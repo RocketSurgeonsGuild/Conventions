@@ -6,9 +6,9 @@ namespace Rocket.Surgery.Conventions
     /// <summary>
     /// An attribute that defines a convention for this entire assembly
     /// The type attached to the convention must implement <see cref="IConvention" /> but may also implement other interfaces
-    /// Implements the <see cref="System.Attribute" />
+    /// Implements the <see cref="Attribute" />
     /// </summary>
-    /// <seealso cref="System.Attribute" />
+    /// <seealso cref="Attribute" />
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public sealed class ConventionAttribute : Attribute
     {

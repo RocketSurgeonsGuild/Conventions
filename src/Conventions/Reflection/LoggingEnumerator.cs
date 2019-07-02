@@ -15,17 +15,17 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <typeparam name="T"></typeparam>
         /// <param name="enumerator">The enumerator.</param>
         /// <param name="logAction">The log action.</param>
-        /// <returns>IEnumerator&lt;T&gt;.</returns>
+        /// <returns>IEnumerator{T}.</returns>
         public static IEnumerator<T> Create<T>(IEnumerator<T> enumerator, Action<T> logAction) =>
             new LoggingEnumerator<T>(enumerator, logAction);
     }
 
     /// <summary>
     /// LoggingEnumerator.
-    /// Implements the <see cref="System.Collections.Generic.IEnumerator{T}" />
+    /// Implements the <see cref="IEnumerator{T}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="System.Collections.Generic.IEnumerator{T}" />
+    /// <seealso cref="IEnumerator{T}" />
     class LoggingEnumerator<T> : IEnumerator<T>
     {
         private readonly IEnumerator<T> _enumerator;

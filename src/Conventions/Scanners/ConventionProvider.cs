@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
     /// ConventionProvider.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.Scanners.IConventionProvider" />
+    /// Implements the <see cref="IConventionProvider" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.Scanners.IConventionProvider" />
+    /// <seealso cref="IConventionProvider" />
     internal class ConventionProvider : IConventionProvider
     {
         private readonly IEnumerable<DelegateOrConvention> _conventions;
@@ -43,7 +42,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <typeparam name="TContribution">The type of the contribution.</typeparam>
         /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-        /// <returns>IEnumerable&lt;DelegateOrConvention&gt;.</returns>
+        /// <returns>IEnumerable{DelegateOrConvention}.</returns>
         public IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
             where TContribution : IConvention
             where TDelegate : Delegate
@@ -68,7 +67,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         /// Gets a all the conventions from the provider
         /// </summary>
-        /// <returns>IEnumerable&lt;DelegateOrConvention&gt;.</returns>
+        /// <returns>IEnumerable{DelegateOrConvention}.</returns>
         public IEnumerable<DelegateOrConvention> GetAll()
         {
             return _conventions;

@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// Base convention context that allos for stashing items in index keys
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionContext" />
+    /// Implements the <see cref="IConventionContext" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.IConventionContext" />
+    /// <seealso cref="IConventionContext" />
     public abstract class ConventionContext : IConventionContext
     {
         /// <summary>
@@ -30,7 +29,7 @@ namespace Rocket.Surgery.Conventions
         /// <returns>System.Object.</returns>
         public virtual object this[object item]
         {
-            get => Properties.TryGetValue(item, out object value) ? value : null;
+            get => Properties.TryGetValue(item, out var value) ? value : null;
             set => Properties[item] = value;
         }
 

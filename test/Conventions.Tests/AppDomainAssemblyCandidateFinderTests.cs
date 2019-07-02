@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;

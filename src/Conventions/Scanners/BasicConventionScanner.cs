@@ -7,9 +7,9 @@ namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
     /// A basic convention scanner that doesn't scan any assemblies it only composes provided conventions.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.Scanners.IConventionScanner" />
+    /// Implements the <see cref="IConventionScanner" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.Scanners.IConventionScanner" />
+    /// <seealso cref="IConventionScanner" />
     public class BasicConventionScanner : IConventionScanner
     {
         private readonly List<object> _prependContributions = new List<object>();

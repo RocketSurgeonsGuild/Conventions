@@ -9,10 +9,10 @@ namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// ConventionHostBuilder.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionHostBuilder{TSelf}" />
+    /// Implements the <see cref="IConventionHostBuilder{TSelf}" />
     /// </summary>
     /// <typeparam name="TSelf">The type of the t self.</typeparam>
-    /// <seealso cref="Rocket.Surgery.Conventions.IConventionHostBuilder{TSelf}" />
+    /// <seealso cref="IConventionHostBuilder{TSelf}" />
     public abstract class ConventionHostBuilder<TSelf> : IConventionHostBuilder<TSelf>
         where TSelf : IConventionHostBuilder<TSelf>
     {
@@ -61,7 +61,7 @@ namespace Rocket.Surgery.Conventions
         /// <returns>System.Object.</returns>
         public virtual object this[object item]
         {
-            get => Properties.TryGetValue(item, out object value) ? value : null;
+            get => Properties.TryGetValue(item, out var value) ? value : null;
             set => Properties[item] = value;
         }
 

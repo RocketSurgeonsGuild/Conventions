@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Reflection;
-using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;

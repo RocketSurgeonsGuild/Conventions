@@ -86,11 +86,19 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <returns>IRocketEnvironment.</returns>
+#pragma warning disable 618
         public static IRocketEnvironment Convert(this IHostingEnvironment environment)
+#pragma warning restore 618
         {
             return new RocketEnvironment(environment);
         }
 #if NETCOREAPP3_0
+
+        /// <summary>
+        /// Converts the specified environment.
+        /// </summary>
+        /// <param name="environment">The environment.</param>
+        /// <returns>IRocketEnvironment.</returns>
         public static IRocketEnvironment Convert(this IHostEnvironment environment)
         {
             return new RocketEnvironment(environment);

@@ -1,7 +1,5 @@
-﻿using System;
-using FakeItEasy;
+﻿using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Xunit;

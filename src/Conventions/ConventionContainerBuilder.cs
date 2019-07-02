@@ -7,17 +7,27 @@ namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// ConventionContainerBuilder.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionContainer{TBuilder, TConvention, TDelegate}" />
+    /// Implements the <see cref="IConventionContainer{TBuilder, TConvention, TDelegate}" />
     /// </summary>
     /// <typeparam name="TBuilder">The type of the t builder.</typeparam>
     /// <typeparam name="TConvention">The type of the t convention.</typeparam>
     /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
-    /// <seealso cref="Rocket.Surgery.Conventions.IConventionContainer{TBuilder, TConvention, TDelegate}" />
+    /// <seealso cref="IConventionContainer{TBuilder, TConvention, TDelegate}" />
     public abstract class ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TBuilder : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention
         where TDelegate : Delegate
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConventionContainerBuilder{TBuilder, TConvention, TDelegate}"/> class.
+        /// </summary>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="properties">The properties.</param>
+        /// <exception cref="ArgumentNullException">
+        /// scanner
+        /// or
+        /// properties
+        /// </exception>
         protected ConventionContainerBuilder(
             IConventionScanner scanner,
             IDictionary<object, object> properties)
@@ -36,7 +46,7 @@ namespace Rocket.Surgery.Conventions
         /// <returns>System.Object.</returns>
         public virtual object this[object item]
         {
-            get => Properties.TryGetValue(item, out object value) ? value : null;
+            get => Properties.TryGetValue(item, out var value) ? value : null;
             set => Properties[item] = value;
         }
 
@@ -92,7 +102,7 @@ namespace Rocket.Surgery.Conventions
         /// <returns>TBuilder.</returns>
         public TBuilder AppendDelegate(params TDelegate[] delegates)
         {
-            Scanner.AppendDelegate(delegates);
+            Scanner.AppendDelegate(delegates.Cast<Delegate>().ToArray());
             return (TBuilder)(object)this;
         }
 
@@ -147,7 +157,7 @@ namespace Rocket.Surgery.Conventions
         /// <returns>TBuilder.</returns>
         public TBuilder PrependDelegate(params TDelegate[] delegates)
         {
-            Scanner.PrependDelegate(delegates);
+            Scanner.PrependDelegate(delegates.Cast<Delegate>().ToArray());
             return (TBuilder)(object)this;
         }
 

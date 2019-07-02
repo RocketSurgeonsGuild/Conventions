@@ -11,9 +11,9 @@ namespace Rocket.Surgery.Conventions.Scanners
 {
     /// <summary>
     /// Base class for various scanners
-    /// Implements the <see cref="Rocket.Surgery.Conventions.Scanners.IConventionScanner" />
+    /// Implements the <see cref="IConventionScanner" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.Scanners.IConventionScanner" />
+    /// <seealso cref="IConventionScanner" />
     public abstract class ConventionScannerBase : IConventionScanner
     {
         private readonly List<object> _prependedConventions = new List<object>();
@@ -26,14 +26,14 @@ namespace Rocket.Surgery.Conventions.Scanners
         private readonly IAssemblyCandidateFinder _assemblyCandidateFinder;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger _logger;
-        private bool _updatedConventionCollections = false;
+        private bool _updatedConventionCollections;
 
         /// <summary>
         /// Default constructor for the scanner
         /// </summary>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder</param>
         /// <param name="serviceProvider">The service provider for creating instances of conventions (usually a <see cref="IServiceProviderDictionary"/>.</param>
-        /// <param name="loggerFactory">A diagnostic logger factory</param>
+        /// <param name="logger">A diagnostic logger</param>
         protected ConventionScannerBase(IAssemblyCandidateFinder assemblyCandidateFinder, IServiceProvider serviceProvider, ILogger logger)
         {
             _assemblyCandidateFinder = assemblyCandidateFinder ?? throw new ArgumentNullException(nameof(assemblyCandidateFinder));
@@ -52,7 +52,7 @@ namespace Rocket.Surgery.Conventions.Scanners
                 "Rocket.Surgery.Conventions"
             ).ToArray();
 
-            var prependedConventionTypes = new Lazy<HashSet<Type>>(() => 
+            var prependedConventionTypes = new Lazy<HashSet<Type>>(() =>
                 new HashSet<Type>(_prependedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()));
             var appendedConventionTypes = new Lazy<HashSet<Type>>(() =>
                 new HashSet<Type>(_appendedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()));
@@ -207,7 +207,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <param name="conventions">The conventions.</param>
         /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
         public IConventionScanner AppendConvention<T>() where T : IConvention
@@ -272,7 +271,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
-        /// <param name="conventions">The conventions.</param>
         /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
         public IConventionScanner PrependConvention<T>() where T : IConvention

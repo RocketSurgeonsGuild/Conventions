@@ -5,10 +5,10 @@ namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     ///  IServiceProviderDictionary
-    /// Implements the <see cref="System.Collections.Generic.IDictionary{System.Object, System.Object}" />
-    /// Implements the <see cref="System.IServiceProvider" />
+    /// Implements the <see cref="IDictionary{Object, Object}" />
+    /// Implements the <see cref="IServiceProvider" />
     /// </summary>
-    /// <seealso cref="System.Collections.Generic.IDictionary{System.Object, System.Object}" />
-    /// <seealso cref="System.IServiceProvider" />
+    /// <seealso cref="IDictionary{Object, Object}" />
+    /// <seealso cref="IServiceProvider" />
     public interface IServiceProviderDictionary : IDictionary<object, object>, IServiceProvider { }
 }

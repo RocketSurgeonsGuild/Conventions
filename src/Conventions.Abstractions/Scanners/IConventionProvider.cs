@@ -13,7 +13,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <typeparam name="TContribution">The type of the contribution.</typeparam>
         /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-        /// <returns>IEnumerable&lt;DelegateOrConvention&gt;.</returns>
+        /// <returns>IEnumerable{DelegateOrConvention}.</returns>
         IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
             where TContribution : IConvention
             where TDelegate : Delegate;
@@ -21,7 +21,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         /// Gets a all the conventions from the provider
         /// </summary>
-        /// <returns>IEnumerable&lt;DelegateOrConvention&gt;.</returns>
+        /// <returns>IEnumerable{DelegateOrConvention}.</returns>
         IEnumerable<DelegateOrConvention> GetAll();
     }
 }

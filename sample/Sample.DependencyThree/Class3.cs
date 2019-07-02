@@ -1,5 +1,4 @@
-﻿using System;
-using Rocket.Surgery.Conventions;
+﻿using Rocket.Surgery.Conventions;
 using Sample.DependencyOne;
 using Sample.DependencyThree;
 

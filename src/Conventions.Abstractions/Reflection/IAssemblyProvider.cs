@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <summary>
         /// Get the full list of assemblies
         /// </summary>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
+        /// <returns>IEnumerable{Assembly}.</returns>
         IEnumerable<Assembly> GetAssemblies();
     }
 }

@@ -15,7 +15,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="finder">The <see cref="IAssemblyCandidateFinder" /></param>
         /// <param name="candidate">The first candidate to find</param>
         /// <param name="candidates">The candidates as an array</param>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
+        /// <returns>IEnumerable{Assembly}.</returns>
         public static IEnumerable<Assembly> GetCandidateAssemblies(this IAssemblyCandidateFinder finder, string candidate, params string[] candidates)
         {
             return finder.GetCandidateAssemblies(new[] {candidate}.Concat(candidates).ToArray());

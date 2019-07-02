@@ -3,8 +3,6 @@ using System.Linq;
 using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
@@ -27,7 +25,6 @@ namespace Rocket.Surgery.Conventions.Tests
         public void ShouldConstruct()
         {
             var scanner = AutoFake.Resolve<AggregateConventionScanner>();
-            var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             scanner.Should().NotBeNull();
         }

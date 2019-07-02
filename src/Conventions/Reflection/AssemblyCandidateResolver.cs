@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 
@@ -122,7 +121,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <summary>
         /// Gets the candidates.
         /// </summary>
-        /// <returns>IEnumerable&lt;Dependency&gt;.</returns>
+        /// <returns>IEnumerable{Dependency}.</returns>
         public IEnumerable<Dependency> GetCandidates()
         {
             foreach (var dependency in _dependencies)
@@ -163,9 +162,9 @@ namespace Rocket.Surgery.Conventions.Reflection
             public DependencyClassification Classification { get; set; }
 
             /// <summary>
-            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// Returns a <see cref="string" /> that represents this instance.
             /// </summary>
-            /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
+            /// <returns>A <see cref="string" /> that represents this instance.</returns>
             public override string ToString()
             {
                 return $"AssemblyName: {Assembly.GetName().Name}, Classification: {Classification}";

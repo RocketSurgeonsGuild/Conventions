@@ -8,9 +8,9 @@ namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// DiagnosticLogger.
-    /// Implements the <see cref="Microsoft.Extensions.Logging.ILogger" />
+    /// Implements the <see cref="ILogger" />
     /// </summary>
-    /// <seealso cref="Microsoft.Extensions.Logging.ILogger" />
+    /// <seealso cref="ILogger" />
     public class DiagnosticLogger : ILogger
     {
         private readonly DiagnosticSource _diagnosticSource;
@@ -81,9 +81,9 @@ namespace Rocket.Surgery.Conventions
 
         /// <summary>
         /// Disposable.
-        /// Implements the <see cref="System.IDisposable" />
+        /// Implements the <see cref="IDisposable" />
         /// </summary>
-        /// <seealso cref="System.IDisposable" />
+        /// <seealso cref="IDisposable" />
         class Disposable : IDisposable
         {
             private readonly DiagnosticSource _diagnosticSource;

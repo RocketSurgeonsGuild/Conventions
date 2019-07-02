@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Rocket.Surgery.Conventions
+﻿namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// A marker interface to indicate a type is a convention
@@ -11,10 +9,10 @@ namespace Rocket.Surgery.Conventions
     /// A default interface that can be used to create a convention with a known context type
     /// context is used to house all the data that the convention requires to do it's job
     /// This can be things like a service collection, container builder, logger, etc.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConvention" />
+    /// Implements the <see cref="IConvention" />
     /// </summary>
     /// <typeparam name="TContext">The convention type that contains all the values for this convention to work</typeparam>
-    /// <seealso cref="Rocket.Surgery.Conventions.IConvention" />
+    /// <seealso cref="IConvention" />
     public interface IConvention<in TContext> : IConvention
         where TContext : IConventionContext
     {

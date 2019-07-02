@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -12,7 +10,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// <summary>
     /// Assembly provider that uses <see cref="AppDomain" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyProvider" />
+    /// <seealso cref="IAssemblyProvider" />
     public class AppDomainAssemblyProvider : IAssemblyProvider
     {
         private readonly ILogger _logger;
@@ -33,7 +31,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <summary>
         /// Gets the assemblies.
         /// </summary>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
+        /// <returns>IEnumerable{Assembly}.</returns>
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles.Value, LogValue);
 
         private void LogValue(Assembly value) =>

@@ -1,18 +1,16 @@
 using System;
-using System.Collections.Generic;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     ///  IConventionBuilder
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionContainer{TBuilder, TConvention, TDelegate}" />
+    /// Implements the <see cref="IConventionContainer{TBuilder, TConvention, TDelegate}" />
     /// </summary>
     /// <typeparam name="TBuilder">The type of the t builder.</typeparam>
     /// <typeparam name="TConvention">The type of the t convention.</typeparam>
     /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
-    /// <seealso cref="Rocket.Surgery.Conventions.IConventionContainer{TBuilder, TConvention, TDelegate}" />
+    /// <seealso cref="IConventionContainer{TBuilder, TConvention, TDelegate}" />
     public interface IConventionBuilder<out TBuilder, in TConvention, in TDelegate> : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TBuilder : IConventionBuilder<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention

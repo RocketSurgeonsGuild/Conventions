@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -11,7 +10,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// <summary>
     /// Default assembly candidate finder that uses a list of assemblies
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder" />
+    /// <seealso cref="IAssemblyCandidateFinder" />
     public class DefaultAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         /// <summary>
@@ -38,7 +37,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// Get the candidates for a given set
         /// </summary>
         /// <param name="candidates">The candidates as an enumerable</param>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
+        /// <returns>IEnumerable{Assembly}.</returns>
         /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {

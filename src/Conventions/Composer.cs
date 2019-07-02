@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
@@ -11,12 +10,12 @@ namespace Rocket.Surgery.Conventions
     {
         /// <summary>
         /// ComposerImpl.
-        /// Implements the <see cref="Rocket.Surgery.Conventions.ConventionComposer{TContext, TContribution, TDelegate}" />
+        /// Implements the <see cref="ConventionComposer{TContext, TContribution, TDelegate}" />
         /// </summary>
         /// <typeparam name="TContext">The type of the t context.</typeparam>
         /// <typeparam name="TContribution">The type of the t contribution.</typeparam>
         /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
-        /// <seealso cref="Rocket.Surgery.Conventions.ConventionComposer{TContext, TContribution, TDelegate}" />
+        /// <seealso cref="ConventionComposer{TContext, TContribution, TDelegate}" />
         class ComposerImpl<TContext, TContribution, TDelegate> : ConventionComposer<TContext, TContribution, TDelegate>
             where TContribution : IConvention<TContext>
             where TContext : IConventionContext

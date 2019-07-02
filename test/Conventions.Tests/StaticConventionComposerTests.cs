@@ -1,5 +1,4 @@
 ﻿using FakeItEasy;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
 using Xunit;
 

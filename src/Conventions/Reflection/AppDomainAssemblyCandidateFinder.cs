@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// <summary>
     /// Assembly candidate finder that uses <see cref="AppDomain" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder" />
+    /// <seealso cref="IAssemblyCandidateFinder" />
     public class AppDomainAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         private readonly AppDomain _appDomain;
@@ -32,7 +31,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// Get the candidates for a given set
         /// </summary>
         /// <param name="candidates">The candidates as an enumerable</param>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
+        /// <returns>IEnumerable{Assembly}.</returns>
 
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {

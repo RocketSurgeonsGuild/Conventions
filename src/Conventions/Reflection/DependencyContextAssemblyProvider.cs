@@ -10,9 +10,9 @@ namespace Rocket.Surgery.Conventions.Reflection
 {
     /// <summary>
     /// Assembly provider that uses <see cref="DependencyContext" />
-    /// Implements the <see cref="Rocket.Surgery.Conventions.Reflection.IAssemblyProvider" />
+    /// Implements the <see cref="IAssemblyProvider" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.Reflection.IAssemblyProvider" />
+    /// <seealso cref="IAssemblyProvider" />
     public class DependencyContextAssemblyProvider : IAssemblyProvider
     {
         private readonly ILogger _logger;
@@ -35,7 +35,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <summary>
         /// Gets the assemblies.
         /// </summary>
-        /// <returns>IEnumerable&lt;Assembly&gt;.</returns>
+        /// <returns>IEnumerable{Assembly}.</returns>
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles.Value, LogValue);
 
         private void LogValue(Assembly value) =>

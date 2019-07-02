@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable UnusedTypeParameter
 
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// A composer that allows registration of delegates and interfaces that implement an interface like the delegate
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConvention{TContext}" />
+    /// Implements the <see cref="IConvention{TContext}" />
     /// </summary>
     /// <typeparam name="TContext">The context type</typeparam>
     /// <typeparam name="TContribution">The contribution type</typeparam>
     /// <typeparam name="TDelegate">The delegate Type</typeparam>
-    /// <seealso cref="Rocket.Surgery.Conventions.IConvention{TContext}" />
+    /// <seealso cref="IConvention{TContext}" />
     public interface IConventionComposer<in TContext, TContribution, TDelegate> : IConvention<TContext>
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
@@ -20,9 +21,9 @@ namespace Rocket.Surgery.Conventions
 
     /// <summary>
     /// Takes a list of conventions and composes them with the given context
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConvention{TContext}" />
+    /// Implements the <see cref="IConvention{TContext}" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.IConvention{TContext}" />
+    /// <seealso cref="IConvention{TContext}" />
     public interface IConventionComposer
     {
         /// <summary>

@@ -1,23 +1,21 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// Convention base compose, that calls all methods on register.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.ConventionComposerBase" />
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionComposer{TContext, TContribution, TDelegate}" />
+    /// Implements the <see cref="ConventionComposerBase" />
+    /// Implements the <see cref="IConventionComposer{TContext, TContribution, TDelegate}" />
     /// </summary>
     /// <typeparam name="TContext">The context type</typeparam>
     /// <typeparam name="TContribution">The contribution type</typeparam>
     /// <typeparam name="TDelegate">The delegate type</typeparam>
-    /// <seealso cref="Rocket.Surgery.Conventions.ConventionComposerBase" />
-    /// <seealso cref="Rocket.Surgery.Conventions.IConventionComposer{TContext, TContribution, TDelegate}" />
+    /// <seealso cref="ConventionComposerBase" />
+    /// <seealso cref="IConventionComposer{TContext, TContribution, TDelegate}" />
     public abstract class ConventionComposer<TContext, TContribution, TDelegate> : ConventionComposerBase, IConventionComposer<TContext, TContribution, TDelegate>
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
@@ -53,11 +51,11 @@ namespace Rocket.Surgery.Conventions
 
     /// <summary>
     /// Convention base compose, that calls all methods on register.
-    /// Implements the <see cref="Rocket.Surgery.Conventions.ConventionComposerBase" />
-    /// Implements the <see cref="Rocket.Surgery.Conventions.IConventionComposer{TContext, TContribution, TDelegate}" />
+    /// Implements the <see cref="ConventionComposerBase" />
+    /// Implements the <see cref="IConventionComposer{TContext, TContribution, TDelegate}" />
     /// </summary>
-    /// <seealso cref="Rocket.Surgery.Conventions.ConventionComposerBase" />
-    /// <seealso cref="Rocket.Surgery.Conventions.IConventionComposer{TContext, TContribution, TDelegate}" />
+    /// <seealso cref="ConventionComposerBase" />
+    /// <seealso cref="IConventionComposer{TContext, TContribution, TDelegate}" />
     public class ConventionComposer : ConventionComposerBase, IConventionComposer
     {
         private readonly IConventionScanner _scanner;
