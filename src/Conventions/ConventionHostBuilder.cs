@@ -13,8 +13,8 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     /// <typeparam name="TSelf">The type of the t self.</typeparam>
     /// <seealso cref="IConventionHostBuilder{TSelf}" />
-    public abstract class ConventionHostBuilder<TSelf> : IConventionHostBuilder<TSelf>
-        where TSelf : IConventionHostBuilder<TSelf>
+    public abstract class ConventionHostBuilder<TSelf> : IConventionHostBuilder
+        where TSelf : IConventionHostBuilder
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ConventionHostBuilder{TSelf}" /> class.
@@ -260,10 +260,179 @@ namespace Rocket.Surgery.Conventions
         /// <param name="delegates">The conventions.</param>
         /// <returns>TSelf.</returns>
 
-        public TSelf AppendDelegate(IEnumerable<Delegate> delegates)
+        IConventionHostBuilder IConventionHostBuilder.AppendDelegate(IEnumerable<Delegate> delegates)
         {
             Scanner.AppendDelegate(delegates);
-            return (TSelf)(object)this;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.AppendConvention(params IConvention[] conventions)
+        {
+            Scanner.AppendConvention(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.AppendConvention(IEnumerable<IConvention> conventions)
+        {
+            Scanner.AppendConvention(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.AppendConvention(params Type[] conventions)
+        {
+            Scanner.AppendConvention(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.AppendConvention(IEnumerable<Type> conventions)
+        {
+            Scanner.AppendConvention(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.AppendConvention<T>() where T : IConvention
+        {
+            Scanner.AppendConvention<T>();
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.PrependConvention(params IConvention[] conventions)
+        {
+            Scanner.PrependConvention(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.PrependConvention(IEnumerable<IConvention> conventions)
+        {
+            Scanner.PrependConvention(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The additional conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.PrependConvention(params Type[] conventions)
+        {
+            Scanner.PrependConvention(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <param name="conventions">The conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.PrependConvention(IEnumerable<Type> conventions)
+        {
+            Scanner.PrependConvention(conventions);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of conventions to the scanner
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.PrependConvention<T>() where T : IConvention
+        {
+            Scanner.PrependConvention<T>();
+            return this;
+        }
+
+        /// <summary>
+        /// Addes a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The additional delegates.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.PrependDelegate(params Delegate[] delegates)
+        {
+            Scanner.PrependDelegate(delegates);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.PrependDelegate(IEnumerable<Delegate> delegates)
+        {
+            Scanner.PrependDelegate(delegates);
+            return this;
+        }
+
+
+        /// <summary>
+        /// Addes a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The additional delegates.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.AppendDelegate(params Delegate[] delegates)
+        {
+            Scanner.AppendDelegate(delegates);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a set of delegates to the scanner
+        /// </summary>
+        /// <param name="delegates">The conventions.</param>
+        /// <returns>TSelf.</returns>
+
+        IConventionHostBuilder IConventionHostBuilder.AppendDelegate(IEnumerable<Delegate> delegates)
+        {
+            Scanner.AppendDelegate(delegates);
+            return this;
         }
     }
 }
