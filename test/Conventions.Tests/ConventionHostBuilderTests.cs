@@ -198,7 +198,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var convention2 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention2"));
             var convention3 = A.Fake<ServiceConventionDelegate>(x => x.Named("convention3"));
 
-            var conventions = new[] { convention3, convention, convention2 }.AsEnumerable();
+            var conventions = new Delegate[] { convention3, convention, convention2 }.AsEnumerable();
 
             builder.AppendDelegate(conventions);
 
