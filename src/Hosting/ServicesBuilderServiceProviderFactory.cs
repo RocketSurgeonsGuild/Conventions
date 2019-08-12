@@ -13,7 +13,7 @@ namespace Rocket.Surgery.Hosting
     /// Implements the <see cref="IServiceProviderFactory{IServicesBuilder}" />
     /// </summary>
     /// <seealso cref="IServiceProviderFactory{IServicesBuilder}" />
-    class ServicesBuilderServiceProviderFactory : IServiceProviderFactory<IServicesBuilder>
+    public class ServicesBuilderServiceProviderFactory : IServiceProviderFactory<IServicesBuilder>
     {
         private readonly Func<IServiceCollection, IServicesBuilder> _func;
 
