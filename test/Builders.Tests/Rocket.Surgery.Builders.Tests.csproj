@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
-    </PropertyGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Builders.Abstractions\Rocket.Surgery.Builders.Abstractions.csproj" />
-        <ProjectReference Include="..\..\src\Builders\Rocket.Surgery.Builders.csproj" />
-    </ItemGroup>
-</Project>

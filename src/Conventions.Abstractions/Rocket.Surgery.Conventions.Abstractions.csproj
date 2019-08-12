@@ -6,5 +6,6 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="System.Diagnostics.DiagnosticSource" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
     </ItemGroup>
 </Project>

@@ -135,7 +135,7 @@ namespace Rocket.Surgery.Conventions
         /// Copies to.
         /// </summary>
         /// <param name="array">The array.</param>
-        /// <param name="arrayIndex">Index of the array.</param>
+        /// <param name="index">Index of the array.</param>
         public void CopyTo(KeyValuePair<object, object>[] array, int index)
         {
             _values.CopyTo(array, index);

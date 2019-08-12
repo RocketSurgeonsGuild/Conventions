@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj" />
+      <ProjectReference Include="..\..\src\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
+    </ItemGroup>
+</Project>

@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    </PropertyGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\Builders.Abstractions\Rocket.Surgery.Builders.Abstractions.csproj" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    </ItemGroup>
-</Project>

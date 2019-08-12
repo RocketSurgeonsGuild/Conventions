@@ -123,5 +123,21 @@ namespace Rocket.Surgery.Conventions.Scanners
             hashCode = hashCode * -1521134295 + EqualityComparer<Delegate>.Default.GetHashCode(Delegate);
             return hashCode;
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            if (Convention != null)
+            {
+                return Convention.GetType().Name;
+            }
+            if (Delegate != null)
+            {
+                var name = Delegate.Method.Name;
+                var methodType = Delegate.Method.DeclaringType;
+                return $"{methodType.FullName}:{name}";
+            }
+            return "None";
+        }
     }
 }

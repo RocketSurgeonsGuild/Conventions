@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="../../src/Conventions.Diagnostics/Rocket.Surgery.Conventions.Diagnostics.csproj" />
+        <ProjectReference Include="../../src/Hosting/Rocket.Surgery.Hosting.csproj" />
+        <ProjectReference Include="../../src/Hosting.Functions/Rocket.Surgery.Hosting.Functions.csproj" />
+    </ItemGroup>
+</Project>

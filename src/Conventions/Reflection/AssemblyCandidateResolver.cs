@@ -46,7 +46,7 @@ namespace Rocket.Surgery.Conventions.Reflection
 
             foreach (var dependency in assembly.GetReferencedAssemblies())
             {
-                if (dependency.Name.StartsWith("System.") || dependency.Name.StartsWith("mscorlib") || dependency.Name.StartsWith("Microsoft."))
+                if (dependency.Name.StartsWith("System.") || dependency.Name.StartsWith("Windows") || dependency.Name.StartsWith("mscorlib") || dependency.Name.StartsWith("Microsoft."))
                     continue;
 
                 Assembly dependentAssembly;
@@ -81,6 +81,7 @@ namespace Rocket.Surgery.Conventions.Reflection
             if (dependency.StartsWith("System.") ||
                 dependency.StartsWith("mscorlib") ||
                 dependency.StartsWith("Microsoft.") ||
+                dependency.StartsWith("Windows") ||
                 dependency.StartsWith("DynamicProxyGenAssembly"))
             {
                 return DependencyClassification.NotCandidate;
