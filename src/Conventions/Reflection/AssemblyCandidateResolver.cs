@@ -81,6 +81,7 @@ namespace Rocket.Surgery.Conventions.Reflection
             if (dependency.StartsWith("System.") ||
                 dependency.StartsWith("mscorlib") ||
                 dependency.StartsWith("Microsoft.") ||
+                dependency.StartsWith("Windows") ||
                 dependency.StartsWith("DynamicProxyGenAssembly"))
             {
                 return DependencyClassification.NotCandidate;

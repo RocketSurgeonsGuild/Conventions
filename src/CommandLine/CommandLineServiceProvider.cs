@@ -18,8 +18,6 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Initializes a new instance of the <see cref="CommandLineServiceProvider"/> class.
         /// </summary>
         /// <param name="modelAccessor">The model accessor.</param>
-        /// <param name="services">The services.</param>
-        /// <exception cref="ArgumentNullException">services</exception>
         public CommandLineServiceProvider(IModelAccessor modelAccessor)
         {
             _modelAccessor = modelAccessor;

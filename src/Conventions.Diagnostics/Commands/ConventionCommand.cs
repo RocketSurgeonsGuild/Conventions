@@ -562,6 +562,9 @@ namespace Rocket.Surgery.Conventions.Diagnostics
         }
     }
 
+    /// <summary>
+    /// A common diagnostics command to attach multiple commands to.
+    /// </summary>
     [Command("diagnostics", "diag", Description = "Convention Diagnostics")]
     public class DiagnosticsCommand
     {
