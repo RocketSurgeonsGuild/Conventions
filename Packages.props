@@ -77,6 +77,7 @@
     <PackageReference Update="Scrutor" Version="3.1.0" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="1.6.0" />
     <PackageReference Update="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Update="NodaTime" Version="2.4.6" />
     <PackageReference Update="Terminal.Gui" Version="0.24.0" />
   </ItemGroup>
   <ItemGroup>
