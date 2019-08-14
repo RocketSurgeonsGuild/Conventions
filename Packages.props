@@ -10,8 +10,8 @@
   <ItemGroup>
     <PackageReference Update="Nuke.Common" Version="0.21.2" />
     <PackageReference Update="Rocket.Surgery.Nuke.DotNetCore" Version="0.3.5" />
-    <PackageReference Update="GitVersion.CommandLine.DotNetCore" Version="5.0.1-beta1.14" />
-    <PackageReference Update="ReportGenerator" Version="4.2.12" />
+    <PackageReference Update="GitVersion.CommandLine.DotNetCore" Version="5.0.1" />
+    <PackageReference Update="ReportGenerator" Version="4.2.15" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
@@ -41,31 +41,31 @@
     <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.5.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0' and '$(TargetFramework)'!='netcoreapp2.1'">
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview7.19365.7" />
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview7.19362.4" />
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview8.19405.7" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview8.19405.4" />
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="3.0.0-preview6-27804-01" />
-    <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.FileProviders.Physical" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-preview7.19362.4" />
-    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.6.0-preview7.19362.9" />
+    <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.FileProviders.Physical" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.6.0-preview8.19405.3" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
@@ -76,7 +76,7 @@
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
     <PackageReference Update="Scrutor" Version="3.1.0" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="1.6.0" />
-    <PackageReference Update="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Update="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Update="NodaTime" Version="2.4.6" />
     <PackageReference Update="Terminal.Gui" Version="0.24.0" />
   </ItemGroup>
