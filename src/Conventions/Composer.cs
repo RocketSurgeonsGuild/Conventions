@@ -20,8 +20,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="scanner">The provider.</param>
         /// <param name="context">The context.</param>
         public static void Register<TContext, TContribution, TDelegate>(IConventionScanner scanner, IConventionContext context)
-            where TContribution : IConvention<TContext>
             where TContext : IConventionContext
+            where TContribution : IConvention<TContext>
             where TDelegate : Delegate
         {
             Register(context, scanner.BuildProvider().Get<TContribution, TDelegate>(), new[] { typeof(TContribution), typeof(TDelegate) });
@@ -33,8 +33,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="provider">The provider.</param>
         /// <param name="context">The context.</param>
         public static void Register<TContext, TContribution, TDelegate>(IConventionProvider provider, IConventionContext context)
-            where TContribution : IConvention<TContext>
             where TContext : IConventionContext
+            where TContribution : IConvention<TContext>
             where TDelegate : Delegate
         {
             Register(context, provider.Get<TContribution, TDelegate>(), new[] { typeof(TContribution), typeof(TDelegate) });
@@ -202,7 +202,7 @@ namespace Rocket.Surgery.Conventions
                 .Where(x => typeof(IConventionContext).IsAssignableFrom(x));
 
             var typesToRegister = interfaces
-                .Join(contextTypes, x => x, x => x, (interfaceType, contextType) => contextType);
+                .Join(contextTypes, x => x, x => x, (_, contextType) => contextType);
 
             foreach (var item in typesToRegister)
             {

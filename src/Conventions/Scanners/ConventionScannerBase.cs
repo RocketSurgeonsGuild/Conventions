@@ -135,11 +135,17 @@ namespace Rocket.Surgery.Conventions.Scanners
             if (!_updatedConventionCollections)
             {
                 for (var i = 0; i < _prependedConventions.Count; i++)
+                {
                     if (_prependedConventions[i] is Type type)
                         _prependedConventions[i] = ActivatorUtilities.CreateInstance(_serviceProvider, type);
+                }
+
                 for (var i = 0; i < _appendedConventions.Count; i++)
+                {
                     if (_appendedConventions[i] is Type type)
                         _appendedConventions[i] = ActivatorUtilities.CreateInstance(_serviceProvider, type);
+                }
+
                 _updatedConventionCollections = true;
             }
 

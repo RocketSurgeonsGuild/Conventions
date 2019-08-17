@@ -18,8 +18,8 @@ namespace Rocket.Surgery.Conventions
     /// <seealso cref="IConventionComposer{TContext, TContribution, TDelegate}" />
     [Obsolete("This class will be removed in the future version.  Replaced by Composer.Register<TContext, TContribution, TDelegate>.")]
     public abstract class ConventionComposer<TContext, TContribution, TDelegate> : IConventionComposer<TContext, TContribution, TDelegate>
-        where TContribution : IConvention<TContext>
         where TContext : IConventionContext
+        where TContribution : IConvention<TContext>
         where TDelegate : Delegate
     {
         private readonly IConventionScanner _scanner;
