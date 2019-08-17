@@ -27,33 +27,4 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <returns>System.Int32.</returns>
         int Run(IApplicationState state);
     }
-
-    /// <summary>
-    /// OnRunDefaultCommand.
-    /// Implements the <see cref="IDefaultCommand" />
-    /// </summary>
-    /// <seealso cref="IDefaultCommand" />
-    class OnRunDefaultCommand : IDefaultCommand
-    {
-        private readonly OnRunDelegate @delegate;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OnRunDefaultCommand"/> class.
-        /// </summary>
-        /// <param name="delegate">The delegate.</param>
-        public OnRunDefaultCommand(OnRunDelegate @delegate)
-        {
-            this.@delegate = @delegate;
-        }
-
-        /// <summary>
-        /// Runs the specified state.
-        /// </summary>
-        /// <param name="state">The state.</param>
-        /// <returns>System.Int32.</returns>
-        public int Run(IApplicationState state)
-        {
-            return @delegate(state);
-        }
-    }
 }

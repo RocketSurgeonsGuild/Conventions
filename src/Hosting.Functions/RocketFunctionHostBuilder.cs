@@ -229,7 +229,7 @@ namespace Rocket.Surgery.Hosting.Functions
                 _logger,
                 Properties);
 
-            Composer.Register<IWebJobsConventionContext, IWebJobsConvention, WebJobsConventionDelegate>(Scanner.BuildProvider(), builder);
+            builder.Build();
         }
 
         /// <summary>
