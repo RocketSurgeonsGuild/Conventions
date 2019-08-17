@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +17,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// The assemblies
         /// </summary>
         private readonly List<Assembly> _assemblies;
+
         /// <summary>
         /// The logger
         /// </summary>
@@ -27,7 +28,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <param name="assemblies">The assemblies.</param>
         /// <param name="logger">The logger.</param>
-        public DefaultAssemblyCandidateFinder(IEnumerable<Assembly> assemblies, ILogger logger = null)
+        public DefaultAssemblyCandidateFinder(IEnumerable<Assembly> assemblies, ILogger? logger = null)
         {
             _assemblies = assemblies.ToList();
             _logger = logger ?? NullLogger.Instance;
@@ -49,11 +50,18 @@ namespace Rocket.Surgery.Conventions.Reflection
         }
 
         private Action<Assembly> LogValue(string[] candidates) =>
-            value => _logger.LogDebug("[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
-                nameof(DefaultAssemblyCandidateFinder),
-                value.GetName().Name,
-                candidates
-            );
+            value =>
+            {
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug("[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
+                       nameof(DefaultAssemblyCandidateFinder),
+                        value.GetName().Name,
+                        candidates
+                    );
+                }
+            };
+
         private IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
         {
             if (candidates == null || !candidates.Any())
@@ -61,7 +69,7 @@ namespace Rocket.Surgery.Conventions.Reflection
                 return Enumerable.Empty<Assembly>();
             }
 
-            var candidatesResolver = new AssemblyCandidateResolver(_assemblies, new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase), _logger);
+            var candidatesResolver = new AssemblyCandidateResolver(_assemblies, new HashSet<string?>(candidates, StringComparer.OrdinalIgnoreCase), _logger);
             return candidatesResolver.GetCandidates().Select(x => x.Assembly);
         }
     }

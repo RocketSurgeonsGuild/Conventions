@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using FakeItEasy;
@@ -36,7 +36,7 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            AutoFake.Provide<IDictionary<object, object?>>(properties);
             AutoFake.Provide<IServiceProvider>(properties);
             var configuration = new ConfigurationBuilder().Build();
             AutoFake.Provide<IConfiguration>(configuration);
@@ -67,7 +67,7 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            AutoFake.Provide<IDictionary<object, object>>(properties);
+            AutoFake.Provide<IDictionary<object, object?>>(properties);
             AutoFake.Provide<IServiceProvider>(properties);
             var configuration = new ConfigurationBuilder().Build();
             AutoFake.Provide<IConfiguration>(configuration);
@@ -81,7 +81,7 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
             var builder = AutoFake.Resolve<HostBuilder>();
             var sb = AutoFake.Resolve<ServicesBuilder>();
 
-            Func<ILoggingConventionContext, LogLevel> @delegate = x => LogLevel.Error;
+            static LogLevel @delegate(ILoggingConventionContext x) => LogLevel.Error;
 
             builder.UseLogging(new RocketLoggingOptions() { GetLogLevel = @delegate });
 

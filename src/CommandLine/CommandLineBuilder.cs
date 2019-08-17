@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             IAssemblyProvider assemblyProvider,
             IAssemblyCandidateFinder assemblyCandidateFinder,
             ILogger diagnosticSource,
-            IDictionary<object, object> properties) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
+            IDictionary<object, object?> properties) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
         {
             _application = new CommandLineApplication<ApplicationState>()
             {
@@ -115,13 +115,13 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>ICommandLineBuilder.</returns>
-        public CommandLineApplication<T> AddCommand<T>(Action<CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true)
+        public CommandLineApplication<T> AddCommand<T>(Action<CommandLineApplication<T>>? action = null, bool throwOnUnexpectedArg = true)
             where T : class
         {
             if (action == null)
                 action = application => { };
 
-            var commandAttribute = (typeof(T)).GetCustomAttribute<CommandAttribute>();
+            var commandAttribute = typeof(T).GetCustomAttribute<CommandAttribute>();
 
             if (commandAttribute == null)
             {
@@ -148,7 +148,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>ICommandLineBuilder.</returns>
-        public CommandLineApplication<T> AddCommand<T>(string name, Action<CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true)
+        public CommandLineApplication<T> AddCommand<T>(string name, Action<CommandLineApplication<T>>? action = null, bool throwOnUnexpectedArg = true)
             where T : class
         {
             if (action == null)
@@ -172,7 +172,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>ICommandLineBuilder.</returns>
-        public CommandLineApplication AddCommand(string name, Action<CommandLineApplication> action = null, bool throwOnUnexpectedArg = true)
+        public CommandLineApplication AddCommand(string name, Action<CommandLineApplication>? action = null, bool throwOnUnexpectedArg = true)
         {
             if (action == null)
                 action = application => { };
@@ -204,16 +204,11 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// </summary>
         /// <param name="entryAssembly">The entry assembly.</param>
         /// <returns>ICommandLine.</returns>
-        public ICommandLine Build(Assembly entryAssembly = null)
+        public ICommandLine Build(Assembly? entryAssembly = null)
         {
-            if (entryAssembly is null) entryAssembly = Assembly.GetEntryAssembly();
+            if (entryAssembly is null) entryAssembly = Assembly.GetEntryAssembly()!;
 
-            new ConventionComposer(Scanner)
-                .Register(
-                    this,
-                    typeof(ICommandLineConvention),
-                    typeof(CommandLineConventionDelegate)
-                );
+            Composer.Register(Scanner, this, typeof(ICommandLineConvention), typeof(CommandLineConventionDelegate));
 
             _application.Conventions
                 .UseAttributes()

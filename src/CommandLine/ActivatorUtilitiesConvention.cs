@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
@@ -16,12 +16,12 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// </summary>
     class BackingFieldHelper
     {
-        private static FieldInfo GetBackingField(PropertyInfo pi)
+        private static FieldInfo? GetBackingField(PropertyInfo pi)
         {
-            if (!pi.CanRead || !pi.GetMethod.IsDefined(typeof(CompilerGeneratedAttribute), inherit: true))
+            if (!pi.CanRead || pi.GetMethod?.IsDefined(typeof(CompilerGeneratedAttribute), inherit: true) == false)
                 return null;
 
-            var backingField = pi.DeclaringType.GetTypeInfo().GetDeclaredField($"<{pi.Name}>k__BackingField");
+            var backingField = pi.DeclaringType?.GetTypeInfo().GetDeclaredField($"<{pi.Name}>k__BackingField");
             if (backingField == null)
                 return null;
 
@@ -31,11 +31,13 @@ namespace Rocket.Surgery.Extensions.CommandLine
             return backingField;
         }
 
-        private static FieldInfo GetBackingField(Type objectType, Type interfaceType, string name)
+        private static FieldInfo? GetBackingField(Type objectType, Type interfaceType, string name)
         {
-            var property = objectType.GetTypeInfo().GetProperty($"{interfaceType.FullName.Replace("+", ".")}.{name}", BindingFlags.NonPublic | BindingFlags.Instance);
+            var property = objectType.GetTypeInfo().GetProperty($"{interfaceType.FullName?.Replace("+", ".")}.{name}", BindingFlags.NonPublic | BindingFlags.Instance);
             if (property == null)
                 property = objectType.GetTypeInfo().GetProperty(name);
+            if (property == null)
+                return null;
 
             return GetBackingField(property);
         }
@@ -49,7 +51,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="expression">The expression.</param>
         /// <returns>FieldInfo.</returns>
         /// <exception cref="NotSupportedException">Given Expression is not supported</exception>
-        public static FieldInfo GetBackingField<TInterface, TValue>(Type type, Expression<Func<TInterface, TValue>> expression)
+        public static FieldInfo? GetBackingField<TInterface, TValue>(Type type, Expression<Func<TInterface, TValue>> expression)
         {
             if (expression.Body is MemberExpression exp)
             {
@@ -68,11 +70,12 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="value">The value.</param>
         /// <exception cref="NotSupportedException">Given Expression is not supported</exception>
         public static void SetBackingField<TInterface, TValue>(TInterface instance, Expression<Func<TInterface, TValue>> expression, TValue value)
+            where TInterface : notnull
         {
-            if (expression.Body is MemberExpression exp)
+            if (expression.Body is MemberExpression)
             {
                 var field = GetBackingField(instance.GetType(), expression);
-                field.SetValue(instance, value);
+                field?.SetValue(instance, value);
                 return;
             }
             throw new NotSupportedException("Given Expression is not supported");
@@ -126,8 +129,8 @@ namespace Rocket.Surgery.Extensions.CommandLine
             const BindingFlags binding = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 
             var typeInfo = context.ModelType.GetTypeInfo();
-            MethodInfo method;
-            MethodInfo asyncMethod;
+            MethodInfo? method;
+            MethodInfo? asyncMethod;
             try
             {
                 method = typeInfo.GetMethod("OnExecute", binding);
@@ -179,7 +182,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 property.PropertyInfo.SetValue(model, property.value);
             }
 
-            var arguments = (object[])BindParametersMethod.Invoke(null, new object[] { method, context.Application });
+            var arguments = (object[])BindParametersMethod.Invoke(null, new object[] { method, context.Application })!;
 
             if (method.ReturnType == typeof(Task) || method.ReturnType == typeof(Task<int>))
             {
@@ -207,7 +210,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
         private async Task<int> InvokeAsync(MethodInfo method, object instance, object[] arguments)
         {
-            var result = (Task)method.Invoke(instance, arguments);
+            var result = (Task)method.Invoke(instance, arguments)!;
             if (result is Task<int> intResult)
             {
                 return await intResult;
@@ -222,7 +225,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             var result = method.Invoke(instance, arguments);
             if (method.ReturnType == typeof(int))
             {
-                return (int)result;
+                return (int)result!;
             }
 
             return 0;
@@ -230,9 +233,9 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
 
 
-        private static MethodInfo BindParametersMethod = typeof(ConventionContext).Assembly
-            .GetType("McMaster.Extensions.CommandLineUtils.ReflectionHelper")
-            .GetMethod("BindParameters", BindingFlags.Public | BindingFlags.Static);
+        private static readonly MethodInfo BindParametersMethod = typeof(ConventionContext).Assembly
+            .GetType("McMaster.Extensions.CommandLineUtils.ReflectionHelper")!
+            .GetMethod("BindParameters", BindingFlags.Public | BindingFlags.Static)!;
 
         /// <summary>
         /// The ambiguous on execute method
@@ -267,11 +270,8 @@ namespace Rocket.Surgery.Extensions.CommandLine
         private void ApplyImpl<TModel>(ConventionContext context)
             where TModel : class
         {
-            (context.Application as CommandLineApplication<TModel>).ModelFactory =
-                () =>
-                {
-                    return (TModel)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(TModel));
-                };
+            if (context.Application is CommandLineApplication<TModel> app)
+                app.ModelFactory = () => (TModel)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(TModel));
         }
     }
 }

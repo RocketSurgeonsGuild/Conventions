@@ -43,15 +43,14 @@ namespace Rocket.Surgery.Hosting
         /// <returns>IServiceProvider.</returns>
         public IServiceProvider CreateServiceProvider(IServicesBuilder containerBuilder)
         {
-            var exec = ((IConventionContext)containerBuilder).Properties[typeof(ICommandLineExecutor)] as ICommandLineExecutor;
-            if (exec != null)
+            if (containerBuilder.Properties[typeof(ICommandLineExecutor)] is ICommandLineExecutor exec)
             {
                 var result = new CommandLineResult();
                 containerBuilder.Services.AddSingleton(result);
                 containerBuilder.Services.AddSingleton(exec.ApplicationState);
                 // Remove the hosted service that bootstraps kestrel, we are executing a command here.
                 var webHostedServices = containerBuilder.Services
-                    .Where(x => x.ImplementationType?.FullName.Contains("Microsoft.AspNetCore.Hosting.Internal") == true)
+                    .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting.Internal") == true)
                     .ToArray();
                 if (!exec.IsDefaultCommand)
                 {

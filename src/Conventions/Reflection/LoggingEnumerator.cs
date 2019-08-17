@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -56,10 +56,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <summary>
         /// Sets the enumerator to its initial position, which is before the first element in the collection.
         /// </summary>
-        public void Reset()
-        {
-            _enumerator.Reset();
-        }
+        public void Reset() => _enumerator.Reset();
 
         /// <summary>
         /// Gets the element in the collection at the current position of the enumerator.
@@ -67,14 +64,11 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <value>The current.</value>
         public T Current => _enumerator.Current;
 
-        object IEnumerator.Current => Current;
+        object? IEnumerator.Current => Current;
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
-        {
-            _enumerator.Dispose();
-        }
+        public void Dispose() => _enumerator.Dispose();
     }
 }

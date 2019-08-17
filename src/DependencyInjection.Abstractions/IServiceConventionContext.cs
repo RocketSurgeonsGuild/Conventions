@@ -19,21 +19,25 @@ namespace Rocket.Surgery.Extensions.DependencyInjection
         /// </summary>
         /// <value>The configuration.</value>
         IConfiguration Configuration { get; }
+
         /// <summary>
         /// Gets the assembly provider.
         /// </summary>
         /// <value>The assembly provider.</value>
         IAssemblyProvider AssemblyProvider { get; }
+
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>
         /// <value>The assembly candidate finder.</value>
         IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+
         /// <summary>
         /// Gets the services.
         /// </summary>
         /// <value>The services.</value>
         IServiceCollection Services { get; }
+
         /// <summary>
         /// Gets the on build.
         /// </summary>

@@ -19,6 +19,7 @@ namespace Rocket.Surgery.Extensions.DependencyInjection.Internals
         {
             _action = action;
         }
+
         /// <summary>
         /// Disposes this instance.
         /// </summary>

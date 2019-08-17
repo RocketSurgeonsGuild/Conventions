@@ -126,7 +126,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics
             return new LocateWindow().UpdateAssemblies(candidateAssemblies).UpdateDefinitions(builders);
         }
 
-        private static (FrameView frame, ListView list) BuildListFrameView(string name, View relativeTo = null, bool canFocus = false)
+        private static (FrameView frame, ListView list) BuildListFrameView(string name, View? relativeTo = null, bool canFocus = false)
         {
             var frame = new FrameView(name)
             {
@@ -145,7 +145,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics
             return (frame, list);
         }
 
-        private static (Label label, Label value) BuildLabelView(string name, View relativeTo = null, int width = 12)
+        private static (Label label, Label value) BuildLabelView(string name, View? relativeTo = null, int width = 12)
         {
             var label = new Label(name)
             {
@@ -256,9 +256,9 @@ namespace Rocket.Surgery.Conventions.Diagnostics
                 typeView.value.Text = MinLabelText(detail.Type.FullName);
             }
 
-            string MinLabelText(string value)
+            string MinLabelText(string? value)
             {
-                return value.Substring(0, details.Frame.Width <= 0 ? value.Length : Math.Min(value.Length, details.Frame.Width - assemblyView.label.Frame.Width - 4));
+                return (value ?? string.Empty).Substring(0, details.Frame.Width <= 0 ? (value ?? string.Empty).Length : Math.Min((value ?? string.Empty).Length, details.Frame.Width - assemblyView.label.Frame.Width - 4));
             }
         }
 
@@ -387,9 +387,9 @@ namespace Rocket.Surgery.Conventions.Diagnostics
                 conventionsValue.Text = string.Join("\n", detail.Definitions.Select(z => "* " + z.Name));
             }
 
-            string MinLabelText(string value)
+            string MinLabelText(string? value)
             {
-                return value.Substring(0, details.Frame.Width <= 0 ? value.Length : Math.Min(value.Length, details.Frame.Width - assemblyView.label.Frame.Width - 4));
+                return (value ?? string.Empty).Substring(0, details.Frame.Width <= 0 ? (value ?? string.Empty).Length : Math.Min((value ?? string.Empty).Length, details.Frame.Width - assemblyView.label.Frame.Width - 4));
             }
         }
 
@@ -425,7 +425,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics
         }
 
         public Assembly Assembly { get; }
-        public string Name => Assembly.GetName().Name;
+        public string Name => Assembly.GetName()?.Name ?? string.Empty;
         public TypeInfo[] Conventions { get; }
 
         public override string ToString()
@@ -471,15 +471,15 @@ namespace Rocket.Surgery.Conventions.Diagnostics
             }
             else
             {
-                Type = convention.Delegate.Method.DeclaringType.GetTypeInfo();
+                Type = convention.Delegate!.Method.DeclaringType!.GetTypeInfo();
                 Assembly = Type.Assembly;
-                var name = convention.Delegate.Method.Name;
+                var name = convention.Delegate!.Method.Name;
                 var methodType = convention.Delegate.Method.DeclaringType;
-                var rootName = methodType.FullName;
+                var rootName = methodType!.FullName;
 
                 if (methodType.IsNested)
                 {
-                    rootName = methodType.DeclaringType.Name;
+                    rootName = methodType.DeclaringType!.Name;
                 }
 
                 var regex = new Regex("<(\\w+?)>b_+\\d+?_+(\\d+?)", RegexOptions.Compiled);
@@ -492,6 +492,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics
                 Name = $"{rootName}+{name}";
             }
         }
+
         public ConventionKind Kind { get; }
         public Assembly Assembly { get; }
         public TypeInfo Type { get; }
@@ -521,6 +522,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics
             ConventionType = container.GenericTypeArguments[1].GetTypeInfo();
             DelegateType = container.GenericTypeArguments[2].GetTypeInfo();
         }
+
         public TypeInfo Type { get; }
         public string Name { get; }
         public TypeInfo ConventionType { get; }

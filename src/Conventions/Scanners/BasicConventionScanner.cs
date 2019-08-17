@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,7 +17,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         private readonly List<object> _appendContributions = new List<object>();
         private readonly List<Type> _exceptContributions = new List<Type>();
         private readonly IServiceProvider _serviceProvider;
-        private IConventionProvider _provider;
+        private IConventionProvider? _provider;
 
         /// <summary>
         /// The default constructor
@@ -27,7 +27,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         public BasicConventionScanner(IServiceProvider serviceProvider, params IConvention[] conventions)
         {
             _prependContributions.AddRange(conventions);
-            this._serviceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -263,10 +263,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="assemblies">The convention types to exclude.</param>
         /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner ExceptConvention(IEnumerable<Assembly> assemblies)
-        {
-            return this;
-        }
+        public IConventionScanner ExceptConvention(IEnumerable<Assembly> assemblies) => this;
 
         /// <summary>
         /// Adds an exception to the scanner to exclude a specific type
@@ -274,9 +271,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="assemblies">The additional types to exclude.</param>
         /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner ExceptConvention(params Assembly[] assemblies)
-        {
-            return this;
-        }
+        public IConventionScanner ExceptConvention(params Assembly[] assemblies) => this;
     }
 }

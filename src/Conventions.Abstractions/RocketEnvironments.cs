@@ -1,4 +1,4 @@
-﻿namespace Rocket.Surgery.Conventions
+namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// Rocket Environments.
@@ -9,10 +9,12 @@
         /// Development
         /// </summary>
         public const string Development = "Development";
+
         /// <summary>
         /// Staging
         /// </summary>
         public const string Staging = "Staging";
+
         /// <summary>
         /// Production
         /// </summary>

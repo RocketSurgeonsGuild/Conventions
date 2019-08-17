@@ -59,7 +59,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>System.Object.</returns>
-        public virtual object this[object item]
+        public virtual object? this[object item]
         {
             get => Properties.TryGetValue(item, out var value) ? value : null;
             set => Properties[item] = value;
@@ -75,22 +75,26 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        public IDictionary<object, object> Properties => ServiceProperties;
+        public IDictionary<object, object?> Properties => ServiceProperties;
+
         /// <summary>
         /// Gets the scanner.
         /// </summary>
         /// <value>The scanner.</value>
         public IConventionScanner Scanner { get; }
+
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>
         /// <value>The assembly candidate finder.</value>
         public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+
         /// <summary>
         /// Gets the assembly provider.
         /// </summary>
         /// <value>The assembly provider.</value>
         public IAssemblyProvider AssemblyProvider { get; }
+
         /// <summary>
         /// Gets the diagnostic source.
         /// </summary>

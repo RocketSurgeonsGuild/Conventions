@@ -1,22 +1,23 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// Convention base compose, that calls all methods on register.
-    /// Implements the <see cref="ConventionComposerBase" />
     /// Implements the <see cref="IConventionComposer{TContext, TContribution, TDelegate}" />
     /// </summary>
     /// <typeparam name="TContext">The context type</typeparam>
     /// <typeparam name="TContribution">The contribution type</typeparam>
     /// <typeparam name="TDelegate">The delegate type</typeparam>
-    /// <seealso cref="ConventionComposerBase" />
     /// <seealso cref="IConventionComposer{TContext, TContribution, TDelegate}" />
-    public abstract class ConventionComposer<TContext, TContribution, TDelegate> : ConventionComposerBase, IConventionComposer<TContext, TContribution, TDelegate>
+    [Obsolete("This class will be removed in the future version.  Replaced by Composer.Register<TContext, TContribution, TDelegate>.")]
+    public abstract class ConventionComposer<TContext, TContribution, TDelegate> : IConventionComposer<TContext, TContribution, TDelegate>
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
         where TDelegate : Delegate
@@ -29,8 +30,6 @@ namespace Rocket.Surgery.Conventions
         /// <param name="scanner"></param>
         protected ConventionComposer(IConventionScanner scanner)
         {
-            if (!typeof(Delegate).GetTypeInfo().IsAssignableFrom(typeof(TDelegate).GetTypeInfo()))
-                throw new ArgumentException("TDelegate is not a Delegate");
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         }
 
@@ -41,22 +40,17 @@ namespace Rocket.Surgery.Conventions
         /// <inheritdoc />
         public void Register(TContext context)
         {
-            var items = _scanner.BuildProvider()
-                .Get<TContribution, TDelegate>()
-                .ToList();
-
-            ExecuteRegister(context, items, new[] { typeof(TContribution), typeof(TDelegate) });
+            Composer.Register<TContext, TContribution, TDelegate>(_scanner.BuildProvider(), context);
         }
     }
 
     /// <summary>
     /// Convention base compose, that calls all methods on register.
-    /// Implements the <see cref="ConventionComposerBase" />
     /// Implements the <see cref="IConventionComposer{TContext, TContribution, TDelegate}" />
     /// </summary>
-    /// <seealso cref="ConventionComposerBase" />
     /// <seealso cref="IConventionComposer{TContext, TContribution, TDelegate}" />
-    public class ConventionComposer : ConventionComposerBase, IConventionComposer
+    [Obsolete("This class will be removed in the future version.  Replaced by Composer.Register<TContext, TContribution, TDelegate>.")]
+    public class ConventionComposer : IConventionComposer
     {
         private readonly IConventionScanner _scanner;
 
@@ -64,6 +58,7 @@ namespace Rocket.Surgery.Conventions
         /// A base compose that does the composing of conventions and delegates
         /// </summary>
         /// <param name="scanner">The scanner.</param>
+        [Obsolete("Convention Composer will be come a static class in a future version")]
         public ConventionComposer(IConventionScanner scanner)
         {
             _scanner = scanner;
@@ -77,8 +72,7 @@ namespace Rocket.Surgery.Conventions
         /// <inheritdoc />
         public void Register(IConventionContext context, IEnumerable<Type> types)
         {
-            var items = _scanner.BuildProvider().GetAll().ToList();
-            ExecuteRegister(context, items, types);
+            Composer.Register(_scanner.BuildProvider(), context, types);
         }
     }
 }

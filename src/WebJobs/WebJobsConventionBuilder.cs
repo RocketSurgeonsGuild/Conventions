@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Azure.WebJobs;
@@ -56,7 +56,7 @@ namespace Rocket.Surgery.Extensions.WebJobs
             IConfiguration configuration,
             IRocketEnvironment environment,
             ILogger diagnosticSource,
-            IDictionary<object, object> properties)
+            IDictionary<object, object?> properties)
             : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
         {
             Environment = environment ?? throw new ArgumentNullException(nameof(environment));
@@ -71,8 +71,7 @@ namespace Rocket.Surgery.Extensions.WebJobs
         /// </summary>
         public void Build()
         {
-            new ConventionComposer(Scanner)
-                .Register(this, typeof(IWebJobsConvention), typeof(WebJobsConventionDelegate));
+            Composer.Register(Scanner, this, typeof(IWebJobsConvention), typeof(WebJobsConventionDelegate));
         }
 
         /// <summary>
@@ -80,21 +79,25 @@ namespace Rocket.Surgery.Extensions.WebJobs
         /// </summary>
         /// <value>The web jobs builder.</value>
         public IWebJobsBuilder WebJobsBuilder { get; }
+
         /// <summary>
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
         public IConfiguration Configuration { get; }
+
         /// <summary>
         /// Gets the services.
         /// </summary>
         /// <value>The services.</value>
         public IServiceCollection Services { get; }
+
         /// <summary>
         /// A logger that is configured to work with each convention item
         /// </summary>
         /// <value>The logger.</value>
         public ILogger Logger { get; }
+
         /// <summary>
         /// The environment that this convention is running
         /// Based on IHostEnvironment / IHostingEnvironment

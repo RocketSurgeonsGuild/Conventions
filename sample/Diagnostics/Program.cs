@@ -24,7 +24,7 @@ using Rocket.Surgery.Hosting;
 namespace Diag
 {
     [PublicAPI]
-    public class Program
+    public static class Program
     {
         public static Task<int> Main(string[] args) => CreateHostBuilder(args).RunCli();
 

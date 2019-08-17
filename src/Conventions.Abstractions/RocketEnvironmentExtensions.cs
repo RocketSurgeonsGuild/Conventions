@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting;
 using System;
 
 namespace Rocket.Surgery.Conventions
@@ -81,6 +81,7 @@ namespace Rocket.Surgery.Conventions
                 environmentName,
                 StringComparison.OrdinalIgnoreCase);
         }
+
         /// <summary>
         /// Converts the specified environment.
         /// </summary>
@@ -92,7 +93,7 @@ namespace Rocket.Surgery.Conventions
         {
             return new RocketEnvironment(environment);
         }
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0 || NETSTANDARD2_1
 
         /// <summary>
         /// Converts the specified environment.

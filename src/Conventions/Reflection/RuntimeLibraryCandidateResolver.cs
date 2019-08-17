@@ -115,10 +115,7 @@ namespace Rocket.Surgery.Conventions.Reflection
             /// Returns a <see cref="string" /> that represents this instance.
             /// </summary>
             /// <returns>A <see cref="string" /> that represents this instance.</returns>
-            public override string ToString()
-            {
-                return $"Library: {Library.Name}, Classification: {Classification}";
-            }
+            public override string ToString() => $"Library: {Library.Name}, Classification: {Classification}";
         }
     }
 

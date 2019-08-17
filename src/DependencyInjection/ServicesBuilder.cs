@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -59,7 +59,7 @@ namespace Rocket.Surgery.Extensions.DependencyInjection
             IConfiguration configuration,
             IRocketEnvironment environment,
             ILogger diagnosticSource,
-            IDictionary<object, object> properties)
+            IDictionary<object, object?> properties)
             : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
         {
             Environment = environment ?? throw new ArgumentNullException(nameof(environment));
@@ -85,8 +85,7 @@ namespace Rocket.Surgery.Extensions.DependencyInjection
         /// <returns>IServiceProvider.</returns>
         public IServiceProvider Build()
         {
-            new ConventionComposer(Scanner)
-                .Register(this, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
+            Composer.Register(Scanner, this, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
 
             var result = Services.BuildServiceProvider(ServiceProviderOptions);
             _onBuild.Send(result);
@@ -104,16 +103,19 @@ namespace Rocket.Surgery.Extensions.DependencyInjection
         /// </summary>
         /// <value>The services.</value>
         public IServiceCollection Services { get; }
+
         /// <summary>
         /// A logger that is configured to work with each convention item
         /// </summary>
         /// <value>The logger.</value>
         public ILogger Logger { get; }
+
         /// <summary>
         /// Gets the on build.
         /// </summary>
         /// <value>The on build.</value>
         public IObservable<IServiceProvider> OnBuild => _onBuild;
+
         /// <summary>
         /// The environment that this convention is running
         /// Based on IHostEnvironment / IHostingEnvironment

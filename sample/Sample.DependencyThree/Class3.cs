@@ -1,4 +1,4 @@
-﻿using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions;
 using Sample.DependencyOne;
 using Sample.DependencyThree;
 
@@ -8,6 +8,6 @@ namespace Sample.DependencyThree
 {
     public class Class3 : IConvention
     {
-        public Class1 Class1 { get; set; }
+        public Class1? Class1 { get; set; }
     }
 }

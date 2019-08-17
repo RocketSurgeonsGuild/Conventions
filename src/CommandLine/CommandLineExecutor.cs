@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -23,8 +23,8 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="applicationState">State of the application.</param>
         public CommandLineExecutor(CommandLineApplication application, IApplicationState applicationState)
         {
-            Application = application;
-            ApplicationState = applicationState;
+            Application = application ?? throw new ArgumentNullException(nameof(application));
+            ApplicationState = applicationState ?? throw new ArgumentNullException(nameof(applicationState));
             IsDefaultCommand = Application is IModelAccessor m && m.GetModelType() == typeof(ApplicationState) && !Application.IsShowingInformation;
         }
 
@@ -67,10 +67,9 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
             if (Application is IModelAccessor ma && ma.GetModel() is ApplicationState state)
             {
-                if (state.OnRunType != null)
+                if (state.OnRunType != null && ActivatorUtilities.CreateInstance(serviceProvider, state.OnRunType) is IDefaultCommand defaultCommand)
                 {
-                    var @default = ActivatorUtilities.CreateInstance(serviceProvider, state.OnRunType) as IDefaultCommand;
-                    return @default.Run(state);
+                    return defaultCommand.Run(state);
                 }
 
                 return state.OnRunDelegate?.Invoke(state) ?? int.MinValue;

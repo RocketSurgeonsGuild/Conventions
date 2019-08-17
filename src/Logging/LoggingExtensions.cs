@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,7 +23,7 @@ namespace Rocket.Surgery.Conventions
         /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseLogging(
             this IConventionHostBuilder container,
-            RocketLoggingOptions options = null)
+            RocketLoggingOptions? options = null)
         {
             container.ServiceProperties[typeof(RocketLoggingOptions)] = options ?? new RocketLoggingOptions();
             container.Scanner.PrependConvention<LoggingServiceConvention>();

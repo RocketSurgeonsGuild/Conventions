@@ -22,7 +22,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         private readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
 
         private static readonly ConcurrentDictionary<Assembly, List<IConvention>> Conventions = new ConcurrentDictionary<Assembly, List<IConvention>>();
-        private IConventionProvider _provider;
+        private IConventionProvider? _provider;
         private readonly IAssemblyCandidateFinder _assemblyCandidateFinder;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger _logger;
@@ -124,10 +124,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <returns>IConventionProvider.</returns>
         /// <inheritdoc />
-        public IConventionProvider BuildProvider()
-        {
-            return _provider ??= CreateProvider();
-        }
+        public IConventionProvider BuildProvider() => _provider ??= CreateProvider();
 
         /// <summary>
         /// Method used to create a convention provider

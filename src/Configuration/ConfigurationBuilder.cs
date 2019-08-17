@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -53,7 +53,7 @@ namespace Rocket.Surgery.Extensions.Configuration
             IConfiguration configuration,
             IMsftConfigurationBuilder builder,
             ILogger diagnosticSource,
-            IDictionary<object, object> properties) : base(scanner, properties)
+            IDictionary<object, object?> properties) : base(scanner, properties)
         {
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
             _builder = builder ?? throw new ArgumentNullException(nameof(builder));
@@ -73,6 +73,7 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// </summary>
         /// <value>The configuration.</value>
         public IConfiguration Configuration { get; }
+
         /// <summary>
         /// A logger that is configured to work with each convention item
         /// </summary>
@@ -84,12 +85,7 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// </summary>
         public void Build()
         {
-            new ConventionComposer(_scanner)
-                .Register(
-                    this,
-                    typeof(IConfigurationConvention),
-                    typeof(ConfigurationConventionDelegate)
-                );
+            Composer.Register(Scanner, this, typeof(IConfigurationConvention), typeof(ConfigurationConventionDelegate));
         }
 
         IMsftConfigurationBuilder IMsftConfigurationBuilder.Add(IConfigurationSource source) => _builder.Add(source);

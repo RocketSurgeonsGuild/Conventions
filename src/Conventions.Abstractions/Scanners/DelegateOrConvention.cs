@@ -40,33 +40,27 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// The convention, only Convention or Delegate are available
         /// </summary>
         /// <value>The convention.</value>
-        public IConvention Convention { get; }
+        public IConvention? Convention { get; }
 
         /// <summary>
         /// The delegate, only Convention or Delegate are available
         /// </summary>
         /// <value>The delegate.</value>
-        public Delegate Delegate { get; }
+        public Delegate? Delegate { get; }
 
         /// <summary>
         /// Operator to get the delegate implictly
         /// </summary>
         /// <param name="delegateOrContribution">The delegate or contribution.</param>
         /// <returns>The result of the conversion.</returns>
-        public static implicit operator Delegate(DelegateOrConvention delegateOrContribution)
-        {
-            return delegateOrContribution.Delegate;
-        }
+        public static implicit operator Delegate?(DelegateOrConvention delegateOrContribution) => delegateOrContribution.Delegate;
 
         /// <summary>
         /// Operator to create from a delegate
         /// </summary>
         /// <param name="delegate">The delegate.</param>
         /// <returns>The result of the conversion.</returns>
-        public static implicit operator DelegateOrConvention(Delegate @delegate)
-        {
-            return new DelegateOrConvention(@delegate);
-        }
+        public static implicit operator DelegateOrConvention(Delegate @delegate) => new DelegateOrConvention(@delegate);
 
         /// <summary>
         /// Implements the operator ==.
@@ -74,10 +68,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="convention1">The convention1.</param>
         /// <param name="convention2">The convention2.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator ==(DelegateOrConvention convention1, DelegateOrConvention convention2)
-        {
-            return convention1.Equals(convention2);
-        }
+        public static bool operator ==(DelegateOrConvention convention1, DelegateOrConvention convention2) => convention1.Equals(convention2);
 
         /// <summary>
         /// Implements the operator !=.
@@ -85,9 +76,17 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="convention1">The convention1.</param>
         /// <param name="convention2">The convention2.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator !=(DelegateOrConvention convention1, DelegateOrConvention convention2)
+        public static bool operator !=(DelegateOrConvention convention1, DelegateOrConvention convention2) => !(convention1 == convention2);
+
+        /// <summary>
+        /// Deconstructs the specified convention.
+        /// </summary>
+        /// <param name="convention">The convention.</param>
+        /// <param name="delegate">The delegate.</param>
+        public void Deconstruct(out IConvention? convention, out Delegate? @delegate)
         {
-            return !(convention1 == convention2);
+            convention = Convention;
+            @delegate = Delegate;
         }
 
         /// <summary>
@@ -95,21 +94,17 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
-        {
-            return obj is DelegateOrConvention && Equals((DelegateOrConvention)obj);
-        }
+        public override bool Equals(object? obj) => obj is DelegateOrConvention delegateOrConvention && Equals(delegateOrConvention);
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-        public bool Equals(DelegateOrConvention other)
-        {
-            return EqualityComparer<IConvention>.Default.Equals(Convention, other.Convention) &&
-                   EqualityComparer<Delegate>.Default.Equals(Delegate, other.Delegate);
-        }
+        public bool Equals(DelegateOrConvention other) =>
+            EqualityComparer<IConvention>.Default.Equals(Convention!, other.Convention!)
+                   && EqualityComparer<Delegate>.Default.Equals(Delegate!, other.Delegate!);
+
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -118,9 +113,9 @@ namespace Rocket.Surgery.Conventions.Scanners
         public override int GetHashCode()
         {
             var hashCode = 190459212;
-            hashCode = hashCode * -1521134295 + base.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<IConvention>.Default.GetHashCode(Convention);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Delegate>.Default.GetHashCode(Delegate);
+            hashCode = (hashCode * -1521134295) + base.GetHashCode();
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IConvention>.Default.GetHashCode(Convention!);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<Delegate>.Default.GetHashCode(Delegate!);
             return hashCode;
         }
 
@@ -135,7 +130,7 @@ namespace Rocket.Surgery.Conventions.Scanners
             {
                 var name = Delegate.Method.Name;
                 var methodType = Delegate.Method.DeclaringType;
-                return $"{methodType.FullName}:{name}";
+                return $"{methodType?.FullName}:{name}";
             }
             return "None";
         }

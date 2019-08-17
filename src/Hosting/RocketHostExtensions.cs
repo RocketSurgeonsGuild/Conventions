@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,7 +42,7 @@ namespace Rocket.Surgery.Hosting
         /// <param name="func">The function.</param>
         /// <param name="action">The action.</param>
         /// <returns>IHostBuilder.</returns>
-        public static IHostBuilder UseRocketBooster(this IHostBuilder builder, Func<IHostBuilder, IRocketHostBuilder> func, Action<IRocketHostBuilder> action = null)
+        public static IHostBuilder UseRocketBooster(this IHostBuilder builder, Func<IHostBuilder, IRocketHostBuilder> func, Action<IRocketHostBuilder>? action = null)
         {
             var b = func(builder);
             action?.Invoke(b);
@@ -56,7 +56,7 @@ namespace Rocket.Surgery.Hosting
         /// <param name="func">The function.</param>
         /// <param name="action">The action.</param>
         /// <returns>IHostBuilder.</returns>
-        public static IHostBuilder LaunchWith(this IHostBuilder builder, Func<IHostBuilder, IRocketHostBuilder> func, Action<IRocketHostBuilder> action = null)
+        public static IHostBuilder LaunchWith(this IHostBuilder builder, Func<IHostBuilder, IRocketHostBuilder> func, Action<IRocketHostBuilder>? action = null)
         {
             var b = func(builder);
             action?.Invoke(b);
@@ -117,7 +117,7 @@ namespace Rocket.Surgery.Hosting
         public static IRocketHostBuilder UseDependencyContext(
             this IRocketHostBuilder builder,
             DependencyContext dependencyContext,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return RocketBooster.ForDependencyContext(dependencyContext, diagnosticSource)(builder.Builder);
         }
@@ -132,7 +132,7 @@ namespace Rocket.Surgery.Hosting
         public static IRocketHostBuilder UseAppDomain(
             this IRocketHostBuilder builder,
             AppDomain appDomain,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return RocketBooster.ForAppDomain(appDomain, diagnosticSource)(builder.Builder);
         }
@@ -147,7 +147,7 @@ namespace Rocket.Surgery.Hosting
         public static IRocketHostBuilder UseAssemblies(
             this IRocketHostBuilder builder,
             IEnumerable<Assembly> assemblies,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return RocketBooster.ForAssemblies(assemblies, diagnosticSource)(builder.Builder);
         }

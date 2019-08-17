@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,12 +23,13 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <param name="context">The dependency contenxt to list assemblies for.</param>
         /// <param name="logger">The logger to log out diagnostic information.</param>
-        public DependencyContextAssemblyProvider(DependencyContext context, ILogger logger = null)
+        public DependencyContextAssemblyProvider(DependencyContext context, ILogger? logger = null)
         {
             _assembles = new Lazy<IEnumerable<Assembly>>(() =>
                 context.GetDefaultAssemblyNames()
                     .Select(TryLoad)
-                    .Where(x => x != null));
+                    .Where(x => x != null)
+                    .ToArray());
             _logger = logger ?? NullLogger.Instance;
         }
 
@@ -38,23 +39,34 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <returns>IEnumerable{Assembly}.</returns>
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles.Value, LogValue);
 
-        private void LogValue(Assembly value) =>
-            _logger.LogDebug("[{AssemblyProvider}] Found assembly {AssemblyName}",
-                nameof(DependencyContextAssemblyProvider),
-                value.GetName().Name
-            );
+        private void LogValue(Assembly value)
+        {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("[{AssemblyProvider}] Found assembly {AssemblyName}",
+                    nameof(DependencyContextAssemblyProvider),
+                    value.GetName().Name
+                );
+            }
+        }
 
         private Assembly TryLoad(AssemblyName assemblyName)
         {
-            _logger.LogDebug("Trying to load assembly {Assembly}", assemblyName.Name);
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("Trying to load assembly {Assembly}", assemblyName.Name);
+            }
             try
             {
                 return Assembly.Load(assemblyName);
             }
             catch (Exception e)
             {
-                _logger.LogWarning(0, e, "Failed to load assembly {Assembly}", assemblyName.Name);
-                return default;
+                if (_logger.IsEnabled(LogLevel.Warning))
+                {
+                    _logger.LogWarning(0, e, "Failed to load assembly {Assembly}", assemblyName.Name);
+                }
+                return default!;
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -27,7 +27,7 @@ namespace Rocket.Surgery.Extensions.Logging
         /// Initializes a new instance of the <see cref="LoggingServiceConvention"/> class.
         /// </summary>
         /// <param name="options">The options.</param>
-        public LoggingServiceConvention(RocketLoggingOptions options = null)
+        public LoggingServiceConvention(RocketLoggingOptions? options = null)
         {
             _options = options ?? new RocketLoggingOptions();
         }

@@ -26,12 +26,12 @@ namespace Rocket.Surgery.Conventions.Scanners
                 .Union(appendedContributionsOrDelegates)
                 .Select(x =>
                 {
-                    switch (x)
+                    return x switch
                     {
-                        case IConvention a: return new DelegateOrConvention(a);
-                        case Delegate d: return new DelegateOrConvention(d);
-                        default: return DelegateOrConvention.None;
-                    }
+                        IConvention a => new DelegateOrConvention(a),
+                        Delegate d => new DelegateOrConvention(d),
+                        _ => DelegateOrConvention.None,
+                    };
                 })
                 .Where(x => x != DelegateOrConvention.None)
                 .ToArray();
@@ -45,9 +45,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <returns>IEnumerable{DelegateOrConvention}.</returns>
         public IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
             where TContribution : IConvention
-            where TDelegate : Delegate
-        {
-            return _conventions
+            where TDelegate : Delegate => _conventions
                 .Select(x =>
                 {
                     if (x.Convention is TContribution a)
@@ -62,15 +60,11 @@ namespace Rocket.Surgery.Conventions.Scanners
                     return DelegateOrConvention.None;
                 })
                 .Where(x => x != DelegateOrConvention.None);
-        }
 
         /// <summary>
         /// Gets a all the conventions from the provider
         /// </summary>
         /// <returns>IEnumerable{DelegateOrConvention}.</returns>
-        public IEnumerable<DelegateOrConvention> GetAll()
-        {
-            return _conventions;
-        }
+        public IEnumerable<DelegateOrConvention> GetAll() => _conventions;
     }
 }

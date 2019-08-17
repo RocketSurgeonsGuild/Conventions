@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -83,8 +83,8 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             response.Application.OptionHelp.Should().NotBeNull();
 
             response.Execute(AutoFake.Resolve<IServiceProvider>(), "remote", "add", "-v").Should().Be(1);
-            Logger.LogInformation(response.Application.Commands.Find(x => x.Name == "remote").GetHelpText());
-            response.Application.Commands.Find(x => x.Name == "fetch").GetHelpText().Should().NotBeNullOrEmpty();
+            Logger.LogInformation(response.Application.Commands.Find(x => x.Name == "remote")!.GetHelpText());
+            response.Application.Commands.Find(x => x.Name == "fetch")!.GetHelpText().Should().NotBeNullOrEmpty();
         }
 
         [Fact]
@@ -229,7 +229,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
 
             var serviceProvider = A.Fake<IServiceProvider>();
 
-            A.CallTo(() => serviceProvider.GetService(A<Type>.Ignored)).Returns(null);
+            A.CallTo(() => serviceProvider.GetService(A<Type>.Ignored)).Returns(null!);
             A.CallTo(() => serviceProvider.GetService(typeof(IService))).Returns(service).NumberOfTimes(2);
             builder.OnRun((state) =>
             {
@@ -345,10 +345,10 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         class CommandWithValues
         {
             [Option("--api-domain", CommandOptionType.SingleValue, Description = "The auth0 Domain")]
-            public string ApiDomain { get; }
+            public string? ApiDomain { get; }
 
             [Option("--client-name", CommandOptionType.SingleValue, Description = "The client name to create or update")]
-            public string ClientName { get; }
+            public string? ClientName { get; }
 
             [Option("--origin", CommandOptionType.MultipleValue, Description =
                 "The origins that are allowed to access the client")]

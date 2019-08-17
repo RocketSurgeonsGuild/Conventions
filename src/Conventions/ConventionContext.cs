@@ -16,10 +16,10 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="properties"></param>
-        protected ConventionContext(ILogger logger, IDictionary<object, object> properties)
+        protected ConventionContext(ILogger logger, IDictionary<object, object?> properties)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            Properties = properties ?? new Dictionary<object, object>();
+            Properties = properties ?? new Dictionary<object, object?>();
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>System.Object.</returns>
-        public virtual object this[object item]
+        public virtual object? this[object item]
         {
             get => Properties.TryGetValue(item, out var value) ? value : null;
             set => Properties[item] = value;
@@ -37,7 +37,7 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        public IDictionary<object, object> Properties { get; }
+        public IDictionary<object, object?> Properties { get; }
 
         /// <summary>
         /// A logger that is configured to work with each convention item

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
@@ -15,6 +15,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public BasicConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
+
         class C : IServiceConvention
         {
             public void Register(IServiceConventionContext context)
@@ -155,7 +156,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
             result.Count().Should().Be(3);
-            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+            result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
         [Fact]
@@ -167,7 +168,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
             result.Count().Should().Be(3);
-            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+            result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
         [Fact]
@@ -272,7 +273,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
             result.Count().Should().Be(3);
-            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+            result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
         [Fact]
@@ -284,7 +285,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
             result.Count().Should().Be(3);
-            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+            result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
         [Fact]

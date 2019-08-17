@@ -1,4 +1,4 @@
-﻿using FakeItEasy;
+using FakeItEasy;
 using FluentAssertions;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
@@ -43,10 +43,9 @@ namespace Rocket.Surgery.Conventions.Tests
                     new DelegateOrConvention(dele),
                     new DelegateOrConvention(dele2),
                 }.AsEnumerable());
-            var composer = new ServiceConventionComposer(scanner);
 
-            composer.Register(new ServiceConventionContext(Logger));
-            composer.Register(new ServiceConventionContext(Logger));
+            Composer.Register<ServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(provider, new ServiceConventionContext(Logger));
+            Composer.Register<ServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(provider, new ServiceConventionContext(Logger));
             A.CallTo(() => dele.Invoke(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
             A.CallTo(() => dele2.Invoke(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
             A.CallTo(() => contrib.Register(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
