@@ -9,11 +9,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Nuke.Common" Version="0.21.2" />
-    <PackageReference Update="Rocket.Surgery.Nuke.DotNetCore" Version="0.3.5" />
+    <PackageReference Update="Rocket.Surgery.Nuke.DotNetCore" Version="0.3.6" />
     <PackageReference Update="GitVersion.CommandLine.DotNetCore" Version="5.0.1" />
     <PackageReference Update="ReportGenerator" Version="4.2.15" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Update="BenchMarkDotNet" Version="0.11.5" />
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="2.1.1" />
