@@ -16,6 +16,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <value>The scanner.</value>
         IConventionScanner Scanner { get; }
+
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>
@@ -27,11 +28,13 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <value>The properties.</value>
         IServiceProviderDictionary ServiceProperties { get; }
+
         /// <summary>
         /// Gets the assembly provider.
         /// </summary>
         /// <value>The assembly provider.</value>
         IAssemblyProvider AssemblyProvider { get; }
+
         /// <summary>
         /// Gets the diagnostic source.
         /// </summary>

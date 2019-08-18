@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -46,14 +46,8 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
-        public IEnumerator<T> GetEnumerator()
-        {
-            return new LoggingEnumerator<T>(_enumerable.GetEnumerator(), _logAction);
-        }
+        public IEnumerator<T> GetEnumerator() => new LoggingEnumerator<T>(_enumerable.GetEnumerator(), _logAction);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 // ReSharper disable UnusedTypeParameter
 
@@ -12,6 +12,7 @@ namespace Rocket.Surgery.Conventions
     /// <typeparam name="TContribution">The contribution type</typeparam>
     /// <typeparam name="TDelegate">The delegate Type</typeparam>
     /// <seealso cref="IConvention{TContext}" />
+    [Obsolete("This class will be removed in the future version.  Replaced by Composer.Register<TContext, TContribution, TDelegate>.")]
     public interface IConventionComposer<in TContext, TContribution, TDelegate> : IConvention<TContext>
         where TContribution : IConvention<TContext>
         where TContext : IConventionContext
@@ -24,6 +25,7 @@ namespace Rocket.Surgery.Conventions
     /// Implements the <see cref="IConvention{TContext}" />
     /// </summary>
     /// <seealso cref="IConvention{TContext}" />
+    [Obsolete("This class will be removed in the future version.  Replaced by Composer.Register.")]
     public interface IConventionComposer
     {
         /// <summary>

@@ -36,7 +36,7 @@ namespace Rocket.Surgery.Conventions
             IConventionScanner scanner,
             IAssemblyProvider assemblyProvider,
             IAssemblyCandidateFinder assemblyCandidateFinder,
-            IDictionary<object, object> properties
+            IDictionary<object, object?> properties
         ) : base(scanner, properties)
         {
             AssemblyProvider = assemblyProvider ?? throw new ArgumentNullException(nameof(assemblyProvider));

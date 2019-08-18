@@ -19,7 +19,8 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// Gets the properties.
         /// </summary>
         /// <value>The properties.</value>
-        new IDictionary<object, object> Properties { get; }
+        new IDictionary<object, object?> Properties { get; }
+
         /// <summary>
         /// Gets the configuration.
         /// </summary>

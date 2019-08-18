@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <param name="appDomain">The application domain.</param>
         /// <param name="logger">The logger.</param>
-        public AppDomainAssemblyCandidateFinder(AppDomain appDomain = null, ILogger logger = null)
+        public AppDomainAssemblyCandidateFinder(AppDomain? appDomain = null, ILogger? logger = null)
         {
             _appDomain = appDomain ?? AppDomain.CurrentDomain;
             _logger = logger ?? NullLogger.Instance;
@@ -44,11 +44,15 @@ namespace Rocket.Surgery.Conventions.Reflection
         }
 
         private Action<Assembly> LogValue(string[] candidates) =>
-            value => _logger.LogDebug("[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
-                nameof(AppDomainAssemblyCandidateFinder),
-                value.GetName().Name,
-                candidates
-            );
+            value => {
+                if (_logger.IsEnabled(LogLevel.Debug)) {
+                    _logger.LogDebug("[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
+                        nameof(AppDomainAssemblyCandidateFinder),
+                        value.GetName().Name,
+                        candidates
+                    );
+                }
+            };
 
         private IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
         {
@@ -58,7 +62,7 @@ namespace Rocket.Surgery.Conventions.Reflection
             }
 
             // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
-            var candidatesResolver = new AssemblyCandidateResolver(_appDomain.GetAssemblies(), new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase), _logger);
+            var candidatesResolver = new AssemblyCandidateResolver(_appDomain.GetAssemblies(), new HashSet<string?>(candidates, StringComparer.OrdinalIgnoreCase), _logger);
             return candidatesResolver.GetCandidates().Select(x => x.Assembly).ToArray();
         }
     }

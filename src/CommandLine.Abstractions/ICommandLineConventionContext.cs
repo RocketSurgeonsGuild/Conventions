@@ -40,7 +40,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication{T}.</returns>
-        CommandLineApplication<T> AddCommand<T>(Action<CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true) where T : class;
+        CommandLineApplication<T> AddCommand<T>(Action<CommandLineApplication<T>>? action = null, bool throwOnUnexpectedArg = true) where T : class;
 
         /// <summary>
         /// Adds the command.
@@ -50,7 +50,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication{T}.</returns>
-        CommandLineApplication<T> AddCommand<T>(string name, Action<CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true) where T : class;
+        CommandLineApplication<T> AddCommand<T>(string name, Action<CommandLineApplication<T>>? action = null, bool throwOnUnexpectedArg = true) where T : class;
 
         /// <summary>
         /// Adds the command.
@@ -59,7 +59,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication.</returns>
-        CommandLineApplication AddCommand(string name, Action<CommandLineApplication> action = null, bool throwOnUnexpectedArg = true);
+        CommandLineApplication AddCommand(string name, Action<CommandLineApplication>? action = null, bool throwOnUnexpectedArg = true);
 
         /// <summary>
         /// Called when [parse].

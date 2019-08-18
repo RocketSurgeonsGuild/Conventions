@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using FakeItEasy;
 using FluentAssertions;
@@ -33,7 +33,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
                 AutoFake.Resolve<IFileProvider>());
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Action a = () => RocketEnvironmentExtensions.IsDevelopment(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             a.Should().Throw<ArgumentNullException>();
         }
 
@@ -43,7 +45,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
                 AutoFake.Resolve<IFileProvider>());
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Action a = () => RocketEnvironmentExtensions.IsEnvironment(null, RocketEnvironments.Staging);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             a.Should().Throw<ArgumentNullException>();
         }
 
@@ -53,7 +57,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
                 AutoFake.Resolve<IFileProvider>());
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Action a = () => RocketEnvironmentExtensions.IsEnvironment(null, RocketEnvironments.Production);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             a.Should().Throw<ArgumentNullException>();
         }
 
@@ -63,7 +69,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
                 AutoFake.Resolve<IFileProvider>());
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Action a = () => RocketEnvironmentExtensions.IsEnvironment(null, RocketEnvironments.Development);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             a.Should().Throw<ArgumentNullException>();
         }
 
@@ -100,14 +108,16 @@ namespace Rocket.Surgery.Conventions.Tests
         [InlineData(RocketEnvironments.Production)]
         public void ShouldConvertFromIHostingEnvironment(string envName)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             var fakeEnvironment = A.Fake<IHostingEnvironment>();
+#pragma warning restore CS0618 // Type or member is obsolete
             A.CallTo(() => fakeEnvironment.EnvironmentName).Returns(envName);
             var env = fakeEnvironment.Convert();
 
             env.EnvironmentName.Should().Be(envName);
         }
 
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0 || NETSTANDARD2_1
         [Theory]
         [InlineData(RocketEnvironments.Development)]
         [InlineData(RocketEnvironments.Staging)]

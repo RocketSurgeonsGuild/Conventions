@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
@@ -21,7 +21,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <param name="assemblies">The assemblies</param>
         /// <param name="logger">The logger</param>
-        public DefaultAssemblyProvider(IEnumerable<Assembly> assemblies, ILogger logger = null)
+        public DefaultAssemblyProvider(IEnumerable<Assembly> assemblies, ILogger? logger = null)
         {
             _assembles = assemblies.Where(x => x != null).ToArray();
             _logger = logger ?? NullLogger.Instance;
@@ -33,10 +33,15 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <returns>IEnumerable{Assembly}.</returns>
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles, LogValue);
 
-        private void LogValue(Assembly value) =>
-            _logger.LogDebug("[{AssemblyProvider}] Found assembly {AssemblyName}",
-                nameof(DefaultAssemblyProvider),
-                value.GetName().Name
-            );
+        private void LogValue(Assembly value)
+        {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("[{AssemblyProvider}] Found assembly {AssemblyName}",
+                    nameof(DefaultAssemblyProvider),
+                    value.GetName().Name
+                );
+            }
+        }
     }
 }

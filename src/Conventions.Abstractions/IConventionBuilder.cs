@@ -21,6 +21,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <value>The assembly provider.</value>
         IAssemblyProvider AssemblyProvider { get; }
+
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>

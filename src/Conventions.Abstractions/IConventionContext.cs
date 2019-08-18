@@ -13,13 +13,13 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>System.Object.</returns>
-        object this[object item] { get; set; }
+        object? this[object item] { get; set; }
 
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        IDictionary<object, object> Properties { get; }
+        IDictionary<object, object?> Properties { get; }
 
         /// <summary>
         /// A logger that is configured to work with each convention item

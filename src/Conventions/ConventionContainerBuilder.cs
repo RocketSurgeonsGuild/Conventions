@@ -30,7 +30,7 @@ namespace Rocket.Surgery.Conventions
         /// </exception>
         protected ConventionContainerBuilder(
             IConventionScanner scanner,
-            IDictionary<object, object> properties)
+            IDictionary<object, object?> properties)
         {
             Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
             Properties = properties ?? throw new ArgumentNullException(nameof(properties));
@@ -44,7 +44,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns>System.Object.</returns>
-        public virtual object this[object item]
+        public virtual object? this[object item]
         {
             get => Properties.TryGetValue(item, out var value) ? value : null;
             set => Properties[item] = value;
@@ -54,7 +54,7 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        public IDictionary<object, object> Properties { get; }
+        public IDictionary<object, object?> Properties { get; }
 
         /// <summary>
         /// Gets the scanner.

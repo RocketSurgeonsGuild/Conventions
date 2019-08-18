@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
@@ -44,7 +44,10 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <returns>ICommandLineExecutor.</returns>
         public ICommandLineExecutor Parse(params string[] args)
         {
-            _logger.LogTrace("Parsing {@Args}", args);
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                _logger.LogTrace("Parsing {@Args}", args);
+            }
             var result = Application.Parse(args);
 
             var parent = result.SelectedCommand;
@@ -53,7 +56,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 parent = parent.Parent;
             }
 
-            ApplicationState myState = null;
+            ApplicationState? myState = null;
             if (parent is IModelAccessor ma && ma.GetModel() is ApplicationState state)
             {
                 state.IsDefaultCommand = result.SelectedCommand is IModelAccessor m && m.GetModelType() == typeof(ApplicationState) && !result.SelectedCommand.IsShowingInformation;
@@ -64,24 +67,26 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 myState = state;
             }
 
-            _logger.LogTrace("Selected Command {@Command} {@State}",
-                new
-                {
-                    result.SelectedCommand.FullName,
-                    result.SelectedCommand.Name,
-                    result.SelectedCommand.Description
-                },
-                new
-                {
-                    myState.RemainingArguments,
-                    myState.Trace,
-                    myState.Verbose,
-                    myState.Log.Level
-                }
-            );
+            if (myState != null && _logger.IsEnabled(LogLevel.Trace))
+            {
+                _logger.LogTrace("Selected Command {@Command} {@State}",
+                    new
+                    {
+                        result.SelectedCommand.FullName,
+                        result.SelectedCommand.Name,
+                        result.SelectedCommand.Description
+                    },
+                    new
+                    {
+                        myState.RemainingArguments,
+                        myState.Trace,
+                        myState.Verbose,
+                        myState.Log.Level
+                    }
+                );
+            }
 
-            var executor = new CommandLineExecutor(result.SelectedCommand, myState);
-            return executor;
+            return new CommandLineExecutor(result.SelectedCommand, myState!);
         }
 
         /// <summary>
@@ -92,7 +97,10 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <returns>System.Int32.</returns>
         public int Execute(IServiceProvider serviceProvider, params string[] args)
         {
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
             _logger.LogTrace("Executing {@Args}", args);
+            }
             return Parse(args).Execute(serviceProvider);
         }
     }

@@ -19,69 +19,69 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", ".build\.build.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{E3DCB78E-EE06-4EA3-88AC-762D8910387C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Conventions", "src\Conventions\Rocket.Surgery.Conventions.csproj", "{485374E4-374F-47BC-93D9-B9EB719742AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Conventions", "src\Conventions\Rocket.Surgery.Conventions.csproj", "{485374E4-374F-47BC-93D9-B9EB719742AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Conventions.Abstractions", "src\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj", "{3D882153-8CBC-46AB-B93E-8C70DFF4765F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Conventions.Abstractions", "src\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj", "{3D882153-8CBC-46AB-B93E-8C70DFF4765F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Conventions.Tests", "test\Conventions.Tests\Rocket.Surgery.Conventions.Tests.csproj", "{840A1D05-6E19-4D56-A752-8054646D0297}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Conventions.Tests", "test\Conventions.Tests\Rocket.Surgery.Conventions.Tests.csproj", "{840A1D05-6E19-4D56-A752-8054646D0297}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{96A0AEB7-ACFA-491C-8FA5-2A1BE4E8B718}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.DependencyOne", "sample\Sample.DependencyOne\Sample.DependencyOne.csproj", "{4A67F092-0AFF-4358-B9C5-9FD06469F21C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.DependencyOne", "sample\Sample.DependencyOne\Sample.DependencyOne.csproj", "{4A67F092-0AFF-4358-B9C5-9FD06469F21C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.DependencyThree", "sample\Sample.DependencyThree\Sample.DependencyThree.csproj", "{F4B6AB74-9949-4CB7-A0D7-C7A51827394D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.DependencyThree", "sample\Sample.DependencyThree\Sample.DependencyThree.csproj", "{F4B6AB74-9949-4CB7-A0D7-C7A51827394D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.DependencyTwo", "sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj", "{07E9A423-1C40-4EBC-9E28-B109CCDFD770}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.DependencyTwo", "sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj", "{07E9A423-1C40-4EBC-9E28-B109CCDFD770}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.CommandLine", "src\CommandLine\Rocket.Surgery.Extensions.CommandLine.csproj", "{6727277B-60DA-4C7E-BFD5-EEBF68A832A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.CommandLine", "src\CommandLine\Rocket.Surgery.Extensions.CommandLine.csproj", "{6727277B-60DA-4C7E-BFD5-EEBF68A832A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.CommandLine.Abstractions", "src\CommandLine.Abstractions\Rocket.Surgery.Extensions.CommandLine.Abstractions.csproj", "{76F35964-D01E-4368-815E-FCCC31432825}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.CommandLine.Abstractions", "src\CommandLine.Abstractions\Rocket.Surgery.Extensions.CommandLine.Abstractions.csproj", "{76F35964-D01E-4368-815E-FCCC31432825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.Configuration", "src\Configuration\Rocket.Surgery.Extensions.Configuration.csproj", "{612DFB29-6F38-4B14-AB38-E85EAB44B6AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.Configuration", "src\Configuration\Rocket.Surgery.Extensions.Configuration.csproj", "{612DFB29-6F38-4B14-AB38-E85EAB44B6AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.Configuration.Abstractions", "src\Configuration.Abstractions\Rocket.Surgery.Extensions.Configuration.Abstractions.csproj", "{15723036-281B-42A6-B8D6-DA3428569AC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.Configuration.Abstractions", "src\Configuration.Abstractions\Rocket.Surgery.Extensions.Configuration.Abstractions.csproj", "{15723036-281B-42A6-B8D6-DA3428569AC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.DependencyInjection", "src\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj", "{36787F00-E1C4-42B8-A676-EF654FD40D75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.DependencyInjection", "src\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj", "{36787F00-E1C4-42B8-A676-EF654FD40D75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.DependencyInjection.Abstractions", "src\DependencyInjection.Abstractions\Rocket.Surgery.Extensions.DependencyInjection.Abstractions.csproj", "{2EBFAD4D-FF98-4294-849B-EE572C408B9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.DependencyInjection.Abstractions", "src\DependencyInjection.Abstractions\Rocket.Surgery.Extensions.DependencyInjection.Abstractions.csproj", "{2EBFAD4D-FF98-4294-849B-EE572C408B9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.Logging", "src\Logging\Rocket.Surgery.Extensions.Logging.csproj", "{76AD4409-8810-4C8D-8211-17E8DEC34F75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.Logging", "src\Logging\Rocket.Surgery.Extensions.Logging.csproj", "{76AD4409-8810-4C8D-8211-17E8DEC34F75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.Logging.Abstractions", "src\Logging.Abstractions\Rocket.Surgery.Extensions.Logging.Abstractions.csproj", "{1C9DC79B-250D-46AE-B272-3F251BAF4203}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.Logging.Abstractions", "src\Logging.Abstractions\Rocket.Surgery.Extensions.Logging.Abstractions.csproj", "{1C9DC79B-250D-46AE-B272-3F251BAF4203}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.WebJobs", "src\WebJobs\Rocket.Surgery.Extensions.WebJobs.csproj", "{BE4511CC-7443-48A3-954D-718F50A967E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.WebJobs", "src\WebJobs\Rocket.Surgery.Extensions.WebJobs.csproj", "{BE4511CC-7443-48A3-954D-718F50A967E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.WebJobs.Abstractions", "src\WebJobs.Abstractions\Rocket.Surgery.Extensions.WebJobs.Abstractions.csproj", "{F9EB555A-6C6E-499C-A5AB-B240AD41EFC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.WebJobs.Abstractions", "src\WebJobs.Abstractions\Rocket.Surgery.Extensions.WebJobs.Abstractions.csproj", "{F9EB555A-6C6E-499C-A5AB-B240AD41EFC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.CommandLine.Tests", "test\CommandLine.Tests\Rocket.Surgery.Extensions.CommandLine.Tests.csproj", "{6472D7E0-9E3D-4ED7-A018-C18A26698A4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.CommandLine.Tests", "test\CommandLine.Tests\Rocket.Surgery.Extensions.CommandLine.Tests.csproj", "{6472D7E0-9E3D-4ED7-A018-C18A26698A4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.Configuration.Tests", "test\Configuration.Tests\Rocket.Surgery.Extensions.Configuration.Tests.csproj", "{BC402152-AAA5-45C8-9DA0-BC8A64506A18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.Configuration.Tests", "test\Configuration.Tests\Rocket.Surgery.Extensions.Configuration.Tests.csproj", "{BC402152-AAA5-45C8-9DA0-BC8A64506A18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.DependencyInjection.Tests", "test\DependencyInjection.Tests\Rocket.Surgery.Extensions.DependencyInjection.Tests.csproj", "{1A5DFFD2-B220-4178-AE93-37AD6495E5CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.DependencyInjection.Tests", "test\DependencyInjection.Tests\Rocket.Surgery.Extensions.DependencyInjection.Tests.csproj", "{1A5DFFD2-B220-4178-AE93-37AD6495E5CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.Logging.Tests", "test\Logging.Tests\Rocket.Surgery.Extensions.Logging.Tests.csproj", "{664D9B4F-3991-408D-BBFC-A65BBD0603A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.Logging.Tests", "test\Logging.Tests\Rocket.Surgery.Extensions.Logging.Tests.csproj", "{664D9B4F-3991-408D-BBFC-A65BBD0603A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Extensions.WebJobs.Tests", "test\WebJobs.Tests\Rocket.Surgery.Extensions.WebJobs.Tests.csproj", "{7968A69A-9A81-4856-9DAA-CFE4240D1512}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Extensions.WebJobs.Tests", "test\WebJobs.Tests\Rocket.Surgery.Extensions.WebJobs.Tests.csproj", "{7968A69A-9A81-4856-9DAA-CFE4240D1512}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Hosting", "src\Hosting\Rocket.Surgery.Hosting.csproj", "{5AAF0361-6838-472F-BEE8-6B2485A64C29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Hosting", "src\Hosting\Rocket.Surgery.Hosting.csproj", "{5AAF0361-6838-472F-BEE8-6B2485A64C29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Hosting.Abstractions", "src\Hosting.Abstractions\Rocket.Surgery.Hosting.Abstractions.csproj", "{C73891C6-F2A7-4376-94D4-6730707B1DAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Hosting.Abstractions", "src\Hosting.Abstractions\Rocket.Surgery.Hosting.Abstractions.csproj", "{C73891C6-F2A7-4376-94D4-6730707B1DAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Hosting.Functions", "src\Hosting.Functions\Rocket.Surgery.Hosting.Functions.csproj", "{1702F2EC-2A90-40E4-ADEF-F46BD70AEED0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Hosting.Functions", "src\Hosting.Functions\Rocket.Surgery.Hosting.Functions.csproj", "{1702F2EC-2A90-40E4-ADEF-F46BD70AEED0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Hosting.AspNetCore.Tests", "test\Hosting.AspNetCore.Tests\Rocket.Surgery.Hosting.AspNetCore.Tests.csproj", "{8F36F458-A5EE-4E3E-8AFF-2F6D6952A363}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Hosting.AspNetCore.Tests", "test\Hosting.AspNetCore.Tests\Rocket.Surgery.Hosting.AspNetCore.Tests.csproj", "{8F36F458-A5EE-4E3E-8AFF-2F6D6952A363}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Hosting.Functions.Tests", "test\Hosting.Functions.Tests\Rocket.Surgery.Hosting.Functions.Tests.csproj", "{1D24788C-1981-4E03-88A8-977B8996FB7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Hosting.Functions.Tests", "test\Hosting.Functions.Tests\Rocket.Surgery.Hosting.Functions.Tests.csproj", "{1D24788C-1981-4E03-88A8-977B8996FB7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Hosting.Tests", "test\Hosting.Tests\Rocket.Surgery.Hosting.Tests.csproj", "{FC5097EF-5751-48C9-8A7C-01588E649957}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Hosting.Tests", "test\Hosting.Tests\Rocket.Surgery.Hosting.Tests.csproj", "{FC5097EF-5751-48C9-8A7C-01588E649957}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Conventions.Diagnostics", "src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj", "{8516E650-93F2-4F9A-B4ED-D83AB1469FD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Surgery.Conventions.Diagnostics", "src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj", "{8516E650-93F2-4F9A-B4ED-D83AB1469FD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnostics", "sample\Diagnostics\Diagnostics.csproj", "{60352223-EEDC-4C1B-ACAC-D28622D5357B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diagnostics", "sample\Diagnostics\Diagnostics.csproj", "{60352223-EEDC-4C1B-ACAC-D28622D5357B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{6E25DD54-88B0-4647-9AB1-2575C5253B52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hosting.Benchmarks", "benchmarks\Hosting.Benchmarks\Hosting.Benchmarks.csproj", "{3E4C7202-8D87-4A52-A50A-0F0CC62BA70B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hosting.Benchmarks", "benchmarks\Hosting.Benchmarks\Hosting.Benchmarks.csproj", "{3E4C7202-8D87-4A52-A50A-0F0CC62BA70B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

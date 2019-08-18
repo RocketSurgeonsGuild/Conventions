@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -209,7 +209,7 @@ namespace Rocket.Surgery.Hosting.Functions
         public static IRocketFunctionHostBuilder UseDependencyContext(
             this IRocketFunctionHostBuilder builder,
             DependencyContext dependencyContext,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return RocketBooster.ForDependencyContext(dependencyContext, diagnosticSource)(builder.Builder, builder.FunctionsAssembly);
         }
@@ -224,7 +224,7 @@ namespace Rocket.Surgery.Hosting.Functions
         public static IRocketFunctionHostBuilder UseAppDomain(
             this IRocketFunctionHostBuilder builder,
             AppDomain appDomain,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return RocketBooster.ForAppDomain(appDomain, diagnosticSource)(builder.Builder, builder.FunctionsAssembly);
         }
@@ -239,7 +239,7 @@ namespace Rocket.Surgery.Hosting.Functions
         public static IRocketFunctionHostBuilder UseAssemblies(
             this IRocketFunctionHostBuilder builder,
             IEnumerable<Assembly> assemblies,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return RocketBooster.ForAssemblies(assemblies, diagnosticSource)(builder.Builder, builder.FunctionsAssembly);
         }
@@ -251,7 +251,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <param name="startupInstance">The startup instance.</param>
         /// <param name="environment">The environment.</param>
         /// <returns>RocketFunctionHostBuilder.</returns>
-        internal static RocketFunctionHostBuilder GetOrCreateBuilder(IRocketFunctionHostBuilder builder, object startupInstance, IRocketEnvironment environment)
+        internal static RocketFunctionHostBuilder GetOrCreateBuilder(IRocketFunctionHostBuilder builder, object startupInstance, IRocketEnvironment? environment)
         {
             return GetOrCreateBuilder(builder.Builder, startupInstance, environment);
         }
@@ -263,7 +263,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <param name="startupInstance">The startup instance.</param>
         /// <param name="environment">The environment.</param>
         /// <returns>RocketFunctionHostBuilder.</returns>
-        internal static RocketFunctionHostBuilder GetOrCreateBuilder(IWebJobsBuilder builder, object startupInstance, IRocketEnvironment environment)
+        internal static RocketFunctionHostBuilder GetOrCreateBuilder(IWebJobsBuilder builder, object startupInstance, IRocketEnvironment? environment)
         {
             if (!Builders.TryGetValue(builder, out var conventionalBuilder))
             {
@@ -271,7 +271,7 @@ namespace Rocket.Surgery.Hosting.Functions
                 var functionsAssembly = startupInstance.GetType().Assembly;
 
                 var location = Path.GetDirectoryName(functionsAssembly.Location);
-                DependencyContext dependencyContext = null;
+                DependencyContext? dependencyContext = null;
                 while (dependencyContext == null && !string.IsNullOrEmpty(location))
                 {
                     var depsFilePath = Path.Combine(location, functionsAssembly.GetName().Name + ".deps.json");
@@ -286,11 +286,11 @@ namespace Rocket.Surgery.Hosting.Functions
                     location = Path.GetDirectoryName(location);
                 }
                 var logger = new DiagnosticLogger(diagnosticSource);
-                var assemblyCandidateFinder = new DependencyContextAssemblyCandidateFinder(dependencyContext, logger);
-                var assemblyProvider = new DependencyContextAssemblyProvider(dependencyContext, logger);
+                var assemblyCandidateFinder = new DependencyContextAssemblyCandidateFinder(dependencyContext!, logger);
+                var assemblyProvider = new DependencyContextAssemblyProvider(dependencyContext!, logger);
                 var properties = new ServiceProviderDictionary();
                 var scanner = new SimpleConventionScanner(assemblyCandidateFinder, properties, logger);
-                conventionalBuilder = new RocketFunctionHostBuilder(builder, functionsAssembly, startupInstance, environment, scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties);
+                conventionalBuilder = new RocketFunctionHostBuilder(builder, functionsAssembly, startupInstance, environment!, scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties);
                 Builders.Add(builder, conventionalBuilder);
             }
 

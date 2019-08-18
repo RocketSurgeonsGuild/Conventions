@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <returns>Func&lt;IWebJobsBuilder, System.Object, IRocketFunctionHostBuilder&gt;.</returns>
         public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> ForDependencyContext(
             DependencyContext dependencyContext,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return (builder , startupInstance) =>
             {
@@ -53,7 +53,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <param name="dependencyContext">The dependency context.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
         /// <returns>Func&lt;IWebJobsBuilder, System.Object, IRocketFunctionHostBuilder&gt;.</returns>
-        public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> For(DependencyContext dependencyContext, DiagnosticSource diagnosticSource = null)
+        public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> For(DependencyContext dependencyContext, DiagnosticSource? diagnosticSource = null)
         {
             return ForDependencyContext(dependencyContext, diagnosticSource);
         }
@@ -66,7 +66,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <returns>Func&lt;IWebJobsBuilder, System.Object, IRocketFunctionHostBuilder&gt;.</returns>
         public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> ForAppDomain(
             AppDomain appDomain,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return (builder, startupInstance) =>
             {
@@ -94,7 +94,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <param name="appDomain">The application domain.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
         /// <returns>Func&lt;IWebJobsBuilder, System.Object, IRocketFunctionHostBuilder&gt;.</returns>
-        public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> For(AppDomain appDomain, DiagnosticSource diagnosticSource = null)
+        public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> For(AppDomain appDomain, DiagnosticSource? diagnosticSource = null)
         {
             return ForAppDomain(appDomain, diagnosticSource);
         }
@@ -107,7 +107,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <returns>Func&lt;IWebJobsBuilder, System.Object, IRocketFunctionHostBuilder&gt;.</returns>
         public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> ForAssemblies(
             IEnumerable<Assembly> assemblies,
-            DiagnosticSource diagnosticSource = null)
+            DiagnosticSource? diagnosticSource = null)
         {
             return (builder, startupInstance) =>
             {
@@ -136,7 +136,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <param name="assemblies">The assemblies.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
         /// <returns>Func&lt;IWebJobsBuilder, System.Object, IRocketFunctionHostBuilder&gt;.</returns>
-        public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> For(IEnumerable<Assembly> assemblies, DiagnosticSource diagnosticSource = null)
+        public static Func<IWebJobsBuilder, object, IRocketFunctionHostBuilder> For(IEnumerable<Assembly> assemblies, DiagnosticSource? diagnosticSource = null)
         {
             return ForAssemblies(assemblies, diagnosticSource);
         }

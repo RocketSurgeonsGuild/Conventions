@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -178,7 +178,7 @@ namespace Rocket.Surgery.Hosting.Functions
             var cb = new ConfigurationBuilder(
                 Scanner,
                 _environment,
-                existingConfiguration,
+                existingConfiguration!,
                 configurationBuilder,
                 _logger,
                 Properties);
@@ -214,7 +214,7 @@ namespace Rocket.Surgery.Hosting.Functions
                 _logger,
                 Properties);
 
-            Composer.Register<IServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(Scanner, builder);
+            Composer.Register<IServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(Scanner.BuildProvider(), builder);
         }
 
         private void SetupWebJobs(IConfiguration existingConfiguration)
@@ -229,7 +229,7 @@ namespace Rocket.Surgery.Hosting.Functions
                 _logger,
                 Properties);
 
-            Composer.Register<IWebJobsConventionContext, IWebJobsConvention, WebJobsConventionDelegate>(Scanner, builder);
+            builder.Build();
         }
 
         /// <summary>

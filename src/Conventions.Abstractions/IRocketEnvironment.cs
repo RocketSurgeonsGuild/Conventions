@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -26,13 +26,13 @@ namespace Rocket.Surgery.Conventions
         /// content files.
         /// </summary>
         /// <value>The content root path.</value>
-        string ContentRootPath { get; }
+        string? ContentRootPath { get; }
 
         /// <summary>
         /// Gets or sets an Microsoft.Extensions.FileProviders.IFileProvider pointing
         /// at Microsoft.Extensions.Hosting.IHostingEnvironment.ContentRootPath.
         /// </summary>
         /// <value>The content root file provider.</value>
-        IFileProvider ContentRootFileProvider { get; }
+        IFileProvider? ContentRootFileProvider { get; }
     }
 }

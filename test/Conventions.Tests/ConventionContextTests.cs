@@ -15,7 +15,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
         class TestGenericValueContainer : ConventionContext
         {
-            public TestGenericValueContainer(ILogger logger) : base(logger, new Dictionary<object, object>())
+            public TestGenericValueContainer(ILogger logger) : base(logger, new Dictionary<object, object?>())
             {
             }
         }
@@ -38,6 +38,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             container[typeof(string)].Should().Be("abc");
         }
+
         [Fact]
         public void GetAStronglyTypedValue()
         {

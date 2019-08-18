@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -65,7 +65,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             public F(IConventionScanner scanner, IService service)
             {
-                this.Scanner = scanner;
+                Scanner = scanner;
                 Service = service;
             }
 
@@ -77,11 +77,11 @@ namespace Rocket.Surgery.Conventions.Tests
         class F_WithDefault : IServiceConvention
         {
             public IConventionScanner Scanner { get; }
-            public IService Service { get; }
+            public IService? Service { get; }
 
-            public F_WithDefault(IConventionScanner scanner, IService service = null)
+            public F_WithDefault(IConventionScanner scanner, IService? service = null)
             {
-                this.Scanner = scanner;
+                Scanner = scanner;
                 Service = service;
             }
 
@@ -113,7 +113,7 @@ namespace Rocket.Surgery.Conventions.Tests
             items
                 .Select(x => x.Convention)
                 .Should()
-                .Contain(x => x.GetType() == typeof(Contrib));
+                .Contain(x => x!.GetType() == typeof(Contrib));
         }
 
         [Fact]
@@ -222,7 +222,7 @@ namespace Rocket.Surgery.Conventions.Tests
             provider.Get<IServiceConvention, ServiceConventionDelegate>()
                 .Select(x => x.Convention)
                 .Should()
-                .NotContain(x => x.GetType() == typeof(Contrib));
+                .NotContain(x => x!.GetType() == typeof(Contrib));
         }
 
         [Fact]
@@ -243,7 +243,7 @@ namespace Rocket.Surgery.Conventions.Tests
             provider.Get<IServiceConvention, ServiceConventionDelegate>()
                 .Select(x => x.Convention)
                 .Should()
-                .NotContain(x => x.GetType() == typeof(Contrib));
+                .NotContain(x => x!.GetType() == typeof(Contrib));
         }
 
         [Fact]
@@ -317,7 +317,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
             result.Count().Should().Be(3);
-            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+            result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
         [Fact]
@@ -329,7 +329,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
             result.Count().Should().Be(3);
-            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+            result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
         [Fact]
@@ -439,7 +439,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
             result.Count().Should().Be(3);
-            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+            result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
         [Fact]
@@ -451,7 +451,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
             result.Count().Should().Be(3);
-            result.Select(x => x.Convention.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
+            result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
         [Fact]
@@ -521,9 +521,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var item = result.First().Convention;
 
             item.Should().BeOfType<F>();
-            (item as F).Scanner.Should().NotBeNull();
-            (item as F).Scanner.Should().BeSameAs(scanner);
-            (item as F).Service.Should().BeSameAs(fakeService);
+            (item as F)!.Scanner.Should().NotBeNull();
+            (item as F)!.Scanner.Should().BeSameAs(scanner);
+            (item as F)!.Service.Should().BeSameAs(fakeService);
         }
 
         [Fact]
@@ -541,9 +541,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var item = result.First().Convention;
 
             item.Should().BeOfType<F_WithDefault>();
-            (item as F_WithDefault).Scanner.Should().NotBeNull();
-            (item as F_WithDefault).Scanner.Should().BeSameAs(scanner);
-            (item as F_WithDefault).Service.Should().BeNull();
+            (item as F_WithDefault)!.Scanner.Should().NotBeNull();
+            (item as F_WithDefault)!.Scanner.Should().BeSameAs(scanner);
+            (item as F_WithDefault)!.Service.Should().BeNull();
         }
 
         [Fact]

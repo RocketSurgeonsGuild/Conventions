@@ -17,6 +17,6 @@ namespace Rocket.Surgery.Hosting.Functions
         /// Gets the properties.
         /// </summary>
         /// <value>The properties.</value>
-        IDictionary<object, object> Properties { get; }
+        IDictionary<object, object?> Properties { get; }
     }
 }

@@ -21,11 +21,13 @@ namespace Rocket.Surgery.Extensions.WebJobs
         /// </summary>
         /// <value>The configuration.</value>
         IConfiguration Configuration { get; }
+
         /// <summary>
         /// Gets the assembly provider.
         /// </summary>
         /// <value>The assembly provider.</value>
         IAssemblyProvider AssemblyProvider { get; }
+
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>

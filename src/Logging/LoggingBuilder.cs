@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -56,7 +56,7 @@ namespace Rocket.Surgery.Extensions.Logging
             IRocketEnvironment environment,
             IConfiguration configuration,
             ILogger diagnosticSource,
-            IDictionary<object, object> properties) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
+            IDictionary<object, object?> properties) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
         {
             Environment = environment ?? throw new ArgumentNullException(nameof(environment));
             Services = services ?? throw new ArgumentNullException(nameof(services));
@@ -69,16 +69,19 @@ namespace Rocket.Surgery.Extensions.Logging
         /// </summary>
         /// <value>The services.</value>
         public IServiceCollection Services { get; }
+
         /// <summary>
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
         public IConfiguration Configuration { get; }
+
         /// <summary>
         /// A logger that is configured to work with each convention item
         /// </summary>
         /// <value>The logger.</value>
         public ILogger Logger { get; }
+
         /// <summary>
         /// The environment that this convention is running
         /// Based on IHostEnvironment / IHostingEnvironment
@@ -91,7 +94,8 @@ namespace Rocket.Surgery.Extensions.Logging
         /// </summary>
         public void Build()
         {
-            new ConventionComposer(Scanner).Register(
+            Composer.Register(
+                Scanner,
                 this,
                 typeof(ILoggingConvention),
                 typeof(LoggingConventionDelegate)

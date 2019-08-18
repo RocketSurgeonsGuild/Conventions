@@ -9,14 +9,17 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// The unknown
         /// </summary>
         Unknown = 0,
+
         /// <summary>
         /// The candidate
         /// </summary>
         Candidate = 1,
+
         /// <summary>
         /// The not candidate
         /// </summary>
         NotCandidate = 2,
+
         /// <summary>
         /// The reference
         /// </summary>

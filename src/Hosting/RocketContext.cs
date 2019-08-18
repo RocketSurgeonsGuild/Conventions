@@ -22,8 +22,8 @@ namespace Rocket.Surgery.Hosting
     class RocketContext
     {
         private readonly IHostBuilder _hostBuilder;
-        private string[] _args;
-        private ICommandLineExecutor _exec;
+        private string[]? _args;
+        private ICommandLineExecutor? _exec;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RocketContext"/> class.

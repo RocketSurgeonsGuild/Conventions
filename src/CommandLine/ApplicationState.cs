@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,13 +21,13 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Gets or sets the on run delegate.
         /// </summary>
         /// <value>The on run delegate.</value>
-        public OnRunDelegate OnRunDelegate { get; set; }
+        public OnRunDelegate? OnRunDelegate { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the on run.
         /// </summary>
         /// <value>The type of the on run.</value>
-        public Type OnRunType { get; set; }
+        public Type? OnRunType { get; set; }
 
         /// <summary>
         /// Gets or sets the on parse delegates.
@@ -39,7 +39,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Gets the remaining arguments.
         /// </summary>
         /// <value>The remaining arguments.</value>
-        public string[] RemainingArguments { get; set; }
+        public string[] RemainingArguments { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="T:Rocket.Surgery.Extensions.CommandLine.IApplicationState" /> is verbose.

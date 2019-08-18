@@ -19,7 +19,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="assemblies">The assemblies.</param>
         /// <param name="referenceAssemblies">The reference assemblies.</param>
         /// <param name="logger">The logger.</param>
-        public AssemblyCandidateResolver(IReadOnlyList<Assembly> assemblies, ISet<string> referenceAssemblies, ILogger logger)
+        public AssemblyCandidateResolver(IReadOnlyList<Assembly> assemblies, ISet<string?> referenceAssemblies, ILogger logger)
         {
             _logger = logger;
             var processedAssemblies = new HashSet<Assembly>();
@@ -32,21 +32,21 @@ namespace Rocket.Surgery.Conventions.Reflection
         }
 
         private void RecursiveAddDependencies(Assembly assembly,
-            ISet<string> referenceAssemblies,
+            ISet<string?> referenceAssemblies,
             IDictionary<string, Dependency> dependenciesWithNoDuplicates,
             ISet<Assembly> processedAssemblies)
         {
             if (processedAssemblies.Contains(assembly)) return;
             processedAssemblies.Add(assembly);
             var key = assembly.GetName().Name;
-            if (!dependenciesWithNoDuplicates.ContainsKey(key))
+            if (!string.IsNullOrWhiteSpace(key) && !dependenciesWithNoDuplicates.ContainsKey(key))
             {
                 dependenciesWithNoDuplicates.Add(key, CreateDependency(assembly, referenceAssemblies));
             }
 
             foreach (var dependency in assembly.GetReferencedAssemblies())
             {
-                if (dependency.Name.StartsWith("System.") || dependency.Name.StartsWith("Windows") || dependency.Name.StartsWith("mscorlib") || dependency.Name.StartsWith("Microsoft."))
+                if (dependency.Name?.StartsWith("System.") == true || dependency.Name?.StartsWith("Windows") == true || dependency.Name?.StartsWith("mscorlib") == true || dependency.Name?.StartsWith("Microsoft.") == true)
                     continue;
 
                 Assembly dependentAssembly;
@@ -56,17 +56,20 @@ namespace Rocket.Surgery.Conventions.Reflection
                 }
                 catch (Exception e)
                 {
-                    _logger.LogWarning(0, e, "Unable to load assembly {Name}", dependency.Name);
+                    if (_logger.IsEnabled(LogLevel.Warning))
+                    {
+                        _logger.LogWarning(0, e, "Unable to load assembly {Name}", dependency.Name);
+                    }
                     continue;
                 }
                 RecursiveAddDependencies(dependentAssembly, referenceAssemblies, dependenciesWithNoDuplicates, processedAssemblies);
             }
         }
 
-        private Dependency CreateDependency(Assembly library, ISet<string> referenceAssemblies)
+        private Dependency CreateDependency(Assembly library, ISet<string?> referenceAssemblies)
         {
             var classification = DependencyClassification.Unknown;
-            if (referenceAssemblies.Contains(library.GetName().Name))
+            if (referenceAssemblies.Contains(library.GetName()?.Name))
             {
                 classification = DependencyClassification.Reference;
             }
@@ -74,7 +77,7 @@ namespace Rocket.Surgery.Conventions.Reflection
             return new Dependency(library, classification);
         }
 
-        private DependencyClassification ComputeClassification(string dependency, ISet<string> processedAssemblies)
+        private DependencyClassification ComputeClassification(string dependency, ISet<string?> processedAssemblies)
         {
             processedAssemblies.Add(dependency);
             // Prevents issues with looking at system assemblies
@@ -101,7 +104,7 @@ namespace Rocket.Surgery.Conventions.Reflection
 
             foreach (var candidateDependency in candidateEntry.Assembly.GetReferencedAssemblies())
             {
-                if (processedAssemblies.Contains(candidateDependency.Name))
+                if (string.IsNullOrWhiteSpace(candidateDependency?.Name) || processedAssemblies.Contains(candidateDependency!.Name))
                 {
                     continue;
                 }
@@ -127,7 +130,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         {
             foreach (var dependency in _dependencies)
             {
-                if (ComputeClassification(dependency.Key, new HashSet<string>()) == DependencyClassification.Candidate && dependency.Value.Assembly != null)
+                if (ComputeClassification(dependency.Key, new HashSet<string?>()) == DependencyClassification.Candidate && dependency.Value.Assembly != null)
                 {
                     yield return dependency.Value;
                 }
@@ -166,10 +169,7 @@ namespace Rocket.Surgery.Conventions.Reflection
             /// Returns a <see cref="string" /> that represents this instance.
             /// </summary>
             /// <returns>A <see cref="string" /> that represents this instance.</returns>
-            public override string ToString()
-            {
-                return $"AssemblyName: {Assembly.GetName().Name}, Classification: {Classification}";
-            }
+            public override string ToString() => $"AssemblyName: {Assembly.GetName().Name}, Classification: {Classification}";
         }
     }
 }

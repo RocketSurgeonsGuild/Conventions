@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Rocket.Surgery.Conventions
@@ -10,5 +10,5 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     /// <seealso cref="IDictionary{Object, Object}" />
     /// <seealso cref="IServiceProvider" />
-    public interface IServiceProviderDictionary : IDictionary<object, object>, IServiceProvider { }
+    public interface IServiceProviderDictionary : IDictionary<object, object?>, IServiceProvider { }
 }

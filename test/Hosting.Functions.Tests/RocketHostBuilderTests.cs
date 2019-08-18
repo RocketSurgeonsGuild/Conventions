@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Autofac;
@@ -18,6 +18,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+using Rocket.Surgery.Extensions.WebJobs;
 
 namespace Rocket.Surgery.Hosting.Functions.Tests
 {
@@ -145,6 +146,22 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
 
             var sp = builder.Services.BuildServiceProvider();
             sp.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Should_ConfigureWebJobs()
+        {
+            var startup = new Startup();
+            var builder = new WebJobsBuilder()
+                .UseRocketSurgery(startup, rb => rb
+                    .UseDependencyContext(DependencyContext.Default)
+                    .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                    .ConfigureWebJobs(x => { })
+                );
+
+            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
+                A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(WebJobsConventionDelegate))
+            )).MustHaveHappened();
         }
     }
 }
