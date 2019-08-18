@@ -187,7 +187,7 @@ namespace Rocket.Surgery.Conventions
             }
         }
 
-        private static readonly ConditionalWeakTable<Type, MethodInfo> _registerMethodCache = new ConditionalWeakTable<Type, MethodInfo>();
+        private static readonly ConcurrentDictionary<Type, MethodInfo> _registerMethodCache = new ConcurrentDictionary<Type, MethodInfo>();
 
         private static readonly MethodInfo RegisterGenericMethod =
             typeof(Composer).GetTypeInfo().GetDeclaredMethod(nameof(RegisterGeneric))!;
@@ -209,7 +209,7 @@ namespace Rocket.Surgery.Conventions
                 if (!_registerMethodCache.TryGetValue(item, out var method))
                 {
                     method = RegisterGenericMethod.MakeGenericMethod(item);
-                    _registerMethodCache.Add(item, method);
+                    _registerMethodCache.TryAdd(item, method);
                 }
 
                 method.Invoke(null, new object[] { convention, context });
