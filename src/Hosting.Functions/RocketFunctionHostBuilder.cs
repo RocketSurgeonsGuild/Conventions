@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Azure.WebJobs;
@@ -141,9 +142,10 @@ namespace Rocket.Surgery.Hosting.Functions
         {
             var environmentNames = new[]
             {
+                Environment.GetEnvironmentVariable("AZURE_FUNCTIONS_ENVIRONMENT"),
                 Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
                 Environment.GetEnvironmentVariable("WEBSITE_SLOT_NAME"),
-                "Unknown"
+                "Production"
             };
 
             var applicationNames = new[]
@@ -152,25 +154,29 @@ namespace Rocket.Surgery.Hosting.Functions
                 "Functions"
             };
 
-            var environment = new RocketEnvironment(
+            return new RocketEnvironment(
                 environmentNames.First(x => !string.IsNullOrEmpty(x)),
                 applicationNames.First(x => !string.IsNullOrEmpty(x)),
                 contentRootPath: null,
                 contentRootFileProvider: null
             );
-
-            return environment;
         }
 
         private IConfiguration SetupConfiguration()
         {
+            var currentDirectory = "/home/site/wwwroot";
+            bool isLocal = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID"));
+            if (isLocal || !Directory.Exists(currentDirectory))
+            {
+                currentDirectory = Environment.CurrentDirectory;
+            }
+
             var existingConfiguration = Builder.Services.First(z => z.ServiceType == typeof(IConfiguration))
                 .ImplementationInstance as IConfiguration;
 
-            var configurationBuilder = new MsftConfigurationBinder();
-            configurationBuilder.AddConfiguration(existingConfiguration);
-
-            configurationBuilder
+            var configurationBuilder = new MsftConfigurationBinder()
+                .SetBasePath(currentDirectory)
+                .AddConfiguration(existingConfiguration)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddYamlFile("appsettings.yml", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
