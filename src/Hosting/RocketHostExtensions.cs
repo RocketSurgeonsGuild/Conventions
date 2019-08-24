@@ -274,6 +274,8 @@ namespace Rocket.Surgery.Hosting
             builder.ConfigureRocketSurgery(x => x.UseCommandLine());
             using (var host = builder.Build())
             {
+                var logger = host.Services.GetService<ILoggerFactory>()
+                        .CreateLogger("Cli");
                 var result = host.Services.GetRequiredService<CommandLineResult>();
                 try
                 {
@@ -282,9 +284,7 @@ namespace Rocket.Surgery.Hosting
                 }
                 catch (Exception e)
                 {
-                    host.Services.GetService<ILoggerFactory>()
-                        .CreateLogger("Cli")
-                        .LogError(e, "Application exception");
+                    logger.LogError(e, "Application exception");
                     return -1;
                 }
             }

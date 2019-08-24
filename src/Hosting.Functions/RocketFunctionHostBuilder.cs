@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
@@ -237,6 +238,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// </summary>
         public void Compose()
         {
+            var existingHostedServices = Builder.Services.Where(x => x.ServiceType == typeof(IHostedService)).ToArray();
             if (_startupInstance is IConvention convention)
             {
                 Scanner.AppendConvention(convention);
@@ -245,6 +247,15 @@ namespace Rocket.Surgery.Hosting.Functions
             var configuration = SetupConfiguration();
             SetupServices(configuration);
             SetupWebJobs(configuration);
+
+            // remove all other hosted services
+            var newHostedServices = Builder.Services
+                .Where(x => existingHostedServices.Any(z => z == x))
+                .ToArray();
+            foreach (var item in newHostedServices)
+            {
+                Builder.Services.Remove(item);
+            }
         }
     }
 }

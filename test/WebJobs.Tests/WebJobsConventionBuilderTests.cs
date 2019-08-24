@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
@@ -76,8 +79,49 @@ namespace Rocket.Surgery.Extensions.WebJobs.Tests
             A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependConvention(A<IEnumerable<IWebJobsConvention>>._)).MustHaveHappened();
         }
 
+        [Fact]
+        public void Removes_Hosted_Services_Since_They_Cannot_Be_Added_for_functions()
+        {
+            var services = AutoFake.Provide<IServiceCollection>(new ServiceCollection());
+            A.CallTo(() => AutoFake.Resolve<IWebJobsBuilder>().Services).Returns(services);
+            services.AddHostedService<Abc>();
+            var webJobsConventionBuilder = AutoFake.Resolve<WebJobsConventionBuilder>();
+
+            var convention = A.Fake<IWebJobsConvention>();
+
+            webJobsConventionBuilder.PrependConvention(convention);
+
+            webJobsConventionBuilder.Build();
+            webJobsConventionBuilder.Services.Should().Contain(x => x.ServiceType == typeof(IHostedService) && x.ImplementationType == typeof(Abc));
+            webJobsConventionBuilder.Services.Should().NotContain(x => x.ServiceType == typeof(IHostedService) && x.ImplementationType == typeof(Abc2));
+        }
+
         public interface IAbc { }
-        public interface IAbc2 { }
+        public class Abc : IHostedService
+        {
+            public Task StartAsync(CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task StopAsync(CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
+            }
+        }
+        public interface IAbc2 : IHostedService { }
+        public class Abc2 : IAbc2, IHostedService
+        {
+            public Task StartAsync(CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task StopAsync(CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
+            }
+        }
         public interface IAbc3 { }
         public interface IAbc4 { }
 
@@ -88,6 +132,7 @@ namespace Rocket.Surgery.Extensions.WebJobs.Tests
                 context.AddExtension(typeof(IAbc));
                 context.Services.AddSingleton(A.Fake<IAbc>());
                 context.Services.AddSingleton(A.Fake<IAbc2>());
+                context.Services.AddHostedService<Abc2>();
             }
         }
     }
