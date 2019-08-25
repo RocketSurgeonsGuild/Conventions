@@ -164,7 +164,7 @@ namespace Rocket.Surgery.Hosting.Functions
 
         private IConfiguration SetupConfiguration()
         {
-            var currentDirectory = "/home/site/wwwroot";
+            var currentDirectory = Environment.GetEnvironmentVariable("AzureWebJobsScriptRoot") ?? "/home/site/wwwroot";
             bool isLocal = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID"));
             if (isLocal || !Directory.Exists(currentDirectory))
             {
@@ -254,14 +254,8 @@ namespace Rocket.Surgery.Hosting.Functions
             SetupServices(configuration);
             SetupWebJobs(configuration);
 
-            // remove all other hosted services
-            var newHostedServices = Builder.Services
-                .Where(x => existingHostedServices.Any(z => z == x))
-                .ToArray();
-            foreach (var item in newHostedServices)
-            {
-                Builder.Services.Remove(item);
-            }
+            Builder.Services.RemoveAll<IHostedService>();
+            Builder.Services.Add(existingHostedServices);
         }
     }
 }
