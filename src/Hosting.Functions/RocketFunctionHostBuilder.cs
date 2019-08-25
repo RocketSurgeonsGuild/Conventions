@@ -165,8 +165,8 @@ namespace Rocket.Surgery.Hosting.Functions
         private IConfiguration SetupConfiguration()
         {
             var currentDirectory = Environment.GetEnvironmentVariable("AzureWebJobsScriptRoot") ?? "/home/site/wwwroot";
-            bool isLocal = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID"));
-            if (isLocal || !Directory.Exists(currentDirectory))
+            bool isLocal = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID")) && !Directory.Exists(currentDirectory);
+            if (isLocal)
             {
                 currentDirectory = Environment.CurrentDirectory;
             }

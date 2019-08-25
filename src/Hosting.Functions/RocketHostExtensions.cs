@@ -6,8 +6,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
@@ -242,6 +244,27 @@ namespace Rocket.Surgery.Hosting.Functions
             DiagnosticSource? diagnosticSource = null)
         {
             return RocketBooster.ForAssemblies(assemblies, diagnosticSource)(builder.Builder, builder.FunctionsAssembly);
+        }
+
+        /// <summary>
+        /// Uses the diagnostic logging.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="action">The action.</param>
+        /// <returns>IRocketHostBuilder.</returns>
+        public static IRocketFunctionHostBuilder UseDiagnosticLogging(this IRocketFunctionHostBuilder builder, Action<ILoggingBuilder> action)
+        {
+            DiagnosticListenerExtensions.SubscribeWithAdapter(
+                builder.DiagnosticSource is DiagnosticListener listener ? listener : new DiagnosticListener("DiagnosticLogger"),
+                new DiagnosticListenerLoggingAdapter(
+                    new ServiceCollection()
+                        .AddLogging(action)
+                        .BuildServiceProvider()
+                        .GetRequiredService<ILoggerFactory>()
+                        .CreateLogger("DiagnosticLogger")
+                    )
+                );
+            return builder;
         }
 
         /// <summary>
