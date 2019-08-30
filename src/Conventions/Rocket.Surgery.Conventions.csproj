@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1;netcoreapp3.0;netstandard2.0;netcoreapp2.1</TargetFrameworks>
     </PropertyGroup>
@@ -10,5 +10,6 @@
         <PackageReference Include="Microsoft.Extensions.DiagnosticAdapter" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
     </ItemGroup>
 </Project>
