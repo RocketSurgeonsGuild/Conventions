@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Rocket.Surgery.Conventions.Scanners
 {
@@ -11,7 +12,7 @@ namespace Rocket.Surgery.Conventions.Scanners
     /// <seealso cref="IConventionProvider" />
     internal class ConventionProvider : IConventionProvider
     {
-        private readonly IEnumerable<DelegateOrConvention> _conventions;
+        private readonly Lazy<DelegateOrConvention[]> _conventions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConventionProvider" /> class.
@@ -21,20 +22,93 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
         public ConventionProvider(IEnumerable<IConvention> contributions, IEnumerable<object> prependedContributionsOrDelegates, IEnumerable<object> appendedContributionsOrDelegates)
         {
-            _conventions = prependedContributionsOrDelegates
-                .Union(contributions)
-                .Union(appendedContributionsOrDelegates)
-                .Select(x =>
-                {
-                    return x switch
+            _conventions = new Lazy<DelegateOrConvention[]>(() =>
+            {
+                var prepended = prependedContributionsOrDelegates as object[] ??
+                                prependedContributionsOrDelegates.ToArray();
+                var appended = appendedContributionsOrDelegates as object[] ??
+                               appendedContributionsOrDelegates.ToArray();
+                var contributionsList = contributions as IConvention[] ?? contributions.ToArray();
+
+                var c = prepended
+                    .Union(contributionsList)
+                    .Union(appended)
+                    .Select(x =>
                     {
-                        IConvention a => new DelegateOrConvention(a),
-                        Delegate d => new DelegateOrConvention(d),
-                        _ => DelegateOrConvention.None,
-                    };
-                })
-                .Where(x => x != DelegateOrConvention.None)
-                .ToArray();
+                        return x switch
+                        {
+                            IConvention a => new DelegateOrConvention(a),
+                            Delegate d => new DelegateOrConvention(d),
+                            _ => DelegateOrConvention.None,
+                        };
+                    })
+                    .ToArray();
+
+                var conventions = c
+                    .Select(convention => (
+                        convention,
+                        type: convention.Convention?.GetType(),
+                        dependsOn: convention.Convention?.GetType().GetCustomAttributes().OfType<IDependsOnConvention>().Select(z => z.Type) ?? Array.Empty<Type>(),
+                        dependentFor: convention.Convention?.GetType().GetCustomAttributes().OfType<IDependentOfConvention>().Select(z => z.Type) ?? Array.Empty<Type>()
+                    ))
+                    .ToArray();
+                if (conventions.Any(z => z.dependsOn.Any() || z.dependentFor.Any()))
+                {
+                    var lookup = conventions.ToLookup(z => z.type, z => z.convention);
+                    var dependentFor = conventions
+                        .SelectMany(data => data.dependentFor
+                            .SelectMany(z => lookup[z])
+                            .Select(dependentFor => (dependentFor, data.convention))
+                        ).ToLookup(z => z.dependentFor, z => z.convention);
+
+                    var dependsOn = conventions
+                        .SelectMany(data => data.dependsOn
+                            .SelectMany(z => lookup[z])
+                            .Select(dependsOn => (data.convention, dependsOn)))
+                        .Concat(conventions
+                        .SelectMany(data =>
+                            dependentFor[data.convention]
+                                .Select(dependsOn => (data.convention, dependsOn))))
+                        //.Concat(dependentFor[data.convention]))
+
+                        .ToLookup(x => x.convention, x => x.dependsOn);
+
+                    return TopographicalSort(prepended
+                                .Union(contributionsList)
+                                .Union(appended)
+                                .Select(x =>
+                                {
+                                    return x switch
+                                    {
+                                        IConvention a => new DelegateOrConvention(a),
+                                        Delegate d => new DelegateOrConvention(d),
+                                        _ => DelegateOrConvention.None,
+                                    };
+                                })
+                                .Where(x => x != DelegateOrConvention.None),
+                            x => dependsOn[x]
+                        )
+                        .ToArray();
+
+                }
+                else
+                {
+                    return prepended
+                        .Union(contributionsList)
+                        .Union(appended)
+                        .Select(x =>
+                        {
+                            return x switch
+                            {
+                                IConvention a => new DelegateOrConvention(a),
+                                Delegate d => new DelegateOrConvention(d),
+                                _ => DelegateOrConvention.None,
+                            };
+                        })
+                        .Where(x => x != DelegateOrConvention.None)
+                        .ToArray();
+                }
+            });
         }
 
         /// <summary>
@@ -45,7 +119,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <returns>IEnumerable{DelegateOrConvention}.</returns>
         public IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
             where TContribution : IConvention
-            where TDelegate : Delegate => _conventions
+            where TDelegate : Delegate => _conventions.Value
                 .Select(x =>
                 {
                     if (x.Convention is TContribution a)
@@ -65,6 +139,35 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// Gets a all the conventions from the provider
         /// </summary>
         /// <returns>IEnumerable{DelegateOrConvention}.</returns>
-        public IEnumerable<DelegateOrConvention> GetAll() => _conventions;
+        public IEnumerable<DelegateOrConvention> GetAll() => _conventions.Value;
+
+        private static IEnumerable<T> TopographicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies)
+        {
+            var sorted = new List<T>();
+            var visited = new HashSet<T>();
+
+            foreach (var item in source)
+                Visit(item, visited, sorted, dependencies);
+
+            return sorted;
+        }
+
+        private static void Visit<T>(T item, HashSet<T> visited, List<T> sorted, Func<T, IEnumerable<T>> dependencies)
+        {
+            if (!visited.Contains(item))
+            {
+                visited.Add(item);
+
+                foreach (var dep in dependencies(item))
+                    Visit(dep, visited, sorted, dependencies);
+
+                sorted.Add(item);
+            }
+            else
+            {
+                if (!sorted.Contains(item))
+                    throw new NotSupportedException($"Cyclic dependency found {item}");
+            }
+        }
     }
 }
