@@ -22,7 +22,7 @@
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.1" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
@@ -49,7 +49,7 @@
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="3.0.0-preview8.19405.4" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.0.0-preview8.19405.4" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview8.19405.4" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview8.19405.4" />
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="3.0.0-preview8-28405-07" />
