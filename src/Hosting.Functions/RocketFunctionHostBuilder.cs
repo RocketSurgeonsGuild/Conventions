@@ -19,7 +19,7 @@ using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.WebJobs;
 using ConfigurationBuilder = Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder;
-using MsftConfigurationBinder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 namespace Rocket.Surgery.Hosting.Functions
 {
@@ -174,34 +174,52 @@ namespace Rocket.Surgery.Hosting.Functions
             var existingConfiguration = Builder.Services.First(z => z.ServiceType == typeof(IConfiguration))
                 .ImplementationInstance as IConfiguration;
 
-            var configurationBuilder = new MsftConfigurationBinder()
+            var configurationBuilder = new MsftConfigurationBuilder()
                 .SetBasePath(currentDirectory)
                 .AddConfiguration(existingConfiguration)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddYamlFile("appsettings.yml", optional: true, reloadOnChange: true)
+                .AddYamlFile("appsettings.yaml", optional: true, reloadOnChange: true)
+                .AddIniFile("appsettings.ini", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yml", optional: true, reloadOnChange: true);
+                .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yml", optional: true, reloadOnChange: true)
+                .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yaml", optional: true, reloadOnChange: true)
+                .AddIniFile($"appsettings.{_environment.EnvironmentName}.ini", optional: true, reloadOnChange: true);
+
+            if (_environment.IsDevelopment())
+            {
+                configurationBuilder.AddUserSecrets(FunctionsAssembly, optional: true);
+            }
+
+            configurationBuilder
+                .AddEnvironmentVariables("RSG_")
+                .AddEnvironmentVariables();
+
+            IConfigurationSource? source = null;
+            foreach (var item in configurationBuilder.Sources.Reverse())
+            {
+                if ((item is EnvironmentVariablesConfigurationSource env && (string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase))) || (item is JsonConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase)))
+                {
+                    continue;
+                }
+                source = item;
+                break;
+            }
+
+            var index = source == null ? configurationBuilder.Sources.Count - 1 : configurationBuilder.Sources.IndexOf(source);
 
             var cb = new ConfigurationBuilder(
                 Scanner,
                 _environment,
-                existingConfiguration!,
+                new MsftConfigurationBuilder().AddConfiguration(existingConfiguration!).AddConfiguration(configurationBuilder.Build()).Build(),
                 configurationBuilder,
                 _logger,
                 Properties);
 
-            cb.Build();
-
-            if (_environment.IsDevelopment() && !string.IsNullOrEmpty(_environment.ApplicationName))
+            configurationBuilder.Sources.Insert(index + 1, new ChainedConfigurationSource()
             {
-                var appAssembly = Assembly.Load(new AssemblyName(_environment.ApplicationName));
-                if (appAssembly != null)
-                {
-                    configurationBuilder.AddUserSecrets(appAssembly, optional: true);
-                }
-            }
-
-            configurationBuilder.AddEnvironmentVariables();
+                Configuration = cb.Build()
+            });
 
             var newConfig = configurationBuilder.Build();
 

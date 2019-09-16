@@ -8,6 +8,7 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
+using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 namespace Rocket.Surgery.Extensions.Configuration
 {
@@ -27,7 +28,7 @@ namespace Rocket.Surgery.Extensions.Configuration
     public class ConfigurationBuilder : ConventionContainerBuilder<IConfigurationBuilder, IConfigurationConvention, ConfigurationConventionDelegate>, IConfigurationBuilder, IConfigurationConventionContext
     {
         private readonly IConventionScanner _scanner;
-        private readonly IMsftConfigurationBuilder _builder;
+        private readonly IMsftConfigurationBuilder _builder = new MsftConfigurationBuilder();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationBuilder"/> class.
@@ -43,7 +44,7 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// or
         /// builder
         /// or
-        /// configuration 
+        /// configuration
         /// or
         /// diagnosticSource
         /// </exception>
@@ -56,7 +57,7 @@ namespace Rocket.Surgery.Extensions.Configuration
             IDictionary<object, object?> properties) : base(scanner, properties)
         {
             _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
-            _builder = builder ?? throw new ArgumentNullException(nameof(builder));
+            ApplicationConfigurationBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
             Environment = environment;
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             Logger = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
@@ -75,6 +76,12 @@ namespace Rocket.Surgery.Extensions.Configuration
         public IConfiguration Configuration { get; }
 
         /// <summary>
+        /// Gets the configuration builder for the application (this one is self contained)
+        /// </summary>
+        /// <value>The configuration.</value>
+        public IMsftConfigurationBuilder ApplicationConfigurationBuilder { get; }
+
+        /// <summary>
         /// A logger that is configured to work with each convention item
         /// </summary>
         /// <value>The logger.</value>
@@ -83,13 +90,13 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// <summary>
         /// Builds this instance.
         /// </summary>
-        public void Build()
+        public IConfigurationRoot Build()
         {
             Composer.Register(Scanner, this, typeof(IConfigurationConvention), typeof(ConfigurationConventionDelegate));
+            return _builder.Build();
         }
 
         IMsftConfigurationBuilder IMsftConfigurationBuilder.Add(IConfigurationSource source) => _builder.Add(source);
-        IConfigurationRoot IMsftConfigurationBuilder.Build() => _builder.Build();
         IDictionary<string, object> IMsftConfigurationBuilder.Properties => _builder.Properties;
         IList<IConfigurationSource> IMsftConfigurationBuilder.Sources => _builder.Sources;
     }

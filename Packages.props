@@ -9,9 +9,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Nuke.Common" Version="0.21.2" />
-    <PackageReference Update="Rocket.Surgery.Nuke.DotNetCore" Version="0.3.8" />
+    <PackageReference Update="Rocket.Surgery.Nuke.DotNetCore" Version="0.4.1" />
     <PackageReference Update="GitVersion.CommandLine.DotNetCore" Version="5.0.1" />
-    <PackageReference Update="ReportGenerator" Version="4.2.15" />
+    <PackageReference Update="ReportGenerator" Version="4.2.19" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="BenchMarkDotNet" Version="0.11.5" />
@@ -21,6 +21,7 @@
     <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Ini" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
@@ -42,54 +43,55 @@
     <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.5.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0' and '$(TargetFramework)'!='netcoreapp2.1'">
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview8.19405.7" />
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="3.0.0-preview8-28405-07" />
-    <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.FileProviders.Physical" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-preview8.19405.4" />
-    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.6.0-preview8.19405.3" />
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview9.19424.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Ini" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="3.0.0-preview9-19423-09" />
+    <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.FileProviders.Physical" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.6.0-preview9.19421.4" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="5.0.0-rc1" />
     <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.10" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.2" />
     <PackageReference Update="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
-    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
+    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.0" />
     <PackageReference Update="Scrutor" Version="3.1.0" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="1.6.0" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Update="NodaTime" Version="2.4.6" />
+    <PackageReference Update="NodaTime" Version="2.4.7" />
     <PackageReference Update="Terminal.Gui" Version="0.24.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Rocket.Surgery.Extensions.Testing" Version="1.2.1" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Testing" Version="1.2.3" />
     <PackageReference Update="Autofac.Extras.FakeItEasy" Version="5.0.1" />
-    <PackageReference Update="Bogus" Version="28.0.2" />
+    <PackageReference Update="Bogus" Version="28.2.1" />
     <PackageReference Update="coverlet.collector" Version="1.0.1" />
     <PackageReference Update="coverlet.msbuild" Version="2.6.3" />
-    <PackageReference Update="FakeItEasy" Version="5.1.1" />
-    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="5.1.1" />
-    <PackageReference Update="FluentAssertions" Version="5.8.0" />
+    <PackageReference Update="FakeItEasy" Version="5.2.0" />
+    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="5.2.0" />
+    <PackageReference Update="FluentAssertions" Version="5.9.0" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Update="xunit" Version="2.4.1" />

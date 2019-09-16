@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
+using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
 
 namespace Rocket.Surgery.Extensions.Configuration
 {
@@ -25,5 +26,11 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// </summary>
         /// <value>The environment.</value>
         IRocketEnvironment Environment { get; }
+
+        /// <summary>
+        /// Gets the configuration builder for the application
+        /// </summary>
+        /// <value>The configuration.</value>
+        IMsftConfigurationBuilder ApplicationConfigurationBuilder { get; }
     }
 }

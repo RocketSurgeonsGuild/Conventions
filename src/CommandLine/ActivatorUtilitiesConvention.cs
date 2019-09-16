@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Conventions;
@@ -49,10 +50,10 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
             ApplyMethod.MakeGenericMethod(context.ModelType).Invoke(this, new object[] { context });
 
-            context.Application.OnExecute(async () => await OnExecute(context));
+            context.Application.OnExecuteAsync((cancellation) => OnExecute(context, cancellation));
         }
 
-        private async Task<int> OnExecute(ConventionContext context)
+        private async Task<int> OnExecute(ConventionContext context, CancellationToken cancellation)
         {
             const BindingFlags binding = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 
@@ -84,19 +85,19 @@ namespace Rocket.Surgery.Extensions.CommandLine
             var constructor =
                 context.ModelType.GetTypeInfo()
                     .DeclaredConstructors.Single();
-            var model = context.ModelAccessor.GetModel();
+            var model = context.ModelAccessor?.GetModel();
 
             // Preserve any values that have been set by the command line
-            var properties = context.ModelType
+            var properties = context.ModelType?
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(x => x.CanRead && x.CanWrite)
                 .Select(x => (PropertyInfo: x, value: x.GetValue(model)))
-                .Where(x => x.value != default)
-                .ToArray(); // Lazy evaluation is killer
-            var fields = context.ModelType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(x => x.value != null)
+                .ToArray() ?? Array.Empty<(PropertyInfo, object)>(); // Lazy evaluation is killer
+            var fields = context.ModelType?.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Select(x => (FieldInfo: x, value: x.GetValue(model)))
-                .Where(x => x.value != default)
-                .ToArray(); // Lazy evaluation is killer
+                .Where(x => x.value != null)
+                .ToArray() ?? Array.Empty<(FieldInfo, object)>(); // Lazy evaluation is killer
 
             CallConstructor(context.Application, constructor, model);
 
@@ -110,7 +111,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 property.PropertyInfo.SetValue(model, property.value);
             }
 
-            var arguments = (object[])BindParametersMethod.Invoke(null, new object[] { method, context.Application })!;
+            var arguments = (object[])BindParametersMethod.Invoke(null, new object[] { method, context.Application, cancellation })!;
 
             if (method.ReturnType == typeof(Task) || method.ReturnType == typeof(Task<int>))
             {
@@ -124,7 +125,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             throw new InvalidOperationException(InvalidOnExecuteReturnType(method.Name));
         }
 
-        private static void CallConstructor(IServiceProvider provider, ConstructorInfo constructorInfo, object instance)
+        private static void CallConstructor(IServiceProvider provider, ConstructorInfo constructorInfo, object? instance)
         {
             var methodParams = constructorInfo.GetParameters();
             var arguments = new object[methodParams.Length];
@@ -136,7 +137,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             constructorInfo.Invoke(instance, arguments);
         }
 
-        private async Task<int> InvokeAsync(MethodInfo method, object instance, object[] arguments)
+        private async Task<int> InvokeAsync(MethodInfo method, object? instance, object[] arguments)
         {
             var result = (Task)method.Invoke(instance, arguments)!;
             if (result is Task<int> intResult)
@@ -148,7 +149,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             return 0;
         }
 
-        private int Invoke(MethodInfo method, object instance, object[] arguments)
+        private int Invoke(MethodInfo method, object? instance, object[] arguments)
         {
             var result = method.Invoke(instance, arguments);
             if (method.ReturnType == typeof(int))
