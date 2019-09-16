@@ -184,9 +184,29 @@ namespace Rocket.Surgery.Hosting.Functions
                 .AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yml", optional: true, reloadOnChange: true)
                 .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yaml", optional: true, reloadOnChange: true)
-                .AddIniFile($"appsettings.{_environment.EnvironmentName}.ini", optional: true, reloadOnChange: true)
+                .AddIniFile($"appsettings.{_environment.EnvironmentName}.ini", optional: true, reloadOnChange: true);
+
+            if (_environment.IsDevelopment())
+            {
+                configurationBuilder.AddUserSecrets(FunctionsAssembly, optional: true);
+            }
+
+            configurationBuilder
                 .AddEnvironmentVariables("RSG_")
                 .AddEnvironmentVariables();
+
+            IConfigurationSource? source = null;
+            foreach (var item in configurationBuilder.Sources.Reverse())
+            {
+                if ((item is EnvironmentVariablesConfigurationSource env && (string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase))) || (item is JsonConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase)))
+                {
+                    continue;
+                }
+                source = item;
+                break;
+            }
+
+            var index = source == null ? configurationBuilder.Sources.Count - 1 : configurationBuilder.Sources.IndexOf(source);
 
             var cb = new ConfigurationBuilder(
                 Scanner,
@@ -195,19 +215,11 @@ namespace Rocket.Surgery.Hosting.Functions
                 configurationBuilder,
                 _logger,
                 Properties);
-            cb.Build();
 
-            if (_environment.IsDevelopment() && !string.IsNullOrEmpty(_environment.ApplicationName))
+            configurationBuilder.Sources.Insert(index + 1, new ChainedConfigurationSource()
             {
-                var appAssembly = Assembly.Load(new AssemblyName(_environment.ApplicationName));
-                if (appAssembly != null)
-                {
-                    configurationBuilder.AddUserSecrets(appAssembly, optional: true);
-                }
-            }
-
-            MoveConfigurationSourceToEnd(configurationBuilder.Sources,
-                sources => sources.OfType<EnvironmentVariablesConfigurationSource>().Where(x => string.IsNullOrWhiteSpace(x.Prefix)));
+                Configuration = cb.Build()
+            });
 
             var newConfig = configurationBuilder.Build();
 
@@ -243,23 +255,6 @@ namespace Rocket.Surgery.Hosting.Functions
                 Properties);
 
             builder.Build();
-        }
-
-        private static void MoveConfigurationSourceToEnd<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, IEnumerable<T>> getSource)
-            where T : IConfigurationSource
-        {
-            var otherSources = getSource(sources).ToArray();
-            if (otherSources.Any())
-            {
-                foreach (var other in otherSources)
-                {
-                    sources.Remove(other);
-                }
-                foreach (var other in otherSources)
-                {
-                    sources.Add(other);
-                }
-            }
         }
 
         /// <summary>
