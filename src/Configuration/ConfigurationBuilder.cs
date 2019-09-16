@@ -36,7 +36,7 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// <param name="scanner">The scanner.</param>
         /// <param name="environment">The environment.</param>
         /// <param name="configuration">The configuration.</param>
-        /// /// <param name="builder">The builder.</param>
+        /// <param name="builder">The builder.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
         /// <param name="properties">The properties.</param>
         /// <exception cref="ArgumentNullException">
