@@ -19,7 +19,7 @@ using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.WebJobs;
 using ConfigurationBuilder = Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder;
-using MsftConfigurationBinder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 namespace Rocket.Surgery.Hosting.Functions
 {
@@ -174,22 +174,27 @@ namespace Rocket.Surgery.Hosting.Functions
             var existingConfiguration = Builder.Services.First(z => z.ServiceType == typeof(IConfiguration))
                 .ImplementationInstance as IConfiguration;
 
-            var configurationBuilder = new MsftConfigurationBinder()
+            var configurationBuilder = new MsftConfigurationBuilder()
                 .SetBasePath(currentDirectory)
                 .AddConfiguration(existingConfiguration)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddYamlFile("appsettings.yml", optional: true, reloadOnChange: true)
+                .AddYamlFile("appsettings.yaml", optional: true, reloadOnChange: true)
+                .AddIniFile("appsettings.ini", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yml", optional: true, reloadOnChange: true);
+                .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yml", optional: true, reloadOnChange: true)
+                .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yaml", optional: true, reloadOnChange: true)
+                .AddIniFile($"appsettings.{_environment.EnvironmentName}.ini", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables("RSG_")
+                .AddEnvironmentVariables();
 
             var cb = new ConfigurationBuilder(
                 Scanner,
                 _environment,
-                existingConfiguration!,
+                new MsftConfigurationBuilder().AddConfiguration(existingConfiguration!).AddConfiguration(configurationBuilder.Build()).Build(),
                 configurationBuilder,
                 _logger,
                 Properties);
-
             cb.Build();
 
             if (_environment.IsDevelopment() && !string.IsNullOrEmpty(_environment.ApplicationName))
@@ -201,7 +206,8 @@ namespace Rocket.Surgery.Hosting.Functions
                 }
             }
 
-            configurationBuilder.AddEnvironmentVariables();
+            MoveConfigurationSourceToEnd(configurationBuilder.Sources,
+                sources => sources.OfType<EnvironmentVariablesConfigurationSource>().Where(x => string.IsNullOrWhiteSpace(x.Prefix)));
 
             var newConfig = configurationBuilder.Build();
 
@@ -237,6 +243,23 @@ namespace Rocket.Surgery.Hosting.Functions
                 Properties);
 
             builder.Build();
+        }
+
+        private static void MoveConfigurationSourceToEnd<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, IEnumerable<T>> getSource)
+            where T : IConfigurationSource
+        {
+            var otherSources = getSource(sources).ToArray();
+            if (otherSources.Any())
+            {
+                foreach (var other in otherSources)
+                {
+                    sources.Remove(other);
+                }
+                foreach (var other in otherSources)
+                {
+                    sources.Add(other);
+                }
+            }
         }
 
         /// <summary>

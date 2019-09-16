@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.Azure.WebJobs" />
         <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Ini" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />

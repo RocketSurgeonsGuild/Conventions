@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
+using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +13,8 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.CommandLine;
 using Rocket.Surgery.Extensions.DependencyInjection;
 using ConfigurationBuilder = Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder;
-using IConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
+using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
+using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 namespace Rocket.Surgery.Hosting
 {
@@ -38,7 +40,7 @@ namespace Rocket.Surgery.Hosting
         /// Configures the cli.
         /// </summary>
         /// <param name="configurationBuilder">The configuration builder.</param>
-        public void ConfigureCli(IConfigurationBuilder configurationBuilder)
+        public void ConfigureCli(IMsftConfigurationBuilder configurationBuilder)
         {
             var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
             var clb = new CommandLineBuilder(
@@ -59,7 +61,7 @@ namespace Rocket.Surgery.Hosting
         /// Captures the arguments.
         /// </summary>
         /// <param name="configurationBuilder">The configuration builder.</param>
-        public void CaptureArguments(IConfigurationBuilder configurationBuilder)
+        public void CaptureArguments(IMsftConfigurationBuilder configurationBuilder)
         {
             var commandLineSource = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>()
                 .FirstOrDefault();
@@ -73,7 +75,7 @@ namespace Rocket.Surgery.Hosting
         /// Replaces the arguments.
         /// </summary>
         /// <param name="configurationBuilder">The configuration builder.</param>
-        public void ReplaceArguments(IConfigurationBuilder configurationBuilder)
+        public void ReplaceArguments(IMsftConfigurationBuilder configurationBuilder)
         {
             var commandLineSource = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>()
                 .FirstOrDefault();
@@ -88,7 +90,7 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="configurationBuilder">The configuration builder.</param>
-        public void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder configurationBuilder)
+        public void ConfigureAppConfiguration(HostBuilderContext context, IMsftConfigurationBuilder configurationBuilder)
         {
             var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
             InsertConfigurationSourceAfter(
@@ -97,6 +99,20 @@ namespace Rocket.Surgery.Hosting
                 (source) => new YamlConfigurationSource()
                 {
                     Path = "appsettings.yml",
+                    FileProvider = source.FileProvider,
+                    Optional = true,
+                    ReloadOnChange = true,
+                },
+                (source) => new YamlConfigurationSource()
+                {
+                    Path = "appsettings.yaml",
+                    FileProvider = source.FileProvider,
+                    Optional = true,
+                    ReloadOnChange = true,
+                },
+                (source) => new IniConfigurationSource()
+                {
+                    Path = "appsettings.ini",
                     FileProvider = source.FileProvider,
                     Optional = true,
                     ReloadOnChange = true,
@@ -113,52 +129,81 @@ namespace Rocket.Surgery.Hosting
                     FileProvider = source.FileProvider,
                     Optional = true,
                     ReloadOnChange = true,
+                },
+                (source) => new YamlConfigurationSource()
+                {
+                    Path = $"appsettings.{context.HostingEnvironment.EnvironmentName}.yaml",
+                    FileProvider = source.FileProvider,
+                    Optional = true,
+                    ReloadOnChange = true,
+                },
+                (source) => new IniConfigurationSource()
+                {
+                    Path = $"appsettings.{context.HostingEnvironment.EnvironmentName}.ini",
+                    FileProvider = source.FileProvider,
+                    Optional = true,
+                    ReloadOnChange = true,
                 });
+
+            InsertConfigurationSourceBefore(
+                configurationBuilder.Sources,
+                sources => sources.OfType<EnvironmentVariablesConfigurationSource>().FirstOrDefault(x => string.IsNullOrWhiteSpace(x.Prefix)),
+                (source) => new EnvironmentVariablesConfigurationSource()
+                {
+                    Prefix = "RSG_"
+                });
+
+            IConfigurationSource? source = null;
+            foreach (var item in configurationBuilder.Sources.Reverse())
+            {
+                if (item is CommandLineConfigurationSource || (item is EnvironmentVariablesConfigurationSource env && (string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase))) || (item is JsonConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase)))
+                {
+                    continue;
+                }
+                source = item;
+                break;
+            }
+
+            var index = source == null ? configurationBuilder.Sources.Count - 1 : configurationBuilder.Sources.IndexOf(source);
 
             var cb = new ConfigurationBuilder(
                 rocketHostBuilder.Scanner,
                 context.HostingEnvironment.Convert(),
-                context.Configuration,
+                new MsftConfigurationBuilder().AddConfiguration(context.Configuration).AddConfiguration(configurationBuilder.Build()).Build(),
                 configurationBuilder,
                 rocketHostBuilder.Logger,
                 rocketHostBuilder.Properties);
-            cb.Build();
 
-            MoveConfigurationSourceToEnd(configurationBuilder.Sources,
-                sources => sources.OfType<JsonConfigurationSource>().Where(x =>
-                    string.Equals(x.Path, "secrets.json", StringComparison.OrdinalIgnoreCase)));
-
-            MoveConfigurationSourceToEnd(configurationBuilder.Sources,
-                sources => sources.OfType<EnvironmentVariablesConfigurationSource>());
-
-            MoveConfigurationSourceToEnd(configurationBuilder.Sources,
-                sources => sources.OfType<CommandLineConfigurationSource>());
+            configurationBuilder.Sources.Insert(index + 1, new ChainedConfigurationSource()
+            {
+                Configuration = cb.Build()
+            });
         }
 
-        private static void InsertConfigurationSourceAfter<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, T> getSource, Func<T, IConfigurationSource> createSourceFrom)
+        private static void InsertConfigurationSourceAfter<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, T> getSource, params Func<T, IConfigurationSource>[] createSourceFrom)
             where T : IConfigurationSource
         {
             var source = getSource(sources);
             if (source != null)
             {
                 var index = sources.IndexOf(source);
-                sources.Insert(index + 1, createSourceFrom(source));
+                foreach (var m in createSourceFrom.Reverse())
+                {
+                    sources.Insert(index + 1, m(source));
+                }
             }
         }
 
-        private static void MoveConfigurationSourceToEnd<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, IEnumerable<T>> getSource)
+        private static void InsertConfigurationSourceBefore<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, T> getSource, params Func<T, IConfigurationSource>[] createSourceFrom)
             where T : IConfigurationSource
         {
-            var otherSources = getSource(sources).ToArray();
-            if (otherSources.Any())
+            var source = getSource(sources);
+            if (source != null)
             {
-                foreach (var other in otherSources)
+                var index = sources.IndexOf(source);
+                foreach (var m in createSourceFrom.Reverse())
                 {
-                    sources.Remove(other);
-                }
-                foreach (var other in otherSources)
-                {
-                    sources.Add(other);
+                    sources.Insert(index, m(source));
                 }
             }
         }

@@ -26,5 +26,7 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// </summary>
         /// <value>The configuration.</value>
         IConfiguration Configuration { get; }
+
+
     }
 }
