@@ -36,7 +36,7 @@
     <PackageReference Update="Microsoft.Extensions.Logging" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
@@ -64,7 +64,7 @@
     <PackageReference Update="Microsoft.Extensions.Logging" Version="3.0.0-preview9.19423.4" />
     <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview9.19423.4" />
     <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-preview9.19423.4" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview9.19423.4" />
     <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="3.0.0-preview9.19423.4" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-preview9.19423.4" />
