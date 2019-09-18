@@ -50,7 +50,7 @@ namespace Rocket.Surgery.Hosting
                 containerBuilder.Services.AddSingleton(exec.ApplicationState);
                 // Remove the hosted service that bootstraps kestrel, we are executing a command here.
                 var webHostedServices = containerBuilder.Services
-                    .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting.Internal") == true)
+                    .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting") == true)
                     .ToArray();
                 if (!exec.IsDefaultCommand)
                 {
