@@ -12,24 +12,7 @@ namespace Rocket.Surgery.Hosting
     /// Implements the <see cref="IConventionContext" />
     /// </summary>
     /// <seealso cref="IConventionContext" />
-    public interface IHostingConventionContext : IConventionContext
+    public interface IHostingConventionContext : IConventionContext, IRocketHostBuilder
     {
-        /// <summary>
-        /// Gets the builder.
-        /// </summary>
-        /// <value>The builder.</value>
-        IHostBuilder Builder { get; }
-
-        /// <summary>
-        /// Gets the assembly provider.
-        /// </summary>
-        /// <value>The assembly provider.</value>
-        IAssemblyProvider AssemblyProvider { get; }
-
-        /// <summary>
-        /// Gets the assembly candidate finder.
-        /// </summary>
-        /// <value>The assembly candidate finder.</value>
-        IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
     }
 }

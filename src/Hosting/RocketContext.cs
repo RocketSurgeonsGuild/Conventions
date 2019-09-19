@@ -45,13 +45,7 @@ namespace Rocket.Surgery.Hosting
         public void ComposeHostingConvention(IMsftConfigurationBuilder configurationBuilder)
         {
             var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
-            Composer.Register(rocketHostBuilder.Scanner, new HostingConventionContext(
-                rocketHostBuilder.Builder,
-                rocketHostBuilder.AssemblyProvider,
-                rocketHostBuilder.AssemblyCandidateFinder,
-                rocketHostBuilder.Logger,
-                rocketHostBuilder.Properties
-            ), typeof(IHostingConvention), typeof(HostingConventionDelegate));
+            Composer.Register(rocketHostBuilder.Scanner, new HostingConventionContext(rocketHostBuilder, rocketHostBuilder.Logger), typeof(IHostingConvention), typeof(HostingConventionDelegate));
         }
 
         /// <summary>
