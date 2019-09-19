@@ -78,8 +78,29 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <summary>
         /// Called when [run].
         /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>ICommandLineConventionContext.</returns>
+        ICommandLineConventionContext OnRun(OnRunAsyncDelegate @delegate);
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>ICommandLineConventionContext.</returns>
+        ICommandLineConventionContext OnRun(OnRunAsyncCancellableDelegate @delegate);
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>ICommandLineConventionContext.</returns>
         ICommandLineConventionContext OnRun<T>() where T : IDefaultCommand;
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>ICommandLineConventionContext.</returns>
+        ICommandLineConventionContext OnRunAsync<T>() where T : IDefaultCommandAsync;
     }
 }

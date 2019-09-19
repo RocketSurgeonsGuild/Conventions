@@ -106,7 +106,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var response = builder
-                .OnRun((state) => (int)state.GetLogLevel())
+                .OnRun(async (state) => (int)state.GetLogLevel())
                 .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Execute(AutoFake.Resolve<IServiceProvider>()).Should().Be((int)LogLevel.Information);

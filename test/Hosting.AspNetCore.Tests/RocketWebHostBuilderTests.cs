@@ -93,7 +93,7 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
                 ))
                 .UseAssemblyCandidateFinder(new DefaultAssemblyCandidateFinder(new[] { typeof(RocketWebHostBuilderTests).Assembly }))
                 .UseAssemblyProvider(new DefaultAssemblyProvider(new[] { typeof(RocketWebHostBuilderTests).Assembly }))
-                .AppendDelegate(new CommandLineConventionDelegate(c => c.OnRun(state => 1337)))
+                .AppendDelegate(new CommandLineConventionDelegate(c => c.OnRun(async state => 1337)))
                 .AppendDelegate(new CommandLineConventionDelegate(context => context.AddCommand<MyCommand>("myself", v => { })))
                 );
 

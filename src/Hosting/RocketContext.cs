@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.CommandLine;
@@ -18,6 +19,7 @@ using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.Configuratio
 
 namespace Rocket.Surgery.Hosting
 {
+
     /// <summary>
     /// Class RocketContext.
     /// </summary>
@@ -34,6 +36,22 @@ namespace Rocket.Surgery.Hosting
         public RocketContext(IHostBuilder hostBuilder)
         {
             _hostBuilder = hostBuilder;
+        }
+
+        /// <summary>
+        /// Configures any hosting builder conventions
+        /// </summary>
+        /// <param name="configurationBuilder">The configuration builder.</param>
+        public void ComposeHostingConvention(IMsftConfigurationBuilder configurationBuilder)
+        {
+            var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
+            Composer.Register(rocketHostBuilder.Scanner, new HostingConventionContext(
+                rocketHostBuilder.Builder,
+                rocketHostBuilder.AssemblyProvider,
+                rocketHostBuilder.AssemblyCandidateFinder,
+                rocketHostBuilder.Logger,
+                rocketHostBuilder.Properties
+            ), typeof(IHostingConvention), typeof(HostingConventionDelegate));
         }
 
         /// <summary>

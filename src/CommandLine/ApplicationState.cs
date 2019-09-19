@@ -21,13 +21,31 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Gets or sets the on run delegate.
         /// </summary>
         /// <value>The on run delegate.</value>
-        public OnRunDelegate? OnRunDelegate { get; set; }
+        internal OnRunDelegate? OnRunDelegate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the on run delegate.
+        /// </summary>
+        /// <value>The on run delegate.</value>
+        internal OnRunAsyncDelegate? OnRunAsyncDelegate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the on run delegate.
+        /// </summary>
+        /// <value>The on run delegate.</value>
+        internal OnRunAsyncCancellableDelegate? OnRunAsyncCancellableDelegate { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the on run.
         /// </summary>
         /// <value>The type of the on run.</value>
-        public Type? OnRunType { get; set; }
+        internal Type? OnRunType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the on run.
+        /// </summary>
+        /// <value>The type of the on run.</value>
+        internal Type? OnRunAsyncType { get; set; }
 
         /// <summary>
         /// Gets or sets the on parse delegates.

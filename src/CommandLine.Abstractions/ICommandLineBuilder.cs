@@ -60,9 +60,30 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <summary>
         /// Called when [run].
         /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>ICommandLineBuilder.</returns>
+        ICommandLineBuilder OnRun(OnRunAsyncDelegate @delegate);
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>ICommandLineBuilder.</returns>
+        ICommandLineBuilder OnRun(OnRunAsyncCancellableDelegate @delegate);
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>ICommandLineBuilder.</returns>
         ICommandLineBuilder OnRun<T>() where T : IDefaultCommand;
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>ICommandLineBuilder.</returns>
+        ICommandLineBuilder OnRunAsync<T>() where T : IDefaultCommandAsync;
 
         /// <summary>
         /// Builds the specified entry assembly.

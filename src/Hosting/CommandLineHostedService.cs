@@ -69,13 +69,13 @@ namespace Rocket.Surgery.Hosting
         /// <returns>Task.</returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _lifetime.ApplicationStarted.Register(() =>
+            _lifetime.ApplicationStarted.Register(async () =>
             {
                 if (!(_executor.IsDefaultCommand && _isWebApp))
                 {
                     try
                     {
-                        _result.Value = _executor.Execute(_serviceProvider);
+                        _result.Value = await _executor.ExecuteAsync(_serviceProvider, cancellationToken).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {

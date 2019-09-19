@@ -72,9 +72,26 @@ namespace Rocket.Surgery.Extensions.CommandLine
             return this;
         }
 
+        ICommandLineConventionContext ICommandLineConventionContext.OnRun(OnRunAsyncDelegate @delegate)
+        {
+            OnRun(@delegate);
+            return this;
+        }
+
+        ICommandLineConventionContext ICommandLineConventionContext.OnRun(OnRunAsyncCancellableDelegate @delegate)
+        {
+            OnRun(@delegate);
+            return this;
+        }
+
         ICommandLineConventionContext ICommandLineConventionContext.OnRun<T>()
         {
             OnRun<T>();
+            return this;
+        }
+        ICommandLineConventionContext ICommandLineConventionContext.OnRunAsync<T>()
+        {
+            OnRunAsync<T>();
             return this;
         }
 
@@ -92,6 +109,36 @@ namespace Rocket.Surgery.Extensions.CommandLine
         public ICommandLineBuilder OnRun(OnRunDelegate @delegate)
         {
             _application.Model.OnRunDelegate = @delegate;
+            _application.Model.OnRunAsyncDelegate = null;
+            _application.Model.OnRunAsyncCancellableDelegate = null;
+            _application.Model.OnRunType = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>ICommandLineBuilder.</returns>
+        public ICommandLineBuilder OnRun(OnRunAsyncDelegate @delegate)
+        {
+            _application.Model.OnRunDelegate = null;
+            _application.Model.OnRunAsyncDelegate = @delegate;
+            _application.Model.OnRunAsyncCancellableDelegate = null;
+            _application.Model.OnRunType = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>ICommandLineBuilder.</returns>
+        public ICommandLineBuilder OnRun(OnRunAsyncCancellableDelegate @delegate)
+        {
+            _application.Model.OnRunDelegate = null;
+            _application.Model.OnRunAsyncDelegate = null;
+            _application.Model.OnRunAsyncCancellableDelegate = @delegate;
             _application.Model.OnRunType = null;
             return this;
         }
@@ -103,8 +150,24 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <returns>ICommandLineBuilder.</returns>
         public ICommandLineBuilder OnRun<T>() where T : IDefaultCommand
         {
-            _application.Model.OnRunType = typeof(T);
             _application.Model.OnRunDelegate = null;
+            _application.Model.OnRunAsyncDelegate = null;
+            _application.Model.OnRunAsyncCancellableDelegate = null;
+            _application.Model.OnRunType = typeof(T);
+            return this;
+        }
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>ICommandLineBuilder.</returns>
+        public ICommandLineBuilder OnRunAsync<T>() where T : IDefaultCommandAsync
+        {
+            _application.Model.OnRunDelegate = null;
+            _application.Model.OnRunAsyncDelegate = null;
+            _application.Model.OnRunAsyncCancellableDelegate = null;
+            _application.Model.OnRunType = typeof(T);
             return this;
         }
 
@@ -130,7 +193,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
             if (!(_application.Commands.Find(z => z.Name == commandAttribute.Name) is CommandLineApplication<T> command))
             {
-                command = _application.Command(commandAttribute.Name, action, throwOnUnexpectedArg);
+                command = _application.Command(commandAttribute.Name!, action, throwOnUnexpectedArg);
             }
             else
             {
@@ -225,7 +288,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
                     new CommandLineServiceProvider(_application)
                 ));
 
-            return new CommandLine(this, _application, Logger);
+            return new CommandLine(_application, Logger);
         }
     }
 }

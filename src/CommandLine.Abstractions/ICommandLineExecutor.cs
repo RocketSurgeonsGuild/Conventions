@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace Rocket.Surgery.Extensions.CommandLine
@@ -12,8 +14,14 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Executes the specified service provider.
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
-        /// <returns>System.Int32.</returns>
         int Execute(IServiceProvider serviceProvider);
+
+        /// <summary>
+        /// Executes the specified service provider.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        Task<int> ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets a value indicating whether this instance is default command.

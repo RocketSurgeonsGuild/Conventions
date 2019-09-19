@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,18 +17,15 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// <seealso cref="ICommandLine" />
     class CommandLine : ICommandLine
     {
-        private readonly CommandLineBuilder _commandLineBuilder;
         private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLine"/> class.
         /// </summary>
-        /// <param name="commandLineBuilder">The command line builder.</param>
         /// <param name="application">The application.</param>
         /// <param name="logger">The logger.</param>
-        internal CommandLine(CommandLineBuilder commandLineBuilder, CommandLineApplication application, ILogger logger)
+        internal CommandLine(CommandLineApplication application, ILogger logger)
         {
-            _commandLineBuilder = commandLineBuilder;
             _logger = logger;
             Application = application;
         }
@@ -86,7 +85,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 );
             }
 
-            return new CommandLineExecutor(result.SelectedCommand, myState!);
+            return new CommandLineExecutor(result.SelectedCommand, myState!, Application, args);
         }
 
         /// <summary>
@@ -99,9 +98,25 @@ namespace Rocket.Surgery.Extensions.CommandLine
         {
             if (_logger.IsEnabled(LogLevel.Trace))
             {
-            _logger.LogTrace("Executing {@Args}", args);
+                _logger.LogTrace("Executing {@Args}", args);
             }
             return Parse(args).Execute(serviceProvider);
+        }
+
+        /// <summary>
+        /// Executes the specified service provider.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="args">The arguments.</param>
+        /// <returns>System.Int32.</returns>
+        public Task<int> ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken, params string[] args)
+        {
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                _logger.LogTrace("Executing {@Args}", args);
+            }
+            return Parse(args).ExecuteAsync(serviceProvider, cancellationToken);
         }
     }
 }

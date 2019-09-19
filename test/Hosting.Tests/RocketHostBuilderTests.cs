@@ -155,6 +155,22 @@ namespace Rocket.Surgery.Hosting.Tests
         }
 
         [Fact]
+        public void Should_ConfigureHosting()
+        {
+            var builder = Host.CreateDefaultBuilder()
+                .ConfigureRocketSurgery(rb => rb
+                    .UseDependencyContext(DependencyContext.Default)
+                    .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                    .ConfigureHosting(x => { })
+                );
+
+            var host = builder.Build();
+            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
+                A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(HostingConventionDelegate))
+            )).MustHaveHappened();
+        }
+
+        [Fact]
         public void Should_ConfigureCommandLine()
         {
             var builder = Host.CreateDefaultBuilder()

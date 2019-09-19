@@ -2,6 +2,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,16 +18,22 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// <seealso cref="ICommandLineExecutor" />
     class CommandLineExecutor : ICommandLineExecutor
     {
+        private readonly CommandLineApplication _rootApplication;
+        private readonly string[] _args;
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLineExecutor"/> class.
         /// </summary>
-        /// <param name="application">The application.</param>
+        /// <param name="application">The selected application.</param>
         /// <param name="applicationState">State of the application.</param>
-        public CommandLineExecutor(CommandLineApplication application, IApplicationState applicationState)
+        /// <param name="rootApplication">The root application.</param>
+        /// <param name="args">The arguments.</param>
+        public CommandLineExecutor(CommandLineApplication application, IApplicationState applicationState, CommandLineApplication rootApplication, string[] args)
         {
             Application = application ?? throw new ArgumentNullException(nameof(application));
             ApplicationState = applicationState ?? throw new ArgumentNullException(nameof(applicationState));
             IsDefaultCommand = Application is IModelAccessor m && m.GetModelType() == typeof(ApplicationState) && !Application.IsShowingInformation;
+            _rootApplication = rootApplication;
+            _args = args;
         }
 
         /// <summary>
@@ -50,33 +58,52 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Executes the specified service provider.
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
-        /// <returns>System.Int32.</returns>
         public int Execute(IServiceProvider serviceProvider)
+        {
+            return ExecuteAsync(serviceProvider, CancellationToken.None).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Executes the specified service provider.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public Task<int> ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
             if (Application.IsShowingInformation)
             {
-                return 0;
+                return Task.FromResult(0);
             }
-
 
             var validationResult = Application.GetValidationResult();
             if (validationResult != ValidationResult.Success)
             {
-                return Application.ValidationErrorHandler(validationResult);
+                return Task.FromResult(Application.ValidationErrorHandler(validationResult));
             }
 
             if (Application is IModelAccessor ma && ma.GetModel() is ApplicationState state)
             {
-                if (state.OnRunType != null && ActivatorUtilities.CreateInstance(serviceProvider, state.OnRunType) is IDefaultCommand defaultCommand)
+                if (state.OnRunType != null)
                 {
-                    return defaultCommand.Run(state);
+                    var instance = ActivatorUtilities.CreateInstance(serviceProvider, state.OnRunType);
+                    if (instance is IDefaultCommand defaultCommand)
+                    {
+                        return Task.FromResult(defaultCommand.Run(state));
+                    }
+                    if (instance is IDefaultCommandAsync defaultCommandAsync)
+                    {
+                        return defaultCommandAsync.Run(state, cancellationToken);
+                    }
                 }
 
-                return state.OnRunDelegate?.Invoke(state) ?? int.MinValue;
+                if (state.OnRunDelegate != null) return Task.FromResult(state.OnRunDelegate(state));
+                if (state.OnRunAsyncDelegate != null) return state.OnRunAsyncDelegate(state);
+                if (state.OnRunAsyncCancellableDelegate != null) return state.OnRunAsyncCancellableDelegate(state, cancellationToken);
+                return Task.FromResult(int.MinValue);
             }
 
             ActivatorUtilitiesConvention.AdditionalServicesProperty.SetValue(Application, serviceProvider);
-            return Application.Invoke();
+            return _rootApplication.ExecuteAsync(_args, cancellationToken);
         }
     }
 }
