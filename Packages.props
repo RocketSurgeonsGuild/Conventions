@@ -26,7 +26,7 @@
     <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.FileProviders.Physical" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.1" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Logging" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="2.1.1" />
@@ -54,7 +54,7 @@
     <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="3.0.0-rc1.19456.10" />
     <PackageReference Update="Microsoft.Extensions.FileProviders.Physical" Version="3.0.0-rc1.19456.10" />
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="3.0.0-rc1.19456.10" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-rc1.19456.10" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Logging" Version="3.0.0-rc1.19456.10" />
     <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-rc1.19456.10" />
     <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-rc1.19456.10" />
