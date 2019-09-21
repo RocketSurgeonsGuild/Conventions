@@ -52,8 +52,9 @@ namespace Rocket.Surgery.Hosting
                 var webHostedServices = containerBuilder.Services
                     .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting") == true)
                     .ToArray();
-                if (!exec.IsDefaultCommand)
+                if (!exec.IsDefaultCommand || exec.Application.IsShowingInformation)
                 {
+                    containerBuilder.Services.Configure<ConsoleLifetimeOptions>(x => x.SuppressStatusMessages = true);
                     foreach (var descriptor in webHostedServices)
                     {
                         containerBuilder.Services.Remove(descriptor);
