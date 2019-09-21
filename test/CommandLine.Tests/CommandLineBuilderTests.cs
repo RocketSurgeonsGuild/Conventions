@@ -106,7 +106,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var response = builder
-                .OnRun(async (state) => (int)state.GetLogLevel())
+                .OnRun(async (state) => (int)(state.GetLogLevel() ?? LogLevel.Information))
                 .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Execute(AutoFake.Resolve<IServiceProvider>()).Should().Be((int)LogLevel.Information);
@@ -119,7 +119,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var response = builder
-                .OnRun((state) => (int)state.GetLogLevel())
+                .OnRun((state) => (int)(state.GetLogLevel() ?? LogLevel.Information))
                 .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Execute(AutoFake.Resolve<IServiceProvider>(), "run").Should().Be((int)LogLevel.Information);
@@ -135,7 +135,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var response = builder
-                .OnRun((state) => (int)state.GetLogLevel())
+                .OnRun((state) => (int)(state.GetLogLevel() ?? LogLevel.Information))
                 .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = (LogLevel)response.Execute(AutoFake.Resolve<IServiceProvider>(), command);
@@ -154,7 +154,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
-            (builder as ICommandLineConventionContext).OnRun((state) => (int)state.GetLogLevel());
+            (builder as ICommandLineConventionContext).OnRun((state) => (int)(state.GetLogLevel() ?? LogLevel.Information));
 
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 

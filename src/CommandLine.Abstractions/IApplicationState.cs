@@ -36,7 +36,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Gets the log level.
         /// </summary>
         /// <returns>LogLevel.</returns>
-        LogLevel GetLogLevel();
+        LogLevel? GetLogLevel();
 
         /// <summary>
         /// Gets a value indicating whether this instance is default command.

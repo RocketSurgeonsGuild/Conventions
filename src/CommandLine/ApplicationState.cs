@@ -97,7 +97,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Gets the log level.
         /// </summary>
         /// <returns>LogLevel.</returns>
-        public LogLevel GetLogLevel()
+        public LogLevel? GetLogLevel()
         {
             if (Log.HasValue)
                 return Log.Level;
@@ -108,7 +108,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             if (Debug)
                 return LogLevel.Debug;
 
-            return LogLevel.Information;
+            return null;
         }
     }
 }

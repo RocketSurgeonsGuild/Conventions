@@ -14,7 +14,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="builder">The builder.</param>
         /// <param name="state">The state.</param>
         /// <returns>IConfigurationBuilder.</returns>
-        public static IConfigurationBuilder AddApplicationState(this IConfigurationBuilder  builder, IApplicationState state)
+        public static IConfigurationBuilder AddApplicationState(this IConfigurationBuilder builder, IApplicationState state)
         {
             builder.AddInMemoryCollection(new Dictionary<string, string>
             {
@@ -22,8 +22,17 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Trace)}"] = state.Trace.ToString(),
                 [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Verbose)}"] = state.Verbose.ToString(),
                 [$"{nameof(ApplicationState)}:{nameof(ApplicationState.IsDefaultCommand)}"] = state.IsDefaultCommand.ToString(),
-                [$"{nameof(ApplicationState)}:LogLevel"] = state.GetLogLevel().ToString(),
             });
+
+            var logLevel = state.GetLogLevel();
+            if (logLevel.HasValue)
+            {
+                builder.AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    [$"{nameof(ApplicationState)}:LogLevel"] = state.GetLogLevel().ToString(),
+                });
+            }
+
             return builder;
         }
     }

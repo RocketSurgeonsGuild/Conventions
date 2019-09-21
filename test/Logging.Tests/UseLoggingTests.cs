@@ -81,7 +81,7 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
             var builder = AutoFake.Resolve<HostBuilder>();
             var sb = AutoFake.Resolve<ServicesBuilder>();
 
-            static LogLevel @delegate(ILoggingConventionContext x) => LogLevel.Error;
+            static LogLevel? @delegate(ILoggingConventionContext x) => LogLevel.Error;
 
             builder.UseLogging(new RocketLoggingOptions() { GetLogLevel = @delegate });
 

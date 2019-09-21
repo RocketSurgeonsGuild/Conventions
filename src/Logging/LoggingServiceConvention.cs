@@ -8,7 +8,7 @@ using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Logging;
 
-[assembly:Convention(typeof(LoggingServiceConvention))]
+[assembly: Convention(typeof(LoggingServiceConvention))]
 
 namespace Rocket.Surgery.Extensions.Logging
 {
@@ -60,7 +60,11 @@ namespace Rocket.Surgery.Extensions.Logging
         public void Register(ILoggingConventionContext context)
         {
             context.AddConfiguration(context.Configuration.GetSection("Logging"));
-            context.SetMinimumLevel(_options.GetLogLevel(context));
+            var logLevel = _options.GetLogLevel(context);
+            if (logLevel.HasValue)
+            {
+                context.SetMinimumLevel(logLevel.Value);
+            }
         }
     }
 }
