@@ -43,7 +43,7 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
         }
     }
 
-    public class RocketHostBuilderTests : AutoTestBase
+    public class RocketHostBuilderTests : AutoFakeTest
     {
         public RocketHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 

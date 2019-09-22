@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests
 {
-    public class RocketWebHostStartupTests : AutoTestBase
+    public class RocketWebHostStartupTests : AutoFakeTest
     {
         private readonly IHostBuilder _baseBuilder;
 

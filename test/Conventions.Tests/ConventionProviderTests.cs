@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    public class ConventionProviderTests : AutoTestBase
+    public class ConventionProviderTests : AutoFakeTest
     {
         public ConventionProviderTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information)
         {

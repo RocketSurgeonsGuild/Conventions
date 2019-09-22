@@ -25,7 +25,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         string SomeValue { get; }
     }
 
-    public class CommandLineBuilderTests : AutoTestBase
+    public class CommandLineBuilderTests : AutoFakeTest
     {
         public CommandLineBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 

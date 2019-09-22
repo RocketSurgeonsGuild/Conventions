@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests
 {
-    public class RocketWebHostBuilderTests : AutoTestBase
+    public class RocketWebHostBuilderTests : AutoFakeTest
     {
         public RocketWebHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 

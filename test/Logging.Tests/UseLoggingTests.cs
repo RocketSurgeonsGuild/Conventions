@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Extensions.Logging.Tests
 {
-    public class UseLoggingTests : AutoTestBase
+    public class UseLoggingTests : AutoFakeTest
     {
         public UseLoggingTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Trace)
         {

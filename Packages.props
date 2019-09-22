@@ -66,7 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="5.0.0-rc2" />
-    <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.10" />
+    <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.13" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.2" />
     <PackageReference Update="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
@@ -78,11 +78,11 @@
     <PackageReference Update="Terminal.Gui" Version="0.24.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Rocket.Surgery.Extensions.Testing" Version="1.2.3" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="2.0.0" />
     <PackageReference Update="Autofac.Extras.FakeItEasy" Version="5.0.1" />
-    <PackageReference Update="Bogus" Version="28.2.1" />
-    <PackageReference Update="coverlet.collector" Version="1.0.1" />
-    <PackageReference Update="coverlet.msbuild" Version="2.6.3" />
+    <PackageReference Update="Bogus" Version="28.3.1" />
+    <PackageReference Update="coverlet.collector" Version="1.1.0" />
+    <PackageReference Update="coverlet.msbuild" Version="2.7.0" />
     <PackageReference Update="FakeItEasy" Version="5.2.0" />
     <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="5.2.0" />
     <PackageReference Update="FluentAssertions" Version="5.9.0" />

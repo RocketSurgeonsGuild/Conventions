@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Extensions.Configuration.Tests
 {
-    public class ConfigurationBuilderTests : AutoTestBase
+    public class ConfigurationBuilderTests : AutoFakeTest
     {
         public ConfigurationBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 

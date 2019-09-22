@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Extensions.WebJobs.Tests
 {
-    public class WebJobsConventionBuilderTests : AutoTestBase
+    public class WebJobsConventionBuilderTests : AutoFakeTest
     {
         public WebJobsConventionBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {

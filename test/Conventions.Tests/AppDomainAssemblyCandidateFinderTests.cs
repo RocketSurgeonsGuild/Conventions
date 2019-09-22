@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    public class AppDomainAssemblyCandidateFinderTests : AutoTestBase
+    public class AppDomainAssemblyCandidateFinderTests : AutoFakeTest
     {
         public AppDomainAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 
@@ -26,7 +26,7 @@ namespace Rocket.Surgery.Conventions.Tests
                 .Should()
                 .Contain(new[] {
                     "Sample.DependencyOne",
-                    //"Sample.DependencyTwo",   
+                    //"Sample.DependencyTwo",
                     "Sample.DependencyThree",
                     "Rocket.Surgery.Conventions.Tests",
                 });

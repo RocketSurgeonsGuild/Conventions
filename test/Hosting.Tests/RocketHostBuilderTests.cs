@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.Tests
 {
-    public class RocketHostBuilderTests : AutoTestBase
+    public class RocketHostBuilderTests : AutoFakeTest
     {
         public RocketHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 

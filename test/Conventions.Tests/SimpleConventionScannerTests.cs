@@ -12,12 +12,12 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    public class SimpleConventionScannerTests : AutoTestBase
+    public class SimpleConventionScannerTests : AutoFakeTest
     {
         public SimpleConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
         }
-    
+
         [Fact]
         public void ShouldConstruct()
         {

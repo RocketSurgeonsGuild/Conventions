@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Extensions.DependencyInjection.Tests
 {
-    public class ServiceBuilderTests : AutoTestBase
+    public class ServiceBuilderTests : AutoFakeTest
     {
         public ServiceBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
