@@ -22,7 +22,7 @@
     <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
     <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.5" />
+    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.0.0" />
     <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.FileProviders.Physical" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="2.1.1" />
