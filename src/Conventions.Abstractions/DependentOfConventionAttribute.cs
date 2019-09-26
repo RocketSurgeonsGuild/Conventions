@@ -28,4 +28,29 @@ namespace Rocket.Surgery.Conventions
             Type = type;
         }
     }
+
+    internal interface IIsHostBasedConvention
+    {
+        HostType HostType { get; }
+    }
+
+    /// <summary>
+    /// Defines this convention as one that only runs during live usage to avoid unit tests
+    /// </summary>
+    /// <seealso cref="Attribute" />
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class LiveConventionAttribute : Attribute, IIsHostBasedConvention
+    {
+        HostType IIsHostBasedConvention.HostType => HostType.Live;
+    }
+
+    /// <summary>
+    /// Defines this convention as one that only runs during a unit test run
+    /// </summary>
+    /// <seealso cref="Attribute" />
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class UnitTestConventionAttribute : Attribute, IIsHostBasedConvention
+    {
+        HostType IIsHostBasedConvention.HostType => HostType.UnitTestHost;
+    }
 }

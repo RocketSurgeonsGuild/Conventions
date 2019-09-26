@@ -24,7 +24,7 @@ namespace Rocket.Surgery.Conventions
             where TContribution : IConvention<TContext>
             where TDelegate : Delegate
         {
-            Register(context, scanner.BuildProvider().Get<TContribution, TDelegate>(), new[] { typeof(TContribution), typeof(TDelegate) });
+            Register(context, scanner.BuildProvider().Get<TContribution, TDelegate>(context.GetHostType()), new[] { typeof(TContribution), typeof(TDelegate) });
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Rocket.Surgery.Conventions
             where TContribution : IConvention<TContext>
             where TDelegate : Delegate
         {
-            Register(context, provider.Get<TContribution, TDelegate>(), new[] { typeof(TContribution), typeof(TDelegate) });
+            Register(context, provider.Get<TContribution, TDelegate>(context.GetHostType()), new[] { typeof(TContribution), typeof(TDelegate) });
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="types">The types.</param>
         public static void Register(IConventionScanner scanner, IConventionContext context, IEnumerable<Type> types)
         {
-            Register(context, scanner.BuildProvider().GetAll(), types);
+            Register(context, scanner.BuildProvider().GetAll(context.GetHostType()), types);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="types">The types.</param>
         public static void Register(IConventionProvider provider, IConventionContext context, IEnumerable<Type> types)
         {
-            Register(context, provider.GetAll(), types);
+            Register(context, provider.GetAll(context.GetHostType()), types);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="types">The types.</param>
         public static void Register(IConventionScanner scanner, IConventionContext context, params Type[] types)
         {
-            Register(context, scanner.BuildProvider().GetAll(), types);
+            Register(context, scanner.BuildProvider().GetAll(context.GetHostType()), types);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="types">The types.</param>
         public static void Register(IConventionProvider provider, IConventionContext context, params Type[] types)
         {
-            Register(context, provider.GetAll(), types);
+            Register(context, provider.GetAll(context.GetHostType()), types);
         }
 
         /// <summary>
@@ -110,15 +110,12 @@ namespace Rocket.Surgery.Conventions
                             if (context.Logger.IsEnabled(LogLevel.Debug))
                             {
                                 var conventionType = convention.GetType();
-                                if (context.Logger.IsEnabled(LogLevel.Debug))
-                                {
-                                    context.Logger.LogDebug(
-                                        "Could not execute Convention {TypeName} from {AssemblyName} :: {@Types}",
-                                        conventionType.FullName,
-                                        conventionType.Assembly.GetName().Name,
-                                        enumerable
-                                    );
-                                }
+                                context.Logger.LogDebug(
+                                    "Could not execute Convention {TypeName} from {AssemblyName} :: {@Types}",
+                                    conventionType.FullName,
+                                    conventionType.Assembly.GetName().Name,
+                                    enumerable
+                                );
                             }
                             continue;
                         }
@@ -126,14 +123,11 @@ namespace Rocket.Surgery.Conventions
                         if (context.Logger.IsEnabled(LogLevel.Debug))
                         {
                             var conventionType = convention.GetType();
-                            if (context.Logger.IsEnabled(LogLevel.Debug))
-                            {
-                                context.Logger.LogDebug(
-                                    "Executing Convention {TypeName} from {AssemblyName}",
-                                    conventionType.FullName,
-                                    conventionType.Assembly.GetName().Name
-                                );
-                            }
+                            context.Logger.LogDebug(
+                                "Executing Convention {TypeName} from {AssemblyName}",
+                                conventionType.FullName,
+                                conventionType.Assembly.GetName().Name
+                            );
                         }
                         Register(convention, context);
                         continue;

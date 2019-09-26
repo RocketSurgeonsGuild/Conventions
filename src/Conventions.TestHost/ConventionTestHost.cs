@@ -34,7 +34,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="environment">The environment.</param>
         internal ConventionTestHost(IConventionScanner scanner, IAssemblyCandidateFinder assemblyCandidateFinder, IAssemblyProvider assemblyProvider, DiagnosticSource diagnosticSource, IServiceProviderDictionary serviceProperties, ILoggerFactory loggerFactory, IRocketEnvironment environment) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties)
         {
-            serviceProperties.Set(HostType.TestHost);
+            serviceProperties.Set(HostType.UnitTestHost);
             _loggerFactory = loggerFactory;
             _environment = environment;
             _logger = _loggerFactory.CreateLogger(nameof(ConventionTestHost));
@@ -92,17 +92,6 @@ namespace Rocket.Surgery.Conventions.TestHost
             {
                 builder.ClearProviders();
                 builder.Services.AddSingleton(_loggerFactory);
-                var loggingBuilder = new LoggingBuilder(
-                    Scanner,
-                    AssemblyProvider,
-                    AssemblyCandidateFinder,
-                    builder.Services,
-                    _environment,
-                    configuration,
-                    _logger,
-                    ServiceProperties
-                );
-                loggingBuilder.Build();
             });
 
             var serviceProvider = servicesBuilder.Build();

@@ -63,7 +63,7 @@ namespace Rocket.Surgery.Conventions.Reflection
 
         private IEnumerable<RuntimeLibrary> GetCandidateLibraries(string[] candidates)
         {
-            if (candidates == null || !candidates.Any())
+            if (candidates == null || candidates.Length == 0)
             {
                 return Enumerable.Empty<RuntimeLibrary>();
             }

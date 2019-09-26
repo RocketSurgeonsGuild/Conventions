@@ -63,9 +63,29 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Not_TestHost()
         {
             var context = A.Fake<IConventionHostBuilder>();
-            A.CallTo(() => context.ServiceProperties[typeof(HostType)]).Returns(HostType.Default);
+            A.CallTo(() => context.ServiceProperties[typeof(HostType)]).Returns(HostType.Live);
 
             context.IsUnitTestHost().Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(HostType.UnitTestHost)]
+        [InlineData(HostType.Live)]
+        public void Should_Get_HostType(HostType hostType)
+        {
+            var context = A.Fake<IConventionHostBuilder>();
+            A.CallTo(() => context.ServiceProperties[typeof(HostType)]).Returns(hostType);
+
+            context.GetHostType().Should().Be(hostType);
+        }
+
+        [Fact]
+        public void Should_Not_GetHostType()
+        {
+            var context = A.Fake<IConventionHostBuilder>();
+            A.CallTo(() => context.ServiceProperties[typeof(HostType)]).Returns(null);
+
+            context.GetHostType().Should().BeNull();
         }
 
         [Fact]

@@ -20,20 +20,34 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// Create a convention
         /// </summary>
         /// <param name="convention">The convention.</param>
-        public DelegateOrConvention(IConvention convention)
+        internal DelegateOrConvention(IConvention convention)
         {
             Convention = convention;
             Delegate = default;
+            HostType = null;
+        }
+
+        /// <summary>
+        /// Create a convention
+        /// </summary>
+        /// <param name="convention">The convention.</param>
+        /// <param name="hostType">The host type.</param>
+        internal DelegateOrConvention(IConvention convention, HostType? hostType)
+        {
+            Convention = convention;
+            Delegate = default;
+            HostType = hostType;
         }
 
         /// <summary>
         /// Create a delegate
         /// </summary>
         /// <param name="delegate">The delegate.</param>
-        public DelegateOrConvention(Delegate @delegate)
+        internal DelegateOrConvention(Delegate @delegate)
         {
             Convention = default;
             Delegate = @delegate;
+            HostType = null;
         }
 
         /// <summary>
@@ -47,6 +61,12 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <value>The delegate.</value>
         public Delegate? Delegate { get; }
+
+        /// <summary>
+        /// The host type this applies to
+        /// </summary>
+        /// <value>The delegate.</value>
+        internal HostType? HostType { get; }
 
         /// <summary>
         /// Operator to get the delegate implictly
@@ -124,6 +144,10 @@ namespace Rocket.Surgery.Conventions.Scanners
         {
             if (Convention != null)
             {
+                if (HostType.HasValue)
+                {
+                    return $"{HostType}:{Convention.GetType().Name}";
+                }
                 return Convention.GetType().Name;
             }
             if (Delegate != null)

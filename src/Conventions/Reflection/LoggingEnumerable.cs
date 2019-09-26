@@ -7,7 +7,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// <summary>
     /// LoggingEnumerable.
     /// </summary>
-    static class LoggingEnumerable
+    internal static class LoggingEnumerable
     {
         /// <summary>
         /// Creates the specified enumerable.
@@ -26,7 +26,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="IEnumerable{T}" />
-    class LoggingEnumerable<T> : IEnumerable<T>
+    internal class LoggingEnumerable<T> : IEnumerable<T>
     {
         private readonly IEnumerable<T> _enumerable;
         private readonly Action<T> _logAction;

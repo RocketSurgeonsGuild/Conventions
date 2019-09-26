@@ -29,7 +29,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             {
                 builder.AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    [$"{nameof(ApplicationState)}:LogLevel"] = state.GetLogLevel().ToString(),
+                    [$"{nameof(ApplicationState)}:LogLevel"] = logLevel.ToString(),
                 });
             }
 
