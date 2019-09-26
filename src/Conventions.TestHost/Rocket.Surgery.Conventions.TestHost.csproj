@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;netcoreapp3.0;netstandard2.0;netcoreapp2.1</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj" />
         <ProjectReference Include="..\Configuration\Rocket.Surgery.Extensions.Configuration.csproj" />
-        <ProjectReference Include="..\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
     </ItemGroup>
     <ItemGroup>
     </ItemGroup>

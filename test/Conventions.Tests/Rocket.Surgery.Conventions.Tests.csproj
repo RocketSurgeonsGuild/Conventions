@@ -7,5 +7,6 @@
         <ProjectReference Include="..\..\sample\Sample.DependencyThree\Sample.DependencyThree.csproj" />
         <ProjectReference Include="..\..\sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <ProjectReference Include="..\..\src\Conventions.TestHost\Rocket.Surgery.Conventions.TestHost.csproj" />
     </ItemGroup>
 </Project>

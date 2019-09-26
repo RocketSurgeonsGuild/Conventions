@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    public class BasicConventionScannerTests: AutoFakeTest
+    public class BasicConventionScannerTests : AutoFakeTest
     {
         public BasicConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
         {
@@ -114,7 +114,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.AppendConvention(conventions);
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Convention).Should().ContainInOrder(conventions);
         }
 
@@ -131,7 +131,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.AppendConvention(conventions);
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Convention).Should().ContainInOrder(conventions);
         }
 
@@ -143,7 +143,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.AppendConvention<C>();
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(1);
+            result.Should().HaveCount(1);
             result.Select(x => x.Convention).Should().AllBeOfType(typeof(C));
         }
 
@@ -155,7 +155,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.AppendConvention(typeof(C), typeof(E), typeof(D));
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
@@ -167,7 +167,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.AppendConvention(new[] { typeof(C), typeof(E), typeof(D) }.AsEnumerable());
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
@@ -184,7 +184,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.AppendDelegate(conventions);
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
         }
 
@@ -201,7 +201,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.AppendDelegate(conventions);
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
         }
 
@@ -214,7 +214,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.PrependConvention(convention);
 
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
-            result.Count().Should().Be(1);
+            result.Should().HaveCount(1);
             result.Select(x => x.Convention).Should().Contain(convention);
         }
 
@@ -231,7 +231,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.PrependConvention(conventions);
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Convention).Should().ContainInOrder(conventions);
         }
 
@@ -248,7 +248,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.PrependConvention(conventions);
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Convention).Should().ContainInOrder(conventions);
         }
 
@@ -260,7 +260,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.PrependConvention<C>();
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(1);
+            result.Should().HaveCount(1);
             result.Select(x => x.Convention).Should().AllBeOfType(typeof(C));
         }
 
@@ -272,7 +272,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.PrependConvention(typeof(C), typeof(E), typeof(D));
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
@@ -284,7 +284,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.PrependConvention(new[] { typeof(C), typeof(E), typeof(D) }.AsEnumerable());
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Convention!.GetType()).Should().ContainInOrder(typeof(C), typeof(E), typeof(D));
         }
 
@@ -301,7 +301,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.PrependDelegate(conventions);
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
         }
 
@@ -318,7 +318,7 @@ namespace Rocket.Surgery.Conventions.Tests
             scanner.PrependDelegate(conventions);
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
 
-            result.Count().Should().Be(3);
+            result.Should().HaveCount(3);
             result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
         }
     }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -6,11 +6,17 @@ namespace Rocket.Surgery.Conventions
     /// Ensures the convention runs after the given <see cref="IConvention" />
     /// </summary>
     /// <seealso cref="Attribute" />
-    public interface IDependsOnConvention
+    public interface IConventionDependency
     {
         /// <summary>
         /// The <see cref="IConvention" /> type to link to
         /// </summary>
         Type Type { get; }
+
+
+        /// <summary>
+        /// The <see cref="DependencyDirection" /> direction of this relationship
+        /// </summary>
+        DependencyDirection Direction { get; }
     }
 }

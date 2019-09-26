@@ -14,8 +14,8 @@ namespace Rocket.Surgery.Conventions
     /// <seealso cref="IConvention{TContext}" />
     [Obsolete("This class will be removed in the future version.  Replaced by Composer.Register<TContext, TContribution, TDelegate>.")]
     public interface IConventionComposer<in TContext, TContribution, TDelegate> : IConvention<TContext>
-        where TContribution : IConvention<TContext>
         where TContext : IConventionContext
+        where TContribution : IConvention<TContext>
         where TDelegate : Delegate
     {
     }

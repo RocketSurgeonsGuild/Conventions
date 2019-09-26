@@ -300,11 +300,10 @@ namespace Rocket.Surgery.Hosting.Functions
                     var depsFilePath = Path.Combine(location, functionsAssembly.GetName().Name + ".deps.json");
                     if (File.Exists(depsFilePath))
                     {
-                        using (var stream = File.Open(depsFilePath, FileMode.Open, FileAccess.Read))
-                        {
-                            dependencyContext = new DependencyContextJsonReader().Read(stream);
-                            break;
-                        }
+                        using var stream = File.Open(depsFilePath, FileMode.Open, FileAccess.Read);
+                        using var reader = new DependencyContextJsonReader();
+                        dependencyContext = reader.Read(stream);
+                        break;
                     }
                     location = Path.GetDirectoryName(location);
                 }
@@ -312,6 +311,8 @@ namespace Rocket.Surgery.Hosting.Functions
                 var assemblyCandidateFinder = new DependencyContextAssemblyCandidateFinder(dependencyContext!, logger);
                 var assemblyProvider = new DependencyContextAssemblyProvider(dependencyContext!, logger);
                 var properties = new ServiceProviderDictionary();
+                properties.Set<ILogger>(logger);
+                properties.Set(HostType.Live);
                 var scanner = new SimpleConventionScanner(assemblyCandidateFinder, properties, logger);
                 conventionalBuilder = new RocketFunctionHostBuilder(builder, functionsAssembly, startupInstance, environment!, scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties);
                 Builders.Add(builder, conventionalBuilder);

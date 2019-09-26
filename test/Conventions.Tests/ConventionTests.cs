@@ -35,7 +35,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var dele2 = A.Fake<ServiceConventionDelegate>();
 
             A.CallTo(() => scanner.BuildProvider()).Returns(provider);
-            A.CallTo(() => provider.Get<IServiceConvention, ServiceConventionDelegate>())
+            A.CallTo(() => provider.Get<IServiceConvention, ServiceConventionDelegate>(HostType.Undefined))
                 .Returns(new[]
                 {
                     new DelegateOrConvention(contrib),

@@ -57,7 +57,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         {
             const BindingFlags binding = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 
-            var typeInfo = context.ModelType.GetTypeInfo();
+            var typeInfo = context.ModelType!.GetTypeInfo();
             MethodInfo? method;
             MethodInfo? asyncMethod;
             try
@@ -83,7 +83,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             }
 
             var constructor =
-                context.ModelType.GetTypeInfo()
+                context.ModelType!.GetTypeInfo()
                     .DeclaredConstructors.Single();
             var model = context.ModelAccessor?.GetModel();
 
@@ -115,7 +115,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
             if (method.ReturnType == typeof(Task) || method.ReturnType == typeof(Task<int>))
             {
-                return await InvokeAsync(method, model, arguments);
+                return await InvokeAsync(method, model, arguments).ConfigureAwait(false);
             }
             if (method.ReturnType == typeof(void) || method.ReturnType == typeof(int))
             {
@@ -159,8 +159,6 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
             return 0;
         }
-
-
 
         private static readonly MethodInfo BindParametersMethod = typeof(ConventionContext).Assembly
             .GetType("McMaster.Extensions.CommandLineUtils.ReflectionHelper")!

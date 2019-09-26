@@ -37,29 +37,37 @@ namespace Rocket.Surgery.Conventions.Scanners
                     {
                         return x switch
                         {
-                            IConvention a => new DelegateOrConvention(a),
+                            IConvention a => new DelegateOrConvention(a, a.GetType().GetCustomAttributes().OfType<IHostBasedConvention>().FirstOrDefault()?.HostType ?? HostType.Undefined),
                             Delegate d => new DelegateOrConvention(d),
                             _ => DelegateOrConvention.None,
                         };
                     })
                     .ToArray();
 
-                var conventions = c
-                    .Select(convention => (
-                        convention,
-                        type: convention.Convention?.GetType(),
-                        dependsOn: convention.Convention?.GetType().GetCustomAttributes().OfType<IDependsOnConvention>().Select(z => z.Type) ?? Array.Empty<Type>(),
-                        dependentFor: convention.Convention?.GetType().GetCustomAttributes().OfType<IDependentOfConvention>().Select(z => z.Type) ?? Array.Empty<Type>()
-                    ))
-                    .ToArray();
-                if (conventions.Any(z => z.dependsOn.Any() || z.dependentFor.Any()))
+                if (c.Where(x => x.Convention != null).Any(cc => (cc.Convention!.GetType().GetCustomAttributes() ?? Array.Empty<Attribute>()).OfType<IConventionDependency>().Any()))
                 {
+                    var conventions = c
+                        .Where(x => x.Convention != null)
+                        .Select(convention =>
+                        {
+                            var type = convention.Convention?.GetType();
+                            var dependencies = type.GetCustomAttributes()?.OfType<IConventionDependency>().ToArray() ?? Array.Empty<IConventionDependency>();
+                            return (
+                                convention,
+                                type,
+                                dependsOn: dependencies.Where(x => x.Direction == DependencyDirection.DependsOn).Select(z => z.Type) ?? Array.Empty<Type>(),
+                                dependentFor: dependencies.Where(x => x.Direction == DependencyDirection.DependentOf).Select(z => z.Type) ?? Array.Empty<Type>()
+                            );
+                        })
+                        .ToArray();
+
                     var lookup = conventions.ToLookup(z => z.type, z => z.convention);
                     var dependentFor = conventions
                         .SelectMany(data => data.dependentFor
                             .SelectMany(z => lookup[z])
                             .Select(dependentFor => (dependentFor, data.convention))
-                        ).ToLookup(z => z.dependentFor, z => z.convention);
+                        )
+                        .ToLookup(z => z.dependentFor, z => z.convention);
 
                     var dependsOn = conventions
                         .SelectMany(data => data.dependsOn
@@ -69,8 +77,6 @@ namespace Rocket.Surgery.Conventions.Scanners
                         .SelectMany(data =>
                             dependentFor[data.convention]
                                 .Select(dependsOn => (data.convention, dependsOn))))
-                        //.Concat(dependentFor[data.convention]))
-
                         .ToLookup(x => x.convention, x => x.dependsOn);
 
                     return TopographicalSort(prepended
@@ -80,7 +86,7 @@ namespace Rocket.Surgery.Conventions.Scanners
                                 {
                                     return x switch
                                     {
-                                        IConvention a => new DelegateOrConvention(a),
+                                        IConvention a => new DelegateOrConvention(a, a.GetType().GetCustomAttributes().OfType<IHostBasedConvention>().FirstOrDefault()?.HostType ?? HostType.Undefined),
                                         Delegate d => new DelegateOrConvention(d),
                                         _ => DelegateOrConvention.None,
                                     };
@@ -89,24 +95,10 @@ namespace Rocket.Surgery.Conventions.Scanners
                             x => dependsOn[x]
                         )
                         .ToArray();
-
                 }
                 else
                 {
-                    return prepended
-                        .Union(contributionsList)
-                        .Union(appended)
-                        .Select(x =>
-                        {
-                            return x switch
-                            {
-                                IConvention a => new DelegateOrConvention(a),
-                                Delegate d => new DelegateOrConvention(d),
-                                _ => DelegateOrConvention.None,
-                            };
-                        })
-                        .Where(x => x != DelegateOrConvention.None)
-                        .ToArray();
+                    return c;
                 }
             });
         }
@@ -116,20 +108,23 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <typeparam name="TContribution">The type of the contribution.</typeparam>
         /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-        /// <returns>IEnumerable{DelegateOrConvention}.</returns>
-        public IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>()
+        /// <param name="hostType">The host type.</param>
+        public IEnumerable<DelegateOrConvention> Get<TContribution, TDelegate>(HostType hostType = HostType.Undefined)
             where TContribution : IConvention
             where TDelegate : Delegate => _conventions.Value
                 .Select(x =>
                 {
                     if (x.Convention is TContribution a)
                     {
-                        return new DelegateOrConvention(a);
+                        if (x.HostType == HostType.Undefined || x.HostType == hostType)
+                        {
+                            return x;
+                        }
                     }
                     // ReSharper disable once ConvertIfStatementToReturnStatement
                     if (x.Delegate is TDelegate d)
                     {
-                        return new DelegateOrConvention(d);
+                        return x;
                     }
                     return DelegateOrConvention.None;
                 })
@@ -138,8 +133,9 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <summary>
         /// Gets a all the conventions from the provider
         /// </summary>
-        /// <returns>IEnumerable{DelegateOrConvention}.</returns>
-        public IEnumerable<DelegateOrConvention> GetAll() => _conventions.Value;
+        /// <param name="hostType">The host type.</param>
+        public IEnumerable<DelegateOrConvention> GetAll(HostType hostType = HostType.Undefined) => _conventions.Value
+            .Where(x => hostType == HostType.Undefined || x.HostType == HostType.Undefined || x.HostType == hostType);
 
         private static IEnumerable<T> TopographicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies)
         {

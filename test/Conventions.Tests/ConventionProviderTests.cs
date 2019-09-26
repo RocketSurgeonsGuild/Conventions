@@ -22,7 +22,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
         }
 
-        [DependsOnConvention(typeof(D))]
+        [DependsOnConvention(typeof(D)), UnitTestConvention]
         class C : IServiceConvention
         {
             public void Register(IServiceConventionContext context) => throw new NotImplementedException();
@@ -39,7 +39,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
         }
 
-        [DependsOnConvention(typeof(E))]
+        [DependsOnConvention(typeof(E)), LiveConvention]
         class F : IConvention
         {
 
@@ -132,11 +132,59 @@ namespace Rocket.Surgery.Conventions.Tests
             var provider = new ConventionProvider(
                 new IConvention[] { c1, c2, },
                 new object[] { },
-                new object[] {  }
+                new object[] { }
             );
 
             Action a = () => provider.GetAll();
             a.Should().Throw<NotSupportedException>();
+        }
+
+        [Fact]
+        public void Should_Exclude_Unit_Test_Conventions()
+        {
+            var b = new B();
+            var d1 = new ServiceConventionDelegate((x) => { });
+            var d2 = new ServiceConventionDelegate((x) => { });
+            var d3 = new ServiceConventionDelegate((x) => { });
+            var c = new C();
+            var d = new D();
+            var e = new E();
+            var f = new F();
+
+            var provider = new ConventionProvider(
+                new IConvention[] { b, c, },
+                new object[] { d1, d, d2 },
+                new object[] { e, d3, f }
+            );
+
+            var r = provider.GetAll(HostType.Live)
+                .Select(x => x.Convention as object ?? x.Delegate)
+                .Should()
+                .ContainInOrder(d1, e, d, d2, b, d3, f);
+        }
+
+        [Fact]
+        public void Should_Include_Unit_Test_Conventions()
+        {
+            var b = new B();
+            var d1 = new ServiceConventionDelegate((x) => { });
+            var d2 = new ServiceConventionDelegate((x) => { });
+            var d3 = new ServiceConventionDelegate((x) => { });
+            var c = new C();
+            var d = new D();
+            var e = new E();
+            var f = new F();
+
+            var provider = new ConventionProvider(
+                new IConvention[] { b, c, },
+                new object[] { d1, d, d2 },
+                new object[] { e, d3, f }
+            );
+
+            var r = provider.GetAll(HostType.UnitTestHost)
+                .Select(x => x.Convention as object ?? x.Delegate)
+                .Should()
+                .ContainInOrder(d1, e, d, d2, b, c, d3);
         }
     }
 }
