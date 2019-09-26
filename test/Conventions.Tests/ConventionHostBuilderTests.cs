@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
@@ -55,7 +56,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource= new DiagnosticListener("DiagnosticSource");
+            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 

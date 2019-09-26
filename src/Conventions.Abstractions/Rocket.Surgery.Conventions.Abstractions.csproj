@@ -9,5 +9,6 @@
         <PackageReference Include="NodaTime" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.TestHost" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
     </ItemGroup>
 </Project>
