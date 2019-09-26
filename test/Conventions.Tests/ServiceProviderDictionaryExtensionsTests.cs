@@ -53,8 +53,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Should_Get_TestHost()
         {
-            var context = A.Fake<IServiceProviderDictionary>();
-            A.CallTo(() => context[typeof(HostType)]).Returns(HostType.UnitTestHost);
+            var context = new ServiceProviderDictionary();
+            context.Set(HostType.UnitTestHost);
 
             context.IsUnitTestHost().Should().BeTrue();
         }
@@ -62,19 +62,20 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Should_Not_TestHost()
         {
-            var context = A.Fake<IServiceProviderDictionary>();
-            A.CallTo(() => context[typeof(HostType)]).Returns(HostType.Live);
+            var context = new ServiceProviderDictionary();
+            context.Set(HostType.Live);
 
             context.IsUnitTestHost().Should().BeFalse();
         }
 
         [Theory]
-        [InlineData(HostType.UnitTestHost)]
+        [InlineData(HostType.Undefined)]
         [InlineData(HostType.Live)]
+        [InlineData(HostType.UnitTestHost)]
         public void Should_Get_HostType(HostType hostType)
         {
-            var context = A.Fake<IServiceProviderDictionary>();
-            A.CallTo(() => context[typeof(HostType)]).Returns(hostType);
+            var context = new ServiceProviderDictionary();
+            context.Set(hostType);
 
             context.GetHostType().Should().Be(hostType);
         }
@@ -82,10 +83,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Should_Not_GetHostType()
         {
-            var context = A.Fake<IServiceProviderDictionary>();
-            A.CallTo(() => context[typeof(HostType)]).Returns(null);
-
-            context.GetHostType().Should().BeNull();
+            var context = new ServiceProviderDictionary();
+            context.GetHostType().Should().Be(HostType.Undefined);
         }
 
         [Fact]

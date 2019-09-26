@@ -8,8 +8,10 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     /// <seealso cref="Attribute" />
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public sealed class BeforeConventionAttribute : Attribute, IDependentOfConvention
+    public sealed class BeforeConventionAttribute : Attribute, IConventionDependency
     {
+        DependencyDirection IConventionDependency.Direction => DependencyDirection.DependentOf;
+
         /// <summary>
         /// The convention type
         /// </summary>

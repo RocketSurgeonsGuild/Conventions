@@ -164,18 +164,18 @@ namespace Rocket.Surgery.Conventions
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="context">The context</param>
-        internal static HostType? GetHostType(this IConventionHostBuilder context) => context.ServiceProperties.TryGetValue(typeof(HostType), out var hostType) ? (HostType?)hostType : null;
+        internal static HostType GetHostType(this IConventionHostBuilder context) => context.ServiceProperties.TryGetValue(typeof(HostType), out var hostType) ? (HostType)hostType! : HostType.Undefined;
 
         /// <summary>
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="serviceProviderDictionary">The properties</param>
-        public static bool IsUnitTestHost(this IServiceProviderDictionary serviceProviderDictionary) => serviceProviderDictionary.Get<HostType>() == HostType.UnitTestHost;
+        public static bool IsUnitTestHost(this IServiceProviderDictionary serviceProviderDictionary) => serviceProviderDictionary.GetHostType() == HostType.UnitTestHost;
 
         /// <summary>
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="serviceProviderDictionary">The properties</param>
-        internal static HostType? GetHostType(this IServiceProviderDictionary serviceProviderDictionary) => serviceProviderDictionary.TryGetValue(typeof(HostType), out var hostType) ? (HostType?)hostType : null;
+        internal static HostType GetHostType(this IServiceProviderDictionary serviceProviderDictionary) => serviceProviderDictionary.TryGetValue(typeof(HostType), out var hostType) ? (HostType)hostType! : HostType.Undefined;
     }
 }

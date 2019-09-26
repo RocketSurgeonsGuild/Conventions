@@ -24,7 +24,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         {
             Convention = convention;
             Delegate = default;
-            HostType = null;
+            HostType = HostType.Undefined;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="convention">The convention.</param>
         /// <param name="hostType">The host type.</param>
-        internal DelegateOrConvention(IConvention convention, HostType? hostType)
+        internal DelegateOrConvention(IConvention convention, HostType hostType)
         {
             Convention = convention;
             Delegate = default;
@@ -47,7 +47,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         {
             Convention = default;
             Delegate = @delegate;
-            HostType = null;
+            HostType = HostType.Undefined;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// The host type this applies to
         /// </summary>
         /// <value>The delegate.</value>
-        internal HostType? HostType { get; }
+        internal HostType HostType { get; }
 
         /// <summary>
         /// Operator to get the delegate implictly
@@ -144,7 +144,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         {
             if (Convention != null)
             {
-                if (HostType.HasValue)
+                if (HostType != HostType.Undefined)
                 {
                     return $"{HostType}:{Convention.GetType().Name}";
                 }

@@ -54,7 +54,9 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Get_IsUnitTestHost()
         {
             var context = A.Fake<IConventionContext>();
-            A.CallTo(() => context[typeof(HostType)]).Returns(HostType.UnitTestHost);
+            var properties = new ServiceProviderDictionary();
+            A.CallTo(() => context.Properties).Returns(properties);
+            properties.Set(HostType.UnitTestHost);
 
             context.IsUnitTestHost().Should().BeTrue();
         }
@@ -63,18 +65,23 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Not_IsUnitTestHost()
         {
             var context = A.Fake<IConventionContext>();
-            A.CallTo(() => context[typeof(HostType)]).Returns(HostType.Live);
+            var properties = new ServiceProviderDictionary();
+            A.CallTo(() => context.Properties).Returns(properties);
+            properties.Set(HostType.Live);
 
             context.IsUnitTestHost().Should().BeFalse();
         }
 
         [Theory]
-        [InlineData(HostType.UnitTestHost)]
+        [InlineData(HostType.Undefined)]
         [InlineData(HostType.Live)]
+        [InlineData(HostType.UnitTestHost)]
         public void Should_Get_HostType(HostType hostType)
         {
             var context = A.Fake<IConventionContext>();
-            A.CallTo(() => context[typeof(HostType)]).Returns(hostType);
+            var properties = new ServiceProviderDictionary();
+            A.CallTo(() => context.Properties).Returns(properties);
+            properties.Set(hostType);
 
             context.GetHostType().Should().Be(hostType);
         }
@@ -83,9 +90,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Not_GetHostType()
         {
             var context = A.Fake<IConventionContext>();
-            A.CallTo(() => context[typeof(HostType)]).Returns(null);
-
-            context.GetHostType().Should().BeNull();
+            context.GetHostType().Should().Be(HostType.Undefined);
         }
 
         [Fact]

@@ -8,6 +8,10 @@ namespace Rocket.Surgery.Conventions
     public enum HostType
     {
         /// <summary>
+        /// No hast type has been defined
+        /// </summary>
+        Undefined,
+        /// <summary>
         /// This is a live application
         /// This also may apply to in memory integration tests running through the HostBuilder infrastructure
         /// </summary>

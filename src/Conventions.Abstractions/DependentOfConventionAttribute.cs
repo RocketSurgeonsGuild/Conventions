@@ -8,8 +8,10 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     /// <seealso cref="Attribute" />
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public sealed class DependentOfConventionAttribute : Attribute, IDependentOfConvention
+    public sealed class DependentOfConventionAttribute : Attribute, IConventionDependency
     {
+        DependencyDirection IConventionDependency.Direction => DependencyDirection.DependentOf;
+
         /// <summary>
         /// The convention type
         /// </summary>
@@ -27,30 +29,5 @@ namespace Rocket.Surgery.Conventions
                 throw new NotSupportedException("Type must inherit from " + nameof(IConvention));
             Type = type;
         }
-    }
-
-    internal interface IIsHostBasedConvention
-    {
-        HostType HostType { get; }
-    }
-
-    /// <summary>
-    /// Defines this convention as one that only runs during live usage to avoid unit tests
-    /// </summary>
-    /// <seealso cref="Attribute" />
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public sealed class LiveConventionAttribute : Attribute, IIsHostBasedConvention
-    {
-        HostType IIsHostBasedConvention.HostType => HostType.Live;
-    }
-
-    /// <summary>
-    /// Defines this convention as one that only runs during a unit test run
-    /// </summary>
-    /// <seealso cref="Attribute" />
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public sealed class UnitTestConventionAttribute : Attribute, IIsHostBasedConvention
-    {
-        HostType IIsHostBasedConvention.HostType => HostType.UnitTestHost;
     }
 }

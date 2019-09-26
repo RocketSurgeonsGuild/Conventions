@@ -54,7 +54,9 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Get_TestHost()
         {
             var context = A.Fake<IConventionHostBuilder>();
-            A.CallTo(() => context.ServiceProperties[typeof(HostType)]).Returns(HostType.UnitTestHost);
+            var properties = new ServiceProviderDictionary();
+            A.CallTo(() => context.ServiceProperties).Returns(properties);
+            properties.Set(HostType.UnitTestHost);
 
             context.IsUnitTestHost().Should().BeTrue();
         }
@@ -63,18 +65,23 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Not_TestHost()
         {
             var context = A.Fake<IConventionHostBuilder>();
-            A.CallTo(() => context.ServiceProperties[typeof(HostType)]).Returns(HostType.Live);
+            var properties = new ServiceProviderDictionary();
+            A.CallTo(() => context.ServiceProperties).Returns(properties);
+            properties.Set(HostType.Live);
 
             context.IsUnitTestHost().Should().BeFalse();
         }
 
         [Theory]
-        [InlineData(HostType.UnitTestHost)]
+        [InlineData(HostType.Undefined)]
         [InlineData(HostType.Live)]
+        [InlineData(HostType.UnitTestHost)]
         public void Should_Get_HostType(HostType hostType)
         {
             var context = A.Fake<IConventionHostBuilder>();
-            A.CallTo(() => context.ServiceProperties[typeof(HostType)]).Returns(hostType);
+            var properties = new ServiceProviderDictionary();
+            properties.Set(hostType);
+            A.CallTo(() => context.ServiceProperties).Returns(properties);
 
             context.GetHostType().Should().Be(hostType);
         }
@@ -83,9 +90,10 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Not_GetHostType()
         {
             var context = A.Fake<IConventionHostBuilder>();
-            A.CallTo(() => context.ServiceProperties[typeof(HostType)]).Returns(null);
+            var properties = new ServiceProviderDictionary();
+            A.CallTo(() => context.ServiceProperties).Returns(properties);
 
-            context.GetHostType().Should().BeNull();
+            context.GetHostType().Should().Be(HostType.Undefined);
         }
 
         [Fact]
