@@ -84,6 +84,6 @@ namespace Rocket.Surgery.Conventions
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="context">The context</param>
-        public static bool IsTestHost(this IConventionContext context) => context.Get<HostType>() == HostType.TestHost;
+        public static bool IsUnitTestHost(this IConventionContext context) => context.Get<HostType>() == HostType.UnitTestHost;
     }
 }

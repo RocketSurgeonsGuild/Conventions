@@ -6,6 +6,6 @@ namespace Rocket.Surgery.Conventions
     internal enum HostType
     {
         Default,
-        TestHost
+        UnitTestHost
     }
 }
