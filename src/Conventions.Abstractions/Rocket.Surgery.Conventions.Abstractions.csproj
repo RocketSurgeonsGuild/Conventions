@@ -8,5 +8,6 @@
         <PackageReference Include="System.Diagnostics.DiagnosticSource" />
         <PackageReference Include="NodaTime" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.TestHost" />
     </ItemGroup>
 </Project>
