@@ -44,13 +44,14 @@ namespace Rocket.Surgery.Conventions.Scanners
                     })
                     .ToArray();
 
-                if (c.Where(x => x.Convention != null).Any(cc => cc.Convention!.GetType().GetCustomAttributes().OfType<IConventionDependency>().Any()))
+                if (c.Where(x => x.Convention != null).Any(cc => (cc.Convention!.GetType().GetCustomAttributes() ?? Array.Empty<Attribute>()).OfType<IConventionDependency>().Any()))
                 {
                     var conventions = c
+                        .Where(x => x.Convention != null)
                         .Select(convention =>
                         {
                             var type = convention.Convention?.GetType();
-                            var dependencies = convention.Convention?.GetType().GetCustomAttributes().OfType<IConventionDependency>().ToArray() ?? Array.Empty<IConventionDependency>();
+                            var dependencies = type.GetCustomAttributes()?.OfType<IConventionDependency>().ToArray() ?? Array.Empty<IConventionDependency>();
                             return (
                                 convention,
                                 type,
@@ -134,7 +135,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="hostType">The host type.</param>
         public IEnumerable<DelegateOrConvention> GetAll(HostType hostType = HostType.Undefined) => _conventions.Value
-            .Where(x => x.HostType == HostType.Undefined || x.HostType == hostType);
+            .Where(x => hostType == HostType.Undefined || x.HostType == HostType.Undefined || x.HostType == hostType);
 
         private static IEnumerable<T> TopographicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies)
         {

@@ -207,6 +207,7 @@ namespace Rocket.Surgery.Hosting
                 var logger = new DiagnosticLogger(diagnosticSource);
                 var serviceProviderDictionary = new ServiceProviderDictionary(builder.Properties);
                 serviceProviderDictionary.Set<ILogger>(logger);
+                serviceProviderDictionary.Set(HostType.Live);
                 var assemblyCandidateFinder = new DependencyContextAssemblyCandidateFinder(dependencyContext, logger);
                 var assemblyProvider = new DependencyContextAssemblyProvider(dependencyContext, logger);
                 var scanner = new SimpleConventionScanner(assemblyCandidateFinder, serviceProviderDictionary, logger);
