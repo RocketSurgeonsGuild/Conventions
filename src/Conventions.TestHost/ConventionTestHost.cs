@@ -58,11 +58,10 @@ namespace Rocket.Surgery.Conventions.TestHost
             return new ConventionTestHost(new SimpleConventionScanner(AssemblyCandidateFinder, ServiceProperties, _logger), AssemblyCandidateFinder, AssemblyProvider, DiagnosticSource, ServiceProperties, _loggerFactory, _environment);
         }
 
-
         /// <summary>
-        /// Build the configuration and service provider based on the input environment.
+        /// Build the configuration and populate the service collection based on the input environment.
         /// </summary>
-        public (IConfigurationRoot Configuration, IServiceProvider ServiceProvider) Build()
+        private (IConfigurationRoot Configuration, ServicesBuilder ServicesBuilder) Init()
         {
             var configurationBuilder = new ConfigurationBuilder();
             var cb = new Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder(
@@ -77,11 +76,12 @@ namespace Rocket.Surgery.Conventions.TestHost
             cb.Build();
             var configuration = configurationBuilder.Build();
 
+            var serviceCollection = new ServiceCollection();
             var servicesBuilder = new ServicesBuilder(
                 Scanner,
                 AssemblyProvider,
                 AssemblyCandidateFinder,
-                new ServiceCollection(),
+                serviceCollection,
                 configuration,
                 _environment,
                 _logger,
@@ -94,9 +94,33 @@ namespace Rocket.Surgery.Conventions.TestHost
                 builder.Services.AddSingleton(_loggerFactory);
             });
 
+            Composer.Register(servicesBuilder.Scanner, servicesBuilder, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
+
+            return (configuration, servicesBuilder);
+        }
+
+        /// <summary>
+        /// Build the configuration and service provider based on the input environment.
+        /// </summary>
+        public (IConfigurationRoot Configuration, IServiceProvider ServiceProvider) Build()
+        {
+            var (configuration, servicesBuilder) = Init();
+
             var serviceProvider = servicesBuilder.Build();
 
             return (configuration, serviceProvider);
+        }
+
+        /// <summary>
+        /// Build the configuration and populate the service collection based on the input environment.
+        /// </summary>
+        public (IConfigurationRoot Configuration, IServiceCollection ServiceCollection) Parse()
+        {
+            var (configuration, servicesBuilder) = Init();
+
+            Composer.Register(servicesBuilder.Scanner, servicesBuilder, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
+
+            return (configuration, servicesBuilder.Services);
         }
     }
 }

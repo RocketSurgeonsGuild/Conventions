@@ -27,6 +27,15 @@ namespace Rocket.Surgery.Conventions.Tests
             a.Should().NotThrow();
         }
 
+
+        [Fact]
+        public void Builder_Should_Create_With_Delegate()
+        {
+            Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
+                .Create(builder => { });
+            a.Should().NotThrow();
+        }
+
         [Fact]
         public void Builder_Should_Not_Create_Host_When_Missing_AssemblyCandidateFinder()
         {
@@ -71,6 +80,15 @@ namespace Rocket.Surgery.Conventions.Tests
             Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
                 .Create()
                 .Build();
+            a.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Builder_Should_Parse_Host()
+        {
+            Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
+                .Create()
+                .Parse();
             a.Should().NotThrow();
         }
 

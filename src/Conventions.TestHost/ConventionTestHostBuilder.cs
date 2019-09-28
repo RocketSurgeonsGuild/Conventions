@@ -170,5 +170,26 @@ namespace Rocket.Surgery.Conventions.TestHost
                 _environment ?? new RocketEnvironment("Test", nameof(ConventionTestHost), null, null)
             );
         }
+
+        /// <summary>
+        /// Create the convention test host with the given defaults
+        /// </summary>
+        /// <returns></returns>
+        public ConventionTestHost Create(Action<IConventionHostBuilder> action)
+        {
+            var assemblyCandidateFinder = _assemblyCandidateFinder ?? throw new ArgumentNullException("AssemblyCandidateFinder");
+            var assemblyProvider = _assemblyProvider ?? throw new ArgumentNullException("AssemblyProvider");
+            var builder = new ConventionTestHost(
+                _scanner ?? new SimpleConventionScanner(assemblyCandidateFinder, _serviceProperties, _logger ?? NullLogger.Instance),
+                assemblyCandidateFinder,
+                assemblyProvider,
+                _diagnosticSource ?? new DiagnosticListener(nameof(ConventionTestHost)),
+                _serviceProperties,
+                _loggerFactory ?? NullLoggerFactory.Instance,
+                _environment ?? new RocketEnvironment("Test", nameof(ConventionTestHost), null, null)
+            );
+            action(builder);
+            return builder;
+        }
     }
 }
