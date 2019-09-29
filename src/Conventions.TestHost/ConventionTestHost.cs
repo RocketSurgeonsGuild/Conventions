@@ -73,8 +73,9 @@ namespace Rocket.Surgery.Conventions.TestHost
                 ServiceProperties
             );
 
-            cb.Build();
-            var configuration = configurationBuilder.Build();
+            var configuration = configurationBuilder
+                .AddConfiguration(cb.Build())
+                .Build();
 
             var serviceCollection = new ServiceCollection();
             var servicesBuilder = new ServicesBuilder(
