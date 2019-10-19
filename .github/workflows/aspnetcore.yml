@@ -1,6 +1,8 @@
 name: ASP.NET Core CI
 
 on: [push]
+env:
+  key: DotNetSdk
 
 jobs:
   build:
@@ -12,6 +14,11 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.0.100
+        dotnet-version: 2.2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0
+    
     - name: Build with dotnet
       run: dotnet build
