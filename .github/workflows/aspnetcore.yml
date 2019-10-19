@@ -1,8 +1,6 @@
 name: ASP.NET Core CI
 
 on: [push]
-env:
-  key: DotNetSdk
 
 jobs:
   build:
@@ -11,14 +9,15 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: Setup .NET Core
+    - name: Setup .NET Core 2
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2
-    - name: Setup .NET Core
+    - name: Setup .NET Core 3
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0
-    
-    - name: Build with dotnet
-      run: dotnet build
+    - name: Restore .NET Core tools
+      run: dotnet tool restore
+    - name: dotnet nuke
+      run: dotnet nuke
