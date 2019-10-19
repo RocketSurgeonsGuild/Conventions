@@ -12,11 +12,11 @@ jobs:
     - name: Setup .NET Core 2
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.x
+        dotnet-version: 2.2.402
     - name: Setup .NET Core 3
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.0.x
+        dotnet-version: 3.0.100
     - name: Restore .NET Core tools
       run: dotnet tool restore
     - name: dotnet nuke
