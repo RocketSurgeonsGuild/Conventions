@@ -37,7 +37,7 @@ namespace Rocket.Surgery.Conventions.TestHost
             serviceProperties.Set(HostType.UnitTestHost);
             _loggerFactory = loggerFactory;
             _environment = environment;
-            _logger = _loggerFactory.CreateLogger(nameof(ConventionTestHost));
+            _logger = ServiceProperties.Get<ILogger>();
         }
 
         /// <summary>
