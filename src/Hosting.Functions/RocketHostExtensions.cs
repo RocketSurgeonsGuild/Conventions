@@ -6,13 +6,16 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
+using Rocket.Surgery.Extensions.Configuration;
 //using Microsoft.Azure.WebJobs.Hosting;
 
 namespace Rocket.Surgery.Hosting.Functions
@@ -315,6 +318,78 @@ namespace Rocket.Surgery.Hosting.Functions
                 properties.Set(HostType.Live);
                 var scanner = new SimpleConventionScanner(assemblyCandidateFinder, properties, logger);
                 conventionalBuilder = new RocketFunctionHostBuilder(builder, functionsAssembly, startupInstance, environment!, scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties);
+                conventionalBuilder.Set(new ConfigurationOptions()
+                {
+                    SettingsConfigurationSourceProviders = {
+                        (fileProvider) => new YamlConfigurationSource()
+                        {
+                            Path = $"appsettings.yml",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        },
+                        (fileProvider) => new YamlConfigurationSource()
+                        {
+                            Path = $"appsettings.yaml",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        },
+                        (fileProvider) => new IniConfigurationSource()
+                        {
+                            Path = $"appsettings.ini",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        }
+                    },
+                    EnvironmentSettingsConfigurationSourceProviders = {
+                        (fileProvider, environmentName) => new YamlConfigurationSource()
+                        {
+                            Path = $"appsettings.{environmentName}.yml",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        },
+                        (fileProvider, environmentName) => new YamlConfigurationSource()
+                        {
+                            Path = $"appsettings.{environmentName}.yaml",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        },
+                        (fileProvider, environmentName) => new IniConfigurationSource()
+                        {
+                            Path = $"appsettings.{environmentName}.ini",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        }
+                    },
+                    LocalSettingsConfigurationSourceProvider = {
+                        (fileProvider) => new YamlConfigurationSource()
+                        {
+                            Path = $"appsettings.local.yml",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        },
+                        (fileProvider) => new YamlConfigurationSource()
+                        {
+                            Path = $"appsettings.local.yaml",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        },
+                        (fileProvider) => new IniConfigurationSource()
+                        {
+                            Path = $"appsettings.local.ini",
+                            FileProvider = fileProvider,
+                            Optional = true,
+                            ReloadOnChange = true,
+                        }
+                    }
+                });
                 Builders.Add(builder, conventionalBuilder);
             }
 

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
@@ -174,17 +175,26 @@ namespace Rocket.Surgery.Hosting.Functions
             var existingConfiguration = Builder.Services.First(z => z.ServiceType == typeof(IConfiguration))
                 .ImplementationInstance as IConfiguration;
 
+            var configurationOptions = this.GetOrAdd(() => new ConfigurationOptions());
+
+            var fileProvider = new PhysicalFileProvider(currentDirectory);
             var configurationBuilder = new MsftConfigurationBuilder()
                 .SetBasePath(currentDirectory)
                 .AddConfiguration(existingConfiguration)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddYamlFile("appsettings.yml", optional: true, reloadOnChange: true)
-                .AddYamlFile("appsettings.yaml", optional: true, reloadOnChange: true)
-                .AddIniFile("appsettings.ini", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yml", optional: true, reloadOnChange: true)
-                .AddYamlFile($"appsettings.{_environment.EnvironmentName}.yaml", optional: true, reloadOnChange: true)
-                .AddIniFile($"appsettings.{_environment.EnvironmentName}.ini", optional: true, reloadOnChange: true);
+                .AddJsonFile(fileProvider, "appsettings.json", optional: true, reloadOnChange: true);
+
+            foreach (var provider in configurationOptions.SettingsConfigurationSourceProviders)
+                configurationBuilder = configurationBuilder.Add(provider(fileProvider));
+
+            configurationBuilder.AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+            foreach (var provider in configurationOptions.EnvironmentSettingsConfigurationSourceProviders)
+                configurationBuilder = configurationBuilder.Add(provider(fileProvider, _environment.EnvironmentName));
+
+            configurationBuilder.AddJsonFile($"appsettings.local.json", optional: true, reloadOnChange: true);
+
+            foreach (var provider in configurationOptions.LocalSettingsConfigurationSourceProvider)
+                configurationBuilder = configurationBuilder.Add(provider(fileProvider));
 
             if (_environment.IsDevelopment())
             {

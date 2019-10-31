@@ -27,7 +27,7 @@ namespace Rocket.Surgery.Hosting.Functions
             DependencyContext dependencyContext,
             DiagnosticSource? diagnosticSource = null)
         {
-            return (builder , startupInstance) =>
+            return (builder, startupInstance) =>
             {
                 var b = RocketHostExtensions.GetOrCreateBuilder(builder, startupInstance, null);
                 if (diagnosticSource != null)
