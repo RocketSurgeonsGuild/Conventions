@@ -177,24 +177,12 @@ namespace Rocket.Surgery.Hosting.Functions
 
             var configurationOptions = this.GetOrAdd(() => new ConfigurationOptions());
 
-            var fileProvider = new PhysicalFileProvider(currentDirectory);
             var configurationBuilder = new MsftConfigurationBuilder()
                 .SetBasePath(currentDirectory)
                 .AddConfiguration(existingConfiguration)
-                .AddJsonFile(fileProvider, "appsettings.json", optional: true, reloadOnChange: true);
-
-            foreach (var provider in configurationOptions.SettingsConfigurationSourceProviders)
-                configurationBuilder = configurationBuilder.Add(provider(fileProvider));
-
-            configurationBuilder.AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-            foreach (var provider in configurationOptions.EnvironmentSettingsConfigurationSourceProviders)
-                configurationBuilder = configurationBuilder.Add(provider(fileProvider, _environment.EnvironmentName));
-
-            configurationBuilder.AddJsonFile($"appsettings.local.json", optional: true, reloadOnChange: true);
-
-            foreach (var provider in configurationOptions.LocalSettingsConfigurationSourceProvider)
-                configurationBuilder = configurationBuilder.Add(provider(fileProvider));
+                .Apply(configurationOptions.ApplicationConfiguration)
+                .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
+                .Apply(configurationOptions.EnvironmentConfiguration, "local");
 
             if (_environment.IsDevelopment())
             {

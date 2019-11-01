@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -24,6 +26,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         private ILogger? _logger;
         private DiagnosticSource? _diagnosticSource;
         private IRocketEnvironment? _environment;
+        private Assembly _assembly;
 
         /// <summary>
         /// Create a convention test host build for the given <see cref="DependencyContext" /> in the assembly.
@@ -32,7 +35,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="loggerFactory">Optional logger factory.</param>
         public static ConventionTestHostBuilder For(Type type, ILoggerFactory? loggerFactory = null)
         {
-            return For(DependencyContext.Load(type.Assembly), loggerFactory);
+            return For(DependencyContext.Load(type.Assembly), type.Assembly, loggerFactory);
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="loggerFactory">Optional logger factory.</param>
         public static ConventionTestHostBuilder For(object instance, ILoggerFactory? loggerFactory = null)
         {
-            return For(DependencyContext.Load(instance.GetType().Assembly), loggerFactory);
+            return For(DependencyContext.Load(instance.GetType().Assembly), instance.GetType().Assembly, loggerFactory);
         }
 
         /// <summary>
@@ -52,7 +55,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="loggerFactory">Optional logger factory.</param>
         public static ConventionTestHostBuilder For(Assembly assembly, ILoggerFactory? loggerFactory = null)
         {
-            return For(DependencyContext.Load(assembly), loggerFactory);
+            return For(DependencyContext.Load(assembly), assembly, loggerFactory);
         }
 
         /// <summary>
@@ -60,12 +63,31 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         /// <param name="context">The context that that will be used for the test host.</param>
         /// <param name="loggerFactory">Optional logger factory.</param>
+        [Obsolete("No longer to be used, has been replaced with the overload that takes the assembly and loads the context from that")]
         public static ConventionTestHostBuilder For(DependencyContext context, ILoggerFactory? loggerFactory = null)
         {
             loggerFactory ??= NullLoggerFactory.Instance;
             var logger = loggerFactory.CreateLogger(nameof(ConventionTestHostBuilder));
             return new ConventionTestHostBuilder()
                 .With(loggerFactory)
+                .With(new DependencyContextAssemblyProvider(context, logger))
+                .With(new DependencyContextAssemblyCandidateFinder(context, logger))
+                ;
+        }
+
+        /// <summary>
+        /// Create a convention test host build for the given <see cref="DependencyContext" /> in the assembly.
+        /// </summary>
+        /// <param name="context">The context that that will be used for the test host.</param>
+        /// <param name="assembly">The assembly that that will be used to load the <see cref="DependencyContext" />.</param>
+        /// <param name="loggerFactory">Optional logger factory.</param>
+        public static ConventionTestHostBuilder For(DependencyContext context, Assembly assembly, ILoggerFactory? loggerFactory = null)
+        {
+            loggerFactory ??= NullLoggerFactory.Instance;
+            var logger = loggerFactory.CreateLogger(nameof(ConventionTestHostBuilder));
+            return new ConventionTestHostBuilder()
+                .With(loggerFactory)
+                .With(assembly)
                 .With(new DependencyContextAssemblyProvider(context, logger))
                 .With(new DependencyContextAssemblyCandidateFinder(context, logger))
                 ;
@@ -89,6 +111,16 @@ namespace Rocket.Surgery.Conventions.TestHost
         public ConventionTestHostBuilder With(IAssemblyCandidateFinder assemblyCandidateFinder)
         {
             _assemblyCandidateFinder = assemblyCandidateFinder;
+            return this;
+        }
+
+        /// <summary>
+        /// Use the specific <see cref="Assembly" />
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        public ConventionTestHostBuilder With(Assembly assembly)
+        {
+            _assembly = assembly;
             return this;
         }
 
@@ -160,6 +192,9 @@ namespace Rocket.Surgery.Conventions.TestHost
         {
             var assemblyCandidateFinder = _assemblyCandidateFinder ?? throw new ArgumentNullException("AssemblyCandidateFinder");
             var assemblyProvider = _assemblyProvider ?? throw new ArgumentNullException("AssemblyProvider");
+
+            string contentRootPath = _assembly != null && Directory.Exists(Path.GetDirectoryName(_assembly.Location)) ? Path.GetDirectoryName(_assembly.Location) : Directory.GetCurrentDirectory();
+            var contentProvider = !string.IsNullOrWhiteSpace(contentRootPath) ? new PhysicalFileProvider(contentRootPath) : new NullFileProvider() as IFileProvider;
             return new ConventionTestHost(
                 _scanner ?? new SimpleConventionScanner(assemblyCandidateFinder, _serviceProperties, _logger ?? NullLogger.Instance),
                 assemblyCandidateFinder,
@@ -167,7 +202,7 @@ namespace Rocket.Surgery.Conventions.TestHost
                 _diagnosticSource ?? new DiagnosticListener(nameof(ConventionTestHost)),
                 _serviceProperties,
                 _loggerFactory ?? NullLoggerFactory.Instance,
-                _environment ?? new RocketEnvironment("Test", nameof(ConventionTestHost), null, null)
+                _environment ?? new RocketEnvironment("Test", nameof(ConventionTestHost), contentRootPath, contentProvider)
             );
         }
 
@@ -179,6 +214,9 @@ namespace Rocket.Surgery.Conventions.TestHost
         {
             var assemblyCandidateFinder = _assemblyCandidateFinder ?? throw new ArgumentNullException("AssemblyCandidateFinder");
             var assemblyProvider = _assemblyProvider ?? throw new ArgumentNullException("AssemblyProvider");
+
+            string contentRootPath = _assembly != null && Directory.Exists(Path.GetDirectoryName(_assembly.Location)) ? Path.GetDirectoryName(_assembly.Location) : string.Empty;
+            var contentProvider = !string.IsNullOrWhiteSpace(contentRootPath) ? new PhysicalFileProvider(contentRootPath) : new NullFileProvider() as IFileProvider;
             var builder = new ConventionTestHost(
                 _scanner ?? new SimpleConventionScanner(assemblyCandidateFinder, _serviceProperties, _logger ?? NullLogger.Instance),
                 assemblyCandidateFinder,
@@ -186,7 +224,7 @@ namespace Rocket.Surgery.Conventions.TestHost
                 _diagnosticSource ?? new DiagnosticListener(nameof(ConventionTestHost)),
                 _serviceProperties,
                 _loggerFactory ?? NullLoggerFactory.Instance,
-                _environment ?? new RocketEnvironment("Test", nameof(ConventionTestHost), null, null)
+                _environment ?? new RocketEnvironment("Test", nameof(ConventionTestHost), contentRootPath, contentProvider)
             );
             action(builder);
             return builder;
