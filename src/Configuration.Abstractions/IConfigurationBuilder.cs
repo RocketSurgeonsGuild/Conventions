@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;

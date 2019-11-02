@@ -7,11 +7,13 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.CommandLine;
+using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.DependencyInjection;
 using ConfigurationBuilder = Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder;
 using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
@@ -105,57 +107,43 @@ namespace Rocket.Surgery.Hosting
         public void ConfigureAppConfiguration(HostBuilderContext context, IMsftConfigurationBuilder configurationBuilder)
         {
             var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
-            InsertConfigurationSourceAfter(
-                configurationBuilder.Sources,
-                sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(x => x.Path == "appsettings.json"),
-                (source) => new YamlConfigurationSource()
-                {
-                    Path = "appsettings.yml",
-                    FileProvider = source.FileProvider,
-                    Optional = true,
-                    ReloadOnChange = true,
-                },
-                (source) => new YamlConfigurationSource()
-                {
-                    Path = "appsettings.yaml",
-                    FileProvider = source.FileProvider,
-                    Optional = true,
-                    ReloadOnChange = true,
-                },
-                (source) => new IniConfigurationSource()
-                {
-                    Path = "appsettings.ini",
-                    FileProvider = source.FileProvider,
-                    Optional = true,
-                    ReloadOnChange = true,
-                });
+
+            var configurationOptions = rocketHostBuilder.GetOrAdd(() => new ConfigurationOptions());
 
             InsertConfigurationSourceAfter(
                 configurationBuilder.Sources,
                 sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(x =>
-                    string.Equals(x.Path, $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
-                        StringComparison.OrdinalIgnoreCase)),
-                (source) => new YamlConfigurationSource()
-                {
-                    Path = $"appsettings.{context.HostingEnvironment.EnvironmentName}.yml",
-                    FileProvider = source.FileProvider,
-                    Optional = true,
-                    ReloadOnChange = true,
-                },
-                (source) => new YamlConfigurationSource()
-                {
-                    Path = $"appsettings.{context.HostingEnvironment.EnvironmentName}.yaml",
-                    FileProvider = source.FileProvider,
-                    Optional = true,
-                    ReloadOnChange = true,
-                },
-                (source) => new IniConfigurationSource()
-                {
-                    Path = $"appsettings.{context.HostingEnvironment.EnvironmentName}.ini",
-                    FileProvider = source.FileProvider,
-                    Optional = true,
-                    ReloadOnChange = true,
-                });
+                    string.Equals(x.Path, $"appsettings.{context.HostingEnvironment.EnvironmentName}.json", StringComparison.OrdinalIgnoreCase)),
+                new IConfigurationSource[] {
+                    new JsonConfigurationSource()
+                    {
+                        FileProvider = configurationBuilder.GetFileProvider(),
+                        Path = "appsettings.local.json",
+                        Optional = true,
+                        ReloadOnChange = true,
+                    }
+                }
+            );
+
+            ReplaceConfigurationSourceAt(
+                configurationBuilder.Sources,
+                sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(x => string.Equals(x.Path, "appsettings.json", StringComparison.OrdinalIgnoreCase)),
+                new ProxyConfigurationBuilder(configurationBuilder).Apply(configurationOptions.ApplicationConfiguration).GetAdditionalSources()
+            );
+
+            ReplaceConfigurationSourceAt(
+                configurationBuilder.Sources,
+                sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(x =>
+                    string.Equals(x.Path, $"appsettings.{context.HostingEnvironment.EnvironmentName}.json", StringComparison.OrdinalIgnoreCase)),
+                    new ProxyConfigurationBuilder(configurationBuilder).Apply(configurationOptions.EnvironmentConfiguration, context.HostingEnvironment.EnvironmentName).GetAdditionalSources()
+            );
+
+            ReplaceConfigurationSourceAt(
+                configurationBuilder.Sources,
+                sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(x =>
+                    string.Equals(x.Path, $"appsettings.local.json", StringComparison.OrdinalIgnoreCase)),
+                    new ProxyConfigurationBuilder(configurationBuilder).Apply(configurationOptions.EnvironmentConfiguration, "local").GetAdditionalSources()
+            );
 
             InsertConfigurationSourceBefore(
                 configurationBuilder.Sources,
@@ -192,16 +180,31 @@ namespace Rocket.Surgery.Hosting
             });
         }
 
-        private static void InsertConfigurationSourceAfter<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, T> getSource, params Func<T, IConfigurationSource>[] createSourceFrom)
+        private static void InsertConfigurationSourceAfter<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, T> getSource, IEnumerable<IConfigurationSource> createSourceFrom)
             where T : IConfigurationSource
         {
             var source = getSource(sources);
             if (source != null)
             {
                 var index = sources.IndexOf(source);
-                foreach (var m in createSourceFrom.Reverse())
+                foreach (var newSource in createSourceFrom.Reverse())
                 {
-                    sources.Insert(index + 1, m(source));
+                    sources.Insert(index + 1, newSource);
+                }
+            }
+        }
+
+        private static void ReplaceConfigurationSourceAt<T>(IList<IConfigurationSource> sources, Func<IList<IConfigurationSource>, T> getSource, IEnumerable<IConfigurationSource> createSourceFrom)
+            where T : IConfigurationSource
+        {
+            var source = getSource(sources);
+            if (source != null)
+            {
+                var index = sources.IndexOf(source);
+                sources.RemoveAt(index);
+                foreach (var newSource in createSourceFrom.Reverse())
+                {
+                    sources.Insert(index, newSource);
                 }
             }
         }

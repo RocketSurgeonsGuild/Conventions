@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
+using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Logging;
 
@@ -32,6 +35,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="serviceProperties">The service properties.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="environment">The environment.</param>
+        /// <param name="assembly">The assembly.</param>
         internal ConventionTestHost(IConventionScanner scanner, IAssemblyCandidateFinder assemblyCandidateFinder, IAssemblyProvider assemblyProvider, DiagnosticSource diagnosticSource, IServiceProviderDictionary serviceProperties, ILoggerFactory loggerFactory, IRocketEnvironment environment) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties)
         {
             serviceProperties.Set(HostType.UnitTestHost);
@@ -63,7 +67,13 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         private (IConfigurationRoot Configuration, ServicesBuilder ServicesBuilder) Init()
         {
-            var configurationBuilder = new ConfigurationBuilder();
+            var configurationOptions = this.GetOrAdd(() => new ConfigurationOptions());
+            var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+                .SetFileProvider(_environment.ContentRootFileProvider)
+                .Apply(configurationOptions.ApplicationConfiguration)
+                .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
+                .Apply(configurationOptions.EnvironmentConfiguration, "local");
+
             var cb = new Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder(
                 Scanner,
                 _environment,

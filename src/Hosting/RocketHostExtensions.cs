@@ -5,13 +5,17 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
+using Rocket.Surgery.Extensions.Configuration;
 
 // ReSharper disable once CheckNamespace
 namespace Rocket.Surgery.Hosting
@@ -212,6 +216,22 @@ namespace Rocket.Surgery.Hosting
                 var assemblyProvider = new DependencyContextAssemblyProvider(dependencyContext, logger);
                 var scanner = new SimpleConventionScanner(assemblyCandidateFinder, serviceProviderDictionary, logger);
                 conventionalBuilder = new RocketHostBuilder(builder, scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProviderDictionary);
+
+                conventionalBuilder.Set(new ConfigurationOptions()
+                {
+                    ApplicationConfiguration = {
+                        (builder) => builder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true),
+                        (builder) => builder.AddYamlFile("appsettings.yml", optional: true, reloadOnChange: true),
+                        (builder) => builder.AddYamlFile("appsettings.yaml", optional: true, reloadOnChange: true),
+                        (builder) => builder.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true),
+                    },
+                    EnvironmentConfiguration = {
+                        (builder, environmentName) => builder.AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true),
+                        (builder, environmentName) => builder.AddYamlFile($"appsettings.{environmentName}.yml", optional: true, reloadOnChange: true),
+                        (builder, environmentName) => builder.AddYamlFile($"appsettings.{environmentName}.yaml", optional: true, reloadOnChange: true),
+                        (builder, environmentName) => builder.AddIniFile($"appsettings.{environmentName}.ini", optional: true, reloadOnChange: true),
+                    }
+                });
 
                 var host = new RocketContext(builder);
                 builder

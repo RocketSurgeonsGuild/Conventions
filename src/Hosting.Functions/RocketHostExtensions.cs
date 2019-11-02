@@ -6,13 +6,16 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
+using Rocket.Surgery.Extensions.Configuration;
 //using Microsoft.Azure.WebJobs.Hosting;
 
 namespace Rocket.Surgery.Hosting.Functions
@@ -315,6 +318,21 @@ namespace Rocket.Surgery.Hosting.Functions
                 properties.Set(HostType.Live);
                 var scanner = new SimpleConventionScanner(assemblyCandidateFinder, properties, logger);
                 conventionalBuilder = new RocketFunctionHostBuilder(builder, functionsAssembly, startupInstance, environment!, scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties);
+                conventionalBuilder.Set(new ConfigurationOptions()
+                {
+                    ApplicationConfiguration = {
+                        (builder) => builder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true),
+                        (builder) => builder.AddYamlFile("appsettings.yml", optional: true, reloadOnChange: true),
+                        (builder) => builder.AddYamlFile("appsettings.yaml", optional: true, reloadOnChange: true),
+                        (builder) => builder.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true),
+                    },
+                    EnvironmentConfiguration = {
+                        (builder, environmentName) => builder.AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true),
+                        (builder, environmentName) => builder.AddYamlFile($"appsettings.{environmentName}.yml", optional: true, reloadOnChange: true),
+                        (builder, environmentName) => builder.AddYamlFile($"appsettings.{environmentName}.yaml", optional: true, reloadOnChange: true),
+                        (builder, environmentName) => builder.AddIniFile($"appsettings.{environmentName}.ini", optional: true, reloadOnChange: true),
+                    }
+                });
                 Builders.Add(builder, conventionalBuilder);
             }
 
