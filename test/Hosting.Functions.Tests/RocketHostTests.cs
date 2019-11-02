@@ -1,8 +1,14 @@
-﻿using System;
+using System;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Ini;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
+using NetEscapades.Configuration.Yaml;
+using Rocket.Surgery.Extensions.Configuration;
 using Xunit;
 
 namespace Rocket.Surgery.Hosting.Functions.Tests

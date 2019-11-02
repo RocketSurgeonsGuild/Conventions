@@ -1,8 +1,15 @@
-﻿using System;
+using System;
+using System.Linq;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Ini;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
+using NetEscapades.Configuration.Yaml;
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Extensions.Configuration;
 using Xunit;
 
 namespace Rocket.Surgery.Hosting.Tests
@@ -21,6 +28,34 @@ namespace Rocket.Surgery.Hosting.Tests
         {
             var host = Host.CreateDefaultBuilder().LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
             host.Should().BeAssignableTo<IHostBuilder>();
+        }
+
+        [Fact]
+        public void Creates_RocketHost_WithConfiguration()
+        {
+            var host = Host.CreateDefaultBuilder().LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
+            var configuration = host.Build().Services.GetRequiredService<IConfiguration>() as IConfigurationRoot;
+
+            configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
+            configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
+            configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(3);
+        }
+
+        [Fact]
+        public void Creates_RocketHost_WithModifiedConfiguration()
+        {
+            var host = Host.CreateDefaultBuilder().LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }))
+                .ConfigureRocketSurgery(c =>
+                {
+                    var options = c.GetOrAdd(() => new ConfigurationOptions());
+                    options.EnvironmentConfiguration.Clear();
+                });
+
+            var configuration = host.Build().Services.GetRequiredService<IConfiguration>() as IConfigurationRoot;
+
+            configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(1);
+            configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(2);
+            configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(1);
         }
     }
 }

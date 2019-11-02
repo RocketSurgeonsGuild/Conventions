@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
+using Rocket.Surgery.Extensions.Configuration;
 
 namespace Rocket.Surgery.Conventions.TestHost
 {
@@ -27,6 +29,28 @@ namespace Rocket.Surgery.Conventions.TestHost
         private DiagnosticSource? _diagnosticSource;
         private IRocketEnvironment? _environment;
         private Assembly _assembly;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public ConventionTestHostBuilder()
+        {
+            _serviceProperties.Set(new ConfigurationOptions()
+            {
+                ApplicationConfiguration = {
+                    (builder) => builder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true),
+                    (builder) => builder.AddYamlFile("appsettings.yml", optional: true, reloadOnChange: true),
+                    (builder) => builder.AddYamlFile("appsettings.yaml", optional: true, reloadOnChange: true),
+                    (builder) => builder.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true),
+                },
+                EnvironmentConfiguration = {
+                    (builder, environmentName) => builder.AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true),
+                    (builder, environmentName) => builder.AddYamlFile($"appsettings.{environmentName}.yml", optional: true, reloadOnChange: true),
+                    (builder, environmentName) => builder.AddYamlFile($"appsettings.{environmentName}.yaml", optional: true, reloadOnChange: true),
+                    (builder, environmentName) => builder.AddIniFile($"appsettings.{environmentName}.ini", optional: true, reloadOnChange: true),
+                }
+            });
+        }
 
         /// <summary>
         /// Create a convention test host build for the given <see cref="DependencyContext" /> in the assembly.
@@ -188,23 +212,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Create the convention test host with the given defaults
         /// </summary>
         /// <returns></returns>
-        public ConventionTestHost Create()
-        {
-            var assemblyCandidateFinder = _assemblyCandidateFinder ?? throw new ArgumentNullException("AssemblyCandidateFinder");
-            var assemblyProvider = _assemblyProvider ?? throw new ArgumentNullException("AssemblyProvider");
-
-            string contentRootPath = _assembly != null && Directory.Exists(Path.GetDirectoryName(_assembly.Location)) ? Path.GetDirectoryName(_assembly.Location) : Directory.GetCurrentDirectory();
-            var contentProvider = !string.IsNullOrWhiteSpace(contentRootPath) ? new PhysicalFileProvider(contentRootPath) : new NullFileProvider() as IFileProvider;
-            return new ConventionTestHost(
-                _scanner ?? new SimpleConventionScanner(assemblyCandidateFinder, _serviceProperties, _logger ?? NullLogger.Instance),
-                assemblyCandidateFinder,
-                assemblyProvider,
-                _diagnosticSource ?? new DiagnosticListener(nameof(ConventionTestHost)),
-                _serviceProperties,
-                _loggerFactory ?? NullLoggerFactory.Instance,
-                _environment ?? new RocketEnvironment("Test", nameof(ConventionTestHost), contentRootPath, contentProvider)
-            );
-        }
+        public ConventionTestHost Create() => Create(_ => { });
 
         /// <summary>
         /// Create the convention test host with the given defaults
@@ -215,7 +223,7 @@ namespace Rocket.Surgery.Conventions.TestHost
             var assemblyCandidateFinder = _assemblyCandidateFinder ?? throw new ArgumentNullException("AssemblyCandidateFinder");
             var assemblyProvider = _assemblyProvider ?? throw new ArgumentNullException("AssemblyProvider");
 
-            string contentRootPath = _assembly != null && Directory.Exists(Path.GetDirectoryName(_assembly.Location)) ? Path.GetDirectoryName(_assembly.Location) : string.Empty;
+            var contentRootPath = _assembly != null && Directory.Exists(Path.GetDirectoryName(_assembly.Location)) ? Path.GetDirectoryName(_assembly.Location) : string.Empty;
             var contentProvider = !string.IsNullOrWhiteSpace(contentRootPath) ? new PhysicalFileProvider(contentRootPath) : new NullFileProvider() as IFileProvider;
             var builder = new ConventionTestHost(
                 _scanner ?? new SimpleConventionScanner(assemblyCandidateFinder, _serviceProperties, _logger ?? NullLogger.Instance),
