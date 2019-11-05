@@ -4,7 +4,7 @@
     <GlobalPackageReference Include="Rocket.Surgery.Build.Metadata" Version="3.3.11" Condition="'$(MSBuildProjectName)'!='.build'" />
     <!-- <GlobalPackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.3" /> -->
     <GlobalPackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0-preview.2" />
-    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" />
+    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19554-01" />
     <GlobalPackageReference Include="Roslynator.Analyzers" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +78,7 @@
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.2" />
     <PackageReference Update="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
-    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.2" />
+    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.3" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="1.6.0" />
     <PackageReference Update="NodaTime" Version="2.4.7" />
     <PackageReference Update="Terminal.Gui" Version="0.24.0" />
