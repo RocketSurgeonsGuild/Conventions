@@ -72,7 +72,7 @@
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.2" />
     <PackageReference Update="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
-    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.2" />
+    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.3" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="1.6.0" />
     <PackageReference Update="NodaTime" Version="2.4.7" />
     <PackageReference Update="Terminal.Gui" Version="0.24.0" />
