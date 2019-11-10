@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -280,6 +280,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         public void SupportsInjection_Without_Creating_The_SubContainer()
         {
             AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
+            AutoFake.Provide<IServiceProvider>(A.Fake<IServiceProvider>());
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var sp = AutoFake.Resolve<IServiceProvider>();
