@@ -74,7 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.13" />
+    <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.14" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.2" />
     <PackageReference Update="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
