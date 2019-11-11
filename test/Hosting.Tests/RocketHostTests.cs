@@ -34,7 +34,7 @@ namespace Rocket.Surgery.Hosting.Tests
         public void Creates_RocketHost_WithConfiguration()
         {
             var host = Host.CreateDefaultBuilder().LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
-            var configuration = host.Build().Services.GetRequiredService<IConfiguration>() as IConfigurationRoot;
+            var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
             configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
             configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
@@ -51,7 +51,7 @@ namespace Rocket.Surgery.Hosting.Tests
                     options.EnvironmentConfiguration.Clear();
                 });
 
-            var configuration = host.Build().Services.GetRequiredService<IConfiguration>() as IConfigurationRoot;
+            var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
             configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(1);
             configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(2);

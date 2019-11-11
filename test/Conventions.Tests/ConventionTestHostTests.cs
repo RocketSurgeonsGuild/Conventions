@@ -72,6 +72,7 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
+        [Obsolete]
         public void Builder_Should_Create_Host_ByDependencyContext()
         {
             Action a = () => ConventionTestHostBuilder.For(DependencyContext.Load(GetType().Assembly), LoggerFactory)

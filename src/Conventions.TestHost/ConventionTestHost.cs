@@ -35,7 +35,6 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="serviceProperties">The service properties.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="environment">The environment.</param>
-        /// <param name="assembly">The assembly.</param>
         internal ConventionTestHost(IConventionScanner scanner, IAssemblyCandidateFinder assemblyCandidateFinder, IAssemblyProvider assemblyProvider, DiagnosticSource diagnosticSource, IServiceProviderDictionary serviceProperties, ILoggerFactory loggerFactory, IRocketEnvironment environment) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties)
         {
             serviceProperties.Set(HostType.UnitTestHost);

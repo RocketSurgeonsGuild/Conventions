@@ -28,7 +28,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         private ILogger? _logger;
         private DiagnosticSource? _diagnosticSource;
         private IRocketEnvironment? _environment;
-        private Assembly _assembly;
+        private Assembly? _assembly;
 
         /// <summary>
         /// Default constructor
