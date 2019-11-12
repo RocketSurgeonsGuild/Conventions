@@ -13,6 +13,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Azure.WebJobs" />
         <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" />
+        <PackageReference Include="Microsoft.Azure.WebJobs.Host.Storage" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Ini" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
