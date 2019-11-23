@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.FileProviders;
 using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
 
 namespace Rocket.Surgery.Extensions.Configuration
@@ -13,11 +12,15 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// <summary>
         /// Additional settings providers to be inserted after the default application settings file (typically appsettings.json)
         /// </summary>
-        public List<Func<IMsftConfigurationBuilder, IMsftConfigurationBuilder>> ApplicationConfiguration { get; } = new List<Func<IMsftConfigurationBuilder, IMsftConfigurationBuilder>>();
+        public List<Func<IMsftConfigurationBuilder, IMsftConfigurationBuilder>> ApplicationConfiguration { get; } =
+            new List<Func<IMsftConfigurationBuilder, IMsftConfigurationBuilder>>();
 
         /// <summary>
-        /// Additional settings providers to be inserted after the default environment application settings file (typically appsettings.{env}.json)
+        /// Additional settings providers to be inserted after the default environment application settings file (typically
+        /// appsettings.{env}.json)
         /// </summary>
-        public List<Func<IMsftConfigurationBuilder, string, IMsftConfigurationBuilder>> EnvironmentConfiguration { get; } = new List<Func<IMsftConfigurationBuilder, string, IMsftConfigurationBuilder>>();
+        public List<Func<IMsftConfigurationBuilder, string, IMsftConfigurationBuilder>>
+            EnvironmentConfiguration { get; } =
+            new List<Func<IMsftConfigurationBuilder, string, IMsftConfigurationBuilder>>();
     }
 }

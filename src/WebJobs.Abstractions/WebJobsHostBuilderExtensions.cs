@@ -1,4 +1,5 @@
-using Rocket.Surgery.Conventions;
+using System;
+using JetBrains.Annotations;
 using Rocket.Surgery.Extensions.WebJobs;
 
 // ReSharper disable once CheckNamespace
@@ -15,10 +16,17 @@ namespace Rocket.Surgery.Conventions
         /// <param name="container">The container.</param>
         /// <param name="delegate">The delegate.</param>
         /// <returns>IConventionHostBuilder.</returns>
+        [NotNull]
         public static IConventionHostBuilder ConfigureWebJobs(
-            this IConventionHostBuilder container,
-            WebJobsConventionDelegate @delegate)
+            [NotNull] this IConventionHostBuilder container,
+            WebJobsConventionDelegate @delegate
+        )
         {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
             container.Scanner.AppendDelegate(@delegate);
             return container;
         }

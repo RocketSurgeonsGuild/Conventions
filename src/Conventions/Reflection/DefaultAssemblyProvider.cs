@@ -27,21 +27,22 @@ namespace Rocket.Surgery.Conventions.Reflection
             _logger = logger ?? NullLogger.Instance;
         }
 
-        /// <summary>
-        /// Gets the assemblies.
-        /// </summary>
-        /// <returns>IEnumerable{Assembly}.</returns>
-        public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles, LogValue);
-
         private void LogValue(Assembly value)
         {
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug("[{AssemblyProvider}] Found assembly {AssemblyName}",
+                _logger.LogDebug(
+                    "[{AssemblyProvider}] Found assembly {AssemblyName}",
                     nameof(DefaultAssemblyProvider),
                     value.GetName().Name
                 );
             }
         }
+
+        /// <summary>
+        /// Gets the assemblies.
+        /// </summary>
+        /// <returns>IEnumerable{Assembly}.</returns>
+        public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles, LogValue);
     }
 }

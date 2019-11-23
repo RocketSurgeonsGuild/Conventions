@@ -1,4 +1,7 @@
 using System;
+using JetBrains.Annotations;
+
+#pragma warning disable CS8601 // Possible null reference assignment.
 
 namespace Rocket.Surgery.Conventions
 {
@@ -7,15 +10,22 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     public static class ConventionHostBuilderExtensions
     {
-
-#nullable disable
         /// <summary>
         /// Get a value by type from the context
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="context">The context</param>
         /// <returns>T.</returns>
-        public static T Get<T>(this IConventionHostBuilder context) => (T)context.ServiceProperties[typeof(T)];
+        [NotNull]
+        public static T Get<T>([NotNull] this IConventionHostBuilder context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            return (T)context.ServiceProperties[typeof(T)];
+        }
 
         /// <summary>
         /// Get a value by key from the context
@@ -24,25 +34,15 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
         /// <returns>T.</returns>
-        public static T Get<T>(this IConventionHostBuilder context, string key) => (T)context.ServiceProperties[key];
-#nullable restore
-
-        /// <summary>
-        /// Get a value by key from the context
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="builder">The builder</param>
-        /// <param name="factory">The factory method in the event the type is not found</param>
-        /// <returns>T.</returns>
-        public static T GetOrAdd<T>(this IConventionHostBuilder builder, Func<T> factory)
-            where T : class
+        [NotNull]
+        public static T Get<T>([NotNull] this IConventionHostBuilder context, string key)
         {
-            if (!(builder.ServiceProperties[typeof(T)] is T value))
+            if (context == null)
             {
-                value = factory();
-                builder.Set(value);
+                throw new ArgumentNullException(nameof(context));
             }
-            return value;
+
+            return (T)context.ServiceProperties[key];
         }
 
         /// <summary>
@@ -50,17 +50,65 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="builder">The builder</param>
+        /// <param name="factory">The factory method in the event the type is not found</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static T GetOrAdd<T>([NotNull] this IConventionHostBuilder builder, [NotNull] Func<T> factory)
+            where T : class
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (builder.ServiceProperties[typeof(T)] is T value)
+            {
+                return value;
+            }
+
+            value = factory();
+            builder.Set(value);
+
+            return value;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        public static T GetOrAdd<T>(this IConventionHostBuilder builder, string key, Func<T> factory)
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IConventionHostBuilder builder,
+            string key,
+            [NotNull] Func<T> factory
+        )
             where T : class
         {
-            if (!(builder.ServiceProperties[key] is T value))
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (!( builder.ServiceProperties[key] is T value ))
             {
                 value = factory();
                 builder.Set(value);
             }
+
             return value;
         }
 
@@ -70,7 +118,15 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T">The type of the value</typeparam>
         /// <param name="context">The context</param>
         /// <param name="value">The value to save</param>
-        public static void Set<T>(this IConventionHostBuilder context, T value) => context.ServiceProperties[typeof(T)] = value;
+        public static void Set<T>([NotNull] this IConventionHostBuilder context, T value)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            context.ServiceProperties[typeof(T)] = value;
+        }
 
         /// <summary>
         /// Get a value by type from the context
@@ -79,16 +135,32 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="value">The value to save</param>
-        public static void Set<T>(this IConventionHostBuilder context, string key, T value) => context.ServiceProperties[key] = value;
+        public static void Set<T>([NotNull] this IConventionHostBuilder context, string key, T value)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
-#nullable disable
+            context.ServiceProperties[key] = value;
+        }
+
         /// <summary>
         /// Get a value by type from the context
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <returns>T.</returns>
-        public static T Get<T>(this IServiceProviderDictionary serviceProviderDictionary) => (T)serviceProviderDictionary[typeof(T)];
+        [NotNull]
+        public static T Get<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary)
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            return (T)serviceProviderDictionary[typeof(T)];
+        }
 
         /// <summary>
         /// Get a value by key from the context
@@ -97,8 +169,16 @@ namespace Rocket.Surgery.Conventions
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <param name="key">The key where the value is saved</param>
         /// <returns>T.</returns>
-        public static T Get<T>(this IServiceProviderDictionary serviceProviderDictionary, string key) => (T)serviceProviderDictionary[key];
-#nullable restore
+        [NotNull]
+        public static T Get<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary, string key)
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            return (T)serviceProviderDictionary[key];
+        }
 
         /// <summary>
         /// Get a value by key from the context
@@ -107,14 +187,29 @@ namespace Rocket.Surgery.Conventions
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        public static T GetOrAdd<T>(this IServiceProviderDictionary serviceProviderDictionary, Func<T> factory)
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            [NotNull] Func<T> factory
+        )
             where T : class
         {
-            if (!(serviceProviderDictionary[typeof(T)] is T value))
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (!( serviceProviderDictionary[typeof(T)] is T value ))
             {
                 value = factory();
                 serviceProviderDictionary.Set(value);
             }
+
             return value;
         }
 
@@ -126,14 +221,30 @@ namespace Rocket.Surgery.Conventions
         /// <param name="key">The key where the value is saved</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        public static T GetOrAdd<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, Func<T> factory)
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            string key,
+            [NotNull] Func<T> factory
+        )
             where T : class
         {
-            if (!(serviceProviderDictionary[key] is T value))
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (!( serviceProviderDictionary[key] is T value ))
             {
                 value = factory();
                 serviceProviderDictionary.Set(value);
             }
+
             return value;
         }
 
@@ -143,7 +254,15 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T">The type of the value</typeparam>
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <param name="value">The value to save</param>
-        public static void Set<T>(this IServiceProviderDictionary serviceProviderDictionary, T value) => serviceProviderDictionary[typeof(T)] = value;
+        public static void Set<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary, T value)
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            serviceProviderDictionary[typeof(T)] = value;
+        }
 
         /// <summary>
         /// Get a value by type from the context
@@ -152,30 +271,64 @@ namespace Rocket.Surgery.Conventions
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="value">The value to save</param>
-        public static void Set<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value) => serviceProviderDictionary[key] = value;
+        public static void Set<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            string key,
+            T value
+        )
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            serviceProviderDictionary[key] = value;
+        }
 
         /// <summary>
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="context">The context</param>
-        public static bool IsUnitTestHost(this IConventionHostBuilder context) => context.ServiceProperties.IsUnitTestHost();
+        public static bool IsUnitTestHost([NotNull] this IConventionHostBuilder context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            return context.ServiceProperties.IsUnitTestHost();
+        }
+
+        /// <summary>
+        /// Check if this is a test host (to allow conventions to behave differently during unit tests)
+        /// </summary>
+        /// <param name="serviceProviderDictionary">The properties</param>
+        public static bool IsUnitTestHost([NotNull] this IServiceProviderDictionary serviceProviderDictionary)
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            return serviceProviderDictionary.GetHostType() == HostType.UnitTestHost;
+        }
 
         /// <summary>
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="context">The context</param>
-        internal static HostType GetHostType(this IConventionHostBuilder context) => context.ServiceProperties.TryGetValue(typeof(HostType), out var hostType) ? (HostType)hostType! : HostType.Undefined;
+        internal static HostType GetHostType(this IConventionHostBuilder context)
+            => context.ServiceProperties.TryGetValue(typeof(HostType), out var hostType)
+                ? (HostType)hostType!
+                : HostType.Undefined;
 
         /// <summary>
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="serviceProviderDictionary">The properties</param>
-        public static bool IsUnitTestHost(this IServiceProviderDictionary serviceProviderDictionary) => serviceProviderDictionary.GetHostType() == HostType.UnitTestHost;
-
-        /// <summary>
-        /// Check if this is a test host (to allow conventions to behave differently during unit tests)
-        /// </summary>
-        /// <param name="serviceProviderDictionary">The properties</param>
-        internal static HostType GetHostType(this IServiceProviderDictionary serviceProviderDictionary) => serviceProviderDictionary.TryGetValue(typeof(HostType), out var hostType) ? (HostType)hostType! : HostType.Undefined;
+        internal static HostType GetHostType(this IServiceProviderDictionary serviceProviderDictionary)
+            => serviceProviderDictionary.TryGetValue(typeof(HostType), out var hostType)
+                ? (HostType)hostType!
+                : HostType.Undefined;
     }
 }

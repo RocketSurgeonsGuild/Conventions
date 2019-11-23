@@ -1,9 +1,10 @@
+using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    ///  IRocketEnvironment
+    /// IRocketEnvironment
     /// </summary>
     public interface IRocketEnvironment
     {
@@ -12,6 +13,7 @@ namespace Rocket.Surgery.Conventions
         /// of the "environment" key as specified in configuration.
         /// </summary>
         /// <value>The name of the environment.</value>
+        [NotNull]
         string EnvironmentName { get; }
 
         /// <summary>
@@ -19,6 +21,7 @@ namespace Rocket.Surgery.Conventions
         /// the application entry point.
         /// </summary>
         /// <value>The name of the application.</value>
+        [NotNull]
         string ApplicationName { get; }
 
         /// <summary>

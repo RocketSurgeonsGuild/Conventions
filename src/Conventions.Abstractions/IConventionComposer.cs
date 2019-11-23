@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+
 // ReSharper disable UnusedTypeParameter
 
 namespace Rocket.Surgery.Conventions
@@ -12,13 +13,13 @@ namespace Rocket.Surgery.Conventions
     /// <typeparam name="TContribution">The contribution type</typeparam>
     /// <typeparam name="TDelegate">The delegate Type</typeparam>
     /// <seealso cref="IConvention{TContext}" />
-    [Obsolete("This class will be removed in the future version.  Replaced by Composer.Register<TContext, TContribution, TDelegate>.")]
+    [Obsolete(
+        "This class will be removed in the future version.  Replaced by Composer.Register<TContext, TContribution, TDelegate>."
+    )]
     public interface IConventionComposer<in TContext, TContribution, TDelegate> : IConvention<TContext>
         where TContext : IConventionContext
         where TContribution : IConvention<TContext>
-        where TDelegate : Delegate
-    {
-    }
+        where TDelegate : Delegate { }
 
     /// <summary>
     /// Takes a list of conventions and composes them with the given context
@@ -32,7 +33,10 @@ namespace Rocket.Surgery.Conventions
         /// Uses all the conventions and calls the register method for all of them.
         /// </summary>
         /// <param name="context">The valid context for the types</param>
-        /// <param name="types">The types to compose with.  This type will either be a <see cref="Delegate" /> that takes <see cref="IConventionContext" />, or a type that implements <see cref="IConvention{IConventionContext}" /></param>
+        /// <param name="types">
+        /// The types to compose with.  This type will either be a <see cref="Delegate" /> that takes
+        /// <see cref="IConventionContext" />, or a type that implements <see cref="IConvention{IConventionContext}" />
+        /// </param>
         void Register(IConventionContext context, IEnumerable<Type> types);
     }
 }

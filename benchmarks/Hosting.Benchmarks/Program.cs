@@ -1,29 +1,32 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Toolchains.CsProj;
+using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
-using Rocket.Surgery.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyModel;
-using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Hosting;
+
+#pragma warning disable CA1822
+#pragma warning disable CA1724
 
 namespace Hosting.Benchmarks
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             var config = ManualConfig
-                .Create(DefaultConfig.Instance);
+               .Create(DefaultConfig.Instance);
             config.Add(
                 Job.ShortRun.With(
-                    InProcessEmitToolchain.Instance  // Run in-process so you don't need a solution file. If this is part of a solution, replace with CsProjCoreToolchain.NetCoreApp21.
+                    InProcessEmitToolchain
+                       .Instance // Run in-process so you don't need a solution file. If this is part of a solution, replace with CsProjCoreToolchain.NetCoreApp21.
                 )
             );
 
@@ -40,50 +43,50 @@ namespace Hosting.Benchmarks
         public async Task Default_Hosting()
         {
             using var host = Host.CreateDefaultBuilder(Array.Empty<string>())
-                .ConfigureLogging(x => x.ClearProviders())
-                .Build();
-            await host.StartAsync();
-            await host.StopAsync();
+               .ConfigureLogging(x => x.ClearProviders())
+               .Build();
+            await host.StartAsync().ConfigureAwait(false);
+            await host.StopAsync().ConfigureAwait(false);
         }
 
         [Benchmark]
         public async Task Rocket_Surgery_Hosting()
         {
             using var host = Host.CreateDefaultBuilder(Array.Empty<string>())
-                .LaunchWith(RocketBooster.For(DependencyContext.Default))
-                .ConfigureLogging(x => x.ClearProviders())
-                .Build();
-            await host.StartAsync();
-            await host.StopAsync();
-        }
-
-        class HostedService : IHostedService
-        {
-            public Task StartAsync(CancellationToken cancellationToken) => Task.Delay(TimeSpan.FromMilliseconds(1));
-            public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+               .LaunchWith(RocketBooster.For(DependencyContext.Default))
+               .ConfigureLogging(x => x.ClearProviders())
+               .Build();
+            await host.StartAsync().ConfigureAwait(false);
+            await host.StopAsync().ConfigureAwait(false);
         }
 
         [Benchmark]
         public async Task Default_Hosting_With_Service()
         {
             using var host = Host.CreateDefaultBuilder(Array.Empty<string>())
-                .ConfigureLogging(x => x.ClearProviders())
-                .ConfigureServices(x => x.AddHostedService<HostedService>())
-                .Build();
-            await host.StartAsync();
-            await host.StopAsync();
+               .ConfigureLogging(x => x.ClearProviders())
+               .ConfigureServices(x => x.AddHostedService<HostedService>())
+               .Build();
+            await host.StartAsync().ConfigureAwait(false);
+            await host.StopAsync().ConfigureAwait(false);
         }
 
         [Benchmark]
         public async Task Rocket_Surgery_Hosting_With_Service()
         {
             using var host = Host.CreateDefaultBuilder(Array.Empty<string>())
-                .LaunchWith(RocketBooster.For(DependencyContext.Default))
-                .ConfigureLogging(x => x.ClearProviders())
-                .ConfigureServices(x => x.AddHostedService<HostedService>())
-                .Build();
-            await host.StartAsync();
-            await host.StopAsync();
+               .LaunchWith(RocketBooster.For(DependencyContext.Default))
+               .ConfigureLogging(x => x.ClearProviders())
+               .ConfigureServices(x => x.AddHostedService<HostedService>())
+               .Build();
+            await host.StartAsync().ConfigureAwait(false);
+            await host.StopAsync().ConfigureAwait(false);
+        }
+
+        private class HostedService : IHostedService
+        {
+            public Task StartAsync(CancellationToken cancellationToken) => Task.Delay(TimeSpan.FromMilliseconds(1));
+            public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
         }
     }
 }

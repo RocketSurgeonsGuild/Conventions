@@ -2,12 +2,13 @@ using FakeItEasy;
 using FluentAssertions;
 using Xunit;
 
+#pragma warning disable CA1040
+#pragma warning disable CA1034
+
 namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionContextExtensionsTests
     {
-        public interface IMyType { }
-
         [Fact]
         public void Should_Get_Item_By_Type()
         {
@@ -72,20 +73,6 @@ namespace Rocket.Surgery.Conventions.Tests
             context.IsUnitTestHost().Should().BeFalse();
         }
 
-        [Theory]
-        [InlineData(HostType.Undefined)]
-        [InlineData(HostType.Live)]
-        [InlineData(HostType.UnitTestHost)]
-        public void Should_Get_HostType(HostType hostType)
-        {
-            var context = A.Fake<IConventionContext>();
-            var properties = new ServiceProviderDictionary();
-            A.CallTo(() => context.Properties).Returns(properties);
-            properties.Set(hostType);
-
-            context.GetHostType().Should().Be(hostType);
-        }
-
         [Fact]
         public void Should_Not_GetHostType()
         {
@@ -119,7 +106,6 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_GetOrAdd_Item_By_Type_Add()
         {
             var context = A.Fake<IConventionContext>();
-            var myType1 = A.Fake<IMyType>();
             var myType2 = A.Fake<IMyType>();
             A.CallTo(() => context[typeof(IMyType)]).Returns(null);
 
@@ -131,12 +117,27 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_GetOrAdd_Item_By_Name_Add()
         {
             var context = A.Fake<IConventionContext>();
-            var myType1 = A.Fake<IMyType>();
             var myType2 = A.Fake<IMyType>();
             A.CallTo(() => context["value"]).Returns(null);
 
             context.GetOrAdd("value", () => myType2).Should().BeSameAs(myType2);
             A.CallToSet(() => context[typeof(IMyType)]).MustHaveHappenedOnceExactly();
+        }
+
+        public interface IMyType { }
+
+        [Theory]
+        [InlineData(HostType.Undefined)]
+        [InlineData(HostType.Live)]
+        [InlineData(HostType.UnitTestHost)]
+        public void Should_Get_HostType(HostType hostType)
+        {
+            var context = A.Fake<IConventionContext>();
+            var properties = new ServiceProviderDictionary();
+            A.CallTo(() => context.Properties).Returns(properties);
+            properties.Set(hostType);
+
+            context.GetHostType().Should().Be(hostType);
         }
     }
 }

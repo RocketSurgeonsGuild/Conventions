@@ -1,9 +1,12 @@
-using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.Conventions.Scanners;
+
+#pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Conventions
 {
@@ -24,7 +27,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="assemblyProvider">The assembly provider.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
         /// <param name="serviceProperties">The properties.</param>
-        public ConventionHostBuilder(
+        protected ConventionHostBuilder(
             IConventionScanner scanner,
             IAssemblyCandidateFinder assemblyCandidateFinder,
             IAssemblyProvider assemblyProvider,
@@ -39,19 +42,29 @@ namespace Rocket.Surgery.Conventions
             ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
 
             if (!Properties.TryGetValue(typeof(IConventionScanner), out var _))
+            {
                 Properties[typeof(IConventionScanner)] = scanner;
+            }
 
             if (!Properties.TryGetValue(typeof(IAssemblyProvider), out var _))
+            {
                 Properties[typeof(IAssemblyProvider)] = assemblyProvider;
+            }
 
             if (!Properties.TryGetValue(typeof(IAssemblyCandidateFinder), out var _))
+            {
                 Properties[typeof(IAssemblyCandidateFinder)] = assemblyCandidateFinder;
+            }
 
             if (!Properties.TryGetValue(typeof(DiagnosticSource), out var _))
+            {
                 Properties[typeof(DiagnosticSource)] = diagnosticSource;
+            }
 
             if (!Properties.TryGetValue(typeof(ILogger), out var _))
+            {
                 Properties[typeof(ILogger)] = new DiagnosticLogger(diagnosticSource);
+            }
         }
 
         /// <summary>
@@ -69,13 +82,27 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        public IServiceProviderDictionary ServiceProperties { get; }
+        public IDictionary<object, object?> Properties => ServiceProperties;
+
+        /// <summary>
+        /// Apply a set of calls against a host builder without losing the context of the actual host build
+        /// </summary>
+        public TSelf Apply([NotNull] Action<IConventionHostBuilder> hostBuilder)
+        {
+            if (hostBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(hostBuilder));
+            }
+
+            hostBuilder(this);
+            return (TSelf)(object)this;
+        }
 
         /// <summary>
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        public IDictionary<object, object?> Properties => ServiceProperties;
+        public IServiceProviderDictionary ServiceProperties { get; }
 
         /// <summary>
         /// Gets the scanner.
@@ -102,20 +129,10 @@ namespace Rocket.Surgery.Conventions
         public DiagnosticSource DiagnosticSource { get; }
 
         /// <summary>
-        /// Apply a set of calls against a host builder without losing the context of the actual host build
-        /// </summary>
-        public TSelf Apply(Action<IConventionHostBuilder> hostBuilder)
-        {
-            hostBuilder(this);
-            return (TSelf)(object)this;
-        }
-
-        /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder AppendConvention(params IConvention[] conventions)
         {
             Scanner.AppendConvention(conventions);
@@ -127,7 +144,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder AppendConvention(IEnumerable<IConvention> conventions)
         {
             Scanner.AppendConvention(conventions);
@@ -139,7 +155,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder AppendConvention(params Type[] conventions)
         {
             Scanner.AppendConvention(conventions);
@@ -151,7 +166,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder AppendConvention(IEnumerable<Type> conventions)
         {
             Scanner.AppendConvention(conventions);
@@ -163,8 +177,8 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>IConventionHostBuilder.</returns>
-
-        public IConventionHostBuilder AppendConvention<T>() where T : IConvention
+        public IConventionHostBuilder AppendConvention<T>()
+            where T : IConvention
         {
             Scanner.AppendConvention<T>();
             return this;
@@ -175,7 +189,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder PrependConvention(params IConvention[] conventions)
         {
             Scanner.PrependConvention(conventions);
@@ -187,7 +200,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder PrependConvention(IEnumerable<IConvention> conventions)
         {
             Scanner.PrependConvention(conventions);
@@ -199,7 +211,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder PrependConvention(params Type[] conventions)
         {
             Scanner.PrependConvention(conventions);
@@ -211,7 +222,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder PrependConvention(IEnumerable<Type> conventions)
         {
             Scanner.PrependConvention(conventions);
@@ -223,8 +233,8 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>IConventionHostBuilder.</returns>
-
-        public IConventionHostBuilder PrependConvention<T>() where T : IConvention
+        public IConventionHostBuilder PrependConvention<T>()
+            where T : IConvention
         {
             Scanner.PrependConvention<T>();
             return this;
@@ -235,7 +245,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="delegates">The additional delegates.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder PrependDelegate(params Delegate[] delegates)
         {
             Scanner.PrependDelegate(delegates);
@@ -247,20 +256,17 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="delegates">The conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder PrependDelegate(IEnumerable<Delegate> delegates)
         {
             Scanner.PrependDelegate(delegates);
             return this;
         }
 
-
         /// <summary>
         /// Addes a set of delegates to the scanner
         /// </summary>
         /// <param name="delegates">The additional delegates.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder AppendDelegate(params Delegate[] delegates)
         {
             Scanner.AppendDelegate(delegates);
@@ -272,7 +278,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="delegates">The conventions.</param>
         /// <returns>IConventionHostBuilder.</returns>
-
         public IConventionHostBuilder AppendDelegate(IEnumerable<Delegate> delegates)
         {
             Scanner.AppendDelegate(delegates);

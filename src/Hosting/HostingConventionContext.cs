@@ -9,15 +9,14 @@ using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Hosting
 {
-    class HostingConventionContext : ConventionContext, IHostingConventionContext
+    internal class HostingConventionContext : ConventionContext, IHostingConventionContext
     {
         private readonly IRocketHostBuilder _builder;
 
         public HostingConventionContext(
-            IRocketHostBuilder builder, ILogger logger) : base(logger, builder.ServiceProperties)
-        {
-            this._builder = builder;
-        }
+            IRocketHostBuilder builder,
+            ILogger logger
+        ) : base(logger, builder.ServiceProperties) => _builder = builder;
 
         /// <summary>
         /// Gets the builder.
@@ -55,14 +54,13 @@ namespace Rocket.Surgery.Hosting
         public IConventionHostBuilder AppendConvention(params Type[] conventions)
             => _builder.AppendConvention(conventions);
 
-        public IConventionHostBuilder AppendConvention<T>() where T : IConvention
-            => _builder.AppendConvention<T>();
+        public IConventionHostBuilder AppendConvention<T>()
+            where T : IConvention => _builder.AppendConvention<T>();
 
         public IConventionHostBuilder AppendDelegate(IEnumerable<Delegate> delegates)
             => _builder.AppendDelegate(delegates);
 
-        public IConventionHostBuilder AppendDelegate(params Delegate[] delegates)
-            => _builder.AppendDelegate(delegates);
+        public IConventionHostBuilder AppendDelegate(params Delegate[] delegates) => _builder.AppendDelegate(delegates);
 
         public IConventionHostBuilder PrependConvention(IEnumerable<IConvention> conventions)
             => _builder.PrependConvention(conventions);
@@ -76,8 +74,8 @@ namespace Rocket.Surgery.Hosting
         public IConventionHostBuilder PrependConvention(params Type[] conventions)
             => _builder.PrependConvention(conventions);
 
-        public IConventionHostBuilder PrependConvention<T>() where T : IConvention
-            => _builder.PrependConvention<T>();
+        public IConventionHostBuilder PrependConvention<T>()
+            where T : IConvention => _builder.PrependConvention<T>();
 
         public IConventionHostBuilder PrependDelegate(IEnumerable<Delegate> delegates)
             => _builder.PrependDelegate(delegates);

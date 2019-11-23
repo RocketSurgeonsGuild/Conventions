@@ -1,12 +1,11 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Extensions.Logging
 {
     /// <summary>
-    ///  ILoggingConventionContext
+    /// ILoggingConventionContext
     /// Implements the <see cref="IConventionContext" />
     /// Implements the <see cref="Microsoft.Extensions.Logging.ILoggingBuilder" />
     /// </summary>

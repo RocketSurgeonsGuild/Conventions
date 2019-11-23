@@ -1,68 +1,59 @@
 using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Autofac;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
+using Rocket.Surgery.Extensions.WebJobs;
 using Xunit;
 using Xunit.Abstractions;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
-using Rocket.Surgery.Extensions.WebJobs;
 
 namespace Rocket.Surgery.Hosting.Functions.Tests
 {
-    class WebJobsBuilder : IWebJobsBuilder
+    internal class WebJobsBuilder : IWebJobsBuilder
     {
-        private readonly IServiceCollection _services;
-
         public WebJobsBuilder()
         {
-            _services = new ServiceCollection();
-            _services.AddSingleton< IConfiguration>(new ConfigurationBuilder().Build());
+            Services = new ServiceCollection();
+            Services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         }
 
-        public IServiceCollection Services => _services;
+        public IServiceCollection Services { get; }
     }
 
-    class Startup : IServiceConvention
+    internal class Startup : IServiceConvention
     {
-        public void Register(IServiceConventionContext context)
-        {
-            context.Services.AddSingleton(context);
-        }
+        public void Register(IServiceConventionContext context) => context.Services.AddSingleton(context);
     }
 
     public class RocketHostBuilderTests : AutoFakeTest
     {
-        public RocketHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
-
         [Fact]
         public void Should_Call_Through_To_Delegate_Methods()
         {
             var startup = new Startup();
-            var builder = new WebJobsBuilder()
-                .UseRocketBooster(
+            new WebJobsBuilder()
+               .UseRocketBooster(
                     startup,
                     RocketBooster.For(DependencyContext.Load(typeof(RocketHostTests).Assembly)),
                     rb => rb
-                        .UseScanner(AutoFake.Resolve<IConventionScanner>())
-                        .PrependDelegate(new Action(() => { }))
-                        .AppendDelegate(new Action(() => { }))
-                    );
+                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .PrependDelegate(new Action(() => { }))
+                       .AppendDelegate(new Action(() => { }))
+                );
 
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependDelegate(A<Delegate>._)).MustHaveHappened(1, Times.Exactly);
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendDelegate(A<Delegate>._)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependDelegate(A<Delegate>._))
+               .MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendDelegate(A<Delegate>._))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -70,14 +61,18 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
         {
             var convention = AutoFake.Resolve<IConvention>();
             var startup = new Startup();
-            var builder = new WebJobsBuilder()
-                .UseRocketSurgery(startup, rb => rb
-                .UseScanner(AutoFake.Resolve<IConventionScanner>())
-                .PrependConvention(convention)
-                .AppendConvention(convention)
-            );
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependConvention(A<IConvention>._)).MustHaveHappened(1, Times.Exactly);
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendConvention(A<IConvention>._)).MustHaveHappened(1, Times.Exactly);
+            new WebJobsBuilder()
+               .UseRocketSurgery(
+                    startup,
+                    rb => rb
+                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .PrependConvention(convention)
+                       .AppendConvention(convention)
+                );
+            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependConvention(A<IConvention>._))
+               .MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendConvention(A<IConvention>._))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact(Skip = "Disabled because it sometimes fails on windows")]
@@ -85,8 +80,10 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
         {
             var startup = new Startup();
             var builder = new WebJobsBuilder()
-                .UseRocketSurgery(startup, rb => rb
-                    .UseAppDomain(AppDomain.CurrentDomain)
+               .UseRocketSurgery(
+                    startup,
+                    rb => rb
+                       .UseAppDomain(AppDomain.CurrentDomain)
                 );
 
             var sp = builder.Services.BuildServiceProvider();
@@ -98,8 +95,10 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
         {
             var startup = new Startup();
             var builder = new WebJobsBuilder()
-                .UseRocketSurgery(startup, rb => rb
-                    .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
+               .UseRocketSurgery(
+                    startup,
+                    rb => rb
+                       .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
                 );
 
             var sp = builder.Services.BuildServiceProvider();
@@ -111,7 +110,7 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
         {
             var startup = new Startup();
             var builder = new WebJobsBuilder()
-                .UseRocketBooster(startup, RocketBooster.For(AppDomain.CurrentDomain), rb => {});
+               .UseRocketBooster(startup, RocketBooster.For(AppDomain.CurrentDomain), rb => { });
 
             var sp = builder.Services.BuildServiceProvider();
             sp.Should().NotBeNull();
@@ -122,8 +121,10 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
         {
             var startup = new Startup();
             var builder = new WebJobsBuilder()
-                .UseRocketSurgery(startup, rb => rb
-                    .UseDependencyContext(DependencyContext.Default)
+               .UseRocketSurgery(
+                    startup,
+                    rb => rb
+                       .UseDependencyContext(DependencyContext.Default)
                 );
 
             var sp = builder.Services.BuildServiceProvider();
@@ -138,11 +139,23 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
 
             var startup = new Startup();
             var builder = new WebJobsBuilder()
-                .UseRocketSurgery(startup, rb => rb
-                    .UseScanner(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>(),
-                        serviceConventionFake, configurationConventionFake))
-                    .UseAssemblyCandidateFinder(new DefaultAssemblyCandidateFinder(new[] { typeof(RocketHostBuilderTests).Assembly }))
-                    .UseAssemblyProvider(new DefaultAssemblyProvider(new[] { typeof(RocketHostBuilderTests).Assembly })));
+               .UseRocketSurgery(
+                    startup,
+                    rb => rb
+                       .UseScanner(
+                            new BasicConventionScanner(
+                                A.Fake<IServiceProviderDictionary>(),
+                                serviceConventionFake,
+                                configurationConventionFake
+                            )
+                        )
+                       .UseAssemblyCandidateFinder(
+                            new DefaultAssemblyCandidateFinder(new[] { typeof(RocketHostBuilderTests).Assembly })
+                        )
+                       .UseAssemblyProvider(
+                            new DefaultAssemblyProvider(new[] { typeof(RocketHostBuilderTests).Assembly })
+                        )
+                );
 
             var sp = builder.Services.BuildServiceProvider();
             sp.Should().NotBeNull();
@@ -152,16 +165,22 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
         public void Should_ConfigureWebJobs()
         {
             var startup = new Startup();
-            var builder = new WebJobsBuilder()
-                .UseRocketSurgery(startup, rb => rb
-                    .UseDependencyContext(DependencyContext.Default)
-                    .UseScanner(AutoFake.Resolve<IConventionScanner>())
-                    .ConfigureWebJobs(x => { })
+            new WebJobsBuilder()
+               .UseRocketSurgery(
+                    startup,
+                    rb => rb
+                       .UseDependencyContext(DependencyContext.Default)
+                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .ConfigureWebJobs(x => { })
                 );
 
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(WebJobsConventionDelegate))
-            )).MustHaveHappened();
+            A.CallTo(
+                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
+                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(WebJobsConventionDelegate))
+                )
+            ).MustHaveHappened();
         }
+
+        public RocketHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
     }
 }

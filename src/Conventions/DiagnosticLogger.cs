@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions
@@ -13,26 +14,24 @@ namespace Rocket.Surgery.Conventions
     /// <seealso cref="ILogger" />
     public class DiagnosticLogger : ILogger
     {
-        private readonly DiagnosticSource _diagnosticSource;
-
         /// <summary>
         /// The names
         /// </summary>
         internal static readonly IReadOnlyDictionary<LogLevel, string> Names =
             Enum.GetValues(typeof(LogLevel))
-                .Cast<LogLevel>()
-                .ToDictionary(x => x, x => $"Log.{x}");
+               .Cast<LogLevel>()
+               .ToDictionary(x => x, x => $"Log.{x}");
 
-        private static string GetName(LogLevel logLevel) => Names.TryGetValue(logLevel, out var value) ? value : "Log.Other";
+        private static string GetName(LogLevel logLevel)
+            => Names.TryGetValue(logLevel, out var value) ? value : "Log.Other";
+
+        private readonly DiagnosticSource _diagnosticSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DiagnosticLogger" /> class.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        public DiagnosticLogger(DiagnosticSource diagnosticSource)
-        {
-            _diagnosticSource = diagnosticSource;
-        }
+        public DiagnosticLogger(DiagnosticSource diagnosticSource) => _diagnosticSource = diagnosticSource;
 
         /// <summary>
         /// Writes a log entry.
@@ -42,15 +41,35 @@ namespace Rocket.Surgery.Conventions
         /// <param name="eventId">Id of the event.</param>
         /// <param name="state">The entry to be written. Can be also an object.</param>
         /// <param name="exception">The exception related to this entry.</param>
-        /// <param name="formatter">Function to create a <c>string</c> message of the <paramref name="state" /> and <paramref name="exception" />.</param>
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter) => _diagnosticSource.Write(GetName(logLevel), new
+        /// <param name="formatter">
+        /// Function to create a <c>string</c> message of the <paramref name="state" /> and
+        /// <paramref name="exception" />.
+        /// </param>
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception exception,
+            [NotNull] Func<TState, Exception, string> formatter
+        )
         {
-            logLevel,
-            eventId,
-            state = (object?)state,
-            exception,
-            message = formatter(state, exception)
-        });
+            if (formatter == null)
+            {
+                throw new ArgumentNullException(nameof(formatter));
+            }
+
+            _diagnosticSource.Write(
+                GetName(logLevel),
+                new
+                {
+                    logLevel,
+                    eventId,
+                    state = (object?)state,
+                    exception,
+                    message = formatter(state, exception)
+                }
+            );
+        }
 
         /// <summary>
         /// Checks if the given <paramref name="logLevel" /> is enabled.
@@ -76,7 +95,7 @@ namespace Rocket.Surgery.Conventions
         /// Implements the <see cref="IDisposable" />
         /// </summary>
         /// <seealso cref="IDisposable" />
-        class Disposable : IDisposable
+        private class Disposable : IDisposable
         {
             private readonly DiagnosticSource _diagnosticSource;
             private readonly Activity _activity;

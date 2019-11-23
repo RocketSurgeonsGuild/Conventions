@@ -3,15 +3,8 @@ namespace Rocket.Surgery.Hosting
     /// <summary>
     /// Class CommandLineResult.
     /// </summary>
-    class CommandLineResult
+    internal class CommandLineResult
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CommandLineResult"/> class.
-        /// </summary>
-        public CommandLineResult()
-        {
-        }
-
         /// <summary>
         /// Gets or sets the value.
         /// </summary>

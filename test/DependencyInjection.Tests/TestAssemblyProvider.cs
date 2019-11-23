@@ -4,15 +4,12 @@ using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Extensions.DependencyInjection.Tests
 {
-    class TestAssemblyProvider : IAssemblyProvider
+    internal class TestAssemblyProvider : IAssemblyProvider
     {
-        public IEnumerable<Assembly> GetAssemblies()
+        public IEnumerable<Assembly> GetAssemblies() => new[]
         {
-            return new[]
-            {
-                typeof(ServicesBuilder).GetTypeInfo().Assembly,
-                typeof(TestAssemblyProvider).GetTypeInfo().Assembly
-            };
-        }
+            typeof(ServicesBuilder).GetTypeInfo().Assembly,
+            typeof(TestAssemblyProvider).GetTypeInfo().Assembly
+        };
     }
 }

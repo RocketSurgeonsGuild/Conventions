@@ -1,9 +1,9 @@
-using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Reflection
@@ -29,37 +29,18 @@ namespace Rocket.Surgery.Conventions.Reflection
             _logger = logger ?? NullLogger.Instance;
         }
 
-        /// <summary>
-        /// Get the candidates for a given set
-        /// </summary>
-        /// <param name="candidates">The candidates as an enumerable</param>
-        /// <returns>IEnumerable{Assembly}.</returns>
-        /// <inheritdoc />
-        public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
+        private Action<Assembly> LogValue(string[] candidates) => value =>
         {
-            var value = candidates as string[] ?? candidates?.ToArray() ?? Array.Empty<string>();
-            return LoggingEnumerable.Create(GetCandidateLibraries(value)
-                    .SelectMany(library =>
-                        library.GetDefaultAssemblyNames(_dependencyContext))
-                    .Select(TryLoad)
-                    .Where(x => x != null)
-                    .Reverse(),
-                LogValue(value)
-            );
-        }
-
-        private Action<Assembly> LogValue(string[] candidates) =>
-            value =>
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug("[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
-                        nameof(DependencyContextAssemblyCandidateFinder),
-                        value.GetName().Name,
-                        candidates
-                    );
-                }
-            };
+                _logger.LogDebug(
+                    "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
+                    nameof(DependencyContextAssemblyCandidateFinder),
+                    value.GetName().Name,
+                    candidates
+                );
+            }
+        };
 
         private IEnumerable<RuntimeLibrary> GetCandidateLibraries(string[] candidates)
         {
@@ -68,7 +49,10 @@ namespace Rocket.Surgery.Conventions.Reflection
                 return Enumerable.Empty<RuntimeLibrary>();
             }
 
-            var candidatesResolver = new RuntimeLibraryCandidateResolver(_dependencyContext.RuntimeLibraries, new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase));
+            var candidatesResolver = new RuntimeLibraryCandidateResolver(
+                _dependencyContext.RuntimeLibraries,
+                new HashSet<string>(candidates, StringComparer.OrdinalIgnoreCase)
+            );
             return candidatesResolver.GetCandidates();
         }
 
@@ -78,18 +62,44 @@ namespace Rocket.Surgery.Conventions.Reflection
             {
                 _logger.LogDebug("Trying to load assembly {Assembly}", assemblyName.Name);
             }
+
             try
             {
                 return Assembly.Load(assemblyName);
             }
+#pragma warning disable CA1031
             catch (Exception e)
             {
                 if (_logger.IsEnabled(LogLevel.Warning))
                 {
                     _logger.LogWarning(0, e, "Failed to load assembly {Assembly}", assemblyName.Name);
                 }
+
                 return default!;
             }
+#pragma warning restore CA1031
+        }
+
+        /// <summary>
+        /// Get the candidates for a given set
+        /// </summary>
+        /// <param name="candidates">The candidates as an enumerable</param>
+        /// <returns>IEnumerable{Assembly}.</returns>
+        /// <inheritdoc />
+        public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
+        {
+            var value = candidates as string[] ?? candidates.ToArray();
+            return LoggingEnumerable.Create(
+                GetCandidateLibraries(value)
+                   .SelectMany(
+                        library =>
+                            library.GetDefaultAssemblyNames(_dependencyContext)
+                    )
+                   .Select(TryLoad)
+                   .Where(x => x != null)
+                   .Reverse(),
+                LogValue(value)
+            );
         }
     }
 }

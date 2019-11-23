@@ -16,17 +16,16 @@ using Rocket.Surgery.Extensions.WebJobs.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
+#pragma warning disable CA1034
+#pragma warning disable CA1040
+#pragma warning disable CA2000
+
 [assembly: Convention(typeof(WebJobsConventionBuilderTests.AbcConvention))]
 
 namespace Rocket.Surgery.Extensions.WebJobs.Tests
 {
     public class WebJobsConventionBuilderTests : AutoFakeTest
     {
-        public WebJobsConventionBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
-        {
-            AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-        }
-
         [Fact]
         public void Constructs()
         {
@@ -76,7 +75,9 @@ namespace Rocket.Surgery.Extensions.WebJobs.Tests
 
             webJobsConventionBuilder.PrependConvention(convention);
 
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependConvention(A<IEnumerable<IWebJobsConvention>>._)).MustHaveHappened();
+            A.CallTo(
+                () => AutoFake.Resolve<IConventionScanner>().PrependConvention(A<IEnumerable<IWebJobsConvention>>._)
+            ).MustHaveHappened();
         }
 
         [Fact]
@@ -92,43 +93,48 @@ namespace Rocket.Surgery.Extensions.WebJobs.Tests
             webJobsConventionBuilder.PrependConvention(convention);
 
             webJobsConventionBuilder.Build();
-            webJobsConventionBuilder.Services.Should().Contain(x => x.ServiceType == typeof(IHostedService) && x.ImplementationType == typeof(Abc));
-            webJobsConventionBuilder.Services.Should().NotContain(x => x.ServiceType == typeof(IHostedService) && x.ImplementationType == typeof(Abc2));
+            webJobsConventionBuilder.Services.Should().Contain(
+                x => x.ServiceType == typeof(IHostedService) && x.ImplementationType == typeof(Abc)
+            );
+            webJobsConventionBuilder.Services.Should().NotContain(
+                x => x.ServiceType == typeof(IHostedService) && x.ImplementationType == typeof(Abc2)
+            );
         }
+
+        public WebJobsConventionBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
+            => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 
         public interface IAbc { }
+
         public class Abc : IHostedService
         {
-            public Task StartAsync(CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
+            public Task StartAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
 
-            public Task StopAsync(CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
+            public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
         }
+
         public interface IAbc2 : IHostedService { }
-        public class Abc2 : IAbc2, IHostedService
-        {
-            public Task StartAsync(CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
 
-            public Task StopAsync(CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
+        public class Abc2 : IAbc2
+        {
+            public Task StartAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+
+            public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
         }
+
         public interface IAbc3 { }
+
         public interface IAbc4 { }
 
         public class AbcConvention : IWebJobsConvention
         {
             public void Register(IWebJobsConventionContext context)
             {
+                if (context == null)
+                {
+                    throw new ArgumentNullException(nameof(context));
+                }
+
                 context.AddExtension(typeof(IAbc));
                 context.Services.AddSingleton(A.Fake<IAbc>());
                 context.Services.AddSingleton(A.Fake<IAbc2>());

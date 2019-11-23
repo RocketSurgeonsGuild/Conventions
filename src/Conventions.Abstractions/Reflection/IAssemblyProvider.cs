@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Rocket.Surgery.Conventions.Reflection
 {
@@ -12,6 +13,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// Get the full list of assemblies
         /// </summary>
         /// <returns>IEnumerable{Assembly}.</returns>
+        [NotNull]
         IEnumerable<Assembly> GetAssemblies();
     }
 }

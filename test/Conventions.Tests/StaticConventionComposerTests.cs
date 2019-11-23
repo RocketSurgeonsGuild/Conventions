@@ -2,15 +2,12 @@
 using Rocket.Surgery.Conventions.Scanners;
 using Xunit;
 
+#pragma warning disable CA1034
+
 namespace Rocket.Surgery.Conventions.Tests
 {
     public class StaticConventionComposerTests
     {
-        public interface ITestConventionContext : IConventionContext { }
-        public interface ITestConvention : IConvention<ITestConventionContext> { }
-
-        public delegate void TestContributionDelegate(ITestConventionContext context);
-
         [Fact]
         public void RegisterShouldCallContribution()
         {
@@ -20,9 +17,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var context = A.Fake<ITestConventionContext>();
 
             A.CallTo(() => scanner.BuildProvider())
-                .Returns(scannerProvider);
+               .Returns(scannerProvider);
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>(HostType.Undefined))
-                .Returns(new[] { new DelegateOrConvention(contribution) });
+               .Returns(new[] { new DelegateOrConvention(contribution) });
 
             Composer.Register<ITestConventionContext, ITestConvention, TestContributionDelegate>(scanner, context);
 
@@ -40,14 +37,16 @@ namespace Rocket.Surgery.Conventions.Tests
             var context = A.Fake<ITestConventionContext>();
 
             A.CallTo(() => scanner.BuildProvider())
-                .Returns(scannerProvider);
+               .Returns(scannerProvider);
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>(HostType.Undefined))
-                .Returns(new[]
-                {
-                    new DelegateOrConvention(contribution1),
-                    new DelegateOrConvention(contribution2),
-                    new DelegateOrConvention(contribution3)
-                });
+               .Returns(
+                    new[]
+                    {
+                        new DelegateOrConvention(contribution1),
+                        new DelegateOrConvention(contribution2),
+                        new DelegateOrConvention(contribution3)
+                    }
+                );
 
             Composer.Register<ITestConventionContext, ITestConvention, TestContributionDelegate>(scanner, context);
 
@@ -67,7 +66,7 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
             // A.CallTo(() => scannerProvider.Get<ITestConvention>()).Returns(new[] { convention });
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>(HostType.Undefined))
-                .Returns(new DelegateOrConvention[] { @delegate });
+               .Returns(new DelegateOrConvention[] { @delegate });
 
             Composer.Register<ITestConventionContext, ITestConvention, TestContributionDelegate>(scanner, context);
 
@@ -87,16 +86,20 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
             // A.CallTo(() => scannerProvider.Get<ITestConvention>()).Returns(new[] { convention });
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>(HostType.Undefined))
-                .Returns(new[] { new DelegateOrConvention(delegate2),
-                    new DelegateOrConvention(delegate1),
-                    new DelegateOrConvention(delegate3 )
-                });
+               .Returns(
+                    new[]
+                    {
+                        new DelegateOrConvention(delegate2),
+                        new DelegateOrConvention(delegate1),
+                        new DelegateOrConvention(delegate3)
+                    }
+                );
 
             Composer.Register<ITestConventionContext, ITestConvention, TestContributionDelegate>(scanner, context);
 
-            A.CallTo(() => @delegate1.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => @delegate2.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => @delegate3.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => delegate1.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => delegate2.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => delegate3.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -111,14 +114,24 @@ namespace Rocket.Surgery.Conventions.Tests
             A.CallTo(() => scanner.BuildProvider()).Returns(scannerProvider);
             // A.CallTo(() => scannerProvider.Get<ITestConvention>()).Returns(new[] { convention });
             A.CallTo(() => scannerProvider.Get<ITestConvention, TestContributionDelegate>(HostType.Undefined))
-                .Returns(new[] { new DelegateOrConvention(@delegate),
-                    new DelegateOrConvention(contribution )
-                });
+               .Returns(
+                    new[]
+                    {
+                        new DelegateOrConvention(@delegate),
+                        new DelegateOrConvention(contribution)
+                    }
+                );
 
             Composer.Register<ITestConventionContext, ITestConvention, TestContributionDelegate>(scanner, context);
 
             A.CallTo(() => contribution.Register(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
             A.CallTo(() => @delegate.Invoke(A<ITestConventionContext>._)).MustHaveHappenedOnceExactly();
         }
+
+        public interface ITestConventionContext : IConventionContext { }
+
+        public interface ITestConvention : IConvention<ITestConventionContext> { }
+
+        public delegate void TestContributionDelegate(ITestConventionContext context);
     }
 }

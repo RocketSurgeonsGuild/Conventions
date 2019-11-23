@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
 using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
@@ -14,24 +11,27 @@ namespace Rocket.Surgery.Extensions.Configuration
 {
     /// <summary>
     /// Logging Builder
-    /// Implements the <see cref="ConventionContainerBuilder{IConfigurationBuilder, IConfigurationConvention, ConfigurationConventionDelegate}" />
+    /// Implements the <see cref="ConventionContainerBuilder{TBuilder,TConvention,TDelegate}" />
     /// Implements the <see cref="IConfigurationBuilder" />
     /// Implements the <see cref="IConfigurationConvention" />
     /// Implements the <see cref="IConfigurationConventionContext" />
     /// Implements the <see cref="ConfigurationConventionDelegate" />
     /// </summary>
-    /// <seealso cref="ConventionContainerBuilder{IConfigurationBuilder, IConfigurationConvention, ConfigurationConventionDelegate}" />
+    /// <seealso
+    ///     cref="ConventionContainerBuilder{IConfigurationBuilder, IConfigurationConvention, ConfigurationConventionDelegate}" />
     /// <seealso cref="IConfigurationBuilder" />
     /// <seealso cref="IConfigurationConvention" />
     /// <seealso cref="IConfigurationConventionContext" />
     /// <seealso cref="ConfigurationConventionDelegate" />
-    public class ConfigurationBuilder : ConventionContainerBuilder<IConfigurationBuilder, IConfigurationConvention, ConfigurationConventionDelegate>, IConfigurationBuilder, IConfigurationConventionContext
+    public sealed class ConfigurationBuilder :
+        ConventionContainerBuilder<IConfigurationBuilder, IConfigurationConvention, ConfigurationConventionDelegate>,
+        IConfigurationBuilder,
+        IConfigurationConventionContext
     {
-        private readonly IConventionScanner _scanner;
         private readonly IMsftConfigurationBuilder _builder = new MsftConfigurationBuilder();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationBuilder"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationBuilder" /> class.
         /// </summary>
         /// <param name="scanner">The scanner.</param>
         /// <param name="environment">The environment.</param>
@@ -54,9 +54,9 @@ namespace Rocket.Surgery.Extensions.Configuration
             IConfiguration configuration,
             IMsftConfigurationBuilder builder,
             ILogger diagnosticSource,
-            IDictionary<object, object?> properties) : base(scanner, properties)
+            IDictionary<object, object?> properties
+        ) : base(scanner, properties)
         {
-            _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
             ApplicationConfigurationBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
             Environment = environment;
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -70,16 +70,16 @@ namespace Rocket.Surgery.Extensions.Configuration
         public IRocketEnvironment Environment { get; }
 
         /// <summary>
-        /// Gets the configuration.
-        /// </summary>
-        /// <value>The configuration.</value>
-        public IConfiguration Configuration { get; }
-
-        /// <summary>
         /// Gets the configuration builder for the application (this one is self contained)
         /// </summary>
         /// <value>The configuration.</value>
         public IMsftConfigurationBuilder ApplicationConfigurationBuilder { get; }
+
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
+        public IConfiguration Configuration { get; }
 
         /// <summary>
         /// A logger that is configured to work with each convention item

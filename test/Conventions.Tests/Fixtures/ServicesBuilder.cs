@@ -2,8 +2,6 @@
 {
     public class ServicesBuilder
     {
-        protected ServicesBuilder()
-        {
-        }
+        protected ServicesBuilder() { }
     }
 }

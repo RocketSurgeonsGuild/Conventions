@@ -4,15 +4,12 @@ using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Extensions.CommandLine.Tests
 {
-    class TestAssemblyProvider : IAssemblyProvider
+    internal class TestAssemblyProvider : IAssemblyProvider
     {
-        public IEnumerable<Assembly> GetAssemblies()
+        public IEnumerable<Assembly> GetAssemblies() => new[]
         {
-            return new[]
-            {
-                typeof(CommandLineBuilder).GetTypeInfo().Assembly,
-                typeof(TestAssemblyProvider).GetTypeInfo().Assembly
-            };
-        }
+            typeof(CommandLineBuilder).GetTypeInfo().Assembly,
+            typeof(TestAssemblyProvider).GetTypeInfo().Assembly
+        };
     }
 }

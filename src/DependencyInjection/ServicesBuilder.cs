@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
@@ -27,12 +23,13 @@ namespace Rocket.Surgery.Extensions.DependencyInjection
     /// <seealso cref="IServiceConvention" />
     /// <seealso cref="IServiceConventionContext" />
     /// <seealso cref="ServiceConventionDelegate" />
-    public class ServicesBuilder : ConventionBuilder<IServicesBuilder, IServiceConvention, ServiceConventionDelegate>, IServicesBuilder
+    public class ServicesBuilder : ConventionBuilder<IServicesBuilder, IServiceConvention, ServiceConventionDelegate>,
+                                   IServicesBuilder
     {
         private readonly ServiceProviderObservable _onBuild;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServicesBuilder"/> class.
+        /// Initializes a new instance of the <see cref="ServicesBuilder" /> class.
         /// </summary>
         /// <param name="scanner">The scanner.</param>
         /// <param name="assemblyProvider">The assembly provider.</param>
@@ -59,7 +56,8 @@ namespace Rocket.Surgery.Extensions.DependencyInjection
             IConfiguration configuration,
             IRocketEnvironment environment,
             ILogger diagnosticSource,
-            IDictionary<object, object?> properties)
+            IDictionary<object, object?> properties
+        )
             : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
         {
             Environment = environment ?? throw new ArgumentNullException(nameof(environment));
@@ -67,9 +65,9 @@ namespace Rocket.Surgery.Extensions.DependencyInjection
             Services = services ?? throw new ArgumentNullException(nameof(services));
             Logger = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
             _onBuild = new ServiceProviderObservable(Logger);
-            ServiceProviderOptions = new ServiceProviderOptions()
+            ServiceProviderOptions = new ServiceProviderOptions
             {
-                ValidateScopes = environment.IsDevelopment(),
+                ValidateScopes = environment.IsDevelopment()
             };
         }
 

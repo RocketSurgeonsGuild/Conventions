@@ -15,7 +15,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner AppendConvention(IEnumerable<IConvention> conventions);
 
         /// <summary>
@@ -23,7 +22,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner AppendConvention(params IConvention[] conventions);
 
         /// <summary>
@@ -45,14 +43,14 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>IConventionScanner.</returns>
-        IConventionScanner AppendConvention<T>() where T : IConvention;
+        IConventionScanner AppendConvention<T>()
+            where T : IConvention;
 
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner PrependConvention(IEnumerable<IConvention> conventions);
 
         /// <summary>
@@ -60,7 +58,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner PrependConvention(params IConvention[] conventions);
 
         /// <summary>
@@ -75,7 +72,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner PrependConvention(params Type[] conventions);
 
         /// <summary>
@@ -83,7 +79,8 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>IConventionScanner.</returns>
-        IConventionScanner PrependConvention<T>() where T : IConvention;
+        IConventionScanner PrependConvention<T>()
+            where T : IConvention;
 
         /// <summary>
         /// Adds a set of delegates to the scanner
@@ -119,7 +116,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="types">The additional types to exclude.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner ExceptConvention(params Type[] types);
 
         /// <summary>
@@ -127,7 +123,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="types">The convention types to exclude.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner ExceptConvention(IEnumerable<Type> types);
 
         /// <summary>
@@ -135,7 +130,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="assemblies">The additional types to exclude.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner ExceptConvention(params Assembly[] assemblies);
 
         /// <summary>
@@ -143,7 +137,6 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// </summary>
         /// <param name="assemblies">The convention types to exclude.</param>
         /// <returns>IConventionScanner.</returns>
-
         IConventionScanner ExceptConvention(IEnumerable<Assembly> assemblies);
 
         /// <summary>

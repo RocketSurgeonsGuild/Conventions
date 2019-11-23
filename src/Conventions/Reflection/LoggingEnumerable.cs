@@ -16,8 +16,8 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="enumerable">The enumerable.</param>
         /// <param name="logAction">The log action.</param>
         /// <returns>IEnumerable{T}.</returns>
-        public static IEnumerable<T> Create<T>(IEnumerable<T> enumerable, Action<T> logAction) =>
-            new LoggingEnumerable<T>(enumerable, logAction);
+        public static IEnumerable<T> Create<T>(IEnumerable<T> enumerable, Action<T> logAction)
+            => new LoggingEnumerable<T>(enumerable, logAction);
     }
 
     /// <summary>

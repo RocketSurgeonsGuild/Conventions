@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Reflection
@@ -27,43 +27,49 @@ namespace Rocket.Surgery.Conventions.Reflection
             _logger = logger ?? NullLogger.Instance;
         }
 
-        /// <summary>
-        /// Get the candidates for a given set
-        /// </summary>
-        /// <param name="candidates">The candidates as an enumerable</param>
-        /// <returns>IEnumerable{Assembly}.</returns>
-
-        public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
+        private Action<Assembly> LogValue(string[] candidates) => value =>
         {
-            var value = candidates as string[] ?? candidates?.ToArray() ?? Array.Empty<string>();
-            return LoggingEnumerable.Create(GetCandidateLibraries(value)
-                    .Where(x => x != null)
-                    .Reverse(),
-                LogValue(value)
-            );
-        }
-
-        private Action<Assembly> LogValue(string[] candidates) =>
-            value => {
-                if (_logger.IsEnabled(LogLevel.Debug)) {
-                    _logger.LogDebug("[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
-                        nameof(AppDomainAssemblyCandidateFinder),
-                        value.GetName().Name,
-                        candidates
-                    );
-                }
-            };
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug(
+                    "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
+                    nameof(AppDomainAssemblyCandidateFinder),
+                    value.GetName().Name,
+                    candidates
+                );
+            }
+        };
 
         private IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
         {
-            if (candidates == null || !candidates.Any())
+            if (candidates?.Any() != true)
             {
                 return Enumerable.Empty<Assembly>();
             }
 
             // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
-            var candidatesResolver = new AssemblyCandidateResolver(_appDomain.GetAssemblies(), new HashSet<string?>(candidates, StringComparer.OrdinalIgnoreCase), _logger);
+            var candidatesResolver = new AssemblyCandidateResolver(
+                _appDomain.GetAssemblies(),
+                new HashSet<string?>(candidates, StringComparer.OrdinalIgnoreCase),
+                _logger
+            );
             return candidatesResolver.GetCandidates().Select(x => x.Assembly).ToArray();
+        }
+
+        /// <summary>
+        /// Get the candidates for a given set
+        /// </summary>
+        /// <param name="candidates">The candidates as an enumerable</param>
+        /// <returns>IEnumerable{Assembly}.</returns>
+        public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
+        {
+            var value = candidates as string[] ?? candidates.ToArray();
+            return LoggingEnumerable.Create(
+                GetCandidateLibraries(value)
+                   .Where(x => x != null)
+                   .Reverse(),
+                LogValue(value)
+            );
         }
     }
 }

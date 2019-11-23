@@ -10,57 +10,40 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
     {
         [Fact]
         public void TimeInformationShouldNotBeNull()
-        {
-            A.Fake<ILogger>().TimeInformation("message").Should().NotBeNull();
-        }
+            => A.Fake<ILogger>().TimeInformation("message").Should().NotBeNull();
 
         [Fact]
         public void TimeInformationShouldDispose()
         {
             Action a = () =>
             {
-                using (A.Fake<ILogger>().TimeInformation("message"))
-                {
-
-                }
+                using (A.Fake<ILogger>().TimeInformation("message")) { }
             };
             a.Should().NotThrow();
         }
 
         [Fact]
-        public void TimeDebugShouldNotBeNull()
-        {
-            A.Fake<ILogger>().TimeDebug("message").Should().NotBeNull();
-        }
+        public void TimeDebugShouldNotBeNull() => A.Fake<ILogger>().TimeDebug("message").Should().NotBeNull();
 
         [Fact]
         public void TimeDebugShouldDispose()
         {
             Action a = () =>
             {
-                using (A.Fake<ILogger>().TimeDebug("message"))
-                {
-
-                }
+                using (A.Fake<ILogger>().TimeDebug("message")) { }
             };
             a.Should().NotThrow();
         }
 
         [Fact]
-        public void TimeTraceShouldNotBeNull()
-        {
-            A.Fake<ILogger>().TimeTrace("message").Should().NotBeNull();
-        }
+        public void TimeTraceShouldNotBeNull() => A.Fake<ILogger>().TimeTrace("message").Should().NotBeNull();
 
         [Fact]
         public void TimeTraceShouldDispose()
         {
             Action a = () =>
             {
-                using (A.Fake<ILogger>().TimeTrace("message"))
-                {
-
-                }
+                using (A.Fake<ILogger>().TimeTrace("message")) { }
             };
             a.Should().NotThrow();
         }

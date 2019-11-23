@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,7 +8,9 @@ using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.DependencyInjection;
-using Rocket.Surgery.Extensions.Logging;
+using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+
+#pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Conventions.TestHost
 {
@@ -26,7 +26,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConventionTestHost"/> class.
+        /// Initializes a new instance of the <see cref="ConventionTestHost" /> class.
         /// </summary>
         /// <param name="scanner">The scanner.</param>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
@@ -35,7 +35,15 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="serviceProperties">The service properties.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="environment">The environment.</param>
-        internal ConventionTestHost(IConventionScanner scanner, IAssemblyCandidateFinder assemblyCandidateFinder, IAssemblyProvider assemblyProvider, DiagnosticSource diagnosticSource, IServiceProviderDictionary serviceProperties, ILoggerFactory loggerFactory, IRocketEnvironment environment) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties)
+        internal ConventionTestHost(
+            IConventionScanner scanner,
+            IAssemblyCandidateFinder assemblyCandidateFinder,
+            IAssemblyProvider assemblyProvider,
+            DiagnosticSource diagnosticSource,
+            IServiceProviderDictionary serviceProperties,
+            ILoggerFactory loggerFactory,
+            IRocketEnvironment environment
+        ) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties)
         {
             serviceProperties.Set(HostType.UnitTestHost);
             _loggerFactory = loggerFactory;
@@ -47,19 +55,29 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the <see cref="BasicConventionScanner" /> to not automatically load conventions from attributes.
         /// </summary>
         /// <returns></returns>
-        public ConventionTestHost ExcludeConventionAttributes()
-        {
-            return new ConventionTestHost(new BasicConventionScanner(ServiceProperties), AssemblyCandidateFinder, AssemblyProvider, DiagnosticSource, ServiceProperties, _loggerFactory, _environment);
-        }
+        public ConventionTestHost ExcludeConventionAttributes() => new ConventionTestHost(
+            new BasicConventionScanner(ServiceProperties),
+            AssemblyCandidateFinder,
+            AssemblyProvider,
+            DiagnosticSource,
+            ServiceProperties,
+            _loggerFactory,
+            _environment
+        );
 
         /// <summary>
         /// <para>Use the <see cref="SimpleConventionScanner" /> to automatically load conventions from attributes.</para>
         /// <para>This is the default</para>
         /// </summary>
-        public ConventionTestHost IncludeConventionAttributes()
-        {
-            return new ConventionTestHost(new SimpleConventionScanner(AssemblyCandidateFinder, ServiceProperties, _logger), AssemblyCandidateFinder, AssemblyProvider, DiagnosticSource, ServiceProperties, _loggerFactory, _environment);
-        }
+        public ConventionTestHost IncludeConventionAttributes() => new ConventionTestHost(
+            new SimpleConventionScanner(AssemblyCandidateFinder, ServiceProperties, _logger),
+            AssemblyCandidateFinder,
+            AssemblyProvider,
+            DiagnosticSource,
+            ServiceProperties,
+            _loggerFactory,
+            _environment
+        );
 
         /// <summary>
         /// Build the configuration and populate the service collection based on the input environment.
@@ -67,13 +85,14 @@ namespace Rocket.Surgery.Conventions.TestHost
         private (IConfigurationRoot Configuration, ServicesBuilder ServicesBuilder) Init()
         {
             var configurationOptions = this.GetOrAdd(() => new ConfigurationOptions());
-            var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
-                .SetFileProvider(_environment.ContentRootFileProvider)
-                .Apply(configurationOptions.ApplicationConfiguration)
-                .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
-                .Apply(configurationOptions.EnvironmentConfiguration, "local");
+            var configurationBuilder = new ConfigurationBuilder()
+               .SetFileProvider(_environment.ContentRootFileProvider)
+               .Apply(configurationOptions.ApplicationConfiguration)
+               .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
+               .Apply(configurationOptions.EnvironmentConfiguration, "local");
 
-            var cb = new Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder(
+#pragma warning disable CA2000
+            var cb = new Extensions.Configuration.ConfigurationBuilder(
                 Scanner,
                 _environment,
                 new ConfigurationRoot(new List<IConfigurationProvider>()),
@@ -81,10 +100,11 @@ namespace Rocket.Surgery.Conventions.TestHost
                 _logger,
                 ServiceProperties
             );
+#pragma warning restore CA2000
 
             var configuration = configurationBuilder
-                .AddConfiguration(cb.Build())
-                .Build();
+               .AddConfiguration(cb.Build())
+               .Build();
 
             var serviceCollection = new ServiceCollection();
             var servicesBuilder = new ServicesBuilder(
@@ -98,15 +118,22 @@ namespace Rocket.Surgery.Conventions.TestHost
                 ServiceProperties
             );
 
-            servicesBuilder.Services.AddLogging(builder =>
-            {
-                builder.ClearProviders();
-                builder.Services.AddSingleton(_loggerFactory);
-            });
+            servicesBuilder.Services.AddLogging(
+                builder =>
+                {
+                    builder.ClearProviders();
+                    builder.Services.AddSingleton(_loggerFactory);
+                }
+            );
 
-            Composer.Register(servicesBuilder.Scanner, servicesBuilder, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
+            Composer.Register(
+                servicesBuilder.Scanner,
+                servicesBuilder,
+                typeof(IServiceConvention),
+                typeof(ServiceConventionDelegate)
+            );
 
-            return (configuration, servicesBuilder);
+            return ( configuration, servicesBuilder );
         }
 
         /// <summary>
@@ -118,7 +145,7 @@ namespace Rocket.Surgery.Conventions.TestHost
 
             var serviceProvider = servicesBuilder.Build();
 
-            return (configuration, serviceProvider);
+            return ( configuration, serviceProvider );
         }
 
         /// <summary>
@@ -128,9 +155,14 @@ namespace Rocket.Surgery.Conventions.TestHost
         {
             var (configuration, servicesBuilder) = Init();
 
-            Composer.Register(servicesBuilder.Scanner, servicesBuilder, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
+            Composer.Register(
+                servicesBuilder.Scanner,
+                servicesBuilder,
+                typeof(IServiceConvention),
+                typeof(ServiceConventionDelegate)
+            );
 
-            return (configuration, servicesBuilder.Services);
+            return ( configuration, servicesBuilder.Services );
         }
     }
 }

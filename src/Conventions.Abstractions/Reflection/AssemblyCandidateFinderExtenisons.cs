@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Rocket.Surgery.Conventions.Reflection
 {
@@ -16,9 +18,19 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="candidate">The first candidate to find</param>
         /// <param name="candidates">The candidates as an array</param>
         /// <returns>IEnumerable{Assembly}.</returns>
-        public static IEnumerable<Assembly> GetCandidateAssemblies(this IAssemblyCandidateFinder finder, string candidate, params string[] candidates)
+        [NotNull]
+        public static IEnumerable<Assembly> GetCandidateAssemblies(
+            [NotNull] this IAssemblyCandidateFinder finder,
+            string candidate,
+            params string[] candidates
+        )
         {
-            return finder.GetCandidateAssemblies(new[] {candidate}.Concat(candidates).ToArray());
+            if (finder == null)
+            {
+                throw new ArgumentNullException(nameof(finder));
+            }
+
+            return finder.GetCandidateAssemblies(new[] { candidate }.Concat(candidates).ToArray());
         }
     }
 }

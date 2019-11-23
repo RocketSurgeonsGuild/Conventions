@@ -3,7 +3,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// <summary>
     /// Enum DependencyClassification
     /// </summary>
-    enum DependencyClassification
+    internal enum DependencyClassification
     {
         /// <summary>
         /// The unknown

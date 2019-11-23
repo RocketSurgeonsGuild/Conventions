@@ -6,23 +6,10 @@ using McMaster.Extensions.CommandLineUtils;
 namespace Rocket.Surgery.Extensions.CommandLine
 {
     /// <summary>
-    ///  ICommandLineExecutor
+    /// ICommandLineExecutor
     /// </summary>
     public interface ICommandLineExecutor
     {
-        /// <summary>
-        /// Executes the specified service provider.
-        /// </summary>
-        /// <param name="serviceProvider">The service provider.</param>
-        int Execute(IServiceProvider serviceProvider);
-
-        /// <summary>
-        /// Executes the specified service provider.
-        /// </summary>
-        /// <param name="serviceProvider">The service provider.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        Task<int> ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken);
-
         /// <summary>
         /// Gets a value indicating whether this instance is default command.
         /// </summary>
@@ -40,5 +27,18 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// </summary>
         /// <value>The state of the application.</value>
         IApplicationState ApplicationState { get; }
+
+        /// <summary>
+        /// Executes the specified service provider.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        int Execute(IServiceProvider serviceProvider);
+
+        /// <summary>
+        /// Executes the specified service provider.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        Task<int> ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken);
     }
 }

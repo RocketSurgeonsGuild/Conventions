@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
@@ -12,51 +11,18 @@ using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
+// ReSharper disable CoVariantArrayConversion
+
 namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionHostBuilderTests : AutoFakeTest
     {
-        public ConventionHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
-        {
-        }
-
-        private class CCBuilder : ConventionHostBuilder<CCBuilder>
-        {
-            public CCBuilder(IConventionScanner scanner, IAssemblyCandidateFinder assemblyCandidateFinder, IAssemblyProvider assemblyProvider, DiagnosticSource diagnosticSource, IServiceProviderDictionary properties) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties)
-            {
-            }
-        }
-
-        class C : IServiceConvention
-        {
-            public void Register(IServiceConventionContext context)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        class D : IServiceConvention
-        {
-            public void Register(IServiceConventionContext context)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        class E : IServiceConvention
-        {
-            public void Register(IServiceConventionContext context)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         [Fact]
         public void ShouldConstruct()
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -76,14 +42,15 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
             var convention = A.Fake<IServiceConvention>();
 
             builder.AppendConvention(convention);
 
-            A.CallTo(() => builder.Scanner.AppendConvention(A<IConvention[]>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.AppendConvention(A<IConvention[]>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -91,7 +58,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
             var convention = A.Fake<IServiceConvention>(x => x.Named("convention"));
@@ -102,7 +69,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             builder.AppendConvention(conventions);
 
-            A.CallTo(() => builder.Scanner.AppendConvention(A<IConvention[]>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.AppendConvention(A<IConvention[]>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -110,7 +78,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
             var convention = A.Fake<IServiceConvention>(x => x.Named("convention"));
@@ -121,7 +89,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             builder.AppendConvention(conventions);
 
-            A.CallTo(() => builder.Scanner.AppendConvention(A<IEnumerable<IConvention>>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.AppendConvention(A<IEnumerable<IConvention>>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -129,7 +98,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -143,7 +112,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -157,13 +126,14 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
             builder.AppendConvention(new[] { typeof(C), typeof(E), typeof(D) }.AsEnumerable());
 
-            A.CallTo(() => builder.Scanner.AppendConvention(A<IEnumerable<Type>>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.AppendConvention(A<IEnumerable<Type>>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -171,7 +141,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -191,7 +161,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -203,7 +173,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             builder.AppendDelegate(conventions);
 
-            A.CallTo(() => builder.Scanner.AppendDelegate(A<IEnumerable<Delegate>>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.AppendDelegate(A<IEnumerable<Delegate>>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -211,14 +182,15 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
             var convention = A.Fake<IServiceConvention>();
 
             builder.PrependConvention(convention);
 
-            A.CallTo(() => builder.Scanner.PrependConvention(A<IConvention[]>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.PrependConvention(A<IConvention[]>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -226,7 +198,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -238,7 +210,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             builder.PrependConvention(conventions);
 
-            A.CallTo(() => builder.Scanner.PrependConvention(A<IConvention[]>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.PrependConvention(A<IConvention[]>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -246,7 +219,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -258,7 +231,8 @@ namespace Rocket.Surgery.Conventions.Tests
 
             builder.PrependConvention(conventions);
 
-            A.CallTo(() => builder.Scanner.PrependConvention(A<IEnumerable<IConvention>>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.PrependConvention(A<IEnumerable<IConvention>>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -266,7 +240,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -281,7 +255,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -296,14 +270,15 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
 
             builder.PrependConvention(new[] { typeof(C), typeof(E), typeof(D) }.AsEnumerable());
 
-            A.CallTo(() => builder.Scanner.PrependConvention(A<IEnumerable<Type>>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.PrependConvention(A<IEnumerable<Type>>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
         }
 
         [Fact]
@@ -311,7 +286,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -331,7 +306,7 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var properties = new ServiceProviderDictionary();
             AutoFake.Provide<IServiceProviderDictionary>(properties);
-            var diaglosticSource = new DiagnosticListener("DiagnosticSource");
+            using var diaglosticSource = new DiagnosticListener("DiagnosticSource");
             AutoFake.Provide<DiagnosticSource>(diaglosticSource);
             var builder = AutoFake.Resolve<CCBuilder>();
 
@@ -343,7 +318,36 @@ namespace Rocket.Surgery.Conventions.Tests
 
             builder.PrependDelegate(conventions);
 
-            A.CallTo(() => builder.Scanner.PrependDelegate(A<IEnumerable<Delegate>>.Ignored)).MustHaveHappened(1, Times.Exactly);
+            A.CallTo(() => builder.Scanner.PrependDelegate(A<IEnumerable<Delegate>>.Ignored))
+               .MustHaveHappened(1, Times.Exactly);
+        }
+
+        public ConventionHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
+
+        private class CCBuilder : ConventionHostBuilder<CCBuilder>
+        {
+            public CCBuilder(
+                IConventionScanner scanner,
+                IAssemblyCandidateFinder assemblyCandidateFinder,
+                IAssemblyProvider assemblyProvider,
+                DiagnosticSource diagnosticSource,
+                IServiceProviderDictionary properties
+            ) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, properties) { }
+        }
+
+        private class C : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context) => throw new NotImplementedException();
+        }
+
+        private class D : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context) => throw new NotImplementedException();
+        }
+
+        private class E : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context) => throw new NotImplementedException();
         }
     }
 }

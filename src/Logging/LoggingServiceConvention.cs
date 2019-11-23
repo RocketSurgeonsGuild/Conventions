@@ -1,7 +1,5 @@
-using System.Diagnostics;
-using Microsoft.Extensions.Configuration;
+using System;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Scanners;
@@ -24,12 +22,29 @@ namespace Rocket.Surgery.Extensions.Logging
         private readonly RocketLoggingOptions _options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LoggingServiceConvention"/> class.
+        /// Initializes a new instance of the <see cref="LoggingServiceConvention" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
         public LoggingServiceConvention(RocketLoggingOptions? options = null)
+            => _options = options ?? new RocketLoggingOptions();
+
+        /// <summary>
+        /// Registers the specified context.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        public void Register(ILoggingConventionContext context)
         {
-            _options = options ?? new RocketLoggingOptions();
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            context.AddConfiguration(context.Configuration.GetSection("Logging"));
+            var logLevel = _options.GetLogLevel(context);
+            if (logLevel.HasValue)
+            {
+                context.SetMinimumLevel(logLevel.Value);
+            }
         }
 
         /// <summary>
@@ -38,6 +53,11 @@ namespace Rocket.Surgery.Extensions.Logging
         /// <param name="context">The context.</param>
         public void Register(IServiceConventionContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             var loggingBuilder = new LoggingBuilder(
                 context.Get<IConventionScanner>(),
                 context.AssemblyProvider,
@@ -51,20 +71,6 @@ namespace Rocket.Surgery.Extensions.Logging
             context.Services.AddLogging();
 
             loggingBuilder.Build();
-        }
-
-        /// <summary>
-        /// Registers the specified context.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        public void Register(ILoggingConventionContext context)
-        {
-            context.AddConfiguration(context.Configuration.GetSection("Logging"));
-            var logLevel = _options.GetLogLevel(context);
-            if (logLevel.HasValue)
-            {
-                context.SetMinimumLevel(logLevel.Value);
-            }
         }
     }
 }

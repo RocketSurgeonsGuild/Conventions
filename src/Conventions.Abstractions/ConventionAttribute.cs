@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -13,21 +14,29 @@ namespace Rocket.Surgery.Conventions
     public sealed class ConventionAttribute : Attribute
     {
         /// <summary>
-        /// The convention type
-        /// </summary>
-        /// <value>The type.</value>
-        public Type Type { get; set; }
-
-        /// <summary>
         /// The type to be used with the convention type
         /// </summary>
         /// <param name="type">The type.</param>
         /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
-        public ConventionAttribute(Type type)
+        public ConventionAttribute([NotNull] Type type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             if (!typeof(IConvention).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
                 throw new NotSupportedException("Type must inherit from " + nameof(IConvention));
+            }
+
             Type = type;
         }
+
+        /// <summary>
+        /// The convention type
+        /// </summary>
+        /// <value>The type.</value>
+        public Type Type { get; }
     }
 }

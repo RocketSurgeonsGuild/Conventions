@@ -8,38 +8,13 @@ using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
+// ReSharper disable PossibleMultipleEnumeration
+// ReSharper disable CoVariantArrayConversion
+
 namespace Rocket.Surgery.Conventions.Tests
 {
     public class BasicConventionScannerTests : AutoFakeTest
     {
-        public BasicConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
-        {
-        }
-
-        class C : IServiceConvention
-        {
-            public void Register(IServiceConventionContext context)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        class D : IServiceConvention
-        {
-            public void Register(IServiceConventionContext context)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        class E : IServiceConvention
-        {
-            public void Register(IServiceConventionContext context)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         [Fact]
         public void ShouldConstruct()
         {
@@ -82,9 +57,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var provider = scanner.BuildProvider();
 
             provider.Get<IServiceConvention, ServiceConventionDelegate>()
-                .Select(x => x.Convention)
-                .Should()
-                .NotContain(convention);
+               .Select(x => x.Convention)
+               .Should()
+               .NotContain(convention);
         }
 
         [Fact]
@@ -97,7 +72,7 @@ namespace Rocket.Surgery.Conventions.Tests
 
             var result = scanner.BuildProvider().Get<IServiceConvention, ServiceConventionDelegate>();
             var delegateOrConventions = result as DelegateOrConvention[] ?? result.ToArray();
-            delegateOrConventions.Count().Should().Be(1);
+            delegateOrConventions.Length.Should().Be(1);
             delegateOrConventions.Select(x => x.Convention).Should().Contain(convention);
         }
 
@@ -320,6 +295,23 @@ namespace Rocket.Surgery.Conventions.Tests
 
             result.Should().HaveCount(3);
             result.Select(x => x.Delegate).Should().ContainInOrder(conventions);
+        }
+
+        public BasicConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
+
+        private class C : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context) => throw new NotImplementedException();
+        }
+
+        private class D : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context) => throw new NotImplementedException();
+        }
+
+        private class E : IServiceConvention
+        {
+            public void Register(IServiceConventionContext context) => throw new NotImplementedException();
         }
     }
 }

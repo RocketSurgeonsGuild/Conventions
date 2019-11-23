@@ -45,6 +45,7 @@ namespace Rocket.Surgery.Conventions.Scanners
                     _appendContributions.Where(z => _exceptContributions.All(x => x != z.GetType())).ToList()
                 );
             }
+
             return _provider;
         }
 
@@ -70,7 +71,9 @@ namespace Rocket.Surgery.Conventions.Scanners
         public IConventionScanner AppendConvention(IEnumerable<Type> conventions)
         {
             _provider = null;
-            _appendContributions.AddRange(conventions.Select(t => ActivatorUtilities.CreateInstance(_serviceProvider, t)).Cast<IConvention>());
+            _appendContributions.AddRange(
+                conventions.Select(t => ActivatorUtilities.CreateInstance(_serviceProvider, t)).Cast<IConvention>()
+            );
             return this;
         }
 
@@ -96,7 +99,9 @@ namespace Rocket.Surgery.Conventions.Scanners
         public IConventionScanner AppendConvention(params Type[] conventions)
         {
             _provider = null;
-            _appendContributions.AddRange(conventions.Select(t => ActivatorUtilities.CreateInstance(_serviceProvider, t)).Cast<IConvention>());
+            _appendContributions.AddRange(
+                conventions.Select(t => ActivatorUtilities.CreateInstance(_serviceProvider, t)).Cast<IConvention>()
+            );
             return this;
         }
 
@@ -106,7 +111,8 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <typeparam name="T"></typeparam>
         /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner AppendConvention<T>() where T : IConvention
+        public IConventionScanner AppendConvention<T>()
+            where T : IConvention
         {
             _provider = null;
             _appendContributions.Add(ActivatorUtilities.CreateInstance<T>(_serviceProvider));
@@ -135,7 +141,9 @@ namespace Rocket.Surgery.Conventions.Scanners
         public IConventionScanner PrependConvention(IEnumerable<Type> conventions)
         {
             _provider = null;
-            _prependContributions.AddRange(conventions.Select(t => ActivatorUtilities.CreateInstance(_serviceProvider, t)).Cast<IConvention>());
+            _prependContributions.AddRange(
+                conventions.Select(t => ActivatorUtilities.CreateInstance(_serviceProvider, t)).Cast<IConvention>()
+            );
             return this;
         }
 
@@ -161,7 +169,9 @@ namespace Rocket.Surgery.Conventions.Scanners
         public IConventionScanner PrependConvention(params Type[] conventions)
         {
             _provider = null;
-            _prependContributions.AddRange(conventions.Select(t => ActivatorUtilities.CreateInstance(_serviceProvider, t)).Cast<IConvention>());
+            _prependContributions.AddRange(
+                conventions.Select(t => ActivatorUtilities.CreateInstance(_serviceProvider, t)).Cast<IConvention>()
+            );
             return this;
         }
 
@@ -171,7 +181,8 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <typeparam name="T"></typeparam>
         /// <returns>IConventionScanner.</returns>
         /// <inheritdoc />
-        public IConventionScanner PrependConvention<T>() where T : IConvention
+        public IConventionScanner PrependConvention<T>()
+            where T : IConvention
         {
             _provider = null;
             _prependContributions.Add(ActivatorUtilities.CreateInstance<T>(_serviceProvider));

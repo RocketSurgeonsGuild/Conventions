@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    ///  IConventionContainer
+    /// IConventionContainer
     /// </summary>
     /// <typeparam name="TBuilder">The type of the t builder.</typeparam>
     /// <typeparam name="TConvention">The type of the t convention.</typeparam>
@@ -19,6 +20,7 @@ namespace Rocket.Surgery.Conventions
         /// Gets the scanner.
         /// </summary>
         /// <value>The scanner.</value>
+        [NotNull]
         IConventionScanner Scanner { get; }
 
         /// <summary>
@@ -26,7 +28,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>TBuilder.</returns>
-
         TBuilder AppendConvention(params TConvention[] conventions);
 
         /// <summary>
@@ -34,22 +35,21 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns>TBuilder.</returns>
-
-        TBuilder AppendConvention(IEnumerable<TConvention> conventions);
+        TBuilder AppendConvention([NotNull] IEnumerable<TConvention> conventions);
 
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TBuilder.</returns>
-        TBuilder AppendConvention<T>() where T : TConvention;
+        TBuilder AppendConvention<T>()
+            where T : TConvention;
 
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
         /// <param name="conventions">The additional conventions.</param>
         /// <returns>TBuilder.</returns>
-
         TBuilder PrependConvention(params TConvention[] conventions);
 
         /// <summary>
@@ -57,15 +57,15 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns>TBuilder.</returns>
-
-        TBuilder PrependConvention(IEnumerable<TConvention> conventions);
+        TBuilder PrependConvention([NotNull] IEnumerable<TConvention> conventions);
 
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TBuilder.</returns>
-        TBuilder PrependConvention<T>() where T : TConvention;
+        TBuilder PrependConvention<T>()
+            where T : TConvention;
 
 
         /// <summary>
@@ -73,7 +73,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="delegates">The additional delegates.</param>
         /// <returns>TBuilder.</returns>
-
         TBuilder PrependDelegate(params TDelegate[] delegates);
 
         /// <summary>
@@ -81,8 +80,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="delegates">The conventions.</param>
         /// <returns>TBuilder.</returns>
-
-        TBuilder PrependDelegate(IEnumerable<TDelegate> delegates);
+        TBuilder PrependDelegate([NotNull] IEnumerable<TDelegate> delegates);
 
 
         /// <summary>
@@ -90,7 +88,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="delegates">The additional delegates.</param>
         /// <returns>TBuilder.</returns>
-
         TBuilder AppendDelegate(params TDelegate[] delegates);
 
         /// <summary>
@@ -98,7 +95,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="delegates">The conventions.</param>
         /// <returns>TBuilder.</returns>
-
-        TBuilder AppendDelegate(IEnumerable<TDelegate> delegates);
+        TBuilder AppendDelegate([NotNull] IEnumerable<TDelegate> delegates);
     }
 }

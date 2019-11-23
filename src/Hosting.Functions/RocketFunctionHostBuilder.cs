@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,9 +9,7 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
@@ -31,114 +28,9 @@ namespace Rocket.Surgery.Hosting.Functions
     /// </summary>
     /// <seealso cref="ConventionHostBuilder{IRocketFunctionHostBuilder}" />
     /// <seealso cref="IRocketFunctionHostBuilder" />
-    class RocketFunctionHostBuilder : ConventionHostBuilder<IRocketFunctionHostBuilder>, IRocketFunctionHostBuilder
+    internal class RocketFunctionHostBuilder : ConventionHostBuilder<IRocketFunctionHostBuilder>,
+                                               IRocketFunctionHostBuilder
     {
-        private readonly object _startupInstance;
-        private readonly IRocketEnvironment _environment;
-        private readonly DiagnosticLogger _logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RocketFunctionHostBuilder"/> class.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="functionsAssembly">The functions assembly.</param>
-        /// <param name="startupInstance">The startup instance.</param>
-        /// <param name="environment">The environment.</param>
-        /// <param name="scanner">The scanner.</param>
-        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        /// <param name="assemblyProvider">The assembly provider.</param>
-        /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <param name="serviceProviderDictionary">The service provider dictionary of values</param>
-        public RocketFunctionHostBuilder(
-            IWebJobsBuilder builder,
-            Assembly functionsAssembly,
-            object startupInstance,
-            IRocketEnvironment environment,
-            IConventionScanner scanner,
-            IAssemblyCandidateFinder assemblyCandidateFinder,
-            IAssemblyProvider assemblyProvider,
-            DiagnosticSource diagnosticSource,
-            IServiceProviderDictionary serviceProviderDictionary) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProviderDictionary)
-        {
-            _startupInstance = startupInstance;
-            _environment = environment ?? CreateEnvironment();
-            _logger = new DiagnosticLogger(DiagnosticSource);
-            Builder = builder;
-            FunctionsAssembly = functionsAssembly;
-        }
-
-        /// <summary>
-        /// Gets the builder.
-        /// </summary>
-        /// <value>The builder.</value>
-        public IWebJobsBuilder Builder { get; }
-
-        /// <summary>
-        /// Gets the functions assembly.
-        /// </summary>
-        /// <value>The functions assembly.</value>
-        public Assembly FunctionsAssembly { get; }
-
-        /// <summary>
-        /// Withes the specified scanner.
-        /// </summary>
-        /// <param name="scanner">The scanner.</param>
-        /// <returns>RocketFunctionHostBuilder.</returns>
-        internal RocketFunctionHostBuilder With(IConventionScanner scanner)
-        {
-            return new RocketFunctionHostBuilder(Builder, FunctionsAssembly, _startupInstance, _environment, scanner, AssemblyCandidateFinder, AssemblyProvider, DiagnosticSource, ServiceProperties);
-        }
-
-        /// <summary>
-        /// Withes the specified assemby.
-        /// </summary>
-        /// <param name="assemby">The assemby.</param>
-        /// <returns>RocketFunctionHostBuilder.</returns>
-        internal RocketFunctionHostBuilder With(Assembly assemby)
-        {
-            return new RocketFunctionHostBuilder(Builder, assemby, _startupInstance, _environment, Scanner, AssemblyCandidateFinder, AssemblyProvider, DiagnosticSource, ServiceProperties);
-        }
-
-        /// <summary>
-        /// Withes the specified assembly candidate finder.
-        /// </summary>
-        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        /// <returns>RocketFunctionHostBuilder.</returns>
-        internal RocketFunctionHostBuilder With(IAssemblyCandidateFinder assemblyCandidateFinder)
-        {
-            return new RocketFunctionHostBuilder(Builder, FunctionsAssembly, _startupInstance, _environment, Scanner, assemblyCandidateFinder, AssemblyProvider, DiagnosticSource, ServiceProperties);
-        }
-
-        /// <summary>
-        /// Withes the specified assembly provider.
-        /// </summary>
-        /// <param name="assemblyProvider">The assembly provider.</param>
-        /// <returns>RocketFunctionHostBuilder.</returns>
-        internal RocketFunctionHostBuilder With(IAssemblyProvider assemblyProvider)
-        {
-            return new RocketFunctionHostBuilder(Builder, FunctionsAssembly, _startupInstance, _environment, Scanner, AssemblyCandidateFinder, assemblyProvider, DiagnosticSource, ServiceProperties);
-        }
-
-        /// <summary>
-        /// Withes the specified diagnostic source.
-        /// </summary>
-        /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <returns>RocketFunctionHostBuilder.</returns>
-        internal RocketFunctionHostBuilder With(DiagnosticSource diagnosticSource)
-        {
-            return new RocketFunctionHostBuilder(Builder, FunctionsAssembly, _startupInstance, _environment, Scanner, AssemblyCandidateFinder, AssemblyProvider, diagnosticSource, ServiceProperties);
-        }
-
-        /// <summary>
-        /// Withes the specified environment.
-        /// </summary>
-        /// <param name="environment">The environment.</param>
-        /// <returns>RocketFunctionHostBuilder.</returns>
-        internal RocketFunctionHostBuilder With(IRocketEnvironment environment)
-        {
-            return new RocketFunctionHostBuilder(Builder, FunctionsAssembly, _startupInstance, environment, Scanner, AssemblyCandidateFinder, AssemblyProvider, DiagnosticSource, ServiceProperties);
-        }
-
         private static IRocketEnvironment CreateEnvironment()
         {
             var environmentNames = new[]
@@ -158,66 +50,219 @@ namespace Rocket.Surgery.Hosting.Functions
             return new RocketEnvironment(
                 environmentNames.First(x => !string.IsNullOrEmpty(x)),
                 applicationNames.First(x => !string.IsNullOrEmpty(x)),
-                contentRootPath: null,
-                contentRootFileProvider: null
+                null,
+                null
             );
         }
+
+        private readonly object _startupInstance;
+        private readonly IRocketEnvironment _environment;
+        private readonly DiagnosticLogger _logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RocketFunctionHostBuilder" /> class.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="functionsAssembly">The functions assembly.</param>
+        /// <param name="startupInstance">The startup instance.</param>
+        /// <param name="environment">The environment.</param>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
+        /// <param name="assemblyProvider">The assembly provider.</param>
+        /// <param name="diagnosticSource">The diagnostic source.</param>
+        /// <param name="serviceProviderDictionary">The service provider dictionary of values</param>
+        public RocketFunctionHostBuilder(
+            IWebJobsBuilder builder,
+            Assembly functionsAssembly,
+            object startupInstance,
+            IRocketEnvironment environment,
+            IConventionScanner scanner,
+            IAssemblyCandidateFinder assemblyCandidateFinder,
+            IAssemblyProvider assemblyProvider,
+            DiagnosticSource diagnosticSource,
+            IServiceProviderDictionary serviceProviderDictionary
+        ) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProviderDictionary)
+        {
+            _startupInstance = startupInstance;
+            _environment = environment ?? CreateEnvironment();
+            _logger = new DiagnosticLogger(DiagnosticSource);
+            Builder = builder;
+            FunctionsAssembly = functionsAssembly;
+        }
+
+        /// <summary>
+        /// Withes the specified scanner.
+        /// </summary>
+        /// <param name="scanner">The scanner.</param>
+        /// <returns>RocketFunctionHostBuilder.</returns>
+        internal RocketFunctionHostBuilder With(IConventionScanner scanner) => new RocketFunctionHostBuilder(
+            Builder,
+            FunctionsAssembly,
+            _startupInstance,
+            _environment,
+            scanner,
+            AssemblyCandidateFinder,
+            AssemblyProvider,
+            DiagnosticSource,
+            ServiceProperties
+        );
+
+        /// <summary>
+        /// Withes the specified assemby.
+        /// </summary>
+        /// <param name="assemby">The assemby.</param>
+        /// <returns>RocketFunctionHostBuilder.</returns>
+        internal RocketFunctionHostBuilder With(Assembly assemby) => new RocketFunctionHostBuilder(
+            Builder,
+            assemby,
+            _startupInstance,
+            _environment,
+            Scanner,
+            AssemblyCandidateFinder,
+            AssemblyProvider,
+            DiagnosticSource,
+            ServiceProperties
+        );
+
+        /// <summary>
+        /// Withes the specified assembly candidate finder.
+        /// </summary>
+        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
+        /// <returns>RocketFunctionHostBuilder.</returns>
+        internal RocketFunctionHostBuilder With(IAssemblyCandidateFinder assemblyCandidateFinder)
+            => new RocketFunctionHostBuilder(
+                Builder,
+                FunctionsAssembly,
+                _startupInstance,
+                _environment,
+                Scanner,
+                assemblyCandidateFinder,
+                AssemblyProvider,
+                DiagnosticSource,
+                ServiceProperties
+            );
+
+        /// <summary>
+        /// Withes the specified assembly provider.
+        /// </summary>
+        /// <param name="assemblyProvider">The assembly provider.</param>
+        /// <returns>RocketFunctionHostBuilder.</returns>
+        internal RocketFunctionHostBuilder With(IAssemblyProvider assemblyProvider) => new RocketFunctionHostBuilder(
+            Builder,
+            FunctionsAssembly,
+            _startupInstance,
+            _environment,
+            Scanner,
+            AssemblyCandidateFinder,
+            assemblyProvider,
+            DiagnosticSource,
+            ServiceProperties
+        );
+
+        /// <summary>
+        /// Withes the specified diagnostic source.
+        /// </summary>
+        /// <param name="diagnosticSource">The diagnostic source.</param>
+        /// <returns>RocketFunctionHostBuilder.</returns>
+        internal RocketFunctionHostBuilder With(DiagnosticSource diagnosticSource) => new RocketFunctionHostBuilder(
+            Builder,
+            FunctionsAssembly,
+            _startupInstance,
+            _environment,
+            Scanner,
+            AssemblyCandidateFinder,
+            AssemblyProvider,
+            diagnosticSource,
+            ServiceProperties
+        );
+
+        /// <summary>
+        /// Withes the specified environment.
+        /// </summary>
+        /// <param name="environment">The environment.</param>
+        /// <returns>RocketFunctionHostBuilder.</returns>
+        internal RocketFunctionHostBuilder With(IRocketEnvironment environment) => new RocketFunctionHostBuilder(
+            Builder,
+            FunctionsAssembly,
+            _startupInstance,
+            environment,
+            Scanner,
+            AssemblyCandidateFinder,
+            AssemblyProvider,
+            DiagnosticSource,
+            ServiceProperties
+        );
 
         private IConfiguration SetupConfiguration()
         {
             var currentDirectory = Environment.GetEnvironmentVariable("AzureWebJobsScriptRoot") ?? "/home/site/wwwroot";
-            bool isLocal = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID")) && !Directory.Exists(currentDirectory);
+            var isLocal = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID")) &&
+                !Directory.Exists(currentDirectory);
             if (isLocal)
             {
                 currentDirectory = Environment.CurrentDirectory;
             }
 
             var existingConfiguration = Builder.Services.First(z => z.ServiceType == typeof(IConfiguration))
-                .ImplementationInstance as IConfiguration;
+               .ImplementationInstance as IConfiguration;
 
             var configurationOptions = this.GetOrAdd(() => new ConfigurationOptions());
 
             var configurationBuilder = new MsftConfigurationBuilder()
-                .SetBasePath(currentDirectory)
-                .AddConfiguration(existingConfiguration)
-                .Apply(configurationOptions.ApplicationConfiguration)
-                .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
-                .Apply(configurationOptions.EnvironmentConfiguration, "local");
+               .SetBasePath(currentDirectory)
+               .AddConfiguration(existingConfiguration)
+               .Apply(configurationOptions.ApplicationConfiguration)
+               .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
+               .Apply(configurationOptions.EnvironmentConfiguration, "local");
 
             if (_environment.IsDevelopment())
             {
-                configurationBuilder.AddUserSecrets(FunctionsAssembly, optional: true);
+                configurationBuilder.AddUserSecrets(FunctionsAssembly, true);
             }
 
             configurationBuilder
-                .AddEnvironmentVariables("RSG_")
-                .AddEnvironmentVariables();
+               .AddEnvironmentVariables("RSG_")
+               .AddEnvironmentVariables();
 
             IConfigurationSource? source = null;
             foreach (var item in configurationBuilder.Sources.Reverse())
             {
-                if ((item is EnvironmentVariablesConfigurationSource env && (string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase))) || (item is JsonConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase)))
+                if (( item is EnvironmentVariablesConfigurationSource env && ( string.IsNullOrWhiteSpace(env.Prefix) ||
+                        string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) ) ||
+                    ( item is JsonConfigurationSource a && string.Equals(
+                        a.Path,
+                        "secrets.json",
+                        StringComparison.OrdinalIgnoreCase
+                    ) ))
                 {
                     continue;
                 }
+
                 source = item;
                 break;
             }
 
-            var index = source == null ? configurationBuilder.Sources.Count - 1 : configurationBuilder.Sources.IndexOf(source);
+            var index = source == null
+                ? configurationBuilder.Sources.Count - 1
+                : configurationBuilder.Sources.IndexOf(source);
 
             var cb = new ConfigurationBuilder(
                 Scanner,
                 _environment,
-                new MsftConfigurationBuilder().AddConfiguration(existingConfiguration!).AddConfiguration(configurationBuilder.Build()).Build(),
+                new MsftConfigurationBuilder().AddConfiguration(existingConfiguration!)
+                   .AddConfiguration(configurationBuilder.Build()).Build(),
                 configurationBuilder,
                 _logger,
-                Properties);
+                Properties
+            );
 
-            configurationBuilder.Sources.Insert(index + 1, new ChainedConfigurationSource()
-            {
-                Configuration = cb.Build()
-            });
+            configurationBuilder.Sources.Insert(
+                index + 1,
+                new ChainedConfigurationSource
+                {
+                    Configuration = cb.Build()
+                }
+            );
 
             var newConfig = configurationBuilder.Build();
 
@@ -235,9 +280,13 @@ namespace Rocket.Surgery.Hosting.Functions
                 existingConfiguration,
                 _environment,
                 _logger,
-                Properties);
+                Properties
+            );
 
-            Composer.Register<IServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(Scanner.BuildProvider(), builder);
+            Composer.Register<IServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(
+                Scanner.BuildProvider(),
+                builder
+            );
         }
 
         private void SetupWebJobs(IConfiguration existingConfiguration)
@@ -250,7 +299,8 @@ namespace Rocket.Surgery.Hosting.Functions
                 existingConfiguration,
                 _environment,
                 _logger,
-                Properties);
+                Properties
+            );
 
             builder.Build();
         }
@@ -273,5 +323,17 @@ namespace Rocket.Surgery.Hosting.Functions
             Builder.Services.RemoveAll<IHostedService>();
             Builder.Services.Add(existingHostedServices);
         }
+
+        /// <summary>
+        /// Gets the builder.
+        /// </summary>
+        /// <value>The builder.</value>
+        public IWebJobsBuilder Builder { get; }
+
+        /// <summary>
+        /// Gets the functions assembly.
+        /// </summary>
+        /// <value>The functions assembly.</value>
+        public Assembly FunctionsAssembly { get; }
     }
 }

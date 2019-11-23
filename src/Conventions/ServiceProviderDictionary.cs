@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+
+#pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Conventions
 {
-
     /// <summary>
-    ///  ServiceProviderDictionary.
+    /// ServiceProviderDictionary.
     /// Implements the <see cref="IServiceProviderDictionary" />
     /// </summary>
     /// <seealso cref="IServiceProviderDictionary" />
@@ -17,24 +17,19 @@ namespace Rocket.Surgery.Conventions
         private readonly HashSet<Type> _servicesTypes = new HashSet<Type>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceProviderDictionary"/> class.
+        /// Initializes a new instance of the <see cref="ServiceProviderDictionary" /> class.
         /// </summary>
         /// <param name="values">The values.</param>
         public ServiceProviderDictionary(IDictionary<object, object?> values)
-        {
-            _values = values ?? new Dictionary<object, object?>();
-        }
+            => _values = values ?? new Dictionary<object, object?>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceProviderDictionary"/> class.
+        /// Initializes a new instance of the <see cref="ServiceProviderDictionary" /> class.
         /// </summary>
-        public ServiceProviderDictionary()
-        {
-            _values = new Dictionary<object, object?>();
-        }
+        public ServiceProviderDictionary() => _values = new Dictionary<object, object?>();
 
         /// <summary>
-        /// Gets or sets the <see cref="object"/> with the specified key.
+        /// Gets or sets the <see cref="object" /> with the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns>System.Object.</returns>
@@ -165,6 +160,7 @@ namespace Rocket.Surgery.Conventions
                 _servicesTypes.Remove(t);
             }
 
+            // ReSharper disable once AssignNullToNotNullAttribute
             return _values.Remove(item);
         }
 

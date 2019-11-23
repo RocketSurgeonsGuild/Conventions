@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Rocket.Surgery.Conventions.Scanners;
 
+#pragma warning disable IDE0058 // Expression value is never used
+
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
@@ -13,13 +15,15 @@ namespace Rocket.Surgery.Conventions
     /// <typeparam name="TConvention">The type of the t convention.</typeparam>
     /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
     /// <seealso cref="IConventionContainer{TBuilder, TConvention, TDelegate}" />
-    public abstract class ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : IConventionContainer<TBuilder, TConvention, TDelegate>
+    public abstract class
+        ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : IConventionContainer<TBuilder, TConvention,
+            TDelegate>
         where TBuilder : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention
         where TDelegate : Delegate
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConventionContainerBuilder{TBuilder, TConvention, TDelegate}"/> class.
+        /// Initializes a new instance of the <see cref="ConventionContainerBuilder{TBuilder, TConvention, TDelegate}" /> class.
         /// </summary>
         /// <param name="scanner">The scanner.</param>
         /// <param name="properties">The properties.</param>
@@ -30,13 +34,16 @@ namespace Rocket.Surgery.Conventions
         /// </exception>
         protected ConventionContainerBuilder(
             IConventionScanner scanner,
-            IDictionary<object, object?> properties)
+            IDictionary<object, object?> properties
+        )
         {
             Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
             Properties = properties ?? throw new ArgumentNullException(nameof(properties));
 
-            if (!Properties.TryGetValue(typeof(IConventionScanner), out _))
+            if (!Properties.TryGetValue(typeof(IConventionScanner), out var _))
+            {
                 Properties[typeof(IConventionScanner)] = Scanner;
+            }
         }
 
         /// <summary>
@@ -89,7 +96,8 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TBuilder.</returns>
-        public TBuilder AppendConvention<T>() where T : TConvention
+        public TBuilder AppendConvention<T>()
+            where T : TConvention
         {
             Scanner.AppendConvention<T>();
             return (TBuilder)(object)this;
@@ -144,7 +152,8 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>TBuilder.</returns>
-        public TBuilder PrependConvention<T>() where T : TConvention
+        public TBuilder PrependConvention<T>()
+            where T : TConvention
         {
             Scanner.PrependConvention<T>();
             return (TBuilder)(object)this;

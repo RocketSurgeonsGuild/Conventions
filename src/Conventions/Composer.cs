@@ -3,9 +3,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
+
+#pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Conventions
 {
@@ -19,12 +21,29 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="scanner">The provider.</param>
         /// <param name="context">The context.</param>
-        public static void Register<TContext, TContribution, TDelegate>(IConventionScanner scanner, IConventionContext context)
+        public static void Register<TContext, TContribution, TDelegate>(
+            [NotNull] IConventionScanner scanner,
+            [NotNull] IConventionContext context
+        )
             where TContext : IConventionContext
             where TContribution : IConvention<TContext>
             where TDelegate : Delegate
         {
-            Register(context, scanner.BuildProvider().Get<TContribution, TDelegate>(context.GetHostType()), new[] { typeof(TContribution), typeof(TDelegate) });
+            if (scanner == null)
+            {
+                throw new ArgumentNullException(nameof(scanner));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            Register(
+                context,
+                scanner.BuildProvider().Get<TContribution, TDelegate>(context.GetHostType()),
+                new[] { typeof(TContribution), typeof(TDelegate) }
+            );
         }
 
         /// <summary>
@@ -32,12 +51,29 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="provider">The provider.</param>
         /// <param name="context">The context.</param>
-        public static void Register<TContext, TContribution, TDelegate>(IConventionProvider provider, IConventionContext context)
+        public static void Register<TContext, TContribution, TDelegate>(
+            [NotNull] IConventionProvider provider,
+            [NotNull] IConventionContext context
+        )
             where TContext : IConventionContext
             where TContribution : IConvention<TContext>
             where TDelegate : Delegate
         {
-            Register(context, provider.Get<TContribution, TDelegate>(context.GetHostType()), new[] { typeof(TContribution), typeof(TDelegate) });
+            if (provider == null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            Register(
+                context,
+                provider.Get<TContribution, TDelegate>(context.GetHostType()),
+                new[] { typeof(TContribution), typeof(TDelegate) }
+            );
         }
 
         /// <summary>
@@ -46,8 +82,22 @@ namespace Rocket.Surgery.Conventions
         /// <param name="scanner">The scanner.</param>
         /// <param name="context">The context.</param>
         /// <param name="types">The types.</param>
-        public static void Register(IConventionScanner scanner, IConventionContext context, IEnumerable<Type> types)
+        public static void Register(
+            [NotNull] IConventionScanner scanner,
+            [NotNull] IConventionContext context,
+            IEnumerable<Type> types
+        )
         {
+            if (scanner == null)
+            {
+                throw new ArgumentNullException(nameof(scanner));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             Register(context, scanner.BuildProvider().GetAll(context.GetHostType()), types);
         }
 
@@ -57,8 +107,22 @@ namespace Rocket.Surgery.Conventions
         /// <param name="provider">The provider.</param>
         /// <param name="context">The context.</param>
         /// <param name="types">The types.</param>
-        public static void Register(IConventionProvider provider, IConventionContext context, IEnumerable<Type> types)
+        public static void Register(
+            [NotNull] IConventionProvider provider,
+            [NotNull] IConventionContext context,
+            IEnumerable<Type> types
+        )
         {
+            if (provider == null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             Register(context, provider.GetAll(context.GetHostType()), types);
         }
 
@@ -68,8 +132,22 @@ namespace Rocket.Surgery.Conventions
         /// <param name="scanner">The scanner.</param>
         /// <param name="context">The context.</param>
         /// <param name="types">The types.</param>
-        public static void Register(IConventionScanner scanner, IConventionContext context, params Type[] types)
+        public static void Register(
+            [NotNull] IConventionScanner scanner,
+            [NotNull] IConventionContext context,
+            params Type[] types
+        )
         {
+            if (scanner == null)
+            {
+                throw new ArgumentNullException(nameof(scanner));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             Register(context, scanner.BuildProvider().GetAll(context.GetHostType()), types);
         }
 
@@ -79,8 +157,22 @@ namespace Rocket.Surgery.Conventions
         /// <param name="provider">The provider.</param>
         /// <param name="context">The context.</param>
         /// <param name="types">The types.</param>
-        public static void Register(IConventionProvider provider, IConventionContext context, params Type[] types)
+        public static void Register(
+            [NotNull] IConventionProvider provider,
+            [NotNull] IConventionContext context,
+            params Type[] types
+        )
         {
+            if (provider == null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             Register(context, provider.GetAll(context.GetHostType()), types);
         }
 
@@ -90,10 +182,17 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context">The context.</param>
         /// <param name="items">The items.</param>
         /// <param name="types">The types.</param>
-        private static void Register(IConventionContext context, IEnumerable<DelegateOrConvention> items, IEnumerable<Type> types)
+        private static void Register(
+            IConventionContext context,
+            IEnumerable<DelegateOrConvention> items,
+            IEnumerable<Type> types
+        )
         {
             var enumerable = types as Type[] ?? types.ToArray();
-            if (enumerable.Length == 0) return;
+            if (enumerable.Length == 0)
+            {
+                return;
+            }
 
             var delegateTypes = enumerable.Where(typeof(Delegate).IsAssignableFrom).ToArray();
             var conventionTypes = enumerable.Except(delegateTypes).ToArray();
@@ -117,6 +216,7 @@ namespace Rocket.Surgery.Conventions
                                     enumerable
                                 );
                             }
+
                             continue;
                         }
 
@@ -129,6 +229,7 @@ namespace Rocket.Surgery.Conventions
                                 conventionType.Assembly.GetName().Name
                             );
                         }
+
                         Register(convention, context);
                         continue;
                     }
@@ -141,11 +242,13 @@ namespace Rocket.Surgery.Conventions
                         {
                             if (context.Logger.IsEnabled(LogLevel.Debug))
                             {
-                                context.Logger.LogDebug("Could not execute Delegate {TypeName} :: {@Types}",
+                                context.Logger.LogDebug(
+                                    "Could not execute Delegate {TypeName} :: {@Types}",
                                     @delegate.GetType().FullName,
                                     enumerable
                                 );
                             }
+
                             continue;
                         }
 
@@ -156,6 +259,7 @@ namespace Rocket.Surgery.Conventions
                                 @delegate.GetType().FullName
                             );
                         }
+
                         @delegate.DynamicInvoke(context);
                         continue;
                     }
@@ -165,13 +269,29 @@ namespace Rocket.Surgery.Conventions
                 catch (Exception e)
                 {
                     if (convention != null)
-                        context.Logger.LogError(0, e, "Error invoking Convention {Convention}", convention.GetType().FullName);
+                    {
+                        context.Logger.LogError(
+                            0,
+                            e,
+                            "Error invoking Convention {Convention}",
+                            convention.GetType().FullName
+                        );
+                    }
                     else if (@delegate != null)
+                    {
                         context.Logger.LogError(0, e, "Error invoking Delegate at index {Index}", index);
+                    }
                     else
-                        context.Logger.LogError("Unknown error invoking Convention or Delegate at index {Index}", index);
+                    {
+                        context.Logger.LogError(
+                            "Unknown error invoking Convention or Delegate at index {Index}",
+                            index
+                        );
+                    }
+
                     throw;
                 }
+
                 index++;
             }
 
@@ -181,7 +301,8 @@ namespace Rocket.Surgery.Conventions
             }
         }
 
-        private static readonly ConcurrentDictionary<Type, MethodInfo> _registerMethodCache = new ConcurrentDictionary<Type, MethodInfo>();
+        private static readonly ConcurrentDictionary<Type, MethodInfo> _registerMethodCache =
+            new ConcurrentDictionary<Type, MethodInfo>();
 
         private static readonly MethodInfo RegisterGenericMethod =
             typeof(Composer).GetTypeInfo().GetDeclaredMethod(nameof(RegisterGeneric))!;
@@ -189,14 +310,14 @@ namespace Rocket.Surgery.Conventions
         private static void Register(IConvention convention, IConventionContext context)
         {
             var interfaces = convention.GetType().GetTypeInfo().ImplementedInterfaces
-                   .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConvention<>))
-                   .Select(x => x.GetTypeInfo().GenericTypeArguments[0]);
+               .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConvention<>))
+               .Select(x => x.GetTypeInfo().GenericTypeArguments[0]);
 
             var contextTypes = context.GetType().GetTypeInfo().ImplementedInterfaces
-                .Where(x => typeof(IConventionContext).IsAssignableFrom(x));
+               .Where(x => typeof(IConventionContext).IsAssignableFrom(x));
 
             var typesToRegister = interfaces
-                .Join(contextTypes, x => x, x => x, (_, contextType) => contextType);
+               .Join(contextTypes, x => x, x => x, (_, contextType) => contextType);
 
             foreach (var item in typesToRegister)
             {

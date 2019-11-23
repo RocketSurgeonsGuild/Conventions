@@ -1,0 +1,18 @@
+Rocket.Surgery.Conventions.LoggingHostBuilderExtensions
+Rocket.Surgery.Extensions.Logging.ILoggingBuilder
+Rocket.Surgery.Extensions.Logging.ILoggingConvention
+Rocket.Surgery.Extensions.Logging.ILoggingConventionContext
+Rocket.Surgery.Extensions.Logging.ILoggingConventionContext.AssemblyCandidateFinder.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder
+Rocket.Surgery.Extensions.Logging.ILoggingConventionContext.AssemblyProvider.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyProvider
+Rocket.Surgery.Extensions.Logging.ILoggingConventionContext.Configuration.get -> Microsoft.Extensions.Configuration.IConfiguration
+Rocket.Surgery.Extensions.Logging.ILoggingConventionContext.Environment.get -> Rocket.Surgery.Conventions.IRocketEnvironment
+Rocket.Surgery.Extensions.Logging.LoggingAbstractionsExtensions
+Rocket.Surgery.Extensions.Logging.LoggingConventionDelegate
+Rocket.Surgery.Extensions.Logging.RocketLoggingOptions
+Rocket.Surgery.Extensions.Logging.RocketLoggingOptions.GetLogLevel.get -> System.Func<Rocket.Surgery.Extensions.Logging.ILoggingConventionContext, Microsoft.Extensions.Logging.LogLevel?>
+Rocket.Surgery.Extensions.Logging.RocketLoggingOptions.GetLogLevel.set -> void
+Rocket.Surgery.Extensions.Logging.RocketLoggingOptions.RocketLoggingOptions() -> void
+static Rocket.Surgery.Conventions.LoggingHostBuilderExtensions.ConfigureLogging(this Rocket.Surgery.Conventions.IConventionHostBuilder container, Rocket.Surgery.Extensions.Logging.LoggingConventionDelegate delegate) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+static Rocket.Surgery.Extensions.Logging.LoggingAbstractionsExtensions.TimeDebug(this Microsoft.Extensions.Logging.ILogger logger, string message, params object[] args) -> System.IDisposable
+static Rocket.Surgery.Extensions.Logging.LoggingAbstractionsExtensions.TimeInformation(this Microsoft.Extensions.Logging.ILogger logger, string message, params object[] args) -> System.IDisposable
+static Rocket.Surgery.Extensions.Logging.LoggingAbstractionsExtensions.TimeTrace(this Microsoft.Extensions.Logging.ILogger logger, string message, params object[] args) -> System.IDisposable
