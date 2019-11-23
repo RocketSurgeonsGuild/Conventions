@@ -70,10 +70,10 @@ namespace Rocket.Surgery.Conventions
             [NotNull] string environmentName
         )
         {
-            if (hostEnvironment == null)
-            {
-                throw new ArgumentNullException(nameof(hostEnvironment));
-            }
+            // if (hostEnvironment == null)
+            // {
+            //     throw new ArgumentNullException(nameof(hostEnvironment));
+            // }
 
             return string.Equals(
                 hostEnvironment.EnvironmentName,
