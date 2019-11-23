@@ -108,10 +108,9 @@ namespace Rocket.Surgery.Conventions.Tests
         {
 #pragma warning disable CS0618 // Type or member is obsolete
             var fakeEnvironment = A.Fake<IHostingEnvironment>();
-#pragma warning restore CS0618 // Type or member is obsolete
             A.CallTo(() => fakeEnvironment.EnvironmentName).Returns(envName);
             var env = fakeEnvironment.Convert();
-
+#pragma warning restore CS0618 // Type or member is obsolete
             env.EnvironmentName.Should().Be(envName);
         }
 

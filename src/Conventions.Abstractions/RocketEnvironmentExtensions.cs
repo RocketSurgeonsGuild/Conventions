@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Hosting;
+#pragma warning disable RS0017
 
 namespace Rocket.Surgery.Conventions
 {
@@ -86,10 +87,11 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <returns>IRocketEnvironment.</returns>
-#pragma warning disable 618
+#if NETCOREAPP3_0 || NETSTANDARD2_1
+        [Obsolete("IHostingEnvironment is obsolete and will be removed in a future version. The recommended alternative is Microsoft.Extensions.Hosting.IHostEnvironment.", error: false)]
+#endif
         [NotNull]
         public static IRocketEnvironment Convert([NotNull] this IHostingEnvironment environment)
-#pragma warning restore 618
         {
             return new RocketEnvironment(environment);
         }

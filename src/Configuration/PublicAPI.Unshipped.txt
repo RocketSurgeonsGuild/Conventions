@@ -1,7 +1,0 @@
-Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder
-Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder.ApplicationConfigurationBuilder.get -> Microsoft.Extensions.Configuration.IConfigurationBuilder
-Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder.Build() -> Microsoft.Extensions.Configuration.IConfigurationRoot
-Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder.Configuration.get -> Microsoft.Extensions.Configuration.IConfiguration
-Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder.ConfigurationBuilder(Rocket.Surgery.Conventions.Scanners.IConventionScanner scanner, Rocket.Surgery.Conventions.IRocketEnvironment environment, Microsoft.Extensions.Configuration.IConfiguration configuration, Microsoft.Extensions.Configuration.IConfigurationBuilder builder, Microsoft.Extensions.Logging.ILogger diagnosticSource, System.Collections.Generic.IDictionary<object, object> properties) -> void
-Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder.Environment.get -> Rocket.Surgery.Conventions.IRocketEnvironment
-Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder.Logger.get -> Microsoft.Extensions.Logging.ILogger

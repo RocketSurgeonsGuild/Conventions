@@ -1,0 +1,16 @@
+Rocket.Surgery.Conventions.ServicesHostBuilderExtensions
+Rocket.Surgery.Extensions.DependencyInjection.IServiceConvention
+Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext
+Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext.AssemblyCandidateFinder.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder
+Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext.AssemblyProvider.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyProvider
+Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext.Configuration.get -> Microsoft.Extensions.Configuration.IConfiguration
+Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext.Environment.get -> Rocket.Surgery.Conventions.IRocketEnvironment
+Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext.OnBuild.get -> System.IObservable<System.IServiceProvider>
+Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+Rocket.Surgery.Extensions.DependencyInjection.IServicesBuilder
+Rocket.Surgery.Extensions.DependencyInjection.IServicesBuilder.Build() -> System.IServiceProvider
+Rocket.Surgery.Extensions.DependencyInjection.NodaTimeConvention
+Rocket.Surgery.Extensions.DependencyInjection.NodaTimeConvention.NodaTimeConvention() -> void
+Rocket.Surgery.Extensions.DependencyInjection.NodaTimeConvention.Register(Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext context) -> void
+Rocket.Surgery.Extensions.DependencyInjection.ServiceConventionDelegate
+static Rocket.Surgery.Conventions.ServicesHostBuilderExtensions.ConfigureServices(this Rocket.Surgery.Conventions.IConventionHostBuilder container, Rocket.Surgery.Extensions.DependencyInjection.ServiceConventionDelegate delegate) -> Rocket.Surgery.Conventions.IConventionHostBuilder

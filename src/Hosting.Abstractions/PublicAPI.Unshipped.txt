@@ -1,7 +1,0 @@
-Rocket.Surgery.Conventions.HostingConventionExtensions
-Rocket.Surgery.Hosting.HostingConventionDelegate
-Rocket.Surgery.Hosting.IHostingConvention
-Rocket.Surgery.Hosting.IHostingConventionContext
-Rocket.Surgery.Hosting.IRocketHostBuilder
-Rocket.Surgery.Hosting.IRocketHostBuilder.Builder.get -> Microsoft.Extensions.Hosting.IHostBuilder
-static Rocket.Surgery.Conventions.HostingConventionExtensions.ConfigureHosting(this Rocket.Surgery.Conventions.IConventionHostBuilder container, Rocket.Surgery.Hosting.HostingConventionDelegate delegate) -> Rocket.Surgery.Conventions.IConventionHostBuilder

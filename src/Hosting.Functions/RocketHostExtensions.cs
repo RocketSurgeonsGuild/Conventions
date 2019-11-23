@@ -529,9 +529,7 @@ namespace Rocket.Surgery.Hosting.Functions
 
             ( builder.DiagnosticSource is DiagnosticListener listener
                 ? listener
-#pragma warning disable CA2000
                 : new DiagnosticListener("DiagnosticLogger") ).SubscribeWithAdapter(
-#pragma warning restore CA2000
                 new DiagnosticListenerLoggingAdapter(
                     new ServiceCollection()
                        .AddLogging(action)

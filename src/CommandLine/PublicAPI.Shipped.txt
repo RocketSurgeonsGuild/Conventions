@@ -1,0 +1,22 @@
+Rocket.Surgery.Extensions.CommandLine.ActivatorUtilitiesConvention
+Rocket.Surgery.Extensions.CommandLine.ActivatorUtilitiesConvention.ActivatorUtilitiesConvention(System.IServiceProvider serviceProvider) -> void
+Rocket.Surgery.Extensions.CommandLine.ApplicationStateExtensions
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.AddCommand(string name, System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.AddCommand<T>(System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.AddCommand<T>(string name, System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.Build(System.Reflection.Assembly entryAssembly = null) -> Rocket.Surgery.Extensions.CommandLine.ICommandLine
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.CommandLineApplicationConventions.get -> McMaster.Extensions.CommandLineUtils.Conventions.IConventionBuilder
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.CommandLineBuilder(Rocket.Surgery.Conventions.Scanners.IConventionScanner scanner, Rocket.Surgery.Conventions.Reflection.IAssemblyProvider assemblyProvider, Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder assemblyCandidateFinder, Microsoft.Extensions.Logging.ILogger diagnosticSource, System.Collections.Generic.IDictionary<object, object> properties) -> void
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.Logger.get -> Microsoft.Extensions.Logging.ILogger
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.OnParse(Rocket.Surgery.Extensions.CommandLine.OnParseDelegate onParseDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunAsyncDelegate onRunAsyncDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunDelegate onRunDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.OnRun<T>() -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.CommandLineBuilder.OnRunAsync<T>() -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+const Rocket.Surgery.Extensions.CommandLine.ActivatorUtilitiesConvention.AmbiguousOnExecuteMethod = "Could not determine which 'OnExecute' or 'OnExecuteAsync' method to use. Multiple methods with this name were found" -> string
+const Rocket.Surgery.Extensions.CommandLine.ActivatorUtilitiesConvention.NoOnExecuteMethodFound = "No method named 'OnExecute' or 'OnExecuteAsync' could be found" -> string
+static Rocket.Surgery.Extensions.CommandLine.ActivatorUtilitiesConvention.InvalidOnExecuteReturnType(string methodName) -> string
+static Rocket.Surgery.Extensions.CommandLine.ApplicationStateExtensions.AddApplicationState(this Microsoft.Extensions.Configuration.IConfigurationBuilder builder, Rocket.Surgery.Extensions.CommandLine.IApplicationState state) -> Microsoft.Extensions.Configuration.IConfigurationBuilder
+virtual Rocket.Surgery.Extensions.CommandLine.ActivatorUtilitiesConvention.Apply(McMaster.Extensions.CommandLineUtils.Conventions.ConventionContext context) -> void

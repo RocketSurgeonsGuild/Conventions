@@ -1,9 +1,0 @@
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder.Build() -> System.IServiceProvider
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder.Configuration.get -> Microsoft.Extensions.Configuration.IConfiguration
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder.Environment.get -> Rocket.Surgery.Conventions.IRocketEnvironment
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder.Logger.get -> Microsoft.Extensions.Logging.ILogger
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder.OnBuild.get -> System.IObservable<System.IServiceProvider>
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder.ServiceProviderOptions.get -> Microsoft.Extensions.DependencyInjection.ServiceProviderOptions
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection
-Rocket.Surgery.Extensions.DependencyInjection.ServicesBuilder.ServicesBuilder(Rocket.Surgery.Conventions.Scanners.IConventionScanner scanner, Rocket.Surgery.Conventions.Reflection.IAssemblyProvider assemblyProvider, Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder assemblyCandidateFinder, Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration, Rocket.Surgery.Conventions.IRocketEnvironment environment, Microsoft.Extensions.Logging.ILogger diagnosticSource, System.Collections.Generic.IDictionary<object, object> properties) -> void
