@@ -1,0 +1,3 @@
+Rocket.Surgery.Conventions.Diagnostics.Commands.DiagnosticsCommand
+Rocket.Surgery.Conventions.Diagnostics.Commands.DiagnosticsCommand.DiagnosticsCommand(McMaster.Extensions.CommandLineUtils.CommandLineApplication application) -> void
+Rocket.Surgery.Conventions.Diagnostics.Commands.DiagnosticsCommand.OnExecute() -> int

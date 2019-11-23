@@ -1,0 +1,13 @@
+Rocket.Surgery.Conventions.LoggingHostBuilder2Extensions
+Rocket.Surgery.Extensions.Logging.LoggingBuilder
+Rocket.Surgery.Extensions.Logging.LoggingBuilder.Build() -> void
+Rocket.Surgery.Extensions.Logging.LoggingBuilder.Configuration.get -> Microsoft.Extensions.Configuration.IConfiguration
+Rocket.Surgery.Extensions.Logging.LoggingBuilder.Environment.get -> Rocket.Surgery.Conventions.IRocketEnvironment
+Rocket.Surgery.Extensions.Logging.LoggingBuilder.Logger.get -> Microsoft.Extensions.Logging.ILogger
+Rocket.Surgery.Extensions.Logging.LoggingBuilder.LoggingBuilder(Rocket.Surgery.Conventions.Scanners.IConventionScanner scanner, Rocket.Surgery.Conventions.Reflection.IAssemblyProvider assemblyProvider, Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder assemblyCandidateFinder, Microsoft.Extensions.DependencyInjection.IServiceCollection services, Rocket.Surgery.Conventions.IRocketEnvironment environment, Microsoft.Extensions.Configuration.IConfiguration configuration, Microsoft.Extensions.Logging.ILogger diagnosticSource, System.Collections.Generic.IDictionary<object, object> properties) -> void
+Rocket.Surgery.Extensions.Logging.LoggingBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+Rocket.Surgery.Extensions.Logging.LoggingServiceConvention
+Rocket.Surgery.Extensions.Logging.LoggingServiceConvention.LoggingServiceConvention(Rocket.Surgery.Extensions.Logging.RocketLoggingOptions options = null) -> void
+Rocket.Surgery.Extensions.Logging.LoggingServiceConvention.Register(Rocket.Surgery.Extensions.DependencyInjection.IServiceConventionContext context) -> void
+Rocket.Surgery.Extensions.Logging.LoggingServiceConvention.Register(Rocket.Surgery.Extensions.Logging.ILoggingConventionContext context) -> void
+static Rocket.Surgery.Conventions.LoggingHostBuilder2Extensions.UseLogging(this Rocket.Surgery.Conventions.IConventionHostBuilder container, Rocket.Surgery.Extensions.Logging.RocketLoggingOptions options = null) -> Rocket.Surgery.Conventions.IConventionHostBuilder
