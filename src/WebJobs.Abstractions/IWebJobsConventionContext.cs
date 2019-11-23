@@ -1,14 +1,12 @@
-﻿using System;
-using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Extensions.WebJobs
 {
     /// <summary>
-    ///  IWebJobsConventionContext
+    /// IWebJobsConventionContext
     /// Implements the <see cref="IConventionContext" />
     /// Implements the <see cref="IWebJobsBuilder" />
     /// </summary>

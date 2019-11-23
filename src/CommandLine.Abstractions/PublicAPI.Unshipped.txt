@@ -1,0 +1,54 @@
+Rocket.Surgery.Conventions.CommandLineHostBuilderExtensions
+Rocket.Surgery.Extensions.CommandLine.CommandLineConventionDelegate
+Rocket.Surgery.Extensions.CommandLine.IApplicationState
+Rocket.Surgery.Extensions.CommandLine.IApplicationState.Debug.get -> bool
+Rocket.Surgery.Extensions.CommandLine.IApplicationState.GetLogLevel() -> Microsoft.Extensions.Logging.LogLevel?
+Rocket.Surgery.Extensions.CommandLine.IApplicationState.IsDefaultCommand.get -> bool
+Rocket.Surgery.Extensions.CommandLine.IApplicationState.RemainingArguments.get -> string[]
+Rocket.Surgery.Extensions.CommandLine.IApplicationState.Trace.get -> bool
+Rocket.Surgery.Extensions.CommandLine.IApplicationState.Verbose.get -> bool
+Rocket.Surgery.Extensions.CommandLine.ICommandLine
+Rocket.Surgery.Extensions.CommandLine.ICommandLine.Application.get -> McMaster.Extensions.CommandLineUtils.CommandLineApplication
+Rocket.Surgery.Extensions.CommandLine.ICommandLine.Execute(System.IServiceProvider serviceProvider, params string[] args) -> int
+Rocket.Surgery.Extensions.CommandLine.ICommandLine.ExecuteAsync(System.IServiceProvider serviceProvider, System.Threading.CancellationToken cancellationToken, params string[] args) -> System.Threading.Tasks.Task<int>
+Rocket.Surgery.Extensions.CommandLine.ICommandLine.Parse(params string[] args) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineExecutor
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.AddCommand(string name, System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.AddCommand<T>(System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.AddCommand<T>(string name, System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.Build(System.Reflection.Assembly entryAssembly = null) -> Rocket.Surgery.Extensions.CommandLine.ICommandLine
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.OnParse(Rocket.Surgery.Extensions.CommandLine.OnParseDelegate onParseDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunAsyncDelegate onRunAsyncDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunDelegate onRunDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.OnRun<T>() -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder.OnRunAsync<T>() -> Rocket.Surgery.Extensions.CommandLine.ICommandLineBuilder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConvention
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.AddCommand(string name, System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.AddCommand<T>(System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.AddCommand<T>(string name, System.Action<McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>> action = null, bool throwOnUnexpectedArg = true) -> McMaster.Extensions.CommandLineUtils.CommandLineApplication<T>
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.AssemblyCandidateFinder.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.AssemblyProvider.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyProvider
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.CommandLineApplicationConventions.get -> McMaster.Extensions.CommandLineUtils.Conventions.IConventionBuilder
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.OnParse(Rocket.Surgery.Extensions.CommandLine.OnParseDelegate onParseDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunAsyncDelegate onRunAsyncDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.OnRun(Rocket.Surgery.Extensions.CommandLine.OnRunDelegate onRunDelegate) -> Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.OnRun<T>() -> Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext
+Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext.OnRunAsync<T>() -> Rocket.Surgery.Extensions.CommandLine.ICommandLineConventionContext
+Rocket.Surgery.Extensions.CommandLine.ICommandLineExecutor
+Rocket.Surgery.Extensions.CommandLine.ICommandLineExecutor.Application.get -> McMaster.Extensions.CommandLineUtils.CommandLineApplication
+Rocket.Surgery.Extensions.CommandLine.ICommandLineExecutor.ApplicationState.get -> Rocket.Surgery.Extensions.CommandLine.IApplicationState
+Rocket.Surgery.Extensions.CommandLine.ICommandLineExecutor.Execute(System.IServiceProvider serviceProvider) -> int
+Rocket.Surgery.Extensions.CommandLine.ICommandLineExecutor.ExecuteAsync(System.IServiceProvider serviceProvider, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<int>
+Rocket.Surgery.Extensions.CommandLine.ICommandLineExecutor.IsDefaultCommand.get -> bool
+Rocket.Surgery.Extensions.CommandLine.IDefaultCommand
+Rocket.Surgery.Extensions.CommandLine.IDefaultCommand.Run(Rocket.Surgery.Extensions.CommandLine.IApplicationState state) -> int
+Rocket.Surgery.Extensions.CommandLine.IDefaultCommandAsync
+Rocket.Surgery.Extensions.CommandLine.IDefaultCommandAsync.Run(Rocket.Surgery.Extensions.CommandLine.IApplicationState state, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<int>
+Rocket.Surgery.Extensions.CommandLine.OnParseDelegate
+Rocket.Surgery.Extensions.CommandLine.OnRunAsyncCancellableDelegate
+Rocket.Surgery.Extensions.CommandLine.OnRunAsyncDelegate
+Rocket.Surgery.Extensions.CommandLine.OnRunDelegate
+static Rocket.Surgery.Conventions.CommandLineHostBuilderExtensions.ConfigureCommandLine(this Rocket.Surgery.Conventions.IConventionHostBuilder container, Rocket.Surgery.Extensions.CommandLine.CommandLineConventionDelegate delegate) -> Rocket.Surgery.Conventions.IConventionHostBuilder

@@ -1,15 +1,13 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Conventions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Extensions.CommandLine
 {
     /// <summary>
-    ///  ICommandLineConventionContext
+    /// ICommandLineConventionContext
     /// Implements the <see cref="IConventionContext" />
     /// </summary>
     /// <seealso cref="IConventionContext" />
@@ -40,7 +38,11 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication{T}.</returns>
-        CommandLineApplication<T> AddCommand<T>(Action<CommandLineApplication<T>>? action = null, bool throwOnUnexpectedArg = true) where T : class;
+        CommandLineApplication<T> AddCommand<T>(
+            Action<CommandLineApplication<T>>? action = null,
+            bool throwOnUnexpectedArg = true
+        )
+            where T : class;
 
         /// <summary>
         /// Adds the command.
@@ -50,7 +52,12 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication{T}.</returns>
-        CommandLineApplication<T> AddCommand<T>(string name, Action<CommandLineApplication<T>>? action = null, bool throwOnUnexpectedArg = true) where T : class;
+        CommandLineApplication<T> AddCommand<T>(
+            string name,
+            Action<CommandLineApplication<T>>? action = null,
+            bool throwOnUnexpectedArg = true
+        )
+            where T : class;
 
         /// <summary>
         /// Adds the command.
@@ -59,48 +66,54 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication.</returns>
-        CommandLineApplication AddCommand(string name, Action<CommandLineApplication>? action = null, bool throwOnUnexpectedArg = true);
+        CommandLineApplication AddCommand(
+            string name,
+            Action<CommandLineApplication>? action = null,
+            bool throwOnUnexpectedArg = true
+        );
 
         /// <summary>
         /// Called when [parse].
         /// </summary>
-        /// <param name="delegate">The delegate.</param>
+        /// <param name="onParseDelegate">The delegate.</param>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnParse(OnParseDelegate @delegate);
+        ICommandLineConventionContext OnParse(OnParseDelegate onParseDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
-        /// <param name="delegate">The delegate.</param>
+        /// <param name="onRunDelegate">The delegate.</param>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnRun(OnRunDelegate @delegate);
+        ICommandLineConventionContext OnRun(OnRunDelegate onRunDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
-        /// <param name="delegate">The delegate.</param>
+        /// <param name="onRunAsyncDelegate">The delegate.</param>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnRun(OnRunAsyncDelegate @delegate);
+        ICommandLineConventionContext OnRun(OnRunAsyncDelegate onRunAsyncDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
-        /// <param name="delegate">The delegate.</param>
+        /// <param name="onRunAsyncCancellableDelegate">The delegate.</param>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnRun(OnRunAsyncCancellableDelegate @delegate);
-
-        /// <summary>
-        /// Called when [run].
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnRun<T>() where T : IDefaultCommand;
+        ICommandLineConventionContext OnRun(OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnRunAsync<T>() where T : IDefaultCommandAsync;
+        ICommandLineConventionContext OnRun<T>()
+            where T : IDefaultCommand;
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>ICommandLineConventionContext.</returns>
+        ICommandLineConventionContext OnRunAsync<T>()
+            where T : IDefaultCommandAsync;
     }
 }

@@ -1,13 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Extensions.CommandLine
 {
@@ -16,22 +13,29 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// Implements the <see cref="ICommandLineExecutor" />
     /// </summary>
     /// <seealso cref="ICommandLineExecutor" />
-    class CommandLineExecutor : ICommandLineExecutor
+    internal class CommandLineExecutor : ICommandLineExecutor
     {
         private readonly CommandLineApplication _rootApplication;
         private readonly string[] _args;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandLineExecutor"/> class.
+        /// Initializes a new instance of the <see cref="CommandLineExecutor" /> class.
         /// </summary>
         /// <param name="application">The selected application.</param>
         /// <param name="applicationState">State of the application.</param>
         /// <param name="rootApplication">The root application.</param>
         /// <param name="args">The arguments.</param>
-        public CommandLineExecutor(CommandLineApplication application, IApplicationState applicationState, CommandLineApplication rootApplication, string[] args)
+        public CommandLineExecutor(
+            CommandLineApplication application,
+            IApplicationState applicationState,
+            CommandLineApplication rootApplication,
+            string[] args
+        )
         {
             Application = application ?? throw new ArgumentNullException(nameof(application));
             ApplicationState = applicationState ?? throw new ArgumentNullException(nameof(applicationState));
-            IsDefaultCommand = Application is IModelAccessor m && m.GetModelType() == typeof(ApplicationState) && !Application.IsShowingInformation;
+            IsDefaultCommand = Application is IModelAccessor m && m.GetModelType() == typeof(ApplicationState) &&
+                !Application.IsShowingInformation;
             _rootApplication = rootApplication;
             _args = args;
         }
@@ -59,9 +63,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
         public int Execute(IServiceProvider serviceProvider)
-        {
-            return ExecuteAsync(serviceProvider, CancellationToken.None).GetAwaiter().GetResult();
-        }
+            => ExecuteAsync(serviceProvider, CancellationToken.None).GetAwaiter().GetResult();
 
         /// <summary>
         /// Executes the specified service provider.
@@ -90,15 +92,28 @@ namespace Rocket.Surgery.Extensions.CommandLine
                     {
                         return Task.FromResult(defaultCommand.Run(state));
                     }
+
                     if (instance is IDefaultCommandAsync defaultCommandAsync)
                     {
                         return defaultCommandAsync.Run(state, cancellationToken);
                     }
                 }
 
-                if (state.OnRunDelegate != null) return Task.FromResult(state.OnRunDelegate(state));
-                if (state.OnRunAsyncDelegate != null) return state.OnRunAsyncDelegate(state);
-                if (state.OnRunAsyncCancellableDelegate != null) return state.OnRunAsyncCancellableDelegate(state, cancellationToken);
+                if (state.OnRunDelegate != null)
+                {
+                    return Task.FromResult(state.OnRunDelegate(state));
+                }
+
+                if (state.OnRunAsyncDelegate != null)
+                {
+                    return state.OnRunAsyncDelegate(state);
+                }
+
+                if (state.OnRunAsyncCancellableDelegate != null)
+                {
+                    return state.OnRunAsyncCancellableDelegate(state, cancellationToken);
+                }
+
                 return Task.FromResult(int.MinValue);
             }
 

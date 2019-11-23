@@ -1,0 +1,168 @@
+Rocket.Surgery.Conventions.AfterConventionAttribute
+Rocket.Surgery.Conventions.AfterConventionAttribute.AfterConventionAttribute(System.Type type) -> void
+Rocket.Surgery.Conventions.AfterConventionAttribute.Type.get -> System.Type
+Rocket.Surgery.Conventions.BeforeConventionAttribute
+Rocket.Surgery.Conventions.BeforeConventionAttribute.BeforeConventionAttribute(System.Type type) -> void
+Rocket.Surgery.Conventions.BeforeConventionAttribute.Type.get -> System.Type
+Rocket.Surgery.Conventions.ConventionAttribute
+Rocket.Surgery.Conventions.ConventionAttribute.ConventionAttribute(System.Type type) -> void
+Rocket.Surgery.Conventions.ConventionAttribute.Type.get -> System.Type
+Rocket.Surgery.Conventions.ConventionContextExtensions
+Rocket.Surgery.Conventions.ConventionHostBuilderExtensions
+Rocket.Surgery.Conventions.DependencyDirection
+Rocket.Surgery.Conventions.DependencyDirection.DependentOf = 1 -> Rocket.Surgery.Conventions.DependencyDirection
+Rocket.Surgery.Conventions.DependencyDirection.DependsOn = 0 -> Rocket.Surgery.Conventions.DependencyDirection
+Rocket.Surgery.Conventions.DependentOfConventionAttribute
+Rocket.Surgery.Conventions.DependentOfConventionAttribute.DependentOfConventionAttribute(System.Type type) -> void
+Rocket.Surgery.Conventions.DependentOfConventionAttribute.Type.get -> System.Type
+Rocket.Surgery.Conventions.DependsOnConventionAttribute
+Rocket.Surgery.Conventions.DependsOnConventionAttribute.DependsOnConventionAttribute(System.Type type) -> void
+Rocket.Surgery.Conventions.DependsOnConventionAttribute.Type.get -> System.Type
+Rocket.Surgery.Conventions.DependsOnConventionAttribute.Type.set -> void
+Rocket.Surgery.Conventions.HostType
+Rocket.Surgery.Conventions.HostType.Live = 1 -> Rocket.Surgery.Conventions.HostType
+Rocket.Surgery.Conventions.HostType.Undefined = 0 -> Rocket.Surgery.Conventions.HostType
+Rocket.Surgery.Conventions.HostType.UnitTestHost = 2 -> Rocket.Surgery.Conventions.HostType
+Rocket.Surgery.Conventions.IConvention
+Rocket.Surgery.Conventions.IConvention<TContext>
+Rocket.Surgery.Conventions.IConvention<TContext>.Register(TContext context) -> void
+Rocket.Surgery.Conventions.IConventionBuilder<TBuilder, TConvention, TDelegate>
+Rocket.Surgery.Conventions.IConventionBuilder<TBuilder, TConvention, TDelegate>.AssemblyCandidateFinder.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder
+Rocket.Surgery.Conventions.IConventionBuilder<TBuilder, TConvention, TDelegate>.AssemblyProvider.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyProvider
+Rocket.Surgery.Conventions.IConventionComposer
+Rocket.Surgery.Conventions.IConventionComposer.Register(Rocket.Surgery.Conventions.IConventionContext context, System.Collections.Generic.IEnumerable<System.Type> types) -> void
+Rocket.Surgery.Conventions.IConventionComposer<TContext, TContribution, TDelegate>
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.AppendConvention(System.Collections.Generic.IEnumerable<TConvention> conventions) -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.AppendConvention(params TConvention[] conventions) -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.AppendConvention<T>() -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.AppendDelegate(System.Collections.Generic.IEnumerable<TDelegate> delegates) -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.AppendDelegate(params TDelegate[] delegates) -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.PrependConvention(System.Collections.Generic.IEnumerable<TConvention> conventions) -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.PrependConvention(params TConvention[] conventions) -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.PrependConvention<T>() -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.PrependDelegate(System.Collections.Generic.IEnumerable<TDelegate> delegates) -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.PrependDelegate(params TDelegate[] delegates) -> TBuilder
+Rocket.Surgery.Conventions.IConventionContainer<TBuilder, TConvention, TDelegate>.Scanner.get -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.IConventionContext
+Rocket.Surgery.Conventions.IConventionContext.Logger.get -> Microsoft.Extensions.Logging.ILogger
+Rocket.Surgery.Conventions.IConventionContext.Properties.get -> System.Collections.Generic.IDictionary<object, object>
+Rocket.Surgery.Conventions.IConventionContext.this[object item].get -> object
+Rocket.Surgery.Conventions.IConventionContext.this[object item].set -> void
+Rocket.Surgery.Conventions.IConventionDependency
+Rocket.Surgery.Conventions.IConventionDependency.Direction.get -> Rocket.Surgery.Conventions.DependencyDirection
+Rocket.Surgery.Conventions.IConventionDependency.Type.get -> System.Type
+Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AppendConvention(System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.IConvention> conventions) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AppendConvention(System.Collections.Generic.IEnumerable<System.Type> conventions) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AppendConvention(params Rocket.Surgery.Conventions.IConvention[] conventions) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AppendConvention(params System.Type[] conventions) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AppendConvention<T>() -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AppendDelegate(System.Collections.Generic.IEnumerable<System.Delegate> delegates) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AppendDelegate(params System.Delegate[] delegates) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AssemblyCandidateFinder.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder
+Rocket.Surgery.Conventions.IConventionHostBuilder.AssemblyProvider.get -> Rocket.Surgery.Conventions.Reflection.IAssemblyProvider
+Rocket.Surgery.Conventions.IConventionHostBuilder.DiagnosticSource.get -> System.Diagnostics.DiagnosticSource
+Rocket.Surgery.Conventions.IConventionHostBuilder.PrependConvention(System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.IConvention> conventions) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.PrependConvention(System.Collections.Generic.IEnumerable<System.Type> conventions) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.PrependConvention(params Rocket.Surgery.Conventions.IConvention[] conventions) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.PrependConvention(params System.Type[] conventions) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.PrependConvention<T>() -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.PrependDelegate(System.Collections.Generic.IEnumerable<System.Delegate> delegates) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.PrependDelegate(params System.Delegate[] delegates) -> Rocket.Surgery.Conventions.IConventionHostBuilder
+Rocket.Surgery.Conventions.IConventionHostBuilder.Scanner.get -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.IConventionHostBuilder.ServiceProperties.get -> Rocket.Surgery.Conventions.IServiceProviderDictionary
+Rocket.Surgery.Conventions.IRocketEnvironment
+Rocket.Surgery.Conventions.IRocketEnvironment.ApplicationName.get -> string
+Rocket.Surgery.Conventions.IRocketEnvironment.ContentRootFileProvider.get -> Microsoft.Extensions.FileProviders.IFileProvider
+Rocket.Surgery.Conventions.IRocketEnvironment.ContentRootPath.get -> string
+Rocket.Surgery.Conventions.IRocketEnvironment.EnvironmentName.get -> string
+Rocket.Surgery.Conventions.IServiceProviderDictionary
+Rocket.Surgery.Conventions.LiveConventionAttribute
+Rocket.Surgery.Conventions.LiveConventionAttribute.LiveConventionAttribute() -> void
+Rocket.Surgery.Conventions.Reflection.AssemblyCandidateFinderExtenisons
+Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder
+Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder.GetCandidateAssemblies(System.Collections.Generic.IEnumerable<string> candidates) -> System.Collections.Generic.IEnumerable<System.Reflection.Assembly>
+Rocket.Surgery.Conventions.Reflection.IAssemblyProvider
+Rocket.Surgery.Conventions.Reflection.IAssemblyProvider.GetAssemblies() -> System.Collections.Generic.IEnumerable<System.Reflection.Assembly>
+Rocket.Surgery.Conventions.RocketEnvironment
+Rocket.Surgery.Conventions.RocketEnvironment.ApplicationName.get -> string
+Rocket.Surgery.Conventions.RocketEnvironment.ContentRootFileProvider.get -> Microsoft.Extensions.FileProviders.IFileProvider
+Rocket.Surgery.Conventions.RocketEnvironment.ContentRootPath.get -> string
+Rocket.Surgery.Conventions.RocketEnvironment.EnvironmentName.get -> string
+Rocket.Surgery.Conventions.RocketEnvironment.RocketEnvironment(Microsoft.Extensions.Hosting.IHostEnvironment environment) -> void
+Rocket.Surgery.Conventions.RocketEnvironment.RocketEnvironment(Microsoft.Extensions.Hosting.IHostingEnvironment environment) -> void
+Rocket.Surgery.Conventions.RocketEnvironment.RocketEnvironment(string environmentName, string applicationName, string contentRootPath, Microsoft.Extensions.FileProviders.IFileProvider contentRootFileProvider) -> void
+Rocket.Surgery.Conventions.RocketEnvironmentExtensions
+Rocket.Surgery.Conventions.RocketEnvironments
+Rocket.Surgery.Conventions.Scanners.DelegateOrConvention
+Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.Convention.get -> Rocket.Surgery.Conventions.IConvention
+Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.Deconstruct(out Rocket.Surgery.Conventions.IConvention convention, out System.Delegate delegate) -> void
+Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.Delegate.get -> System.Delegate
+Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.Equals(Rocket.Surgery.Conventions.Scanners.DelegateOrConvention other) -> bool
+Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.ToDelegate() -> System.Delegate
+Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.ToDelegateOrConvention() -> Rocket.Surgery.Conventions.Scanners.DelegateOrConvention
+Rocket.Surgery.Conventions.Scanners.IConventionProvider
+Rocket.Surgery.Conventions.Scanners.IConventionProvider.Get<TContribution, TDelegate>(Rocket.Surgery.Conventions.HostType hostType = Rocket.Surgery.Conventions.HostType.Undefined) -> System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.Scanners.DelegateOrConvention>
+Rocket.Surgery.Conventions.Scanners.IConventionProvider.GetAll(Rocket.Surgery.Conventions.HostType hostType = Rocket.Surgery.Conventions.HostType.Undefined) -> System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.Scanners.DelegateOrConvention>
+Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.AppendConvention(System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.IConvention> conventions) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.AppendConvention(System.Collections.Generic.IEnumerable<System.Type> conventions) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.AppendConvention(params Rocket.Surgery.Conventions.IConvention[] conventions) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.AppendConvention(params System.Type[] conventions) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.AppendConvention<T>() -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.AppendDelegate(System.Collections.Generic.IEnumerable<System.Delegate> delegates) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.AppendDelegate(params System.Delegate[] delegates) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.BuildProvider() -> Rocket.Surgery.Conventions.Scanners.IConventionProvider
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.ExceptConvention(System.Collections.Generic.IEnumerable<System.Reflection.Assembly> assemblies) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.ExceptConvention(System.Collections.Generic.IEnumerable<System.Type> types) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.ExceptConvention(params System.Reflection.Assembly[] assemblies) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.ExceptConvention(params System.Type[] types) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.PrependConvention(System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.IConvention> conventions) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.PrependConvention(System.Collections.Generic.IEnumerable<System.Type> conventions) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.PrependConvention(params Rocket.Surgery.Conventions.IConvention[] conventions) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.PrependConvention(params System.Type[] conventions) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.PrependConvention<T>() -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.PrependDelegate(System.Collections.Generic.IEnumerable<System.Delegate> delegates) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.Scanners.IConventionScanner.PrependDelegate(params System.Delegate[] delegates) -> Rocket.Surgery.Conventions.Scanners.IConventionScanner
+Rocket.Surgery.Conventions.UnitTestConventionAttribute
+Rocket.Surgery.Conventions.UnitTestConventionAttribute.UnitTestConventionAttribute() -> void
+const Rocket.Surgery.Conventions.RocketEnvironments.Development = "Development" -> string
+const Rocket.Surgery.Conventions.RocketEnvironments.Production = "Production" -> string
+const Rocket.Surgery.Conventions.RocketEnvironments.Staging = "Staging" -> string
+override Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.Equals(object obj) -> bool
+override Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.GetHashCode() -> int
+override Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.ToString() -> string
+static Rocket.Surgery.Conventions.ConventionContextExtensions.Get<T>(this Rocket.Surgery.Conventions.IConventionContext context) -> T
+static Rocket.Surgery.Conventions.ConventionContextExtensions.Get<T>(this Rocket.Surgery.Conventions.IConventionContext context, string key) -> T
+static Rocket.Surgery.Conventions.ConventionContextExtensions.GetOrAdd<T>(this Rocket.Surgery.Conventions.IConventionContext context, System.Func<T> factory) -> T
+static Rocket.Surgery.Conventions.ConventionContextExtensions.GetOrAdd<T>(this Rocket.Surgery.Conventions.IConventionContext context, string key, System.Func<T> factory) -> T
+static Rocket.Surgery.Conventions.ConventionContextExtensions.IsUnitTestHost(this Rocket.Surgery.Conventions.IConventionContext context) -> bool
+static Rocket.Surgery.Conventions.ConventionContextExtensions.Set<T>(this Rocket.Surgery.Conventions.IConventionContext context, T value) -> void
+static Rocket.Surgery.Conventions.ConventionContextExtensions.Set<T>(this Rocket.Surgery.Conventions.IConventionContext context, string key, T value) -> void
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.Get<T>(this Rocket.Surgery.Conventions.IConventionHostBuilder context) -> T
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.Get<T>(this Rocket.Surgery.Conventions.IConventionHostBuilder context, string key) -> T
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.Get<T>(this Rocket.Surgery.Conventions.IServiceProviderDictionary serviceProviderDictionary) -> T
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.Get<T>(this Rocket.Surgery.Conventions.IServiceProviderDictionary serviceProviderDictionary, string key) -> T
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.GetOrAdd<T>(this Rocket.Surgery.Conventions.IConventionHostBuilder builder, System.Func<T> factory) -> T
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.GetOrAdd<T>(this Rocket.Surgery.Conventions.IConventionHostBuilder builder, string key, System.Func<T> factory) -> T
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.GetOrAdd<T>(this Rocket.Surgery.Conventions.IServiceProviderDictionary serviceProviderDictionary, System.Func<T> factory) -> T
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.GetOrAdd<T>(this Rocket.Surgery.Conventions.IServiceProviderDictionary serviceProviderDictionary, string key, System.Func<T> factory) -> T
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.IsUnitTestHost(this Rocket.Surgery.Conventions.IConventionHostBuilder context) -> bool
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.IsUnitTestHost(this Rocket.Surgery.Conventions.IServiceProviderDictionary serviceProviderDictionary) -> bool
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.Set<T>(this Rocket.Surgery.Conventions.IConventionHostBuilder context, T value) -> void
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.Set<T>(this Rocket.Surgery.Conventions.IConventionHostBuilder context, string key, T value) -> void
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.Set<T>(this Rocket.Surgery.Conventions.IServiceProviderDictionary serviceProviderDictionary, T value) -> void
+static Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.Set<T>(this Rocket.Surgery.Conventions.IServiceProviderDictionary serviceProviderDictionary, string key, T value) -> void
+static Rocket.Surgery.Conventions.Reflection.AssemblyCandidateFinderExtenisons.GetCandidateAssemblies(this Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder finder, string candidate, params string[] candidates) -> System.Collections.Generic.IEnumerable<System.Reflection.Assembly>
+static Rocket.Surgery.Conventions.RocketEnvironmentExtensions.Convert(this Microsoft.Extensions.Hosting.IHostEnvironment environment) -> Rocket.Surgery.Conventions.IRocketEnvironment
+static Rocket.Surgery.Conventions.RocketEnvironmentExtensions.Convert(this Microsoft.Extensions.Hosting.IHostingEnvironment environment) -> Rocket.Surgery.Conventions.IRocketEnvironment
+static Rocket.Surgery.Conventions.RocketEnvironmentExtensions.IsDevelopment(this Rocket.Surgery.Conventions.IRocketEnvironment hostEnvironment) -> bool
+static Rocket.Surgery.Conventions.RocketEnvironmentExtensions.IsEnvironment(this Rocket.Surgery.Conventions.IRocketEnvironment hostEnvironment, string environmentName) -> bool
+static Rocket.Surgery.Conventions.RocketEnvironmentExtensions.IsProduction(this Rocket.Surgery.Conventions.IRocketEnvironment hostEnvironment) -> bool
+static Rocket.Surgery.Conventions.RocketEnvironmentExtensions.IsStaging(this Rocket.Surgery.Conventions.IRocketEnvironment hostEnvironment) -> bool
+static Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.None.get -> Rocket.Surgery.Conventions.Scanners.DelegateOrConvention
+static Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.implicit operator Rocket.Surgery.Conventions.Scanners.DelegateOrConvention(System.Delegate delegate) -> Rocket.Surgery.Conventions.Scanners.DelegateOrConvention
+static Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.implicit operator System.Delegate(Rocket.Surgery.Conventions.Scanners.DelegateOrConvention delegateOrContribution) -> System.Delegate
+static Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.operator !=(Rocket.Surgery.Conventions.Scanners.DelegateOrConvention convention1, Rocket.Surgery.Conventions.Scanners.DelegateOrConvention convention2) -> bool
+static Rocket.Surgery.Conventions.Scanners.DelegateOrConvention.operator ==(Rocket.Surgery.Conventions.Scanners.DelegateOrConvention convention1, Rocket.Surgery.Conventions.Scanners.DelegateOrConvention convention2) -> bool

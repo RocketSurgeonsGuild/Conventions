@@ -6,7 +6,7 @@ namespace Rocket.Surgery.Conventions
     /// Defines this convention as one that only runs during a unit test run
     /// </summary>
     /// <seealso cref="Attribute" />
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class)]
     public sealed class UnitTestConventionAttribute : Attribute, IHostBasedConvention
     {
         HostType IHostBasedConvention.HostType => HostType.UnitTestHost;

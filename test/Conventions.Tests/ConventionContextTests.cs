@@ -9,17 +9,6 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionContextTests : AutoFakeTest
     {
-        public ConventionContextTests(ITestOutputHelper outputHelper) : base(outputHelper)
-        {
-        }
-
-        class TestGenericValueContainer : ConventionContext
-        {
-            public TestGenericValueContainer(ILogger logger) : base(logger, new Dictionary<object, object?>())
-            {
-            }
-        }
-
         [Fact]
         public void ReturnsNullOfNoValue()
         {
@@ -53,6 +42,13 @@ namespace Rocket.Surgery.Conventions.Tests
             var container = new TestGenericValueContainer(Logger);
             container.Set("abc");
             container.Get<string>().Should().Be("abc");
+        }
+
+        public ConventionContextTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
+
+        private class TestGenericValueContainer : ConventionContext
+        {
+            public TestGenericValueContainer(ILogger logger) : base(logger, new Dictionary<object, object?>()) { }
         }
     }
 }

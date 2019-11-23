@@ -1,10 +1,11 @@
 using Rocket.Surgery.Conventions;
+// ReSharper disable PossibleInterfaceMemberAmbiguity
 
 namespace Rocket.Surgery.Extensions.WebJobs
 {
     /// <summary>
     /// IWebJobsConventionBuilder.
-    /// Implements the <see cref="IConventionBuilder{IWebJobsConventionBuilder, IWebJobsConvention, WebJobsConventionDelegate}" />
+    /// Implements the <see cref="IConventionBuilder{TBuilder,TConvention,TDelegate}" />
     /// Implements the <see cref="IWebJobsConventionBuilder" />
     /// Implements the <see cref="IWebJobsConvention" />
     /// Implements the <see cref="IWebJobsConventionContext" />
@@ -13,7 +14,9 @@ namespace Rocket.Surgery.Extensions.WebJobs
     /// <seealso cref="IWebJobsConventionBuilder" />
     /// <seealso cref="IWebJobsConvention" />
     /// <seealso cref="IWebJobsConventionContext" />
-    public interface IWebJobsConventionBuilder : IConventionBuilder<IWebJobsConventionBuilder, IWebJobsConvention, WebJobsConventionDelegate>, IWebJobsConventionContext
+    public interface IWebJobsConventionBuilder :
+        IConventionBuilder<IWebJobsConventionBuilder, IWebJobsConvention, WebJobsConventionDelegate>,
+        IWebJobsConventionContext
     {
         /// <summary>
         /// Build the service provider from this container

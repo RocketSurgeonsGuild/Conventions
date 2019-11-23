@@ -20,15 +20,11 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionTestHostTests : AutoFakeTest
     {
-        public ConventionTestHostTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information)
-        {
-        }
-
         [Fact]
         public void Builder_Should_Create_Host()
         {
             Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
-                .Create();
+               .Create();
             a.Should().NotThrow();
         }
 
@@ -37,7 +33,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Create_With_Delegate()
         {
             Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
-                .Create(builder => { });
+               .Create(builder => { });
             a.Should().NotThrow();
         }
 
@@ -59,7 +55,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Create_Host_ByType()
         {
             Action a = () => ConventionTestHostBuilder.For(GetType(), LoggerFactory)
-                .Create();
+               .Create();
             a.Should().NotThrow();
         }
 
@@ -67,16 +63,16 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Create_Host_ByAssembly()
         {
             Action a = () => ConventionTestHostBuilder.For(GetType().Assembly, LoggerFactory)
-                .Create();
+               .Create();
             a.Should().NotThrow();
         }
 
         [Fact]
-        [Obsolete]
+        [Obsolete("This functionality will be removed in the future")]
         public void Builder_Should_Create_Host_ByDependencyContext()
         {
             Action a = () => ConventionTestHostBuilder.For(DependencyContext.Load(GetType().Assembly), LoggerFactory)
-                .Create();
+               .Create();
             a.Should().NotThrow();
         }
 
@@ -84,8 +80,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Build_Host()
         {
             Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
-                .Create()
-                .Build();
+               .Create()
+               .Build();
             a.Should().NotThrow();
         }
 
@@ -93,8 +89,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Parse_Host()
         {
             Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
-                .Create()
-                .Parse();
+               .Create()
+               .Parse();
             a.Should().NotThrow();
         }
 
@@ -102,8 +98,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Use_A_Custom_IConventionScanner()
         {
             var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .With(AutoFake.Resolve<IConventionScanner>())
-                .Create();
+               .With(AutoFake.Resolve<IConventionScanner>())
+               .Create();
 
             builder.Scanner.Should().BeSameAs(AutoFake.Resolve<IConventionScanner>());
         }
@@ -112,8 +108,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Use_A_Custom_IAssemblyCandidateFinder()
         {
             var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .With(AutoFake.Resolve<IAssemblyCandidateFinder>())
-                .Create();
+               .With(AutoFake.Resolve<IAssemblyCandidateFinder>())
+               .Create();
 
             builder.AssemblyCandidateFinder.Should().BeSameAs(AutoFake.Resolve<IAssemblyCandidateFinder>());
         }
@@ -122,8 +118,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Use_A_Custom_IAssemblyProvider()
         {
             var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .With(AutoFake.Resolve<IAssemblyProvider>())
-                .Create();
+               .With(AutoFake.Resolve<IAssemblyProvider>())
+               .Create();
 
             builder.AssemblyProvider.Should().BeSameAs(AutoFake.Resolve<IAssemblyProvider>());
         }
@@ -132,8 +128,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Use_A_Custom_IServiceProviderDictionary()
         {
             var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .With(AutoFake.Resolve<IServiceProviderDictionary>())
-                .Create();
+               .With(AutoFake.Resolve<IServiceProviderDictionary>())
+               .Create();
 
             builder.ServiceProperties.Should().BeSameAs(AutoFake.Resolve<IServiceProviderDictionary>());
         }
@@ -142,8 +138,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Use_A_Custom_DiagnosticSource()
         {
             var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .With(AutoFake.Resolve<DiagnosticSource>())
-                .Create();
+               .With(AutoFake.Resolve<DiagnosticSource>())
+               .Create();
 
             builder.DiagnosticSource.Should().BeSameAs(AutoFake.Resolve<DiagnosticSource>());
         }
@@ -152,8 +148,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Use_A_Custom_ILogger()
         {
             Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
-                .With(AutoFake.Resolve<ILogger>())
-                .Create();
+               .With(AutoFake.Resolve<ILogger>())
+               .Create();
             a.Should().NotThrow();
         }
 
@@ -161,8 +157,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Use_A_Custom_IRocketEnvironment()
         {
             Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
-                .With(AutoFake.Resolve<IRocketEnvironment>())
-                .Create();
+               .With(AutoFake.Resolve<IRocketEnvironment>())
+               .Create();
             a.Should().NotThrow();
         }
 
@@ -170,8 +166,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Scan_For_Conventions_When_Desired()
         {
             var host = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .Create()
-                .IncludeConventionAttributes();
+               .Create()
+               .IncludeConventionAttributes();
 
             host.Scanner.BuildProvider().GetAll().Should().NotBeEmpty();
         }
@@ -180,8 +176,8 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Not_Scan_For_Conventions()
         {
             var host = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .Create()
-                .ExcludeConventionAttributes();
+               .Create()
+               .ExcludeConventionAttributes();
 
             host.Scanner.BuildProvider().GetAll().Should().BeEmpty();
         }
@@ -190,9 +186,9 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Add_Configuration()
         {
             var host = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .Create();
+               .Create();
 
-            var (configuration, serviceProvider) = host.Build();
+            var (configuration, _) = host.Build();
 
             configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
             configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
@@ -203,16 +199,18 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Add_Configuration_After_It_Has_Been_Changed()
         {
             var host = ConventionTestHostBuilder.For(this, LoggerFactory)
-                .Create();
+               .Create();
             var options = host.GetOrAdd(() => new ConfigurationOptions());
 
             options.EnvironmentConfiguration.Clear();
 
-            var (configuration, serviceProvider) = host.Build();
+            var (configuration, _) = host.Build();
 
             configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(1);
             configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(2);
             configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(1);
         }
+
+        public ConventionTestHostTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information) { }
     }
 }

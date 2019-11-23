@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Extensions.Logging
 {
@@ -15,6 +14,7 @@ namespace Rocket.Surgery.Extensions.Logging
         /// IApplicationState:LogLevel
         /// </summary>
         /// <value>The get log level.</value>
-        public Func<ILoggingConventionContext, LogLevel?> GetLogLevel { get; set; } = context => context.Configuration.GetValue<LogLevel?>("ApplicationState:LogLevel");
+        public Func<ILoggingConventionContext, LogLevel?> GetLogLevel { get; set; } = context
+            => context.Configuration.GetValue<LogLevel?>("ApplicationState:LogLevel");
     }
 }

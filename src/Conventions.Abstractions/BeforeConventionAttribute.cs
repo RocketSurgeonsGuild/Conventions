@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -10,24 +11,32 @@ namespace Rocket.Surgery.Conventions
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public sealed class BeforeConventionAttribute : Attribute, IConventionDependency
     {
+        /// <summary>
+        /// The type to be used with the convention type
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
+        public BeforeConventionAttribute([NotNull] Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (!typeof(IConvention).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                throw new NotSupportedException("Type must inherit from " + nameof(IConvention));
+            }
+
+            Type = type;
+        }
+
         DependencyDirection IConventionDependency.Direction => DependencyDirection.DependentOf;
 
         /// <summary>
         /// The convention type
         /// </summary>
         /// <value>The type.</value>
-        public Type Type { get; set; }
-
-        /// <summary>
-        /// The type to be used with the convention type
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
-        public BeforeConventionAttribute(Type type)
-        {
-            if (!typeof(IConvention).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-                throw new NotSupportedException("Type must inherit from " + nameof(IConvention));
-            Type = type;
-        }
+        public Type Type { get; }
     }
 }

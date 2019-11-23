@@ -6,11 +6,8 @@ using Rocket.Surgery.Conventions.Tests.Fixtures;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-
     internal class Contrib : IServiceConvention
     {
-        public void Register(IServiceConventionContext context)
-        {
-        }
+        public void Register(IServiceConventionContext context) { }
     }
 }

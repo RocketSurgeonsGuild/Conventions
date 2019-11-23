@@ -4,15 +4,14 @@ using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurat
 
 namespace Rocket.Surgery.Extensions.Configuration
 {
-    class ProxyConfigurationBuilder : IMsftConfigurationBuilder
+    internal class ProxyConfigurationBuilder : IMsftConfigurationBuilder
     {
         private readonly IMsftConfigurationBuilder _builder;
         private readonly IList<IConfigurationSource> _sources = new List<IConfigurationSource>();
 
-        public ProxyConfigurationBuilder(IMsftConfigurationBuilder builder)
-        {
-            this._builder = builder;
-        }
+        public ProxyConfigurationBuilder(IMsftConfigurationBuilder builder) => _builder = builder;
+
+        public IEnumerable<IConfigurationSource> GetAdditionalSources() => _sources;
 
         public IDictionary<string, object> Properties => _builder.Properties;
 
@@ -24,14 +23,6 @@ namespace Rocket.Surgery.Extensions.Configuration
             return this;
         }
 
-        public IEnumerable<IConfigurationSource> GetAdditionalSources()
-        {
-            return _sources;
-        }
-
-        public IConfigurationRoot Build()
-        {
-            return _builder.Build();
-        }
+        public IConfigurationRoot Build() => _builder.Build();
     }
 }

@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
-using System.Collections.Generic;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -15,13 +15,15 @@ namespace Rocket.Surgery.Conventions
     /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
     /// <seealso cref="ConventionContainerBuilder{TBuilder, TConvention, TDelegate}" />
     /// <seealso cref="IConventionBuilder{TBuilder, TConvention, TDelegate}" />
-    public abstract class ConventionBuilder<TBuilder, TConvention, TDelegate> : ConventionContainerBuilder<TBuilder, TConvention, TDelegate>, IConventionBuilder<TBuilder, TConvention, TDelegate>
+    public abstract class ConventionBuilder<TBuilder, TConvention, TDelegate> :
+        ConventionContainerBuilder<TBuilder, TConvention, TDelegate>,
+        IConventionBuilder<TBuilder, TConvention, TDelegate>
         where TBuilder : IConventionBuilder<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention
         where TDelegate : Delegate
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConventionBuilder{TBuilder, TConvention, TDelegate}"/> class.
+        /// Initializes a new instance of the <see cref="ConventionBuilder{TBuilder, TConvention, TDelegate}" /> class.
         /// </summary>
         /// <param name="scanner">The scanner.</param>
         /// <param name="assemblyProvider">The assembly provider.</param>
@@ -40,13 +42,18 @@ namespace Rocket.Surgery.Conventions
         ) : base(scanner, properties)
         {
             AssemblyProvider = assemblyProvider ?? throw new ArgumentNullException(nameof(assemblyProvider));
-            AssemblyCandidateFinder = assemblyCandidateFinder ?? throw new ArgumentNullException(nameof(assemblyCandidateFinder));
+            AssemblyCandidateFinder = assemblyCandidateFinder ??
+                throw new ArgumentNullException(nameof(assemblyCandidateFinder));
 
             if (!Properties.TryGetValue(typeof(IAssemblyProvider), out var _))
+            {
                 Properties[typeof(IAssemblyProvider)] = AssemblyProvider;
+            }
 
             if (!Properties.TryGetValue(typeof(IAssemblyCandidateFinder), out var _))
+            {
                 Properties[typeof(IAssemblyCandidateFinder)] = AssemblyCandidateFinder;
+            }
         }
 
         /// <summary>

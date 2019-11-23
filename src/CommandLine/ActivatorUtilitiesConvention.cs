@@ -1,14 +1,14 @@
 using System;
-using System.Collections.Concurrent;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Conventions;
 using Microsoft.Extensions.DependencyInjection;
+#pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Extensions.CommandLine
 {
@@ -20,38 +20,66 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// <seealso cref="IConvention" />
     public class ActivatorUtilitiesConvention : IConvention
     {
+        /// <summary>
+        /// The ambiguous on execute method
+        /// </summary>
+        public const string AmbiguousOnExecuteMethod =
+            "Could not determine which 'OnExecute' or 'OnExecuteAsync' method to use. Multiple methods with this name were found";
+
+        /// <summary>
+        /// The no on execute method found
+        /// </summary>
+        public const string NoOnExecuteMethodFound = "No method named 'OnExecute' or 'OnExecuteAsync' could be found";
+
+        /// <summary>
+        /// Invalids the type of the on execute return.
+        /// </summary>
+        /// <param name="methodName">Name of the method.</param>
+        /// <returns>System.String.</returns>
+        public static string InvalidOnExecuteReturnType(string methodName) => methodName +
+            " must have a return type of int or void, or if the method is async, Task<int> or Task.";
+
+        /// <summary>
+        /// The additional services property
+        /// </summary>
+        internal static readonly PropertyInfo AdditionalServicesProperty =
+            typeof(CommandLineApplication)
+               .GetRuntimeProperties()
+               .Single(m => m.Name == "AdditionalServices");
+
+        private static void CallConstructor(
+            IServiceProvider provider,
+            ConstructorInfo constructorInfo,
+            object? instance
+        )
+        {
+            var methodParams = constructorInfo.GetParameters();
+            var arguments = new object[methodParams.Length];
+            for (var index = 0; index < methodParams.Length; index++)
+            {
+                // does not support things like nullable properties
+                arguments[index] = provider.GetRequiredService(methodParams[index].ParameterType);
+            }
+
+            constructorInfo.Invoke(instance, arguments);
+        }
+
+        private static readonly MethodInfo BindParametersMethod = typeof(ConventionContext).Assembly
+               .GetType("McMaster.Extensions.CommandLineUtils.ReflectionHelper")!
+           .GetMethod("BindParameters", BindingFlags.Public | BindingFlags.Static)!;
+
+        private static readonly MethodInfo ApplyMethod =
+            typeof(ActivatorUtilitiesConvention)
+               .GetRuntimeMethods()
+               .Single(m => m.Name == nameof(ApplyImpl));
+
         private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivatorUtilitiesConvention"/> class.
+        /// Initializes a new instance of the <see cref="ActivatorUtilitiesConvention" /> class.
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
-        public ActivatorUtilitiesConvention(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
-
-        /// <summary>
-        /// Apply the convention.
-        /// </summary>
-        /// <param name="context">The context in which the convention is applied.</param>
-        /// <inheritdoc />
-        public virtual void Apply(ConventionContext context)
-        {
-            if (_serviceProvider != null)
-            {
-                AdditionalServicesProperty.SetValue(context.Application, _serviceProvider);
-            }
-
-            if (context.ModelType == null)
-            {
-                return;
-            }
-
-            ApplyMethod.MakeGenericMethod(context.ModelType).Invoke(this, new object[] { context });
-
-            context.Application.OnExecuteAsync((cancellation) => OnExecute(context, cancellation));
-        }
+        public ActivatorUtilitiesConvention(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
         private async Task<int> OnExecute(ConventionContext context, CancellationToken cancellation)
         {
@@ -75,7 +103,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 throw new InvalidOperationException(AmbiguousOnExecuteMethod);
             }
 
-            method = method ?? asyncMethod;
+            method ??= asyncMethod;
 
             if (method == null)
             {
@@ -84,20 +112,21 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
             var constructor =
                 context.ModelType!.GetTypeInfo()
-                    .DeclaredConstructors.Single();
+                   .DeclaredConstructors.Single();
             var model = context.ModelAccessor?.GetModel();
 
             // Preserve any values that have been set by the command line
             var properties = context.ModelType?
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(x => x.CanRead && x.CanWrite)
-                .Select(x => (PropertyInfo: x, value: x.GetValue(model)))
-                .Where(x => x.value != null)
-                .ToArray() ?? Array.Empty<(PropertyInfo, object)>(); // Lazy evaluation is killer
-            var fields = context.ModelType?.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Select(x => (FieldInfo: x, value: x.GetValue(model)))
-                .Where(x => x.value != null)
-                .ToArray() ?? Array.Empty<(FieldInfo, object)>(); // Lazy evaluation is killer
+               .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+               .Where(x => x.CanRead && x.CanWrite)
+               .Select(x => ( PropertyInfo: x, value: x.GetValue(model) ))
+               .Where(x => x.value != null)
+               .ToArray() ?? Array.Empty<(PropertyInfo, object)>(); // Lazy evaluation is killer
+            var fields = context.ModelType
+              ?.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+               .Select(x => ( FieldInfo: x, value: x.GetValue(model) ))
+               .Where(x => x.value != null)
+               .ToArray() ?? Array.Empty<(FieldInfo, object)>(); // Lazy evaluation is killer
 
             CallConstructor(context.Application, constructor, model);
 
@@ -106,17 +135,22 @@ namespace Rocket.Surgery.Extensions.CommandLine
             {
                 field.FieldInfo.SetValue(model, field.value);
             }
+
             foreach (var property in properties)
             {
                 property.PropertyInfo.SetValue(model, property.value);
             }
 
-            var arguments = (object[])BindParametersMethod.Invoke(null, new object[] { method, context.Application, cancellation })!;
+            var arguments = (object[])BindParametersMethod.Invoke(
+                null,
+                new object[] { method, context.Application, cancellation }
+            )!;
 
             if (method.ReturnType == typeof(Task) || method.ReturnType == typeof(Task<int>))
             {
                 return await InvokeAsync(method, model, arguments).ConfigureAwait(false);
             }
+
             if (method.ReturnType == typeof(void) || method.ReturnType == typeof(int))
             {
                 return Invoke(method, model, arguments);
@@ -125,31 +159,19 @@ namespace Rocket.Surgery.Extensions.CommandLine
             throw new InvalidOperationException(InvalidOnExecuteReturnType(method.Name));
         }
 
-        private static void CallConstructor(IServiceProvider provider, ConstructorInfo constructorInfo, object? instance)
-        {
-            var methodParams = constructorInfo.GetParameters();
-            var arguments = new object[methodParams.Length];
-            for (var index = 0; index < methodParams.Length; index++)
-            {
-                // does not support things like nullable properties
-                arguments[index] = provider.GetRequiredService(methodParams[index].ParameterType);
-            }
-            constructorInfo.Invoke(instance, arguments);
-        }
-
-        private async Task<int> InvokeAsync(MethodInfo method, object? instance, object[] arguments)
+        private static async Task<int> InvokeAsync(MethodInfo method, object? instance, object[] arguments)
         {
             var result = (Task)method.Invoke(instance, arguments)!;
             if (result is Task<int> intResult)
             {
-                return await intResult;
+                return await intResult.ConfigureAwait(false);
             }
 
-            await result;
+            await result.ConfigureAwait(false);
             return 0;
         }
 
-        private int Invoke(MethodInfo method, object? instance, object[] arguments)
+        private static int Invoke(MethodInfo method, object? instance, object[] arguments)
         {
             var result = method.Invoke(instance, arguments);
             if (method.ReturnType == typeof(int))
@@ -160,45 +182,40 @@ namespace Rocket.Surgery.Extensions.CommandLine
             return 0;
         }
 
-        private static readonly MethodInfo BindParametersMethod = typeof(ConventionContext).Assembly
-            .GetType("McMaster.Extensions.CommandLineUtils.ReflectionHelper")!
-            .GetMethod("BindParameters", BindingFlags.Public | BindingFlags.Static)!;
-
-        /// <summary>
-        /// The ambiguous on execute method
-        /// </summary>
-        public const string AmbiguousOnExecuteMethod = "Could not determine which 'OnExecute' or 'OnExecuteAsync' method to use. Multiple methods with this name were found";
-
-        /// <summary>
-        /// The no on execute method found
-        /// </summary>
-        public const string NoOnExecuteMethodFound = "No method named 'OnExecute' or 'OnExecuteAsync' could be found";
-
-        /// <summary>
-        /// Invalids the type of the on execute return.
-        /// </summary>
-        /// <param name="methodName">Name of the method.</param>
-        /// <returns>System.String.</returns>
-        public static string InvalidOnExecuteReturnType(string methodName) => methodName + " must have a return type of int or void, or if the method is async, Task<int> or Task.";
-
-        /// <summary>
-        /// The additional services property
-        /// </summary>
-        internal static readonly PropertyInfo AdditionalServicesProperty =
-            typeof(CommandLineApplication)
-                .GetRuntimeProperties()
-                .Single(m => m.Name == "AdditionalServices");
-
-        private static readonly MethodInfo ApplyMethod =
-            typeof(ActivatorUtilitiesConvention)
-                .GetRuntimeMethods()
-                .Single(m => m.Name == nameof(ApplyImpl));
-
-        private void ApplyImpl<TModel>(ConventionContext context)
+        private static void ApplyImpl<TModel>(ConventionContext context)
             where TModel : class
         {
             if (context.Application is CommandLineApplication<TModel> app)
-                app.ModelFactory = () => (TModel)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(TModel));
+            {
+                app.ModelFactory = () => (TModel)FormatterServices.GetUninitializedObject(typeof(TModel));
+            }
+        }
+
+        /// <summary>
+        /// Apply the convention.
+        /// </summary>
+        /// <param name="context">The context in which the convention is applied.</param>
+        /// <inheritdoc />
+        public virtual void Apply([NotNull] ConventionContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (_serviceProvider != null)
+            {
+                AdditionalServicesProperty.SetValue(context.Application, _serviceProvider);
+            }
+
+            if (context.ModelType == null)
+            {
+                return;
+            }
+
+            ApplyMethod.MakeGenericMethod(context.ModelType).Invoke(this, new object[] { context });
+
+            context.Application.OnExecuteAsync(cancellation => OnExecute(context, cancellation));
         }
     }
 }

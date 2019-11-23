@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions
@@ -19,12 +20,12 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        IDictionary<object, object?> Properties { get; }
+        [NotNull] IDictionary<object, object?> Properties { get; }
 
         /// <summary>
         /// A logger that is configured to work with each convention item
         /// </summary>
         /// <value>The logger.</value>
-        ILogger Logger { get; }
+        [NotNull] ILogger Logger { get; }
     }
 }

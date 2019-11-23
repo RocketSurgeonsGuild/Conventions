@@ -23,9 +23,23 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="logger">The logger to log information</param>
         public AppDomainAssemblyProvider(AppDomain? appDomain = null, ILogger? logger = null)
         {
-            _assembles = new Lazy<IEnumerable<Assembly>>(() =>
-                (appDomain ?? AppDomain.CurrentDomain).GetAssemblies().Where(x => x != null));
+            _assembles = new Lazy<IEnumerable<Assembly>>(
+                () =>
+                    ( appDomain ?? AppDomain.CurrentDomain ).GetAssemblies().Where(x => x != null)
+            );
             _logger = logger ?? NullLogger.Instance;
+        }
+
+        private void LogValue(Assembly value)
+        {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug(
+                    "[{AssemblyProvider}] Found assembly {AssemblyName}",
+                    nameof(AppDomainAssemblyProvider),
+                    value.GetName().Name
+                );
+            }
         }
 
         /// <summary>
@@ -33,16 +47,5 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <returns>IEnumerable{Assembly}.</returns>
         public IEnumerable<Assembly> GetAssemblies() => LoggingEnumerable.Create(_assembles.Value, LogValue);
-
-        private void LogValue(Assembly value)
-        {
-            if (_logger.IsEnabled(LogLevel.Debug))
-            {
-                _logger.LogDebug("[{AssemblyProvider}] Found assembly {AssemblyName}",
-                    nameof(AppDomainAssemblyProvider),
-                    value.GetName().Name
-                );
-            }
-        }
     }
 }

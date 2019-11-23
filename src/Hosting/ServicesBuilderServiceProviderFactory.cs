@@ -2,9 +2,10 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.CommandLine;
 using Rocket.Surgery.Extensions.DependencyInjection;
+using JetBrains.Annotations;
+#pragma warning disable CA1307
 
 namespace Rocket.Surgery.Hosting
 {
@@ -18,31 +19,30 @@ namespace Rocket.Surgery.Hosting
         private readonly Func<IServiceCollection, IServicesBuilder> _func;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServicesBuilderServiceProviderFactory"/> class.
+        /// Initializes a new instance of the <see cref="ServicesBuilderServiceProviderFactory" /> class.
         /// </summary>
         /// <param name="func">The function.</param>
-        public ServicesBuilderServiceProviderFactory(Func<IServiceCollection, IServicesBuilder> func)
-        {
-            _func = func;
-        }
+        public ServicesBuilderServiceProviderFactory(Func<IServiceCollection, IServicesBuilder> func) => _func = func;
 
         /// <summary>
-        /// Creates a container builder from an <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
+        /// Creates a container builder from an <see cref="IServiceCollection" />.
         /// </summary>
         /// <param name="services">The collection of services</param>
-        /// <returns>A container builder that can be used to create an <see cref="T:System.IServiceProvider" />.</returns>
-        public IServicesBuilder CreateBuilder(IServiceCollection services)
-        {
-            return _func(services);
-        }
+        /// <returns>A container builder that can be used to create an <see cref="IServiceProvider" />.</returns>
+        public IServicesBuilder CreateBuilder(IServiceCollection services) => _func(services);
 
         /// <summary>
         /// Creates the service provider.
         /// </summary>
         /// <param name="containerBuilder">The container builder.</param>
         /// <returns>IServiceProvider.</returns>
-        public IServiceProvider CreateServiceProvider(IServicesBuilder containerBuilder)
+        public IServiceProvider CreateServiceProvider([NotNull] IServicesBuilder containerBuilder)
         {
+            if (containerBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(containerBuilder));
+            }
+
             if (containerBuilder.Properties[typeof(ICommandLineExecutor)] is ICommandLineExecutor exec)
             {
                 var result = new CommandLineResult();
@@ -50,8 +50,8 @@ namespace Rocket.Surgery.Hosting
                 containerBuilder.Services.AddSingleton(exec.ApplicationState);
                 // Remove the hosted service that bootstraps kestrel, we are executing a command here.
                 var webHostedServices = containerBuilder.Services
-                    .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting") == true)
-                    .ToArray();
+                   .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting") == true)
+                   .ToArray();
                 if (!exec.IsDefaultCommand || exec.Application.IsShowingInformation)
                 {
                     containerBuilder.Services.Configure<ConsoleLifetimeOptions>(x => x.SuppressStatusMessages = true);
@@ -60,24 +60,28 @@ namespace Rocket.Surgery.Hosting
                         containerBuilder.Services.Remove(descriptor);
                     }
                 }
+
                 var hasWebHostedService = webHostedServices.Any();
-                if (containerBuilder.Properties.TryGetValue(typeof(CommandLineHostedService), out var _) || !exec.IsDefaultCommand)
+                if (containerBuilder.Properties.TryGetValue(typeof(CommandLineHostedService), out var _) ||
+                    !exec.IsDefaultCommand)
                 {
-                    containerBuilder.Services.AddSingleton<IHostedService>(_ =>
-                        new CommandLineHostedService(
-                            _,
-                            exec,
+                    containerBuilder.Services.AddSingleton<IHostedService>(
+                        _ =>
+                            new CommandLineHostedService(
+                                _,
+                                exec,
 #if NETSTANDARD2_0 || NETCOREAPP2_1
-                            _.GetRequiredService<IApplicationLifetime>(),
+                                _.GetRequiredService<IApplicationLifetime>(),
 #else
-                            _.GetRequiredService<IHostApplicationLifetime>(),
+                                _.GetRequiredService<IHostApplicationLifetime>(),
 #endif
-                            result,
-                            hasWebHostedService
-                        )
+                                result,
+                                hasWebHostedService
+                            )
                     );
                 }
             }
+
             return containerBuilder.Build();
         }
     }

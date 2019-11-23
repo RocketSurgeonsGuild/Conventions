@@ -1,10 +1,5 @@
-using System.Collections.Generic;
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
+using System;
+using JetBrains.Annotations;
 using Rocket.Surgery.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
@@ -22,9 +17,15 @@ namespace Rocket.Surgery.Conventions
         /// <param name="options">The options.</param>
         /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseLogging(
-            this IConventionHostBuilder container,
-            RocketLoggingOptions? options = null)
+            [NotNull] this IConventionHostBuilder container,
+            RocketLoggingOptions? options = null
+        )
         {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
             container.ServiceProperties[typeof(RocketLoggingOptions)] = options ?? new RocketLoggingOptions();
             container.Scanner.PrependConvention<LoggingServiceConvention>();
             return container;

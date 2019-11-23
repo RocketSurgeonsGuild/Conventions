@@ -10,17 +10,6 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionBuilderTests : AutoFakeTest
     {
-        public ConventionBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
-        {
-        }
-
-        private class CCBuilder : ConventionBuilder<CCBuilder, IServiceConvention, ServiceConventionDelegate>
-        {
-            public CCBuilder(IConventionScanner scanner, IAssemblyProvider assemblyProvider, IAssemblyCandidateFinder assemblyCandidateFinder, IServiceProviderDictionary properties) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
-            {
-            }
-        }
-
         [Fact]
         public void ShouldConstruct()
         {
@@ -37,6 +26,18 @@ namespace Rocket.Surgery.Conventions.Tests
             builder["a"] = "b";
 
             builder["a"].Should().Be("b");
+        }
+
+        public ConventionBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
+
+        private class CCBuilder : ConventionBuilder<CCBuilder, IServiceConvention, ServiceConventionDelegate>
+        {
+            public CCBuilder(
+                IConventionScanner scanner,
+                IAssemblyProvider assemblyProvider,
+                IAssemblyCandidateFinder assemblyCandidateFinder,
+                IServiceProviderDictionary properties
+            ) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties) { }
         }
     }
 }

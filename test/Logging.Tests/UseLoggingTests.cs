@@ -19,18 +19,6 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
 {
     public class UseLoggingTests : AutoFakeTest
     {
-        public UseLoggingTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Trace)
-        {
-        }
-
-        class HostBuilder : ConventionHostBuilder<HostBuilder>
-        {
-            public HostBuilder(IConventionScanner scanner, IAssemblyCandidateFinder assemblyCandidateFinder, IAssemblyProvider assemblyProvider, DiagnosticSource diagnosticSource, IServiceProviderDictionary serviceProperties) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties)
-            {
-            }
-        }
-
-
         [Fact]
         public void AddsAsAConvention()
         {
@@ -43,7 +31,7 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
             var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-                .Returns(new[] { typeof(LoggingHostBuilder2Extensions).Assembly });
+               .Returns(new[] { typeof(LoggingHostBuilder2Extensions).Assembly });
 
             properties[typeof(ILogger)] = Logger;
             var scanner = AutoFake.Resolve<SimpleConventionScanner>();
@@ -51,7 +39,7 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
             var services = new ServiceCollection();
             AutoFake.Provide<IServiceCollection>(services);
 
-            var builder = AutoFake.Resolve<HostBuilder>();
+            AutoFake.Resolve<HostBuilder>();
             var sb = AutoFake.Resolve<ServicesBuilder>();
             sb.Services.AddOptions();
 
@@ -83,12 +71,25 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
 
             static LogLevel? @delegate(ILoggingConventionContext x) => LogLevel.Error;
 
-            builder.UseLogging(new RocketLoggingOptions() { GetLogLevel = @delegate });
+            builder.UseLogging(new RocketLoggingOptions { GetLogLevel = @delegate });
 
             var sp = sb.Build();
 
             services.Should().Contain(x => x.ServiceType == typeof(IConfigureOptions<LoggerFilterOptions>));
             sp.GetRequiredService<IOptions<LoggerFilterOptions>>().Value.MinLevel.Should().Be(LogLevel.Error);
+        }
+
+        public UseLoggingTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Trace) { }
+
+        private class HostBuilder : ConventionHostBuilder<HostBuilder>
+        {
+            public HostBuilder(
+                IConventionScanner scanner,
+                IAssemblyCandidateFinder assemblyCandidateFinder,
+                IAssemblyProvider assemblyProvider,
+                DiagnosticSource diagnosticSource,
+                IServiceProviderDictionary serviceProperties
+            ) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties) { }
         }
     }
 }

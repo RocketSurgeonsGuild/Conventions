@@ -1,0 +1,8 @@
+Rocket.Surgery.Extensions.WebJobs.WebJobsConventionBuilder
+Rocket.Surgery.Extensions.WebJobs.WebJobsConventionBuilder.Build() -> void
+Rocket.Surgery.Extensions.WebJobs.WebJobsConventionBuilder.Configuration.get -> Microsoft.Extensions.Configuration.IConfiguration
+Rocket.Surgery.Extensions.WebJobs.WebJobsConventionBuilder.Environment.get -> Rocket.Surgery.Conventions.IRocketEnvironment
+Rocket.Surgery.Extensions.WebJobs.WebJobsConventionBuilder.Logger.get -> Microsoft.Extensions.Logging.ILogger
+Rocket.Surgery.Extensions.WebJobs.WebJobsConventionBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+Rocket.Surgery.Extensions.WebJobs.WebJobsConventionBuilder.WebJobsBuilder.get -> Microsoft.Azure.WebJobs.IWebJobsBuilder
+Rocket.Surgery.Extensions.WebJobs.WebJobsConventionBuilder.WebJobsConventionBuilder(Rocket.Surgery.Conventions.Scanners.IConventionScanner scanner, Rocket.Surgery.Conventions.Reflection.IAssemblyProvider assemblyProvider, Rocket.Surgery.Conventions.Reflection.IAssemblyCandidateFinder assemblyCandidateFinder, Microsoft.Azure.WebJobs.IWebJobsBuilder webJobsBuilder, Microsoft.Extensions.Configuration.IConfiguration configuration, Rocket.Surgery.Conventions.IRocketEnvironment environment, Microsoft.Extensions.Logging.ILogger diagnosticSource, System.Collections.Generic.IDictionary<object, object> properties) -> void

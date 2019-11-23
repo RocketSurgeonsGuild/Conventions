@@ -364,7 +364,7 @@ dotnet_diagnostic.CA1061.severity = warning
 dotnet_diagnostic.CA1062.severity = warning
 
 # CA1063: Implement IDisposable Correctly
-dotnet_diagnostic.CA1063.severity = warning
+dotnet_diagnostic.CA1063.severity = none
 
 # CA1064: Exceptions should be public
 dotnet_diagnostic.CA1064.severity = warning
@@ -454,7 +454,7 @@ dotnet_diagnostic.CA1802.severity = warning
 dotnet_diagnostic.CA1806.severity = warning
 
 # CA1812: Avoid uninstantiated internal classes
-dotnet_diagnostic.CA1812.severity = warning
+dotnet_diagnostic.CA1812.severity = none
 
 # CA1814: Prefer jagged arrays over multidimensional
 dotnet_diagnostic.CA1814.severity = warning
@@ -555,7 +555,7 @@ dotnet_diagnostic.CA1810.severity = warning
 dotnet_diagnostic.CA1813.severity = none
 
 # CA1816: Dispose methods should call SuppressFinalize
-dotnet_diagnostic.CA1816.severity = warning
+dotnet_diagnostic.CA1816.severity = none
 
 # CA1820: Test for empty strings using string length
 dotnet_diagnostic.CA1820.severity = warning

@@ -1,18 +1,11 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
+﻿using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Hosting
 {
     /// <summary>
-    ///  IHostingConventionContext
+    /// IHostingConventionContext
     /// Implements the <see cref="IConventionContext" />
     /// </summary>
     /// <seealso cref="IConventionContext" />
-    public interface IHostingConventionContext : IConventionContext, IRocketHostBuilder
-    {
-    }
+    public interface IHostingConventionContext : IConventionContext, IRocketHostBuilder { }
 }

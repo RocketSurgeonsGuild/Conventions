@@ -1,4 +1,5 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using System;
+using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Conventions;
 
 namespace Rocket.Surgery.Extensions.CommandLine
@@ -8,7 +9,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// Implements the <see cref="IConvention" />
     /// </summary>
     /// <seealso cref="IConvention" />
-    class DefaultHelpOptionConvention : IConvention
+    internal class DefaultHelpOptionConvention : IConvention
     {
         /// <summary>
         /// The default help template.
@@ -34,21 +35,22 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 // the convention will run on each subcommand automatically.
                 // it is better to run the command on each to check for overlap
                 // or already set options to avoid conflict
-                Inherited = false,
+                Inherited = false
             };
 
             foreach (var opt in context.Application.GetOptions())
             {
-                if (string.Equals(help.LongName, opt.LongName))
+                if (string.Equals(help.LongName, opt.LongName, StringComparison.OrdinalIgnoreCase))
                 {
                     help.LongName = null;
                 }
-                if (string.Equals(help.ShortName, opt.ShortName))
+
+                if (string.Equals(help.ShortName, opt.ShortName, StringComparison.OrdinalIgnoreCase))
                 {
                     help.ShortName = null;
                 }
 
-                if (string.Equals(help.SymbolName, opt.SymbolName))
+                if (string.Equals(help.SymbolName, opt.SymbolName, StringComparison.OrdinalIgnoreCase))
                 {
                     help.SymbolName = null;
                 }

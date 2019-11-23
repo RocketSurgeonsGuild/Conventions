@@ -1,5 +1,5 @@
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Extensions.DependencyInjection;
+using System;
+using JetBrains.Annotations;
 using Rocket.Surgery.Hosting;
 
 // ReSharper disable once CheckNamespace
@@ -17,9 +17,15 @@ namespace Rocket.Surgery.Conventions
         /// <param name="delegate">The delegate.</param>
         /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder ConfigureHosting(
-            this IConventionHostBuilder container,
-            HostingConventionDelegate @delegate)
+            [NotNull] this IConventionHostBuilder container,
+            HostingConventionDelegate @delegate
+        )
         {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
             container.Scanner.AppendDelegate(@delegate);
             return container;
         }

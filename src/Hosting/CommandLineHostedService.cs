@@ -13,7 +13,7 @@ namespace Rocket.Surgery.Hosting
     /// Implements the <see cref="IHostedService" />
     /// </summary>
     /// <seealso cref="IHostedService" />
-    class CommandLineHostedService : IHostedService
+    internal class CommandLineHostedService : IHostedService
     {
         private readonly ICommandLineExecutor _executor;
         private readonly IServiceProvider _serviceProvider;
@@ -27,7 +27,7 @@ namespace Rocket.Surgery.Hosting
         private readonly ILogger<CommandLineHostedService> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandLineHostedService"/> class.
+        /// Initializes a new instance of the <see cref="CommandLineHostedService" /> class.
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="executor">The executor.</param>
@@ -51,8 +51,9 @@ namespace Rocket.Surgery.Hosting
 #else
             IHostApplicationLifetime lifetime,
 #endif
-        CommandLineResult commandLineResult,
-            bool isWebApp)
+            CommandLineResult commandLineResult,
+            bool isWebApp
+        )
         {
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
@@ -69,25 +70,30 @@ namespace Rocket.Surgery.Hosting
         /// <returns>Task.</returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _lifetime.ApplicationStarted.Register(async () =>
-            {
-                if (!(_executor.IsDefaultCommand && _isWebApp))
+            _lifetime.ApplicationStarted.Register(
+                async () =>
                 {
-                    try
+                    if (!( _executor.IsDefaultCommand && _isWebApp ))
                     {
-                        _result.Value = await _executor.ExecuteAsync(_serviceProvider, cancellationToken).ConfigureAwait(false);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError(e, "Command failed to execute");
-                        _result.Value = -1;
-                    }
-                    finally
-                    {
-                        _lifetime.StopApplication();
+                        try
+                        {
+                            _result.Value = await _executor.ExecuteAsync(_serviceProvider, cancellationToken)
+                               .ConfigureAwait(false);
+                        }
+                        #pragma warning disable CA1031
+                        catch (Exception e)
+                        {
+                            _logger.LogError(e, "Command failed to execute");
+                            _result.Value = -1;
+                        }
+#pragma warning restore CA1031
+                        finally
+                        {
+                            _lifetime.StopApplication();
+                        }
                     }
                 }
-            });
+            );
             return Task.CompletedTask;
         }
 
@@ -96,9 +102,6 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task.</returns>
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }

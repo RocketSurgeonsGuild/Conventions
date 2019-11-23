@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using McMaster.Extensions.CommandLineUtils.Abstractions;
 
 namespace Rocket.Surgery.Extensions.CommandLine
 {
     /// <summary>
-    ///  ICommandLine
+    /// ICommandLine
     /// </summary>
     public interface ICommandLine
     {
@@ -40,6 +38,10 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="args">The arguments.</param>
         /// <returns>System.Int32.</returns>
-        Task<int> ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken, params string[] args);
+        Task<int> ExecuteAsync(
+            IServiceProvider serviceProvider,
+            CancellationToken cancellationToken,
+            params string[] args
+        );
     }
 }

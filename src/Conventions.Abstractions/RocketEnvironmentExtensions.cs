@@ -1,5 +1,6 @@
-using Microsoft.Extensions.Hosting;
 using System;
+using JetBrains.Annotations;
+using Microsoft.Extensions.Hosting;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -14,8 +15,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="hostEnvironment">An instance of <see cref="IRocketEnvironment" />.</param>
         /// <returns><c>true</c> if the specified host environment is development; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException">hostEnvironment</exception>
-
-        public static bool IsDevelopment(this IRocketEnvironment hostEnvironment)
+        public static bool IsDevelopment([NotNull] this IRocketEnvironment hostEnvironment)
         {
             if (hostEnvironment == null)
             {
@@ -31,8 +31,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="hostEnvironment">An instance of <see cref="IRocketEnvironment" />.</param>
         /// <returns><c>true</c> if the specified host environment is staging; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException">hostEnvironment</exception>
-
-        public static bool IsStaging(this IRocketEnvironment hostEnvironment)
+        public static bool IsStaging([NotNull] this IRocketEnvironment hostEnvironment)
         {
             if (hostEnvironment == null)
             {
@@ -48,8 +47,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="hostEnvironment">An instance of <see cref="IRocketEnvironment" />.</param>
         /// <returns><c>true</c> if the specified host environment is production; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException">hostEnvironment</exception>
-
-        public static bool IsProduction(this IRocketEnvironment hostEnvironment)
+        public static bool IsProduction([NotNull] this IRocketEnvironment hostEnvironment)
         {
             if (hostEnvironment == null)
             {
@@ -66,10 +64,10 @@ namespace Rocket.Surgery.Conventions
         /// <param name="environmentName">Environment name to validate against.</param>
         /// <returns><c>true</c> if the specified environment name is environment; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException">hostEnvironment</exception>
-
         public static bool IsEnvironment(
-            this IRocketEnvironment hostEnvironment,
-            string environmentName)
+            [NotNull] this IRocketEnvironment hostEnvironment,
+            [NotNull] string environmentName
+        )
         {
             if (hostEnvironment == null)
             {
@@ -79,7 +77,8 @@ namespace Rocket.Surgery.Conventions
             return string.Equals(
                 hostEnvironment.EnvironmentName,
                 environmentName,
-                StringComparison.OrdinalIgnoreCase);
+                StringComparison.OrdinalIgnoreCase
+            );
         }
 
         /// <summary>
@@ -88,22 +87,19 @@ namespace Rocket.Surgery.Conventions
         /// <param name="environment">The environment.</param>
         /// <returns>IRocketEnvironment.</returns>
 #pragma warning disable 618
-        public static IRocketEnvironment Convert(this IHostingEnvironment environment)
+        [NotNull] public static IRocketEnvironment Convert([NotNull] this IHostingEnvironment environment)
 #pragma warning restore 618
         {
             return new RocketEnvironment(environment);
         }
 #if NETCOREAPP3_0 || NETSTANDARD2_1
-
         /// <summary>
         /// Converts the specified environment.
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <returns>IRocketEnvironment.</returns>
-        public static IRocketEnvironment Convert(this IHostEnvironment environment)
-        {
-            return new RocketEnvironment(environment);
-        }
+        [NotNull] public static IRocketEnvironment Convert([NotNull] this IHostEnvironment environment)
+            => new RocketEnvironment(environment);
 #endif
     }
 }

@@ -14,7 +14,10 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// </summary>
     /// <param name="state">The state.</param>
     /// <param name="cancellationToken">The state.</param>
-    public delegate Task<int> OnRunAsyncCancellableDelegate(IApplicationState state, CancellationToken cancellationToken);
+    public delegate Task<int> OnRunAsyncCancellableDelegate(
+        IApplicationState state,
+        CancellationToken cancellationToken
+    );
 
     /// <summary>
     /// Delegate OnRunDelegate
@@ -29,7 +32,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
     public delegate void OnParseDelegate(IApplicationState state);
 
     /// <summary>
-    ///  IDefaultCommand
+    /// IDefaultCommand
     /// </summary>
     public interface IDefaultCommand
     {
@@ -41,7 +44,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
     }
 
     /// <summary>
-    ///  IDefaultCommand
+    /// IDefaultCommand
     /// </summary>
     public interface IDefaultCommandAsync
     {

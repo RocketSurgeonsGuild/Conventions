@@ -7,20 +7,23 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
+// ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable IDE0058 // Expression value is never used
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 
 namespace Rocket.Surgery.Conventions.Tests
 {
     public class RocketEnvironmentTests : AutoFakeTest
     {
-        public RocketEnvironmentTests(ITestOutputHelper outputHelper) : base(outputHelper)
-        {
-        }
-
         [Fact]
         public void ShouldCreateAnEnvironmentAsExpected()
         {
-            var env = new RocketEnvironment("someenv", "appname", Directory.GetCurrentDirectory(),
-                AutoFake.Resolve<IFileProvider>());
+            var env = new RocketEnvironment(
+                "someenv",
+                "appname",
+                Directory.GetCurrentDirectory(),
+                AutoFake.Resolve<IFileProvider>()
+            );
 
             env.EnvironmentName.Should().Be("someenv");
             env.ApplicationName.Should().Be("appname");
@@ -30,56 +33,40 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void CheckForDevelopmentShouldFailOnNull()
         {
-            var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
-                AutoFake.Resolve<IFileProvider>());
-
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Action a = () => RocketEnvironmentExtensions.IsDevelopment(null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             a.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
         public void CheckForStagingShouldFailOnNull()
         {
-            var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
-                AutoFake.Resolve<IFileProvider>());
-
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Action a = () => RocketEnvironmentExtensions.IsEnvironment(null, RocketEnvironments.Staging);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             a.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
         public void CheckForProductionShouldFailOnNull()
         {
-            var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
-                AutoFake.Resolve<IFileProvider>());
-
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Action a = () => RocketEnvironmentExtensions.IsEnvironment(null, RocketEnvironments.Production);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             a.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
         public void CheckForEnvironmentShouldFailOnNull()
         {
-            var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
-                AutoFake.Resolve<IFileProvider>());
-
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Action a = () => RocketEnvironmentExtensions.IsEnvironment(null, RocketEnvironments.Development);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             a.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
         public void ShouldCheckForDevelopment()
         {
-            var env = new RocketEnvironment(RocketEnvironments.Development, "appname", Directory.GetCurrentDirectory(),
-                AutoFake.Resolve<IFileProvider>());
+            var env = new RocketEnvironment(
+                RocketEnvironments.Development,
+                "appname",
+                Directory.GetCurrentDirectory(),
+                AutoFake.Resolve<IFileProvider>()
+            );
 
             env.IsDevelopment().Should().BeTrue();
         }
@@ -87,8 +74,12 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldCheckForStaging()
         {
-            var env = new RocketEnvironment(RocketEnvironments.Staging, "appname", Directory.GetCurrentDirectory(),
-                AutoFake.Resolve<IFileProvider>());
+            var env = new RocketEnvironment(
+                RocketEnvironments.Staging,
+                "appname",
+                Directory.GetCurrentDirectory(),
+                AutoFake.Resolve<IFileProvider>()
+            );
 
             env.IsStaging().Should().BeTrue();
         }
@@ -96,11 +87,17 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void ShouldCheckForProduction()
         {
-            var env = new RocketEnvironment(RocketEnvironments.Production, "appname", Directory.GetCurrentDirectory(),
-                AutoFake.Resolve<IFileProvider>());
+            var env = new RocketEnvironment(
+                RocketEnvironments.Production,
+                "appname",
+                Directory.GetCurrentDirectory(),
+                AutoFake.Resolve<IFileProvider>()
+            );
 
             env.IsProduction().Should().BeTrue();
         }
+
+        public RocketEnvironmentTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 
         [Theory]
         [InlineData(RocketEnvironments.Development)]

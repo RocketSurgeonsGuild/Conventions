@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Extensions.CommandLine
@@ -15,12 +14,12 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// Implements the <see cref="ICommandLine" />
     /// </summary>
     /// <seealso cref="ICommandLine" />
-    class CommandLine : ICommandLine
+    internal class CommandLine : ICommandLine
     {
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandLine"/> class.
+        /// Initializes a new instance of the <see cref="CommandLine" /> class.
         /// </summary>
         /// <param name="application">The application.</param>
         /// <param name="logger">The logger.</param>
@@ -45,8 +44,9 @@ namespace Rocket.Surgery.Extensions.CommandLine
         {
             if (_logger.IsEnabled(LogLevel.Trace))
             {
-                _logger.LogTrace("Parsing {@Args}", args);
+                _logger.LogTrace("Parsing {@Args}", args.AsEnumerable());
             }
+
             var result = Application.Parse(args);
 
             var parent = result.SelectedCommand;
@@ -58,17 +58,26 @@ namespace Rocket.Surgery.Extensions.CommandLine
             ApplicationState? myState = null;
             if (parent is IModelAccessor ma && ma.GetModel() is ApplicationState state)
             {
-                state.IsDefaultCommand = result.SelectedCommand is IModelAccessor m && m.GetModelType() == typeof(ApplicationState) && !result.SelectedCommand.IsShowingInformation;
+                state.IsDefaultCommand = result.SelectedCommand is IModelAccessor m &&
+                    m.GetModelType() == typeof(ApplicationState) && !result.SelectedCommand.IsShowingInformation;
 
-                if (state.OnParseDelegates == null) state.OnParseDelegates = new List<OnParseDelegate>();
+                if (state.OnParseDelegates == null)
+                {
+                    state.OnParseDelegates = new List<OnParseDelegate>();
+                }
+
                 foreach (var d in state.OnParseDelegates)
+                {
                     d(state);
+                }
+
                 myState = state;
             }
 
             if (myState != null && _logger.IsEnabled(LogLevel.Trace))
             {
-                _logger.LogTrace("Selected Command {@Command} {@State}",
+                _logger.LogTrace(
+                    "Selected Command {@Command} {@State}",
                     new
                     {
                         result.SelectedCommand.FullName,
@@ -98,8 +107,9 @@ namespace Rocket.Surgery.Extensions.CommandLine
         {
             if (_logger.IsEnabled(LogLevel.Trace))
             {
-                _logger.LogTrace("Executing {@Args}", args);
+                _logger.LogTrace("Executing {@Args}", args.AsEnumerable());
             }
+
             return Parse(args).Execute(serviceProvider);
         }
 
@@ -110,12 +120,17 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="args">The arguments.</param>
         /// <returns>System.Int32.</returns>
-        public Task<int> ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken, params string[] args)
+        public Task<int> ExecuteAsync(
+            IServiceProvider serviceProvider,
+            CancellationToken cancellationToken,
+            params string[] args
+        )
         {
             if (_logger.IsEnabled(LogLevel.Trace))
             {
-                _logger.LogTrace("Executing {@Args}", args);
+                _logger.LogTrace("Executing {@Args}", args.AsEnumerable());
             }
+
             return Parse(args).ExecuteAsync(serviceProvider, cancellationToken);
         }
     }

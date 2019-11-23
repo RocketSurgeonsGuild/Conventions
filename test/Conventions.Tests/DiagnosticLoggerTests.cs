@@ -9,23 +9,26 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class DiagnosticLoggerTests : AutoFakeTest
     {
-        public DiagnosticLoggerTests(ITestOutputHelper outputHelper) : base(outputHelper){ }
-
         [Fact]
         public void LogTrace()
         {
             var logger = AutoFake.Resolve<DiagnosticLogger>();
             logger.LogTrace("Test!~");
-            A.CallTo(() => AutoFake.Resolve<DiagnosticSource>()
-                    .Write(
-                        "Log.Trace",
-                        A<object>.That.Matches(x =>
-                            x.GetType().GetProperty("logLevel") != null &&
-                            x.GetType().GetProperty("eventId") != null &&
-                            x.GetType().GetProperty("state") != null &&
-                            x.GetType().GetProperty("exception") != null &&
-                            x.GetType().GetProperty("message") != null)))
-                .MustHaveHappenedOnceExactly();
+            A.CallTo(
+                    () => AutoFake.Resolve<DiagnosticSource>()
+                       .Write(
+                            "Log.Trace",
+                            A<object>.That.Matches(
+                                x =>
+                                    x.GetType().GetProperty("logLevel") != null &&
+                                    x.GetType().GetProperty("eventId") != null &&
+                                    x.GetType().GetProperty("state") != null &&
+                                    x.GetType().GetProperty("exception") != null &&
+                                    x.GetType().GetProperty("message") != null
+                            )
+                        )
+                )
+               .MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -33,16 +36,21 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var logger = AutoFake.Resolve<DiagnosticLogger>();
             logger.LogDebug("Test!~");
-            A.CallTo(() => AutoFake.Resolve<DiagnosticSource>()
-                    .Write(
-                        "Log.Debug",
-                        A<object>.That.Matches(x =>
-                            x.GetType().GetProperty("logLevel") != null &&
-                            x.GetType().GetProperty("eventId") != null &&
-                            x.GetType().GetProperty("state") != null &&
-                            x.GetType().GetProperty("exception") != null &&
-                            x.GetType().GetProperty("message") != null)))
-                .MustHaveHappenedOnceExactly();
+            A.CallTo(
+                    () => AutoFake.Resolve<DiagnosticSource>()
+                       .Write(
+                            "Log.Debug",
+                            A<object>.That.Matches(
+                                x =>
+                                    x.GetType().GetProperty("logLevel") != null &&
+                                    x.GetType().GetProperty("eventId") != null &&
+                                    x.GetType().GetProperty("state") != null &&
+                                    x.GetType().GetProperty("exception") != null &&
+                                    x.GetType().GetProperty("message") != null
+                            )
+                        )
+                )
+               .MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -50,16 +58,21 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var logger = AutoFake.Resolve<DiagnosticLogger>();
             logger.LogInformation("Test!~");
-            A.CallTo(() => AutoFake.Resolve<DiagnosticSource>()
-                    .Write(
-                        "Log.Information",
-                        A<object>.That.Matches(x =>
-                            x.GetType().GetProperty("logLevel") != null &&
-                            x.GetType().GetProperty("eventId") != null &&
-                            x.GetType().GetProperty("state") != null &&
-                            x.GetType().GetProperty("exception") != null &&
-                            x.GetType().GetProperty("message") != null)))
-                .MustHaveHappenedOnceExactly();
+            A.CallTo(
+                    () => AutoFake.Resolve<DiagnosticSource>()
+                       .Write(
+                            "Log.Information",
+                            A<object>.That.Matches(
+                                x =>
+                                    x.GetType().GetProperty("logLevel") != null &&
+                                    x.GetType().GetProperty("eventId") != null &&
+                                    x.GetType().GetProperty("state") != null &&
+                                    x.GetType().GetProperty("exception") != null &&
+                                    x.GetType().GetProperty("message") != null
+                            )
+                        )
+                )
+               .MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -67,16 +80,21 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var logger = AutoFake.Resolve<DiagnosticLogger>();
             logger.LogCritical("Test!~");
-            A.CallTo(() => AutoFake.Resolve<DiagnosticSource>()
-                    .Write(
-                        "Log.Critical",
-                        A<object>.That.Matches(x =>
-                            x.GetType().GetProperty("logLevel") != null &&
-                            x.GetType().GetProperty("eventId") != null &&
-                            x.GetType().GetProperty("state") != null &&
-                            x.GetType().GetProperty("exception") != null &&
-                            x.GetType().GetProperty("message") != null)))
-                .MustHaveHappenedOnceExactly();
+            A.CallTo(
+                    () => AutoFake.Resolve<DiagnosticSource>()
+                       .Write(
+                            "Log.Critical",
+                            A<object>.That.Matches(
+                                x =>
+                                    x.GetType().GetProperty("logLevel") != null &&
+                                    x.GetType().GetProperty("eventId") != null &&
+                                    x.GetType().GetProperty("state") != null &&
+                                    x.GetType().GetProperty("exception") != null &&
+                                    x.GetType().GetProperty("message") != null
+                            )
+                        )
+                )
+               .MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -84,16 +102,21 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var logger = AutoFake.Resolve<DiagnosticLogger>();
             logger.LogError("Test!~");
-            A.CallTo(() => AutoFake.Resolve<DiagnosticSource>()
-                    .Write(
-                        "Log.Error",
-                        A<object>.That.Matches(x =>
-                            x.GetType().GetProperty("logLevel") != null &&
-                            x.GetType().GetProperty("eventId") != null &&
-                            x.GetType().GetProperty("state") != null &&
-                            x.GetType().GetProperty("exception") != null &&
-                            x.GetType().GetProperty("message") != null)))
-                .MustHaveHappenedOnceExactly();
+            A.CallTo(
+                    () => AutoFake.Resolve<DiagnosticSource>()
+                       .Write(
+                            "Log.Error",
+                            A<object>.That.Matches(
+                                x =>
+                                    x.GetType().GetProperty("logLevel") != null &&
+                                    x.GetType().GetProperty("eventId") != null &&
+                                    x.GetType().GetProperty("state") != null &&
+                                    x.GetType().GetProperty("exception") != null &&
+                                    x.GetType().GetProperty("message") != null
+                            )
+                        )
+                )
+               .MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -101,16 +124,23 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var logger = AutoFake.Resolve<DiagnosticLogger>();
             logger.LogWarning("Test!~");
-            A.CallTo(() => AutoFake.Resolve<DiagnosticSource>()
-                    .Write(
-                        "Log.Warning",
-                        A<object>.That.Matches(x =>
-                            x.GetType().GetProperty("logLevel") != null &&
-                            x.GetType().GetProperty("eventId") != null &&
-                            x.GetType().GetProperty("state") != null &&
-                            x.GetType().GetProperty("exception") != null &&
-                            x.GetType().GetProperty("message") != null)))
-                .MustHaveHappenedOnceExactly();
+            A.CallTo(
+                    () => AutoFake.Resolve<DiagnosticSource>()
+                       .Write(
+                            "Log.Warning",
+                            A<object>.That.Matches(
+                                x =>
+                                    x.GetType().GetProperty("logLevel") != null &&
+                                    x.GetType().GetProperty("eventId") != null &&
+                                    x.GetType().GetProperty("state") != null &&
+                                    x.GetType().GetProperty("exception") != null &&
+                                    x.GetType().GetProperty("message") != null
+                            )
+                        )
+                )
+               .MustHaveHappenedOnceExactly();
         }
+
+        public DiagnosticLoggerTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
     }
 }

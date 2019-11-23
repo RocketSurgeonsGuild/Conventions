@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
-using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 
 namespace Rocket.Surgery.Extensions.CommandLine
 {
@@ -15,8 +12,22 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// </summary>
     /// <seealso cref="IApplicationState" />
     [Command(ThrowOnUnexpectedArgument = false)]
-    class ApplicationState : IApplicationState
+    internal class ApplicationState : IApplicationState
     {
+        /// <summary>
+        /// Gets or sets the on parse delegates.
+        /// </summary>
+        /// <value>The on parse delegates.</value>
+        public List<OnParseDelegate> OnParseDelegates { get; internal set; } = new List<OnParseDelegate>();
+
+        /// <summary>
+        /// Gets the log.
+        /// </summary>
+        /// <value>The log.</value>
+        [Option(CommandOptionType.SingleValue, Description = "Log level", Inherited = true, ShowInHelpText = true)]
+        [UsedImplicitly]
+        public (bool HasValue, LogLevel Level) Log { get; }
+
         /// <summary>
         /// Gets or sets the on run delegate.
         /// </summary>
@@ -48,44 +59,35 @@ namespace Rocket.Surgery.Extensions.CommandLine
         internal Type? OnRunAsyncType { get; set; }
 
         /// <summary>
-        /// Gets or sets the on parse delegates.
-        /// </summary>
-        /// <value>The on parse delegates.</value>
-        public List<OnParseDelegate> OnParseDelegates { get; internal set; } = new List<OnParseDelegate>();
-
-        /// <summary>
         /// Gets the remaining arguments.
         /// </summary>
         /// <value>The remaining arguments.</value>
         public string[] RemainingArguments { get; set; } = Array.Empty<string>();
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:Rocket.Surgery.Extensions.CommandLine.IApplicationState" /> is verbose.
+        /// Gets a value indicating whether this <see cref="IApplicationState" /> is
+        /// verbose.
         /// </summary>
         /// <value><c>true</c> if verbose; otherwise, <c>false</c>.</value>
         [Option(CommandOptionType.NoValue, Description = "Verbose logging", Inherited = true, ShowInHelpText = true)]
+        [UsedImplicitly]
         public bool Verbose { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:Rocket.Surgery.Extensions.CommandLine.IApplicationState" /> is trace.
+        /// Gets a value indicating whether this <see cref="IApplicationState" /> is trace.
         /// </summary>
         /// <value><c>true</c> if trace; otherwise, <c>false</c>.</value>
         [Option(CommandOptionType.NoValue, Description = "Trace logging", Inherited = true, ShowInHelpText = true)]
+        [UsedImplicitly]
         public bool Trace { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:Rocket.Surgery.Extensions.CommandLine.IApplicationState" /> is debug.
+        /// Gets a value indicating whether this <see cref="IApplicationState" /> is debug.
         /// </summary>
         /// <value><c>true</c> if debug; otherwise, <c>false</c>.</value>
         [Option(CommandOptionType.NoValue, Description = "Debug logging", Inherited = true, ShowInHelpText = true)]
+        [UsedImplicitly]
         public bool Debug { get; }
-
-        /// <summary>
-        /// Gets the log.
-        /// </summary>
-        /// <value>The log.</value>
-        [Option(CommandOptionType.SingleValue, Description = "Log level", Inherited = true, ShowInHelpText = true)]
-        public (bool HasValue, LogLevel Level) Log { get; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is default command.
@@ -100,13 +102,19 @@ namespace Rocket.Surgery.Extensions.CommandLine
         public LogLevel? GetLogLevel()
         {
             if (Log.HasValue)
+            {
                 return Log.Level;
+            }
 
             if (Verbose || Trace)
+            {
                 return LogLevel.Trace;
+            }
 
             if (Debug)
+            {
                 return LogLevel.Debug;
+            }
 
             return null;
         }

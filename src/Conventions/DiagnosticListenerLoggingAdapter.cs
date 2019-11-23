@@ -15,10 +15,7 @@ namespace Rocket.Surgery.Conventions
         /// Initializes a new instance of the <see cref="DiagnosticListenerLoggingAdapter" /> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public DiagnosticListenerLoggingAdapter(ILogger logger)
-        {
-            _logger = logger;
-        }
+        public DiagnosticListenerLoggingAdapter(ILogger logger) => _logger = logger;
 
         /// <summary>
         /// Logs the other.
@@ -28,7 +25,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="exception">The exception.</param>
         /// <param name="message">The message.</param>
         [DiagnosticName("Log.Other")]
-        public void LogOther(LogLevel logLevel, EventId eventId, Exception exception, string message) => _logger.Log(logLevel, eventId, exception, message);
+        public void LogOther(LogLevel logLevel, EventId eventId, Exception exception, string message)
+            => _logger.Log(logLevel, eventId, exception, message);
 
         /// <summary>
         /// Logs the trace.
@@ -37,7 +35,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="exception">The exception.</param>
         /// <param name="message">The message.</param>
         [DiagnosticName("Log.Trace")]
-        public void LogTrace(EventId eventId, Exception exception, string message) => _logger.LogTrace(eventId, exception, message);
+        public void LogTrace(EventId eventId, Exception exception, string message)
+            => _logger.LogTrace(eventId, exception, message);
 
         /// <summary>
         /// Logs the debug.
@@ -46,7 +45,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="exception">The exception.</param>
         /// <param name="message">The message.</param>
         [DiagnosticName("Log.Debug")]
-        public void LogDebug(EventId eventId, Exception exception, string message) => _logger.LogDebug(eventId, exception, message);
+        public void LogDebug(EventId eventId, Exception exception, string message)
+            => _logger.LogDebug(eventId, exception, message);
 
         /// <summary>
         /// Logs the information.
@@ -55,7 +55,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="exception">The exception.</param>
         /// <param name="message">The message.</param>
         [DiagnosticName("Log.Information")]
-        public void LogInformation(EventId eventId, Exception exception, string message) => _logger.LogInformation(eventId, exception, message);
+        public void LogInformation(EventId eventId, Exception exception, string message)
+            => _logger.LogInformation(eventId, exception, message);
 
         /// <summary>
         /// Logs the warning.
@@ -64,7 +65,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="exception">The exception.</param>
         /// <param name="message">The message.</param>
         [DiagnosticName("Log.Warning")]
-        public void LogWarning(EventId eventId, Exception exception, string message) => _logger.LogWarning(eventId, exception, message);
+        public void LogWarning(EventId eventId, Exception exception, string message)
+            => _logger.LogWarning(eventId, exception, message);
 
         /// <summary>
         /// Logs the error.
@@ -73,7 +75,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="exception">The exception.</param>
         /// <param name="message">The message.</param>
         [DiagnosticName("Log.Error")]
-        public void LogError(EventId eventId, Exception exception, string message) => _logger.LogError(eventId, exception, message);
+        public void LogError(EventId eventId, Exception exception, string message)
+            => _logger.LogError(eventId, exception, message);
 
         /// <summary>
         /// Logs the critical.
@@ -82,6 +85,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="exception">The exception.</param>
         /// <param name="message">The message.</param>
         [DiagnosticName("Log.Critical")]
-        public void LogCritical(EventId eventId, Exception exception, string message) => _logger.LogCritical(eventId, exception, message);
+        public void LogCritical(EventId eventId, Exception exception, string message)
+            => _logger.LogCritical(eventId, exception, message);
     }
 }

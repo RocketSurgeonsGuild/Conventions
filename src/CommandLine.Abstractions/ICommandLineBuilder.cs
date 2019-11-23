@@ -1,19 +1,17 @@
 using System;
 using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
-using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Extensions.CommandLine
 {
     /// <summary>
-    ///  ILoggingConvention
-    /// Implements the <see cref="IConventionBuilder{ICommandLineBuilder, ICommandLineConvention, CommandLineConventionDelegate}" />
+    /// ILoggingConvention
+    /// Implements the <see cref="IConventionBuilder{TBuilder,TConvention,TDelegate}" />
     /// </summary>
     /// <seealso cref="IConventionBuilder{ICommandLineBuilder, ICommandLineConvention, CommandLineConventionDelegate}" />
-    public interface ICommandLineBuilder : IConventionBuilder<ICommandLineBuilder, ICommandLineConvention, CommandLineConventionDelegate>
+    public interface ICommandLineBuilder : IConventionBuilder<ICommandLineBuilder, ICommandLineConvention,
+        CommandLineConventionDelegate>
     {
         /// <summary>
         /// Adds the command.
@@ -22,7 +20,11 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication{T}.</returns>
-        CommandLineApplication<T> AddCommand<T>(Action<CommandLineApplication<T>>? action = null, bool throwOnUnexpectedArg = true) where T : class;
+        CommandLineApplication<T> AddCommand<T>(
+            Action<CommandLineApplication<T>>? action = null,
+            bool throwOnUnexpectedArg = true
+        )
+            where T : class;
 
         /// <summary>
         /// Adds the command.
@@ -32,7 +34,12 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication{T}.</returns>
-        CommandLineApplication<T> AddCommand<T>(string name, Action<CommandLineApplication<T>>? action = null, bool throwOnUnexpectedArg = true) where T : class;
+        CommandLineApplication<T> AddCommand<T>(
+            string name,
+            Action<CommandLineApplication<T>>? action = null,
+            bool throwOnUnexpectedArg = true
+        )
+            where T : class;
 
         /// <summary>
         /// Adds the command.
@@ -41,49 +48,55 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication.</returns>
-        CommandLineApplication AddCommand(string name, Action<CommandLineApplication>? action = null, bool throwOnUnexpectedArg = true);
+        CommandLineApplication AddCommand(
+            string name,
+            Action<CommandLineApplication>? action = null,
+            bool throwOnUnexpectedArg = true
+        );
 
         /// <summary>
         /// Called when [parse].
         /// </summary>
-        /// <param name="delegate">The delegate.</param>
+        /// <param name="onParseDelegate">The delegate.</param>
         /// <returns>ICommandLineBuilder.</returns>
-        ICommandLineBuilder OnParse(OnParseDelegate @delegate);
+        ICommandLineBuilder OnParse(OnParseDelegate onParseDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
-        /// <param name="delegate">The delegate.</param>
+        /// <param name="onRunDelegate">The delegate.</param>
         /// <returns>ICommandLineBuilder.</returns>
-        ICommandLineBuilder OnRun(OnRunDelegate @delegate);
+        ICommandLineBuilder OnRun(OnRunDelegate onRunDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
-        /// <param name="delegate">The delegate.</param>
+        /// <param name="onRunAsyncDelegate">The delegate.</param>
         /// <returns>ICommandLineBuilder.</returns>
-        ICommandLineBuilder OnRun(OnRunAsyncDelegate @delegate);
+        ICommandLineBuilder OnRun(OnRunAsyncDelegate onRunAsyncDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
-        /// <param name="delegate">The delegate.</param>
+        /// <param name="onRunAsyncCancellableDelegate">The delegate.</param>
         /// <returns>ICommandLineBuilder.</returns>
-        ICommandLineBuilder OnRun(OnRunAsyncCancellableDelegate @delegate);
-
-        /// <summary>
-        /// Called when [run].
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns>ICommandLineBuilder.</returns>
-        ICommandLineBuilder OnRun<T>() where T : IDefaultCommand;
+        ICommandLineBuilder OnRun(OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>ICommandLineBuilder.</returns>
-        ICommandLineBuilder OnRunAsync<T>() where T : IDefaultCommandAsync;
+        ICommandLineBuilder OnRun<T>()
+            where T : IDefaultCommand;
+
+        /// <summary>
+        /// Called when [run].
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>ICommandLineBuilder.</returns>
+        ICommandLineBuilder OnRunAsync<T>()
+            where T : IDefaultCommandAsync;
 
         /// <summary>
         /// Builds the specified entry assembly.

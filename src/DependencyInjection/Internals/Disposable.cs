@@ -7,25 +7,19 @@ namespace Rocket.Surgery.Extensions.DependencyInjection.Internals
     /// Implements the <see cref="IDisposable" />
     /// </summary>
     /// <seealso cref="IDisposable" />
-    class Disposable : IDisposable
+    internal class Disposable : IDisposable
     {
         private readonly Action _action;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Disposable"/> class.
+        /// Initializes a new instance of the <see cref="Disposable" /> class.
         /// </summary>
         /// <param name="action">The action.</param>
-        public Disposable(Action action)
-        {
-            _action = action;
-        }
+        public Disposable(Action action) => _action = action;
 
         /// <summary>
         /// Disposes this instance.
         /// </summary>
-        public void Dispose()
-        {
-            _action();
-        }
+        public void Dispose() => _action();
     }
 }

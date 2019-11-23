@@ -8,18 +8,15 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// Implements the <see cref="IConvention" />
     /// </summary>
     /// <seealso cref="IConvention" />
-    class VersionConvention : IConvention
+    internal class VersionConvention : IConvention
     {
         private readonly Assembly _entryAssembly;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VersionConvention"/> class.
+        /// Initializes a new instance of the <see cref="VersionConvention" /> class.
         /// </summary>
         /// <param name="entryAssembly">The entry assembly.</param>
-        public VersionConvention(Assembly entryAssembly)
-        {
-            _entryAssembly = entryAssembly;
-        }
+        public VersionConvention(Assembly entryAssembly) => _entryAssembly = entryAssembly;
 
         /// <summary>
         /// Applies the specified context.
@@ -37,7 +34,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
                 "--version",
                 () => _entryAssembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version,
                 () => _entryAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                    ?.InformationalVersion
+                  ?.InformationalVersion
             );
         }
     }

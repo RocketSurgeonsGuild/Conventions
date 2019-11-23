@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -11,7 +12,7 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// The <see cref="IConvention" /> type to link to
         /// </summary>
-        Type Type { get; }
+        [NotNull] Type Type { get; }
 
 
         /// <summary>

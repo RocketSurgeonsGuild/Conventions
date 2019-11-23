@@ -34,6 +34,34 @@ namespace Rocket.Surgery.Conventions.Reflection
             _logger = logger ?? NullLogger.Instance;
         }
 
+        private Action<Assembly> LogValue(string[] candidates) => value =>
+        {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug(
+                    "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
+                    nameof(DefaultAssemblyCandidateFinder),
+                    value.GetName().Name,
+                    candidates
+                );
+            }
+        };
+
+        private IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
+        {
+            if (candidates?.Any() != true)
+            {
+                return Enumerable.Empty<Assembly>();
+            }
+
+            var candidatesResolver = new AssemblyCandidateResolver(
+                _assemblies,
+                new HashSet<string?>(candidates, StringComparer.OrdinalIgnoreCase),
+                _logger
+            );
+            return candidatesResolver.GetCandidates().Select(x => x.Assembly);
+        }
+
         /// <summary>
         /// Get the candidates for a given set
         /// </summary>
@@ -42,35 +70,13 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <inheritdoc />
         public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
         {
-            var value = candidates as string[] ?? candidates?.ToArray() ?? Array.Empty<string>();
-            return LoggingEnumerable.Create(GetCandidateLibraries(value)
-                .Where(x => x != null)
-                .Reverse(),
-                LogValue(value));
-        }
-
-        private Action<Assembly> LogValue(string[] candidates) =>
-            value =>
-            {
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug("[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}",
-                       nameof(DefaultAssemblyCandidateFinder),
-                        value.GetName().Name,
-                        candidates
-                    );
-                }
-            };
-
-        private IEnumerable<Assembly> GetCandidateLibraries(string[] candidates)
-        {
-            if (candidates == null || !candidates.Any())
-            {
-                return Enumerable.Empty<Assembly>();
-            }
-
-            var candidatesResolver = new AssemblyCandidateResolver(_assemblies, new HashSet<string?>(candidates, StringComparer.OrdinalIgnoreCase), _logger);
-            return candidatesResolver.GetCandidates().Select(x => x.Assembly);
+            var value = candidates as string[] ?? candidates.ToArray();
+            return LoggingEnumerable.Create(
+                GetCandidateLibraries(value)
+                   .Where(x => x != null)
+                   .Reverse(),
+                LogValue(value)
+            );
         }
     }
 }

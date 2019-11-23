@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Rocket.Surgery.Conventions.Reflection
 {
@@ -14,7 +15,6 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <param name="candidates">The candidates as an enumerable</param>
         /// <returns>IEnumerable{Assembly}.</returns>
-        IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates);
+        [NotNull] IEnumerable<Assembly> GetCandidateAssemblies([NotNull] IEnumerable<string> candidates);
     }
 }
-

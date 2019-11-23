@@ -5,8 +5,6 @@ namespace Rocket.Surgery.Conventions.Tests.Fixtures
 {
     public class ServiceConventionContext : ConventionContext, IServiceConventionContext
     {
-        public ServiceConventionContext(ILogger logger) : base(logger, new Dictionary<object, object?>())
-        {
-        }
+        public ServiceConventionContext(ILogger logger) : base(logger, new Dictionary<object, object?>()) { }
     }
 }

@@ -7,7 +7,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// <summary>
     /// LoggingEnumerator.
     /// </summary>
-    static class LoggingEnumerator
+    internal static class LoggingEnumerator
     {
         /// <summary>
         /// Creates the specified enumerator.
@@ -16,8 +16,8 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="enumerator">The enumerator.</param>
         /// <param name="logAction">The log action.</param>
         /// <returns>IEnumerator{T}.</returns>
-        public static IEnumerator<T> Create<T>(IEnumerator<T> enumerator, Action<T> logAction) =>
-            new LoggingEnumerator<T>(enumerator, logAction);
+        public static IEnumerator<T> Create<T>(IEnumerator<T> enumerator, Action<T> logAction)
+            => new LoggingEnumerator<T>(enumerator, logAction);
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="IEnumerator{T}" />
-    class LoggingEnumerator<T> : IEnumerator<T>
+    internal class LoggingEnumerator<T> : IEnumerator<T>
     {
         private readonly IEnumerator<T> _enumerator;
         private readonly Action<T> _logAction;
@@ -45,11 +45,18 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <summary>
         /// Advances the enumerator to the next element of the collection.
         /// </summary>
-        /// <returns>true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
+        /// <returns>
+        /// true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the
+        /// end of the collection.
+        /// </returns>
         public bool MoveNext()
         {
             var result = _enumerator.MoveNext();
-            if (result) _logAction(Current);
+            if (result)
+            {
+                _logAction(Current);
+            }
+
             return result;
         }
 

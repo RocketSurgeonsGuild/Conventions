@@ -1,3 +1,5 @@
+using System;
+using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
@@ -17,10 +19,15 @@ namespace Rocket.Surgery.Conventions
         /// <param name="applicationName">Name of the application.</param>
         /// <param name="contentRootPath">The content root path.</param>
         /// <param name="contentRootFileProvider">The content root file provider.</param>
-        public RocketEnvironment(string environmentName, string applicationName, string? contentRootPath, IFileProvider? contentRootFileProvider)
+        public RocketEnvironment(
+            [NotNull] string environmentName,
+            [NotNull] string applicationName,
+            string? contentRootPath,
+            IFileProvider? contentRootFileProvider
+        )
         {
-            EnvironmentName = environmentName ?? throw new System.ArgumentNullException(nameof(environmentName));
-            ApplicationName = applicationName ?? throw new System.ArgumentNullException(nameof(applicationName));
+            EnvironmentName = environmentName ?? throw new ArgumentNullException(nameof(environmentName));
+            ApplicationName = applicationName ?? throw new ArgumentNullException(nameof(applicationName));
             ContentRootPath = contentRootPath;
             ContentRootFileProvider = contentRootFileProvider;
         }
@@ -30,9 +37,14 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="environment">The environment.</param>
 #pragma warning disable 618
-        public RocketEnvironment(IHostingEnvironment environment)
+        public RocketEnvironment([NotNull] IHostingEnvironment environment)
 #pragma warning restore 618
         {
+            if (environment == null)
+            {
+                throw new ArgumentNullException(nameof(environment));
+            }
+
             EnvironmentName = environment.EnvironmentName;
             ApplicationName = environment.ApplicationName;
             ContentRootPath = environment.ContentRootPath;
@@ -40,11 +52,16 @@ namespace Rocket.Surgery.Conventions
         }
 #if NETCOREAPP3_0 || NETSTANDARD2_1
         /// <summary>
-        /// Initializes a new instance of the <see cref="RocketEnvironment"/> class.
+        /// Initializes a new instance of the <see cref="RocketEnvironment" /> class.
         /// </summary>
         /// <param name="environment">The environment.</param>
-        public RocketEnvironment(IHostEnvironment environment)
+        public RocketEnvironment([NotNull] IHostEnvironment environment)
         {
+            if (environment == null)
+            {
+                throw new ArgumentNullException(nameof(environment));
+            }
+
             EnvironmentName = environment.EnvironmentName;
             ApplicationName = environment.ApplicationName;
             ContentRootPath = environment.ContentRootPath;

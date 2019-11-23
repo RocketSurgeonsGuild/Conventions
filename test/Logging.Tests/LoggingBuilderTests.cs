@@ -1,8 +1,6 @@
 ﻿using System;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
@@ -12,10 +10,6 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
 {
     public class LoggingBuilderTests : AutoFakeTest
     {
-        public LoggingBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
-        {
-        }
-
         [Fact]
         public void Constructs()
         {
@@ -42,5 +36,7 @@ namespace Rocket.Surgery.Extensions.Logging.Tests
             Action a = () => builder.Build();
             a.Should().NotThrow();
         }
+
+        public LoggingBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
     }
 }

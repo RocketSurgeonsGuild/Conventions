@@ -7,7 +7,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// <summary>
     /// RuntimeLibraryCandidateResolver.
     /// </summary>
-    class RuntimeLibraryCandidateResolver
+    internal class RuntimeLibraryCandidateResolver
     {
         private readonly IDictionary<string, Dependency> _dependencies;
 
@@ -16,13 +16,17 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <param name="runtimeDependencies">The runtime dependencies.</param>
         /// <param name="referenceAssemblies">The reference assemblies.</param>
-        public RuntimeLibraryCandidateResolver(IReadOnlyList<RuntimeLibrary> runtimeDependencies, ISet<string> referenceAssemblies)
+        public RuntimeLibraryCandidateResolver(
+            IReadOnlyList<RuntimeLibrary> runtimeDependencies,
+            ISet<string> referenceAssemblies
+        )
         {
             var dependenciesWithNoDuplicates = new Dictionary<string, Dependency>(StringComparer.OrdinalIgnoreCase);
             foreach (var dependency in runtimeDependencies)
             {
                 dependenciesWithNoDuplicates.Add(dependency.Name, CreateDependency(dependency, referenceAssemblies));
             }
+
             _dependencies = dependenciesWithNoDuplicates;
         }
 
@@ -48,24 +52,22 @@ namespace Rocket.Surgery.Conventions.Reflection
             {
                 return candidateEntry.Classification;
             }
-            else
+
+            var classification = DependencyClassification.NotCandidate;
+            foreach (var candidateDependency in candidateEntry.Library.Dependencies)
             {
-                var classification = DependencyClassification.NotCandidate;
-                foreach (var candidateDependency in candidateEntry.Library.Dependencies)
+                var dependencyClassification = ComputeClassification(candidateDependency.Name);
+                if (dependencyClassification == DependencyClassification.Candidate ||
+                    dependencyClassification == DependencyClassification.Reference)
                 {
-                    var dependencyClassification = ComputeClassification(candidateDependency.Name);
-                    if (dependencyClassification == DependencyClassification.Candidate ||
-                        dependencyClassification == DependencyClassification.Reference)
-                    {
-                        classification = DependencyClassification.Candidate;
-                        break;
-                    }
+                    classification = DependencyClassification.Candidate;
+                    break;
                 }
-
-                candidateEntry.Classification = classification;
-
-                return classification;
             }
+
+            candidateEntry.Classification = classification;
+
+            return classification;
         }
 
         /// <summary>
@@ -118,5 +120,4 @@ namespace Rocket.Surgery.Conventions.Reflection
             public override string ToString() => $"Library: {Library.Name}, Classification: {Classification}";
         }
     }
-
 }

@@ -1,21 +1,19 @@
+using System;
+using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
-using System;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
+// ReSharper disable ObjectCreationAsStatement
+#pragma warning disable CA1806
 
 namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionTests : AutoFakeTest
     {
-        public ConventionTests(ITestOutputHelper outputHelper) : base(outputHelper)
-        {
-        }
-
         [Fact]
         public void ConventionAttributeThrowsIfNonConventionGiven()
         {
@@ -36,20 +34,30 @@ namespace Rocket.Surgery.Conventions.Tests
 
             A.CallTo(() => scanner.BuildProvider()).Returns(provider);
             A.CallTo(() => provider.Get<IServiceConvention, ServiceConventionDelegate>(HostType.Undefined))
-                .Returns(new[]
-                {
-                    new DelegateOrConvention(contrib),
-                    new DelegateOrConvention(contrib2),
-                    new DelegateOrConvention(dele),
-                    new DelegateOrConvention(dele2),
-                }.AsEnumerable());
+               .Returns(
+                    new[]
+                    {
+                        new DelegateOrConvention(contrib),
+                        new DelegateOrConvention(contrib2),
+                        new DelegateOrConvention(dele),
+                        new DelegateOrConvention(dele2)
+                    }.AsEnumerable()
+                );
 
-            Composer.Register<ServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(provider, new ServiceConventionContext(Logger));
-            Composer.Register<ServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(provider, new ServiceConventionContext(Logger));
+            Composer.Register<ServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(
+                provider,
+                new ServiceConventionContext(Logger)
+            );
+            Composer.Register<ServiceConventionContext, IServiceConvention, ServiceConventionDelegate>(
+                provider,
+                new ServiceConventionContext(Logger)
+            );
             A.CallTo(() => dele.Invoke(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
             A.CallTo(() => dele2.Invoke(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
             A.CallTo(() => contrib.Register(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
             A.CallTo(() => contrib2.Register(A<ServiceConventionContext>._)).MustHaveHappenedTwiceExactly();
         }
+
+        public ConventionTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
     }
 }
