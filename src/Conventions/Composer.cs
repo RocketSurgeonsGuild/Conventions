@@ -6,6 +6,7 @@ using System.Reflection;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Scanners;
+
 #pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Conventions
@@ -81,7 +82,11 @@ namespace Rocket.Surgery.Conventions
         /// <param name="scanner">The scanner.</param>
         /// <param name="context">The context.</param>
         /// <param name="types">The types.</param>
-        public static void Register([NotNull] IConventionScanner scanner, [NotNull] IConventionContext context, IEnumerable<Type> types)
+        public static void Register(
+            [NotNull] IConventionScanner scanner,
+            [NotNull] IConventionContext context,
+            IEnumerable<Type> types
+        )
         {
             if (scanner == null)
             {
@@ -102,7 +107,11 @@ namespace Rocket.Surgery.Conventions
         /// <param name="provider">The provider.</param>
         /// <param name="context">The context.</param>
         /// <param name="types">The types.</param>
-        public static void Register([NotNull] IConventionProvider provider, [NotNull] IConventionContext context, IEnumerable<Type> types)
+        public static void Register(
+            [NotNull] IConventionProvider provider,
+            [NotNull] IConventionContext context,
+            IEnumerable<Type> types
+        )
         {
             if (provider == null)
             {
@@ -123,7 +132,11 @@ namespace Rocket.Surgery.Conventions
         /// <param name="scanner">The scanner.</param>
         /// <param name="context">The context.</param>
         /// <param name="types">The types.</param>
-        public static void Register([NotNull] IConventionScanner scanner, [NotNull] IConventionContext context, params Type[] types)
+        public static void Register(
+            [NotNull] IConventionScanner scanner,
+            [NotNull] IConventionContext context,
+            params Type[] types
+        )
         {
             if (scanner == null)
             {
@@ -144,7 +157,11 @@ namespace Rocket.Surgery.Conventions
         /// <param name="provider">The provider.</param>
         /// <param name="context">The context.</param>
         /// <param name="types">The types.</param>
-        public static void Register([NotNull] IConventionProvider provider, [NotNull] IConventionContext context, params Type[] types)
+        public static void Register(
+            [NotNull] IConventionProvider provider,
+            [NotNull] IConventionContext context,
+            params Type[] types
+        )
         {
             if (provider == null)
             {

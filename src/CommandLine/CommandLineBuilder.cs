@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
+
 #pragma warning disable CA1001
 
 namespace Rocket.Surgery.Extensions.CommandLine
@@ -292,7 +293,9 @@ namespace Rocket.Surgery.Extensions.CommandLine
             return this;
         }
 
-        ICommandLineConventionContext ICommandLineConventionContext.OnRun(OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate)
+        ICommandLineConventionContext ICommandLineConventionContext.OnRun(
+            OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate
+        )
         {
             OnRun(onRunAsyncCancellableDelegate);
             return this;

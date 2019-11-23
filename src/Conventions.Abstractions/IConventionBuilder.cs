@@ -23,12 +23,14 @@ namespace Rocket.Surgery.Conventions
         /// Gets the assembly provider.
         /// </summary>
         /// <value>The assembly provider.</value>
-        [NotNull] IAssemblyProvider AssemblyProvider { get; }
+        [NotNull]
+        IAssemblyProvider AssemblyProvider { get; }
 
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>
         /// <value>The assembly candidate finder.</value>
-        [NotNull] IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+        [NotNull]
+        IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
     }
 }

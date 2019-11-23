@@ -87,7 +87,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="environment">The environment.</param>
         /// <returns>IRocketEnvironment.</returns>
 #pragma warning disable 618
-        [NotNull] public static IRocketEnvironment Convert([NotNull] this IHostingEnvironment environment)
+        [NotNull]
+        public static IRocketEnvironment Convert([NotNull] this IHostingEnvironment environment)
 #pragma warning restore 618
         {
             return new RocketEnvironment(environment);
@@ -98,7 +99,8 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <returns>IRocketEnvironment.</returns>
-        [NotNull] public static IRocketEnvironment Convert([NotNull] this IHostEnvironment environment)
+        [NotNull]
+        public static IRocketEnvironment Convert([NotNull] this IHostEnvironment environment)
             => new RocketEnvironment(environment);
 #endif
     }

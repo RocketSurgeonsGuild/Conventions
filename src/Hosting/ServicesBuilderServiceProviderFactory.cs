@@ -1,10 +1,11 @@
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.CommandLine;
 using Rocket.Surgery.Extensions.DependencyInjection;
-using JetBrains.Annotations;
+
 #pragma warning disable CA1307
 
 namespace Rocket.Surgery.Hosting

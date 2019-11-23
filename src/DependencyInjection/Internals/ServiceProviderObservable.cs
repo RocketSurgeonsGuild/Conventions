@@ -33,7 +33,7 @@ namespace Rocket.Surgery.Extensions.DependencyInjection.Internals
                     observer.OnNext(value);
                     observer.OnCompleted();
                 }
-                #pragma warning disable CA1031
+#pragma warning disable CA1031
                 catch (Exception e)
                 {
                     _logger.LogError(0, e, "Failed to execute observer");

@@ -7,6 +7,7 @@ using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
+
 // ReSharper disable PossibleMultipleEnumeration
 // ReSharper disable CoVariantArrayConversion
 

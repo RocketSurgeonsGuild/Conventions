@@ -17,7 +17,8 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="builder">The builder.</param>
         /// <param name="state">The state.</param>
         /// <returns>IConfigurationBuilder.</returns>
-        [NotNull] public static IConfigurationBuilder AddApplicationState(
+        [NotNull]
+        public static IConfigurationBuilder AddApplicationState(
             this IConfigurationBuilder builder,
             [NotNull] IApplicationState state
         )
@@ -30,9 +31,12 @@ namespace Rocket.Surgery.Extensions.CommandLine
             builder.AddInMemoryCollection(
                 new Dictionary<string, string>
                 {
-                    [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Debug)}"] = state.Debug.ToString(CultureInfo.InvariantCulture),
-                    [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Trace)}"] = state.Trace.ToString(CultureInfo.InvariantCulture),
-                    [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Verbose)}"] = state.Verbose.ToString(CultureInfo.InvariantCulture),
+                    [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Debug)}"] =
+                        state.Debug.ToString(CultureInfo.InvariantCulture),
+                    [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Trace)}"] =
+                        state.Trace.ToString(CultureInfo.InvariantCulture),
+                    [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Verbose)}"] =
+                        state.Verbose.ToString(CultureInfo.InvariantCulture),
                     [$"{nameof(ApplicationState)}:{nameof(ApplicationState.IsDefaultCommand)}"] =
                         state.IsDefaultCommand.ToString(CultureInfo.InvariantCulture)
                 }

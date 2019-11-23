@@ -9,6 +9,7 @@ using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.DependencyInjection;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+
 #pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Conventions.TestHost

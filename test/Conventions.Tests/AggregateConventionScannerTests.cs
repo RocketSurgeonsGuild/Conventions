@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -76,7 +77,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-               .Returns(System.Array.Empty<Assembly>());
+               .Returns(Array.Empty<Assembly>());
 
             var contribution = A.Fake<IServiceConvention>();
             var contribution2 = A.Fake<IServiceConvention>();
@@ -99,7 +100,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-               .Returns(System.Array.Empty<Assembly>());
+               .Returns(Array.Empty<Assembly>());
 
             var @delegate = new ServiceConventionDelegate(context => { });
             var delegate2 = new ServiceConventionDelegate(context => { });

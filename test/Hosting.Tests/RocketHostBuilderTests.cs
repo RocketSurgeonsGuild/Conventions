@@ -277,7 +277,7 @@ namespace Rocket.Surgery.Hosting.Tests
                         )
                 );
 
-            ( await builder.RunCli().ConfigureAwait(false)).Should().Be(1337);
+            ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1337);
         }
 
         [Fact]
@@ -299,7 +299,7 @@ namespace Rocket.Surgery.Hosting.Tests
                         )
                 );
 
-            ( await builder.RunCli().ConfigureAwait(false)).Should().Be(1234);
+            ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1234);
         }
 
         public RocketHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }

@@ -15,6 +15,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// </summary>
         /// <param name="candidates">The candidates as an enumerable</param>
         /// <returns>IEnumerable{Assembly}.</returns>
-        [NotNull] IEnumerable<Assembly> GetCandidateAssemblies([NotNull] IEnumerable<string> candidates);
+        [NotNull]
+        IEnumerable<Assembly> GetCandidateAssemblies([NotNull] IEnumerable<string> candidates);
     }
 }

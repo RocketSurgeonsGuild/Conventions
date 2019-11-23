@@ -11,6 +11,7 @@ using Rocket.Surgery.Extensions.DependencyInjection.Tests;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
+
 #pragma warning disable CA1040
 #pragma warning disable CA1034
 #pragma warning disable CA2000

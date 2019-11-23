@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
+
 // ReSharper disable PossibleInterfaceMemberAmbiguity
 
 namespace Rocket.Surgery.Extensions.Configuration

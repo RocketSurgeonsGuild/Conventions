@@ -11,8 +11,7 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
     [Command]
     internal class MyCommand
     {
-        [UsedImplicitly]
-        private readonly IServiceProvider _serviceProvider;
+        [UsedImplicitly] private readonly IServiceProvider _serviceProvider;
 
         public MyCommand(IServiceProvider serviceProvider) => _serviceProvider =
             serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
@@ -21,7 +20,7 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
         public Task<int> OnExecuteAsync() => Task.FromResult(1234);
     }
 
-    #pragma warning disable CA1801
+#pragma warning disable CA1801
     internal class MyStartup : IServiceConvention
     {
         public void Configure(IApplicationBuilder builder) { }

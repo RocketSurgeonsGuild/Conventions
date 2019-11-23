@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+
 #pragma warning disable CS8601 // Possible null reference assignment.
 
 namespace Rocket.Surgery.Conventions
@@ -15,7 +16,8 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T"></typeparam>
         /// <param name="context">The context</param>
         /// <returns>T.</returns>
-        [NotNull] public static T Get<T>([NotNull] this IConventionContext context)
+        [NotNull]
+        public static T Get<T>([NotNull] this IConventionContext context)
         {
             if (context == null)
             {
@@ -32,7 +34,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
         /// <returns>T.</returns>
-        [NotNull] public static T Get<T>([NotNull] this IConventionContext context, string key)
+        [NotNull]
+        public static T Get<T>([NotNull] this IConventionContext context, string key)
         {
             if (context == null)
             {
@@ -49,7 +52,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context">The context</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        [NotNull] public static T GetOrAdd<T>([NotNull] this IConventionContext context, [NotNull] Func<T> factory)
+        [NotNull]
+        public static T GetOrAdd<T>([NotNull] this IConventionContext context, [NotNull] Func<T> factory)
             where T : class
         {
             if (context == null)
@@ -79,7 +83,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="key">The key where the value is saved</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        [NotNull] public static T GetOrAdd<T>([NotNull] this IConventionContext context, string key, [NotNull] Func<T> factory)
+        [NotNull]
+        public static T GetOrAdd<T>([NotNull] this IConventionContext context, string key, [NotNull] Func<T> factory)
             where T : class
         {
             if (context == null)

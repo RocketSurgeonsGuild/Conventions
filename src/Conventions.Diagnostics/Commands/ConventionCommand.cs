@@ -242,10 +242,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 _scanner = scanner;
             }
 
-            public sealed override void Add(View view)
-            {
-                base.Add(view);
-            }
+            public sealed override void Add(View view) => base.Add(view);
 
             public DiscoveryWindow UpdateDefinitions(ConventionDefinition[] definitions)
             {
@@ -376,10 +373,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 _conventions.list.SelectedChanged += UpdateDetails;
             }
 
-            public sealed override void Add(View view)
-            {
-                base.Add(view);
-            }
+            public sealed override void Add(View view) => base.Add(view);
 
             public LocateWindow UpdateAssemblies(AssemblyDefinition[] assemblies)
             {

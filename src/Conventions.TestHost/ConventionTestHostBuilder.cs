@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.FileProviders;
@@ -10,7 +11,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Configuration;
-using JetBrains.Annotations;
 
 namespace Rocket.Surgery.Conventions.TestHost
 {

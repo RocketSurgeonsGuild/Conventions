@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+
 #pragma warning disable CS8601 // Possible null reference assignment.
 
 namespace Rocket.Surgery.Conventions
@@ -15,7 +16,8 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T"></typeparam>
         /// <param name="context">The context</param>
         /// <returns>T.</returns>
-        [NotNull] public static T Get<T>([NotNull] this IConventionHostBuilder context)
+        [NotNull]
+        public static T Get<T>([NotNull] this IConventionHostBuilder context)
         {
             if (context == null)
             {
@@ -32,7 +34,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
         /// <returns>T.</returns>
-        [NotNull] public static T Get<T>([NotNull] this IConventionHostBuilder context, string key)
+        [NotNull]
+        public static T Get<T>([NotNull] this IConventionHostBuilder context, string key)
         {
             if (context == null)
             {
@@ -49,7 +52,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="builder">The builder</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        [NotNull] public static T GetOrAdd<T>([NotNull] this IConventionHostBuilder builder, [NotNull] Func<T> factory)
+        [NotNull]
+        public static T GetOrAdd<T>([NotNull] this IConventionHostBuilder builder, [NotNull] Func<T> factory)
             where T : class
         {
             if (builder == null)
@@ -81,7 +85,12 @@ namespace Rocket.Surgery.Conventions
         /// <param name="key">The key where the value is saved</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        [NotNull] public static T GetOrAdd<T>([NotNull] this IConventionHostBuilder builder, string key, [NotNull] Func<T> factory)
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IConventionHostBuilder builder,
+            string key,
+            [NotNull] Func<T> factory
+        )
             where T : class
         {
             if (builder == null)
@@ -142,7 +151,8 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <returns>T.</returns>
-        [NotNull] public static T Get<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary)
+        [NotNull]
+        public static T Get<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary)
         {
             if (serviceProviderDictionary == null)
             {
@@ -159,7 +169,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <param name="key">The key where the value is saved</param>
         /// <returns>T.</returns>
-        [NotNull] public static T Get<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary, string key)
+        [NotNull]
+        public static T Get<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary, string key)
         {
             if (serviceProviderDictionary == null)
             {
@@ -176,7 +187,11 @@ namespace Rocket.Surgery.Conventions
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        [NotNull] public static T GetOrAdd<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary, [NotNull] Func<T> factory)
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            [NotNull] Func<T> factory
+        )
             where T : class
         {
             if (serviceProviderDictionary == null)
@@ -206,7 +221,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="key">The key where the value is saved</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
-        [NotNull] public static T GetOrAdd<T>(
+        [NotNull]
+        public static T GetOrAdd<T>(
             [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
             string key,
             [NotNull] Func<T> factory
@@ -255,7 +271,11 @@ namespace Rocket.Surgery.Conventions
         /// <param name="serviceProviderDictionary">The properties</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="value">The value to save</param>
-        public static void Set<T>([NotNull] this IServiceProviderDictionary serviceProviderDictionary, string key, T value)
+        public static void Set<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            string key,
+            T value
+        )
         {
             if (serviceProviderDictionary == null)
             {

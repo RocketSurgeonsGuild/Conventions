@@ -18,7 +18,8 @@ namespace Rocket.Surgery.Conventions.Reflection
         /// <param name="candidate">The first candidate to find</param>
         /// <param name="candidates">The candidates as an array</param>
         /// <returns>IEnumerable{Assembly}.</returns>
-        [NotNull] public static IEnumerable<Assembly> GetCandidateAssemblies(
+        [NotNull]
+        public static IEnumerable<Assembly> GetCandidateAssemblies(
             [NotNull] this IAssemblyCandidateFinder finder,
             string candidate,
             params string[] candidates

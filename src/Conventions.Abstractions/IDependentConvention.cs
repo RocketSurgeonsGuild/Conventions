@@ -12,7 +12,8 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// The <see cref="IConvention" /> type to link to
         /// </summary>
-        [NotNull] Type Type { get; }
+        [NotNull]
+        Type Type { get; }
 
 
         /// <summary>

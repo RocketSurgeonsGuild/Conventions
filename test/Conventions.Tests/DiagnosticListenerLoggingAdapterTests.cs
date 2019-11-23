@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
+
 #pragma warning disable CA2000
 
 namespace Rocket.Surgery.Conventions.Tests

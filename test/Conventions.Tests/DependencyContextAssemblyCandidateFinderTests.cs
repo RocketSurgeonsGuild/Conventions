@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyModel;
@@ -137,7 +138,7 @@ namespace Rocket.Surgery.Conventions.Tests
                 DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
                 Logger
             );
-            var items = resolver.GetCandidateAssemblies(System.Array.Empty<string>().AsEnumerable())
+            var items = resolver.GetCandidateAssemblies(Array.Empty<string>().AsEnumerable())
                .Select(x => x.GetName().Name)
                .ToArray();
 

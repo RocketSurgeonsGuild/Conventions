@@ -1,6 +1,7 @@
 using FakeItEasy;
 using FluentAssertions;
 using Xunit;
+
 #pragma warning disable CA1034
 #pragma warning disable CA1040
 

@@ -14,6 +14,7 @@ using Sample.DependencyThree;
 using Sample.DependencyTwo;
 using Xunit;
 using Xunit.Abstractions;
+
 // ReSharper disable CoVariantArrayConversion
 // ReSharper disable PossibleMultipleEnumeration
 // ReSharper disable MemberHidesStaticFromOuterClass
@@ -475,9 +476,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var item = result.First().Convention;
 
             item.Should().BeOfType<F>();
-            ((F)item!).Scanner.Should().NotBeNull();
-            ((F)item!).Scanner.Should().BeSameAs(scanner);
-            ((F)item!).Service.Should().BeSameAs(fakeService);
+            ( (F)item! ).Scanner.Should().NotBeNull();
+            ( (F)item! ).Scanner.Should().BeSameAs(scanner);
+            ( (F)item! ).Service.Should().BeSameAs(fakeService);
         }
 
         [Fact]
@@ -495,9 +496,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var item = result.First().Convention;
 
             item.Should().BeOfType<F_WithDefault>();
-            ((F_WithDefault)item!).Scanner.Should().NotBeNull();
-            ((F_WithDefault)item!).Scanner.Should().BeSameAs(scanner);
-            ((F_WithDefault)item!).Service.Should().BeNull();
+            ( (F_WithDefault)item! ).Scanner.Should().NotBeNull();
+            ( (F_WithDefault)item! ).Scanner.Should().BeSameAs(scanner);
+            ( (F_WithDefault)item! ).Service.Should().BeNull();
         }
 
         [Fact]

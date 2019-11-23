@@ -80,7 +80,7 @@ namespace Rocket.Surgery.Hosting
                             _result.Value = await _executor.ExecuteAsync(_serviceProvider, cancellationToken)
                                .ConfigureAwait(false);
                         }
-                        #pragma warning disable CA1031
+#pragma warning disable CA1031
                         catch (Exception e)
                         {
                             _logger.LogError(e, "Command failed to execute");

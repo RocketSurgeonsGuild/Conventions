@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using Rocket.Surgery.Conventions.Scanners;
 using Xunit;
+
 #pragma warning disable CA1034
 
 namespace Rocket.Surgery.Conventions.Tests

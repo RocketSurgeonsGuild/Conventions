@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
+
 // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable IDE0058 // Expression value is never used
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.

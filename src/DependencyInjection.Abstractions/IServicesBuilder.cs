@@ -1,5 +1,6 @@
 using System;
 using Rocket.Surgery.Conventions;
+
 // ReSharper disable PossibleInterfaceMemberAmbiguity
 
 namespace Rocket.Surgery.Extensions.DependencyInjection

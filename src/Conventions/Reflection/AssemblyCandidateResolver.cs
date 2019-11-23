@@ -10,6 +10,17 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// </summary>
     internal class AssemblyCandidateResolver
     {
+        private static Dependency CreateDependency(Assembly library, ISet<string?> referenceAssemblies)
+        {
+            var classification = DependencyClassification.Unknown;
+            if (referenceAssemblies.Contains(library.GetName().Name))
+            {
+                classification = DependencyClassification.Reference;
+            }
+
+            return new Dependency(library, classification);
+        }
+
         private readonly ILogger _logger;
         private readonly IDictionary<string, Dependency> _dependencies;
 
@@ -62,7 +73,8 @@ namespace Rocket.Surgery.Conventions.Reflection
 
             foreach (var dependency in assembly.GetReferencedAssemblies())
             {
-                if (dependency.Name?.StartsWith("System.", StringComparison.OrdinalIgnoreCase) == true || dependency.Name?.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) == true ||
+                if (dependency.Name?.StartsWith("System.", StringComparison.OrdinalIgnoreCase) == true ||
+                    dependency.Name?.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) == true ||
                     dependency.Name?.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase) == true ||
                     dependency.Name?.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) == true)
                 {
@@ -74,7 +86,7 @@ namespace Rocket.Surgery.Conventions.Reflection
                 {
                     dependentAssembly = Assembly.Load(dependency);
                 }
-                #pragma warning disable CA1031
+#pragma warning disable CA1031
                 catch (Exception e)
                 {
                     if (_logger.IsEnabled(LogLevel.Warning))
@@ -93,17 +105,6 @@ namespace Rocket.Surgery.Conventions.Reflection
                     processedAssemblies
                 );
             }
-        }
-
-        private static Dependency CreateDependency(Assembly library, ISet<string?> referenceAssemblies)
-        {
-            var classification = DependencyClassification.Unknown;
-            if (referenceAssemblies.Contains(library.GetName().Name))
-            {
-                classification = DependencyClassification.Reference;
-            }
-
-            return new Dependency(library, classification);
         }
 
         private DependencyClassification ComputeClassification(string dependency, ISet<string?> processedAssemblies)

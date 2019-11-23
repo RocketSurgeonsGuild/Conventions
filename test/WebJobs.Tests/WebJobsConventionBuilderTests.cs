@@ -15,6 +15,7 @@ using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Extensions.WebJobs.Tests;
 using Xunit;
 using Xunit.Abstractions;
+
 #pragma warning disable CA1034
 #pragma warning disable CA1040
 #pragma warning disable CA2000

@@ -5,11 +5,11 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace Rocket.Surgery.Hosting.Tests
 {
-    [Command, UsedImplicitly]
+    [Command]
+    [UsedImplicitly]
     internal class MyCommand
     {
-        [UsedImplicitly]
-        private readonly IServiceProvider _serviceProvider;
+        [UsedImplicitly] private readonly IServiceProvider _serviceProvider;
 
         public MyCommand(IServiceProvider serviceProvider) => _serviceProvider =
             serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));

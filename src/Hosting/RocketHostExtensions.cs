@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
@@ -13,7 +14,7 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Configuration;
-using JetBrains.Annotations;
+
 #pragma warning disable CA1031
 #pragma warning disable CA2000
 
@@ -301,9 +302,9 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(action));
             }
 
-            (builder.DiagnosticSource is DiagnosticListener listener
+            ( builder.DiagnosticSource is DiagnosticListener listener
                 ? listener
-                : new DiagnosticListener("DiagnosticLogger")).SubscribeWithAdapter(
+                : new DiagnosticListener("DiagnosticLogger") ).SubscribeWithAdapter(
                 new DiagnosticListenerLoggingAdapter(
                     new ServiceCollection()
                        .AddLogging(action)

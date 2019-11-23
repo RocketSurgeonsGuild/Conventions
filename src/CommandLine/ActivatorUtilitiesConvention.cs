@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Conventions;
 using Microsoft.Extensions.DependencyInjection;
+
 #pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Extensions.CommandLine
@@ -72,6 +73,38 @@ namespace Rocket.Surgery.Extensions.CommandLine
             typeof(ActivatorUtilitiesConvention)
                .GetRuntimeMethods()
                .Single(m => m.Name == nameof(ApplyImpl));
+
+        private static async Task<int> InvokeAsync(MethodInfo method, object? instance, object[] arguments)
+        {
+            var result = (Task)method.Invoke(instance, arguments)!;
+            if (result is Task<int> intResult)
+            {
+                return await intResult.ConfigureAwait(false);
+            }
+
+            await result.ConfigureAwait(false);
+            return 0;
+        }
+
+        private static int Invoke(MethodInfo method, object? instance, object[] arguments)
+        {
+            var result = method.Invoke(instance, arguments);
+            if (method.ReturnType == typeof(int))
+            {
+                return (int)result!;
+            }
+
+            return 0;
+        }
+
+        private static void ApplyImpl<TModel>(ConventionContext context)
+            where TModel : class
+        {
+            if (context.Application is CommandLineApplication<TModel> app)
+            {
+                app.ModelFactory = () => (TModel)FormatterServices.GetUninitializedObject(typeof(TModel));
+            }
+        }
 
         private readonly IServiceProvider _serviceProvider;
 
@@ -157,38 +190,6 @@ namespace Rocket.Surgery.Extensions.CommandLine
             }
 
             throw new InvalidOperationException(InvalidOnExecuteReturnType(method.Name));
-        }
-
-        private static async Task<int> InvokeAsync(MethodInfo method, object? instance, object[] arguments)
-        {
-            var result = (Task)method.Invoke(instance, arguments)!;
-            if (result is Task<int> intResult)
-            {
-                return await intResult.ConfigureAwait(false);
-            }
-
-            await result.ConfigureAwait(false);
-            return 0;
-        }
-
-        private static int Invoke(MethodInfo method, object? instance, object[] arguments)
-        {
-            var result = method.Invoke(instance, arguments);
-            if (method.ReturnType == typeof(int))
-            {
-                return (int)result!;
-            }
-
-            return 0;
-        }
-
-        private static void ApplyImpl<TModel>(ConventionContext context)
-            where TModel : class
-        {
-            if (context.Application is CommandLineApplication<TModel> app)
-            {
-                app.ModelFactory = () => (TModel)FormatterServices.GetUninitializedObject(typeof(TModel));
-            }
         }
 
         /// <summary>

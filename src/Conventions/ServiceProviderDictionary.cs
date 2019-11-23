@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 #pragma warning disable IDE0058 // Expression value is never used
 
 namespace Rocket.Surgery.Conventions

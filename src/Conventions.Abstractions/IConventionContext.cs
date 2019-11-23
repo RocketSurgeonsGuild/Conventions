@@ -20,12 +20,14 @@ namespace Rocket.Surgery.Conventions
         /// A central location for sharing state between components during the convention building process.
         /// </summary>
         /// <value>The properties.</value>
-        [NotNull] IDictionary<object, object?> Properties { get; }
+        [NotNull]
+        IDictionary<object, object?> Properties { get; }
 
         /// <summary>
         /// A logger that is configured to work with each convention item
         /// </summary>
         /// <value>The logger.</value>
-        [NotNull] ILogger Logger { get; }
+        [NotNull]
+        ILogger Logger { get; }
     }
 }

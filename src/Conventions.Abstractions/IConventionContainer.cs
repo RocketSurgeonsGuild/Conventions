@@ -20,7 +20,8 @@ namespace Rocket.Surgery.Conventions
         /// Gets the scanner.
         /// </summary>
         /// <value>The scanner.</value>
-        [NotNull] IConventionScanner Scanner { get; }
+        [NotNull]
+        IConventionScanner Scanner { get; }
 
         /// <summary>
         /// Adds a set of conventions to the scanner

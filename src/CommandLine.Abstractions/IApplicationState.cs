@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+
 #pragma warning disable CA1819
 
 namespace Rocket.Surgery.Extensions.CommandLine

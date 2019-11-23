@@ -13,6 +13,7 @@ using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
+
 #pragma warning disable CA1034
 #pragma warning disable CA1062
 #pragma warning disable CA1822

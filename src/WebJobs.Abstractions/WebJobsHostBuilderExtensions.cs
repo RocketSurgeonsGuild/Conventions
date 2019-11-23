@@ -16,7 +16,8 @@ namespace Rocket.Surgery.Conventions
         /// <param name="container">The container.</param>
         /// <param name="delegate">The delegate.</param>
         /// <returns>IConventionHostBuilder.</returns>
-        [NotNull] public static IConventionHostBuilder ConfigureWebJobs(
+        [NotNull]
+        public static IConventionHostBuilder ConfigureWebJobs(
             [NotNull] this IConventionHostBuilder container,
             WebJobsConventionDelegate @delegate
         )
