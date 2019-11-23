@@ -20,12 +20,12 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// Gets the properties.
         /// </summary>
         /// <value>The properties.</value>
-        new IDictionary<object, object?> Properties { get; }
+        [NotNull] new IDictionary<object, object?> Properties { get; }
 
         /// <summary>
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        IConfiguration Configuration { get; }
+        [NotNull] IConfiguration Configuration { get; }
     }
 }
