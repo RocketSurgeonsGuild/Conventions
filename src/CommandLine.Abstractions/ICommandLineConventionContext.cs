@@ -17,19 +17,19 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// Gets the assembly provider.
         /// </summary>
         /// <value>The assembly provider.</value>
-        IAssemblyProvider AssemblyProvider { get; }
+        [NotNull] IAssemblyProvider AssemblyProvider { get; }
 
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>
         /// <value>The assembly candidate finder.</value>
-        IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+        [NotNull] IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
 
         /// <summary>
         /// Gets the command line application conventions.
         /// </summary>
         /// <value>The command line application conventions.</value>
-        IConventionBuilder CommandLineApplicationConventions { get; }
+        [NotNull] IConventionBuilder CommandLineApplicationConventions { get; }
 
         /// <summary>
         /// Adds the command.
@@ -66,6 +66,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// <param name="action">The action.</param>
         /// <param name="throwOnUnexpectedArg">if set to <c>true</c> [throw on unexpected argument].</param>
         /// <returns>CommandLineApplication.</returns>
+        [NotNull]
         CommandLineApplication AddCommand(
             string name,
             Action<CommandLineApplication>? action = null,
@@ -77,34 +78,35 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// </summary>
         /// <param name="onParseDelegate">The delegate.</param>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnParse(OnParseDelegate onParseDelegate);
+        [NotNull] ICommandLineConventionContext OnParse([NotNull] OnParseDelegate onParseDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
         /// <param name="onRunDelegate">The delegate.</param>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnRun(OnRunDelegate onRunDelegate);
+        [NotNull] ICommandLineConventionContext OnRun([NotNull] OnRunDelegate onRunDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
         /// <param name="onRunAsyncDelegate">The delegate.</param>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnRun(OnRunAsyncDelegate onRunAsyncDelegate);
+        [NotNull] ICommandLineConventionContext OnRun([NotNull] OnRunAsyncDelegate onRunAsyncDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
         /// <param name="onRunAsyncCancellableDelegate">The delegate.</param>
         /// <returns>ICommandLineConventionContext.</returns>
-        ICommandLineConventionContext OnRun(OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate);
+        [NotNull] ICommandLineConventionContext OnRun([NotNull] OnRunAsyncCancellableDelegate onRunAsyncCancellableDelegate);
 
         /// <summary>
         /// Called when [run].
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>ICommandLineConventionContext.</returns>
+        [NotNull]
         ICommandLineConventionContext OnRun<T>()
             where T : IDefaultCommand;
 
@@ -113,6 +115,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>ICommandLineConventionContext.</returns>
+        [NotNull]
         ICommandLineConventionContext OnRunAsync<T>()
             where T : IDefaultCommandAsync;
     }
