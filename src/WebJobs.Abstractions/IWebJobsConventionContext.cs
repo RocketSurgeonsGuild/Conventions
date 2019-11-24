@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.WebJobs;
+﻿using JetBrains.Annotations;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
