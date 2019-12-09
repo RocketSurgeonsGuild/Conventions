@@ -19,8 +19,7 @@ namespace Rocket.Surgery.Extensions.Configuration
         /// Additional settings providers to be inserted after the default environment application settings file (typically
         /// appsettings.{env}.json)
         /// </summary>
-        public List<Func<IMsftConfigurationBuilder, string, IMsftConfigurationBuilder>>
-            EnvironmentConfiguration { get; } =
+        public List<Func<IMsftConfigurationBuilder, string, IMsftConfigurationBuilder>> EnvironmentConfiguration { get; } =
             new List<Func<IMsftConfigurationBuilder, string, IMsftConfigurationBuilder>>();
     }
 }

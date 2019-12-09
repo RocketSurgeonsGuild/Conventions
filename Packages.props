@@ -47,7 +47,7 @@
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
-    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.6.0" />
+    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0' and '$(TargetFramework)'!='netcoreapp2.1'">
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0" />
@@ -82,7 +82,6 @@
     <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.14" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="3.0.5" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Host.Storage" Version="3.0.14" />
-    <PackageReference Update="Microsoft.NET.Sdk.Functions" Version="3.0.1" />
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.4" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="1.6.0" />
     <PackageReference Update="NodaTime" Version="2.4.7" />
