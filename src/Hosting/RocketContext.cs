@@ -236,13 +236,13 @@ namespace Rocket.Surgery.Hosting
             foreach (var item in configurationBuilder.Sources.Reverse())
             {
                 if (item is CommandLineConfigurationSource ||
-                    ( item is EnvironmentVariablesConfigurationSource env && ( string.IsNullOrWhiteSpace(env.Prefix) ||
-                        string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) ) ||
-                    ( item is JsonConfigurationSource a && string.Equals(
+                    (item is EnvironmentVariablesConfigurationSource env && (string.IsNullOrWhiteSpace(env.Prefix) ||
+                        string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase))) ||
+                    (item is JsonConfigurationSource a && string.Equals(
                         a.Path,
                         "secrets.json",
                         StringComparison.OrdinalIgnoreCase
-                    ) ))
+                    )))
                 {
                     continue;
                 }
@@ -285,7 +285,7 @@ namespace Rocket.Surgery.Hosting
             services.AddSingleton(rocketHostBuilder.AssemblyCandidateFinder);
             services.AddSingleton(rocketHostBuilder.AssemblyProvider);
             services.AddSingleton(rocketHostBuilder.Scanner);
-#if !(NETSTANDARD2_0 || NETCOREAPP2_1)
+#if !(NETSTANDARD2_0)
             services.AddHealthChecks();
 #endif
         }

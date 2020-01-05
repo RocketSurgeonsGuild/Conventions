@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.0;netcoreapp2.1</TargetFrameworks>
-    </PropertyGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\..\src\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj" />
-      <ProjectReference Include="..\..\src\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
+  </ItemGroup>
 </Project>

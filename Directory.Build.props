@@ -11,6 +11,7 @@
         <PackageTags Condition="$(MSBuildProjectName.Contains('Abstractions'))">$(PackageTags);abstractions</PackageTags>
         <LangVersion>8.0</LangVersion>
         <Nullable>enable</Nullable>
+        <LegacySupportPackagesProps>Packages.support.props</LegacySupportPackagesProps>
         <NoWarn>NU5105;CS0579;$(NoWarn)</NoWarn>
     </PropertyGroup>
     <ItemGroup>

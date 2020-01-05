@@ -17,43 +17,14 @@
     <PackageReference Update="JetBrains.ReSharper.CommandLineTools" Version="2019.3.1" />
     <PackageReference Update="Nuke.Common" Version="0.23.4" />
     <PackageReference Update="ReportGenerator" Version="4.4.0" />
-    <PackageReference Update="Rocket.Surgery.Nuke.DotNetCore" Version="0.10.1" />
+    <PackageReference Update="Rocket.Surgery.Nuke.DotNetCore" Version="0.11.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="BenchMarkDotNet" Version="0.12.0" />
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.FileExtensions" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Ini" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="2.1.0" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.5" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
-    <PackageReference Update="Microsoft.Extensions.FileProviders.Physical" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Logging" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
-    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.7.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0' and '$(TargetFramework)'!='netcoreapp2.1'">
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="3.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.1.0" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="3.1.0" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.0" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="3.1.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="3.0.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.0.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
@@ -76,6 +47,7 @@
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Update="Microsoft.Extensions.Logging.EventSource" Version="3.0.0" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0" />
+    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
@@ -101,4 +73,5 @@
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
+  <Import Project="$(MSBuildThisFileDirectory)/$(LegacySupportPackagesProps)" Condition="Exists('$(MSBuildThisFileDirectory)/$(LegacySupportPackagesProps)')" />
 </Project>

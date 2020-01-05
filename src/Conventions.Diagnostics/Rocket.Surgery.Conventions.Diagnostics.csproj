@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.0;netcoreapp2.1;net461</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
     <PackageDescription>Adds diagnostics command line utilities for diagnosing what conventions are available to be run</PackageDescription>
     <PackageTags>$(PackageTags);reflection;diagnostics</PackageTags>
     <NoWarn>$(NoWarn);CS0436;CA1812</NoWarn>

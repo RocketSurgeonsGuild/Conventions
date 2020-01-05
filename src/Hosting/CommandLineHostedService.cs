@@ -17,7 +17,7 @@ namespace Rocket.Surgery.Hosting
     {
         private readonly ICommandLineExecutor _executor;
         private readonly IServiceProvider _serviceProvider;
-#if NETSTANDARD2_0 || NETCOREAPP2_1
+#if NETSTANDARD2_0
         private readonly IApplicationLifetime _lifetime;
 #else
         private readonly IHostApplicationLifetime _lifetime;
@@ -46,7 +46,7 @@ namespace Rocket.Surgery.Hosting
         public CommandLineHostedService(
             IServiceProvider serviceProvider,
             ICommandLineExecutor executor,
-#if NETSTANDARD2_0 || NETCOREAPP2_1
+#if NETSTANDARD2_0
             IApplicationLifetime lifetime,
 #else
             IHostApplicationLifetime lifetime,
@@ -73,7 +73,7 @@ namespace Rocket.Surgery.Hosting
             _lifetime.ApplicationStarted.Register(
                 async () =>
                 {
-                    if (!( _executor.IsDefaultCommand && _isWebApp ))
+                    if (!(_executor.IsDefaultCommand && _isWebApp))
                     {
                         try
                         {
