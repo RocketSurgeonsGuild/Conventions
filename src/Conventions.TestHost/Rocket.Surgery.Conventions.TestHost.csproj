@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
         <PackageDescription>Provides a ConventionHostBuilder that can be used during unit tests or anywhere else you wouldn't bootstrap an entire application</PackageDescription>
