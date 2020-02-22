@@ -129,14 +129,13 @@ namespace Rocket.Surgery.Extensions.DependencyInjection.Tests
         public void ConstructTheContainerAndRegisterWithSystem_UsingConvention()
         {
             var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            AutoFake.Provide<IConventionScanner>(AutoFake.Resolve<AggregateConventionScanner>());
-            AutoFake.Provide<IServiceCollection>(new ServiceCollection());
-            var servicesBuilder = AutoFake.Resolve<ServicesBuilder>();
-
-            A.CallTo(
-                    () => AutoFake.Resolve<IAssemblyCandidateFinder>().GetCandidateAssemblies(A<IEnumerable<string>>._)
-                )
+            var assemblyCandidateFinder = AutoFake.Provide(A.Fake<IAssemblyCandidateFinder>());
+            AutoFake.Provide<IServiceProvider>(new ServiceProviderDictionary());
+            A.CallTo(() => assemblyCandidateFinder.GetCandidateAssemblies(A<IEnumerable<string>>._))
                .Returns(assemblyProvider.GetAssemblies());
+            AutoFake.Provide<IServiceCollection>(new ServiceCollection());
+            AutoFake.Provide<IConventionScanner>(AutoFake.Resolve<AggregateConventionScanner>());
+            var servicesBuilder = AutoFake.Resolve<ServicesBuilder>();
 
             var items = servicesBuilder.Build();
             items.GetService<IAbc>().Should().NotBeNull();

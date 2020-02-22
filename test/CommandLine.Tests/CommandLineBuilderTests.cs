@@ -184,7 +184,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
 
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
-            var result = response.Execute(new AutofacServiceProvider(AutoFake.Container), "constructor");
+            var result = response.Execute(ServiceProvider, "constructor");
             result.Should().Be(1000);
             A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
         }
@@ -205,7 +205,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
 
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
-            var result = response.Execute(new AutofacServiceProvider(AutoFake.Container), "constructor");
+            var result = response.Execute(ServiceProvider, "constructor");
             result.Should().Be(1000);
             A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
         }
@@ -218,7 +218,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             builder.AddCommand<CommandWithValues>("cwv");
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
             response.Execute(
-                new AutofacServiceProvider(AutoFake.Container),
+                ServiceProvider,
                 "cwv",
                 "--api-domain",
                 "mydomain.com",
@@ -235,17 +235,18 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         public void Can_Add_A_Command_Without_A_Name()
         {
             AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var service = A.Fake<IService2>();
             A.CallTo(() => service.SomeValue).Returns("Service2");
             AutoFake.Provide(service);
+            
+            var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             builder.AddCommand<ServiceInjection>();
 
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
-            var result = response.Execute(new AutofacServiceProvider(AutoFake.Container), "serviceinjection");
+            var result = response.Execute(ServiceProvider, "serviceinjection");
 
             result.Should().Be(0);
         }
@@ -265,7 +266,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
 
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
-            var result = response.Execute(new AutofacServiceProvider(AutoFake.Container), "serviceinjection");
+            var result = response.Execute(ServiceProvider, "serviceinjection");
 
             result.Should().Be(0);
         }
@@ -274,18 +275,19 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         public void Can_Add_A_Command_With_A_Name_Using_Context()
         {
             AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-            var context = builder as ICommandLineConventionContext;
 
             var service = A.Fake<IService2>();
             A.CallTo(() => service.SomeValue).Returns("Service2");
             AutoFake.Provide(service);
+            
+            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var context = builder as ICommandLineConventionContext;
 
             context.AddCommand<ServiceInjection2>("si");
 
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
-            var result = response.Execute(new AutofacServiceProvider(AutoFake.Container), "si");
+            var result = response.Execute(ServiceProvider, "si");
 
             result.Should().Be(0);
         }
@@ -305,7 +307,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
 
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
-            response.Execute(new AutofacServiceProvider(AutoFake.Container), "si");
+            response.Execute(ServiceProvider, "si");
 
             A.CallTo(() => onParseBuilder(A<IApplicationState>._)).MustHaveHappened(1, Times.Exactly);
             A.CallTo(() => onParseContext(A<IApplicationState>._)).MustHaveHappened(1, Times.Exactly);
@@ -317,7 +319,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
-            var result = builder.OnRun<Default>().Build().Execute(new AutofacServiceProvider(AutoFake.Container));
+            var result = builder.OnRun<Default>().Build().Execute(ServiceProvider);
             result.Should().Be(-1);
         }
 
@@ -329,7 +331,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var context = builder as ICommandLineConventionContext;
 
             context.OnRun<Default>();
-            var result = builder.Build().Execute(new AutofacServiceProvider(AutoFake.Container));
+            var result = builder.Build().Execute(ServiceProvider);
             result.Should().Be(-1);
         }
 
