@@ -12,9 +12,7 @@ using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
-#pragma warning disable CA1040
-#pragma warning disable CA1034
-#pragma warning disable CA2000
+#pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021
 
 [assembly: Convention(typeof(ServiceBuilderTests.AbcConvention))]
 
