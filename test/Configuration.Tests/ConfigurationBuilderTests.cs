@@ -1,5 +1,4 @@
 ﻿using System;
-using Autofac;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +15,7 @@ namespace Rocket.Surgery.Extensions.Configuration.Tests
         public void Constructs()
         {
             var configuration = AutoFake.Resolve<IConfiguration>();
-            var builder = AutoFake.Resolve<ConfigurationBuilder>(new TypedParameter(typeof(ILogger), Logger));
+            var builder = AutoFake.Resolve<ConfigurationBuilder>();
 
             builder.Logger.Should().NotBeNull();
             builder.Configuration.Should().NotBeNull();

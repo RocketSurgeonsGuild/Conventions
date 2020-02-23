@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Autofac.Extensions.DependencyInjection;
 using FakeItEasy;
 using FluentAssertions;
 using JetBrains.Annotations;
@@ -98,7 +97,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var response = builder
-               .OnRun(state => Task.FromResult((int)(state.GetLogLevel() ?? LogLevel.Information)))
+               .OnRun(state => Task.FromResult((int)( state.GetLogLevel() ?? LogLevel.Information )))
                .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Execute(AutoFake.Resolve<IServiceProvider>()).Should().Be((int)LogLevel.Information);
@@ -111,7 +110,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var response = builder
-               .OnRun(state => (int)(state.GetLogLevel() ?? LogLevel.Information))
+               .OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information ))
                .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Execute(AutoFake.Resolve<IServiceProvider>(), "run").Should().Be((int)LogLevel.Information);
@@ -239,7 +238,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var service = A.Fake<IService2>();
             A.CallTo(() => service.SomeValue).Returns("Service2");
             AutoFake.Provide(service);
-            
+
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             builder.AddCommand<ServiceInjection>();
@@ -279,7 +278,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var service = A.Fake<IService2>();
             A.CallTo(() => service.SomeValue).Returns("Service2");
             AutoFake.Provide(service);
-            
+
             var builder = AutoFake.Resolve<CommandLineBuilder>();
             var context = builder as ICommandLineConventionContext;
 
@@ -377,7 +376,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
             var response = builder
-               .OnRun(state => (int)(state.GetLogLevel() ?? LogLevel.Information))
+               .OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information ))
                .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = (LogLevel)response.Execute(AutoFake.Resolve<IServiceProvider>(), command);
@@ -396,8 +395,8 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
             AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
             var builder = AutoFake.Resolve<CommandLineBuilder>();
 
-            (builder as ICommandLineConventionContext).OnRun(
-                state => (int)(state.GetLogLevel() ?? LogLevel.Information)
+            ( builder as ICommandLineConventionContext ).OnRun(
+                state => (int)( state.GetLogLevel() ?? LogLevel.Information )
             );
 
             var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
