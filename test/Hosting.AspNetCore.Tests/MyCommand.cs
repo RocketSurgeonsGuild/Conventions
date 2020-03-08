@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions.DependencyInjection;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests
 {

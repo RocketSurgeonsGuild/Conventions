@@ -11,12 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
-using Rocket.Surgery.Extensions.Configuration;
-using Rocket.Surgery.Extensions.DependencyInjection;
-using Rocket.Surgery.Extensions.WebJobs;
-using ConfigurationBuilder = Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder;
+using Rocket.Surgery.Conventions.WebJobs;
+using ConfigurationBuilder = Rocket.Surgery.Conventions.Configuration.ConfigurationBuilder;
 using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 namespace Rocket.Surgery.Hosting.Functions

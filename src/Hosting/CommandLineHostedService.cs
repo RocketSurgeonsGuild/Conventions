@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Extensions.CommandLine;
+using Rocket.Surgery.Conventions.CommandLine;
 
 namespace Rocket.Surgery.Hosting
 {

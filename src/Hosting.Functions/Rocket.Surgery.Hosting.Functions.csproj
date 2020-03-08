@@ -7,9 +7,9 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
-        <ProjectReference Include="..\Configuration\Rocket.Surgery.Extensions.Configuration.csproj" />
-        <ProjectReference Include="..\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj" />
-        <ProjectReference Include="..\WebJobs\Rocket.Surgery.Extensions.WebJobs.csproj" />
+        <ProjectReference Include="..\Configuration.Conventions\Rocket.Surgery.Conventions.Configuration.csproj" />
+        <ProjectReference Include="..\DependencyInjection.Conventions\Rocket.Surgery.Conventions.DependencyInjection.csproj" />
+        <ProjectReference Include="..\WebJobs.Conventions\Rocket.Surgery.Conventions.WebJobs.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Azure.WebJobs" />

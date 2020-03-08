@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
+using Rocket.Surgery.Conventions.WebJobs;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Extensions.WebJobs.Tests;
 using Xunit;

@@ -3,9 +3,11 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
+using ConfigurationBuilder = Rocket.Surgery.Conventions.Configuration.ConfigurationBuilder;
 
 namespace Rocket.Surgery.Extensions.Configuration.Tests
 {

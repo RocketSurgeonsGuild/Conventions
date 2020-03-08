@@ -8,10 +8,10 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Extensions.CommandLine;
-using Rocket.Surgery.Extensions.Configuration;
-using Rocket.Surgery.Extensions.DependencyInjection;
-using ConfigurationBuilder = Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder;
+using Rocket.Surgery.Conventions.CommandLine;
+using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.DependencyInjection;
+using ConfigurationBuilder = Rocket.Surgery.Conventions.Configuration.ConfigurationBuilder;
 using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
 using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 

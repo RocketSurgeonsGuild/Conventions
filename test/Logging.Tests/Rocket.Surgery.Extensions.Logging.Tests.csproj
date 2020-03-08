@@ -3,7 +3,7 @@
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\src\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\src\DependencyInjection.Conventions\Rocket.Surgery.Conventions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\Logging.Conventions\Rocket.Surgery.Conventions.Logging.csproj" />
   </ItemGroup>
 </Project>

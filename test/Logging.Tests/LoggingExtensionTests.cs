@@ -2,6 +2,7 @@
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Extensions.Logging.Extensions;
 using Xunit;
 
 namespace Rocket.Surgery.Extensions.Logging.Tests

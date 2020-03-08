@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using Rocket.Surgery.Conventions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Extensions.Logging.Tests

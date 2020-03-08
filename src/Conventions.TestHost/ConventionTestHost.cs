@@ -4,10 +4,10 @@ using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
-using Rocket.Surgery.Extensions.Configuration;
-using Rocket.Surgery.Extensions.DependencyInjection;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 #pragma warning disable IDE0058 // Expression value is never used
@@ -92,7 +92,7 @@ namespace Rocket.Surgery.Conventions.TestHost
                .Apply(configurationOptions.EnvironmentConfiguration, "local");
 
 #pragma warning disable CA2000
-            var cb = new Extensions.Configuration.ConfigurationBuilder(
+            var cb = new Configuration.ConfigurationBuilder(
                 Scanner,
                 _environment,
                 new ConfigurationRoot(new List<IConfigurationProvider>()),

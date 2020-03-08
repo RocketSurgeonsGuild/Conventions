@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
-    <ProjectReference Include="..\CommandLine.Abstractions\Rocket.Surgery.Extensions.CommandLine.Abstractions.csproj" />
+    <ProjectReference Include="..\CommandLine.Conventions.Abstractions\Rocket.Surgery.Conventions.CommandLine.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Terminal.Gui" />

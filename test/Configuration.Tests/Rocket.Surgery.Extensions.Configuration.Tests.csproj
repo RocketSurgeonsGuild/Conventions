@@ -3,6 +3,6 @@
         <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Configuration\Rocket.Surgery.Extensions.Configuration.csproj" />
+        <ProjectReference Include="..\..\src\Configuration.Conventions\Rocket.Surgery.Conventions.Configuration.csproj" />
     </ItemGroup>
 </Project>

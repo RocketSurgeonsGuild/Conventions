@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Extensions.Configuration;
+using Rocket.Surgery.Conventions.Configuration;
 using Xunit;
 
 namespace Rocket.Surgery.Hosting.Tests

@@ -7,11 +7,11 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
-    <ProjectReference Include="..\CommandLine\Rocket.Surgery.Extensions.CommandLine.csproj" />
-    <ProjectReference Include="..\Configuration\Rocket.Surgery.Extensions.Configuration.csproj" />
-    <ProjectReference Include="..\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\CommandLine.Conventions\Rocket.Surgery.Conventions.CommandLine.csproj" />
+    <ProjectReference Include="..\Configuration.Conventions\Rocket.Surgery.Conventions.Configuration.csproj" />
+    <ProjectReference Include="..\DependencyInjection.Conventions\Rocket.Surgery.Conventions.DependencyInjection.csproj" />
     <ProjectReference Include="..\Hosting.Abstractions\Rocket.Surgery.Hosting.Abstractions.csproj" />
-    <ProjectReference Include="..\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\Logging.Conventions\Rocket.Surgery.Conventions.Logging.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />

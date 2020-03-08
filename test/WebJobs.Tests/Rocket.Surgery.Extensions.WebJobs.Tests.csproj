@@ -3,6 +3,6 @@
         <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\src\WebJobs\Rocket.Surgery.Extensions.WebJobs.csproj" />
+        <ProjectReference Include="..\..\src\WebJobs.Conventions\Rocket.Surgery.Conventions.WebJobs.csproj" />
     </ItemGroup>
 </Project>

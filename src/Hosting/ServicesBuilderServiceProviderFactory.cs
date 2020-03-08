@@ -3,8 +3,8 @@ using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Extensions.CommandLine;
-using Rocket.Surgery.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions.CommandLine;
+using Rocket.Surgery.Conventions.DependencyInjection;
 
 #pragma warning disable CA1307
 
