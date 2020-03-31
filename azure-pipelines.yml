@@ -23,6 +23,7 @@ pr:
   branches:
     include:
       - master
+      - next
 
 resources:
   repositories:
