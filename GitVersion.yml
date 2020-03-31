@@ -3,8 +3,8 @@ mode: ContinuousDeployment
 continuous-delivery-fallback-tag: beta
 next-version: 0.1.0
 branches:
-  develop:
-    regex: ^dev(elop)?(ment)?$
+  next:
+    regex: ^next$
     mode: ContinuousDeployment
     tag: next
     increment: Major
