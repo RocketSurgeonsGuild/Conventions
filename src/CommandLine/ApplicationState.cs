@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
     /// Implements the <see cref="IApplicationState" />
     /// </summary>
     /// <seealso cref="IApplicationState" />
-    [Command(ThrowOnUnexpectedArgument = false)]
+    [Command(UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.CollectAndContinue)]
     internal class ApplicationState : IApplicationState
     {
         /// <summary>

@@ -3,6 +3,7 @@ trigger:
   branches:
     include:
       - master
+      - next
       - refs/tags/*
   paths:
     exclude:
@@ -22,6 +23,7 @@ pr:
   branches:
     include:
       - master
+      - next
 
 resources:
   repositories:
