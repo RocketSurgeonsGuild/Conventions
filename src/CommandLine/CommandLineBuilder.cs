@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
         {
             _application = new CommandLineApplication<ApplicationState>
             {
-                ThrowOnUnexpectedArgument = false
+                UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.CollectAndContinue
             };
             Logger = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
         }
@@ -152,7 +152,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
             if (!( _application.Commands.Find(z => z.Name == commandAttribute.Name) is CommandLineApplication<T> command
                 ))
             {
-                command = _application.Command(commandAttribute.Name!, action, throwOnUnexpectedArg);
+                command = _application.Command(commandAttribute.Name!, action);
             }
             else
             {
@@ -184,7 +184,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
             if (!( _application.Commands.Find(z => z.Name == name) is CommandLineApplication<T> command ))
             {
-                command = _application.Command(name, action, throwOnUnexpectedArg);
+                command = _application.Command(name, action);
             }
             else
             {
@@ -214,7 +214,7 @@ namespace Rocket.Surgery.Extensions.CommandLine
 
             if (!( _application.Commands.Find(z => z.Name == name) is { } command ))
             {
-                command = _application.Command(name, action, throwOnUnexpectedArg);
+                command = _application.Command(name, action);
             }
             else
             {
