@@ -49,7 +49,7 @@
     <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.16" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="3.0.6" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Host.Storage" Version="3.0.14" />
-    <PackageReference Update="NetEscapades.Configuration.Yaml" Version="2.0.0" />
+    <PackageReference Update="NetEscapades.Configuration.Yaml" Version="2.0.1" />
     <PackageReference Update="NodaTime" Version="2.4.8" />
     <PackageReference Update="Terminal.Gui" Version="0.81.0" />
   </ItemGroup>
