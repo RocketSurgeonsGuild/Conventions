@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\sample\Sample.DependencyOne\Sample.DependencyOne.csproj" />
@@ -8,5 +8,9 @@
         <ProjectReference Include="..\..\sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\..\src\Conventions.TestHost\Rocket.Surgery.Conventions.TestHost.csproj" />
+        <ProjectReference Include="..\..\src\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
+        <ProjectReference Include="..\..\src\Configuration.Ini\Rocket.Surgery.Extensions.Configuration.Ini.csproj" />
+        <ProjectReference Include="..\..\src\Configuration.Json\Rocket.Surgery.Extensions.Configuration.Json.csproj" />
+        <ProjectReference Include="..\..\src\Configuration.Yaml\Rocket.Surgery.Extensions.Configuration.Yaml.csproj" />
     </ItemGroup>
 </Project>

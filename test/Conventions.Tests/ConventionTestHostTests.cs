@@ -1,15 +1,16 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.TestHost;
 using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.Testing;
@@ -63,15 +64,6 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Create_Host_ByAssembly()
         {
             Action a = () => ConventionTestHostBuilder.For(GetType().Assembly, LoggerFactory)
-               .Create();
-            a.Should().NotThrow();
-        }
-
-        [Fact]
-        [Obsolete("This functionality will be removed in the future")]
-        public void Builder_Should_Create_Host_ByDependencyContext()
-        {
-            Action a = () => ConventionTestHostBuilder.For(DependencyContext.Load(GetType().Assembly), LoggerFactory)
                .Create();
             a.Should().NotThrow();
         }
@@ -154,10 +146,10 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
-        public void Builder_Should_Use_A_Custom_IRocketEnvironment()
+        public void Builder_Should_Use_A_Custom_IHostEnvironment()
         {
             Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
-               .With(AutoFake.Resolve<IRocketEnvironment>())
+               .With(AutoFake.Resolve<IHostEnvironment>())
                .Create();
             a.Should().NotThrow();
         }
@@ -186,11 +178,20 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Add_Configuration()
         {
             var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+               .WithConfigOptions(new ConfigOptions().UseJson().UseYaml().UseYml().UseIni())
                .Create();
 
-            var (configuration, _) = host.Build();
+            var (rootConfiguration, _) = host.Build();
 
-            configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
+            var provider = rootConfiguration.Providers.First();
+            provider.Should().BeOfType<ChainedConfigurationProvider>();
+            var configuration = typeof(ChainedConfigurationProvider).GetField(
+                    "_config",
+                    BindingFlags.Instance | BindingFlags.NonPublic
+                )!
+               .GetValue(provider) as IConfigurationRoot;
+
+            configuration!.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
             configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
             configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(3);
         }
@@ -200,15 +201,87 @@ namespace Rocket.Surgery.Conventions.Tests
         {
             var host = ConventionTestHostBuilder.For(this, LoggerFactory)
                .Create();
-            var options = host.GetOrAdd(() => new ConfigurationOptions());
+            host.GetOrAdd(() => new ConfigOptions());
 
-            options.EnvironmentConfiguration.Clear();
+            var (rootConfiguration, _) = host.Build();
 
-            var (configuration, _) = host.Build();
+            var provider = rootConfiguration.Providers.First();
+            provider.Should().BeOfType<ChainedConfigurationProvider>();
+            var configuration = typeof(ChainedConfigurationProvider).GetField(
+                    "_config",
+                    BindingFlags.Instance | BindingFlags.NonPublic
+                )!
+               .GetValue(provider) as IConfigurationRoot;
 
-            configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(1);
-            configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(2);
-            configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(1);
+            configuration!.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(0);
+            configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(0);
+            configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(0);
+        }
+
+        private static IConfiguration GetConfigurationFromChainedConfigurationProvider(IConfigurationProvider provider)
+        {
+            provider.Should().BeOfType<ChainedConfigurationProvider>();
+            return (typeof(ChainedConfigurationProvider).GetField(
+                    "_config",
+                    BindingFlags.Instance | BindingFlags.NonPublic
+                )!
+               .GetValue(provider)! as IConfiguration)!;
+        }
+
+        [Fact]
+        public void Builder_Should_Share_Configuration()
+        {
+            var configurationFake = A.Fake<IConfiguration>();
+            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+               .WithConfiguration(configurationFake)
+               .Create();
+
+            var (rootConfiguration, _) = host.Build();
+
+            var configuration = GetConfigurationFromChainedConfigurationProvider(rootConfiguration.Providers.First());
+
+            configuration.Should().Be(configurationFake);
+        }
+
+        [Theory]
+        [InlineData(typeof(ConventionTestHostTests))]
+        [InlineData("stringkey")]
+        [InlineData(1234)]
+        public void Builder_Should_Reuse_Configuration(object key)
+        {
+            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+               .ShareConfiguration(key)
+               .Create();
+            var host2 = ConventionTestHostBuilder.For(this, LoggerFactory)
+               .ShareConfiguration(key)
+               .Create();
+
+            var (rootConfiguration, _) = host.Build();
+            var (rootConfiguration2, _) = host2.Build();
+
+            var configuration = GetConfigurationFromChainedConfigurationProvider(rootConfiguration.Providers.First());
+            var configuration2 = GetConfigurationFromChainedConfigurationProvider(rootConfiguration2.Providers.First());
+
+            configuration.Should().BeSameAs(configuration2);
+        }
+
+        [Fact]
+        public void Builder_Should_Not_Reuse_Configuration_Across_Keys()
+        {
+            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+               .ShareConfiguration(typeof(ConventionTestHostTests))
+               .Create();
+            var host2 = ConventionTestHostBuilder.For(this, LoggerFactory)
+               .ShareConfiguration("stringkey")
+               .Create();
+
+            var (rootConfiguration, _) = host.Build();
+            var (rootConfiguration2, _) = host2.Build();
+
+            var configuration = GetConfigurationFromChainedConfigurationProvider(rootConfiguration.Providers.First());
+            var configuration2 = GetConfigurationFromChainedConfigurationProvider(rootConfiguration2.Providers.First());
+
+            configuration.Should().NotBeSameAs(configuration2);
         }
 
         public ConventionTestHostTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information) { }

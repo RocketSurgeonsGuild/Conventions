@@ -6,12 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
-using Rocket.Surgery.Extensions.Configuration;
-using Rocket.Surgery.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions.WebJobs;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Extensions.WebJobs;
 using Xunit;
 using Xunit.Abstractions;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
@@ -135,7 +135,7 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
         public void Should_Build_The_Host_Correctly()
         {
             var serviceConventionFake = A.Fake<IServiceConvention>();
-            var configurationConventionFake = A.Fake<IConfigurationConvention>();
+            var configurationConventionFake = A.Fake<IConfigConvention>();
 
             var startup = new Startup();
             var builder = new WebJobsBuilder()

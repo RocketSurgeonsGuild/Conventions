@@ -5,24 +5,29 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Hosting
 {
     internal class HostingConventionContext : ConventionContext, IHostingConventionContext
     {
-        private readonly IRocketHostBuilder _builder;
+        private readonly IConventionHostBuilder _builder;
+        private readonly IHostBuilder _hostBuilder;
 
         public HostingConventionContext(
-            IRocketHostBuilder builder,
+            IConventionHostBuilder builder,
+            IHostBuilder hostBuilder,
             ILogger logger
-        ) : base(logger, builder.ServiceProperties) => _builder = builder;
+        ) : base(logger, builder.ServiceProperties)
+        {
+            _builder = builder;
+            _hostBuilder = hostBuilder;
+        }
 
         /// <summary>
         /// Gets the builder.
         /// </summary>
         /// <value>The builder.</value>
-        public IHostBuilder Builder => _builder.Builder;
+        public IHostBuilder Builder => _hostBuilder;
 
         /// <summary>
         /// Gets the assembly provider.
@@ -40,7 +45,7 @@ namespace Rocket.Surgery.Hosting
 
         public IServiceProviderDictionary ServiceProperties => _builder.ServiceProperties;
 
-        public DiagnosticSource DiagnosticSource => _builder.DiagnosticSource;
+        public DiagnosticSource? DiagnosticSource => _builder.DiagnosticSource;
 
         public IConventionHostBuilder AppendConvention(IEnumerable<IConvention> conventions)
             => _builder.AppendConvention(conventions);

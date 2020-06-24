@@ -2,15 +2,19 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Configuration;
+
+#pragma warning disable CA2000
 
 namespace Rocket.Surgery.Conventions.TestHost
 {
@@ -19,6 +23,7 @@ namespace Rocket.Surgery.Conventions.TestHost
     /// </summary>
     public class ConventionTestHostBuilder
     {
+        private static readonly ConditionalWeakTable<object, IConfiguration> _sharedConfigurations = new ConditionalWeakTable<object, IConfiguration>();
         /// <summary>
         /// Create a convention test host build for the given <see cref="DependencyContext" /> in the assembly.
         /// </summary>
@@ -80,25 +85,6 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Create a convention test host build for the given <see cref="DependencyContext" /> in the assembly.
         /// </summary>
         /// <param name="context">The context that that will be used for the test host.</param>
-        /// <param name="loggerFactory">Optional logger factory.</param>
-        [Obsolete(
-            "No longer to be used, has been replaced with the overload that takes the assembly and loads the context from that"
-        )]
-        public static ConventionTestHostBuilder For(DependencyContext context, ILoggerFactory? loggerFactory = null)
-        {
-            loggerFactory ??= NullLoggerFactory.Instance;
-            var logger = loggerFactory.CreateLogger(nameof(ConventionTestHostBuilder));
-            return new ConventionTestHostBuilder()
-                   .With(loggerFactory)
-                   .With(new DependencyContextAssemblyProvider(context, logger))
-                   .With(new DependencyContextAssemblyCandidateFinder(context, logger))
-                ;
-        }
-
-        /// <summary>
-        /// Create a convention test host build for the given <see cref="DependencyContext" /> in the assembly.
-        /// </summary>
-        /// <param name="context">The context that that will be used for the test host.</param>
         /// <param name="assembly">The assembly that that will be used to load the <see cref="DependencyContext" />.</param>
         /// <param name="loggerFactory">Optional logger factory.</param>
         public static ConventionTestHostBuilder For(
@@ -124,47 +110,11 @@ namespace Rocket.Surgery.Conventions.TestHost
         private ILoggerFactory? _loggerFactory;
         private ILogger? _logger;
         private DiagnosticSource? _diagnosticSource;
-        private IRocketEnvironment? _environment;
+        private IHostEnvironment? _environment;
         private Assembly? _assembly;
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public ConventionTestHostBuilder() => _serviceProperties.Set(
-            new ConfigurationOptions
-            {
-                ApplicationConfiguration =
-                {
-                    builder => builder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true),
-                    builder => builder.AddYamlFile("appsettings.yml", optional: true, reloadOnChange: true),
-                    builder => builder.AddYamlFile("appsettings.yaml", optional: true, reloadOnChange: true),
-                    builder => builder.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true)
-                },
-                EnvironmentConfiguration =
-                {
-                    (builder, environmentName) => builder.AddJsonFile(
-                        $"appsettings.{environmentName}.json",
-                        optional: true,
-                        reloadOnChange: true
-                    ),
-                    (builder, environmentName) => builder.AddYamlFile(
-                        $"appsettings.{environmentName}.yml",
-                        optional: true,
-                        reloadOnChange: true
-                    ),
-                    (builder, environmentName) => builder.AddYamlFile(
-                        $"appsettings.{environmentName}.yaml",
-                        optional: true,
-                        reloadOnChange: true
-                    ),
-                    (builder, environmentName) => builder.AddIniFile(
-                        $"appsettings.{environmentName}.ini",
-                        optional: true,
-                        reloadOnChange: true
-                    )
-                }
-            }
-        );
+        private IConfiguration? _reuseConfiguration;
+        private object? _sharedConfigurationKey;
+        private ConfigOptions _configOptions = new ConfigOptions();
 
         /// <summary>
         /// Use the specific <see cref="IConventionScanner" />
@@ -178,6 +128,13 @@ namespace Rocket.Surgery.Conventions.TestHost
         }
 
         /// <summary>
+        /// Use the specific <see cref="IConventionScanner" />
+        /// </summary>
+        /// <param name="scanner">The scanner.</param>
+        /// <returns>ConventionTestHostBuilder.</returns>
+        public ConventionTestHostBuilder WithScanner(IConventionScanner scanner) => With(scanner);
+
+        /// <summary>
         /// Use the specific <see cref="IAssemblyCandidateFinder" />
         /// </summary>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
@@ -186,6 +143,13 @@ namespace Rocket.Surgery.Conventions.TestHost
             _assemblyCandidateFinder = assemblyCandidateFinder;
             return this;
         }
+
+        /// <summary>
+        /// Use the specific <see cref="IAssemblyCandidateFinder" />
+        /// </summary>
+        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
+        public ConventionTestHostBuilder WithAssemblyCandidateFinder(IAssemblyCandidateFinder assemblyCandidateFinder)
+            => With(assemblyCandidateFinder);
 
         /// <summary>
         /// Use the specific <see cref="Assembly" />
@@ -198,6 +162,28 @@ namespace Rocket.Surgery.Conventions.TestHost
         }
 
         /// <summary>
+        /// Use the specific <see cref="ConfigOptions" />
+        /// </summary>
+        /// <param name="options">The assembly.</param>
+        public ConventionTestHostBuilder WithConfigOptions(ConfigOptions options) => With(options);
+
+        /// <summary>
+        /// Use the specific <see cref="ConfigOptions" />
+        /// </summary>
+        /// <param name="options">The assembly.</param>
+        public ConventionTestHostBuilder With(ConfigOptions options)
+        {
+            _configOptions = options;
+            return this;
+        }
+
+        /// <summary>
+        /// Use the specific <see cref="Assembly" />
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        public ConventionTestHostBuilder WithAssembly(Assembly assembly) => With(assembly);
+
+        /// <summary>
         /// Use the specific <see cref="IAssemblyProvider" />
         /// </summary>
         /// <param name="assemblyProvider">The assembly provider.</param>
@@ -206,6 +192,13 @@ namespace Rocket.Surgery.Conventions.TestHost
             _assemblyProvider = assemblyProvider;
             return this;
         }
+
+        /// <summary>
+        /// Use the specific <see cref="IAssemblyProvider" />
+        /// </summary>
+        /// <param name="assemblyProvider">The assembly provider.</param>
+        public ConventionTestHostBuilder WithAssemblyProvider(IAssemblyProvider assemblyProvider)
+            => With(assemblyProvider);
 
         /// <summary>
         /// Use the specific <see cref="IServiceProviderDictionary" />
@@ -218,6 +211,13 @@ namespace Rocket.Surgery.Conventions.TestHost
         }
 
         /// <summary>
+        /// Use the specific <see cref="IServiceProviderDictionary" />
+        /// </summary>
+        /// <param name="serviceProperties">The service provider dictionary.</param>
+        public ConventionTestHostBuilder WithServiceProperties(IServiceProviderDictionary serviceProperties)
+            => With(serviceProperties);
+
+        /// <summary>
         /// Use the specific <see cref="ILogger" />
         /// </summary>
         /// <param name="logger">The logger.</param>
@@ -226,6 +226,12 @@ namespace Rocket.Surgery.Conventions.TestHost
             _logger = logger;
             return this;
         }
+
+        /// <summary>
+        /// Use the specific <see cref="ILogger" />
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public ConventionTestHostBuilder WithLogger(ILogger logger) => With(logger);
 
         /// <summary>
         /// Use the specific <see cref="ILoggerFactory" />
@@ -238,6 +244,12 @@ namespace Rocket.Surgery.Conventions.TestHost
         }
 
         /// <summary>
+        /// Use the specific <see cref="ILoggerFactory" />
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        public ConventionTestHostBuilder WithLoggerFactory(ILoggerFactory loggerFactory) => With(loggerFactory);
+
+        /// <summary>
         /// Use the specific <see cref="ILogger" />
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source.</param>
@@ -248,12 +260,57 @@ namespace Rocket.Surgery.Conventions.TestHost
         }
 
         /// <summary>
-        /// Use the specific <see cref="IRocketEnvironment" />
+        /// Use the specific <see cref="ILogger" />
+        /// </summary>
+        /// <param name="diagnosticSource">The diagnostic source.</param>
+        public ConventionTestHostBuilder WithDiagnosticSource(DiagnosticSource diagnosticSource)
+            => With(diagnosticSource);
+
+        /// <summary>
+        /// Use the specific <see cref="IHostEnvironment" />
         /// </summary>
         /// <param name="environment">The environment.</param>
-        public ConventionTestHostBuilder With(IRocketEnvironment environment)
+        public ConventionTestHostBuilder With(IHostEnvironment environment)
         {
             _environment = environment;
+            return this;
+        }
+
+        /// <summary>
+        /// Use the specific <see cref="IHostEnvironment" />
+        /// </summary>
+        /// <param name="environment">The environment.</param>
+        public ConventionTestHostBuilder WithEnvironment(IHostEnvironment environment) => With(environment);
+
+        /// <summary>
+        /// Use the specific <see cref="IConventionScanner" />
+        /// </summary>
+        /// <param name="sharedConfiguration">The shared configuration.</param>
+        /// <returns>ConventionTestHostBuilder.</returns>
+        public ConventionTestHostBuilder With(IConfiguration sharedConfiguration)
+        {
+            _reuseConfiguration = sharedConfiguration;
+            return this;
+        }
+
+        /// <summary>
+        /// Use a specific configuration object with the test host
+        /// (This can help avoid re-reading the same configuration over and over)
+        /// </summary>
+        /// <param name="sharedConfiguration">The shared configuration.</param>
+        /// <returns>ConventionTestHostBuilder.</returns>
+        public ConventionTestHostBuilder WithConfiguration(IConfiguration sharedConfiguration)
+            => With(sharedConfiguration);
+
+        /// <summary>
+        /// Use a specific configuration object with the test host
+        /// (This can help avoid re-reading the same configuration over and over)
+        /// </summary>
+        /// <param name="key">The object to use as a key for shared configuration</param>
+        /// <returns>ConventionTestHostBuilder.</returns>
+        public ConventionTestHostBuilder ShareConfiguration(object key)
+        {
+            _sharedConfigurationKey = key;
             return this;
         }
 
@@ -285,9 +342,19 @@ namespace Rocket.Surgery.Conventions.TestHost
             var contentRootPath = _assembly != null && Directory.Exists(Path.GetDirectoryName(_assembly.Location))
                 ? Path.GetDirectoryName(_assembly.Location)
                 : string.Empty;
+
             var contentProvider = !string.IsNullOrWhiteSpace(contentRootPath)
                 ? new PhysicalFileProvider(contentRootPath)
                 : new NullFileProvider() as IFileProvider;
+
+            var environment = _environment ?? new HostEnvironment()
+            {
+                ApplicationName = nameof(ConventionTestHost),
+                EnvironmentName = "Test",
+                ContentRootPath = contentRootPath,
+                ContentRootFileProvider = contentProvider
+            };
+
             var builder = new ConventionTestHost(
                 _scanner ?? new SimpleConventionScanner(
                     assemblyCandidateFinder,
@@ -299,13 +366,30 @@ namespace Rocket.Surgery.Conventions.TestHost
                 _diagnosticSource ?? new DiagnosticListener(nameof(ConventionTestHost)),
                 _serviceProperties,
                 _loggerFactory ?? NullLoggerFactory.Instance,
-                _environment ?? new RocketEnvironment(
-                    "Test",
-                    nameof(ConventionTestHost),
-                    contentRootPath,
-                    contentProvider
-                )
+                environment
             );
+
+            builder.Set(_configOptions);
+
+            if (_reuseConfiguration != null)
+            {
+                builder.Set(_reuseConfiguration);
+            }
+            else if (_sharedConfigurationKey != null)
+            {
+                if (!_sharedConfigurations.TryGetValue(_sharedConfigurationKey, out var configuration))
+                {
+                    var options = _configOptions;
+                    configuration = new ConfigurationBuilder()
+                       .SetFileProvider(environment.ContentRootFileProvider)
+                       .Apply(options.ApplicationConfiguration)
+                       .Apply(options.EnvironmentConfiguration, environment.EnvironmentName)
+                       .Apply(options.EnvironmentConfiguration, "local")
+                       .Build();
+                    _sharedConfigurations.Add(_sharedConfigurationKey, configuration);
+                }
+                builder.Set(configuration);
+            }
             action(builder);
             return builder;
         }

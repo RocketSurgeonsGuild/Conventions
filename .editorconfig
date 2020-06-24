@@ -4,6 +4,7 @@ root=true
 charset=utf-8
 indent_style=space
 indent_size=4
+max_line_length = 160
 insert_final_newline=true
 
 [*.{js,ts,vue}]
@@ -361,7 +362,7 @@ dotnet_naming_style.begins_with_t.capitalization=pascal_case
 # dotnet_diagnostic.CA1061.severity = warning
 
 # CA1062: Validate arguments of public methods
-# dotnet_diagnostic.CA1062.severity = warning
+dotnet_diagnostic.CA1062.severity = none
 
 # CA1063: Implement IDisposable Correctly
 # dotnet_diagnostic.CA1063.severity = none

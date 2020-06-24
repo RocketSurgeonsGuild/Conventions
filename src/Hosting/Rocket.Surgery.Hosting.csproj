@@ -3,25 +3,20 @@
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
     <PackageDescription>Adds helpers to easily bootstrap an application using conventions by just using the correct extension method.  This adds command line operations, additional configuration, logging and service injections by convention.</PackageDescription>
     <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
-    <NoWarn>$(NoWarn);CS0436</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
-    <ProjectReference Include="..\CommandLine\Rocket.Surgery.Extensions.CommandLine.csproj" />
+    <ProjectReference Include="..\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
     <ProjectReference Include="..\Configuration\Rocket.Surgery.Extensions.Configuration.csproj" />
-    <ProjectReference Include="..\DependencyInjection\Rocket.Surgery.Extensions.DependencyInjection.csproj" />
     <ProjectReference Include="..\Hosting.Abstractions\Rocket.Surgery.Hosting.Abstractions.csproj" />
     <ProjectReference Include="..\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Ini" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-    <PackageReference Include="NetEscapades.Configuration.Yaml" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
   </ItemGroup>
 </Project>

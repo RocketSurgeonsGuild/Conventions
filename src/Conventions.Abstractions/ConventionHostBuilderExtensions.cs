@@ -1,5 +1,9 @@
 using System;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Conventions.Logging;
 
 #pragma warning disable CS8601 // Possible null reference assignment.
 
@@ -10,6 +14,86 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     public static class ConventionHostBuilderExtensions
     {
+        /// <summary>
+        /// Configure the services delegate to the convention scanner
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>IConventionHostBuilder.</returns>
+        public static IConventionHostBuilder ConfigureServices(
+            [NotNull] this IConventionHostBuilder container,
+            ServiceConventionDelegate @delegate
+        )
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.Scanner.AppendDelegate(@delegate);
+            return container;
+        }
+
+        /// <summary>
+        /// Configure the logging delegate to the convention scanner
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>IConventionHostBuilder.</returns>
+        public static IConventionHostBuilder ConfigureLogging(
+            [NotNull] this IConventionHostBuilder container,
+            LoggingConventionDelegate @delegate
+        )
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.Scanner.AppendDelegate(@delegate);
+            return container;
+        }
+
+        /// <summary>
+        /// Configure the configuration delegate to the convention scanner
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>IConventionHostBuilder.</returns>
+        public static IConventionHostBuilder ConfigureConfiguration(
+            [NotNull] this IConventionHostBuilder container,
+            ConfigConventionDelegate @delegate
+        )
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.Scanner.AppendDelegate(@delegate);
+            return container;
+        }
+
+        /// <summary>
+        /// Gets the convention host builder or creates one of it's missing.
+        /// </summary>
+        /// <param name="hostBuilder"></param>
+        /// <returns></returns>
+        public static IConventionHostBuilder GetConventions(this IHostBuilder hostBuilder)
+        {
+            if (hostBuilder.Properties.TryGetValue(
+                typeof(IConventionHostBuilder),
+                out var value
+            ) && value is IConventionHostBuilder conventionHostBuilder)
+            {
+                return conventionHostBuilder;
+            }
+
+            conventionHostBuilder = new UninitializedConventionHostBuilder(hostBuilder.Properties);
+            hostBuilder.Properties.Add(typeof(IConventionHostBuilder), conventionHostBuilder);
+            return conventionHostBuilder;
+        }
+
         /// <summary>
         /// Get a value by type from the context
         /// </summary>
@@ -24,7 +108,7 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return (T)context.ServiceProperties[typeof(T)];
+            return (T)context.ServiceProperties[typeof(T)]!;
         }
 
         /// <summary>
@@ -42,7 +126,7 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return (T)context.ServiceProperties[key];
+            return (T)context.ServiceProperties[key]!;
         }
 
         /// <summary>
@@ -159,7 +243,7 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(serviceProviderDictionary));
             }
 
-            return (T)serviceProviderDictionary[typeof(T)];
+            return (T)serviceProviderDictionary[typeof(T)]!;
         }
 
         /// <summary>
@@ -177,7 +261,7 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(serviceProviderDictionary));
             }
 
-            return (T)serviceProviderDictionary[key];
+            return (T)serviceProviderDictionary[key]!;
         }
 
         /// <summary>

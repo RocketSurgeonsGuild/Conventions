@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -44,8 +43,7 @@ namespace Rocket.Surgery.Conventions
         /// Gets the diagnostic source.
         /// </summary>
         /// <value>The diagnostic source.</value>
-        [NotNull]
-        DiagnosticSource DiagnosticSource { get; }
+        DiagnosticSource? DiagnosticSource { get; }
 
         /// <summary>
         /// Adds a set of conventions to the scanner

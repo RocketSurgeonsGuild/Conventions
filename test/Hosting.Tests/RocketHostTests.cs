@@ -34,7 +34,8 @@ namespace Rocket.Surgery.Hosting.Tests
         public void Creates_RocketHost_WithConfiguration()
         {
             var host = Host.CreateDefaultBuilder()
-               .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
+               .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }))
+               .ConfigureRocketSurgery(c => c.GetOrAdd(() => new ConfigOptions()).UseJson().UseYaml().UseYml().UseIni());
             var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
             configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -46,20 +47,13 @@ namespace Rocket.Surgery.Hosting.Tests
         public void Creates_RocketHost_WithModifiedConfiguration()
         {
             var host = Host.CreateDefaultBuilder()
-               .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }))
-               .ConfigureRocketSurgery(
-                    c =>
-                    {
-                        var options = c.GetOrAdd(() => new ConfigurationOptions());
-                        options.EnvironmentConfiguration.Clear();
-                    }
-                );
+               .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
 
             var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
-            configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(1);
-            configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(2);
-            configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(1);
+            configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
+            configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(0);
+            configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(0);
         }
     }
 }

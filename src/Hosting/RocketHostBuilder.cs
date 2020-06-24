@@ -3,18 +3,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 
 namespace Rocket.Surgery.Hosting
 {
     /// <summary>
     /// Class RocketHostBuilder.
     /// Implements the <see cref="ConventionHostBuilder{TSelf}" />
-    /// Implements the <see cref="IRocketHostBuilder" />
     /// </summary>
     /// <seealso cref="ConventionHostBuilder{IRocketHostBuilder}" />
-    /// <seealso cref="IRocketHostBuilder" />
-    internal class RocketHostBuilder : ConventionHostBuilder<IRocketHostBuilder>, IRocketHostBuilder
+    internal class RocketHostBuilder : ConventionHostBuilder<RocketHostBuilder>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RocketHostBuilder" /> class.
