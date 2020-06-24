@@ -23,8 +23,8 @@ namespace Hosting.Benchmarks
         {
             var config = ManualConfig
                .Create(DefaultConfig.Instance);
-            config.Add(
-                Job.ShortRun.With(
+            config.AddJob(
+                Job.ShortRun.WithToolchain(
                     InProcessEmitToolchain
                        .Instance // Run in-process so you don't need a solution file. If this is part of a solution, replace with CsProjCoreToolchain.NetCoreApp21.
                 )

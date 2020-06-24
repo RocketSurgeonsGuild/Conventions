@@ -4,7 +4,6 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 
 #pragma warning disable IDE0058 // Expression value is never used
 

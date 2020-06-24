@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.Conventions.WebJobs;
 
 namespace Rocket.Surgery.Extensions.WebJobs.Tests
 {

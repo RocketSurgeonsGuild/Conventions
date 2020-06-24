@@ -30,7 +30,7 @@ namespace Rocket.Surgery.Conventions.Reflection
             _dependencies = dependenciesWithNoDuplicates;
         }
 
-        private Dependency CreateDependency(RuntimeLibrary library, ISet<string> referenceAssemblies)
+        private static Dependency CreateDependency(RuntimeLibrary library, ISet<string> referenceAssemblies)
         {
             var classification = DependencyClassification.Unknown;
             if (referenceAssemblies.Contains(library.Name))

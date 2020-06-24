@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
@@ -7,13 +6,12 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Extensions.CommandLine;
-using Rocket.Surgery.Extensions.Configuration;
-using Rocket.Surgery.Extensions.DependencyInjection;
-using ConfigurationBuilder = Rocket.Surgery.Extensions.Configuration.ConfigurationBuilder;
-using IMsftConfigurationBuilder = Microsoft.Extensions.Configuration.IConfigurationBuilder;
-using MsftConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+using Rocket.Surgery.Conventions.CommandLine;
+using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.DependencyInjection;
+using JetBrains.Annotations;
 
 namespace Rocket.Surgery.Hosting
 {
@@ -22,61 +20,6 @@ namespace Rocket.Surgery.Hosting
     /// </summary>
     internal class RocketContext
     {
-        private static void InsertConfigurationSourceAfter<T>(
-            IList<IConfigurationSource> sources,
-            Func<IList<IConfigurationSource>, T> getSource,
-            IEnumerable<IConfigurationSource> createSourceFrom
-        )
-            where T : IConfigurationSource
-        {
-            var source = getSource(sources);
-            if (source != null)
-            {
-                var index = sources.IndexOf(source);
-                foreach (var newSource in createSourceFrom.Reverse())
-                {
-                    sources.Insert(index + 1, newSource);
-                }
-            }
-        }
-
-        private static void ReplaceConfigurationSourceAt<T>(
-            IList<IConfigurationSource> sources,
-            Func<IList<IConfigurationSource>, T> getSource,
-            IEnumerable<IConfigurationSource> createSourceFrom
-        )
-            where T : IConfigurationSource
-        {
-            var source = getSource(sources);
-            if (source != null)
-            {
-                var index = sources.IndexOf(source);
-                sources.RemoveAt(index);
-                foreach (var newSource in createSourceFrom.Reverse())
-                {
-                    sources.Insert(index, newSource);
-                }
-            }
-        }
-
-        private static void InsertConfigurationSourceBefore<T>(
-            IList<IConfigurationSource> sources,
-            Func<IList<IConfigurationSource>, T> getSource,
-            params Func<T, IConfigurationSource>[] createSourceFrom
-        )
-            where T : IConfigurationSource
-        {
-            var source = getSource(sources);
-            if (source != null)
-            {
-                var index = sources.IndexOf(source);
-                foreach (var m in createSourceFrom.Reverse())
-                {
-                    sources.Insert(index, m(source));
-                }
-            }
-        }
-
         private readonly IHostBuilder _hostBuilder;
         private string[]? _args;
         private ICommandLineExecutor? _exec;
@@ -91,12 +34,17 @@ namespace Rocket.Surgery.Hosting
         /// Configures any hosting builder conventions
         /// </summary>
         /// <param name="configurationBuilder">The configuration builder.</param>
-        public void ComposeHostingConvention(IMsftConfigurationBuilder configurationBuilder)
+        public void ComposeHostingConvention([NotNull] IConfigurationBuilder configurationBuilder)
         {
-            var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
+            if (configurationBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            }
+
+            var rocketHostBuilder = _hostBuilder.GetConventions();
             Composer.Register(
                 rocketHostBuilder.Scanner,
-                new HostingConventionContext(rocketHostBuilder, rocketHostBuilder.Logger),
+                new HostingConventionContext(rocketHostBuilder, rocketHostBuilder.Get<IHostBuilder>(), rocketHostBuilder.Get<ILogger>()),
                 typeof(IHostingConvention),
                 typeof(HostingConventionDelegate)
             );
@@ -106,29 +54,39 @@ namespace Rocket.Surgery.Hosting
         /// Configures the cli.
         /// </summary>
         /// <param name="configurationBuilder">The configuration builder.</param>
-        public void ConfigureCli(IMsftConfigurationBuilder configurationBuilder)
+        public void ConfigureCli([NotNull] IConfigurationBuilder configurationBuilder)
         {
-            var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
+            if (configurationBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            }
+
+            var rocketHostBuilder = _hostBuilder.GetConventions();
             var clb = new CommandLineBuilder(
                 rocketHostBuilder.Scanner,
                 rocketHostBuilder.AssemblyProvider,
                 rocketHostBuilder.AssemblyCandidateFinder,
-                rocketHostBuilder.Logger,
-                rocketHostBuilder.Properties
+                rocketHostBuilder.Get<ILogger>(),
+                rocketHostBuilder.ServiceProperties
             );
 
             _exec = clb.Build().Parse(_args ?? Array.Empty<string>());
             _args = _exec.ApplicationState.RemainingArguments ?? Array.Empty<string>();
             configurationBuilder.AddApplicationState(_exec.ApplicationState);
-            rocketHostBuilder.Properties.Add(typeof(ICommandLineExecutor), _exec);
+            rocketHostBuilder.ServiceProperties.Add(typeof(ICommandLineExecutor), _exec);
         }
 
         /// <summary>
         /// Captures the arguments.
         /// </summary>
         /// <param name="configurationBuilder">The configuration builder.</param>
-        public void CaptureArguments(IMsftConfigurationBuilder configurationBuilder)
+        public void CaptureArguments([NotNull] IConfigurationBuilder configurationBuilder)
         {
+            if (configurationBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            }
+
             var commandLineSource = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>()
                .FirstOrDefault();
             if (commandLineSource != null)
@@ -141,8 +99,13 @@ namespace Rocket.Surgery.Hosting
         /// Replaces the arguments.
         /// </summary>
         /// <param name="configurationBuilder">The configuration builder.</param>
-        public void ReplaceArguments(IMsftConfigurationBuilder configurationBuilder)
+        public void ReplaceArguments([NotNull] IConfigurationBuilder configurationBuilder)
         {
+            if (configurationBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            }
+
             var commandLineSource = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>()
                .FirstOrDefault();
             if (commandLineSource != null)
@@ -157,80 +120,22 @@ namespace Rocket.Surgery.Hosting
         /// <param name="context">The context.</param>
         /// <param name="configurationBuilder">The configuration builder.</param>
         public void ConfigureAppConfiguration(
-            HostBuilderContext context,
-            IMsftConfigurationBuilder configurationBuilder
+            [NotNull] HostBuilderContext context,
+            [NotNull] IConfigurationBuilder configurationBuilder
         )
         {
-            var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
-            var configurationOptions = rocketHostBuilder.GetOrAdd(() => new ConfigurationOptions());
+            if (configurationBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            }
 
-            InsertConfigurationSourceAfter(
-                configurationBuilder.Sources,
-                sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(
-                    x =>
-                        string.Equals(
-                            x.Path,
-                            $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
-                            StringComparison.OrdinalIgnoreCase
-                        )
-                ),
-                new IConfigurationSource[]
-                {
-                    new JsonConfigurationSource
-                    {
-                        FileProvider = configurationBuilder.GetFileProvider(),
-                        Path = "appsettings.local.json",
-                        Optional = true,
-                        ReloadOnChange = true
-                    }
-                }
-            );
-
-            ReplaceConfigurationSourceAt(
-                configurationBuilder.Sources,
-                sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(
-                    x => string.Equals(x.Path, "appsettings.json", StringComparison.OrdinalIgnoreCase)
-                ),
-                new ProxyConfigurationBuilder(configurationBuilder).Apply(configurationOptions.ApplicationConfiguration)
-                   .GetAdditionalSources()
-            );
-
-            ReplaceConfigurationSourceAt(
-                configurationBuilder.Sources,
-                sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(
-                    x =>
-                        string.Equals(
-                            x.Path,
-                            $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
-                            StringComparison.OrdinalIgnoreCase
-                        )
-                ),
-                new ProxyConfigurationBuilder(configurationBuilder).Apply(
-                    configurationOptions.EnvironmentConfiguration,
-                    context.HostingEnvironment.EnvironmentName
-                ).GetAdditionalSources()
-            );
-
-            ReplaceConfigurationSourceAt(
-                configurationBuilder.Sources,
-                sources => sources.OfType<JsonConfigurationSource>().FirstOrDefault(
-                    x =>
-                        string.Equals(x.Path, "appsettings.local.json", StringComparison.OrdinalIgnoreCase)
-                ),
-                new ProxyConfigurationBuilder(configurationBuilder)
-                   .Apply(configurationOptions.EnvironmentConfiguration, "local").GetAdditionalSources()
-            );
-
-            InsertConfigurationSourceBefore(
-                configurationBuilder.Sources,
-                sources => sources.OfType<EnvironmentVariablesConfigurationSource>()
-                   .FirstOrDefault(x => string.IsNullOrWhiteSpace(x.Prefix)),
-                s => new EnvironmentVariablesConfigurationSource
-                {
-                    Prefix = "RSG_"
-                }
-            );
+            var rocketHostBuilder = _hostBuilder.GetConventions();
+            // Insert after all the normal configuration but before the environment specific configuration
 
             IConfigurationSource? source = null;
             foreach (var item in configurationBuilder.Sources.Reverse())
@@ -255,21 +160,23 @@ namespace Rocket.Surgery.Hosting
                 ? configurationBuilder.Sources.Count - 1
                 : configurationBuilder.Sources.IndexOf(source);
 
-            var cb = new ConfigurationBuilder(
+            var cb = new ConfigBuilder(
                 rocketHostBuilder.Scanner,
-                context.HostingEnvironment.Convert(),
-                new MsftConfigurationBuilder().AddConfiguration(context.Configuration)
-                   .AddConfiguration(configurationBuilder.Build()).Build(),
-                configurationBuilder,
-                rocketHostBuilder.Logger,
-                rocketHostBuilder.Properties
+                context.HostingEnvironment,
+                new ConfigurationBuilder()
+                   .AddConfiguration(context.Configuration, false)
+                   .AddConfiguration(configurationBuilder.Build(), true)
+                   .Build(),
+                rocketHostBuilder.Get<ILogger>(),
+                rocketHostBuilder.ServiceProperties
             );
 
             configurationBuilder.Sources.Insert(
                 index + 1,
                 new ChainedConfigurationSource
                 {
-                    Configuration = cb.Build()
+                    Configuration = cb.Build(),
+                    ShouldDisposeConfiguration = true
                 }
             );
         }
@@ -279,15 +186,23 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="services">The services.</param>
-        public void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+        public void ConfigureServices([NotNull] HostBuilderContext context, [NotNull] IServiceCollection services)
         {
-            var rocketHostBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            var rocketHostBuilder = _hostBuilder.GetConventions();
             services.AddSingleton(rocketHostBuilder.AssemblyCandidateFinder);
             services.AddSingleton(rocketHostBuilder.AssemblyProvider);
             services.AddSingleton(rocketHostBuilder.Scanner);
-#if !(NETSTANDARD2_0)
             services.AddHealthChecks();
-#endif
         }
 
         /// <summary>
@@ -295,9 +210,19 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="services">The services.</param>
-        public void DefaultServices(HostBuilderContext context, IServiceCollection services)
+        public void DefaultServices([NotNull] HostBuilderContext context, [NotNull] IServiceCollection services)
         {
-            var conventionalBuilder = RocketHostExtensions.GetConventionalHostBuilder(_hostBuilder);
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            var conventionalBuilder = _hostBuilder.GetConventions();
             _hostBuilder.UseServiceProviderFactory(
                 new ServicesBuilderServiceProviderFactory(
                     collection =>
@@ -307,9 +232,9 @@ namespace Rocket.Surgery.Hosting
                             conventionalBuilder.AssemblyCandidateFinder,
                             collection,
                             context.Configuration,
-                            context.HostingEnvironment.Convert(),
-                            conventionalBuilder.Logger,
-                            conventionalBuilder.Properties
+                            context.HostingEnvironment,
+                            conventionalBuilder.Get<ILogger>(),
+                            conventionalBuilder.ServiceProperties
                         )
                 )
             );

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Configuration;
-using Rocket.Surgery.Extensions.DependencyInjection;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 #pragma warning disable IDE0058 // Expression value is never used
@@ -22,7 +24,7 @@ namespace Rocket.Surgery.Conventions.TestHost
     public class ConventionTestHost : ConventionHostBuilder<ConventionTestHost>
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly IRocketEnvironment _environment;
+        private readonly IHostEnvironment _environment;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Rocket.Surgery.Conventions.TestHost
             DiagnosticSource diagnosticSource,
             IServiceProviderDictionary serviceProperties,
             ILoggerFactory loggerFactory,
-            IRocketEnvironment environment
+            IHostEnvironment environment
         ) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties)
         {
             serviceProperties.Set(HostType.UnitTestHost);
@@ -84,26 +86,32 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         private (IConfigurationRoot Configuration, ServicesBuilder ServicesBuilder) Init()
         {
-            var configurationOptions = this.GetOrAdd(() => new ConfigurationOptions());
-            var configurationBuilder = new ConfigurationBuilder()
-               .SetFileProvider(_environment.ContentRootFileProvider)
-               .Apply(configurationOptions.ApplicationConfiguration)
-               .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
-               .Apply(configurationOptions.EnvironmentConfiguration, "local");
+            var sharedConfiguration = this.Get<IConfiguration>();
+            if (sharedConfiguration == null)
+            {
+                var configurationOptions = this.GetOrAdd(() => new ConfigOptions());
+                var sharedConfigurationBuilder = new ConfigurationBuilder()
+                   .SetFileProvider(_environment.ContentRootFileProvider)
+                   .Apply(configurationOptions.ApplicationConfiguration)
+                   .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
+                   .Apply(configurationOptions.EnvironmentConfiguration, "local");
+                sharedConfiguration = sharedConfigurationBuilder.Build();
+            }
 
 #pragma warning disable CA2000
-            var cb = new Extensions.Configuration.ConfigurationBuilder(
+            var cb = new ConfigBuilder(
                 Scanner,
                 _environment,
                 new ConfigurationRoot(new List<IConfigurationProvider>()),
-                configurationBuilder,
                 _logger,
                 ServiceProperties
             );
 #pragma warning restore CA2000
 
-            var configuration = configurationBuilder
-               .AddConfiguration(cb.Build())
+
+            var configuration = new ConfigurationBuilder()
+               .AddConfiguration(sharedConfiguration, false)
+               .AddConfiguration(cb.Build(), true)
                .Build();
 
             var serviceCollection = new ServiceCollection();

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rocket.Surgery.Conventions.Scanners;
 
 #pragma warning disable IDE0058 // Expression value is never used
 

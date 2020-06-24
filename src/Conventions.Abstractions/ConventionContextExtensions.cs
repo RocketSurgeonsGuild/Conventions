@@ -16,7 +16,6 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T"></typeparam>
         /// <param name="context">The context</param>
         /// <returns>T.</returns>
-        [NotNull]
         public static T Get<T>([NotNull] this IConventionContext context)
         {
             if (context == null)
@@ -24,7 +23,7 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return (T)context[typeof(T)];
+            return (T)context[typeof(T)]!;
         }
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return (T)context[key];
+            return (T)context[key]!;
         }
 
         /// <summary>

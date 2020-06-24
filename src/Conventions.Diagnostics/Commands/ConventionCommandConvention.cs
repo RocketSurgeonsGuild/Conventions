@@ -1,4 +1,4 @@
-﻿using Rocket.Surgery.Extensions.CommandLine;
+﻿using Rocket.Surgery.Conventions.CommandLine;
 
 namespace Rocket.Surgery.Conventions.Diagnostics.Commands
 {

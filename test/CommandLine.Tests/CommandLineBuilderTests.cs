@@ -8,6 +8,7 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;

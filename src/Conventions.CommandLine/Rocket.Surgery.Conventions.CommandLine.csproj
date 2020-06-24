@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+        <PackageDescription>Provides the ability to provide additional commands to the hosted application by convention.</PackageDescription>
+        <PackageTags>$(PackageTags);command line;cli;command</PackageTags>
+        <NoWarn>$(NoWarn);RCS1102;CA1812</NoWarn>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="McMaster.Extensions.CommandLineUtils" />
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+    </ItemGroup>
+</Project>
