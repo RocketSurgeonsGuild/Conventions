@@ -79,26 +79,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="container">The container.</param>
         /// <param name="delegate">The delegate.</param>
-        /// <returns>IHostBuilder.</returns>
-        public static IHostBuilder ConfigureConfiguration(
-            [NotNull] this IHostBuilder container,
-            ConfigConventionDelegate @delegate
-        )
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
-
-            container.GetConventions().Scanner.AppendDelegate(@delegate);
-            return container;
-        }
-
-        /// <summary>
-        /// Configure the configuration delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
         /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder ConfigureConfiguration(
             [NotNull] this IConventionHostBuilder container,
