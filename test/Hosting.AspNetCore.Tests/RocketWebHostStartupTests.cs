@@ -38,7 +38,7 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
            .ConfigureWebHostDefaults(x => { })
            .ConfigureRocketSurgery(
                 x => x
-                   .UseScanner(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>()))
+                   .UseScannerUnsafe(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>()))
                    .UseAssemblyCandidateFinder(
                         new DefaultAssemblyCandidateFinder(new[] { typeof(RocketWebHostBuilderTests).Assembly })
                     )

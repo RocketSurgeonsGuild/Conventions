@@ -28,7 +28,7 @@ namespace Rocket.Surgery.Hosting.Tests
             Host.CreateDefaultBuilder()
                .ConfigureRocketSurgery(
                     rb => rb
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .PrependDelegate(new Action(() => { }))
                        .AppendDelegate(new Action(() => { }))
                 )
@@ -47,7 +47,7 @@ namespace Rocket.Surgery.Hosting.Tests
             Host.CreateDefaultBuilder()
                .ConfigureRocketSurgery(
                     rb => rb
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .PrependConvention(convention)
                        .AppendConvention(convention)
                 );
@@ -140,7 +140,7 @@ namespace Rocket.Surgery.Hosting.Tests
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .ConfigureServices(x => { })
                 );
 
@@ -159,7 +159,7 @@ namespace Rocket.Surgery.Hosting.Tests
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .ConfigureConfiguration(x => { })
                 );
 
@@ -178,7 +178,7 @@ namespace Rocket.Surgery.Hosting.Tests
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .ConfigureHosting(x => { })
                 );
 
@@ -197,7 +197,7 @@ namespace Rocket.Surgery.Hosting.Tests
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .ConfigureCommandLine(x => { })
                 );
 
@@ -216,7 +216,7 @@ namespace Rocket.Surgery.Hosting.Tests
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .ConfigureLogging(x => { })
                 );
 
@@ -238,7 +238,7 @@ namespace Rocket.Surgery.Hosting.Tests
             var builder = Host.CreateDefaultBuilder()
                .ConfigureRocketSurgery(
                     rb => rb
-                       .UseScanner(
+                       .UseScannerUnsafe(
                             new BasicConventionScanner(
                                 A.Fake<IServiceProviderDictionary>(),
                                 serviceConventionFake,
@@ -264,7 +264,7 @@ namespace Rocket.Surgery.Hosting.Tests
             var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
                .ConfigureRocketSurgery(
                     rb => rb
-                       .UseScanner(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>()))
+                       .UseScannerUnsafe(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>()))
                        .UseAssemblyCandidateFinder(
                             new DefaultAssemblyCandidateFinder(new[] { typeof(RocketHostBuilderTests).Assembly })
                         )
@@ -286,7 +286,7 @@ namespace Rocket.Surgery.Hosting.Tests
             var builder = Host.CreateDefaultBuilder(new[] { "myself" })
                .ConfigureRocketSurgery(
                     rb => rb
-                       .UseScanner(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>()))
+                       .UseScannerUnsafe(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>()))
                        .UseAssemblyCandidateFinder(
                             new DefaultAssemblyCandidateFinder(new[] { typeof(RocketHostBuilderTests).Assembly })
                         )

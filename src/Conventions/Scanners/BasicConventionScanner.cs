@@ -13,9 +13,9 @@ namespace Rocket.Surgery.Conventions.Scanners
     /// <seealso cref="IConventionScanner" />
     public class BasicConventionScanner : IConventionScanner
     {
-        private readonly List<object> _prependContributions = new List<object>();
-        private readonly List<object> _appendContributions = new List<object>();
-        private readonly List<Type> _exceptContributions = new List<Type>();
+        private readonly List<object> _prependContributions;
+        private readonly List<object> _appendContributions;
+        private readonly List<Type> _exceptContributions;
         private readonly IServiceProvider _serviceProvider;
         private IConventionProvider? _provider;
 
@@ -26,8 +26,24 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// <param name="conventions">The initial list of conventions</param>
         public BasicConventionScanner(IServiceProvider serviceProvider, params IConvention[] conventions)
         {
-            _prependContributions.AddRange(conventions);
             _serviceProvider = serviceProvider;
+            _appendContributions = new List<object>();
+            _prependContributions = new List<object>();
+            _exceptContributions = new List<Type>();
+            _prependContributions.AddRange(conventions);
+        }
+
+        internal BasicConventionScanner(
+            IServiceProvider serviceProvider,
+            List<object> prependedConventions,
+            List<object> appendedConventions,
+            List<Type> exceptConventions
+        )
+        {
+            _serviceProvider = serviceProvider;
+            _appendContributions = appendedConventions;
+            _prependContributions = prependedConventions;
+            _exceptContributions = exceptConventions;
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace Rocket.Surgery.Hosting
     /// Class RocketHostBuilder.
     /// Implements the <see cref="ConventionHostBuilder{TSelf}" />
     /// </summary>
-    /// <seealso cref="ConventionHostBuilder{IRocketHostBuilder}" />
+    /// <seealso cref="ConventionHostBuilder{IConventionHostBuilder}" />
     internal class RocketHostBuilder : ConventionHostBuilder<RocketHostBuilder>
     {
         /// <summary>

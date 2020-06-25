@@ -510,7 +510,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="action">The action.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IRocketFunctionHostBuilder.</returns>
         public static IRocketFunctionHostBuilder UseDiagnosticLogging(
             [NotNull] this IRocketFunctionHostBuilder builder,
             [NotNull] Action<ILoggingBuilder> action
