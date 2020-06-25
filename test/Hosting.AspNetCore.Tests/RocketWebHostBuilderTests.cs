@@ -27,7 +27,7 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
                .ConfigureWebHostDefaults(x => { })
                .ConfigureRocketSurgery(
                     x => x
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .PrependDelegate(new Action(() => { }))
                        .AppendDelegate(new Action(() => { }))
                 )
@@ -46,7 +46,7 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
                .ConfigureWebHostDefaults(x => { })
                .ConfigureRocketSurgery(
                     x => x
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .PrependConvention(convention)
                        .AppendConvention(convention)
                 );
@@ -66,7 +66,7 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
                .ConfigureWebHostDefaults(x => x.UseStartup<TestStartup>().UseTestServer())
                .ConfigureRocketSurgery(
                     x => x
-                       .UseScanner(
+                       .UseScannerUnsafe(
                             new BasicConventionScanner(
                                 A.Fake<IServiceProviderDictionary>(),
                                 serviceConventionFake,
@@ -99,7 +99,7 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
                .ConfigureWebHostDefaults(x => x.UseStartup<MyStartup>().UseTestServer())
                .ConfigureRocketSurgery(
                     x => x
-                       .UseScanner(
+                       .UseScannerUnsafe(
                             new BasicConventionScanner(
                                 A.Fake<IServiceProviderDictionary>(),
                                 serviceConventionFake,

@@ -12,8 +12,8 @@ namespace Rocket.Surgery.Conventions
         internal  readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
 
         public IConventionProvider BuildProvider() => throw new NotImplementedException();
-        
-        
+
+
         /// <summary>
         /// Adds a set of conventions to the scanner
         /// </summary>

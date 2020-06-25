@@ -50,6 +50,31 @@ namespace Rocket.Surgery.Hosting
         }
 
         /// <summary>
+        /// Configures the rocket Surgery.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="action">The action.</param>
+        /// <returns>IHostBuilder.</returns>
+        public static IHostBuilder ConfigureRocketSurgery<TScanner>(
+            [NotNull] this IHostBuilder builder,
+            [NotNull] Action<IConventionHostBuilder> action
+        ) where TScanner : IConventionScanner
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            action(GetOrCreateBuilder(builder, typeof(TScanner)));
+            return builder;
+        }
+
+        /// <summary>
         /// Uses the rocket booster.
         /// </summary>
         /// <param name="builder">The builder.</param>
@@ -108,10 +133,14 @@ namespace Rocket.Surgery.Hosting
         /// <summary>
         /// Uses the scanner.
         /// </summary>
+        /// <remarks>
+        /// Swapping out the scanner must be done very early on the bootstrapping process.
+        /// This can result in some unexpected behaviors.
+        /// </remarks>
         /// <param name="builder">The builder.</param>
         /// <param name="scanner">The scanner.</param>
-        /// <returns>IRocketHostBuilder.</returns>
-        public static IConventionHostBuilder UseScanner(
+        /// <returns>IConventionHostBuilder.</returns>
+        public static IConventionHostBuilder UseScannerUnsafe(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] IConventionScanner scanner
         )
@@ -134,7 +163,7 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseAssemblyCandidateFinder(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] IAssemblyCandidateFinder assemblyCandidateFinder
@@ -158,7 +187,7 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="assemblyProvider">The assembly provider.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseAssemblyProvider(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] IAssemblyProvider assemblyProvider
@@ -182,7 +211,7 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseDiagnosticSource(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] DiagnosticSource diagnosticSource
@@ -207,7 +236,7 @@ namespace Rocket.Surgery.Hosting
         /// <param name="builder">The builder.</param>
         /// <param name="dependencyContext">The dependency context.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseDependencyContext(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] DependencyContext dependencyContext,
@@ -233,7 +262,7 @@ namespace Rocket.Surgery.Hosting
         /// <param name="builder">The builder.</param>
         /// <param name="appDomain">The application domain.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseAppDomain(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] AppDomain appDomain,
@@ -259,7 +288,7 @@ namespace Rocket.Surgery.Hosting
         /// <param name="builder">The builder.</param>
         /// <param name="assemblies">The assemblies.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseAssemblies(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] IEnumerable<Assembly> assemblies,
@@ -284,7 +313,7 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="action">The action.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseDiagnosticLogging(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] Action<ILoggingBuilder> action
@@ -318,7 +347,7 @@ namespace Rocket.Surgery.Hosting
         /// Uses the command line.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseCommandLine(this IConventionHostBuilder builder)
             => builder.UseCommandLine(x => x.SuppressStatusMessages = true);
 
@@ -327,7 +356,7 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="configureOptions">The configure options.</param>
-        /// <returns>IRocketHostBuilder.</returns>
+        /// <returns>IConventionHostBuilder.</returns>
         public static IConventionHostBuilder UseCommandLine(
             [NotNull] this IConventionHostBuilder builder,
             [NotNull] Action<ConsoleLifetimeOptions> configureOptions
@@ -385,16 +414,18 @@ namespace Rocket.Surgery.Hosting
         /// Gets the or create builder.
         /// </summary>
         /// <param name="builder">The builder.</param>
+        /// <param name="scannerType">The default type of scanner to use.</param>
         /// <returns>RocketHostBuilder.</returns>
-        internal static RocketHostBuilder GetOrCreateBuilder(IConventionHostBuilder builder)
-            => GetOrCreateBuilder(builder.Get<IHostBuilder>());
+        internal static RocketHostBuilder GetOrCreateBuilder(IConventionHostBuilder builder, Type? scannerType = null)
+            => GetOrCreateBuilder(builder.Get<IHostBuilder>(), scannerType);
 
         /// <summary>
         /// Gets the or create builder.
         /// </summary>
         /// <param name="builder">The builder.</param>
+        /// <param name="scannerType">The default type of scanner to use.</param>
         /// <returns>RocketHostBuilder.</returns>
-        internal static RocketHostBuilder GetOrCreateBuilder(IHostBuilder builder)
+        internal static RocketHostBuilder GetOrCreateBuilder(IHostBuilder builder, Type? scannerType = null)
         {
             var conventionHostBuilder = builder.GetConventions();
             if (conventionHostBuilder is RocketHostBuilder rocketHostBuilder)
@@ -413,14 +444,12 @@ namespace Rocket.Surgery.Hosting
                 serviceProviderDictionary.Set(builder);
                 var assemblyCandidateFinder = new DependencyContextAssemblyCandidateFinder(dependencyContext, logger);
                 var assemblyProvider = new DependencyContextAssemblyProvider(dependencyContext, logger);
-                var scanner = new SimpleConventionScanner(
+                var scanner = ConvertTo(
+                    uninitializedHostBuilder.Scanner,
                     assemblyCandidateFinder,
                     serviceProviderDictionary,
                     logger,
-                    uninitializedHostBuilder.Scanner._appendedConventions,
-                    uninitializedHostBuilder.Scanner._prependedConventions,
-                    uninitializedHostBuilder.Scanner._exceptConventions,
-                    uninitializedHostBuilder.Scanner._exceptAssemblyConventions
+                    scannerType ?? typeof(BasicConventionScanner)
                 );
 
                 var host = new RocketContext(builder);
@@ -448,6 +477,53 @@ namespace Rocket.Surgery.Hosting
             }
 
             throw new NotSupportedException("Unsupported configuration");
+        }
+
+
+        private static IConventionScanner ConvertTo(
+            UninitializedConventionScanner scanner,
+            IAssemblyCandidateFinder assemblyCandidateFinder,
+            IServiceProviderDictionary serviceProviderDictionary,
+            ILogger logger,
+            Type toType)
+        {
+            if (toType == typeof(BasicConventionScanner))
+            {
+                return new BasicConventionScanner(
+                    serviceProviderDictionary,
+                    scanner._appendedConventions,
+                    scanner._prependedConventions,
+                    scanner._exceptConventions
+                );
+            }
+
+            if (toType == typeof(SimpleConventionScanner))
+            {
+                return new SimpleConventionScanner(
+                    assemblyCandidateFinder,
+                    serviceProviderDictionary,
+                    logger,
+                    scanner._appendedConventions,
+                    scanner._prependedConventions,
+                    scanner._exceptConventions,
+                    scanner._exceptAssemblyConventions
+                );
+            }
+
+            if (toType == typeof(AggregateConventionScanner))
+            {
+                return new AggregateConventionScanner(
+                    assemblyCandidateFinder,
+                    serviceProviderDictionary,
+                    logger,
+                    scanner._appendedConventions,
+                    scanner._prependedConventions,
+                    scanner._exceptConventions,
+                    scanner._exceptAssemblyConventions
+                );
+            }
+
+            throw new NotSupportedException("Scanner type is not supported by calling this method, try UseScannerUnsafe instead.");
         }
 
         /// <summary>

@@ -35,6 +35,26 @@ namespace Rocket.Surgery.Conventions
         }
 
         /// <summary>
+        /// Configure the services delegate to the convention scanner
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>IHostBuilder.</returns>
+        public static IHostBuilder ConfigureServices(
+            [NotNull] this IHostBuilder container,
+            ServiceConventionDelegate @delegate
+        )
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.GetConventions().Scanner.AppendDelegate(@delegate);
+            return container;
+        }
+
+        /// <summary>
         /// Configure the logging delegate to the convention scanner
         /// </summary>
         /// <param name="container">The container.</param>
@@ -51,6 +71,26 @@ namespace Rocket.Surgery.Conventions
             }
 
             container.Scanner.AppendDelegate(@delegate);
+            return container;
+        }
+
+        /// <summary>
+        /// Configure the configuration delegate to the convention scanner
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>IHostBuilder.</returns>
+        public static IHostBuilder ConfigureConfiguration(
+            [NotNull] this IHostBuilder container,
+            ConfigConventionDelegate @delegate
+        )
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.GetConventions().Scanner.AppendDelegate(@delegate);
             return container;
         }
 
