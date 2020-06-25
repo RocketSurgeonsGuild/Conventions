@@ -280,7 +280,7 @@ namespace Rocket.Surgery.Hosting.Functions
         /// <param name="builder">The builder.</param>
         /// <param name="scanner">The scanner.</param>
         /// <returns>IRocketFunctionHostBuilder.</returns>
-        public static IRocketFunctionHostBuilder UseScanner(
+        public static IRocketFunctionHostBuilder UseScannerUnsafe(
             [NotNull] this IRocketFunctionHostBuilder builder,
             [NotNull] IConventionScanner scanner
         )

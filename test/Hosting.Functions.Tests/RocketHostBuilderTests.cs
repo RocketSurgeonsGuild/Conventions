@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
                     startup,
                     RocketBooster.For(DependencyContext.Load(typeof(RocketHostTests).Assembly)),
                     rb => rb
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .PrependDelegate(new Action(() => { }))
                        .AppendDelegate(new Action(() => { }))
                 );
@@ -65,7 +65,7 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
                .UseRocketSurgery(
                     startup,
                     rb => rb
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .PrependConvention(convention)
                        .AppendConvention(convention)
                 );
@@ -142,7 +142,7 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
                .UseRocketSurgery(
                     startup,
                     rb => rb
-                       .UseScanner(
+                       .UseScannerUnsafe(
                             new BasicConventionScanner(
                                 A.Fake<IServiceProviderDictionary>(),
                                 serviceConventionFake,
@@ -170,7 +170,7 @@ namespace Rocket.Surgery.Hosting.Functions.Tests
                     startup,
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScanner(AutoFake.Resolve<IConventionScanner>())
+                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
                        .ConfigureWebJobs(x => { })
                 );
 
