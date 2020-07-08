@@ -472,6 +472,11 @@ namespace Rocket.Surgery.Hosting
                     serviceProviderDictionary
                 );
                 serviceProviderDictionary[typeof(IConventionHostBuilder)] = rocketHostBuilder;
+                serviceProviderDictionary.Set(scanner);
+                serviceProviderDictionary.Set<IAssemblyCandidateFinder>(assemblyCandidateFinder);
+                serviceProviderDictionary.Set<IAssemblyProvider>(assemblyProvider);
+                serviceProviderDictionary.Set<ILogger>(logger);
+                serviceProviderDictionary.Set(diagnosticSource);
 
                 return rocketHostBuilder;
             }
