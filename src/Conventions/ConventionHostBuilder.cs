@@ -40,30 +40,11 @@ namespace Rocket.Surgery.Conventions
             DiagnosticSource = diagnosticSource;
             ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
 
-            if (!Properties.TryGetValue(typeof(IConventionScanner), out var _))
-            {
-                Properties[typeof(IConventionScanner)] = scanner;
-            }
-
-            if (!Properties.TryGetValue(typeof(IAssemblyProvider), out var _))
-            {
-                Properties[typeof(IAssemblyProvider)] = assemblyProvider;
-            }
-
-            if (!Properties.TryGetValue(typeof(IAssemblyCandidateFinder), out var _))
-            {
-                Properties[typeof(IAssemblyCandidateFinder)] = assemblyCandidateFinder;
-            }
-
-            if (!Properties.TryGetValue(typeof(DiagnosticSource), out var _))
-            {
-                Properties[typeof(DiagnosticSource)] = diagnosticSource;
-            }
-
-            if (!Properties.TryGetValue(typeof(ILogger), out var _))
-            {
-                Properties[typeof(ILogger)] = new DiagnosticLogger(diagnosticSource);
-            }
+            Properties[typeof(IConventionScanner)] = scanner;
+            Properties[typeof(IAssemblyProvider)] = assemblyProvider;
+            Properties[typeof(IAssemblyCandidateFinder)] = assemblyCandidateFinder;
+            Properties[typeof(DiagnosticSource)] = diagnosticSource;
+            Properties[typeof(ILogger)] = new DiagnosticLogger(diagnosticSource);
         }
 
         /// <summary>
