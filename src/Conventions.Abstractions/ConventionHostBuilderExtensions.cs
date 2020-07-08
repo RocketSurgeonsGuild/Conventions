@@ -81,10 +81,8 @@ namespace Rocket.Surgery.Conventions
         /// <returns></returns>
         public static IConventionHostBuilder GetConventions(this IHostBuilder hostBuilder)
         {
-            if (hostBuilder.Properties.TryGetValue(
-                typeof(IConventionHostBuilder),
-                out var value
-            ) && value is IConventionHostBuilder conventionHostBuilder)
+            if (hostBuilder.Properties.TryGetValue(typeof(IConventionHostBuilder), out var value)
+             && value is IConventionHostBuilder conventionHostBuilder)
             {
                 return conventionHostBuilder;
             }
@@ -401,10 +399,9 @@ namespace Rocket.Surgery.Conventions
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="context">The context</param>
-        internal static HostType GetHostType(this IConventionHostBuilder context)
-            => context.ServiceProperties.TryGetValue(typeof(HostType), out var hostType)
-                ? (HostType)hostType!
-                : HostType.Undefined;
+        internal static HostType GetHostType(this IConventionHostBuilder context) => context.ServiceProperties.TryGetValue(typeof(HostType), out var hostType)
+            ? (HostType)hostType!
+            : HostType.Undefined;
 
         /// <summary>
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
