@@ -111,7 +111,7 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T">The type of the value</typeparam>
         /// <param name="context">The context</param>
         /// <param name="value">The value to save</param>
-        public static void Set<T>([NotNull] this IConventionContext context, T value)
+        public static IConventionContext Set<T>([NotNull] this IConventionContext context, T value)
         {
             if (context == null)
             {
@@ -119,6 +119,7 @@ namespace Rocket.Surgery.Conventions
             }
 
             context[typeof(T)] = value;
+            return context;
         }
 
         /// <summary>
@@ -128,7 +129,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="value">The value to save</param>
-        public static void Set<T>([NotNull] this IConventionContext context, string key, T value)
+        public static IConventionContext Set<T>([NotNull] this IConventionContext context, string key, T value)
         {
             if (context == null)
             {
@@ -136,6 +137,7 @@ namespace Rocket.Surgery.Conventions
             }
 
             context[key] = value;
+            return context;
         }
 
         /// <summary>
