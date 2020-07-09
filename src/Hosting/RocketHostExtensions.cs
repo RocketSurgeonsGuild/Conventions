@@ -439,9 +439,10 @@ namespace Rocket.Surgery.Hosting
                 var dependencyContext = DependencyContext.Default;
                 var logger = new DiagnosticLogger(diagnosticSource);
                 var serviceProviderDictionary = uninitializedHostBuilder.ServiceProperties;
-                serviceProviderDictionary.Set<ILogger>(logger);
-                serviceProviderDictionary.Set(HostType.Live);
-                serviceProviderDictionary.Set(builder);
+                serviceProviderDictionary
+                   .Set<ILogger>(logger)
+                   .Set(HostType.Live)
+                   .Set(builder);
                 var assemblyCandidateFinder = new DependencyContextAssemblyCandidateFinder(dependencyContext, logger);
                 var assemblyProvider = new DependencyContextAssemblyProvider(dependencyContext, logger);
                 var scanner = ConvertTo(
