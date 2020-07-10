@@ -9,7 +9,6 @@
         <PackageReference Include="Microsoft.Extensions.Logging" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
         <PackageReference Include="System.Diagnostics.DiagnosticSource" />
-        <PackageReference Include="NodaTime" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
