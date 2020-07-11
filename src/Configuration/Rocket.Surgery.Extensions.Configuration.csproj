@@ -7,7 +7,6 @@
     <ItemGroup>
         <InternalsVisibleTo Include="Rocket.Surgery.Extensions.Configuration" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
-        <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Functions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.TestHost" />
     </ItemGroup>
     <ItemGroup>

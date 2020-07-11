@@ -16,6 +16,5 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
-        <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Functions" />
     </ItemGroup>
 </Project>
