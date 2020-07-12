@@ -43,6 +43,7 @@ namespace Rocket.Surgery.Conventions
             Properties[typeof(IConventionScanner)] = scanner;
             Properties[typeof(IAssemblyProvider)] = assemblyProvider;
             Properties[typeof(IAssemblyCandidateFinder)] = assemblyCandidateFinder;
+            Properties[typeof(IServiceProviderDictionary)] = serviceProperties;
             Properties[typeof(DiagnosticSource)] = diagnosticSource;
             Properties[typeof(ILogger)] = new DiagnosticLogger(diagnosticSource);
         }

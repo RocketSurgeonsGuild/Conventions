@@ -44,15 +44,9 @@ namespace Rocket.Surgery.Conventions
             AssemblyCandidateFinder = assemblyCandidateFinder ??
                 throw new ArgumentNullException(nameof(assemblyCandidateFinder));
 
-            if (!Properties.TryGetValue(typeof(IAssemblyProvider), out var _))
-            {
-                Properties[typeof(IAssemblyProvider)] = AssemblyProvider;
-            }
-
-            if (!Properties.TryGetValue(typeof(IAssemblyCandidateFinder), out var _))
-            {
-                Properties[typeof(IAssemblyCandidateFinder)] = AssemblyCandidateFinder;
-            }
+            Properties[typeof(IConventionScanner)] = scanner;
+            Properties[typeof(IAssemblyProvider)] = AssemblyProvider;
+            Properties[typeof(IAssemblyCandidateFinder)] = AssemblyCandidateFinder;
         }
 
         /// <summary>

@@ -14,9 +14,7 @@ namespace Rocket.Surgery.Conventions
     /// <typeparam name="TConvention">The type of the t convention.</typeparam>
     /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
     /// <seealso cref="IConventionContainer{TBuilder, TConvention, TDelegate}" />
-    public abstract class
-        ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : IConventionContainer<TBuilder, TConvention,
-            TDelegate>
+    public abstract class ConventionContainerBuilder<TBuilder, TConvention, TDelegate> : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TBuilder : IConventionContainer<TBuilder, TConvention, TDelegate>
         where TConvention : IConvention
         where TDelegate : Delegate
@@ -38,11 +36,7 @@ namespace Rocket.Surgery.Conventions
         {
             Scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
             Properties = properties ?? throw new ArgumentNullException(nameof(properties));
-
-            if (!Properties.TryGetValue(typeof(IConventionScanner), out var _))
-            {
-                Properties[typeof(IConventionScanner)] = Scanner;
-            }
+            Properties[typeof(IConventionScanner)] = Scanner;
         }
 
         /// <summary>
