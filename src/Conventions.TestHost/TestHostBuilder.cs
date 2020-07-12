@@ -14,21 +14,23 @@ using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBui
 
 #pragma warning disable IDE0058 // Expression value is never used
 
-namespace Rocket.Surgery.Conventions.TestHost
+namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// Class ConventionTestHostBuilder.
     /// Implements the <see cref="ConventionHostBuilder{ConventionTestHostBuilder}" />
     /// </summary>
+    /// <remarks>
+    /// The TestHost does not support other service builders
+    /// </remarks>
     /// <seealso cref="ConventionHostBuilder{ConventionTestHostBuilder}" />
-    public class ConventionTestHost : ConventionHostBuilder<ConventionTestHost>
+    public class TestHostBuilder : ConventionHostBuilder<TestHostBuilder>
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly IHostEnvironment _environment;
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConventionTestHost" /> class.
+        /// Initializes a new instance of the <see cref="TestHostBuilder" /> class.
         /// </summary>
         /// <param name="scanner">The scanner.</param>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
@@ -37,7 +39,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="serviceProperties">The service properties.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="environment">The environment.</param>
-        internal ConventionTestHost(
+        internal TestHostBuilder(
             IConventionScanner scanner,
             IAssemblyCandidateFinder assemblyCandidateFinder,
             IAssemblyProvider assemblyProvider,
@@ -49,37 +51,47 @@ namespace Rocket.Surgery.Conventions.TestHost
         {
             serviceProperties.Set(HostType.UnitTestHost);
             _loggerFactory = loggerFactory;
-            _environment = environment;
+            Environment = environment;
             _logger = ServiceProperties.Get<ILogger>();
+
+            serviceProperties.Set(scanner);
+            serviceProperties.Set(assemblyCandidateFinder);
+            serviceProperties.Set(assemblyProvider);
+            serviceProperties.Set(diagnosticSource);
+            serviceProperties.Set(environment);
+            serviceProperties.Set(serviceProperties);
+            serviceProperties.Set(_logger);
         }
 
         /// <summary>
         /// Use the <see cref="BasicConventionScanner" /> to not automatically load conventions from attributes.
         /// </summary>
         /// <returns></returns>
-        public ConventionTestHost ExcludeConventionAttributes() => new ConventionTestHost(
+        public TestHostBuilder ExcludeConventionAttributes() => new TestHostBuilder(
             new BasicConventionScanner(ServiceProperties),
             AssemblyCandidateFinder,
             AssemblyProvider,
             DiagnosticSource,
             ServiceProperties,
             _loggerFactory,
-            _environment
+            Environment
         );
 
         /// <summary>
         /// <para>Use the <see cref="SimpleConventionScanner" /> to automatically load conventions from attributes.</para>
         /// <para>This is the default</para>
         /// </summary>
-        public ConventionTestHost IncludeConventionAttributes() => new ConventionTestHost(
+        public TestHostBuilder IncludeConventionAttributes() => new TestHostBuilder(
             new SimpleConventionScanner(AssemblyCandidateFinder, ServiceProperties, _logger),
             AssemblyCandidateFinder,
             AssemblyProvider,
             DiagnosticSource,
             ServiceProperties,
             _loggerFactory,
-            _environment
+            Environment
         );
+
+        public IHostEnvironment Environment { get; }
 
         /// <summary>
         /// Build the configuration and populate the service collection based on the input environment.
@@ -91,9 +103,9 @@ namespace Rocket.Surgery.Conventions.TestHost
             {
                 var configurationOptions = this.GetOrAdd(() => new ConfigOptions());
                 var sharedConfigurationBuilder = new ConfigurationBuilder()
-                   .SetFileProvider(_environment.ContentRootFileProvider)
+                   .SetFileProvider(Environment.ContentRootFileProvider)
                    .Apply(configurationOptions.ApplicationConfiguration)
-                   .Apply(configurationOptions.EnvironmentConfiguration, _environment.EnvironmentName)
+                   .Apply(configurationOptions.EnvironmentConfiguration, Environment.EnvironmentName)
                    .Apply(configurationOptions.EnvironmentConfiguration, "local");
                 sharedConfiguration = sharedConfigurationBuilder.Build();
             }
@@ -101,13 +113,12 @@ namespace Rocket.Surgery.Conventions.TestHost
 #pragma warning disable CA2000
             var cb = new ConfigBuilder(
                 Scanner,
-                _environment,
+                Environment,
                 new ConfigurationRoot(new List<IConfigurationProvider>()),
                 _logger,
                 ServiceProperties
             );
 #pragma warning restore CA2000
-
 
             var configuration = new ConfigurationBuilder()
                .AddConfiguration(sharedConfiguration, false)
@@ -121,7 +132,7 @@ namespace Rocket.Surgery.Conventions.TestHost
                 AssemblyCandidateFinder,
                 serviceCollection,
                 configuration,
-                _environment,
+                Environment,
                 _logger,
                 ServiceProperties
             );
@@ -132,13 +143,6 @@ namespace Rocket.Surgery.Conventions.TestHost
                     builder.ClearProviders();
                     builder.Services.AddSingleton(_loggerFactory);
                 }
-            );
-
-            Composer.Register(
-                servicesBuilder.Scanner,
-                servicesBuilder,
-                typeof(IServiceConvention),
-                typeof(ServiceConventionDelegate)
             );
 
             return ( configuration, servicesBuilder );

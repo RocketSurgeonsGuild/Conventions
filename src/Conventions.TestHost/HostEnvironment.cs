@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
-namespace Rocket.Surgery.Conventions.TestHost
+namespace Rocket.Surgery.Conventions
 {
     class HostEnvironment : IHostEnvironment
     {

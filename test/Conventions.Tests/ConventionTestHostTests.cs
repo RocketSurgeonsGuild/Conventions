@@ -11,7 +11,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.TestHost;
 using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
@@ -24,7 +23,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Create_Host()
         {
-            Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
+            Action a = () => TestHost.For(this, LoggerFactory)
                .Create();
             a.Should().NotThrow();
         }
@@ -33,7 +32,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Create_With_Delegate()
         {
-            Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
+            Action a = () => TestHost.For(this, LoggerFactory)
                .Create(builder => { });
             a.Should().NotThrow();
         }
@@ -41,21 +40,21 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Not_Create_Host_When_Missing_AssemblyCandidateFinder()
         {
-            Action a = () => new ConventionTestHostBuilder().With(A.Fake<IAssemblyProvider>()).Create();
+            Action a = () => new TestHost().With(A.Fake<IAssemblyProvider>()).Create();
             a.Should().Throw<ArgumentNullException>().Where(x => x.ParamName == "AssemblyCandidateFinder");
         }
 
         [Fact]
         public void Builder_Should_Not_Create_Host_When_Missing_AssemblyProvider()
         {
-            Action a = () => new ConventionTestHostBuilder().With(A.Fake<IAssemblyCandidateFinder>()).Create();
+            Action a = () => new TestHost().With(A.Fake<IAssemblyCandidateFinder>()).Create();
             a.Should().Throw<ArgumentNullException>().Where(x => x.ParamName == "AssemblyProvider");
         }
 
         [Fact]
         public void Builder_Should_Create_Host_ByType()
         {
-            Action a = () => ConventionTestHostBuilder.For(GetType(), LoggerFactory)
+            Action a = () => TestHost.For(GetType(), LoggerFactory)
                .Create();
             a.Should().NotThrow();
         }
@@ -63,7 +62,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Create_Host_ByAssembly()
         {
-            Action a = () => ConventionTestHostBuilder.For(GetType().Assembly, LoggerFactory)
+            Action a = () => TestHost.For(GetType().Assembly, LoggerFactory)
                .Create();
             a.Should().NotThrow();
         }
@@ -71,7 +70,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Build_Host()
         {
-            Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
+            Action a = () => TestHost.For(this, LoggerFactory)
                .Create()
                .Build();
             a.Should().NotThrow();
@@ -80,7 +79,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Parse_Host()
         {
-            Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
+            Action a = () => TestHost.For(this, LoggerFactory)
                .Create()
                .Parse();
             a.Should().NotThrow();
@@ -89,7 +88,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Use_A_Custom_IConventionScanner()
         {
-            var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var builder = TestHost.For(this, LoggerFactory)
                .With(AutoFake.Resolve<IConventionScanner>())
                .Create();
 
@@ -99,7 +98,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Use_A_Custom_IAssemblyCandidateFinder()
         {
-            var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var builder = TestHost.For(this, LoggerFactory)
                .With(AutoFake.Resolve<IAssemblyCandidateFinder>())
                .Create();
 
@@ -109,7 +108,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Use_A_Custom_IAssemblyProvider()
         {
-            var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var builder = TestHost.For(this, LoggerFactory)
                .With(AutoFake.Resolve<IAssemblyProvider>())
                .Create();
 
@@ -119,7 +118,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Use_A_Custom_IServiceProviderDictionary()
         {
-            var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var builder = TestHost.For(this, LoggerFactory)
                .With(AutoFake.Resolve<IServiceProviderDictionary>())
                .Create();
 
@@ -129,7 +128,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Use_A_Custom_DiagnosticSource()
         {
-            var builder = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var builder = TestHost.For(this, LoggerFactory)
                .With(AutoFake.Resolve<DiagnosticSource>())
                .Create();
 
@@ -139,7 +138,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Use_A_Custom_ILogger()
         {
-            Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
+            Action a = () => TestHost.For(this, LoggerFactory)
                .With(AutoFake.Resolve<ILogger>())
                .Create();
             a.Should().NotThrow();
@@ -148,7 +147,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Use_A_Custom_IHostEnvironment()
         {
-            Action a = () => ConventionTestHostBuilder.For(this, LoggerFactory)
+            Action a = () => TestHost.For(this, LoggerFactory)
                .With(AutoFake.Resolve<IHostEnvironment>())
                .Create();
             a.Should().NotThrow();
@@ -157,7 +156,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Scan_For_Conventions_When_Desired()
         {
-            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host = TestHost.For(this, LoggerFactory)
                .Create()
                .IncludeConventionAttributes();
 
@@ -167,7 +166,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Not_Scan_For_Conventions()
         {
-            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host = TestHost.For(this, LoggerFactory)
                .Create()
                .ExcludeConventionAttributes();
 
@@ -177,7 +176,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Add_Configuration()
         {
-            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host = TestHost.For(this, LoggerFactory)
                .WithConfigOptions(new ConfigOptions().UseJson().UseYaml().UseYml().UseIni())
                .Create();
 
@@ -199,7 +198,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Add_Configuration_After_It_Has_Been_Changed()
         {
-            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host = TestHost.For(this, LoggerFactory)
                .Create();
             host.GetOrAdd(() => new ConfigOptions());
 
@@ -232,7 +231,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Share_Configuration()
         {
             var configurationFake = A.Fake<IConfiguration>();
-            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host = TestHost.For(this, LoggerFactory)
                .WithConfiguration(configurationFake)
                .Create();
 
@@ -249,10 +248,10 @@ namespace Rocket.Surgery.Conventions.Tests
         [InlineData(1234)]
         public void Builder_Should_Reuse_Configuration(object key)
         {
-            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host = TestHost.For(this, LoggerFactory)
                .ShareConfiguration(key)
                .Create();
-            var host2 = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host2 = TestHost.For(this, LoggerFactory)
                .ShareConfiguration(key)
                .Create();
 
@@ -268,10 +267,10 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Not_Reuse_Configuration_Across_Keys()
         {
-            var host = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host = TestHost.For(this, LoggerFactory)
                .ShareConfiguration(typeof(ConventionTestHostTests))
                .Create();
-            var host2 = ConventionTestHostBuilder.For(this, LoggerFactory)
+            var host2 = TestHost.For(this, LoggerFactory)
                .ShareConfiguration("stringkey")
                .Create();
 

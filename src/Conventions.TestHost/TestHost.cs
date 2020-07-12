@@ -16,12 +16,12 @@ using Rocket.Surgery.Extensions.Configuration;
 
 #pragma warning disable CA2000
 
-namespace Rocket.Surgery.Conventions.TestHost
+namespace Rocket.Surgery.Conventions
 {
     /// <summary>
     /// A convention test host builder
     /// </summary>
-    public class ConventionTestHostBuilder
+    public class TestHost
     {
         private static readonly ConditionalWeakTable<object, IConfiguration> _sharedConfigurations = new ConditionalWeakTable<object, IConfiguration>();
         /// <summary>
@@ -29,7 +29,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         /// <param name="type">The type that that will be used to load the <see cref="DependencyContext" />.</param>
         /// <param name="loggerFactory">Optional logger factory.</param>
-        public static ConventionTestHostBuilder For([NotNull] Type type, ILoggerFactory? loggerFactory = null)
+        public static TestHost For([NotNull] Type type, ILoggerFactory? loggerFactory = null)
         {
             if (type == null)
             {
@@ -48,7 +48,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         /// <param name="instance">The object that that will be used to load the <see cref="DependencyContext" />.</param>
         /// <param name="loggerFactory">Optional logger factory.</param>
-        public static ConventionTestHostBuilder For([NotNull] object instance, ILoggerFactory? loggerFactory = null)
+        public static TestHost For([NotNull] object instance, ILoggerFactory? loggerFactory = null)
         {
             if (instance == null)
             {
@@ -67,7 +67,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         /// <param name="assembly">The assembly that that will be used to load the <see cref="DependencyContext" />.</param>
         /// <param name="loggerFactory">Optional logger factory.</param>
-        public static ConventionTestHostBuilder For([NotNull] Assembly assembly, ILoggerFactory? loggerFactory = null)
+        public static TestHost For([NotNull] Assembly assembly, ILoggerFactory? loggerFactory = null)
         {
             if (assembly == null)
             {
@@ -87,15 +87,15 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// <param name="context">The context that that will be used for the test host.</param>
         /// <param name="assembly">The assembly that that will be used to load the <see cref="DependencyContext" />.</param>
         /// <param name="loggerFactory">Optional logger factory.</param>
-        public static ConventionTestHostBuilder For(
+        public static TestHost For(
             DependencyContext context,
             Assembly assembly,
             ILoggerFactory? loggerFactory = null
         )
         {
             loggerFactory ??= NullLoggerFactory.Instance;
-            var logger = loggerFactory.CreateLogger(nameof(ConventionTestHostBuilder));
-            return new ConventionTestHostBuilder()
+            var logger = loggerFactory.CreateLogger(nameof(TestHost));
+            return new TestHost()
                    .With(loggerFactory)
                    .With(assembly)
                    .With(new DependencyContextAssemblyProvider(context, logger))
@@ -121,7 +121,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         /// <param name="scanner">The scanner.</param>
         /// <returns>ConventionTestHostBuilder.</returns>
-        public ConventionTestHostBuilder With(IConventionScanner scanner)
+        public TestHost With(IConventionScanner scanner)
         {
             _scanner = scanner;
             return this;
@@ -132,13 +132,13 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         /// <param name="scanner">The scanner.</param>
         /// <returns>ConventionTestHostBuilder.</returns>
-        public ConventionTestHostBuilder WithScanner(IConventionScanner scanner) => With(scanner);
+        public TestHost WithScanner(IConventionScanner scanner) => With(scanner);
 
         /// <summary>
         /// Use the specific <see cref="IAssemblyCandidateFinder" />
         /// </summary>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        public ConventionTestHostBuilder With(IAssemblyCandidateFinder assemblyCandidateFinder)
+        public TestHost With(IAssemblyCandidateFinder assemblyCandidateFinder)
         {
             _assemblyCandidateFinder = assemblyCandidateFinder;
             return this;
@@ -148,14 +148,14 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="IAssemblyCandidateFinder" />
         /// </summary>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        public ConventionTestHostBuilder WithAssemblyCandidateFinder(IAssemblyCandidateFinder assemblyCandidateFinder)
+        public TestHost WithAssemblyCandidateFinder(IAssemblyCandidateFinder assemblyCandidateFinder)
             => With(assemblyCandidateFinder);
 
         /// <summary>
         /// Use the specific <see cref="Assembly" />
         /// </summary>
         /// <param name="assembly">The assembly.</param>
-        public ConventionTestHostBuilder With(Assembly assembly)
+        public TestHost With(Assembly assembly)
         {
             _assembly = assembly;
             return this;
@@ -165,13 +165,13 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="ConfigOptions" />
         /// </summary>
         /// <param name="options">The assembly.</param>
-        public ConventionTestHostBuilder WithConfigOptions(ConfigOptions options) => With(options);
+        public TestHost WithConfigOptions(ConfigOptions options) => With(options);
 
         /// <summary>
         /// Use the specific <see cref="ConfigOptions" />
         /// </summary>
         /// <param name="options">The assembly.</param>
-        public ConventionTestHostBuilder With(ConfigOptions options)
+        public TestHost With(ConfigOptions options)
         {
             _configOptions = options;
             return this;
@@ -181,13 +181,13 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="Assembly" />
         /// </summary>
         /// <param name="assembly">The assembly.</param>
-        public ConventionTestHostBuilder WithAssembly(Assembly assembly) => With(assembly);
+        public TestHost WithAssembly(Assembly assembly) => With(assembly);
 
         /// <summary>
         /// Use the specific <see cref="IAssemblyProvider" />
         /// </summary>
         /// <param name="assemblyProvider">The assembly provider.</param>
-        public ConventionTestHostBuilder With(IAssemblyProvider assemblyProvider)
+        public TestHost With(IAssemblyProvider assemblyProvider)
         {
             _assemblyProvider = assemblyProvider;
             return this;
@@ -197,14 +197,14 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="IAssemblyProvider" />
         /// </summary>
         /// <param name="assemblyProvider">The assembly provider.</param>
-        public ConventionTestHostBuilder WithAssemblyProvider(IAssemblyProvider assemblyProvider)
+        public TestHost WithAssemblyProvider(IAssemblyProvider assemblyProvider)
             => With(assemblyProvider);
 
         /// <summary>
         /// Use the specific <see cref="IServiceProviderDictionary" />
         /// </summary>
         /// <param name="serviceProperties">The service provider dictionary.</param>
-        public ConventionTestHostBuilder With(IServiceProviderDictionary serviceProperties)
+        public TestHost With(IServiceProviderDictionary serviceProperties)
         {
             _serviceProperties = serviceProperties;
             return this;
@@ -214,14 +214,14 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="IServiceProviderDictionary" />
         /// </summary>
         /// <param name="serviceProperties">The service provider dictionary.</param>
-        public ConventionTestHostBuilder WithServiceProperties(IServiceProviderDictionary serviceProperties)
+        public TestHost WithServiceProperties(IServiceProviderDictionary serviceProperties)
             => With(serviceProperties);
 
         /// <summary>
         /// Use the specific <see cref="ILogger" />
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public ConventionTestHostBuilder With(ILogger logger)
+        public TestHost With(ILogger logger)
         {
             _logger = logger;
             return this;
@@ -231,13 +231,13 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="ILogger" />
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public ConventionTestHostBuilder WithLogger(ILogger logger) => With(logger);
+        public TestHost WithLogger(ILogger logger) => With(logger);
 
         /// <summary>
         /// Use the specific <see cref="ILoggerFactory" />
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
-        public ConventionTestHostBuilder With(ILoggerFactory loggerFactory)
+        public TestHost With(ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
             return this;
@@ -247,13 +247,13 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="ILoggerFactory" />
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
-        public ConventionTestHostBuilder WithLoggerFactory(ILoggerFactory loggerFactory) => With(loggerFactory);
+        public TestHost WithLoggerFactory(ILoggerFactory loggerFactory) => With(loggerFactory);
 
         /// <summary>
         /// Use the specific <see cref="ILogger" />
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        public ConventionTestHostBuilder With(DiagnosticSource diagnosticSource)
+        public TestHost With(DiagnosticSource diagnosticSource)
         {
             _diagnosticSource = diagnosticSource;
             return this;
@@ -263,14 +263,14 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="ILogger" />
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        public ConventionTestHostBuilder WithDiagnosticSource(DiagnosticSource diagnosticSource)
+        public TestHost WithDiagnosticSource(DiagnosticSource diagnosticSource)
             => With(diagnosticSource);
 
         /// <summary>
         /// Use the specific <see cref="IHostEnvironment" />
         /// </summary>
         /// <param name="environment">The environment.</param>
-        public ConventionTestHostBuilder With(IHostEnvironment environment)
+        public TestHost With(IHostEnvironment environment)
         {
             _environment = environment;
             return this;
@@ -280,14 +280,14 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Use the specific <see cref="IHostEnvironment" />
         /// </summary>
         /// <param name="environment">The environment.</param>
-        public ConventionTestHostBuilder WithEnvironment(IHostEnvironment environment) => With(environment);
+        public TestHost WithEnvironment(IHostEnvironment environment) => With(environment);
 
         /// <summary>
         /// Use the specific <see cref="IConventionScanner" />
         /// </summary>
         /// <param name="sharedConfiguration">The shared configuration.</param>
         /// <returns>ConventionTestHostBuilder.</returns>
-        public ConventionTestHostBuilder With(IConfiguration sharedConfiguration)
+        public TestHost With(IConfiguration sharedConfiguration)
         {
             _reuseConfiguration = sharedConfiguration;
             return this;
@@ -299,7 +299,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         /// <param name="sharedConfiguration">The shared configuration.</param>
         /// <returns>ConventionTestHostBuilder.</returns>
-        public ConventionTestHostBuilder WithConfiguration(IConfiguration sharedConfiguration)
+        public TestHost WithConfiguration(IConfiguration sharedConfiguration)
             => With(sharedConfiguration);
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// </summary>
         /// <param name="key">The object to use as a key for shared configuration</param>
         /// <returns>ConventionTestHostBuilder.</returns>
-        public ConventionTestHostBuilder ShareConfiguration(object key)
+        public TestHost ShareConfiguration(object key)
         {
             _sharedConfigurationKey = key;
             return this;
@@ -318,14 +318,14 @@ namespace Rocket.Surgery.Conventions.TestHost
         /// Create the convention test host with the given defaults
         /// </summary>
         /// <returns></returns>
-        public ConventionTestHost Create() => Create(_ => { });
+        public TestHostBuilder Create() => Create(_ => { });
 
         /// <summary>
         /// Create the convention test host with the given defaults
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public ConventionTestHost Create([NotNull] Action<IConventionHostBuilder> action)
+        public TestHostBuilder Create([NotNull] Action<IConventionHostBuilder> action)
         {
             if (action == null)
             {
@@ -349,13 +349,13 @@ namespace Rocket.Surgery.Conventions.TestHost
 
             var environment = _environment ?? new HostEnvironment()
             {
-                ApplicationName = nameof(ConventionTestHost),
+                ApplicationName = nameof(TestHostBuilder),
                 EnvironmentName = "Test",
                 ContentRootPath = contentRootPath,
                 ContentRootFileProvider = contentProvider
             };
 
-            var builder = new ConventionTestHost(
+            var builder = new TestHostBuilder(
                 _scanner ?? new SimpleConventionScanner(
                     assemblyCandidateFinder,
                     _serviceProperties,
@@ -363,7 +363,7 @@ namespace Rocket.Surgery.Conventions.TestHost
                 ),
                 assemblyCandidateFinder,
                 assemblyProvider,
-                _diagnosticSource ?? new DiagnosticListener(nameof(ConventionTestHost)),
+                _diagnosticSource ?? new DiagnosticListener(nameof(TestHostBuilder)),
                 _serviceProperties,
                 _loggerFactory ?? NullLoggerFactory.Instance,
                 environment
