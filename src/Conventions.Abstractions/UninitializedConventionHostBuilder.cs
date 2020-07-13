@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions
@@ -12,16 +14,16 @@ namespace Rocket.Surgery.Conventions
             Scanner = new UninitializedConventionScanner();
             AssemblyCandidateFinder = new UninitializedAssemblyCandidateFinder();
             ServiceProperties = new ServiceProviderDictionary(properties);
-            DiagnosticSource = null;
+            DiagnosticLogger = NullLogger.Instance;
             AssemblyProvider = new UninitializedAssemblyProvider();
-
         }
+        
         public UninitializedConventionScanner Scanner { get; }
         IConventionScanner IConventionHostBuilder.Scanner => Scanner;
         public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
         public IServiceProviderDictionary ServiceProperties { get; }
         public IAssemblyProvider AssemblyProvider { get; }
-        public DiagnosticSource? DiagnosticSource { get; }
+        public ILogger DiagnosticLogger { get; }
 
         /// <summary>
         /// Adds a set of conventions to the scanner

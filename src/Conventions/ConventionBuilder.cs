@@ -40,13 +40,9 @@ namespace Rocket.Surgery.Conventions
             IDictionary<object, object?> properties
         ) : base(scanner, properties)
         {
-            AssemblyProvider = assemblyProvider ?? throw new ArgumentNullException(nameof(assemblyProvider));
-            AssemblyCandidateFinder = assemblyCandidateFinder ??
-                throw new ArgumentNullException(nameof(assemblyCandidateFinder));
-
             Properties[typeof(IConventionScanner)] = scanner;
-            Properties[typeof(IAssemblyProvider)] = AssemblyProvider;
-            Properties[typeof(IAssemblyCandidateFinder)] = AssemblyCandidateFinder;
+            Properties[typeof(IAssemblyProvider)] = AssemblyProvider = assemblyProvider;
+            Properties[typeof(IAssemblyCandidateFinder)] = AssemblyCandidateFinder = assemblyCandidateFinder;
         }
 
         /// <summary>

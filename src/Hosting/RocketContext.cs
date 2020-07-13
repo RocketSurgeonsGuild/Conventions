@@ -141,13 +141,13 @@ namespace Rocket.Surgery.Hosting
             foreach (var item in configurationBuilder.Sources.Reverse())
             {
                 if (item is CommandLineConfigurationSource ||
-                    (item is EnvironmentVariablesConfigurationSource env && (string.IsNullOrWhiteSpace(env.Prefix) ||
-                        string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase))) ||
-                    (item is JsonConfigurationSource a && string.Equals(
+                    ( item is EnvironmentVariablesConfigurationSource env && ( string.IsNullOrWhiteSpace(env.Prefix) ||
+                        string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) ) ||
+                    ( item is JsonConfigurationSource a && string.Equals(
                         a.Path,
                         "secrets.json",
                         StringComparison.OrdinalIgnoreCase
-                    )))
+                    ) ))
                 {
                     continue;
                 }
@@ -210,33 +210,26 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="services">The services.</param>
-        public void DefaultServices([NotNull] HostBuilderContext context, [NotNull] IServiceCollection services)
+        public IServiceProviderFactory<IServicesBuilder> DefaultServices([NotNull] HostBuilderContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
             var conventionalBuilder = _hostBuilder.GetConventions();
-            _hostBuilder.UseServiceProviderFactory(
-                new ServicesBuilderServiceProviderFactory(
-                    collection =>
-                        new ServicesBuilder(
-                            conventionalBuilder.Scanner,
-                            conventionalBuilder.AssemblyProvider,
-                            conventionalBuilder.AssemblyCandidateFinder,
-                            collection,
-                            context.Configuration,
-                            context.HostingEnvironment,
-                            conventionalBuilder.Get<ILogger>(),
-                            conventionalBuilder.ServiceProperties
-                        )
-                )
+            return new ServicesBuilderServiceProviderFactory(
+                collection =>
+                    new ServicesBuilder(
+                        conventionalBuilder.Scanner,
+                        conventionalBuilder.AssemblyProvider,
+                        conventionalBuilder.AssemblyCandidateFinder,
+                        collection,
+                        context.Configuration,
+                        context.HostingEnvironment,
+                        conventionalBuilder.Get<ILogger>(),
+                        conventionalBuilder.ServiceProperties
+                    )
             );
         }
     }

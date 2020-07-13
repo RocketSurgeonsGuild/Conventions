@@ -25,13 +25,13 @@ namespace Rocket.Surgery.Conventions
         private static string GetName(LogLevel logLevel)
             => Names.TryGetValue(logLevel, out var value) ? value : "Log.Other";
 
-        private readonly DiagnosticSource _diagnosticSource;
+        public DiagnosticSource DiagnosticSource { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DiagnosticLogger" /> class.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source.</param>
-        public DiagnosticLogger(DiagnosticSource diagnosticSource) => _diagnosticSource = diagnosticSource;
+        public DiagnosticLogger(DiagnosticSource diagnosticSource) => DiagnosticSource = diagnosticSource;
 
         /// <summary>
         /// Writes a log entry.
@@ -58,7 +58,7 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(formatter));
             }
 
-            _diagnosticSource.Write(
+            DiagnosticSource.Write(
                 GetName(logLevel),
                 new
                 {
@@ -76,7 +76,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="logLevel">level to be checked.</param>
         /// <returns><c>true</c> if enabled.</returns>
-        public bool IsEnabled(LogLevel logLevel) => _diagnosticSource.IsEnabled(GetName(logLevel));
+        public bool IsEnabled(LogLevel logLevel) => DiagnosticSource.IsEnabled(GetName(logLevel));
 
         /// <summary>
         /// Begins a logical operation scope.
@@ -86,8 +86,8 @@ namespace Rocket.Surgery.Conventions
         /// <returns>An IDisposable that ends the logical operation scope on dispose.</returns>
         public IDisposable BeginScope<TState>(TState state)
         {
-            var activity = _diagnosticSource.StartActivity(new Activity("Scope"), state);
-            return new Disposable(_diagnosticSource, activity, state!);
+            var activity = DiagnosticSource.StartActivity(new Activity("Scope"), state);
+            return new Disposable(DiagnosticSource, activity, state!);
         }
 
         /// <summary>
