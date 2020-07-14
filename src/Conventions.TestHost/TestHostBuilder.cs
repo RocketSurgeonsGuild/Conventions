@@ -1,22 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Configuration;
-using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
-using Rocket.Surgery.Extensions.Configuration;
-using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
-
-#if NETSTANDARD2_1
-using Rocket.Surgery.Conventions.Internals;
-#endif
 
 #pragma warning disable IDE0058 // Expression value is never used
 
@@ -48,37 +37,6 @@ namespace Rocket.Surgery.Conventions
         /// Build the configuration and service provider based on the input environment.
         /// </summary>
         public IHost Build() => _hostBuilder.Build();
-
-#if NETSTANDARD2_1
-        /// <summary>
-        /// Gets the service collection (by building the host) to ensure all the services are populated
-        /// </summary>
-        /// <returns></returns>
-        public IServiceCollection Parse()
-        {
-            var field = _hostBuilder.GetType().GetField("_serviceProviderFactory", BindingFlags.NonPublic | BindingFlags.Instance);
-            var fieldValue = field.GetValue(_hostBuilder);
-            var factory = ServiceFactoryAdapter.Create(fieldValue);
-            if (!fieldValue.GetType().IsGenericType)
-            {
-                throw new NotSupportedException("Service Provider Factory must be generic");
-            }
-
-            var genericType = fieldValue.GetType().GetGenericArguments()[0];
-            var servicesContainer = ServiceProviderFactory.ConfigureFactory(_hostBuilder, genericType, factory);
-
-            try
-            {
-                _hostBuilder.Build();
-            }
-            catch (InvalidOperationException exception)
-            {
-
-            }
-
-            return servicesContainer.Services;
-        }
-#endif
 
         #region Interfaces
         [ExcludeFromCodeCoverage]
