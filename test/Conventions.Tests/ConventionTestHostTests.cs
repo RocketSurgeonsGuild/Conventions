@@ -145,50 +145,6 @@ namespace Rocket.Surgery.Conventions.Tests
             host.Services.GetRequiredService<ServiceA>().Should().NotBeNull();
         }
 
-        [Fact]
-        public void Builder_Should_Populate()
-        {
-            var services = TestHost.For(this, LoggerFactory).Create(
-                x => { x.ConfigureServices(x => x.AddSingleton<ServiceA>()); }
-            ).Parse();
-
-            Populate(services);
-            Container.IsRegistered<ServiceA>().Should().BeTrue();
-        }
-
-        [Fact]
-        public void Builder_Should_Populate_DryIoc()
-        {
-            var testHost = TestHost.For(this, LoggerFactory).Create(
-                x =>
-                {
-                    var container = new Container();
-                    container.UseInstance(new ServiceA());
-
-                    x.UseServiceProviderFactory(context =>
-                        new ServicesBuilderServiceProviderFactory(
-                            collection =>
-                                new DryIocBuilder(
-                                    context.HostingEnvironment,
-                                    context.Configuration,
-                                    x.Scanner,
-                                    x.AssemblyProvider,
-                                    x.AssemblyCandidateFinder,
-                                    collection,
-                                    container,
-                                    x.Get<ILogger>(),
-                                    x.ServiceProperties
-                                )
-                        )
-                    );
-                }
-            );
-                testHost.Parse();
-
-            Populate(testHost.Get<IContainer>());
-            Container.IsRegistered<ServiceA>().Should().BeTrue();
-        }
-
         class ServiceA
         {
             public string Value = nameof(ServiceA);
