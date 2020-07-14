@@ -3,6 +3,7 @@ using System;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Conventions.DependencyInjection;
 
 namespace Rocket.Surgery.Conventions.Internals
 {
@@ -52,6 +53,10 @@ namespace Rocket.Surgery.Conventions.Internals
 
         public IServiceProvider CreateServiceProvider(TContainerBuilder containerBuilder)
         {
+            if (containerBuilder is IServicesBuilder servicesBuilder)
+            {
+                servicesBuilder.Build();
+            }
             return new ServiceCollection().BuildServiceProvider();
         }
     }
