@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions
@@ -40,10 +41,11 @@ namespace Rocket.Surgery.Conventions
         IAssemblyProvider AssemblyProvider { get; }
 
         /// <summary>
-        /// Gets the diagnostic source.
+        /// Gets the diagnostic logger.
         /// </summary>
-        /// <value>The diagnostic source.</value>
-        DiagnosticSource? DiagnosticSource { get; }
+        /// <value>The assembly provider.</value>
+        [NotNull]
+        ILogger DiagnosticLogger { get; }
 
         /// <summary>
         /// Adds a set of conventions to the scanner

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +13,10 @@ using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Configuration;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+
+#if NETSTANDARD2_1
+using Rocket.Surgery.Conventions.Internals;
+#endif
 
 #pragma warning disable IDE0058 // Expression value is never used
 
@@ -24,157 +30,135 @@ namespace Rocket.Surgery.Conventions
     /// The TestHost does not support other service builders
     /// </remarks>
     /// <seealso cref="ConventionHostBuilder{ConventionTestHostBuilder}" />
-    public class TestHostBuilder : ConventionHostBuilder<TestHostBuilder>
+    public class TestHostBuilder : IHostBuilder, IConventionHostBuilder
     {
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger _logger;
+        private readonly IHostBuilder _hostBuilder;
+        private IConventionHostBuilder _conventionHostBuilder => _hostBuilder.GetConventions();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestHostBuilder" /> class.
         /// </summary>
-        /// <param name="scanner">The scanner.</param>
-        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        /// <param name="assemblyProvider">The assembly provider.</param>
-        /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <param name="serviceProperties">The service properties.</param>
-        /// <param name="loggerFactory">The logger factory.</param>
-        /// <param name="environment">The environment.</param>
-        internal TestHostBuilder(
-            IConventionScanner scanner,
-            IAssemblyCandidateFinder assemblyCandidateFinder,
-            IAssemblyProvider assemblyProvider,
-            DiagnosticSource diagnosticSource,
-            IServiceProviderDictionary serviceProperties,
-            ILoggerFactory loggerFactory,
-            IHostEnvironment environment
-        ) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties)
+        /// <param name="hostBuilder">The host builder.</param>
+        internal TestHostBuilder(IHostBuilder hostBuilder)
         {
-            serviceProperties.Set(HostType.UnitTestHost);
-            _loggerFactory = loggerFactory;
-            Environment = environment;
-            _logger = ServiceProperties.Get<ILogger>();
-
-            serviceProperties.Set(scanner);
-            serviceProperties.Set(assemblyCandidateFinder);
-            serviceProperties.Set(assemblyProvider);
-            serviceProperties.Set(diagnosticSource);
-            serviceProperties.Set(environment);
-            serviceProperties.Set(serviceProperties);
-            serviceProperties.Set(_logger);
-        }
-
-        /// <summary>
-        /// Use the <see cref="BasicConventionScanner" /> to not automatically load conventions from attributes.
-        /// </summary>
-        /// <returns></returns>
-        public TestHostBuilder ExcludeConventionAttributes() => new TestHostBuilder(
-            new BasicConventionScanner(ServiceProperties),
-            AssemblyCandidateFinder,
-            AssemblyProvider,
-            DiagnosticSource,
-            ServiceProperties,
-            _loggerFactory,
-            Environment
-        );
-
-        /// <summary>
-        /// <para>Use the <see cref="SimpleConventionScanner" /> to automatically load conventions from attributes.</para>
-        /// <para>This is the default</para>
-        /// </summary>
-        public TestHostBuilder IncludeConventionAttributes() => new TestHostBuilder(
-            new SimpleConventionScanner(AssemblyCandidateFinder, ServiceProperties, _logger),
-            AssemblyCandidateFinder,
-            AssemblyProvider,
-            DiagnosticSource,
-            ServiceProperties,
-            _loggerFactory,
-            Environment
-        );
-
-        public IHostEnvironment Environment { get; }
-
-        /// <summary>
-        /// Build the configuration and populate the service collection based on the input environment.
-        /// </summary>
-        private (IConfigurationRoot Configuration, ServicesBuilder ServicesBuilder) Init()
-        {
-            var sharedConfiguration = this.Get<IConfiguration>();
-            if (sharedConfiguration == null)
-            {
-                var configurationOptions = this.GetOrAdd(() => new ConfigOptions());
-                var sharedConfigurationBuilder = new ConfigurationBuilder()
-                   .SetFileProvider(Environment.ContentRootFileProvider)
-                   .Apply(configurationOptions.ApplicationConfiguration)
-                   .Apply(configurationOptions.EnvironmentConfiguration, Environment.EnvironmentName)
-                   .Apply(configurationOptions.EnvironmentConfiguration, "local");
-                sharedConfiguration = sharedConfigurationBuilder.Build();
-            }
-
-#pragma warning disable CA2000
-            var cb = new ConfigBuilder(
-                Scanner,
-                Environment,
-                new ConfigurationRoot(new List<IConfigurationProvider>()),
-                _logger,
-                ServiceProperties
-            );
-#pragma warning restore CA2000
-
-            var configuration = new ConfigurationBuilder()
-               .AddConfiguration(sharedConfiguration, false)
-               .AddConfiguration(cb.Build(), true)
-               .Build();
-
-            var serviceCollection = new ServiceCollection();
-            var servicesBuilder = new ServicesBuilder(
-                Scanner,
-                AssemblyProvider,
-                AssemblyCandidateFinder,
-                serviceCollection,
-                configuration,
-                Environment,
-                _logger,
-                ServiceProperties
-            );
-
-            servicesBuilder.Services.AddLogging(
-                builder =>
-                {
-                    builder.ClearProviders();
-                    builder.Services.AddSingleton(_loggerFactory);
-                }
-            );
-
-            return ( configuration, servicesBuilder );
+            _hostBuilder = hostBuilder;
         }
 
         /// <summary>
         /// Build the configuration and service provider based on the input environment.
         /// </summary>
-        public (IConfigurationRoot Configuration, IServiceProvider ServiceProvider) Build()
-        {
-            var (configuration, servicesBuilder) = Init();
+        public IHost Build() => _hostBuilder.Build();
 
-            var serviceProvider = servicesBuilder.Build();
-
-            return ( configuration, serviceProvider );
-        }
-
+#if NETSTANDARD2_1
         /// <summary>
-        /// Build the configuration and populate the service collection based on the input environment.
+        /// Gets the service collection (by building the host) to ensure all the services are populated
         /// </summary>
-        public (IConfigurationRoot Configuration, IServiceCollection ServiceCollection) Parse()
+        /// <returns></returns>
+        public IServiceCollection Parse()
         {
-            var (configuration, servicesBuilder) = Init();
+            var field = _hostBuilder.GetType().GetField("_serviceProviderFactory", BindingFlags.NonPublic | BindingFlags.Instance);
+            var fieldValue = field.GetValue(_hostBuilder);
+            var factory = ServiceFactoryAdapter.Create(fieldValue);
+            if (!fieldValue.GetType().IsGenericType)
+            {
+                throw new NotSupportedException("Service Provider Factory must be generic");
+            }
 
-            Composer.Register(
-                servicesBuilder.Scanner,
-                servicesBuilder,
-                typeof(IServiceConvention),
-                typeof(ServiceConventionDelegate)
-            );
+            var genericType = fieldValue.GetType().GetGenericArguments()[0];
+            var servicesContainer = ServiceProviderFactory.ConfigureFactory(_hostBuilder, genericType, factory);
 
-            return ( configuration, servicesBuilder.Services );
+            try
+            {
+                _hostBuilder.Build();
+            }
+            catch (InvalidOperationException exception)
+            {
+
+            }
+
+            return servicesContainer.Services;
         }
+#endif
+
+        #region Interfaces
+        [ExcludeFromCodeCoverage]
+        public IHostBuilder ConfigureHostConfiguration(Action<IConfigurationBuilder> configureDelegate) => _hostBuilder.ConfigureHostConfiguration(configureDelegate);
+
+        [ExcludeFromCodeCoverage]
+        public IHostBuilder ConfigureAppConfiguration(Action<HostBuilderContext, IConfigurationBuilder> configureDelegate) => _hostBuilder.ConfigureAppConfiguration(configureDelegate);
+
+        [ExcludeFromCodeCoverage]
+        public IHostBuilder ConfigureServices(Action<HostBuilderContext, IServiceCollection> configureDelegate) => _hostBuilder.ConfigureServices(configureDelegate);
+
+        [ExcludeFromCodeCoverage]
+        public IHostBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory) => _hostBuilder.UseServiceProviderFactory(factory);
+
+        [ExcludeFromCodeCoverage]
+        public IHostBuilder UseServiceProviderFactory<TContainerBuilder>(Func<HostBuilderContext, IServiceProviderFactory<TContainerBuilder>> factory) => _hostBuilder.UseServiceProviderFactory(factory);
+
+        [ExcludeFromCodeCoverage]
+        public IHostBuilder ConfigureContainer<TContainerBuilder>(Action<HostBuilderContext, TContainerBuilder> configureDelegate) => _hostBuilder.ConfigureContainer(configureDelegate);
+
+        [ExcludeFromCodeCoverage]
+        public IDictionary<object, object> Properties => _hostBuilder.Properties;
+        [ExcludeFromCodeCoverage]
+        public IConventionScanner Scanner => _conventionHostBuilder.Scanner;
+
+        [ExcludeFromCodeCoverage]
+        public IAssemblyCandidateFinder AssemblyCandidateFinder => _conventionHostBuilder.AssemblyCandidateFinder;
+
+        [ExcludeFromCodeCoverage]
+        public IServiceProviderDictionary ServiceProperties => _conventionHostBuilder.ServiceProperties;
+
+        [ExcludeFromCodeCoverage]
+        public IAssemblyProvider AssemblyProvider => _conventionHostBuilder.AssemblyProvider;
+
+        [ExcludeFromCodeCoverage]
+        public ILogger DiagnosticLogger => _conventionHostBuilder.DiagnosticLogger;
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder AppendConvention(IEnumerable<IConvention> conventions) => _conventionHostBuilder.AppendConvention(conventions);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder AppendConvention(params IConvention[] conventions) => _conventionHostBuilder.AppendConvention(conventions);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder AppendConvention(IEnumerable<Type> conventions) => _conventionHostBuilder.AppendConvention(conventions);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder AppendConvention(params Type[] conventions) => _conventionHostBuilder.AppendConvention(conventions);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder AppendConvention<T>()
+            where T : IConvention => _conventionHostBuilder.AppendConvention<T>();
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder PrependConvention(IEnumerable<IConvention> conventions) => _conventionHostBuilder.PrependConvention(conventions);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder PrependConvention(params IConvention[] conventions) => _conventionHostBuilder.PrependConvention(conventions);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder PrependConvention(IEnumerable<Type> conventions) => _conventionHostBuilder.PrependConvention(conventions);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder PrependConvention(params Type[] conventions) => _conventionHostBuilder.PrependConvention(conventions);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder PrependConvention<T>()
+            where T : IConvention => _conventionHostBuilder.PrependConvention<T>();
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder AppendDelegate(IEnumerable<Delegate> delegates) => _conventionHostBuilder.AppendDelegate(delegates);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder AppendDelegate(params Delegate[] delegates) => _conventionHostBuilder.AppendDelegate(delegates);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder PrependDelegate(IEnumerable<Delegate> delegates) => _conventionHostBuilder.PrependDelegate(delegates);
+
+        [ExcludeFromCodeCoverage]
+        public IConventionHostBuilder PrependDelegate(params Delegate[] delegates) => _conventionHostBuilder.PrependDelegate(delegates);
+        #endregion
     }
 }

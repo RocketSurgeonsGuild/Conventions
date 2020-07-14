@@ -19,10 +19,10 @@ namespace Rocket.Surgery.Conventions.Scanners
         private static readonly ConcurrentDictionary<Assembly, List<IConvention>> Conventions =
             new ConcurrentDictionary<Assembly, List<IConvention>>();
 
-        private readonly List<object> _prependedConventions;
-        private readonly List<object> _appendedConventions;
-        private readonly List<Type> _exceptConventions;
-        private readonly List<Assembly> _exceptAssemblyConventions;
+        internal readonly List<object> _prependedConventions;
+        internal readonly List<object> _appendedConventions;
+        internal readonly List<Type> _exceptConventions;
+        internal readonly List<Assembly> _exceptAssemblyConventions;
         private readonly IAssemblyCandidateFinder _assemblyCandidateFinder;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger _logger;

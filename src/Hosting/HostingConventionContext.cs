@@ -45,8 +45,6 @@ namespace Rocket.Surgery.Hosting
 
         public IServiceProviderDictionary ServiceProperties => _builder.ServiceProperties;
 
-        public DiagnosticSource? DiagnosticSource => _builder.DiagnosticSource;
-
         public IConventionHostBuilder AppendConvention(IEnumerable<IConvention> conventions)
             => _builder.AppendConvention(conventions);
 

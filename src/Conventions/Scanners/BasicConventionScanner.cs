@@ -46,6 +46,14 @@ namespace Rocket.Surgery.Conventions.Scanners
             _exceptContributions = exceptConventions;
         }
 
+        internal BasicConventionScanner(BasicConventionScanner source)
+        {
+            _serviceProvider = source._serviceProvider;
+            _appendContributions = source._appendContributions;
+            _prependContributions = source._prependContributions;
+            _exceptContributions = source._exceptContributions;
+        }
+
         /// <summary>
         /// Creates a provider that returns a set of conventions.
         /// </summary>

@@ -59,5 +59,29 @@ namespace Rocket.Surgery.Conventions.Scanners
             exceptConventions,
             exceptAssemblyConventions
         ) { }
+
+        /// <summary>
+        /// This constructor is used to forward information captured from an existing <see cref="AggregateConventionScanner" />
+        /// </summary>
+        /// <param name="assemblyCandidateFinder"></param>
+        /// <param name="serviceProvider"></param>
+        /// <param name="logger"></param>
+        /// <param name="source"></param>
+        internal AggregateConventionScanner(
+            IAssemblyCandidateFinder assemblyCandidateFinder,
+            IServiceProvider serviceProvider,
+            ILogger logger,
+            AggregateConventionScanner source
+        ) : base(
+            assemblyCandidateFinder,
+            serviceProvider,
+            logger,
+            source._prependedConventions,
+            source._appendedConventions,
+            source._exceptConventions,
+            source._exceptAssemblyConventions
+        )
+        {
+        }
     }
 }

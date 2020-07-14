@@ -34,18 +34,37 @@ namespace Rocket.Surgery.Conventions
             IServiceProviderDictionary serviceProperties
         )
         {
-            Scanner = scanner;
-            AssemblyCandidateFinder = assemblyCandidateFinder;
-            AssemblyProvider = assemblyProvider;
-            DiagnosticSource = diagnosticSource;
             ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
 
             Properties[typeof(IConventionScanner)] = scanner;
             Properties[typeof(IAssemblyProvider)] = assemblyProvider;
             Properties[typeof(IAssemblyCandidateFinder)] = assemblyCandidateFinder;
             Properties[typeof(IServiceProviderDictionary)] = serviceProperties;
-            Properties[typeof(DiagnosticSource)] = diagnosticSource;
             Properties[typeof(ILogger)] = new DiagnosticLogger(diagnosticSource);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConventionHostBuilder{TSelf}" /> class.
+        /// </summary>
+        /// <param name="scanner">The scanner.</param>
+        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
+        /// <param name="assemblyProvider">The assembly provider.</param>
+        /// <param name="diagnosticLogger">The diagnostic logger.</param>
+        /// <param name="serviceProperties">The properties.</param>
+        protected ConventionHostBuilder(
+            IConventionScanner scanner,
+            IAssemblyCandidateFinder assemblyCandidateFinder,
+            IAssemblyProvider assemblyProvider,
+            ILogger diagnosticLogger,
+            IServiceProviderDictionary serviceProperties
+        )
+        {
+            ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
+            Properties[typeof(IConventionScanner)] = scanner;
+            Properties[typeof(IAssemblyProvider)] = assemblyProvider;
+            Properties[typeof(IAssemblyCandidateFinder)] = assemblyCandidateFinder;
+            Properties[typeof(IServiceProviderDictionary)] = serviceProperties;
+            Properties[typeof(ILogger)] = diagnosticLogger;
         }
 
         /// <summary>
@@ -89,25 +108,22 @@ namespace Rocket.Surgery.Conventions
         /// Gets the scanner.
         /// </summary>
         /// <value>The scanner.</value>
-        public IConventionScanner Scanner { get; }
+        public IConventionScanner Scanner => ServiceProperties.Get<IConventionScanner>();
+
+        /// <inheritdoc />
+        public ILogger DiagnosticLogger => ServiceProperties.Get<ILogger>();
 
         /// <summary>
         /// Gets the assembly candidate finder.
         /// </summary>
         /// <value>The assembly candidate finder.</value>
-        public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+        public IAssemblyCandidateFinder AssemblyCandidateFinder => ServiceProperties.Get<IAssemblyCandidateFinder>();
 
         /// <summary>
         /// Gets the assembly provider.
         /// </summary>
         /// <value>The assembly provider.</value>
-        public IAssemblyProvider AssemblyProvider { get; }
-
-        /// <summary>
-        /// Gets the diagnostic source.
-        /// </summary>
-        /// <value>The diagnostic source.</value>
-        public DiagnosticSource DiagnosticSource { get; }
+        public IAssemblyProvider AssemblyProvider => ServiceProperties.Get<IAssemblyProvider>();
 
         /// <summary>
         /// Adds a set of conventions to the scanner
