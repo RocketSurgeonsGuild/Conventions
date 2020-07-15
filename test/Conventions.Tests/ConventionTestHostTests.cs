@@ -145,6 +145,18 @@ namespace Rocket.Surgery.Conventions.Tests
             host.Services.GetRequiredService<ServiceA>().Should().NotBeNull();
         }
 
+        [Fact]
+        public void Builder_Should_Populate_Services()
+        {
+            var testHost = TestHost.For(this, LoggerFactory).Create(
+                x => { x.ConfigureServices(x => x.AddSingleton<ServiceA>()); }
+            );
+
+            using var host = testHost.Build();
+            Populate(testHost.Get<IServiceCollection>());
+            Container.GetRequiredService<ServiceA>().Should().NotBeNull();
+        }
+
         class ServiceA
         {
             public string Value = nameof(ServiceA);
