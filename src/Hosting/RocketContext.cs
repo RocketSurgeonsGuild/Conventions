@@ -31,16 +31,13 @@ namespace Rocket.Surgery.Hosting
         public RocketContext(IHostBuilder hostBuilder) => _hostBuilder = hostBuilder;
 
         /// <summary>
-        /// Configures any hosting builder conventions
+        /// Construct and compose hosting conventions
         /// </summary>
-        /// <param name="configurationBuilder">The configuration builder.</param>
-        public void ComposeHostingConvention([NotNull] IConfigurationBuilder configurationBuilder)
+        /// <param name="context"></param>
+        /// <param name="services"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void ComposeHostingConvention([NotNull] HostBuilderContext context, IServiceCollection services)
         {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
-
             var rocketHostBuilder = _hostBuilder.GetConventions();
             Composer.Register(
                 rocketHostBuilder.Scanner,

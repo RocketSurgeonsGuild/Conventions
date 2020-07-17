@@ -523,7 +523,7 @@ namespace Rocket.Surgery.Hosting
 
                 var host = new RocketContext(builder);
                 builder
-                   .ConfigureHostConfiguration(host.ComposeHostingConvention)
+                   .ConfigureServices(host.ComposeHostingConvention)
                    .ConfigureHostConfiguration(host.CaptureArguments)
                    .ConfigureHostConfiguration(host.ConfigureCli)
                    .ConfigureAppConfiguration(host.ReplaceArguments)

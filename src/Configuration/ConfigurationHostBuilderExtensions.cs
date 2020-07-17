@@ -137,10 +137,17 @@ namespace Rocket.Surgery.Conventions
             var source = getSource(sources);
             if (source != null)
             {
-                var index = sources.IndexOf(source);
+                var index =  sources.IndexOf(source) ;
                 foreach (var newSource in createSourceFrom.Reverse())
                 {
                     sources.Insert(index + 1, newSource);
+                }
+            }
+            else
+            {
+                foreach (var newSource in createSourceFrom.Reverse())
+                {
+                    sources.Add(newSource);
                 }
             }
         }
@@ -153,7 +160,7 @@ namespace Rocket.Surgery.Conventions
             where T : IConfigurationSource
         {
             var iConfigurationSources = createSourceFrom as IConfigurationSource[] ?? createSourceFrom.ToArray();
-            if (!iConfigurationSources.Any())
+            if (iConfigurationSources.Length == 0)
                 return;
             var source = getSource(sources);
             if (source != null)
@@ -163,6 +170,13 @@ namespace Rocket.Surgery.Conventions
                 foreach (var newSource in iConfigurationSources.Reverse())
                 {
                     sources.Insert(index, newSource);
+                }
+            }
+            else
+            {
+                foreach (var newSource in iConfigurationSources.Reverse())
+                {
+                    sources.Add(newSource);
                 }
             }
         }
