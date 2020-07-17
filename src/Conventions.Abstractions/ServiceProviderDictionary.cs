@@ -77,7 +77,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="value">The value.</param>
         public void Add(object key, object? value)
         {
-            _values.Add(key, value);
+            _values[key] = value;
             if (key is Type t)
             {
                 _servicesTypes.Add(t);
