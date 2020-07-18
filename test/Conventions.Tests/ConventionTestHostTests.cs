@@ -119,7 +119,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Scan_For_Conventions_When_Desired()
         {
             var host = TestHost.For(this, LoggerFactory)
-               .IncludeConventionAttributes()
+               .IncludeConventions()
                .Create();
 
             host.Scanner.BuildProvider().GetAll().Should().NotBeEmpty();
@@ -129,7 +129,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Not_Scan_For_Conventions()
         {
             var host = TestHost.For(this, LoggerFactory)
-               .ExcludeConventionAttributes()
+               .ExcludeConventions()
                .Create();
 
             host.Scanner.BuildProvider().GetAll().Should().BeEmpty();

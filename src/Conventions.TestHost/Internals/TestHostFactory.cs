@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
+using Rocket.Surgery.Conventions.DependencyInjection;
 
 namespace Rocket.Surgery.Conventions.Internals
 {
@@ -27,7 +28,19 @@ namespace Rocket.Surgery.Conventions.Internals
                 testHostBuilder._configureAppConfigActions,
                 testHostBuilder.Properties
             );
-            return CreateServiceCollection(hostBuilderContext, testHostBuilder._configureServicesActions);
+            var serviceCollection =  CreateServiceCollection(hostBuilderContext, testHostBuilder._configureServicesActions);
+            var context = new ServicesBuilder(
+                testHostBuilder.Scanner,
+                testHostBuilder.AssemblyProvider,
+                testHostBuilder.AssemblyCandidateFinder,
+                serviceCollection,
+                hostBuilderContext.Configuration,
+                hostBuilderContext.HostingEnvironment,
+                testHostBuilder.DiagnosticLogger,
+                testHostBuilder.Properties
+            );
+            Composer.Register(testHostBuilder.Scanner, context, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
+            return serviceCollection;
         }
 
         internal static IServiceProvider CreateServiceProvider(TestHostBuilder testHostBuilder)
