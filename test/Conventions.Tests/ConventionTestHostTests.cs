@@ -296,6 +296,38 @@ namespace Rocket.Surgery.Conventions.Tests
             configuration.Should().NotBeSameAs(configuration2);
         }
 
+        [Fact]
+        public void Calls_Hosting_Conventions_When_Provided_Configuration()
+        {
+            var handler = A.Fake<HostingConventionDelegate>();
+            var host = TestHost.For(this, LoggerFactory)
+               .WithConfiguration(AutoFake.Resolve<IConfiguration>())
+               .Create()
+               .ConfigureHosting(handler)
+               .Get<IHostBuilder>();
+
+            using (var a = host.Build()) { }
+
+            A.CallTo(handler).MustHaveHappenedOnceExactly();
+        }
+
+        [Fact]
+        public void Calls_Hosting_Conventions_When_Sharing_Configuration()
+        {
+            var handler = A.Fake<HostingConventionDelegate>();
+            var host = TestHost.For(this, LoggerFactory)
+               .ShareConfiguration(typeof(ConventionTestHostTests))
+               .Create()
+               .ConfigureHosting(handler)
+               .Get<IHostBuilder>();
+
+            using (var a = host.Build()) { }
+
+            using (var a = host.Build()) { }
+
+            A.CallTo(handler).MustHaveHappenedTwiceExactly();
+        }
+
         public ConventionTestHostTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information) { }
     }
 }

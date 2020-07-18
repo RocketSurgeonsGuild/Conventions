@@ -55,5 +55,21 @@ namespace Rocket.Surgery.Hosting.Tests
             configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(0);
             configuration.Providers.OfType<IniConfigurationProvider>().Should().HaveCount(0);
         }
+
+        [Fact]
+        public void Should_Not_Fail_If_Hosting_Convention_Adds_Services()
+        {
+            var host = Host.CreateDefaultBuilder()
+               .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }))
+               .ConfigureRocketSurgery(x =>
+                    x.ConfigureHosting(z => z.Builder.ConfigureServices(
+                        c =>
+                        {
+
+                        })));
+
+            Action a = () => host.Build();
+            a.Should().NotThrow();
+        }
     }
 }

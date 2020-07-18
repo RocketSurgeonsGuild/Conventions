@@ -518,12 +518,12 @@ namespace Rocket.Surgery.Hosting
                     assemblyCandidateFinder,
                     serviceProviderDictionary,
                     logger,
-                    scannerType ?? typeof(BasicConventionScanner)
+                    scannerType ?? typeof(SimpleConventionScanner)
                 );
 
                 var host = new RocketContext(builder);
                 builder
-                   .ConfigureServices(host.ComposeHostingConvention)
+                   .ConfigureHostConfiguration(host.ComposeHostingConvention)
                    .ConfigureHostConfiguration(host.CaptureArguments)
                    .ConfigureHostConfiguration(host.ConfigureCli)
                    .ConfigureAppConfiguration(host.ReplaceArguments)
