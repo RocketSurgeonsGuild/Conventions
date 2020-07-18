@@ -136,7 +136,7 @@ namespace Rocket.Surgery.Conventions
         private AppDomain? _appDomain;
         private string? _environmentName;
         private string[]? _arguments;
-        private bool _includeConventions;
+        private bool _includeConventions = true;
         private IEnumerable<Assembly>? _assemblies;
         private string? _contentRootPath;
 
@@ -223,7 +223,7 @@ namespace Rocket.Surgery.Conventions
         /// Use the <see cref="BasicConventionScanner" /> to not automatically load conventions from attributes.
         /// </summary>
         /// <returns></returns>
-        public TestHost ExcludeConventionAttributes()
+        public TestHost ExcludeConventions()
         {
             _includeConventions = false;
             return this;
@@ -233,7 +233,7 @@ namespace Rocket.Surgery.Conventions
         /// <para>Use the <see cref="SimpleConventionScanner" /> to automatically load conventions from attributes.</para>
         /// <para>This is the default</para>
         /// </summary>
-        public TestHost IncludeConventionAttributes()
+        public TestHost IncludeConventions()
         {
             _includeConventions = true;
             return this;
