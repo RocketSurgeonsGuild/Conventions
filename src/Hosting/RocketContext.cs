@@ -33,10 +33,9 @@ namespace Rocket.Surgery.Hosting
         /// <summary>
         /// Construct and compose hosting conventions
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="services"></param>
+        /// <param name="configurationBuilder"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void ComposeHostingConvention([NotNull] HostBuilderContext context, IServiceCollection services)
+        public void ComposeHostingConvention([NotNull]IConfigurationBuilder configurationBuilder)
         {
             var rocketHostBuilder = _hostBuilder.GetConventions();
             Composer.Register(

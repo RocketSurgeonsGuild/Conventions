@@ -12,7 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Hosting;
 
 namespace Rocket.Surgery.Conventions.Internals
 {
@@ -24,6 +26,7 @@ namespace Rocket.Surgery.Conventions.Internals
         internal static IServiceCollection CreateServiceCollection(TestHostBuilder testHostBuilder)
         {
             var hostBuilderContext = CreateHostBuilderContext(
+                testHostBuilder,
                 testHostBuilder._configureHostConfigActions,
                 testHostBuilder._configureAppConfigActions,
                 testHostBuilder.Properties
@@ -46,6 +49,7 @@ namespace Rocket.Surgery.Conventions.Internals
         internal static IServiceProvider CreateServiceProvider(TestHostBuilder testHostBuilder)
         {
             var hostBuilderContext = CreateHostBuilderContext(
+                testHostBuilder,
                 testHostBuilder._configureHostConfigActions,
                 testHostBuilder._configureAppConfigActions,
                 testHostBuilder.Properties
@@ -55,6 +59,7 @@ namespace Rocket.Surgery.Conventions.Internals
         }
 
         internal static HostBuilderContext CreateHostBuilderContext(
+            TestHostBuilder testHostBuilder,
             IEnumerable<Action<IConfigurationBuilder>> configureHostConfigActions,
             IEnumerable<Action<HostBuilderContext, IConfigurationBuilder>> configureAppConfigActions,
             IDictionary<object, object?> properties
@@ -64,6 +69,12 @@ namespace Rocket.Surgery.Conventions.Internals
             {
                 if (item is IConfiguration configuration)
                 {
+                    Composer.Register(
+                        testHostBuilder.Scanner,
+                        new HostingConventionContext(testHostBuilder, testHostBuilder, testHostBuilder.DiagnosticLogger),
+                        typeof(IHostingConvention),
+                        typeof(HostingConventionDelegate)
+                    );
                     return CreateReusedContext(configuration);
                 }
 
@@ -78,6 +89,12 @@ namespace Rocket.Surgery.Conventions.Internals
                         return innerContext;
                     }
 
+                    Composer.Register(
+                        testHostBuilder.Scanner,
+                        new HostingConventionContext(testHostBuilder, testHostBuilder, testHostBuilder.DiagnosticLogger),
+                        typeof(IHostingConvention),
+                        typeof(HostingConventionDelegate)
+                    );
                     return CreateReusedContext(configuration);
                 }
             }
