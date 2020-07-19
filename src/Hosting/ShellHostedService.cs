@@ -1,10 +1,12 @@
 using System;
+using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.CommandLine;
+using Rocket.Surgery.Conventions.Shell;
 
 namespace Rocket.Surgery.Hosting
 {
@@ -13,23 +15,22 @@ namespace Rocket.Surgery.Hosting
     /// Implements the <see cref="IHostedService" />
     /// </summary>
     /// <seealso cref="IHostedService" />
-    internal class CommandLineHostedService : IHostedService
+    internal class ShellHostedService : IHostedService
     {
-        private readonly ICommandLineExecutor _executor;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IHost _host;
+        private readonly InvocationContext _context;
         private readonly IHostApplicationLifetime _lifetime;
         private readonly CommandLineResult _result;
-        private readonly bool _isWebApp;
-        private readonly ILogger<CommandLineHostedService> _logger;
+        private readonly ILogger<ShellHostedService> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandLineHostedService" /> class.
+        /// Initializes a new instance of the <see cref="ShellHostedService" /> class.
         /// </summary>
-        /// <param name="serviceProvider">The service provider.</param>
-        /// <param name="executor">The executor.</param>
+        /// <param name="host">The host.</param>
+        /// <param name="context"></param>
         /// <param name="lifetime">The lifetime.</param>
         /// <param name="commandLineResult">The command line result.</param>
-        /// <param name="isWebApp">if set to <c>true</c> [is web application].</param>
+        /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">
         /// executor
         /// or
@@ -39,20 +40,20 @@ namespace Rocket.Surgery.Hosting
         /// or
         /// commandLineResult
         /// </exception>
-        public CommandLineHostedService(
-            IServiceProvider serviceProvider,
-            ICommandLineExecutor executor,
+        public ShellHostedService(
+            IHost host,
+            InvocationContext context,
             IHostApplicationLifetime lifetime,
             CommandLineResult commandLineResult,
-            bool isWebApp
+            ILogger<ShellHostedService> logger
         )
         {
-            _executor = executor ?? throw new ArgumentNullException(nameof(executor));
-            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _host = host ?? throw new ArgumentNullException(nameof(host));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
             _result = commandLineResult ?? throw new ArgumentNullException(nameof(commandLineResult));
-            _isWebApp = isWebApp;
-            _logger = _serviceProvider.GetRequiredService<ILogger<CommandLineHostedService>>();
+            _logger = logger;
+            _context.BindingContext.AddService(typeof(IHost), _ => _host);
         }
 
         /// <summary>
@@ -65,24 +66,20 @@ namespace Rocket.Surgery.Hosting
             _lifetime.ApplicationStarted.Register(
                 async () =>
                 {
-                    if (!(_executor.IsDefaultCommand && _isWebApp))
+                    try
                     {
-                        try
-                        {
-                            _result.Value = await _executor.ExecuteAsync(_serviceProvider, cancellationToken)
-                               .ConfigureAwait(false);
-                        }
+                        _result.Value = await new ShellInvocationPipeline(_context).InvokeAsync().ConfigureAwait(false);
+                    }
 #pragma warning disable CA1031
-                        catch (Exception e)
-                        {
-                            _logger.LogError(e, "Command failed to execute");
-                            _result.Value = -1;
-                        }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e, "Command failed to execute");
+                        _result.Value = -1;
+                    }
 #pragma warning restore CA1031
-                        finally
-                        {
-                            _lifetime.StopApplication();
-                        }
+                    finally
+                    {
+                        _lifetime.StopApplication();
                     }
                 }
             );

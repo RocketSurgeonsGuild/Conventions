@@ -3,6 +3,5 @@
         <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
     </ItemGroup>
 </Project>

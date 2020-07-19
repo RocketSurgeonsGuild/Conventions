@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.CommandLine.Parsing;
 using System.Globalization;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions.CommandLine
 {
@@ -15,34 +17,35 @@ namespace Rocket.Surgery.Conventions.CommandLine
         /// Adds the state of the application.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <param name="state">The state.</param>
+        /// <param name="parseResult">The parse result.</param>
         /// <returns>IConfigurationBuilder.</returns>
         [NotNull]
         public static IConfigurationBuilder AddApplicationState(
             this IConfigurationBuilder builder,
-            [NotNull] IApplicationState state
+            [NotNull] ParseResult parseResult
         )
         {
-            if (state == null)
+            if (parseResult == null)
             {
-                throw new ArgumentNullException(nameof(state));
+                throw new ArgumentNullException(nameof(parseResult));
             }
 
+            var debug = parseResult.ValueForOption<bool>("--debug");
+            var trace = parseResult.ValueForOption<bool>("--trace");
+            var verbose = parseResult.ValueForOption<bool>("--verbose");
+            var logLevel = parseResult.ValueForOption<LogLevel?>("--log-level");
             builder.AddInMemoryCollection(
                 new Dictionary<string, string>
                 {
                     [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Debug)}"] =
-                        state.Debug.ToString(CultureInfo.InvariantCulture),
+                        debug.ToString(CultureInfo.InvariantCulture),
                     [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Trace)}"] =
-                        state.Trace.ToString(CultureInfo.InvariantCulture),
+                        trace.ToString(CultureInfo.InvariantCulture),
                     [$"{nameof(ApplicationState)}:{nameof(ApplicationState.Verbose)}"] =
-                        state.Verbose.ToString(CultureInfo.InvariantCulture),
-                    [$"{nameof(ApplicationState)}:{nameof(ApplicationState.IsDefaultCommand)}"] =
-                        state.IsDefaultCommand.ToString(CultureInfo.InvariantCulture)
+                        verbose.ToString(CultureInfo.InvariantCulture)
                 }
             );
 
-            var logLevel = state.GetLogLevel();
             if (logLevel.HasValue)
             {
                 builder.AddInMemoryCollection(

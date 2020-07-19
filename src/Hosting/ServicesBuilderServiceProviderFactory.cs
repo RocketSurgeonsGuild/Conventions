@@ -1,9 +1,11 @@
 using System;
+using System.CommandLine.Parsing;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions.CommandLine;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 
 #pragma warning disable CA1307
@@ -43,39 +45,28 @@ namespace Rocket.Surgery.Hosting
             {
                 throw new ArgumentNullException(nameof(containerBuilder));
             }
+            var webHostedServices = containerBuilder.Services
+               .Where(x => x.ImplementationType?.FullName?.StartsWith("Microsoft.AspNetCore.Hosting", StringComparison.Ordinal) == true)
+               .ToArray();
+            var hasWebHostedService = webHostedServices.Any();
 
-            if (containerBuilder.Properties[typeof(ICommandLineExecutor)] is ICommandLineExecutor exec)
+            //if (containerBuilder.Properties[typeof(ParseResult)] is ParseResult parseResult)
+            if (containerBuilder.Get<bool>("DefaultShellCommand") && hasWebHostedService)
             {
-                var result = new CommandLineResult();
-                containerBuilder.Services.AddSingleton(result);
-                containerBuilder.Services.AddSingleton(exec.ApplicationState);
-                // Remove the hosted service that bootstraps kestrel, we are executing a command here.
-                var webHostedServices = containerBuilder.Services
-                   .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting") == true)
-                   .ToArray();
-                if (!exec.IsDefaultCommand || exec.Application.IsShowingInformation)
+                var commandLineHostedService = containerBuilder.Services
+                   .Where(x => x.ImplementationType == typeof(ShellHostedService));
+                // Remove the shell hosted service that bootstraps kestrel, we are executing a command here.
+                foreach (var descriptor in commandLineHostedService)
                 {
-                    containerBuilder.Services.Configure<ConsoleLifetimeOptions>(x => x.SuppressStatusMessages = true);
-                    foreach (var descriptor in webHostedServices)
-                    {
-                        containerBuilder.Services.Remove(descriptor);
-                    }
+                    containerBuilder.Services.Remove(descriptor);
                 }
-
-                var hasWebHostedService = webHostedServices.Any();
-                if (containerBuilder.Properties.TryGetValue(typeof(CommandLineHostedService), out var _) ||
-                    !exec.IsDefaultCommand)
+            }
+            else
+            {
+                // Remove the hosted service that bootstraps kestrel, we are executing a command here.
+                foreach (var descriptor in webHostedServices)
                 {
-                    containerBuilder.Services.AddSingleton<IHostedService>(
-                        _ =>
-                            new CommandLineHostedService(
-                                _,
-                                exec,
-                                _.GetRequiredService<IHostApplicationLifetime>(),
-                                result,
-                                hasWebHostedService
-                            )
-                    );
+                    containerBuilder.Services.Remove(descriptor);
                 }
             }
 

@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.CommandLine.Hosting;
+using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
@@ -8,10 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Configuration.Memory;
+using Rocket.Surgery.Conventions.Shell;
 
 namespace Rocket.Surgery.Hosting
 {
@@ -21,8 +26,9 @@ namespace Rocket.Surgery.Hosting
     internal class RocketContext
     {
         private readonly IHostBuilder _hostBuilder;
+
         private string[]? _args;
-        private ICommandLineExecutor? _exec;
+        //private ParseResult? _parseResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RocketContext" /> class.
@@ -35,7 +41,7 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <param name="configurationBuilder"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void ComposeHostingConvention([NotNull]IConfigurationBuilder configurationBuilder)
+        public void ComposeHostingConvention([NotNull] IConfigurationBuilder configurationBuilder)
         {
             var rocketHostBuilder = _hostBuilder.GetConventions();
             Composer.Register(
@@ -44,32 +50,6 @@ namespace Rocket.Surgery.Hosting
                 typeof(IHostingConvention),
                 typeof(HostingConventionDelegate)
             );
-        }
-
-        /// <summary>
-        /// Configures the cli.
-        /// </summary>
-        /// <param name="configurationBuilder">The configuration builder.</param>
-        public void ConfigureCli([NotNull] IConfigurationBuilder configurationBuilder)
-        {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
-
-            var rocketHostBuilder = _hostBuilder.GetConventions();
-            var clb = new CommandLineBuilder(
-                rocketHostBuilder.Scanner,
-                rocketHostBuilder.AssemblyProvider,
-                rocketHostBuilder.AssemblyCandidateFinder,
-                rocketHostBuilder.Get<ILogger>(),
-                rocketHostBuilder.ServiceProperties
-            );
-
-            _exec = clb.Build().Parse(_args ?? Array.Empty<string>());
-            _args = _exec.ApplicationState.RemainingArguments ?? Array.Empty<string>();
-            configurationBuilder.AddApplicationState(_exec.ApplicationState);
-            rocketHostBuilder.ServiceProperties.Add(typeof(ICommandLineExecutor), _exec);
         }
 
         /// <summary>
@@ -89,6 +69,54 @@ namespace Rocket.Surgery.Hosting
             {
                 _args = commandLineSource.Args.ToArray();
             }
+        }
+
+        /// <summary>
+        /// Configures the cli.
+        /// </summary>
+        /// <param name="configurationBuilder">The configuration builder.</param>
+        public void ConfigureShell([NotNull] IConfigurationBuilder configurationBuilder)
+        {
+            if (configurationBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(configurationBuilder));
+            }
+
+            var rocketHostBuilder = _hostBuilder.GetConventions();
+            var clb = new ShellBuilder(
+                rocketHostBuilder.Scanner,
+                rocketHostBuilder.AssemblyProvider,
+                rocketHostBuilder.AssemblyCandidateFinder,
+                rocketHostBuilder.Get<ILogger>(),
+                rocketHostBuilder.ServiceProperties
+            );
+
+            var parseResult = clb.Parse(_args ?? Array.Empty<string>());
+            var isDefault = parseResult.RootCommandResult.Command == parseResult.CommandResult.Command;
+            rocketHostBuilder.AddIfMissing("RunAsShell", () => !isDefault);
+            rocketHostBuilder.Set("DefaultShellCommand", isDefault);
+            if (rocketHostBuilder.Get<bool>("RunAsShell"))
+            {
+                _hostBuilder.ConfigureServices(
+                    services =>
+                    {
+                        services.AddSingleton(parseResult);
+                        services.AddSingleton(clb.Console);
+                        services.AddSingleton(_ => new InvocationContext(parseResult, clb.Console));
+                        services.AddSingleton(_ => _.GetRequiredService<InvocationContext>().BindingContext);
+                        services.AddSingleton(_ => _.GetRequiredService<InvocationContext>().Console);
+                        services.AddTransient(_ => _.GetRequiredService<InvocationContext>().InvocationResult);
+
+                        var result = new CommandLineResult();
+                        services.AddSingleton(result);
+                        services.AddSingleton<IHostedService, ShellHostedService>();
+                    }
+                );
+            }
+
+            _args = parseResult.UnparsedTokens.ToArray();
+            configurationBuilder.AddShellState(parseResult);
+            rocketHostBuilder.Set(parseResult);
         }
 
         /// <summary>
@@ -136,14 +164,11 @@ namespace Rocket.Surgery.Hosting
             IConfigurationSource? source = null;
             foreach (var item in configurationBuilder.Sources.Reverse())
             {
-                if (item is CommandLineConfigurationSource ||
-                    ( item is EnvironmentVariablesConfigurationSource env && ( string.IsNullOrWhiteSpace(env.Prefix) ||
-                        string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) ) ||
-                    ( item is JsonConfigurationSource a && string.Equals(
-                        a.Path,
-                        "secrets.json",
-                        StringComparison.OrdinalIgnoreCase
-                    ) ))
+                if (item is CommandLineConfigurationSource
+                 || ( item is EnvironmentVariablesConfigurationSource env &&
+                        ( string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) )
+                 || ( item is JsonConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase) )
+                )
                 {
                     continue;
                 }

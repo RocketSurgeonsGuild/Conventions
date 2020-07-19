@@ -12,6 +12,9 @@
         <PackageReference Include="Microsoft.Extensions.DependencyModel" />
         <PackageReference Include="Microsoft.Extensions.DiagnosticAdapter" />
         <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+        <PackageReference Include="System.CommandLine" />
+        <PackageReference Include="System.CommandLine.Rendering" />
+        <PackageReference Include="LoxSmoke.DocXml" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />

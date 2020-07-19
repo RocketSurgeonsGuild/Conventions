@@ -126,21 +126,23 @@ namespace Rocket.Surgery.Conventions
 
             return (T)context.ServiceProperties[key]!;
         }
-
-        /// <summary>
+/// <summary>
         /// Get a value by key from the context
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="builder">The builder</param>
+        /// <param name="conventionHostBuilder">The properties</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
         [NotNull]
-        public static T GetOrAdd<T>([NotNull] this IConventionHostBuilder builder, [NotNull] Func<T> factory)
+        public static T GetOrAdd<T>(
+            [NotNull] this IConventionHostBuilder conventionHostBuilder,
+            [NotNull] Func<T> factory
+        )
             where T : class
         {
-            if (builder == null)
+            if (conventionHostBuilder == null)
             {
-                throw new ArgumentNullException(nameof(builder));
+                throw new ArgumentNullException(nameof(conventionHostBuilder));
             }
 
             if (factory == null)
@@ -148,36 +150,48 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            if (builder.ServiceProperties[typeof(T)] is T value)
-            {
-                return value;
-            }
-
-            value = factory();
-            builder.Set(value);
-
-            return value;
+            return conventionHostBuilder.ServiceProperties.GetOrAdd(factory);
         }
 
         /// <summary>
         /// Get a value by key from the context
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="builder">The builder</param>
+        /// <param name="conventionHostBuilder">The properties</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IConventionHostBuilder conventionHostBuilder
+        )
+            where T : class, new()
+        {
+            if (conventionHostBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(conventionHostBuilder));
+            }
+
+            return conventionHostBuilder.ServiceProperties.GetOrAdd<T>();
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conventionHostBuilder">The properties</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
         [NotNull]
         public static T GetOrAdd<T>(
-            [NotNull] this IConventionHostBuilder builder,
+            [NotNull] this IConventionHostBuilder conventionHostBuilder,
             string key,
             [NotNull] Func<T> factory
         )
             where T : class
         {
-            if (builder == null)
+            if (conventionHostBuilder == null)
             {
-                throw new ArgumentNullException(nameof(builder));
+                throw new ArgumentNullException(nameof(conventionHostBuilder));
             }
 
             if (factory == null)
@@ -185,13 +199,130 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            if (!( builder.ServiceProperties[key] is T value ))
+            return conventionHostBuilder.ServiceProperties.GetOrAdd(key, factory);
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conventionHostBuilder">The properties</param>
+        /// <param name="key">The key where the value is saved</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IConventionHostBuilder conventionHostBuilder,
+            string key
+        )
+            where T : class, new()
+        {
+            if (conventionHostBuilder == null)
             {
-                value = factory();
-                builder.Set(value);
+                throw new ArgumentNullException(nameof(conventionHostBuilder));
             }
 
-            return value;
+            return conventionHostBuilder.ServiceProperties.GetOrAdd<T>(key);
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conventionHostBuilder">The properties</param>
+        /// <param name="factory">The factory method in the event the type is not found</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static IConventionHostBuilder AddIfMissing<T>(
+            [NotNull] this IConventionHostBuilder conventionHostBuilder,
+            [NotNull] Func<T> factory
+        )
+        {
+            if (conventionHostBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(conventionHostBuilder));
+            }
+
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            conventionHostBuilder.ServiceProperties.AddIfMissing(factory);
+            return conventionHostBuilder;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conventionHostBuilder">The properties</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static IConventionHostBuilder AddIfMissing<T>(
+            [NotNull] this IConventionHostBuilder conventionHostBuilder
+        )
+            where T : class, new()
+        {
+            if (conventionHostBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(conventionHostBuilder));
+            }
+
+            conventionHostBuilder.ServiceProperties.AddIfMissing<T>();
+            return conventionHostBuilder;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conventionHostBuilder">The properties</param>
+        /// <param name="key">The key where the value is saved</param>
+        /// <param name="factory">The factory method in the event the type is not found</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static IConventionHostBuilder AddIfMissing<T>(
+            [NotNull] this IConventionHostBuilder conventionHostBuilder,
+            string key,
+            [NotNull] Func<T> factory
+        )
+        {
+            if (conventionHostBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(conventionHostBuilder));
+            }
+
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            conventionHostBuilder.ServiceProperties.AddIfMissing(key, factory);
+
+            return conventionHostBuilder;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conventionHostBuilder">The properties</param>
+        /// <param name="key">The key where the value is saved</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static IConventionHostBuilder AddIfMissing<T>(
+            [NotNull] this IConventionHostBuilder conventionHostBuilder,
+            string key
+        )
+            where T : class, new()
+        {
+            if (conventionHostBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(conventionHostBuilder));
+            }
+
+            conventionHostBuilder.ServiceProperties.AddIfMissing<T>(key);
+            return conventionHostBuilder;
         }
 
         /// <summary>
@@ -302,6 +433,32 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceProviderDictionary">The properties</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary
+        )
+            where T : class, new()
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            if (!( serviceProviderDictionary[typeof(T)] is T value ))
+            {
+                value = new T();
+                serviceProviderDictionary.Set(value);
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceProviderDictionary">The properties</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="factory">The factory method in the event the type is not found</param>
         /// <returns>T.</returns>
@@ -330,6 +487,154 @@ namespace Rocket.Surgery.Conventions
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceProviderDictionary">The properties</param>
+        /// <param name="key">The key where the value is saved</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static T GetOrAdd<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            string key
+        )
+            where T : class, new()
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            if (!( serviceProviderDictionary[key] is T value ))
+            {
+                value = new T();
+                serviceProviderDictionary.Set(value);
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceProviderDictionary">The properties</param>
+        /// <param name="factory">The factory method in the event the type is not found</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static IServiceProviderDictionary AddIfMissing<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            [NotNull] Func<T> factory
+        )
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (!( serviceProviderDictionary[typeof(T)] is T value ))
+            {
+                value = factory();
+                serviceProviderDictionary.Set(value);
+            }
+
+            return serviceProviderDictionary;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceProviderDictionary">The properties</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static IServiceProviderDictionary AddIfMissing<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary
+        )
+            where T : class, new()
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            if (!( serviceProviderDictionary[typeof(T)] is T value ))
+            {
+                value = new T();
+                serviceProviderDictionary.Set(value);
+            }
+
+            return serviceProviderDictionary;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceProviderDictionary">The properties</param>
+        /// <param name="key">The key where the value is saved</param>
+        /// <param name="factory">The factory method in the event the type is not found</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static IServiceProviderDictionary AddIfMissing<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            string key,
+            [NotNull] Func<T> factory
+        )
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (!( serviceProviderDictionary[key] is T value ))
+            {
+                value = factory();
+                serviceProviderDictionary.Set(value);
+            }
+
+            return serviceProviderDictionary;
+        }
+
+        /// <summary>
+        /// Get a value by key from the context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceProviderDictionary">The properties</param>
+        /// <param name="key">The key where the value is saved</param>
+        /// <returns>T.</returns>
+        [NotNull]
+        public static IServiceProviderDictionary AddIfMissing<T>(
+            [NotNull] this IServiceProviderDictionary serviceProviderDictionary,
+            string key
+        )
+            where T : class, new()
+        {
+            if (serviceProviderDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProviderDictionary));
+            }
+
+            if (!( serviceProviderDictionary[key] is T value ))
+            {
+                value = new T();
+                serviceProviderDictionary.Set(value);
+            }
+
+            return serviceProviderDictionary;
         }
 
         /// <summary>

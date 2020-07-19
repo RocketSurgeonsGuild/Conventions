@@ -440,7 +440,7 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(configureOptions));
             }
 
-            builder.ServiceProperties[typeof(CommandLineHostedService)] = true;
+            builder.Set("RunAsShell", true);
             builder.Get<IHostBuilder>()
                .UseConsoleLifetime()
                .ConfigureServices(services => services.Configure(configureOptions));
@@ -525,7 +525,7 @@ namespace Rocket.Surgery.Hosting
                 builder
                    .ConfigureHostConfiguration(host.ComposeHostingConvention)
                    .ConfigureHostConfiguration(host.CaptureArguments)
-                   .ConfigureHostConfiguration(host.ConfigureCli)
+                   .ConfigureHostConfiguration(host.ConfigureShell)
                    .ConfigureAppConfiguration(host.ReplaceArguments)
                    .UseLocalConfiguration(() => serviceProviderDictionary.GetOrAdd(() => new ConfigOptions()))
                    .ConfigureAppConfiguration(host.ConfigureAppConfiguration)

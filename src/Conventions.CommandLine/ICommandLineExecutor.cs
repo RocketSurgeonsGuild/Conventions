@@ -24,8 +24,7 @@ namespace Rocket.Surgery.Conventions.CommandLine
 
         /// <summary>
         /// Gets the state of the application.
-        /// </summary>
-        /// <value>The state of the application.</value>
+        /// </summary> <value>The state of the application.</value>
         IApplicationState ApplicationState { get; }
 
         /// <summary>
