@@ -163,7 +163,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var testHost = TestHost.For(this, LoggerFactory).Create(
                 x =>
                 {
-                    x.UseServiceProviderFactory(new DryIocAdapter.DryIocServiceProviderFactory(new Container()))
+                    x.UseServiceProviderFactory(new DryIocServiceProviderFactory(new Container()))
                        .ConfigureContainer<IContainer>(x => x.Register<ServiceA>(Reuse.Singleton))
                         ;
                 }
@@ -179,7 +179,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var testHost = TestHost.For(this, LoggerFactory).Create(
                 x =>
                 {
-                    x.UseServiceProviderFactory(new DryIocAdapter.DryIocServiceProviderFactory(new Container()))
+                    x.UseServiceProviderFactory(new DryIocServiceProviderFactory(new Container()))
                        .ConfigureContainer<IContainer>(x => x.Register<ServiceA>(Reuse.Singleton))
                         ;
                 }
