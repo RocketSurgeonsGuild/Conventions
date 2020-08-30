@@ -240,8 +240,8 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 _typeView = BuildLabelView("Type:", _assemblyView.label);
                 _details.Add(_typeView.label, _typeView.value);
 
-                _conventions.list.SelectedChanged += UpdateConventions;
-                _discovered.list.SelectedChanged += UpdateDetails;
+                _conventions.list.SelectedItemChanged += UpdateConventions;
+                _discovered.list.SelectedItemChanged += UpdateDetails;
                 _scanner = scanner;
             }
 
@@ -252,11 +252,11 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 _definitions = definitions;
                 _conventions.frame.Width = definitions.Max(x => x.Name.Length) + 4;
                 _conventions.list.SetSource(definitions);
-                UpdateConventions();
+                UpdateConventions(null);
                 return this;
             }
 
-            private void UpdateConventions()
+            private void UpdateConventions(ListViewItemEventArgs? listViewItemEventArgs)
             {
                 if (_details.Frame.Width == 0)
                 {
@@ -266,7 +266,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
 
                 if (_conventions.list.Source.Count == 0)
                 {
-                    UpdateDetails();
+                    UpdateDetails(listViewItemEventArgs);
                     return;
                 }
 
@@ -280,10 +280,10 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                    .Select((cod, index) => new ConventionDetails(cod, index))
                    .ToArray();
                 _discovered.list.SetSource(_conventionDetails);
-                UpdateDetails();
+                UpdateDetails(listViewItemEventArgs);
             }
 
-            private void UpdateDetails()
+            private void UpdateDetails(ListViewItemEventArgs? listViewItemEventArgs)
             {
                 if (_discovered.list.Source.Count == 0)
                 {
@@ -372,8 +372,8 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
 
                 Add(_assembly.frame, _conventions.frame, _details);
 
-                _assembly.list.SelectedChanged += UpdateAssembly;
-                _conventions.list.SelectedChanged += UpdateDetails;
+                _assembly.list.SelectedItemChanged += UpdateAssembly;
+                _conventions.list.SelectedItemChanged += UpdateDetails;
             }
 
             public sealed override void Add(View view) => base.Add(view);
@@ -383,7 +383,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 _assemblies = assemblies;
                 _assembly.frame.Width = assemblies.Max(x => x.Name.Length) + 4;
                 _assembly.list.SetSource(assemblies);
-                UpdateAssembly();
+                UpdateAssembly(null);
                 return this;
             }
 
@@ -392,15 +392,15 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 _definitions = definitions;
                 _conventions.frame.Width = definitions.Max(x => x.Name.Length) + 4;
                 _conventions.list.SetSource(definitions);
-                UpdateAssembly();
+                UpdateAssembly(null);
                 return this;
             }
 
-            private void UpdateAssembly()
+            private void UpdateAssembly(ListViewItemEventArgs? listViewItemEventArgs)
             {
                 if (_assembly.list.Source.Count == 0)
                 {
-                    UpdateDetails();
+                    UpdateDetails(listViewItemEventArgs);
                     return;
                 }
 
@@ -416,10 +416,10 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                     )
                    .ToArray();
                 _conventions.list.SetSource(_conventionDetails);
-                UpdateDetails();
+                UpdateDetails(listViewItemEventArgs);
             }
 
-            private void UpdateDetails()
+            private void UpdateDetails(ListViewItemEventArgs? listViewItemEventArgs)
             {
                 if (_conventions.list.Source.Count == 0)
                 {
