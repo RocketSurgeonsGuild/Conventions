@@ -24,31 +24,6 @@ namespace Rocket.Surgery.Conventions
         /// <param name="scanner">The scanner.</param>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
         /// <param name="assemblyProvider">The assembly provider.</param>
-        /// <param name="diagnosticSource">The diagnostic source.</param>
-        /// <param name="serviceProperties">The properties.</param>
-        protected ConventionHostBuilder(
-            IConventionScanner scanner,
-            IAssemblyCandidateFinder assemblyCandidateFinder,
-            IAssemblyProvider assemblyProvider,
-            DiagnosticSource diagnosticSource,
-            IServiceProviderDictionary serviceProperties
-        )
-        {
-            ServiceProperties = serviceProperties ?? new ServiceProviderDictionary();
-
-            Properties[typeof(IConventionScanner)] = scanner;
-            Properties[typeof(IAssemblyProvider)] = assemblyProvider;
-            Properties[typeof(IAssemblyCandidateFinder)] = assemblyCandidateFinder;
-            Properties[typeof(IServiceProviderDictionary)] = serviceProperties;
-            Properties[typeof(ILogger)] = new DiagnosticLogger(diagnosticSource);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConventionHostBuilder{TSelf}" /> class.
-        /// </summary>
-        /// <param name="scanner">The scanner.</param>
-        /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        /// <param name="assemblyProvider">The assembly provider.</param>
         /// <param name="diagnosticLogger">The diagnostic logger.</param>
         /// <param name="serviceProperties">The properties.</param>
         protected ConventionHostBuilder(

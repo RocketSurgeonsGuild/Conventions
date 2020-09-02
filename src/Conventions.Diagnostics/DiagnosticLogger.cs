@@ -5,7 +5,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
-namespace Rocket.Surgery.Conventions
+namespace Rocket.Surgery.Conventions.Diagnostics
 {
     /// <summary>
     /// DiagnosticLogger.

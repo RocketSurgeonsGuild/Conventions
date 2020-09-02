@@ -16,7 +16,7 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="properties"></param>
-        protected ConventionContext(ILogger logger, IDictionary<object, object?> properties)
+        protected ConventionContext(ILogger logger, IDictionary<object, object?>? properties)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             Properties = properties ?? new Dictionary<object, object?>();

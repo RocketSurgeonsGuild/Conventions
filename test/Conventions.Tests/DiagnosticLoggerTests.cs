@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Diagnostics;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
