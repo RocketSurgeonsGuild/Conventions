@@ -134,7 +134,7 @@ namespace Rocket.Surgery.Conventions
             return this;
         }
 
-        private IConventionHostBuilder ConventionHostBuilder => this.GetConventions();
+        private IConventionHostBuilder ConventionHostBuilder => Properties.GetConventions();
 
         [ExcludeFromCodeCoverage]
         public IConventionScanner Scanner => ConventionHostBuilder.Scanner;
@@ -199,7 +199,6 @@ namespace Rocket.Surgery.Conventions
         /// Get a value by type from the context
         /// </summary>
         /// <typeparam name="T">The type of the value</typeparam>
-        /// <param name="context">The context</param>
         /// <param name="value">The value to save</param>
         public TestHostBuilder Set<T>(T value)
         {
@@ -211,7 +210,6 @@ namespace Rocket.Surgery.Conventions
         /// Get a value by type from the context
         /// </summary>
         /// <typeparam name="T">The type of the value</typeparam>
-        /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
         /// <param name="value">The value to save</param>
         public TestHostBuilder Set<T>(string key, T value)

@@ -16,14 +16,14 @@ namespace Rocket.Surgery.Conventions
         /// <typeparam name="T"></typeparam>
         /// <param name="context">The context</param>
         /// <returns>T.</returns>
-        public static T Get<T>([NotNull] this IConventionContext context)
+        public static T? Get<T>([NotNull] this IConventionContext context) where T : class
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return (T)context[typeof(T)]!;
+            return (T?)context[typeof(T)];
         }
 
         /// <summary>
@@ -33,15 +33,14 @@ namespace Rocket.Surgery.Conventions
         /// <param name="context">The context</param>
         /// <param name="key">The key where the value is saved</param>
         /// <returns>T.</returns>
-        [NotNull]
-        public static T Get<T>([NotNull] this IConventionContext context, string key)
+        public static T? Get<T>([NotNull] this IConventionContext context, string key) where T : class
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return (T)context[key]!;
+            return (T?)context[key];
         }
 
         /// <summary>
@@ -158,7 +157,7 @@ namespace Rocket.Surgery.Conventions
         /// Check if this is a test host (to allow conventions to behave differently during unit tests)
         /// </summary>
         /// <param name="context">The context</param>
-        internal static HostType GetHostType(this IConventionContext context)
+        public static HostType GetHostType(this IConventionContext context)
             => context.Properties.TryGetValue(typeof(HostType), out var hostType)
                 ? (HostType)hostType!
                 : HostType.Undefined;

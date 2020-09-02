@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions.CommandLine;
 
 // ReSharper disable once CheckNamespace
@@ -17,10 +16,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="container">The container.</param>
         /// <param name="delegate">The delegate.</param>
         /// <returns>IConventionHostBuilder.</returns>
-        public static IConventionHostBuilder ConfigureCommandLine(
-            [NotNull] this IConventionHostBuilder container,
-            CommandLineConventionDelegate @delegate
-        )
+        public static IConventionHostBuilder ConfigureCommandLine([NotNull] this IConventionHostBuilder container, CommandLineConventionDelegate @delegate)
         {
             if (container == null)
             {

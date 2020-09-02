@@ -13,7 +13,7 @@ namespace Rocket.Surgery.Conventions.CommandLine
         /// Gets the remaining arguments.
         /// </summary>
         /// <value>The remaining arguments.</value>
-        string[] RemainingArguments { get; }
+        string[]? RemainingArguments { get; }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="IApplicationState" /> is verbose.

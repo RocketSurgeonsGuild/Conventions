@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions.Logging;
 
 // ReSharper disable once CheckNamespace

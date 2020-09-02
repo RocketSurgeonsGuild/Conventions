@@ -495,7 +495,7 @@ namespace Rocket.Surgery.Hosting
         /// <returns>RocketHostBuilder.</returns>
         internal static RocketHostBuilder GetOrCreateBuilder(IHostBuilder builder, Type? scannerType = null)
         {
-            var conventionHostBuilder = builder.GetConventions();
+            var conventionHostBuilder = builder.Properties.GetConventions();
             if (conventionHostBuilder is RocketHostBuilder rocketHostBuilder)
             {
                 return rocketHostBuilder;
@@ -509,8 +509,8 @@ namespace Rocket.Surgery.Hosting
                 var serviceProviderDictionary = uninitializedHostBuilder.ServiceProperties;
                 serviceProviderDictionary
                    .Set<ILogger>(logger)
-                   .Set(HostType.Live)
-                   .Set(builder);
+                   .Set(builder)
+                   .Set(HostType.Live);
                 var assemblyCandidateFinder = new DependencyContextAssemblyCandidateFinder(dependencyContext, logger);
                 var assemblyProvider = new DependencyContextAssemblyProvider(dependencyContext, logger);
                 var scanner = ConvertTo(
@@ -527,7 +527,7 @@ namespace Rocket.Surgery.Hosting
                    .ConfigureHostConfiguration(host.CaptureArguments)
                    .ConfigureHostConfiguration(host.ConfigureCli)
                    .ConfigureAppConfiguration(host.ReplaceArguments)
-                   .UseLocalConfiguration(() => serviceProviderDictionary.GetOrAdd(() => new ConfigOptions()))
+                   .ConfigureAppConfiguration((context, configurationBuilder) => configurationBuilder.UseLocalConfiguration(serviceProviderDictionary.GetOrAdd(() => new ConfigOptions()).UseEnvironment(context.HostingEnvironment.EnvironmentName)))
                    .ConfigureAppConfiguration(host.ConfigureAppConfiguration)
                    .ConfigureServices(host.ConfigureServices)
                    .UseServiceProviderFactory(host.DefaultServices);

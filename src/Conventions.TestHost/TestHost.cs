@@ -297,7 +297,7 @@ namespace Rocket.Surgery.Conventions
                     builder.UseAssemblies(_assemblies);
                 }
 
-                builder.Set(HostType.UnitTestHost);
+                builder.Properties[typeof(HostType)] = HostType.UnitTestHost;
                 builder.Set(_logger);
                 builder.Set(_loggerFactory);
 

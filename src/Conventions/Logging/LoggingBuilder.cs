@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 
@@ -32,7 +31,6 @@ namespace Rocket.Surgery.Conventions.Logging
         /// <param name="assemblyProvider">The assembly provider.</param>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
         /// <param name="services">The services.</param>
-        /// <param name="environment">The environment.</param>
         /// <param name="configuration">The configuration.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
         /// <param name="properties">The properties.</param>
@@ -50,13 +48,11 @@ namespace Rocket.Surgery.Conventions.Logging
             IAssemblyProvider assemblyProvider,
             IAssemblyCandidateFinder assemblyCandidateFinder,
             IServiceCollection services,
-            IHostEnvironment environment,
             IConfiguration configuration,
             ILogger diagnosticSource,
             IDictionary<object, object?> properties
         ) : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
         {
-            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
             Services = services ?? throw new ArgumentNullException(nameof(services));
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             Logger = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
@@ -90,12 +86,5 @@ namespace Rocket.Surgery.Conventions.Logging
         /// </summary>
         /// <value>The logger.</value>
         public ILogger Logger { get; }
-
-        /// <summary>
-        /// The environment that this convention is running
-        /// Based on IHostEnvironment / IHostingEnvironment
-        /// </summary>
-        /// <value>The environment.</value>
-        public IHostEnvironment Environment { get; }
     }
 }

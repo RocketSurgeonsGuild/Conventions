@@ -5,6 +5,7 @@ using DryIoc;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
@@ -27,13 +28,14 @@ namespace Rocket.Surgery.Conventions.Tests.DependencyInjection
         {
             var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
             var services = AutoFake.Provide<IServiceCollection>(new ServiceCollection());
+            AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>() { [typeof(IHostEnvironment)] = AutoFake.Resolve<IHostEnvironment>() });
             var servicesBuilder = AutoFake.Resolve<ServicesBuilder>();
 
             servicesBuilder.AssemblyProvider.Should().BeSameAs(assemblyProvider);
             servicesBuilder.AssemblyCandidateFinder.Should().NotBeNull();
             servicesBuilder.Services.Should().BeSameAs(services);
             servicesBuilder.Configuration.Should().NotBeNull();
-            servicesBuilder.Environment.Should().NotBeNull();
+            servicesBuilder.Properties.Should().ContainKey(typeof(IHostEnvironment));
 
             Action a = () => { servicesBuilder.PrependConvention(A.Fake<IServiceConvention>()); };
             a.Should().NotThrow();
