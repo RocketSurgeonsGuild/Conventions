@@ -1,27 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Scanners;
-using Rocket.Surgery.Extensions.Configuration;
-using Rocket.Surgery.Hosting;
 
 #pragma warning disable CA2000
 
-namespace Rocket.Surgery.Conventions
+namespace Rocket.Surgery.Hosting
 {
     /// <summary>
     /// A convention test host builder
@@ -127,7 +122,7 @@ namespace Rocket.Surgery.Conventions
                 ;
         }
 
-        private IServiceProviderDictionary _serviceProperties = new ServiceProviderDictionary();
+        private readonly IServiceProviderDictionary _serviceProperties = new ServiceProviderDictionary();
         private ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
         private ILogger _logger = NullLogger.Instance;
         private IConfiguration? _reuseConfiguration;

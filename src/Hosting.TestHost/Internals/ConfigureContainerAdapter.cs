@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.Hosting;
 
-namespace Rocket.Surgery.Conventions.Internals
+namespace Rocket.Surgery.Hosting.Internals
 {
     internal class ConfigureContainerAdapter<TContainerBuilder> : IConfigureContainerAdapter
     {

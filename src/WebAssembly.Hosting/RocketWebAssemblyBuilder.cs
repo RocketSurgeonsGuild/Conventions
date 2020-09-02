@@ -1,20 +1,20 @@
 using System.Diagnostics;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
-namespace Rocket.Surgery.Hosting
+namespace Rocket.Surgery.WebAssembly.Hosting
 {
     /// <summary>
-    /// Class RocketHostBuilder.
+    /// Class RocketWebAssemblyBuilder.
     /// Implements the <see cref="ConventionHostBuilder{TSelf}" />
     /// </summary>
     /// <seealso cref="ConventionHostBuilder{IConventionHostBuilder}" />
-    internal class RocketHostBuilder : ConventionHostBuilder<RocketHostBuilder>
+    internal class RocketWebAssemblyBuilder : ConventionHostBuilder<RocketWebAssemblyBuilder>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RocketHostBuilder" /> class.
+        /// Initializes a new instance of the <see cref="RocketWebAssemblyBuilder" /> class.
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="scanner">The scanner.</param>
@@ -22,8 +22,8 @@ namespace Rocket.Surgery.Hosting
         /// <param name="assemblyProvider">The assembly provider.</param>
         /// <param name="diagnosticLogger">The diagnostic logger.</param>
         /// <param name="serviceProperties">The service properties.</param>
-        public RocketHostBuilder(
-            IHostBuilder builder,
+        public RocketWebAssemblyBuilder(
+            IWebAssemblyHostBuilder builder,
             IConventionScanner scanner,
             IAssemblyCandidateFinder assemblyCandidateFinder,
             IAssemblyProvider assemblyProvider,
@@ -35,8 +35,8 @@ namespace Rocket.Surgery.Hosting
         /// Withes the specified scanner.
         /// </summary>
         /// <param name="scanner">The scanner.</param>
-        /// <returns>RocketHostBuilder.</returns>
-        internal RocketHostBuilder With(IConventionScanner scanner)
+        /// <returns>RocketWebAssemblyBuilder.</returns>
+        internal RocketWebAssemblyBuilder With(IConventionScanner scanner)
         {
             ServiceProperties.Set(scanner);
             return this;
@@ -46,8 +46,8 @@ namespace Rocket.Surgery.Hosting
         /// Withes the specified assembly candidate finder.
         /// </summary>
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
-        /// <returns>RocketHostBuilder.</returns>
-        internal RocketHostBuilder With(IAssemblyCandidateFinder assemblyCandidateFinder)
+        /// <returns>RocketWebAssemblyBuilder.</returns>
+        internal RocketWebAssemblyBuilder With(IAssemblyCandidateFinder assemblyCandidateFinder)
         {
             ServiceProperties.Set(assemblyCandidateFinder);
             return this;
@@ -57,8 +57,8 @@ namespace Rocket.Surgery.Hosting
         /// Withes the specified assembly provider.
         /// </summary>
         /// <param name="assemblyProvider">The assembly provider.</param>
-        /// <returns>RocketHostBuilder.</returns>
-        internal RocketHostBuilder With(IAssemblyProvider assemblyProvider)
+        /// <returns>RocketWebAssemblyBuilder.</returns>
+        internal RocketWebAssemblyBuilder With(IAssemblyProvider assemblyProvider)
         {
             ServiceProperties.Set(assemblyProvider);
             return this;
@@ -68,8 +68,8 @@ namespace Rocket.Surgery.Hosting
         /// Withes the specified diagnostic source.
         /// </summary>
         /// <param name="diagnosticLogger">The diagnostic logger.</param>
-        /// <returns>RocketHostBuilder.</returns>
-        internal RocketHostBuilder With(ILogger diagnosticLogger)
+        /// <returns>RocketWebAssemblyBuilder.</returns>
+        internal RocketWebAssemblyBuilder With(ILogger diagnosticLogger)
         {
             ServiceProperties.Set(diagnosticLogger);
             return this;
@@ -79,6 +79,6 @@ namespace Rocket.Surgery.Hosting
         /// Gets the builder.
         /// </summary>
         /// <value>The builder.</value>
-        public IHostBuilder Builder => ServiceProperties.Get<IHostBuilder>();
+        public IWebAssemblyHostBuilder Builder => ServiceProperties.Get<IWebAssemblyHostBuilder>()!;
     }
 }

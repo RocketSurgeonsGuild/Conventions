@@ -12,11 +12,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
-using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Hosting;
 
-namespace Rocket.Surgery.Conventions.Internals
+namespace Rocket.Surgery.Hosting.Internals
 {
     public static class TestHostFactory
     {

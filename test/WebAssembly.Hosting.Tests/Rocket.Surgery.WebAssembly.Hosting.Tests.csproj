@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WebAssembly.Hosting.TestHost\Rocket.Surgery.WebAssembly.Hosting.TestHost.csproj" />
+    <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
+  </ItemGroup>
+</Project>

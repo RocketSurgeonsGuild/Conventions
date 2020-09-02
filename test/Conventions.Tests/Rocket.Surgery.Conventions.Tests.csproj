@@ -6,8 +6,9 @@
         <ProjectReference Include="..\..\sample\Sample.DependencyOne\Sample.DependencyOne.csproj" />
         <ProjectReference Include="..\..\sample\Sample.DependencyThree\Sample.DependencyThree.csproj" />
         <ProjectReference Include="..\..\sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj" />
+        <ProjectReference Include="..\..\src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
-        <ProjectReference Include="..\..\src\Conventions.TestHost\Rocket.Surgery.Conventions.TestHost.csproj" />
+        <ProjectReference Include="..\..\src\Hosting.TestHost\Rocket.Surgery.Hosting.TestHost.csproj" />
         <ProjectReference Include="..\..\src\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
         <ProjectReference Include="..\..\src\Configuration.Ini\Rocket.Surgery.Extensions.Configuration.Ini.csproj" />
         <ProjectReference Include="..\..\src\Configuration.Json\Rocket.Surgery.Extensions.Configuration.Json.csproj" />

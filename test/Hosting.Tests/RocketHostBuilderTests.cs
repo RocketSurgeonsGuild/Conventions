@@ -107,20 +107,6 @@ namespace Rocket.Surgery.Hosting.Tests
         }
 
         [Fact]
-        public void Should_UseDiagnosticSource()
-        {
-            var builder = Host.CreateDefaultBuilder()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseDiagnosticSource(new DiagnosticListener("abcd"))
-                       .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
-                );
-
-            var host = builder.Build();
-            host.Services.Should().NotBeNull();
-        }
-
-        [Fact]
         public void Should_UseDependencyContext()
         {
             var builder = Host.CreateDefaultBuilder()

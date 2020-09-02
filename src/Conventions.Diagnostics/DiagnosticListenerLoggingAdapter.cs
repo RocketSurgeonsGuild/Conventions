@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DiagnosticAdapter;
 using Microsoft.Extensions.Logging;
 
-namespace Rocket.Surgery.Conventions
+namespace Rocket.Surgery.Conventions.Diagnostics
 {
     /// <summary>
     /// DiagnosticListenerLoggingAdapter.

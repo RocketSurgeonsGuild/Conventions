@@ -5,10 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Internals;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.Hosting.Internals;
 
-namespace Rocket.Surgery.Conventions
+namespace Rocket.Surgery.Hosting
 {
     /// <summary>
     /// A program initialization utility.

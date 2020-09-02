@@ -9,7 +9,8 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
-        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.TestHost" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Hosting.TestHost" />
+        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.TestHost" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
     </ItemGroup>
 </Project>

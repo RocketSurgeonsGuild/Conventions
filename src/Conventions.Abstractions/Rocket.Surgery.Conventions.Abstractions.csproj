@@ -7,13 +7,16 @@
     <ItemGroup>
         <ProjectReference Include="../Conventions.Attributes/Rocket.Surgery.Conventions.Attributes.csproj" />
         <PackageReference Include="Microsoft.Extensions.Logging" />
-        <PackageReference Include="System.Diagnostics.DiagnosticSource" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Hosting.TestHost" />
+        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
+        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Abstractions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.TestHost" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
-        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.TestHost" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Tests" />
+        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Tests" />
     </ItemGroup>
 </Project>

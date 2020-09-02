@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Rocket.Surgery.Conventions.Internals
+namespace Rocket.Surgery.Hosting.Internals
 {
     internal class ServiceFactoryAdapter<TContainerBuilder> : IServiceFactoryAdapter
     {

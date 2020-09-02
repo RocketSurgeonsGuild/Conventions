@@ -31,7 +31,7 @@ namespace Rocket.Surgery.Conventions.Tests.Logging
             var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
 
             A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
-               .Returns(new[] { typeof(ConventionHostBuilderExtensions).Assembly, typeof(DiagnosticListenerLoggingAdapter).Assembly });
+               .Returns(new[] { typeof(ConventionHostBuilderExtensions).Assembly });
 
             properties[typeof(ILogger)] = Logger;
             var scanner = AutoFake.Resolve<SimpleConventionScanner>();
@@ -39,9 +39,11 @@ namespace Rocket.Surgery.Conventions.Tests.Logging
             var services = new ServiceCollection();
             AutoFake.Provide<IServiceCollection>(services);
 
-            AutoFake.Resolve<HostBuilder>();
+            var builder = AutoFake.Resolve<HostBuilder>();
             var sb = AutoFake.Resolve<ServicesBuilder>();
             sb.Services.AddOptions();
+
+            builder.UseLogging();
 
             var sp = sb.Build();
 
@@ -87,7 +89,7 @@ namespace Rocket.Surgery.Conventions.Tests.Logging
                 IConventionScanner scanner,
                 IAssemblyCandidateFinder assemblyCandidateFinder,
                 IAssemblyProvider assemblyProvider,
-                DiagnosticSource diagnosticSource,
+                ILogger diagnosticSource,
                 IServiceProviderDictionary serviceProperties
             ) : base(scanner, assemblyCandidateFinder, assemblyProvider, diagnosticSource, serviceProperties) { }
         }
