@@ -8,6 +8,33 @@ namespace Rocket.Surgery.Extensions.Configuration
     public class ConfigOptions
     {
         /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public ConfigOptions()
+        {
+
+        }
+
+        /// <summary>
+        /// Default constructor with environment name
+        /// </summary>
+        public ConfigOptions(string environmentName)
+        {
+            EnvironmentName = environmentName;
+        }
+
+        /// <summary>
+        /// Set the expected environment name
+        /// </summary>
+        /// <param name="environmentName"></param>
+        /// <returns></returns>
+        public ConfigOptions UseEnvironment(string environmentName)
+        {
+            EnvironmentName = environmentName;
+            return this;
+        }
+
+        /// <summary>
         /// Add an application configuration
         /// </summary>
         public ConfigOptions AddApplicationConfiguration(ConfigOptionApplicationDelegate @delegate)
@@ -26,6 +53,8 @@ namespace Rocket.Surgery.Extensions.Configuration
             EnvironmentConfiguration.Add(@delegate);
             return this;
         }
+
+        public string? EnvironmentName { get; private set; }
 
         /// <summary>
         /// Additional settings providers to be inserted after the default application settings file (typically appsettings.json)

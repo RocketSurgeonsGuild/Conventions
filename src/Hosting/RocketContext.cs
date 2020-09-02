@@ -37,10 +37,10 @@ namespace Rocket.Surgery.Hosting
         /// <exception cref="ArgumentNullException"></exception>
         public void ComposeHostingConvention([NotNull]IConfigurationBuilder configurationBuilder)
         {
-            var rocketHostBuilder = _hostBuilder.GetConventions();
+            var rocketHostBuilder = _hostBuilder.Properties.GetConventions();
             Composer.Register(
                 rocketHostBuilder.Scanner,
-                new HostingConventionContext(rocketHostBuilder, rocketHostBuilder.Get<IHostBuilder>(), rocketHostBuilder.Get<ILogger>()),
+                new HostingConventionContext(rocketHostBuilder, rocketHostBuilder.Get<IHostBuilder>()!, rocketHostBuilder.Get<ILogger>()!),
                 typeof(IHostingConvention),
                 typeof(HostingConventionDelegate)
             );
@@ -57,12 +57,12 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
 
-            var rocketHostBuilder = _hostBuilder.GetConventions();
+            var rocketHostBuilder = _hostBuilder.Properties.GetConventions();
             var clb = new CommandLineBuilder(
                 rocketHostBuilder.Scanner,
                 rocketHostBuilder.AssemblyProvider,
                 rocketHostBuilder.AssemblyCandidateFinder,
-                rocketHostBuilder.Get<ILogger>(),
+                rocketHostBuilder.Get<ILogger>()!,
                 rocketHostBuilder.ServiceProperties
             );
 
@@ -130,7 +130,9 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
 
-            var rocketHostBuilder = _hostBuilder.GetConventions();
+            var rocketHostBuilder = context.Properties.GetConventions();
+            rocketHostBuilder.ServiceProperties.Set(context.HostingEnvironment);
+
             // Insert after all the normal configuration but before the environment specific configuration
 
             IConfigurationSource? source = null;
@@ -158,12 +160,11 @@ namespace Rocket.Surgery.Hosting
 
             var cb = new ConfigBuilder(
                 rocketHostBuilder.Scanner,
-                context.HostingEnvironment,
                 new ConfigurationBuilder()
                    .AddConfiguration(context.Configuration, false)
                    .AddConfiguration(configurationBuilder.Build(), true)
                    .Build(),
-                rocketHostBuilder.Get<ILogger>(),
+                rocketHostBuilder.Get<ILogger>()!,
                 rocketHostBuilder.ServiceProperties
             );
 
@@ -194,7 +195,7 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(services));
             }
 
-            var rocketHostBuilder = _hostBuilder.GetConventions();
+            var rocketHostBuilder = _hostBuilder.Properties.GetConventions();
             services.AddSingleton(rocketHostBuilder.AssemblyCandidateFinder);
             services.AddSingleton(rocketHostBuilder.AssemblyProvider);
             services.AddSingleton(rocketHostBuilder.Scanner);
@@ -205,7 +206,6 @@ namespace Rocket.Surgery.Hosting
         /// Defaults the services.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <param name="services">The services.</param>
         public IServiceProviderFactory<IServicesBuilder> DefaultServices([NotNull] HostBuilderContext context)
         {
             if (context == null)
@@ -213,7 +213,7 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var conventionalBuilder = _hostBuilder.GetConventions();
+            var conventionalBuilder = _hostBuilder.Properties.GetConventions();
             return new ServicesBuilderServiceProviderFactory(
                 collection =>
                     new ServicesBuilder(
@@ -222,8 +222,7 @@ namespace Rocket.Surgery.Hosting
                         conventionalBuilder.AssemblyCandidateFinder,
                         collection,
                         context.Configuration,
-                        context.HostingEnvironment,
-                        conventionalBuilder.Get<ILogger>(),
+                        conventionalBuilder.Get<ILogger>()!,
                         conventionalBuilder.ServiceProperties
                     )
             );

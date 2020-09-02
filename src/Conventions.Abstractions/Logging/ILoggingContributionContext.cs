@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Logging
@@ -31,12 +30,5 @@ namespace Rocket.Surgery.Conventions.Logging
         /// </summary>
         /// <value>The configuration.</value>
         [NotNull] IConfiguration Configuration { get; }
-
-        /// <summary>
-        /// The environment that this convention is running
-        /// Based on IHostEnvironment / IHostingEnvironment
-        /// </summary>
-        /// <value>The environment.</value>
-        [NotNull] IHostEnvironment Environment { get; }
     }
 }

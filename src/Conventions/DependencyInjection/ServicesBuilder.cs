@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 
@@ -34,7 +33,6 @@ namespace Rocket.Surgery.Conventions.DependencyInjection
         /// <param name="assemblyCandidateFinder">The assembly candidate finder.</param>
         /// <param name="services">The services.</param>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="environment">The environment.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
         /// <param name="properties">The properties.</param>
         /// <exception cref="ArgumentNullException">
@@ -52,28 +50,16 @@ namespace Rocket.Surgery.Conventions.DependencyInjection
             IAssemblyCandidateFinder assemblyCandidateFinder,
             IServiceCollection services,
             IConfiguration configuration,
-            IHostEnvironment environment,
             ILogger diagnosticSource,
             IDictionary<object, object?> properties
         )
             : base(scanner, assemblyProvider, assemblyCandidateFinder, properties)
         {
-            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             Services = services ?? throw new ArgumentNullException(nameof(services));
             Logger = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
             _onBuild = new ServiceProviderObservable(Logger);
-            ServiceProviderOptions = new ServiceProviderOptions
-            {
-                ValidateScopes = environment.IsDevelopment()
-            };
         }
-
-        /// <summary>
-        /// Gets the service provider options.
-        /// </summary>
-        /// <value>The service provider options.</value>
-        public ServiceProviderOptions ServiceProviderOptions { get; }
 
         /// <summary>
         /// Builds the root container, and returns the lifetime scopes for the application and system containers
@@ -83,7 +69,7 @@ namespace Rocket.Surgery.Conventions.DependencyInjection
         {
             Composer.Register(Scanner, this, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
 
-            var result = Services.BuildServiceProvider(ServiceProviderOptions);
+            var result = Services.BuildServiceProvider(this.Get<ServiceProviderOptions>() ?? new ServiceProviderOptions());
             _onBuild.Send(result);
             return result;
         }
@@ -111,12 +97,5 @@ namespace Rocket.Surgery.Conventions.DependencyInjection
         /// </summary>
         /// <value>The on build.</value>
         public IObservable<IServiceProvider> OnBuild => _onBuild;
-
-        /// <summary>
-        /// The environment that this convention is running
-        /// Based on IHostEnvironment / IHostingEnvironment
-        /// </summary>
-        /// <value>The environment.</value>
-        public IHostEnvironment Environment { get; }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions.Configuration
@@ -30,7 +29,6 @@ namespace Rocket.Surgery.Conventions.Configuration
         /// Initializes a new instance of the <see cref="ConfigBuilder" /> class.
         /// </summary>
         /// <param name="scanner">The scanner.</param>
-        /// <param name="environment">The environment.</param>
         /// <param name="configuration">The configuration.</param>
         /// <param name="diagnosticSource">The diagnostic source.</param>
         /// <param name="properties">The properties.</param>
@@ -45,22 +43,14 @@ namespace Rocket.Surgery.Conventions.Configuration
         /// </exception>
         public ConfigBuilder(
             IConventionScanner scanner,
-            IHostEnvironment environment,
             IConfiguration configuration,
             ILogger diagnosticSource,
             IDictionary<object, object?> properties
         ) : base(scanner, properties)
         {
-            Environment = environment;
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             Logger = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
         }
-
-        /// <summary>
-        /// Gets the environment.
-        /// </summary>
-        /// <value>The environment.</value>
-        public IHostEnvironment Environment { get; }
 
         /// <summary>
         /// Gets the configuration.

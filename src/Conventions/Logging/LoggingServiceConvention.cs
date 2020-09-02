@@ -58,11 +58,10 @@ namespace Rocket.Surgery.Conventions.Logging
             }
 
             var loggingBuilder = new LoggingBuilder(
-                context.Get<IConventionScanner>(),
+                context.Get<IConventionScanner>()!,
                 context.AssemblyProvider,
                 context.AssemblyCandidateFinder,
                 context.Services,
-                context.Environment,
                 context.Configuration,
                 context.Logger,
                 context.Properties

@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.DependencyInjection
@@ -43,12 +42,5 @@ namespace Rocket.Surgery.Conventions.DependencyInjection
         /// </summary>
         /// <value>The on build.</value>
         [NotNull] IObservable<IServiceProvider> OnBuild { get; }
-
-        /// <summary>
-        /// The environment that this convention is running
-        /// Based on IHostEnvironment / IHostingEnvironment
-        /// </summary>
-        /// <value>The environment.</value>
-        [NotNull] IHostEnvironment Environment { get; }
     }
 }

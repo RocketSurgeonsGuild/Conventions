@@ -38,7 +38,6 @@ namespace Rocket.Surgery.Conventions.Internals
                 testHostBuilder.AssemblyCandidateFinder,
                 serviceCollection,
                 hostBuilderContext.Configuration,
-                hostBuilderContext.HostingEnvironment,
                 testHostBuilder.DiagnosticLogger,
                 testHostBuilder.Properties
             );
