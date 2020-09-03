@@ -3,6 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.DependencyInjection;
 
@@ -11,33 +12,40 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 namespace Rocket.Surgery.Hosting
 {
     /// <summary>
-    /// Class ServicesBuilderServiceProviderFactory.
+    /// Class ServicesBuilderProviderFactory.
     /// Implements the <see cref="IServiceProviderFactory{IServicesBuilder}" />
     /// </summary>
     /// <seealso cref="IServiceProviderFactory{IServicesBuilder}" />
-    public class ServicesBuilderServiceProviderFactory : IServiceProviderFactory<IServicesBuilder>
+    public class ServicesBuilderProviderFactory : HostServiceProviderFactory<IServicesBuilder>
     {
-        private readonly Func<IServiceCollection, IServicesBuilder> _func;
+        private readonly IHostBuilder _hostBuilder;
+        private readonly Func<IConventionHostBuilder, IServiceCollection, IServicesBuilder> _func;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServicesBuilderServiceProviderFactory" /> class.
+        /// Initializes a new instance of the <see cref="ServicesBuilderProviderFactory" /> class.
         /// </summary>
+        /// <param name="hostBuilder"></param>
         /// <param name="func">The function.</param>
-        public ServicesBuilderServiceProviderFactory(Func<IServiceCollection, IServicesBuilder> func) => _func = func;
+        public ServicesBuilderProviderFactory(IHostBuilder hostBuilder, Func<IConventionHostBuilder, IServiceCollection, IServicesBuilder> func) : base(hostBuilder)
+        {
+            _hostBuilder = hostBuilder;
+            _func = func;
+        }
 
         /// <summary>
         /// Creates a container builder from an <see cref="IServiceCollection" />.
         /// </summary>
+        /// <param name="hostBuilder"></param>
         /// <param name="services">The collection of services</param>
         /// <returns>A container builder that can be used to create an <see cref="IServiceProvider" />.</returns>
-        public IServicesBuilder CreateBuilder(IServiceCollection services) => _func(services);
+        protected override IServicesBuilder CreateServiceBuilder(IConventionHostBuilder hostBuilder, IServiceCollection services) => _func(hostBuilder, services);
 
         /// <summary>
         /// Creates the service provider.
         /// </summary>
         /// <param name="containerBuilder">The container builder.</param>
         /// <returns>IServiceProvider.</returns>
-        public IServiceProvider CreateServiceProvider([NotNull] IServicesBuilder containerBuilder)
+        public override IServiceProvider CreateServiceProvider([NotNull] IServicesBuilder containerBuilder)
         {
             if (containerBuilder == null)
             {

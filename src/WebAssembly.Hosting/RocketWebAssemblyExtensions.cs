@@ -549,7 +549,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting
                     scannerType ?? typeof(SimpleConventionScanner)
                 );
 
-                builder.ConfigureContainer(new ServicesBuilderServiceProviderFactory(
+                builder.ConfigureContainer(new WebAssemblyServicesBuilderProviderFactory(
                     builder,
                     (hostBuilder, collection) => new ServicesBuilder(
                         hostBuilder.Scanner,

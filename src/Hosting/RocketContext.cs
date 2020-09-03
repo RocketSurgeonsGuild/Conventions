@@ -213,9 +213,9 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var conventionalBuilder = _hostBuilder.Properties.GetConventions();
-            return new ServicesBuilderServiceProviderFactory(
-                collection =>
+            return new ServicesBuilderProviderFactory(
+                _hostBuilder,
+                (conventionalBuilder, collection) =>
                     new ServicesBuilder(
                         conventionalBuilder.Scanner,
                         conventionalBuilder.AssemblyProvider,
