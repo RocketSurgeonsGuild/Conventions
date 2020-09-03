@@ -7,12 +7,20 @@ using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.WebAssembly.Hosting
 {
+    /// <summary>
+    /// A generic web assembly host service provider that includes the convention host builder
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [PublicAPI]
-    public abstract class WebAssemblyServiceProviderFactory<T> : IServiceProviderFactory<T>
+    public abstract class WebAssemblyHostServiceProviderFactory<T> : IServiceProviderFactory<T>
     {
         private readonly IWebAssemblyHostBuilder _webAssemblyHostBuilder;
 
-        protected WebAssemblyServiceProviderFactory(IWebAssemblyHostBuilder webAssemblyHostBuilder) => _webAssemblyHostBuilder = webAssemblyHostBuilder;
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="webAssemblyHostBuilder"></param>
+        protected WebAssemblyHostServiceProviderFactory(IWebAssemblyHostBuilder webAssemblyHostBuilder) => _webAssemblyHostBuilder = webAssemblyHostBuilder;
 
         private void ConfigureHost(IWebAssemblyHostBuilder webAssemblyHostBuilder)
         {
@@ -22,8 +30,15 @@ namespace Rocket.Surgery.WebAssembly.Hosting
             context.ConfigureServices();
         }
 
+        /// <summary>
+        /// Create the service builder using the provided values
+        /// </summary>
+        /// <param name="hostBuilder"></param>
+        /// <param name="services"></param>
+        /// <returns></returns>
         protected abstract T CreateServiceBuilder(IConventionHostBuilder hostBuilder, IServiceCollection services);
 
+        /// <inheritdoc />
         public T CreateBuilder(IServiceCollection services)
         {
             ConfigureHost(_webAssemblyHostBuilder);
@@ -32,6 +47,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting
             return CreateServiceBuilder(conventionHostBuilder, services);
         }
 
+        /// <inheritdoc />
         public abstract IServiceProvider CreateServiceProvider(T containerBuilder);
     }
 }

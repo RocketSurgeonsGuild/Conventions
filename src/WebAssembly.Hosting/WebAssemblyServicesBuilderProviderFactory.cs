@@ -10,21 +10,21 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 namespace Rocket.Surgery.WebAssembly.Hosting
 {
     /// <summary>
-    /// Class ServicesBuilderServiceProviderFactory.
+    /// Class WebAssemblyServicesBuilderProviderFactory.
     /// Implements the <see cref="IServiceProviderFactory{IServicesBuilder}" />
     /// </summary>
     /// <seealso cref="IServiceProviderFactory{IServicesBuilder}" />
-    public class ServicesBuilderServiceProviderFactory : WebAssemblyServiceProviderFactory<IServicesBuilder>
+    public class WebAssemblyServicesBuilderProviderFactory : WebAssemblyHostServiceProviderFactory<IServicesBuilder>
     {
         private readonly IWebAssemblyHostBuilder _webAssemblyHostBuilder;
         private readonly Func<IConventionHostBuilder, IServiceCollection, IServicesBuilder> _func;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServicesBuilderServiceProviderFactory" /> class.
+        /// Initializes a new instance of the <see cref="WebAssemblyServicesBuilderProviderFactory" /> class.
         /// </summary>
         /// <param name="webAssemblyHostBuilder"></param>
         /// <param name="func">The function.</param>
-        public ServicesBuilderServiceProviderFactory(IWebAssemblyHostBuilder webAssemblyHostBuilder, Func<IConventionHostBuilder, IServiceCollection, IServicesBuilder> func)
+        public WebAssemblyServicesBuilderProviderFactory(IWebAssemblyHostBuilder webAssemblyHostBuilder, Func<IConventionHostBuilder, IServiceCollection, IServicesBuilder> func)
             : base(webAssemblyHostBuilder)
         {
             _webAssemblyHostBuilder = webAssemblyHostBuilder;
@@ -34,10 +34,10 @@ namespace Rocket.Surgery.WebAssembly.Hosting
         /// <summary>
         /// Creates a container builder from an <see cref="IServiceCollection" />.
         /// </summary>
-        /// <param name="webAssemblyHostBuilder"></param>
+        /// <param name="hostBuilder"></param>
         /// <param name="services">The collection of services</param>
         /// <returns>A container builder that can be used to create an <see cref="IServiceProvider" />.</returns>
-        protected override IServicesBuilder CreateServiceBuilder(IConventionHostBuilder webAssemblyHostBuilder, IServiceCollection services) => _func(webAssemblyHostBuilder, services);
+        protected override IServicesBuilder CreateServiceBuilder(IConventionHostBuilder hostBuilder, IServiceCollection services) => _func(hostBuilder, services);
 
         /// <summary>
         /// Creates the service provider.
