@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Conventions.Logging;
 
 namespace Rocket.Surgery.WebAssembly.Hosting
 {
@@ -27,20 +28,6 @@ namespace Rocket.Surgery.WebAssembly.Hosting
         /// </summary>
         /// <param name="hostBuilder">The host builder.</param>
         public RocketWebAssemblyContext(IWebAssemblyHostBuilder hostBuilder) => _hostBuilder = hostBuilder;
-
-        /// <summary>
-        /// Construct and compose hosting conventions
-        /// </summary>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void ComposeWebAssemblyHostingConvention()
-        {
-            Composer.Register(
-                ConventionHostBuilder.Scanner,
-                new WebAssemblyHostingConventionContext(ConventionHostBuilder, ConventionHostBuilder.Get<IWebAssemblyHostBuilder>()!, ConventionHostBuilder.Get<ILogger>()!),
-                typeof(IWebAssemblyHostingConvention),
-                typeof(WebAssemblyHostingConventionDelegate)
-            );
-        }
 
         /// <summary>
         /// Configures the application configuration.
@@ -71,6 +58,19 @@ namespace Rocket.Surgery.WebAssembly.Hosting
             _hostBuilder.Services.AddSingleton(ConventionHostBuilder.AssemblyCandidateFinder);
             _hostBuilder.Services.AddSingleton(ConventionHostBuilder.AssemblyProvider);
             _hostBuilder.Services.AddSingleton(ConventionHostBuilder.Scanner);
+
+            Composer.Register<ILoggingConventionContext, ILoggingConvention, LoggingConventionDelegate>(
+                ConventionHostBuilder.Scanner,
+                new LoggingBuilder(
+                    ConventionHostBuilder.Scanner,
+                    ConventionHostBuilder.AssemblyProvider,
+                    ConventionHostBuilder.AssemblyCandidateFinder,
+                    _hostBuilder.Services,
+                    _hostBuilder.Configuration,
+                    ConventionHostBuilder.DiagnosticLogger,
+                    ConventionHostBuilder.ServiceProperties
+                )
+            );
         }
     }
 }

@@ -17,7 +17,6 @@ namespace Rocket.Surgery.WebAssembly.Hosting
         private void ConfigureHost(IWebAssemblyHostBuilder webAssemblyHostBuilder)
         {
             var context = new RocketWebAssemblyContext(webAssemblyHostBuilder);
-            context.ComposeWebAssemblyHostingConvention();
             context.ConfigureAppConfiguration();
             context.ConfigureServices();
         }
