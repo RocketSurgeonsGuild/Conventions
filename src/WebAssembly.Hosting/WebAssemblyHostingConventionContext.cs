@@ -7,7 +7,7 @@ using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.WebAssembly.Hosting
 {
-    internal class WebAssemblyHostingConventionContext : ConventionContext, IWebAssemblyHostingConventionContext
+    internal class WebAssemblyHostingConventionContext : ConventionContext
     {
         private readonly IConventionHostBuilder _builder;
         private readonly IWebAssemblyHostBuilder _hostBuilder;

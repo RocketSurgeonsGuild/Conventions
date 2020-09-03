@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Conventions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.WebAssembly.Hosting;
@@ -255,31 +257,37 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Calls_Hosting_Conventions_When_Provided_Configuration()
         {
-            var handler = A.Fake<WebAssemblyHostingConventionDelegate>();
+            var handler = A.Fake<ServiceConventionDelegate>();
+            var handler2 = A.Fake<LoggingConventionDelegate>();
             var host = TestWebAssemblyHost.For(this, LoggerFactory)
                .WithConfiguration(AutoFake.Resolve<IConfiguration>())
                .Create()
-               .ConfigureHosting(handler)
+               .ConfigureServices(handler)
+               .ConfigureLogging(handler2)
                .Get<IWebAssemblyHostBuilder>();
 
             var a = host.Build();
             A.CallTo(handler).MustHaveHappenedOnceExactly();
+            A.CallTo(handler2).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
         public void Calls_Hosting_Conventions_When_Sharing_Configuration()
         {
-            var handler = A.Fake<WebAssemblyHostingConventionDelegate>();
+            var handler = A.Fake<ServiceConventionDelegate>();
+            var handler2 = A.Fake<LoggingConventionDelegate>();
             var host = TestWebAssemblyHost.For(this, LoggerFactory)
                .ShareConfiguration(typeof(ConventionTestWebAssemblyHostTests))
                .Create()
-               .ConfigureHosting(handler)
+               .ConfigureServices(handler)
+               .ConfigureLogging(handler2)
                .Get<IWebAssemblyHostBuilder>();
 
             var a = host.Build();
             var b = host.Build();
-            
+
             A.CallTo(handler).MustHaveHappenedTwiceExactly();
+            A.CallTo(handler2).MustHaveHappenedTwiceExactly();
         }
 
         public ConventionTestWebAssemblyHostTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information) { }

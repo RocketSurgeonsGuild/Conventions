@@ -1,20 +1,10 @@
-﻿using System;
-using System.Linq;
+using System;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.WebAssembly.Hosting
 {
-    /// <summary>
-    /// IWebAssemblyHostingConvention
-    /// Implements the <see cref="IConvention{TContext}" />
-    /// </summary>
-    /// <seealso cref="IConvention{IWebAssemblyHostingConventionContext}" />
-    public interface IWebAssemblyHostingConvention : IConvention<IWebAssemblyHostingConventionContext> { }
-
     /// <summary>
     /// The default blazor web assembly host build does not allow construction in non-blazor like environments.
     /// </summary>
@@ -72,21 +62,5 @@ namespace Rocket.Surgery.WebAssembly.Hosting
         /// </summary>
         /// <returns>A <see cref="WebAssemblyHost"/> object.</returns>
         WebAssemblyHost Build();
-    }
-
-    internal class WrappedWebAssemblyHostBuilder : IWebAssemblyHostBuilder
-    {
-        private readonly WebAssemblyHostBuilder _webAssemblyHostBuilder;
-        public WrappedWebAssemblyHostBuilder(WebAssemblyHostBuilder webAssemblyHostBuilder) => _webAssemblyHostBuilder = webAssemblyHostBuilder;
-
-        public WebAssemblyHostConfiguration Configuration => _webAssemblyHostBuilder.Configuration;
-        public RootComponentMappingCollection RootComponents => _webAssemblyHostBuilder.RootComponents;
-        public IServiceCollection Services => _webAssemblyHostBuilder.Services;
-        public IWebAssemblyHostEnvironment HostEnvironment => _webAssemblyHostBuilder.HostEnvironment;
-        public ILoggingBuilder Logging => _webAssemblyHostBuilder.Logging;
-        public void ConfigureContainer<TBuilder>(IServiceProviderFactory<TBuilder> factory, Action<TBuilder>? configure = null)
-            => _webAssemblyHostBuilder.ConfigureContainer(factory, configure!);
-        public WebAssemblyHost Build() => _webAssemblyHostBuilder.Build();
-        internal WebAssemblyHostBuilder WebAssemblyHostBuilder => _webAssemblyHostBuilder;
     }
 }
