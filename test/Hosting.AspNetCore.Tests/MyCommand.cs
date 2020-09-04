@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests
@@ -25,6 +27,6 @@ namespace Rocket.Surgery.Hosting.AspNetCore.Tests
     {
         public void Configure(IApplicationBuilder builder) { }
 
-        public void Register(IServiceConventionContext context) => context.Services.AddSingleton(new object());
+        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) => services.AddSingleton(new object());
     }
 }

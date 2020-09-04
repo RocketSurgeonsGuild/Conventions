@@ -17,97 +17,42 @@ using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.WebAssembly.Hosting;
 using Xunit;
 using Xunit.Abstractions;
-using IConventionScanner = Rocket.Surgery.Conventions.IConventionScanner;
 
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests
 {
     public class ConventionTestWebAssemblyHostTests : AutoFakeTest
     {
         [Fact]
-        public void Builder_Should_Create_Host()
+        public void Builder_Should_Create_Host_ByAssemblies()
         {
-            Action a = () => TestWebAssemblyHost.For(this, LoggerFactory)
-               .Create();
-            a.Should().NotThrow();
-        }
-
-
-        [Fact]
-        public void Builder_Should_Create_With_Delegate()
-        {
-            Action a = () => TestWebAssemblyHost.For(this, LoggerFactory)
-               .Create(builder => { });
-            a.Should().NotThrow();
-        }
-
-        [Fact]
-        public void Builder_Should_Create_Host_ByType()
-        {
-            Action a = () => TestWebAssemblyHost.For(GetType(), LoggerFactory)
+            Action a = () => TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .Create();
             a.Should().NotThrow();
         }
 
         [Fact]
-        public void Builder_Should_Create_Host_ByAssembly()
+        public void Builder_Should_Build_Host_ByAppDomain()
         {
-            Action a = () => TestWebAssemblyHost.For(GetType().Assembly, LoggerFactory)
-               .Create();
-            a.Should().NotThrow();
-        }
-
-        [Fact]
-        public void Builder_Should_Build_Host()
-        {
-            Action a = () => TestWebAssemblyHost.For(this, LoggerFactory)
+            Action a = () => TestWebAssemblyHost.For(AppDomain.CurrentDomain, LoggerFactory)
                .Create()
                .Build();
             a.Should().NotThrow();
         }
 
         [Fact]
-        public void Builder_Should_Use_A_Custom_IConventionScanner()
-        {
-            var builder = TestWebAssemblyHost.For(this, LoggerFactory)
-               .Create(x => { x.UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>()); });
-
-            builder.Scanner.Should().BeSameAs(AutoFake.Resolve<IConventionScanner>());
-        }
-
-        [Fact]
-        public void Builder_Should_Use_A_Custom_IAssemblyCandidateFinder()
-        {
-            var builder = TestWebAssemblyHost.For(this, LoggerFactory)
-               .Create(x => { x.UseAssemblyCandidateFinder(AutoFake.Resolve<IAssemblyCandidateFinder>()); });
-
-            builder.AssemblyCandidateFinder.Should().BeSameAs(AutoFake.Resolve<IAssemblyCandidateFinder>());
-        }
-
-        [Fact]
-        public void Builder_Should_Use_A_Custom_IAssemblyProvider()
-        {
-            var builder = TestWebAssemblyHost.For(this, LoggerFactory)
-               .Create(
-                    x => { x.UseAssemblyProvider(AutoFake.Resolve<IAssemblyProvider>()); }
-                );
-
-            builder.AssemblyProvider.Should().BeSameAs(AutoFake.Resolve<IAssemblyProvider>());
-        }
-
-        [Fact]
         public void Builder_Should_Use_A_Custom_DiagnosticSource()
         {
-            var builder = TestWebAssemblyHost.For(this, LoggerFactory)
+            var builder = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .WithLogger(Logger)
                .Create();
 
-            builder.DiagnosticLogger.Should().BeSameAs(Logger);
+            builder.Logger.Should().BeSameAs(Logger);
         }
 
         [Fact]
         public void Builder_Should_Use_A_Custom_ILogger()
         {
-            Action a = () => TestWebAssemblyHost.For(this, LoggerFactory)
+            Action a = () => TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .WithLogger(AutoFake.Resolve<ILogger>())
                .Create();
             a.Should().NotThrow();
@@ -116,28 +61,28 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Builder_Should_Scan_For_Conventions_When_Desired()
         {
-            var host = TestWebAssemblyHost.For(this, LoggerFactory)
+            var host = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .IncludeConventions()
                .Create();
 
-            host.Scanner.BuildProvider().GetAll().Should().NotBeEmpty();
+            host.Conventions.GetAll().Should().NotBeEmpty();
         }
 
         [Fact]
         public void Builder_Should_Not_Scan_For_Conventions()
         {
-            var host = TestWebAssemblyHost.For(this, LoggerFactory)
+            var host = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .ExcludeConventions()
                .Create();
 
-            host.Scanner.BuildProvider().GetAll().Should().BeEmpty();
+            host.Conventions.GetAll().Should().BeEmpty();
         }
 
         [Fact]
         public void Builder_Should_Build()
         {
-            var testWebAssemblyHost = TestWebAssemblyHost.For(this, LoggerFactory).Create(
-                x => { x.Services.AddSingleton<ServiceA>(); }
+            var testWebAssemblyHost = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory).Create(
+                x => { x.ConfigureServices((context, configuration, services) => services.AddSingleton<ServiceA>()); }
             );
 
             var host = testWebAssemblyHost.Build();
@@ -147,8 +92,8 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Builder_Should_Populate_Services()
         {
-            var testWebAssemblyHost = TestWebAssemblyHost.For(this, LoggerFactory).Create(
-                x => { x.Services.AddSingleton<ServiceA>(); }
+            var testWebAssemblyHost = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory).Create(
+                x => { x.ConfigureServices((context, configuration, services) => services.AddSingleton<ServiceA>()); }
             );
 
             Populate(testWebAssemblyHost.Parse());
@@ -158,9 +103,8 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Builder_Should_Populate_Container()
         {
-            var testWebAssemblyHost = TestWebAssemblyHost.For(this, LoggerFactory).Create(
-                x => x.ConfigureContainer(new DryIocServiceProviderFactory(new Container()),
-                    x => x.Register<ServiceA>(Reuse.Singleton))
+            var testWebAssemblyHost = TestWebAssemblyHost.For(new[] { GetType().Assembly }, LoggerFactory).Create().Configure(
+                x => x.ConfigureContainer(new DryIocServiceProviderFactory(new Container()), x => x.Register<ServiceA>(Reuse.Singleton))
             );
 
             Populate(testWebAssemblyHost.Parse<IContainer>());
@@ -170,13 +114,8 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Builder_Should_Build_As_Many_Times_As_We_Want()
         {
-            var testWebAssemblyHost = TestWebAssemblyHost.For(this, LoggerFactory).Create(
-                x =>
-                {
-                    x.ConfigureContainer(new DryIocServiceProviderFactory(new Container()),
-                            x => x.Register<ServiceA>(Reuse.Singleton))
-                        ;
-                }
+            var testWebAssemblyHost = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory).Create().Configure(
+                x => x.ConfigureContainer(new DryIocServiceProviderFactory(new Container()), x => x.Register<ServiceA>(Reuse.Singleton))
             );
 
             Populate(testWebAssemblyHost.Parse<IContainer>());
@@ -202,7 +141,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         public void Builder_Should_Share_Configuration()
         {
             var configurationFake = A.Fake<IConfiguration>();
-            var host = TestWebAssemblyHost.For(this, LoggerFactory)
+            var host = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .WithConfiguration(configurationFake)
                .Create();
 
@@ -219,10 +158,10 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [InlineData(1234)]
         public void Builder_Should_Reuse_Configuration(object key)
         {
-            var host = TestWebAssemblyHost.For(this, LoggerFactory)
+            var host = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .ShareConfiguration(key)
                .Create();
-            var host2 = TestWebAssemblyHost.For(this, LoggerFactory)
+            var host2 = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .ShareConfiguration(key)
                .Create();
 
@@ -238,10 +177,10 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Builder_Should_Not_Reuse_Configuration_Across_Keys()
         {
-            var host = TestWebAssemblyHost.For(this, LoggerFactory)
+            var host = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .ShareConfiguration(typeof(ConventionTestWebAssemblyHostTests))
                .Create();
-            var host2 = TestWebAssemblyHost.For(this, LoggerFactory)
+            var host2 = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .ShareConfiguration("stringkey")
                .Create();
 
@@ -257,14 +196,15 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Calls_Hosting_Conventions_When_Provided_Configuration()
         {
-            var handler = A.Fake<ServiceConventionDelegate>();
-            var handler2 = A.Fake<LoggingConventionDelegate>();
-            var host = TestWebAssemblyHost.For(this, LoggerFactory)
+            var handler = A.Fake<ServiceConvention>();
+            var handler2 = A.Fake<LoggingConvention>();
+            var host = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .WithConfiguration(AutoFake.Resolve<IConfiguration>())
-               .Create()
-               .ConfigureServices(handler)
+               .Create(x => x
+                   .ConfigureServices(handler)
                .ConfigureLogging(handler2)
-               .Get<IWebAssemblyHostBuilder>();
+                   .ConfigureLogging(handler2)
+                );
 
             var a = host.Build();
             A.CallTo(handler).MustHaveHappenedOnceExactly();
@@ -274,14 +214,15 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Calls_Hosting_Conventions_When_Sharing_Configuration()
         {
-            var handler = A.Fake<ServiceConventionDelegate>();
-            var handler2 = A.Fake<LoggingConventionDelegate>();
-            var host = TestWebAssemblyHost.For(this, LoggerFactory)
+            var handler = A.Fake<ServiceConvention>();
+            var handler2 = A.Fake<LoggingConvention>();
+            var host = TestWebAssemblyHost.For(new [] { GetType().Assembly }, LoggerFactory)
                .ShareConfiguration(typeof(ConventionTestWebAssemblyHostTests))
-               .Create()
-               .ConfigureServices(handler)
+               .Create(x => x
+                   .ConfigureServices(handler)
                .ConfigureLogging(handler2)
-               .Get<IWebAssemblyHostBuilder>();
+                   .ConfigureLogging(handler2)
+                );
 
             var a = host.Build();
             var b = host.Build();

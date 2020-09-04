@@ -12,6 +12,8 @@ using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using JetBrains.Annotations;
+using McMaster.Extensions.CommandLineUtils;
+using Rocket.Surgery.Extensions.Configuration;
 
 namespace Rocket.Surgery.Hosting
 {
@@ -21,6 +23,8 @@ namespace Rocket.Surgery.Hosting
     internal class RocketContext
     {
         private readonly IHostBuilder _hostBuilder;
+        private Func<IConventionContext> getContext;
+
         private string[]? _args;
         private ICommandLineExecutor? _exec;
 
@@ -28,22 +32,37 @@ namespace Rocket.Surgery.Hosting
         /// Initializes a new instance of the <see cref="RocketContext" /> class.
         /// </summary>
         /// <param name="hostBuilder">The host builder.</param>
-        public RocketContext(IHostBuilder hostBuilder) => _hostBuilder = hostBuilder;
+        /// <param name="conventionContextBuilder"></param>
+        public RocketContext(IHostBuilder hostBuilder, ConventionContextBuilder conventionContextBuilder)
+        {
+            _hostBuilder = hostBuilder;
+            IConventionContext? context = null;
+            getContext = () =>
+            {
+                context ??= ConventionContext.From(conventionContextBuilder);
+                return context;
+            };
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RocketContext" /> class.
+        /// </summary>
+        /// <param name="hostBuilder">The host builder.</param>
+        /// <param name="context"></param>
+        public RocketContext(IHostBuilder hostBuilder, IConventionContext context)
+        {
+            _hostBuilder = hostBuilder;
+            getContext = () => context;
+        }
 
         /// <summary>
         /// Construct and compose hosting conventions
         /// </summary>
         /// <param name="configurationBuilder"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void ComposeHostingConvention([NotNull]IConfigurationBuilder configurationBuilder)
+        public void ComposeHostingConvention([NotNull] IConfigurationBuilder configurationBuilder)
         {
-            var rocketHostBuilder = _hostBuilder.Properties.GetConventions();
-            Composer.Register(
-                rocketHostBuilder.Scanner,
-                new HostingConventionContext(rocketHostBuilder, rocketHostBuilder.Get<IHostBuilder>()!, rocketHostBuilder.Get<ILogger>()!),
-                typeof(IHostingConvention),
-                typeof(HostingConventionDelegate)
-            );
+            _hostBuilder.ApplyConventions(getContext());
         }
 
         /// <summary>
@@ -57,19 +76,10 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
 
-            var rocketHostBuilder = _hostBuilder.Properties.GetConventions();
-            var clb = new CommandLineBuilder(
-                rocketHostBuilder.Scanner,
-                rocketHostBuilder.AssemblyProvider,
-                rocketHostBuilder.AssemblyCandidateFinder,
-                rocketHostBuilder.Get<ILogger>()!,
-                rocketHostBuilder.ServiceProperties
-            );
-
-            _exec = clb.Build().Parse(_args ?? Array.Empty<string>());
+            _exec = getContext().CreateCommandLine().Parse(_args ?? Array.Empty<string>());
             _args = _exec.ApplicationState.RemainingArguments ?? Array.Empty<string>();
             configurationBuilder.AddApplicationState(_exec.ApplicationState);
-            rocketHostBuilder.ServiceProperties.Add(typeof(ICommandLineExecutor), _exec);
+            getContext().Properties.Set(_exec);
         }
 
         /// <summary>
@@ -130,8 +140,10 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(configurationBuilder));
             }
 
-            var rocketHostBuilder = context.Properties.GetConventions();
-            rocketHostBuilder.ServiceProperties.Set(context.HostingEnvironment);
+            getContext().Properties.AddIfMissing(context.HostingEnvironment);
+            configurationBuilder.UseLocalConfiguration(
+                getContext().GetOrAdd(() => new ConfigOptions()).UseEnvironment(context.HostingEnvironment.EnvironmentName)
+            );
 
             // Insert after all the normal configuration but before the environment specific configuration
 
@@ -158,15 +170,7 @@ namespace Rocket.Surgery.Hosting
                 ? configurationBuilder.Sources.Count - 1
                 : configurationBuilder.Sources.IndexOf(source);
 
-            var cb = new ConfigBuilder(
-                rocketHostBuilder.Scanner,
-                new ConfigurationBuilder()
-                   .AddConfiguration(context.Configuration, false)
-                   .AddConfiguration(configurationBuilder.Build(), true)
-                   .Build(),
-                rocketHostBuilder.Get<ILogger>()!,
-                rocketHostBuilder.ServiceProperties
-            );
+            var cb = new ConfigurationBuilder().ApplyConventions(getContext(), configurationBuilder.Build());
 
             configurationBuilder.Sources.Insert(
                 index + 1,
@@ -195,37 +199,45 @@ namespace Rocket.Surgery.Hosting
                 throw new ArgumentNullException(nameof(services));
             }
 
-            var rocketHostBuilder = _hostBuilder.Properties.GetConventions();
-            services.AddSingleton(rocketHostBuilder.AssemblyCandidateFinder);
-            services.AddSingleton(rocketHostBuilder.AssemblyProvider);
-            services.AddSingleton(rocketHostBuilder.Scanner);
+            getContext().Properties.AddIfMissing(context.Configuration);
             services.AddHealthChecks();
-        }
 
-        /// <summary>
-        /// Defaults the services.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        public IServiceProviderFactory<IServicesBuilder> DefaultServices([NotNull] HostBuilderContext context)
-        {
-            if (context == null)
+            services.ApplyConventions(getContext());
+            new LoggingBuilder(services).ApplyConventions(getContext());
+
+            if (getContext().Properties.TryGetValue(typeof(ICommandLineExecutor), out var o) && o is ICommandLineExecutor exec)
             {
-                throw new ArgumentNullException(nameof(context));
-            }
+                var result = new CommandLineResult();
+                services.AddSingleton(result);
+                services.AddSingleton(exec.ApplicationState);
+                // Remove the hosted service that bootstraps kestrel, we are executing a command here.
+                var webHostedServices = services
+                   .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting") == true)
+                   .ToArray();
+                if (!exec.IsDefaultCommand || exec.Application.IsShowingInformation)
+                {
+                    services.Configure<ConsoleLifetimeOptions>(x => x.SuppressStatusMessages = true);
+                    foreach (var descriptor in webHostedServices)
+                    {
+                        services.Remove(descriptor);
+                    }
+                }
 
-            return new ServicesBuilderProviderFactory(
-                _hostBuilder,
-                (conventionalBuilder, collection) =>
-                    new ServicesBuilder(
-                        conventionalBuilder.Scanner,
-                        conventionalBuilder.AssemblyProvider,
-                        conventionalBuilder.AssemblyCandidateFinder,
-                        collection,
-                        context.Configuration,
-                        conventionalBuilder.Get<ILogger>()!,
-                        conventionalBuilder.ServiceProperties
-                    )
-            );
+                var hasWebHostedService = webHostedServices.Any();
+                if (getContext().Properties.TryGetValue(typeof(CommandLineHostedService), out var _) || !exec.IsDefaultCommand)
+                {
+                    services.AddSingleton<IHostedService>(
+                        _ =>
+                            new CommandLineHostedService(
+                                _,
+                                exec,
+                                _.GetRequiredService<IHostApplicationLifetime>(),
+                                result,
+                                hasWebHostedService
+                            )
+                    );
+                }
+            }
         }
     }
 }

@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -21,42 +23,6 @@ namespace Rocket.Surgery.Hosting.Tests
 {
     public class RocketHostBuilderTests : AutoFakeTest
     {
-        [Fact]
-        public void Should_Call_Through_To_Delegate_Methods()
-        {
-            AutoFake.Provide(Array.Empty<string>());
-            Host.CreateDefaultBuilder()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .PrependDelegate(new Action(() => { }))
-                       .AppendDelegate(new Action(() => { }))
-                )
-               .ConfigureServices((context, collection) => { });
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependDelegate(A<Delegate>._))
-               .MustHaveHappened(1, Times.Exactly);
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendDelegate(A<Delegate>._))
-               .MustHaveHappened(1, Times.Exactly);
-        }
-
-        [Fact]
-        public void Should_Call_Through_To_Convention_Methods()
-        {
-            AutoFake.Provide(Array.Empty<string>());
-            var convention = AutoFake.Resolve<IConvention>();
-            Host.CreateDefaultBuilder()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .PrependConvention(convention)
-                       .AppendConvention(convention)
-                );
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependConvention(A<IConvention>._))
-               .MustHaveHappened(1, Times.Exactly);
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendConvention(A<IConvention>._))
-               .MustHaveHappened(1, Times.Exactly);
-        }
-
         [Fact]
         public void Should_UseAppDomain()
         {
@@ -122,123 +88,83 @@ namespace Rocket.Surgery.Hosting.Tests
         [Fact]
         public void Should_ConfigureServices()
         {
+            var convention = A.Fake<ServiceConvention>();
             var builder = Host.CreateDefaultBuilder()
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .ConfigureServices(x => { })
+                       .ConfigureServices(convention)
                 );
 
             builder.Build();
-            A.CallTo(
-                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(ServiceConventionDelegate))
-                )
-            ).MustHaveHappened();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IServiceCollection>._)).MustHaveHappened();
         }
 
         [Fact]
         public void Should_ConfigureConfiguration()
         {
+            var convention = A.Fake<ConfigurationConvention>();
             var builder = Host.CreateDefaultBuilder()
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .ConfigureConfiguration(x => { })
+                       .ConfigureConfiguration(convention)
                 );
 
             builder.Build();
-            A.CallTo(
-                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(ConfigConventionDelegate))
-                )
-            ).MustHaveHappened();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IConfigurationBuilder>._)).MustHaveHappened();
         }
 
         [Fact]
         public void Should_ConfigureHosting()
         {
+            var convention = A.Fake<HostingConvention>();
             var builder = Host.CreateDefaultBuilder()
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .ConfigureHosting(x => { })
+                       .ConfigureHosting(convention)
                 );
 
             builder.Build();
-            A.CallTo(
-                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(HostingConventionDelegate))
-                )
-            ).MustHaveHappened();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostBuilder>._)).MustHaveHappened();
         }
 
         [Fact]
         public void Should_ConfigureCommandLine()
         {
+            var convention = A.Fake<CommandLineConvention>();
             var builder = Host.CreateDefaultBuilder()
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .ConfigureCommandLine(x => { })
+                       .ConfigureCommandLine(convention)
                 );
 
             builder.Build();
-            A.CallTo(
-                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(CommandLineConventionDelegate))
-                )
-            ).MustHaveHappened();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._,  A<ICommandLineContext>._)).MustHaveHappened();
         }
 
         [Fact]
         public void Should_ConfigureLogging()
         {
+            var convention = A.Fake<LoggingConvention>();
             var builder = Host.CreateDefaultBuilder()
                .ConfigureRocketSurgery(
                     rb => rb
                        .UseDependencyContext(DependencyContext.Default)
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .ConfigureLogging(x => { })
+                       .ConfigureLogging(convention)
                 );
 
             builder.Build();
-            A.CallTo(
-                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(LoggingConventionDelegate))
-                )
-            ).MustHaveHappened();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._,  A<IConfiguration>._, A<ILoggingBuilder>._)).MustHaveHappened();
         }
 
         [Fact]
         public void Should_Build_The_Host_Correctly()
         {
-            var serviceConventionFake = A.Fake<IServiceConvention>();
-            var configurationConventionFake = A.Fake<IConfigConvention>();
-            var commandLineConventionFake = A.Fake<ICommandLineConvention>();
-
             var builder = Host.CreateDefaultBuilder()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseScannerUnsafe(
-                            new BasicConventionScanner(
-                                A.Fake<IServiceProviderDictionary>(),
-                                serviceConventionFake,
-                                configurationConventionFake,
-                                commandLineConventionFake
-                            )
-                        )
-                       .UseAssemblyCandidateFinder(
-                            new DefaultAssemblyCandidateFinder(new[] { typeof(RocketHostBuilderTests).Assembly })
-                        )
-                       .UseAssemblyProvider(
-                            new DefaultAssemblyProvider(new[] { typeof(RocketHostBuilderTests).Assembly })
-                        )
-                );
+               .ConfigureRocketSurgery();
 
             var host = builder.Build();
             host.Services.Should().NotBeNull();
@@ -250,16 +176,9 @@ namespace Rocket.Surgery.Hosting.Tests
             var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
                .ConfigureRocketSurgery(
                     rb => rb
-                       .UseScannerUnsafe(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>()))
-                       .UseAssemblyCandidateFinder(
-                            new DefaultAssemblyCandidateFinder(new[] { typeof(RocketHostBuilderTests).Assembly })
-                        )
-                       .UseAssemblyProvider(
-                            new DefaultAssemblyProvider(new[] { typeof(RocketHostBuilderTests).Assembly })
-                        )
                        .AppendDelegate(
-                            new CommandLineConventionDelegate(c => c.OnRun(state => 1337)),
-                            new CommandLineConventionDelegate(c => c.OnRun(state => 1337))
+                            new CommandLineConvention((a, c) => c.OnRun(state => 1337)),
+                            new CommandLineConvention((a, c)  => c.OnRun(state => 1337))
                         )
                 );
 
@@ -272,17 +191,8 @@ namespace Rocket.Surgery.Hosting.Tests
             var builder = Host.CreateDefaultBuilder(new[] { "myself" })
                .ConfigureRocketSurgery(
                     rb => rb
-                       .UseScannerUnsafe(new BasicConventionScanner(A.Fake<IServiceProviderDictionary>()))
-                       .UseAssemblyCandidateFinder(
-                            new DefaultAssemblyCandidateFinder(new[] { typeof(RocketHostBuilderTests).Assembly })
-                        )
-                       .UseAssemblyProvider(
-                            new DefaultAssemblyProvider(new[] { typeof(RocketHostBuilderTests).Assembly })
-                        )
-                       .AppendDelegate(new CommandLineConventionDelegate(c => c.OnRun(state => 1337)))
-                       .AppendDelegate(
-                            new CommandLineConventionDelegate(context => context.AddCommand<MyCommand>("myself"))
-                        )
+                       .AppendDelegate(new CommandLineConvention((a, c) => c.OnRun(state => 1337)))
+                       .AppendDelegate(new CommandLineConvention((a, context) => context.AddCommand<MyCommand>("myself")))
                 );
 
             ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1234);

@@ -4,9 +4,9 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
 {
     internal class ConventionCommandConvention : ICommandLineConvention
     {
-        public void Register(ICommandLineConventionContext context)
+        public void Register(IConventionContext context, ICommandLineContext commandLineContext)
         {
-            var command = context.AddCommand<DiagnosticsCommand>();
+            var command = commandLineContext.AddCommand<DiagnosticsCommand>();
             command.Command<ConventionCommand>("conventions", app => { });
         }
     }

@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// Default assembly candidate finder that uses a list of assemblies
     /// </summary>
     /// <seealso cref="IAssemblyCandidateFinder" />
-    public class DefaultAssemblyCandidateFinder : IAssemblyCandidateFinder
+     class DefaultAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         /// <summary>
         /// The assemblies

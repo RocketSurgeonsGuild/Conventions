@@ -8,7 +8,9 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
+using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
@@ -37,40 +39,30 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         public void Constructs()
         {
             var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = AutoFake.Resolve<ConventionContextBuilder>().UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-            builder.AssemblyProvider.Should().BeSameAs(assemblyProvider);
-            builder.AssemblyCandidateFinder.Should().NotBeNull();
             Action a = () => { builder.PrependConvention(A.Fake<ICommandLineConvention>()); };
             a.Should().NotThrow();
             a = () => { builder.AppendConvention(A.Fake<ICommandLineConvention>()); };
             a.Should().NotThrow();
-            a = () => { builder.PrependDelegate(delegate { }); };
+            a = () => { builder.PrependDelegate(new ServiceConvention((context, configuration, services) => {})); };
             a.Should().NotThrow();
-            a = () => { builder.AppendDelegate(delegate { }); };
-            a.Should().NotThrow();
-        }
-
-        [Fact]
-        public void BuildsALogger()
-        {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-
-            Action a = () => builder.Build();
+            a = () => { builder.AppendDelegate(new ServiceConvention((context, configuration, services) => {})); };
             a.Should().NotThrow();
         }
 
         [Fact]
         public void ShouldEnableHelpOnAllCommands()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-
-            builder.AddCommand<Remote>();
-            builder.AddCommand<Fetch>();
-
-            var response = builder.Build();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+               .ConfigureCommandLine(
+                    (conventionContext, lineContext) =>
+                    {
+                        lineContext.AddCommand<Remote>();
+                        lineContext.AddCommand<Fetch>();
+                    });
+            var response = ConventionContext.From(builder).CreateCommandLine();
 
             response.Application.OptionHelp.Should().NotBeNull();
 
@@ -82,10 +74,10 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void ShouldGetVersion()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             Action a = () => response.Application.ShowVersion();
             a.Should().NotThrow();
@@ -94,12 +86,15 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void ExecuteWorks()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+            builder.ConfigureCommandLine(
+                (context, lineContext) =>
+                {
+                    lineContext.OnRun(state => Task.FromResult((int)( state.GetLogLevel() ?? LogLevel.Information )));
+                });
 
-            var response = builder
-               .OnRun(state => Task.FromResult((int)( state.GetLogLevel() ?? LogLevel.Information )))
-               .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Execute(AutoFake.Resolve<IServiceProvider>()).Should().Be((int)LogLevel.Information);
         }
@@ -107,12 +102,15 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void RunWorks()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-            var response = builder
-               .OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information ))
-               .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            builder.ConfigureCommandLine(
+                (context, lineContext) => {
+                    lineContext.OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information ));
+                });
+
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Execute(AutoFake.Resolve<IServiceProvider>(), "run").Should().Be((int)LogLevel.Information);
         }
@@ -120,8 +118,8 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void SupportsAppllicationStateWithCustomDependencyInjection()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
             var service = A.Fake<IService>();
             A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -130,14 +128,19 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
 
             A.CallTo(() => serviceProvider.GetService(A<Type>.Ignored)).Returns(null!);
             A.CallTo(() => serviceProvider.GetService(typeof(IService))).Returns(service).NumberOfTimes(2);
-            builder.OnRun(
-                state =>
+            builder.ConfigureCommandLine(
+                (context, lineContext) =>
                 {
-                    state.GetLogLevel().Should().Be(LogLevel.Error);
-                    return 1000;
+                    lineContext.OnRun(
+                        state =>
+                        {
+                            state.GetLogLevel().Should().Be(LogLevel.Error);
+                            return 1000;
+                        }
+                    );
                 }
             );
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = response.Execute(AutoFake.Resolve<IServiceProvider>(), "--log", "error");
 
@@ -147,20 +150,19 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void SupportsInjection_Without_Creating_The_SubContainer()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            AutoFake.Provide(A.Fake<IServiceProvider>());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var sp = AutoFake.Provide(A.Fake<IServiceProvider>());
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+            builder.ConfigureCommandLine(
+                (context, builder) =>
+                {
+                    builder.AddCommand<InjectionConstructor>("constructor");
+                    builder.AddCommand<InjectionExecute>("execute");
+                    builder.OnParse(state => { state.IsDefaultCommand.Should().BeFalse(); });
+                }
+            );
 
-            var sp = AutoFake.Resolve<IServiceProvider>();
-
-            builder
-               .AddCommand<InjectionConstructor>("constructor");
-            builder
-               .AddCommand<InjectionExecute>("execute");
-
-            builder.OnParse(state => { state.IsDefaultCommand.Should().BeFalse(); });
-
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Parse("constructor");
             A.CallTo(() => sp.GetService(A<Type>._)).MustNotHaveHappened();
@@ -169,20 +171,22 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void SupportsInjection_Creating_On_Construction()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-            builder
-               .AddCommand<InjectionConstructor>("constructor");
-            builder
-               .AddCommand<InjectionExecute>("execute");
-
-            builder.OnParse(state => { state.IsDefaultCommand.Should().BeFalse(); });
+            builder.ConfigureCommandLine(
+                (context, builder) =>
+                {
+                    builder.AddCommand<InjectionConstructor>("constructor");
+                    builder.AddCommand<InjectionExecute>("execute");
+                    builder.OnParse(state => { state.IsDefaultCommand.Should().BeFalse(); });
+                }
+            );
 
             var service = AutoFake.Resolve<IService>();
             A.CallTo(() => service.ReturnCode).Returns(1000);
 
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = response.Execute(ServiceProvider, "constructor");
             result.Should().Be(1000);
@@ -192,18 +196,21 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void SupportsInjection_Creating_On_Execute()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-            builder
-               .AddCommand<InjectionConstructor>("constructor");
-            builder
-               .AddCommand<InjectionExecute>("execute");
+            builder.ConfigureCommandLine(
+                (context, builder) =>
+                {
+                    builder.AddCommand<InjectionConstructor>("constructor");
+                    builder.AddCommand<InjectionExecute>("execute");
+                }
+            );
 
             var service = AutoFake.Resolve<IService>();
             A.CallTo(() => service.ReturnCode).Returns(1000);
 
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = response.Execute(ServiceProvider, "constructor");
             result.Should().Be(1000);
@@ -213,10 +220,11 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void Sets_Values_In_Commands()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-            builder.AddCommand<CommandWithValues>("cwv");
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+
+            builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
             response.Execute(
                 ServiceProvider,
                 "cwv",
@@ -234,17 +242,16 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void Can_Add_A_Command_Without_A_Name()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-
             var service = A.Fake<IService2>();
             A.CallTo(() => service.SomeValue).Returns("Service2");
             AutoFake.Provide(service);
 
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-            builder.AddCommand<ServiceInjection>();
+            builder.ConfigureCommandLine((context, builder) => builder.AddCommand<ServiceInjection>());
 
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = response.Execute(ServiceProvider, "serviceinjection");
 
@@ -254,17 +261,21 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void Can_Add_A_Command_Without_A_Name_Using_Context()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-            var context = builder as ICommandLineConventionContext;
-
             var service = A.Fake<IService2>();
             A.CallTo(() => service.SomeValue).Returns("Service2");
             AutoFake.Provide(service);
 
-            context.AddCommand<ServiceInjection>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+            builder.ConfigureCommandLine(
+                (context, builder) =>
+                {
 
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+                    builder.AddCommand<ServiceInjection>();
+                }
+            );
+
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = response.Execute(ServiceProvider, "serviceinjection");
 
@@ -274,18 +285,22 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void Can_Add_A_Command_With_A_Name_Using_Context()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
             var service = A.Fake<IService2>();
             A.CallTo(() => service.SomeValue).Returns("Service2");
             AutoFake.Provide(service);
 
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-            var context = builder as ICommandLineConventionContext;
+            builder.ConfigureCommandLine(
+                (c, builder) =>
+                {
+                    var context = builder as ICommandLineContext;
+                    context.AddCommand<ServiceInjection2>("si");
+                }
+            );
 
-            context.AddCommand<ServiceInjection2>("si");
-
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = response.Execute(ServiceProvider, "si");
 
@@ -295,17 +310,22 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void Should_Call_OnParse_Delegates()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-            var context = builder as ICommandLineConventionContext;
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+            var context = builder as ICommandLineContext;
 
             var onParseBuilder = A.Fake<OnParseDelegate>();
             var onParseContext = A.Fake<OnParseDelegate>();
 
-            builder.OnParse(onParseBuilder);
-            context.OnParse(onParseContext);
+            builder.ConfigureCommandLine(
+                (context, builder) =>
+                {
+                    builder.OnParse(onParseBuilder);
+                    builder.OnParse(onParseContext);
+                }
+            );
 
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             response.Execute(ServiceProvider, "si");
 
@@ -316,22 +336,23 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [Fact]
         public void Should_Call_Default_Command()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-            var result = builder.OnRun<Default>().Build().Execute(ServiceProvider);
+            builder.ConfigureCommandLine((context, builder) => builder.OnRun<Default>());
+            var result = ConventionContext.From(builder).CreateCommandLine().Execute(ServiceProvider);
             result.Should().Be(-1);
         }
 
         [Fact]
         public void Should_Call_Default_Command_Context()
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-            var context = builder as ICommandLineConventionContext;
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+            var context = builder as ICommandLineContext;
 
-            context.OnRun<Default>();
-            var result = builder.Build().Execute(ServiceProvider);
+            builder.ConfigureCommandLine((context, builder) => builder.OnRun<Default>());
+            var result = ConventionContext.From(builder).CreateCommandLine().Execute(ServiceProvider);
             result.Should().Be(-1);
         }
 
@@ -373,12 +394,10 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [InlineData("-d", LogLevel.Debug)]
         public void ShouldAllVerbosity(string command, LogLevel level)
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
-
-            var response = builder
-               .OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information ))
-               .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+            builder.ConfigureCommandLine((context, builder) => builder.OnRun(state => (int)(state.GetLogLevel() ?? LogLevel.Information)));
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = (LogLevel)response.Execute(AutoFake.Resolve<IServiceProvider>(), command);
             result.Should().Be(level);
@@ -393,14 +412,11 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [InlineData("-l critical", LogLevel.Critical)]
         public void ShouldAllowLogLevelIn(string command, LogLevel level)
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+            builder.ConfigureCommandLine((context, builder) => builder.OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information )));
 
-            ( builder as ICommandLineConventionContext ).OnRun(
-                state => (int)( state.GetLogLevel() ?? LogLevel.Information )
-            );
-
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             var result = (LogLevel)response.Execute(AutoFake.Resolve<IServiceProvider>(), command.Split(' '));
             result.Should().Be(level);
@@ -411,10 +427,10 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [InlineData("-l ")]
         public void ShouldDisallowInvalidLogLevels(string command)
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-            var response = builder.Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
 
             Action a = () => response.Execute(AutoFake.Resolve<IServiceProvider>(), command.Split(' '));
             a.Should().Throw<CommandParsingException>();
@@ -450,22 +466,20 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
         [InlineData("cmd5 a --help")]
         public void StopsForHelp(string command)
         {
-            AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-            var builder = AutoFake.Resolve<CommandLineBuilder>();
+            var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+            builder.ConfigureCommandLine(
+                (context, builder) =>
+                {
+                    builder.AddCommand<Cmd>("cmd1");
+                    builder.AddCommand<Cmd>("cmd2");
+                    builder.AddCommand<Cmd>("cmd3");
+                    builder.AddCommand<Cmd>("cmd4");
+                    builder.AddCommand<Cmd>("cmd5");
+                }
+            );
 
-            builder
-               .AddCommand<Cmd>("cmd1");
-            builder
-               .AddCommand<Cmd>("cmd2");
-            builder
-               .AddCommand<Cmd>("cmd3");
-            builder
-               .AddCommand<Cmd>("cmd4");
-            builder
-               .AddCommand<Cmd>("cmd5");
-
-            var response = builder
-               .Build(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+            var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
             var result = response.Execute(AutoFake.Resolve<IServiceProvider>(), command.Split(' '));
             result.Should().BeGreaterOrEqualTo(0);
         }

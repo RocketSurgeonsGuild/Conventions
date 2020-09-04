@@ -65,14 +65,14 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
             return ( label, value );
         }
 
-        private readonly IConventionScanner _scanner;
+        private readonly IConventionProvider _scanner;
         private readonly IAssemblyCandidateFinder _assemblyCandidateFinder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConventionListCommand" /> class.
         /// </summary>
         public ConventionListCommand(
-            IConventionScanner scanner,
+            IConventionProvider scanner,
             IAssemblyCandidateFinder assemblyCandidateFinder
         )
         {
@@ -164,11 +164,11 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                     "Rocket.Surgery.Conventions"
                 )
                .SelectMany(x => x.DefinedTypes)
-               .Where(
-                    x => x.IsInterface && x.ImplementedInterfaces.Any(
-                        z => z.IsGenericType && typeof(IConventionContainer<,,>) == z.GetGenericTypeDefinition()
-                    )
-                )
+               // .Where(
+               //      x => x.IsInterface && x.ImplementedInterfaces.Any(
+               //          z => z.IsGenericType && typeof(IConventionContainer<,,>) == z.GetGenericTypeDefinition()
+               //      )
+               //  )
                .Distinct()
                .Select((x, i) => new ConventionDefinition(x))
                .OrderBy(x => x.Name)
@@ -184,11 +184,11 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                     "Rocket.Surgery.Conventions"
                 )
                .SelectMany(x => x.DefinedTypes)
-               .Where(
-                    x => x.IsInterface && x.ImplementedInterfaces.Any(
-                        z => z.IsGenericType && typeof(IConventionContainer<,,>) == z.GetGenericTypeDefinition()
-                    )
-                )
+               // .Where(
+               //      x => x.IsInterface && x.ImplementedInterfaces.Any(
+               //          z => z.IsGenericType && typeof(IConventionContainer<,,>) == z.GetGenericTypeDefinition()
+               //      )
+               //  )
                .Distinct()
                .Select((x, i) => new ConventionDefinition(x))
                .OrderBy(x => x.Name)
@@ -212,11 +212,11 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
             private readonly (Label label, Label value) _kindView;
             private readonly (Label label, Label value) _assemblyView;
             private readonly (Label label, Label value) _typeView;
-            private readonly IConventionScanner _scanner;
+            private readonly IConventionProvider _scanner;
             private ConventionDefinition[] _definitions = Array.Empty<ConventionDefinition>();
             private ConventionDetails[] _conventionDetails = Array.Empty<ConventionDetails>();
 
-            public DiscoveryWindow(IConventionScanner scanner) : base("Discovery")
+            public DiscoveryWindow(IConventionProvider scanner) : base("Discovery")
             {
                 Y = 1;
                 _conventions = BuildListFrameView("Conventions", canFocus: true);
@@ -271,7 +271,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 }
 
                 var builder = _definitions[_conventions.list.SelectedItem];
-                _conventionDetails = _scanner.BuildProvider().GetAll()
+                _conventionDetails = _scanner.GetAll()
                    .Where(
                         x => ( x.Convention != null &&
                             builder.ConventionType.IsAssignableFrom(x.Convention.GetType()) ) || ( x.Delegate != null &&
@@ -576,11 +576,11 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
 
             Name = name;
 
-            var container = type.ImplementedInterfaces.First(
-                z => z.IsGenericType && typeof(IConventionContainer<,,>) == z.GetGenericTypeDefinition()
-            );
-            ConventionType = container.GenericTypeArguments[1].GetTypeInfo();
-            DelegateType = container.GenericTypeArguments[2].GetTypeInfo();
+            // var container = type.ImplementedInterfaces.First(
+            //     z => z.IsGenericType && typeof(IConventionContainer<,,>) == z.GetGenericTypeDefinition()
+            // );
+            // ConventionType = container.GenericTypeArguments[1].GetTypeInfo();
+            // DelegateType = container.GenericTypeArguments[2].GetTypeInfo();
         }
 
         [UsedImplicitly]

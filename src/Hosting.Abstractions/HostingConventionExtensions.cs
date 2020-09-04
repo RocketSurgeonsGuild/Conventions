@@ -7,7 +7,7 @@ using Rocket.Surgery.Hosting;
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Helper method for working with <see cref="IConventionHostBuilder" />
+    /// Helper method for working with <see cref="ConventionContextBuilder" />
     /// </summary>
     public static class HostingConventionExtensions
     {
@@ -17,17 +17,31 @@ namespace Rocket.Surgery.Conventions
         /// <param name="container">The container.</param>
         /// <param name="delegate">The delegate.</param>
         /// <returns>IConventionHostBuilder.</returns>
-        public static IConventionHostBuilder ConfigureHosting(
-            [NotNull] this IConventionHostBuilder container,
-            HostingConventionDelegate @delegate
-        )
+        public static ConventionContextBuilder ConfigureHosting([NotNull] this ConventionContextBuilder container, HostingConvention @delegate)
         {
             if (container == null)
             {
                 throw new ArgumentNullException(nameof(container));
             }
 
-            container.Scanner.AppendDelegate(@delegate);
+            container.AppendDelegate(@delegate);
+            return container;
+        }
+
+        /// <summary>
+        /// Configure the hosting delegate to the convention scanner
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>IConventionHostBuilder.</returns>
+        public static ConventionContextBuilder ConfigureHosting([NotNull] this ConventionContextBuilder container, Action<IHostBuilder> @delegate)
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.AppendDelegate(new HostingConvention((context, builder) => @delegate(builder)));
             return container;
         }
     }

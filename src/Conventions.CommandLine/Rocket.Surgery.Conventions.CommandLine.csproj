@@ -10,5 +10,13 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Extensions.CommandLine.Tests" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
+        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Abstractions" />
     </ItemGroup>
 </Project>

@@ -30,18 +30,7 @@ namespace Rocket.Surgery.Hosting.Internals
                 testHostBuilder._configureAppConfigActions,
                 testHostBuilder.Properties
             );
-            var serviceCollection =  CreateServiceCollection(hostBuilderContext, testHostBuilder._configureServicesActions);
-            var context = new ServicesBuilder(
-                testHostBuilder.Scanner,
-                testHostBuilder.AssemblyProvider,
-                testHostBuilder.AssemblyCandidateFinder,
-                serviceCollection,
-                hostBuilderContext.Configuration,
-                testHostBuilder.DiagnosticLogger,
-                testHostBuilder.Properties
-            );
-            Composer.Register(testHostBuilder.Scanner, context, typeof(IServiceConvention), typeof(ServiceConventionDelegate));
-            return serviceCollection;
+            return CreateServiceCollection(hostBuilderContext, testHostBuilder._configureServicesActions);
         }
 
         internal static IServiceProvider CreateServiceProvider(TestHostBuilder testHostBuilder)
@@ -67,12 +56,7 @@ namespace Rocket.Surgery.Hosting.Internals
             {
                 if (item is IConfiguration configuration)
                 {
-                    Composer.Register(
-                        testHostBuilder.Scanner,
-                        new HostingConventionContext(testHostBuilder, testHostBuilder, testHostBuilder.DiagnosticLogger),
-                        typeof(IHostingConvention),
-                        typeof(HostingConventionDelegate)
-                    );
+                    testHostBuilder.ApplyConventions(testHostBuilder._conventionContext);
                     return CreateReusedContext(configuration);
                 }
 
@@ -87,12 +71,7 @@ namespace Rocket.Surgery.Hosting.Internals
                         return innerContext;
                     }
 
-                    Composer.Register(
-                        testHostBuilder.Scanner,
-                        new HostingConventionContext(testHostBuilder, testHostBuilder, testHostBuilder.DiagnosticLogger),
-                        typeof(IHostingConvention),
-                        typeof(HostingConventionDelegate)
-                    );
+                    testHostBuilder.ApplyConventions(testHostBuilder._conventionContext);
                     return CreateReusedContext(configuration);
                 }
             }

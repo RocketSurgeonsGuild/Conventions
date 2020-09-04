@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
@@ -58,9 +61,9 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Leave_Delegates_In_Place()
         {
             var b = new B();
-            var d1 = new ServiceConventionDelegate(x => { });
-            var d2 = new ServiceConventionDelegate(x => { });
-            var d3 = new ServiceConventionDelegate(x => { });
+            var d1 = new ServiceConvention((context, configuration, services) => {});
+            var d2 = new ServiceConvention((context, configuration, services) => {});
+            var d3 = new ServiceConvention((context, configuration, services) => {});
             var c = new C();
             var d = new D();
             var e = new E();
@@ -107,9 +110,9 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Exclude_Unit_Test_Conventions()
         {
             var b = new B();
-            var d1 = new ServiceConventionDelegate(x => { });
-            var d2 = new ServiceConventionDelegate(x => { });
-            var d3 = new ServiceConventionDelegate(x => { });
+            var d1 = new ServiceConvention((context, configuration, services) => {});
+            var d2 = new ServiceConvention((context, configuration, services) => {});
+            var d3 = new ServiceConvention((context, configuration, services) => {});
             var c = new C();
             var d = new D();
             var e = new E();
@@ -139,9 +142,9 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Should_Include_Unit_Test_Conventions()
         {
             var b = new B();
-            var d1 = new ServiceConventionDelegate(x => { });
-            var d2 = new ServiceConventionDelegate(x => { });
-            var d3 = new ServiceConventionDelegate(x => { });
+            var d1 = new ServiceConvention((context, configuration, services) => {});
+            var d2 = new ServiceConvention((context, configuration, services) => {});
+            var d3 = new ServiceConvention((context, configuration, services) => {});
             var c = new C();
             var d = new D();
             var e = new E();
@@ -176,7 +179,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [UnitTestConvention]
         private class C : IServiceConvention
         {
-            public void Register(IServiceConventionContext context) => throw new NotImplementedException();
+            public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) => throw new NotImplementedException();
         }
 
         [AfterConvention(typeof(E))]

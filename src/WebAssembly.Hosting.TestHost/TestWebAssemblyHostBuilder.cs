@@ -20,15 +20,14 @@ namespace Rocket.Surgery.Hosting
     /// <summary>
     /// A program initialization utility.
     /// </summary>
-    public class TestWebAssemblyHostBuilder : IWebAssemblyHostBuilder, IConventionHostBuilder
+    public class TestWebAssemblyHostBuilder : IWebAssemblyHostBuilder
     {
+        private readonly IConventionContext _conventionContext;
         private Func<IServiceProvider> _createServiceProvider;
 
-        internal TestWebAssemblyHostBuilder(
-            IServiceProviderDictionary properties,
-            string environmentName
-        )
+        internal TestWebAssemblyHostBuilder(IConventionContext conventionContext, string environmentName)
         {
+            _conventionContext = conventionContext;
             // Private right now because we don't have much reason to expose it. This can be exposed
             // in the future if we want to give people a choice between CreateDefault and something
             // less opinionated.
@@ -41,9 +40,9 @@ namespace Rocket.Surgery.Hosting
             Services.AddSingleton<IConfiguration>(Configuration);
             Services.AddSingleton<IConfigurationRoot>(Configuration);
             _createServiceProvider = () => Services.BuildServiceProvider(validateScopes: HostEnvironment.IsDevelopment());
-            Services.AddSingleton<IJSRuntime>(properties.Get<IJSRuntime>() ??  new NoopJSRuntime() );
-            Services.AddSingleton<NavigationManager>(properties.Get<NavigationManager>() ?? new NoopNavigationManager());
-            Services.AddSingleton<INavigationInterception>(properties.Get<INavigationInterception>() ?? new NoopNavigationInterception());
+            Services.AddSingleton(_conventionContext.Properties.Get<IJSRuntime>() ??  new NoopJSRuntime() );
+            Services.AddSingleton(_conventionContext.Properties.Get<NavigationManager>() ?? new NoopNavigationManager());
+            Services.AddSingleton(_conventionContext.Properties.Get<INavigationInterception>() ?? new NoopNavigationInterception());
         }
 
         /// <summary>
@@ -58,7 +57,39 @@ namespace Rocket.Surgery.Hosting
         /// <returns>An initialized <see cref="WebAssemblyHost"/></returns>
         public IServiceCollection Parse() => Services;
 
+        /// <summary>
+        /// Configure the host builder
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public TestWebAssemblyHostBuilder Configure(Action<IWebAssemblyHostBuilder> action)
+        {
+             action(this);
+             return this;
+        }
+
         #region Interfaces
+        /// <inheritdoc />
+        public object? this[object item]
+        {
+            get => _conventionContext[item];
+            set => _conventionContext[item] = value;
+        }
+
+        /// <inheritdoc />
+        public IServiceProviderDictionary Properties => _conventionContext.Properties;
+
+        /// <inheritdoc />
+        public ILogger Logger => _conventionContext.Logger;
+
+        /// <inheritdoc />
+        public IAssemblyProvider AssemblyProvider => _conventionContext.AssemblyProvider;
+
+        /// <inheritdoc />
+        public IAssemblyCandidateFinder AssemblyCandidateFinder => _conventionContext.AssemblyCandidateFinder;
+
+        /// <inheritdoc />
+        public IConventionProvider Conventions => _conventionContext.Conventions;
 
         public ILoggingBuilder Logging { get;  }
         public IServiceCollection Services { get; }
@@ -111,7 +142,8 @@ namespace Rocket.Surgery.Hosting
         {
             // Intentionally overwrite configuration with the one we're creating.
             Services.AddSingleton<IConfiguration>(Configuration);
-            var current = this.GetConventions();
+
+            RocketWebAssemblyExtensions.ApplyConventions(this, _conventionContext);
 
             // A Blazor application always runs in a scope. Since we want to make it possible for the user
             // to configure services inside *that scope* inside their startup code, we create *both* the
@@ -119,78 +151,14 @@ namespace Rocket.Surgery.Hosting
             var services = _createServiceProvider();
             var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
-            // this gets removed, but we're going toa dd it back so that same factory can be re-used.
-            Services.AddSingleton(current);
-
-            return Activator.CreateInstance(
+            return (Activator.CreateInstance(
                 typeof(WebAssemblyHost),
                 BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
                 null,
                 new object[] { services, scope, Configuration, RootComponents.ToArray() },
                 null
-            ) as WebAssemblyHost;
+            ) as WebAssemblyHost)!;
         }
-
-        private IConventionHostBuilder ConventionHostBuilder => this.GetConventions();
-
-        [ExcludeFromCodeCoverage]
-        public IConventionScanner Scanner => ConventionHostBuilder.Scanner;
-
-        [ExcludeFromCodeCoverage]
-        public IAssemblyCandidateFinder AssemblyCandidateFinder => ConventionHostBuilder.AssemblyCandidateFinder;
-
-        [ExcludeFromCodeCoverage]
-        public IServiceProviderDictionary ServiceProperties => ConventionHostBuilder.ServiceProperties;
-
-        [ExcludeFromCodeCoverage]
-        public IAssemblyProvider AssemblyProvider => ConventionHostBuilder.AssemblyProvider;
-
-        [ExcludeFromCodeCoverage]
-        public ILogger DiagnosticLogger => ConventionHostBuilder.DiagnosticLogger;
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention(IEnumerable<IConvention> conventions) => ConventionHostBuilder.AppendConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention(params IConvention[] conventions) => ConventionHostBuilder.AppendConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention(IEnumerable<Type> conventions) => ConventionHostBuilder.AppendConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention(params Type[] conventions) => ConventionHostBuilder.AppendConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention<T>()
-            where T : IConvention => ConventionHostBuilder.AppendConvention<T>();
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention(IEnumerable<IConvention> conventions) => ConventionHostBuilder.PrependConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention(params IConvention[] conventions) => ConventionHostBuilder.PrependConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention(IEnumerable<Type> conventions) => ConventionHostBuilder.PrependConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention(params Type[] conventions) => ConventionHostBuilder.PrependConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention<T>()
-            where T : IConvention => ConventionHostBuilder.PrependConvention<T>();
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendDelegate(IEnumerable<Delegate> delegates) => ConventionHostBuilder.AppendDelegate(delegates);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendDelegate(params Delegate[] delegates) => ConventionHostBuilder.AppendDelegate(delegates);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependDelegate(IEnumerable<Delegate> delegates) => ConventionHostBuilder.PrependDelegate(delegates);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependDelegate(params Delegate[] delegates) => ConventionHostBuilder.PrependDelegate(delegates);
 
         /// <summary>
         /// Get a value by type from the context
@@ -199,9 +167,22 @@ namespace Rocket.Surgery.Hosting
         /// <param name="value">The value to save</param>
         public TestWebAssemblyHostBuilder Set<T>(T value)
         {
-            ServiceProperties[typeof(T)] = value;
+            this.Properties[typeof(T)] = value;
             return this;
         }
+
+        /// <summary>
+        /// Get a value by type from the context
+        /// </summary>
+        /// <typeparam name="T">The type of the value</typeparam>
+        public T Get<T>() => (T)Properties[typeof(T)]!;
+
+        /// <summary>
+        /// Get a value by type from the context
+        /// </summary>
+        /// <typeparam name="T">The type of the value</typeparam>
+        /// <param name="key">The key where the value is saved</param>
+        public T Get<T>(string key) => (T)Properties[key]!;
 
         /// <summary>
         /// Get a value by type from the context
@@ -211,7 +192,7 @@ namespace Rocket.Surgery.Hosting
         /// <param name="value">The value to save</param>
         public TestWebAssemblyHostBuilder Set<T>(string key, T value)
         {
-            ServiceProperties[key] = value;
+            this.Properties[key] = value;
             return this;
         }
         #endregion

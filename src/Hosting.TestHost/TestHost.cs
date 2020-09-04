@@ -96,7 +96,7 @@ namespace Rocket.Surgery.Hosting
             var logger = loggerFactory.CreateLogger(nameof(TestHost));
 
             return new TestHost()
-                   .WithDependencyContext(context)
+                   .UseDependencyContext(context)
                    .WithLoggerFactory(loggerFactory)
                    .WithLogger(logger)
                    .WithContentRoot(contentRootPath)
@@ -115,26 +115,44 @@ namespace Rocket.Surgery.Hosting
             var logger = loggerFactory.CreateLogger(nameof(TestHost));
 
             return new TestHost()
-                   .WithAppDomain(appDomain)
+                   .UseAppDomain(appDomain)
                    .WithLoggerFactory(loggerFactory)
                    .WithLogger(logger)
                    .WithContentRoot(contentRootPath)
                 ;
         }
 
-        private readonly IServiceProviderDictionary _serviceProperties = new ServiceProviderDictionary();
+        /// <summary>
+        /// Create a convention test host build for the given the list of assemblies.
+        /// </summary>
+        /// <param name="assemblies">The application domain that that will be used for the test host.</param>
+        /// <param name="loggerFactory">Optional logger factory.</param>
+        public static TestHost For(IEnumerable<Assembly> assemblies, ILoggerFactory? loggerFactory = null)
+        {
+            loggerFactory ??= NullLoggerFactory.Instance;
+            var logger = loggerFactory.CreateLogger(nameof(TestHost));
+
+            return new TestHost()
+                   .UseAssemblies(assemblies)
+                   .WithLoggerFactory(loggerFactory)
+                   .WithLogger(logger)
+                ;
+        }
+
+        private readonly ConventionContextBuilder _contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>()).Set(HostType.UnitTestHost);
         private ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
         private ILogger _logger = NullLogger.Instance;
         private IConfiguration? _reuseConfiguration;
         private object? _sharedConfigurationKey;
-        private DependencyContext? _dependencyContext;
-        private AppDomain? _appDomain;
         private string? _environmentName;
         private string[]? _arguments;
-        private bool _includeConventions = true;
-        private IEnumerable<Assembly>? _assemblies;
         private string? _contentRootPath;
 
+        /// <summary>
+        /// Use the given content root path
+        /// </summary>
+        /// <param name="contentRootPath"></param>
+        /// <returns></returns>
         public TestHost WithContentRoot(string? contentRootPath)
         {
             if (string.IsNullOrWhiteSpace(contentRootPath))
@@ -147,29 +165,29 @@ namespace Rocket.Surgery.Hosting
         /// Use the specific <see cref="AppDomain" />
         /// </summary>
         /// <param name="appDomain">The app domain.</param>
-        public TestHost WithAppDomain(AppDomain appDomain)
+        public TestHost UseAppDomain(AppDomain appDomain)
         {
-            _appDomain = appDomain;
+            _contextBuilder.UseAppDomain(appDomain);
             return this;
         }
 
         /// <summary>
-        /// Use the specific <see cref="IAssemblyCandidateFinder" />
+        /// Use the specific <see cref="DependencyContext" />
         /// </summary>
         /// <param name="dependencyContext">The dependency context.</param>
-        public TestHost WithDependencyContext(DependencyContext dependencyContext)
+        public TestHost UseDependencyContext(DependencyContext dependencyContext)
         {
-            _dependencyContext = dependencyContext;
+            _contextBuilder.UseDependencyContext(dependencyContext);
             return this;
         }
 
         /// <summary>
-        /// Use the specific <see cref="IAssemblyCandidateFinder" />
+        /// Use the specific <see cref="IEnumerable&lt;Assembly&gt;" />
         /// </summary>
         /// <param name="assemblies">The assemblies.</param>
-        public TestHost WithAssemblies(IEnumerable<Assembly> assemblies)
+        public TestHost UseAssemblies(IEnumerable<Assembly> assemblies)
         {
-            _assemblies = assemblies;
+            _contextBuilder.UseAssemblies(assemblies);
             return this;
         }
 
@@ -215,22 +233,22 @@ namespace Rocket.Surgery.Hosting
         }
 
         /// <summary>
-        /// Use the <see cref="BasicConventionScanner" /> to not automatically load conventions from attributes.
+        /// Use to not automatically load conventions from attributes.
         /// </summary>
         /// <returns></returns>
         public TestHost ExcludeConventions()
         {
-            _includeConventions = false;
+            _contextBuilder.DisableConventionAttributes();
             return this;
         }
 
         /// <summary>
-        /// <para>Use the <see cref="SimpleConventionScanner" /> to automatically load conventions from attributes.</para>
+        /// <para>Use to automatically load conventions from attributes.</para>
         /// <para>This is the default</para>
         /// </summary>
         public TestHost IncludeConventions()
         {
-            _includeConventions = true;
+            _contextBuilder.EnableConventionAttributes();
             return this;
         }
 
@@ -269,77 +287,56 @@ namespace Rocket.Surgery.Hosting
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public TestHostBuilder Create([NotNull] Action<TestHostBuilder> action)
+        public TestHostBuilder Create([NotNull] Action<ConventionContextBuilder> action)
         {
-            if (_dependencyContext == null && _appDomain == null)
-                throw new NotSupportedException("Must supply appdomain, dependency context, or list of assemblies");
             var environmentName = string.IsNullOrWhiteSpace(_environmentName) ? "Test" : _environmentName;
 
-
             var outerAction = action;
-            action = builder =>
+            action = contextBuilder =>
             {
-                if (_dependencyContext != null)
-                {
-                    builder.UseDependencyContext(_dependencyContext);
-                }
-                else if (_appDomain != null)
-                {
-                    builder.UseAppDomain(_appDomain);
-                }
-                else if (_assemblies != null)
-                {
-                    builder.UseAssemblies(_assemblies);
-                }
+                contextBuilder.Set(_logger);
+                contextBuilder.Set(_loggerFactory);
 
-                builder.Properties[typeof(HostType)] = HostType.UnitTestHost;
-                builder.Set(_logger);
-                builder.Set(_loggerFactory);
-
-                builder.Get<IHostBuilder>()
-                   .ConfigureLogging(
-                        x =>
-                        {
-                            if (_loggerFactory != NullLoggerFactory.Instance)
-                            {
-                                x.Services.RemoveAll(typeof(ILoggerFactory));
-                                x.Services.AddSingleton(_loggerFactory);
-                            }
-                        }
-                    );
-
-                outerAction(builder);
+                outerAction(contextBuilder);
             };
 
-            var builder = new TestHostBuilder(_serviceProperties.ToDictionary(x => x.Key, x => x.Value));
-            builder
-               .ConfigureAppConfiguration(
-                    (hostingContext, config) =>
-                    {
-                        IHostEnvironment env = hostingContext.HostingEnvironment;
-
-                        bool reloadOnChange = hostingContext.Configuration.GetValue("hostBuilder:reloadConfigOnChange", defaultValue: true);
-
-                        config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: reloadOnChange)
-                           .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: reloadOnChange);
-
-                        if (env.IsDevelopment() && !string.IsNullOrEmpty(env.ApplicationName))
-                        {
-                            var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
-                            if (appAssembly != null)
-                            {
-                                config.AddUserSecrets(appAssembly, optional: true);
-                            }
-                        }
-
-                        config.AddEnvironmentVariables();
-
-                        if (_arguments != null)
-                        {
-                            config.AddCommandLine(_arguments);
-                        }
-                    }
-                );
+            // copy properties
+            action(_contextBuilder);
+            var context = ConventionContext.From(_contextBuilder);
+            var builder = new TestHostBuilder(context);
+            RocketHostExtensions.ConfigureRocketSurgery(builder, context);
+            if (_loggerFactory != NullLoggerFactory.Instance)
+            {
+                builder.ConfigureServices(services => services.RemoveAll(typeof(ILoggerFactory)).AddSingleton(_loggerFactory));
+            }
+            // builder
+            //    .ConfigureAppConfiguration(
+            //         (hostingContext, config) =>
+            //         {
+            //             IHostEnvironment env = hostingContext.HostingEnvironment;
+            //
+            //             bool reloadOnChange = hostingContext.Configuration.GetValue("hostBuilder:reloadConfigOnChange", defaultValue: true);
+            //
+            //             config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: reloadOnChange)
+            //                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: reloadOnChange);
+            //
+            //             if (env.IsDevelopment() && !string.IsNullOrEmpty(env.ApplicationName))
+            //             {
+            //                 var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
+            //                 if (appAssembly != null)
+            //                 {
+            //                     config.AddUserSecrets(appAssembly, optional: true);
+            //                 }
+            //             }
+            //
+            //             config.AddEnvironmentVariables();
+            //
+            //             if (_arguments != null)
+            //             {
+            //                 config.AddCommandLine(_arguments);
+            //             }
+            //         }
+            //     );
 
             if (_reuseConfiguration != null)
             {
@@ -350,10 +347,7 @@ namespace Rocket.Surgery.Hosting
                 builder.Set(typeof(IConfiguration).FullName, _sharedConfigurationKey);
             }
 
-            ( _includeConventions
-                    ? builder.ConfigureRocketSurgery<SimpleConventionScanner>(x => action(builder))
-                    : builder.ConfigureRocketSurgery<BasicConventionScanner>(x => action(builder)) )
-               .UseEnvironment(environmentName);
+            builder.UseEnvironment(environmentName);
             if (_contentRootPath != null)
             {
                 builder.UseContentRoot(_contentRootPath);

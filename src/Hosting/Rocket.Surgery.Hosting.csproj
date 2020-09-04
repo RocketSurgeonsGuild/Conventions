@@ -5,6 +5,7 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
+        <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
         <ProjectReference Include="..\Configuration\Rocket.Surgery.Extensions.Configuration.csproj" />
