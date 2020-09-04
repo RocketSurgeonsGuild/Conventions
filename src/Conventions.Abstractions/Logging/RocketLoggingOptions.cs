@@ -14,7 +14,6 @@ namespace Rocket.Surgery.Conventions.Logging
         /// IApplicationState:LogLevel
         /// </summary>
         /// <value>The get log level.</value>
-        public Func<ILoggingConventionContext, LogLevel?> GetLogLevel { get; set; } = context
-            => context.Configuration.GetValue<LogLevel?>("ApplicationState:LogLevel");
+        public Func<IConfiguration, LogLevel?> GetLogLevel { get; set; } = configuration => configuration.GetValue<LogLevel?>("ApplicationState:LogLevel");
     }
 }

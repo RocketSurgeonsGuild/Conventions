@@ -15,7 +15,6 @@ namespace Rocket.Surgery.Conventions
         [NotNull]
         Type Type { get; }
 
-
         /// <summary>
         /// The <see cref="DependencyDirection" /> direction of this relationship
         /// </summary>

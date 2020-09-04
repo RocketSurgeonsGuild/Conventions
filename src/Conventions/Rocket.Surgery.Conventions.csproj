@@ -9,13 +9,16 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-        <PackageReference Include="Microsoft.Extensions.DependencyModel" />
         <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Abstractions" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Conventions" />
     </ItemGroup>
 </Project>

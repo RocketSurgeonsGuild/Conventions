@@ -1,4 +1,7 @@
 ﻿namespace Rocket.Surgery.Conventions.Tests.Fixtures
 {
-    public interface ITestConvention : IConvention<ITestConventionContext> { }
+    public interface ITestConvention : IConvention
+    {
+        void Register(ITestConventionContext context);
+    }
 }

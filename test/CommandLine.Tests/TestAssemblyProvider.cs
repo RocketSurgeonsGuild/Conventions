@@ -9,7 +9,7 @@ namespace Rocket.Surgery.Extensions.CommandLine.Tests
     {
         public IEnumerable<Assembly> GetAssemblies() => new[]
         {
-            typeof(CommandLineBuilder).GetTypeInfo().Assembly,
+            typeof(CommandLineContext).GetTypeInfo().Assembly,
             typeof(TestAssemblyProvider).GetTypeInfo().Assembly
         };
     }

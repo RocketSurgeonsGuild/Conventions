@@ -6,7 +6,7 @@ using Rocket.Surgery.Conventions.CommandLine;
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Helper method for working with <see cref="IConventionHostBuilder" />
+    /// Helper method for working with <see cref="ConventionContextBuilder" />
     /// </summary>
     public static class CommandLineHostBuilderExtensions
     {
@@ -16,14 +16,31 @@ namespace Rocket.Surgery.Conventions
         /// <param name="container">The container.</param>
         /// <param name="delegate">The delegate.</param>
         /// <returns>IConventionHostBuilder.</returns>
-        public static IConventionHostBuilder ConfigureCommandLine([NotNull] this IConventionHostBuilder container, CommandLineConventionDelegate @delegate)
+        public static ConventionContextBuilder ConfigureCommandLine([NotNull] this ConventionContextBuilder container, CommandLineConvention @delegate)
         {
             if (container == null)
             {
                 throw new ArgumentNullException(nameof(container));
             }
 
-            container.Scanner.AppendDelegate(@delegate);
+            container.AppendDelegate(@delegate);
+            return container;
+        }
+
+        /// <summary>
+        /// Configure the commandline delegate to the convention scanner
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns>IConventionHostBuilder.</returns>
+        public static ConventionContextBuilder ConfigureCommandLine([NotNull] this ConventionContextBuilder container, Action<ICommandLineContext> @delegate)
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.AppendDelegate(new CommandLineConvention((_, context) => @delegate(context)));
             return container;
         }
     }

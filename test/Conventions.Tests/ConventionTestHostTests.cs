@@ -14,7 +14,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Tests.DependencyInjection;
 using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
@@ -68,45 +67,6 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
-        public void Builder_Should_Use_A_Custom_IConventionScanner()
-        {
-            var builder = TestHost.For(this, LoggerFactory)
-               .Create(x => { x.UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>()); });
-
-            builder.Scanner.Should().BeSameAs(AutoFake.Resolve<IConventionScanner>());
-        }
-
-        [Fact]
-        public void Builder_Should_Use_A_Custom_IAssemblyCandidateFinder()
-        {
-            var builder = TestHost.For(this, LoggerFactory)
-               .Create(x => { x.UseAssemblyCandidateFinder(AutoFake.Resolve<IAssemblyCandidateFinder>()); });
-
-            builder.AssemblyCandidateFinder.Should().BeSameAs(AutoFake.Resolve<IAssemblyCandidateFinder>());
-        }
-
-        [Fact]
-        public void Builder_Should_Use_A_Custom_IAssemblyProvider()
-        {
-            var builder = TestHost.For(this, LoggerFactory)
-               .Create(
-                    x => { x.UseAssemblyProvider(AutoFake.Resolve<IAssemblyProvider>()); }
-                );
-
-            builder.AssemblyProvider.Should().BeSameAs(AutoFake.Resolve<IAssemblyProvider>());
-        }
-
-        [Fact]
-        public void Builder_Should_Use_A_Custom_DiagnosticSource()
-        {
-            var builder = TestHost.For(this, LoggerFactory)
-               .WithLogger(Logger)
-               .Create();
-
-            builder.DiagnosticLogger.Should().BeSameAs(Logger);
-        }
-
-        [Fact]
         public void Builder_Should_Use_A_Custom_ILogger()
         {
             Action a = () => TestHost.For(this, LoggerFactory)
@@ -116,30 +76,10 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
-        public void Builder_Should_Scan_For_Conventions_When_Desired()
-        {
-            var host = TestHost.For(this, LoggerFactory)
-               .IncludeConventions()
-               .Create();
-
-            host.Scanner.BuildProvider().GetAll().Should().NotBeEmpty();
-        }
-
-        [Fact]
-        public void Builder_Should_Not_Scan_For_Conventions()
-        {
-            var host = TestHost.For(this, LoggerFactory)
-               .ExcludeConventions()
-               .Create();
-
-            host.Scanner.BuildProvider().GetAll().Should().BeEmpty();
-        }
-
-        [Fact]
         public void Builder_Should_Build()
         {
             var testHost = TestHost.For(this, LoggerFactory).Create(
-                x => { x.ConfigureServices(x => x.AddSingleton<ServiceA>()); }
+                x => x.ConfigureServices((c, _, x) => x.AddSingleton<ServiceA>())
             );
 
             using var host = testHost.Build();
@@ -150,7 +90,7 @@ namespace Rocket.Surgery.Conventions.Tests
         public void Builder_Should_Populate_Services()
         {
             var testHost = TestHost.For(this, LoggerFactory).Create(
-                x => { x.ConfigureServices(x => x.AddSingleton<ServiceA>()); }
+                x => { x.ConfigureServices((c, _, x) => x.AddSingleton<ServiceA>()); }
             );
 
             Populate(testHost.Parse());
@@ -160,13 +100,10 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Populate_Container()
         {
-            var testHost = TestHost.For(this, LoggerFactory).Create(
+            var testHost = TestHost.For(this, LoggerFactory).Create().Configure(
                 x =>
-                {
                     x.UseServiceProviderFactory(new DryIocServiceProviderFactory(new Container()))
                        .ConfigureContainer<IContainer>(x => x.Register<ServiceA>(Reuse.Singleton))
-                        ;
-                }
             );
 
             Populate(testHost.Parse<IContainer>());
@@ -176,13 +113,9 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Build_As_Many_Times_As_We_Want()
         {
-            var testHost = TestHost.For(this, LoggerFactory).Create(
-                x =>
-                {
-                    x.UseServiceProviderFactory(new DryIocServiceProviderFactory(new Container()))
-                       .ConfigureContainer<IContainer>(x => x.Register<ServiceA>(Reuse.Singleton))
-                        ;
-                }
+            var testHost = TestHost.For(this, LoggerFactory).Create().Configure(
+                z => z.UseServiceProviderFactory(new DryIocServiceProviderFactory(new Container()))
+                   .ConfigureContainer<IContainer>(x => x.Register<ServiceA>(Reuse.Singleton))
             );
 
             Populate(testHost.Parse<IContainer>());
@@ -211,9 +144,8 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Builder_Should_Add_Configuration_After_It_Has_Been_Changed()
         {
-            var host = TestHost.For(this, LoggerFactory)
-               .Create();
-            host.GetOrAdd(() => new ConfigOptions());
+            var host = TestHost.For(this, LoggerFactory).Create();
+            host.Properties.GetOrAdd(() => new ConfigOptions());
 
             var rootConfiguration = host.Parse<IConfigurationRoot>();
 
@@ -299,11 +231,10 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Calls_Hosting_Conventions_When_Provided_Configuration()
         {
-            var handler = A.Fake<HostingConventionDelegate>();
+            var handler = A.Fake<HostingConvention>();
             var host = TestHost.For(this, LoggerFactory)
                .WithConfiguration(AutoFake.Resolve<IConfiguration>())
-               .Create()
-               .ConfigureHosting(handler)
+               .Create(x => x.ConfigureHosting(handler))
                .Get<IHostBuilder>();
 
             using (var a = host.Build()) { }
@@ -314,11 +245,10 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Calls_Hosting_Conventions_When_Sharing_Configuration()
         {
-            var handler = A.Fake<HostingConventionDelegate>();
+            var handler = A.Fake<HostingConvention>();
             var host = TestHost.For(this, LoggerFactory)
                .ShareConfiguration(typeof(ConventionTestHostTests))
-               .Create()
-               .ConfigureHosting(handler)
+               .Create(x => x.ConfigureHosting(handler))
                .Get<IHostBuilder>();
 
             using (var a = host.Build()) { }

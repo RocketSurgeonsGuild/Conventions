@@ -11,16 +11,15 @@ namespace Rocket.Surgery.Conventions
     /// Implements the <see cref="IServiceProviderDictionary" />
     /// </summary>
     /// <seealso cref="IServiceProviderDictionary" />
-    public class ServiceProviderDictionary : IServiceProviderDictionary
+    public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlyServiceProviderDictionary
     {
         private readonly IDictionary<object, object?> _values;
-        private readonly HashSet<Type> _servicesTypes = new HashSet<Type>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceProviderDictionary" /> class.
         /// </summary>
         /// <param name="values">The values.</param>
-        public ServiceProviderDictionary(IDictionary<object, object?> values)
+        public ServiceProviderDictionary(IDictionary<object, object?>? values)
             => _values = values ?? new Dictionary<object, object?>();
 
         /// <summary>
@@ -39,12 +38,12 @@ namespace Rocket.Surgery.Conventions
             set
             {
                 _values[key] = value;
-                if (key is Type t)
-                {
-                    _servicesTypes.Add(t);
-                }
             }
         }
+
+        IEnumerable<object> IReadOnlyDictionary<object, object?>.Keys => Keys;
+
+        IEnumerable<object?> IReadOnlyDictionary<object, object?>.Values => Values;
 
         /// <summary>
         /// Gets the keys.
@@ -78,10 +77,6 @@ namespace Rocket.Surgery.Conventions
         public void Add(object key, object? value)
         {
             _values[key] = value;
-            if (key is Type t)
-            {
-                _servicesTypes.Add(t);
-            }
         }
 
         /// <summary>
@@ -91,10 +86,6 @@ namespace Rocket.Surgery.Conventions
         public void Add(KeyValuePair<object, object?> item)
         {
             _values.Add(item.Key, item.Value);
-            if (item.Key is Type t)
-            {
-                _servicesTypes.Add(t);
-            }
         }
 
         /// <summary>
@@ -102,7 +93,6 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         public void Clear()
         {
-            _servicesTypes.Clear();
             _values.Clear();
         }
 
@@ -138,31 +128,16 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        public bool Remove(object key)
-        {
-            if (key is Type t)
-            {
-                _servicesTypes.Remove(t);
-            }
-
-            return _values.Remove(key);
-        }
+        public bool Remove(object key) => _values.Remove(key);
 
         /// <summary>
         /// Removes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        public bool Remove(KeyValuePair<object, object?> item)
-        {
-            if (item.Key is Type t)
-            {
-                _servicesTypes.Remove(t);
-            }
-
+        public bool Remove(KeyValuePair<object, object?> item) =>
             // ReSharper disable once AssignNullToNotNullAttribute
-            return _values.Remove(item);
-        }
+            _values.Remove(item);
 
         /// <summary>
         /// Tries the get value.

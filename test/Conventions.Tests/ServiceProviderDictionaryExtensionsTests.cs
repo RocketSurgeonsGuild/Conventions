@@ -52,31 +52,6 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         [Fact]
-        public void Should_Get_TestHost()
-        {
-            var context = new ServiceProviderDictionary();
-            context.Set(HostType.UnitTestHost);
-
-            context.IsUnitTestHost().Should().BeTrue();
-        }
-
-        [Fact]
-        public void Should_Not_TestHost()
-        {
-            var context = new ServiceProviderDictionary();
-            context.Set(HostType.Live);
-
-            context.IsUnitTestHost().Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_Not_GetHostType()
-        {
-            var context = new ServiceProviderDictionary();
-            context.GetHostType().Should().Be(HostType.Undefined);
-        }
-
-        [Fact]
         public void Should_GetOrAdd_Item_By_Type_Get()
         {
             var context = A.Fake<IServiceProviderDictionary>();
@@ -121,17 +96,5 @@ namespace Rocket.Surgery.Conventions.Tests
         }
 
         public interface IMyType { }
-
-        [Theory]
-        [InlineData(HostType.Undefined)]
-        [InlineData(HostType.Live)]
-        [InlineData(HostType.UnitTestHost)]
-        public void Should_Get_HostType(HostType hostType)
-        {
-            var context = new ServiceProviderDictionary();
-            context.Set(hostType);
-
-            context.GetHostType().Should().Be(hostType);
-        }
     }
 }

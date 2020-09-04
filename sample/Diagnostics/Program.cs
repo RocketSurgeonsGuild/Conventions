@@ -17,7 +17,7 @@ namespace Diagnostics
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
            .LaunchWith(RocketBooster.For(DependencyContext.Default))
            .ConfigureRocketSurgery(
-                builder => builder.ConfigureServices(x => { }).ConfigureCommandLine(cl => cl.OnRun(_ => 1))
+                builder => builder.ConfigureServices(x => { }).ConfigureCommandLine((a, cl) => cl.OnRun(_ => 1))
             );
     }
 }

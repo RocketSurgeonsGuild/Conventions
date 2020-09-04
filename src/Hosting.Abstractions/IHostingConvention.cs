@@ -1,11 +1,21 @@
-﻿using Rocket.Surgery.Conventions;
+﻿using JetBrains.Annotations;
+using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Hosting
 {
     /// <summary>
-    /// IHostingConvention
-    /// Implements the <see cref="IConvention{TContext}" />
+    /// ILoggingConvention
+    /// Implements the <see cref="IConvention" />
     /// </summary>
-    /// <seealso cref="IConvention{IHostingConventionContext}" />
-    public interface IHostingConvention : IConvention<IHostingConventionContext> { }
+    /// <seealso cref="IConvention" />
+    public interface IHostingConvention : IConvention
+    {
+        /// <summary>
+        /// Register additional logging providers with the logging builder
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="builder"></param>
+        void Register([NotNull] IConventionContext context, [NotNull] IHostBuilder builder);
+    }
 }

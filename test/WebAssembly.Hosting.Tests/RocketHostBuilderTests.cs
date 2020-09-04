@@ -4,8 +4,10 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
@@ -23,48 +25,10 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
     public class RocketHostBuilderTests : AutoFakeTest
     {
         [Fact]
-        public void Should_Call_Through_To_Delegate_Methods()
-        {
-            AutoFake.Provide(Array.Empty<string>());
-            LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .PrependDelegate(new Action(() => { }))
-                       .AppendDelegate(new Action(() => { }))
-                );
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependDelegate(A<Delegate>._))
-               .MustHaveHappened(1, Times.Exactly);
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendDelegate(A<Delegate>._))
-               .MustHaveHappened(1, Times.Exactly);
-        }
-
-        [Fact]
-        public void Should_Call_Through_To_Convention_Methods()
-        {
-            AutoFake.Provide(Array.Empty<string>());
-            var convention = AutoFake.Resolve<IConvention>();
-            LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .PrependConvention(convention)
-                       .AppendConvention(convention)
-                );
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().PrependConvention(A<IConvention>._))
-               .MustHaveHappened(1, Times.Exactly);
-            A.CallTo(() => AutoFake.Resolve<IConventionScanner>().AppendConvention(A<IConvention>._))
-               .MustHaveHappened(1, Times.Exactly);
-        }
-
-        [Fact]
         public void Should_UseAppDomain()
         {
             var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseAppDomain(AppDomain.CurrentDomain)
-                );
+               .ConfigureRocketSurgery(rb => rb.UseAppDomain(AppDomain.CurrentDomain));
 
             var host = builder.Build();
             host.Services.Should().NotBeNull();
@@ -74,10 +38,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         public void Should_UseAssemblies()
         {
             var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
-                );
+               .ConfigureRocketSurgery(rb => rb.UseAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
             var host = builder.Build();
             host.Services.Should().NotBeNull();
@@ -97,10 +58,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         public void Should_UseDiagnosticLogging()
         {
             var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-               .UseRocketBooster(
-                    RocketBooster.For(AppDomain.CurrentDomain),
-                    x => x.UseDiagnosticLogging(c => c.AddSerilog())
-                );
+               .UseRocketBooster(RocketBooster.For(AppDomain.CurrentDomain), x => x.UseDiagnosticLogging(c => c.AddSerilog()));
 
             var host = builder.Build();
             host.Services.Should().NotBeNull();
@@ -110,10 +68,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         public void Should_UseDependencyContext()
         {
             var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseDependencyContext(DependencyContext.Default)
-                );
+               .ConfigureRocketSurgery(rb => rb.UseAppDomain(AppDomain.CurrentDomain));
 
             var host = builder.Build();
             host.Services.Should().NotBeNull();
@@ -122,83 +77,54 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         [Fact]
         public void Should_ConfigureServices()
         {
+            var convention = A.Fake<ServiceConvention>();
             var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseDependencyContext(DependencyContext.Default)
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .ConfigureServices(x => { })
+               .ConfigureRocketSurgery(rb => rb.UseAppDomain(AppDomain.CurrentDomain)
+                       .ConfigureServices(convention)
                 );
 
             builder.Build();
-            A.CallTo(
-                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(ServiceConventionDelegate))
-                )
-            ).MustHaveHappened();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IServiceCollection>._)).MustHaveHappened();
         }
 
         [Fact]
         public void Should_ConfigureConfiguration()
         {
+            var convention = A.Fake<ConfigurationConvention>();
             var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseDependencyContext(DependencyContext.Default)
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .ConfigureConfiguration(x => { })
-                );
+               .ConfigureRocketSurgery(rb => rb.UseAppDomain(AppDomain.CurrentDomain).ConfigureConfiguration(convention));
 
             builder.Build();
-            A.CallTo(
-                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(ConfigConventionDelegate))
-                )
-            ).MustHaveHappened();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IConfigurationBuilder>._)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void Should_ConfigureHosting()
+        {
+            var convention = A.Fake<WebAssemblyHostingConvention>();
+            var builder = LocalWebAssemblyHostBuilder.CreateDefault()
+               .ConfigureRocketSurgery(rb => rb.UseAppDomain(AppDomain.CurrentDomain).ConfigureHosting(convention));
+
+            builder.Build();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IWebAssemblyHostBuilder>._)).MustHaveHappened();
         }
 
         [Fact]
         public void Should_ConfigureLogging()
         {
+            var convention = A.Fake<LoggingConvention>();
             var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseDependencyContext(DependencyContext.Default)
-                       .UseScannerUnsafe(AutoFake.Resolve<IConventionScanner>())
-                       .ConfigureLogging(x => { })
-                );
+               .ConfigureRocketSurgery(rb => rb.UseAppDomain(AppDomain.CurrentDomain).ConfigureLogging(convention));
 
             builder.Build();
-            A.CallTo(
-                () => AutoFake.Resolve<IConventionScanner>().AppendDelegate(
-                    A<Delegate[]>.That.Matches(z => z[0].GetType() == typeof(LoggingConventionDelegate))
-                )
-            ).MustHaveHappened();
+            A.CallTo(() => convention.Invoke(A<IConventionContext>._,  A<IConfiguration>._, A<ILoggingBuilder>._)).MustHaveHappened();
         }
+
 
         [Fact]
         public void Should_Build_The_Host_Correctly()
         {
-            var serviceConventionFake = A.Fake<IServiceConvention>();
-            var configurationConventionFake = A.Fake<IConfigConvention>();
-
-            var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-               .ConfigureRocketSurgery(
-                    rb => rb
-                       .UseScannerUnsafe(
-                            new BasicConventionScanner(
-                                A.Fake<IServiceProviderDictionary>(),
-                                serviceConventionFake,
-                                configurationConventionFake
-                            )
-                        )
-                       .UseAssemblyCandidateFinder(
-                            new DefaultAssemblyCandidateFinder(new[] { typeof(RocketHostBuilderTests).Assembly })
-                        )
-                       .UseAssemblyProvider(
-                            new DefaultAssemblyProvider(new[] { typeof(RocketHostBuilderTests).Assembly })
-                        )
-                );
+            var builder = LocalWebAssemblyHostBuilder.CreateDefault().ConfigureRocketSurgery(AppDomain.CurrentDomain);
 
             var host = builder.Build();
             host.Services.Should().NotBeNull();

@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// Implements the <see cref="IAssemblyProvider" />
     /// </summary>
     /// <seealso cref="IAssemblyProvider" />
-    public class DefaultAssemblyProvider : IAssemblyProvider
+     class DefaultAssemblyProvider : IAssemblyProvider
     {
         private readonly ILogger _logger;
         private readonly IEnumerable<Assembly> _assembles;

@@ -15,7 +15,7 @@ namespace Rocket.Surgery.Conventions.Scanners
         /// A nether case, if no delegate is found
         /// </summary>
         /// <value>The none.</value>
-        public static DelegateOrConvention None { get; } = new DelegateOrConvention();
+        public static DelegateOrConvention None { get; } = default!;
 
         /// <summary>
         /// Create a convention

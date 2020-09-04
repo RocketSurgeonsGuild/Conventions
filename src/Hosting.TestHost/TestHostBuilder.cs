@@ -14,8 +14,9 @@ namespace Rocket.Surgery.Hosting
     /// <summary>
     /// A program initialization utility.
     /// </summary>
-    public class TestHostBuilder : IHostBuilder, IConventionHostBuilder
+    public class TestHostBuilder : IHostBuilder
     {
+        internal readonly IConventionContext _conventionContext;
         internal readonly List<Action<IConfigurationBuilder>> _configureHostConfigActions = new List<Action<IConfigurationBuilder>>();
 
         internal readonly List<Action<HostBuilderContext, IConfigurationBuilder>> _configureAppConfigActions =
@@ -27,9 +28,11 @@ namespace Rocket.Surgery.Hosting
         internal readonly List<IConfigureContainerAdapter> _configureContainerActions = new List<IConfigureContainerAdapter>();
         internal IServiceFactoryAdapter _serviceProviderFactory = new ServiceFactoryAdapter<IServiceCollection>(new DefaultServiceProviderFactory());
 
-        public TestHostBuilder(IDictionary<object, object?> properties)
+        public TestHostBuilder(IConventionContext conventionContext)
         {
-            Properties = properties;
+            _conventionContext = conventionContext;
+            _conventionContext.Set<IHostBuilder>(this);
+            _conventionContext.Set(this);
         }
 
         /// <summary>
@@ -50,8 +53,40 @@ namespace Rocket.Surgery.Hosting
         /// <returns>An initialized <see cref="IHost"/></returns>
         public IServiceCollection Parse() => TestHostFactory.CreateServiceCollection(this);
 
+        /// <summary>
+        /// Configure the host builder
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public TestHostBuilder Configure(Action<IHostBuilder> action)
+        {
+            action(this);
+            return this;
+        }
+
         #region Interfaces
-        public IDictionary<object, object?> Properties { get; }
+        /// <inheritdoc />
+        public object? this[object item]
+        {
+            get => _conventionContext[item];
+            set => _conventionContext[item] = value;
+        }
+
+        /// <inheritdoc />
+        public IServiceProviderDictionary Properties => _conventionContext.Properties;
+        IDictionary<object, object?> IHostBuilder.Properties => _conventionContext.Properties;
+
+        /// <inheritdoc />
+        public ILogger Logger => _conventionContext.Logger;
+
+        /// <inheritdoc />
+        public IAssemblyProvider AssemblyProvider => _conventionContext.AssemblyProvider;
+
+        /// <inheritdoc />
+        public IAssemblyCandidateFinder AssemblyCandidateFinder => _conventionContext.AssemblyCandidateFinder;
+
+        /// <inheritdoc />
+        public IConventionProvider Conventions => _conventionContext.Conventions;
 
         /// <summary>
         /// Set up the configuration for the builder itself. This will be used to initialize the <see cref="IHostEnvironment"/>
@@ -135,67 +170,6 @@ namespace Rocket.Surgery.Hosting
             return this;
         }
 
-        private IConventionHostBuilder ConventionHostBuilder => Properties.GetConventions();
-
-        [ExcludeFromCodeCoverage]
-        public IConventionScanner Scanner => ConventionHostBuilder.Scanner;
-
-        [ExcludeFromCodeCoverage]
-        public IAssemblyCandidateFinder AssemblyCandidateFinder => ConventionHostBuilder.AssemblyCandidateFinder;
-
-        [ExcludeFromCodeCoverage]
-        public IServiceProviderDictionary ServiceProperties => ConventionHostBuilder.ServiceProperties;
-
-        [ExcludeFromCodeCoverage]
-        public IAssemblyProvider AssemblyProvider => ConventionHostBuilder.AssemblyProvider;
-
-        [ExcludeFromCodeCoverage]
-        public ILogger DiagnosticLogger => ConventionHostBuilder.DiagnosticLogger;
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention(IEnumerable<IConvention> conventions) => ConventionHostBuilder.AppendConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention(params IConvention[] conventions) => ConventionHostBuilder.AppendConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention(IEnumerable<Type> conventions) => ConventionHostBuilder.AppendConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention(params Type[] conventions) => ConventionHostBuilder.AppendConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendConvention<T>()
-            where T : IConvention => ConventionHostBuilder.AppendConvention<T>();
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention(IEnumerable<IConvention> conventions) => ConventionHostBuilder.PrependConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention(params IConvention[] conventions) => ConventionHostBuilder.PrependConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention(IEnumerable<Type> conventions) => ConventionHostBuilder.PrependConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention(params Type[] conventions) => ConventionHostBuilder.PrependConvention(conventions);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependConvention<T>()
-            where T : IConvention => ConventionHostBuilder.PrependConvention<T>();
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendDelegate(IEnumerable<Delegate> delegates) => ConventionHostBuilder.AppendDelegate(delegates);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder AppendDelegate(params Delegate[] delegates) => ConventionHostBuilder.AppendDelegate(delegates);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependDelegate(IEnumerable<Delegate> delegates) => ConventionHostBuilder.PrependDelegate(delegates);
-
-        [ExcludeFromCodeCoverage]
-        public IConventionHostBuilder PrependDelegate(params Delegate[] delegates) => ConventionHostBuilder.PrependDelegate(delegates);
-
         /// <summary>
         /// Get a value by type from the context
         /// </summary>
@@ -203,9 +177,22 @@ namespace Rocket.Surgery.Hosting
         /// <param name="value">The value to save</param>
         public TestHostBuilder Set<T>(T value)
         {
-            this.ServiceProperties[typeof(T)] = value;
+            this.Properties[typeof(T)] = value;
             return this;
         }
+
+        /// <summary>
+        /// Get a value by type from the context
+        /// </summary>
+        /// <typeparam name="T">The type of the value</typeparam>
+        public T Get<T>() => (T)Properties[typeof(T)]!;
+
+        /// <summary>
+        /// Get a value by type from the context
+        /// </summary>
+        /// <typeparam name="T">The type of the value</typeparam>
+        /// <param name="key">The key where the value is saved</param>
+        public T Get<T>(string key) => (T)Properties[key]!;
 
         /// <summary>
         /// Get a value by type from the context
@@ -215,7 +202,7 @@ namespace Rocket.Surgery.Hosting
         /// <param name="value">The value to save</param>
         public TestHostBuilder Set<T>(string key, T value)
         {
-            this.ServiceProperties[key] = value;
+            this.Properties[key] = value;
             return this;
         }
         #endregion
