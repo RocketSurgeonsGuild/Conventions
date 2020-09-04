@@ -202,6 +202,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
                .WithConfiguration(AutoFake.Resolve<IConfiguration>())
                .Create(x => x
                    .ConfigureServices(handler)
+               .ConfigureLogging(handler2)
                    .ConfigureLogging(handler2)
                 );
 
@@ -219,6 +220,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
                .ShareConfiguration(typeof(ConventionTestWebAssemblyHostTests))
                .Create(x => x
                    .ConfigureServices(handler)
+               .ConfigureLogging(handler2)
                    .ConfigureLogging(handler2)
                 );
 
