@@ -155,7 +155,7 @@ namespace Rocket.Surgery.Conventions
                    .Where(z => builder._exceptConventions.All(x => x != z.GetType()))
                 : Enumerable.Empty<IConvention>();
 
-            return new ConventionProvider(contributionTypes, builder._prependedConventions, builder._appendedConventions);
+            return new ConventionProvider(builder.GetHostType(), contributionTypes, builder._prependedConventions, builder._appendedConventions);
         }
 
         internal static IAssemblyCandidateFinder defaultAssemblyCandidateFinderFactory(object? source, ILogger? logger) => source switch

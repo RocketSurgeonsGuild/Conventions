@@ -25,6 +25,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var f = new F();
 
             var provider = new ConventionProvider(
+                HostType.Undefined,
                 new IConvention[] { b, c },
                 new object[] { d, f },
                 new object[] { e }
@@ -46,6 +47,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var f = new F();
 
             var provider = new ConventionProvider(
+                HostType.Undefined,
                 new IConvention[] { b, c },
                 new object[] { d },
                 new object[] { e, f }
@@ -70,6 +72,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var f = new F();
 
             var provider = new ConventionProvider(
+                HostType.Undefined,
                 new IConvention[] { b, c },
                 new object[] { d1, d, d2 },
                 new object[] { e, d3, f }
@@ -97,6 +100,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var c2 = new Cyclic2();
 
             var provider = new ConventionProvider(
+                HostType.Undefined,
                 new IConvention[] { c1, c2 },
                 Array.Empty<object>(),
                 Array.Empty<object>()
@@ -119,6 +123,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var f = new F();
 
             var provider = new ConventionProvider(
+                HostType.Undefined,
                 new IConvention[] { b, c },
                 new object[] { d1, d, d2 },
                 new object[] { e, d3, f }
@@ -151,6 +156,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var f = new F();
 
             var provider = new ConventionProvider(
+                HostType.Undefined,
                 new IConvention[] { b, c },
                 new object[] { d1, d, d2 },
                 new object[] { e, d3, f }
