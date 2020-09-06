@@ -152,7 +152,7 @@ namespace Rocket.Surgery.Conventions
 
             if (builder._conventionProvider != null)
             {
-                return new ConventionProvider(builder.GetHostType(), builder._conventionProvider(), builder._prependedConventions, builder._appendedConventions);
+                return new ConventionProvider(builder.GetHostType(), builder._conventionProvider(builder.Properties), builder._prependedConventions, builder._appendedConventions);
             }
 
             var contributionTypes = builder._useAttributeConventions
