@@ -162,7 +162,7 @@ namespace Rocket.Surgery.Conventions.Tests
                 new object[] { e, d3, f }
             );
 
-            provider.GetAll(HostType.UnitTestHost)
+            provider.GetAll(HostType.UnitTest)
                .Select(x => x.Convention as object ?? x.Delegate)
                .Should()
                .ContainInOrder(

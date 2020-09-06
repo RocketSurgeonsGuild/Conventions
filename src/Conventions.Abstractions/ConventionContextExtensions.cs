@@ -150,7 +150,7 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return context.GetHostType() == HostType.UnitTestHost;
+            return context.GetHostType() == HostType.UnitTest;
         }
 
         /// <summary>

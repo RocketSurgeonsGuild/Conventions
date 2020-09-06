@@ -1,0 +1,204 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive;
+using System.Threading.Tasks;
+using Sample.DependencyOne;
+using Sample.DependencyThree;
+using Sample.DependencyTwo;
+using Xunit;
+using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
+
+namespace Rocket.Surgery.Conventions.Analyzers.Tests
+{
+    public class ExportedConventionsTests
+    {
+        [Fact]
+        public async Task Should_Pull_Through_A_Convention()
+        {
+            var source = @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention(typeof(Contrib))]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    internal class Contrib : IConvention { }
+}
+";
+            var expected = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+
+[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
+namespace TestProject.__conventions__
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    public static class __exports__
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
+        }
+    }
+}
+";
+
+            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+                source,
+                expected
+            ).ConfigureAwait(false);
+        }
+
+        [Theory]
+        [InlineData(HostType.Live)]
+        [InlineData(HostType.UnitTest)]
+        public async Task Should_Support_HostType_Conventions(HostType hostType)
+        {
+            var source = @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention(typeof(Contrib))]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    [{HostType}Convention]
+    internal class Contrib : IConvention { }
+}
+".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase);
+            var expected = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+
+[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
+namespace TestProject.__conventions__
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    public static class __exports__
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.{HostType});
+        }
+    }
+}
+".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase);;
+
+            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+                source,
+                expected
+            ).ConfigureAwait(false);
+        }
+
+        [Theory]
+        [InlineData("AfterConventionAttribute",DependencyDirection.DependsOn)]
+        [InlineData("DependsOnConventionAttribute",DependencyDirection.DependsOn)]
+        [InlineData("BeforeConventionAttribute",DependencyDirection.DependentOf)]
+        [InlineData("DependentOfConventionAttribute",DependencyDirection.DependentOf)]
+        public async Task Should_Support_DependencyDirection_Conventions(string attributeName, DependencyDirection dependencyDirection)
+        {
+            var source = @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention(typeof(Contrib))]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    [{AttributeName}(typeof(D))]
+    [LiveConvention, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    internal class Contrib : IConvention { }
+
+    internal class D : IConvention { }
+}
+".Replace("{AttributeName}", attributeName, StringComparison.OrdinalIgnoreCase);
+            var expected = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+
+[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
+namespace TestProject.__conventions__
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    public static class __exports__
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Live).WithDependency(DependencyDirection.{DependencyDirection}, typeof(Rocket.Surgery.Conventions.Tests.D));
+        }
+    }
+}
+".Replace("{DependencyDirection}", dependencyDirection.ToString(), StringComparison.OrdinalIgnoreCase);;
+
+            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+                new[] { typeof(ExcludeFromCodeCoverageAttribute).Assembly },
+                source,
+                expected
+            ).ConfigureAwait(false);
+        }
+
+        [Fact]
+        public async Task Should_Pull_Through_All_Conventions()
+        {
+            var source1 = @"
+using Rocket.Surgery.Conventions;
+
+[assembly: Convention(typeof(Contrib1))]
+
+internal class Contrib1 : IConvention { }
+";
+            var source2 = @"
+using Rocket.Surgery.Conventions;
+
+[assembly: Convention(typeof(Contrib2))]
+[assembly: Convention(typeof(Contrib3))]
+
+internal class Contrib2 : IConvention { }
+internal class Contrib3 : IConvention { }
+";
+            var source3 = @"
+using Rocket.Surgery.Conventions;
+
+[assembly: Convention(typeof(Contrib4))]
+
+internal class Contrib4 : IConvention { }
+";
+            var expected = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+
+[assembly: ExportedConventions(typeof(Contrib1), typeof(Contrib2), typeof(Contrib3), typeof(Contrib4))]
+namespace TestProject.__conventions__
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    public static class __exports__
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib1>(serviceProvider), HostType.Undefined);
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib2>(serviceProvider), HostType.Undefined);
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib3>(serviceProvider), HostType.Undefined);
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib4>(serviceProvider), HostType.Undefined);
+        }
+    }
+}";
+
+            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+                new[] { source1, source2, source3 },
+                new [] { expected }
+            ).ConfigureAwait(false);
+        }
+    }
+}

@@ -34,6 +34,8 @@
 | Rocket.Surgery.WebAssembly.Hosting.Abstractions | [![nuget-version-210qyrjhfeiq-badge]![nuget-downloads-210qyrjhfeiq-badge]][nuget-210qyrjhfeiq] |
 | Rocket.Surgery.WebAssembly.Hosting.TestHost | [![nuget-version-aszqzl/b9jhq-badge]![nuget-downloads-aszqzl/b9jhq-badge]][nuget-aszqzl/b9jhq] |
 | Rocket.Surgery.Conventions.DependencyModel | [![nuget-version-9pbq5cbbcf5g-badge]![nuget-downloads-9pbq5cbbcf5g-badge]][nuget-9pbq5cbbcf5g] |
+| Rocket.Surgery.Conventions.Analyzers | [![nuget-version-jni/w9zchasw-badge]![nuget-downloads-jni/w9zchasw-badge]][nuget-jni/w9zchasw] |
+| Rocket.Surgery.Conventions.Generators | [![nuget-version-ve7m58xxzu1q-badge]![nuget-downloads-ve7m58xxzu1q-badge]][nuget-ve7m58xxzu1q] |
 <!-- nuget packages -->
 
 # Whats next?
@@ -104,6 +106,12 @@ TBD
 [nuget-9pbq5cbbcf5g]: https://www.nuget.org/packages/Rocket.Surgery.Conventions.DependencyModel/
 [nuget-version-9pbq5cbbcf5g-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.DependencyModel.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
 [nuget-downloads-9pbq5cbbcf5g-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.DependencyModel.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
+[nuget-jni/w9zchasw]: https://www.nuget.org/packages/Rocket.Surgery.Conventions.Analyzers/
+[nuget-version-jni/w9zchasw-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.Analyzers.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
+[nuget-downloads-jni/w9zchasw-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.Analyzers.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
+[nuget-ve7m58xxzu1q]: https://www.nuget.org/packages/Rocket.Surgery.Conventions.Generators/
+[nuget-version-ve7m58xxzu1q-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.Generators.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
+[nuget-downloads-ve7m58xxzu1q-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.Generators.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
 <!-- generated references -->
 
 <!-- nuke-data

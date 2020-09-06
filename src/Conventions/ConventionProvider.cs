@@ -55,6 +55,7 @@ namespace Rocket.Surgery.Conventions
         /// <summary>
         /// Initializes a new instance of the <see cref="ConventionProvider" /> class.
         /// </summary>
+        /// <param name="hostType"></param>
         /// <param name="contributions">The contributions.</param>
         /// <param name="prependedContributionsOrDelegates">The prepended contributions or delegates.</param>
         /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>

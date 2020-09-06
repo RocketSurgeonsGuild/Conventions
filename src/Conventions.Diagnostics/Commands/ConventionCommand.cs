@@ -494,8 +494,8 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
         {
             Type = convention;
             Definitions = definitions;
-            HasAttribute = convention.Assembly.GetCustomAttributes<ConventionAttribute>()
-               .Any(x => x.Type.GetTypeInfo() == convention);
+            HasAttribute = convention.Assembly.GetCustomAttributes<ExportedConventionsAttribute>().SelectMany(z => z.ExportedConventions)
+               .Any(x => x.GetTypeInfo() == convention);
             IsPublic = convention.IsPublic;
         }
 

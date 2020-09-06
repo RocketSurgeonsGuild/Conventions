@@ -139,7 +139,7 @@ namespace Rocket.Surgery.Hosting
                 ;
         }
 
-        private readonly ConventionContextBuilder _contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>()).Set(HostType.UnitTestHost);
+        private readonly ConventionContextBuilder _contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>()).Set(HostType.UnitTest);
         private ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
         private ILogger _logger = NullLogger.Instance;
         private IConfiguration? _reuseConfiguration;

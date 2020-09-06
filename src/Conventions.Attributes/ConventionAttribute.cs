@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using JetBrains.Annotations;
 
@@ -11,6 +12,7 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     /// <seealso cref="Attribute" />
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+    [Conditional("CodeGeneration")]
     public sealed class ConventionAttribute : Attribute
     {
         /// <summary>
@@ -25,11 +27,6 @@ namespace Rocket.Surgery.Conventions
                 throw new ArgumentNullException(nameof(type));
             }
 
-            if (!typeof(IConvention).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-            {
-                throw new NotSupportedException("Type must inherit from " + nameof(IConvention));
-            }
-
             Type = type;
         }
 
@@ -39,6 +36,4 @@ namespace Rocket.Surgery.Conventions
         /// <value>The type.</value>
         public Type Type { get; }
     }
-
-#pragma warning restore CA1040
 }

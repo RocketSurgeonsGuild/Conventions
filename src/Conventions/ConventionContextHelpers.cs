@@ -58,8 +58,8 @@ namespace Rocket.Surgery.Conventions
             {
                 if (!Conventions.TryGetValue(assembly, out var types))
                 {
-                    types = assembly.GetCustomAttributes<ConventionAttribute>()
-                       .Select(x => x.Type)
+                    types = assembly.GetCustomAttributes<ExportedConventionsAttribute>()
+                       .SelectMany(x => x.ExportedConventions)
                        .Distinct()
                        .Select(type => ActivatorUtilities.CreateInstance(builder.Properties, type))
                        .Cast<IConvention>()

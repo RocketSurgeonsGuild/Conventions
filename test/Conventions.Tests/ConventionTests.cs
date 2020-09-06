@@ -19,13 +19,6 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     public class ConventionTests : AutoFakeTest
     {
-        [Fact]
-        public void ConventionAttributeThrowsIfNonConventionGiven()
-        {
-            Action a = () => new ConventionAttribute(typeof(object));
-            a.Should().Throw<NotSupportedException>();
-        }
-
         public ConventionTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
     }
 }
