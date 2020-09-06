@@ -1,18 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
-using Rocket.Surgery.Extensions.Configuration;
 
 #pragma warning disable CA1031
 #pragma warning disable CA2000

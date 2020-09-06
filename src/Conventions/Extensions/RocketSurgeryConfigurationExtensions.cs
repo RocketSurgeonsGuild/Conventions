@@ -28,11 +28,11 @@ namespace Microsoft.Extensions.Configuration
             outerConfiguration ??= new ConfigurationBuilder().Build();
             foreach (var item in conventionContext.Conventions.Get<IConfigurationConvention, ConfigurationConvention>())
             {
-                if (item.Convention is IConfigurationConvention convention)
+                if (item is IConfigurationConvention convention)
                 {
                     convention.Register(conventionContext, outerConfiguration, configurationBuilder);
                 }
-                else if (item.Delegate is ConfigurationConvention @delegate)
+                else if (item is ConfigurationConvention @delegate)
                 {
                     @delegate(conventionContext, outerConfiguration, configurationBuilder);
                 }

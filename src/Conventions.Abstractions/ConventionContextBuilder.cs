@@ -16,6 +16,7 @@ namespace Rocket.Surgery.Conventions
         internal readonly List<object> _appendedConventions = new List<object>();
         internal readonly List<Type> _exceptConventions = new List<Type>();
         internal readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
+        internal Func<IEnumerable<IConventionWithDependencies>>? _conventionProvider;
         internal bool _useAttributeConventions = true;
         internal object? _source;
         internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;
@@ -65,6 +66,18 @@ namespace Rocket.Surgery.Conventions
         public ConventionContextBuilder EnableConventionAttributes()
         {
             _useAttributeConventions = true;
+            _conventionProvider = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Defines a callback that provides
+        /// </summary>
+        /// <param name="conventionProvider"></param>
+        /// <returns></returns>
+        public ConventionContextBuilder WithConventionsFrom(Func<IEnumerable<IConventionWithDependencies>> conventionProvider)
+        {
+            _conventionProvider = conventionProvider;
             return this;
         }
 
@@ -75,6 +88,7 @@ namespace Rocket.Surgery.Conventions
         public ConventionContextBuilder DisableConventionAttributes()
         {
             _useAttributeConventions = false;
+            _conventionProvider = null;
             return this;
         }
 

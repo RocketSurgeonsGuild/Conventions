@@ -31,11 +31,11 @@ namespace McMaster.Extensions.CommandLineUtils
             var context = new CommandLineContext(commandLineApplication);
             foreach (var item in conventionContext.Conventions.Get<ICommandLineConvention, CommandLineConvention>())
             {
-                if (item.Convention is ICommandLineConvention convention)
+                if (item is ICommandLineConvention convention)
                 {
                     convention.Register(conventionContext, context);
                 }
-                else if (item.Delegate is CommandLineConvention @delegate)
+                else if (item is CommandLineConvention @delegate)
                 {
                     @delegate(conventionContext, context);
                 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -8,7 +9,7 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     public sealed class ConventionWithDependencies : IConventionWithDependencies
     {
-        private readonly List<IConventionDependency> _dependencies;
+        private readonly List<ConventionDependency> _dependencies;
 
         /// <summary>
         /// The default constructor
@@ -19,14 +20,18 @@ namespace Rocket.Surgery.Conventions
         {
             Convention = convention;
             HostType = hostType;
-            _dependencies = new List<IConventionDependency>();
+            _dependencies = new List<ConventionDependency>();
         }
 
         /// <inheritdoc />
         public IConvention Convention { get; }
 
-        /// <inheritdoc />
-        public IEnumerable<IConventionDependency> Dependencies => _dependencies;
+        /// <summary>
+        /// The dependencies
+        /// </summary>
+        public IEnumerable<IConventionDependency> Dependencies => _dependencies.OfType<IConventionDependency>();
+
+        internal IEnumerable<ConventionDependency> InnerDependencies => _dependencies;
 
         /// <inheritdoc />
         public HostType HostType { get; }
@@ -41,17 +46,6 @@ namespace Rocket.Surgery.Conventions
         {
             _dependencies.Add(new ConventionDependency(direction, type));
             return this;
-        }
-
-        private sealed class ConventionDependency : IConventionDependency
-        {
-            public ConventionDependency(DependencyDirection direction, Type type)
-            {
-                Type = type;
-                Direction = direction;
-            }
-            public Type Type { get; }
-            public DependencyDirection Direction { get; }
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
@@ -13,8 +12,6 @@ using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
-using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;

@@ -150,11 +150,15 @@ namespace Rocket.Surgery.Conventions
                 }
             }
 
+            if (builder._conventionProvider != null)
+            {
+                return new ConventionProvider(builder.GetHostType(), builder._conventionProvider(), builder._prependedConventions, builder._appendedConventions);
+            }
+
             var contributionTypes = builder._useAttributeConventions
                 ? GetAssemblyConventions(builder, assemblyCandidateFinder, logger)
                    .Where(z => builder._exceptConventions.All(x => x != z.GetType()))
                 : Enumerable.Empty<IConvention>();
-
             return new ConventionProvider(builder.GetHostType(), contributionTypes, builder._prependedConventions, builder._appendedConventions);
         }
 
