@@ -51,6 +51,7 @@ namespace Rocket.Surgery.Conventions
                 var block = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
                 addAssemblySource(context, GetNamespaceForCompilation(compilation), block);
             }
+
             if (importCandidates.OfType<ClassDeclarationSyntax>().Any())
             {
                 var cu = CompilationUnit()
@@ -182,6 +183,8 @@ namespace Rocket.Surgery.Conventions
         {
             var conventions = exportCandidates
                .SelectMany(candidate => GetExportedConventions(context, candidate))
+               .Distinct(SymbolEqualityComparer.Default)
+               .OfType<INamedTypeSymbol>()
                .ToArray();
 
             if (!conventions.Any())
@@ -190,14 +193,12 @@ namespace Rocket.Surgery.Conventions
             var @namespace = context.Compilation.AssemblyName ?? "";
             @namespace = ( @namespace + ".__conventions__" ).TrimStart('.');
 
-
             var liveConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.LiveConventionAttribute")!;
             var unitTestConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.UnitTestConventionAttribute")!;
             var afterConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.AfterConventionAttribute")!;
             var dependsOnConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.DependsOnConventionAttribute")!;
             var beforeConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.BeforeConventionAttribute")!;
             var dependentOfConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.DependentOfConventionAttribute")!;
-
 
             var helperClassBody = Block();
 
@@ -409,7 +410,7 @@ namespace Rocket.Surgery.Conventions
                 if (symbol.Type == null)
                     continue;
 
-                yield return context.Compilation.GetTypeByMetadataName(symbol.Type.ToDisplayString())!;
+                yield return context.Compilation.GetTypeByMetadataName(GetFullMetadataName(symbol.Type))!;
             }
         }
 
@@ -443,5 +444,43 @@ namespace Rocket.Surgery.Conventions
             IdentifierName("DependencyDirection"),
             IdentifierName("DependentOf")
         );
+        public static string GetFullMetadataName(ISymbol? s)
+        {
+            if (s == null || IsRootNamespace(s))
+            {
+                return string.Empty;
+            }
+
+            var sb = new StringBuilder(s.MetadataName);
+            var last = s;
+
+            s = s.ContainingSymbol;
+
+            while (!IsRootNamespace(s))
+            {
+                if (s is ITypeSymbol && last is ITypeSymbol)
+                {
+                    sb.Insert(0, '+');
+                }
+                else
+                {
+                    sb.Insert(0, '.');
+                }
+
+                sb.Insert(0, s.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+                //sb.Insert(0, s.MetadataName);
+                s = s.ContainingSymbol;
+            }
+
+            return sb.ToString();
+
+            static bool IsRootNamespace(ISymbol symbol)
+            {
+                INamespaceSymbol? s = null;
+                return (s = symbol as INamespaceSymbol) != null && s.IsGlobalNamespace;
+            }
+        }
     }
+
+
 }
