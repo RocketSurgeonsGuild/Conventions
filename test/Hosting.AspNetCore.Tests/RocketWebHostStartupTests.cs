@@ -1,12 +1,8 @@
 ﻿using System.Threading.Tasks;
-using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Xunit;

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Components;
@@ -12,10 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.WebAssembly.Hosting;
 using Rocket.Surgery.WebAssembly.Hosting.Internals;
 
-namespace Rocket.Surgery.Hosting
+namespace Rocket.Surgery.WebAssembly.Hosting
 {
     /// <summary>
     /// A program initialization utility.

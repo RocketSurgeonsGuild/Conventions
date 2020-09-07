@@ -1,22 +1,19 @@
-﻿using System;
-using JetBrains.Annotations;
+using System;
 
 namespace Rocket.Surgery.Conventions
 {
     /// <summary>
-    /// Ensures the convention runs after the given <see cref="IConvention" />
+    /// A dependency for a given convention
     /// </summary>
-    /// <seealso cref="Attribute" />
     public interface IConventionDependency
     {
         /// <summary>
-        /// The <see cref="IConvention" /> type to link to
+        /// The type
         /// </summary>
-        [NotNull]
         Type Type { get; }
 
         /// <summary>
-        /// The <see cref="DependencyDirection" /> direction of this relationship
+        /// The direction
         /// </summary>
         DependencyDirection Direction { get; }
     }

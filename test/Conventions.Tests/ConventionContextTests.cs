@@ -97,7 +97,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var convention = A.Fake<IServiceConvention>();
             contextBuilder.PrependConvention(convention);
 
-            ConventionContextHelpers.CreateProvider(contextBuilder, new TestAssemblyProvider(), Logger).GetAll().Select(z => z.Convention).Should().Contain(convention);
+            ConventionContextHelpers.CreateProvider(contextBuilder, new TestAssemblyProvider(), Logger).GetAll().Should().Contain(convention);
         }
 
         [Fact]

@@ -1,3 +1,4 @@
+using System;
 using FakeItEasy;
 using FluentAssertions;
 using Xunit;
@@ -57,7 +58,7 @@ namespace Rocket.Surgery.Conventions.Tests
             var context = A.Fake<IConventionContext>();
             var properties = new ServiceProviderDictionary();
             A.CallTo(() => context.Properties).Returns(properties);
-            properties.Set(HostType.UnitTestHost);
+            properties.Set(HostType.UnitTest);
 
             context.IsUnitTestHost().Should().BeTrue();
         }
@@ -129,7 +130,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Theory]
         [InlineData(HostType.Undefined)]
         [InlineData(HostType.Live)]
-        [InlineData(HostType.UnitTestHost)]
+        [InlineData(HostType.UnitTest)]
         public void Should_Get_HostType(HostType hostType)
         {
             var context = A.Fake<IConventionContext>();

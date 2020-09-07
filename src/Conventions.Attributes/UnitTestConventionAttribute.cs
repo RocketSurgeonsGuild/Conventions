@@ -9,6 +9,6 @@ namespace Rocket.Surgery.Conventions
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class UnitTestConventionAttribute : Attribute, IHostBasedConvention
     {
-        HostType IHostBasedConvention.HostType => HostType.UnitTestHost;
+        HostType IHostBasedConvention.HostType => HostType.UnitTest;
     }
 }

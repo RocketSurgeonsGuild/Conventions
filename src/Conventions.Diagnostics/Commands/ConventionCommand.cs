@@ -7,7 +7,6 @@ using McMaster.Extensions.CommandLineUtils;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Diagnostics.Commands;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 using Terminal.Gui;
 using TerminalAttribute = Terminal.Gui.Attribute;
 
@@ -214,7 +213,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
             private readonly (Label label, Label value) _typeView;
             private readonly IConventionProvider _scanner;
             private ConventionDefinition[] _definitions = Array.Empty<ConventionDefinition>();
-            private ConventionDetails[] _conventionDetails = Array.Empty<ConventionDetails>();
+            private DelegateOrConventionDetails[] _conventionDetails = Array.Empty<DelegateOrConventionDetails>();
 
             public DiscoveryWindow(IConventionProvider scanner) : base("Discovery")
             {
@@ -273,11 +272,12 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 var builder = _definitions[_conventions.list.SelectedItem];
                 _conventionDetails = _scanner.GetAll()
                    .Where(
-                        x => ( x.Convention != null &&
-                            builder.ConventionType.IsAssignableFrom(x.Convention.GetType()) ) || ( x.Delegate != null &&
-                            builder.DelegateType.IsAssignableFrom(x.Delegate?.GetType()) )
+                        x => ( x is IConvention c && builder.ConventionType.IsInstanceOfType(c) )
+                         || ( x is Delegate d && builder.DelegateType.IsInstanceOfType(d) )
                     )
-                   .Select((cod, index) => new ConventionDetails(cod, index))
+                   .Select(
+                        (cod, index) => cod is IConvention c ? new ConventionDetails(c, index) as DelegateOrConventionDetails : new DelegateDetails((Delegate)cod, index)
+                    )
                    .ToArray();
                 _discovered.list.SetSource(_conventionDetails);
                 UpdateDetails(listViewItemEventArgs);
@@ -494,8 +494,8 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
         {
             Type = convention;
             Definitions = definitions;
-            HasAttribute = convention.Assembly.GetCustomAttributes<ConventionAttribute>()
-               .Any(x => x.Type.GetTypeInfo() == convention);
+            HasAttribute = convention.Assembly.GetCustomAttributes<ExportedConventionsAttribute>().SelectMany(z => z.ExportedConventions)
+               .Any(x => x.GetTypeInfo() == convention);
             IsPublic = convention.IsPublic;
         }
 
@@ -509,24 +509,53 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
         public override string ToString() => Type.Name;
     }
 
-    internal class ConventionDetails
+    internal interface DelegateOrConventionDetails
     {
-        public ConventionDetails(DelegateOrConvention convention, int index)
+        ConventionKind Kind { get; }
+        Assembly Assembly { get; }
+        TypeInfo Type { get; }
+
+        [UsedImplicitly]
+        string Name { get; }
+
+        [UsedImplicitly]
+        int Index { get; }
+    }
+
+    internal class ConventionDetails : DelegateOrConventionDetails
+    {
+        public ConventionDetails(IConvention convention, int index)
         {
             Index = index;
-            Kind = convention.Convention == null ? ConventionKind.Delegate : ConventionKind.Convention;
-            if (convention.Convention != null)
-            {
-                Type = convention.Convention.GetType().GetTypeInfo();
+            Kind = ConventionKind.Convention;
+            Type = convention.GetType().GetTypeInfo();
+            Assembly = Type.Assembly;
+            Name = Type.Name;
+        }
+
+        public ConventionKind Kind { get; }
+        public Assembly Assembly { get; }
+        public TypeInfo Type { get; }
+
+        [UsedImplicitly]
+        public string Name { get; }
+
+        [UsedImplicitly]
+        public int Index { get; }
+
+        public override string ToString() => $"{Index + 1}) {Name}";
+    }
+
+    internal class DelegateDetails : DelegateOrConventionDetails
+    {
+        public DelegateDetails(Delegate convention, int index)
+        {
+            Index = index;
+            Kind = ConventionKind.Delegate;
+                Type = convention.Method.DeclaringType!.GetTypeInfo();
                 Assembly = Type.Assembly;
-                Name = Type.Name;
-            }
-            else
-            {
-                Type = convention.Delegate!.Method.DeclaringType!.GetTypeInfo();
-                Assembly = Type.Assembly;
-                var name = convention.Delegate!.Method.Name;
-                var methodType = convention.Delegate.Method.DeclaringType;
+                var name = convention.Method.Name;
+                var methodType = convention.Method.DeclaringType;
                 var rootName = methodType!.FullName;
 
                 if (methodType.IsNested)
@@ -542,7 +571,6 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 }
 
                 Name = $"{rootName}+{name}";
-            }
         }
 
         public ConventionKind Kind { get; }

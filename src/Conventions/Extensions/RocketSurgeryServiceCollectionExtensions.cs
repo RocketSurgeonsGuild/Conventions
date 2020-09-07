@@ -27,11 +27,11 @@ namespace Microsoft.Extensions.DependencyInjection
             var configuration = conventionContext.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context", nameof(conventionContext));
             foreach (var item in conventionContext.Conventions.Get<IServiceConvention, ServiceConvention>())
             {
-                if (item.Convention is IServiceConvention convention)
+                if (item is IServiceConvention convention)
                 {
                     convention.Register(conventionContext, configuration, services);
                 }
-                else if (item.Delegate is ServiceConvention @delegate)
+                else if (item is ServiceConvention @delegate)
                 {
                     @delegate(conventionContext, configuration, services);
                 }

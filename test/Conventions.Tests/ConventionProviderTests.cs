@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Conventions.Scanners;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit;
@@ -32,7 +31,6 @@ namespace Rocket.Surgery.Conventions.Tests
             );
 
             provider.GetAll()
-               .Select(x => x.Convention as object ?? x.Delegate)
                .Should()
                .ContainInOrder(e, d, f, b, c);
         }
@@ -54,7 +52,6 @@ namespace Rocket.Surgery.Conventions.Tests
             );
 
             provider.GetAll()
-               .Select(x => x.Convention as object ?? x.Delegate)
                .Should()
                .ContainInOrder(e, d, b, c, f);
         }
@@ -79,7 +76,6 @@ namespace Rocket.Surgery.Conventions.Tests
             );
 
             provider.GetAll()
-               .Select(x => x.Convention as object ?? x.Delegate)
                .Should()
                .ContainInOrder(
                     d1,
@@ -130,7 +126,6 @@ namespace Rocket.Surgery.Conventions.Tests
             );
 
             provider.GetAll(HostType.Live)
-               .Select(x => x.Convention as object ?? x.Delegate)
                .Should()
                .ContainInOrder(
                     d1,
@@ -162,8 +157,7 @@ namespace Rocket.Surgery.Conventions.Tests
                 new object[] { e, d3, f }
             );
 
-            provider.GetAll(HostType.UnitTestHost)
-               .Select(x => x.Convention as object ?? x.Delegate)
+            provider.GetAll(HostType.UnitTest)
                .Should()
                .ContainInOrder(
                     d1,
@@ -174,6 +168,31 @@ namespace Rocket.Surgery.Conventions.Tests
                     c,
                     d3
                 );
+        }
+
+        [Fact]
+        public void Should_Sort_ConventionWithDependencies_Correctly()
+        {
+            var b = new B();
+            var c = new C();
+            var d = new D();
+            var e = new E();
+            var f = new F();
+
+            var provider = new ConventionProvider(
+                HostType.Undefined,
+                new IConventionWithDependencies[]
+                {
+                    new ConventionWithDependencies(b, HostType.Undefined).WithDependency(DependencyDirection.DependsOn, typeof(C)),
+                    new ConventionWithDependencies(c, HostType.Undefined).WithDependency(DependencyDirection.DependentOf, typeof(D)),
+                },
+                new object[] { d, f },
+                new object[] { e }
+            );
+
+            provider.GetAll()
+               .Should()
+               .ContainInOrder(e, c, d, f, b);
         }
 
         public ConventionProviderTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information) { }

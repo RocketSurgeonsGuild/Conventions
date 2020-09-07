@@ -58,8 +58,8 @@ namespace Rocket.Surgery.Conventions
             {
                 if (!Conventions.TryGetValue(assembly, out var types))
                 {
-                    types = assembly.GetCustomAttributes<ConventionAttribute>()
-                       .Select(x => x.Type)
+                    types = assembly.GetCustomAttributes<ExportedConventionsAttribute>()
+                       .SelectMany(x => x.ExportedConventions)
                        .Distinct()
                        .Select(type => ActivatorUtilities.CreateInstance(builder.Properties, type))
                        .Cast<IConvention>()
@@ -150,11 +150,15 @@ namespace Rocket.Surgery.Conventions
                 }
             }
 
+            if (builder._conventionProvider != null)
+            {
+                return new ConventionProvider(builder.GetHostType(), builder._conventionProvider(builder.Properties), builder._prependedConventions, builder._appendedConventions);
+            }
+
             var contributionTypes = builder._useAttributeConventions
                 ? GetAssemblyConventions(builder, assemblyCandidateFinder, logger)
                    .Where(z => builder._exceptConventions.All(x => x != z.GetType()))
                 : Enumerable.Empty<IConvention>();
-
             return new ConventionProvider(builder.GetHostType(), contributionTypes, builder._prependedConventions, builder._appendedConventions);
         }
 

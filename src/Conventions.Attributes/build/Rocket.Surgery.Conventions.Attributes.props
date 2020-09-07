@@ -1,0 +1,5 @@
+﻿<Project>
+<!--    <ItemGroup>-->
+<!--        <Analyzer Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..))\analyzers\dotnet\cs\Rocket.Surgery.Conventions.Analyzers.dll" Condition="'$(Language)'=='C#'"/>-->
+<!--    </ItemGroup>-->
+</Project>

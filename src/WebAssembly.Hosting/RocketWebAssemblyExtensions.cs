@@ -1,18 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 
 #pragma warning disable CA1031
 #pragma warning disable CA2000
@@ -46,11 +40,11 @@ namespace Rocket.Surgery.WebAssembly.Hosting
             conventionContext.Properties.AddIfMissing(builder.HostEnvironment);
             foreach (var item in conventionContext.Conventions.Get<IWebAssemblyHostingConvention, WebAssemblyHostingConvention>())
             {
-                if (item.Convention is IWebAssemblyHostingConvention convention)
+                if (item is IWebAssemblyHostingConvention convention)
                 {
                     convention.Register(conventionContext, builder);
                 }
-                else if (item.Delegate is WebAssemblyHostingConvention @delegate)
+                else if (item is WebAssemblyHostingConvention @delegate)
                 {
                     @delegate(conventionContext, builder);
                 }

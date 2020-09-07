@@ -6,8 +6,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
-using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
 using Sample.DependencyOne;
 using Sample.DependencyThree;
@@ -32,7 +30,6 @@ namespace Rocket.Surgery.Conventions.Tests
             var scanner = ConventionContextHelpers.CreateProvider(new ConventionContextBuilder(new Dictionary<object, object?>()), new TestAssemblyProvider(), Logger);
 
             scanner.Get<IServiceConvention, ServiceConvention>()
-               .Select(x => x.Convention)
                .Should()
                .Contain(x => x!.GetType() == typeof(Contrib));
         }
@@ -55,7 +52,6 @@ namespace Rocket.Surgery.Conventions.Tests
             var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
 
             provider.Get<IServiceConvention, ServiceConvention>()
-               .Select(x => x.Convention)
                .Should()
                .ContainInOrder(contribution, contribution2);
         }
@@ -78,7 +74,6 @@ namespace Rocket.Surgery.Conventions.Tests
             var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
 
             provider.Get<IServiceConvention, ServiceConvention>()
-               .Select(x => x.Delegate)
                .Should()
                .ContainInOrder(delegate2, @delegate);
         }
@@ -108,11 +103,9 @@ namespace Rocket.Surgery.Conventions.Tests
             var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
 
             provider.Get<IServiceConvention, ServiceConvention>()
-               .Select(x => x.Convention)
                .Should()
                .NotContain(x => x!.GetType() == typeof(Contrib));
             provider.Get<IServiceConvention, ServiceConvention>()
-               .Select(x => x.Convention)
                .Should()
                .ContainInOrder(contribution2, contribution);
         }
@@ -140,7 +133,6 @@ namespace Rocket.Surgery.Conventions.Tests
             var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
 
             provider.Get<IServiceConvention, ServiceConvention>()
-               .Select(x => x.Convention)
                .Should()
                .NotContain(x => x!.GetType() == typeof(Contrib));
         }

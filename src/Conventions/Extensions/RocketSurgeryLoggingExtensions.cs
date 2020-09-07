@@ -34,11 +34,11 @@ namespace Microsoft.Extensions.Logging
 
             foreach (var item in conventionContext.Conventions.Get<ILoggingConvention, LoggingConvention>())
             {
-                if (item.Convention is ILoggingConvention convention)
+                if (item is ILoggingConvention convention)
                 {
                     convention.Register(conventionContext, configuration, loggingBuilder);
                 }
-                else if (item.Delegate is LoggingConvention @delegate)
+                else if (item is LoggingConvention @delegate)
                 {
                     @delegate(conventionContext, configuration, loggingBuilder);
                 }

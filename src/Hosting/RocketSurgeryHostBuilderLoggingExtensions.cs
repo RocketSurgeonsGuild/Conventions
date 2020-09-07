@@ -23,11 +23,11 @@ namespace Microsoft.Extensions.Hosting
         {
             foreach (var item in conventionContext.Conventions.Get<IHostingConvention, HostingConvention>())
             {
-                if (item.Convention is IHostingConvention convention)
+                if (item is IHostingConvention convention)
                 {
                     convention.Register(conventionContext, hostBuilder);
                 }
-                else if (item.Delegate is HostingConvention @delegate)
+                else if (item is HostingConvention @delegate)
                 {
                     @delegate(conventionContext, hostBuilder);
                 }

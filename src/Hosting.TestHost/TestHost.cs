@@ -11,8 +11,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Conventions.Scanners;
 
 #pragma warning disable CA2000
 
@@ -139,7 +137,7 @@ namespace Rocket.Surgery.Hosting
                 ;
         }
 
-        private readonly ConventionContextBuilder _contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>()).Set(HostType.UnitTestHost);
+        private readonly ConventionContextBuilder _contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>()).Set(HostType.UnitTest);
         private ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
         private ILogger _logger = NullLogger.Instance;
         private IConfiguration? _reuseConfiguration;

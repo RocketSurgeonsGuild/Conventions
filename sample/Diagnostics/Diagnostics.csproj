@@ -4,6 +4,7 @@
         <OutputType>Exe</OutputType>
     </PropertyGroup>
     <ItemGroup>
+        <ProjectReference Include="../../src/Conventions.Analyzers/Rocket.Surgery.Conventions.Analyzers.csproj" PrivateAssets="none" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="../../src/Conventions.Diagnostics/Rocket.Surgery.Conventions.Diagnostics.csproj" />
         <ProjectReference Include="../../src/Hosting/Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>
