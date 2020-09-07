@@ -66,10 +66,7 @@ namespace Rocket.Surgery.Conventions
             IEnumerable<IConvention> contributions,
             IEnumerable<object> prependedContributionsOrDelegates,
             IEnumerable<object> appendedContributionsOrDelegates
-        ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates)
-        {
-
-        }
+        ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates) { }
 
 
         /// <summary>
@@ -84,10 +81,7 @@ namespace Rocket.Surgery.Conventions
             IEnumerable<IConventionWithDependencies> contributions,
             IEnumerable<object> prependedContributionsOrDelegates,
             IEnumerable<object> appendedContributionsOrDelegates
-        ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates)
-        {
-
-        }
+        ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConventionProvider" /> class.
@@ -168,16 +162,13 @@ namespace Rocket.Surgery.Conventions
                 }
             );
 
-            static ConventionOrDelegate selector(object value)
+            static ConventionOrDelegate selector(object value) => value switch
             {
-                return value switch
-                {
-                    IConventionWithDependencies cwd => new ConventionOrDelegate(cwd),
-                    IConvention convention          => FromConvention(convention),
-                    Delegate d                      => new ConventionOrDelegate(d),
-                    var _                           => ConventionOrDelegate.None
-                };
-            }
+                IConventionWithDependencies cwd => new ConventionOrDelegate(cwd),
+                IConvention convention          => FromConvention(convention),
+                Delegate d                      => new ConventionOrDelegate(d),
+                var _                           => ConventionOrDelegate.None
+            };
         }
 
         private static ConventionOrDelegate FromConvention(IConvention convention)
@@ -211,7 +202,11 @@ namespace Rocket.Surgery.Conventions
         /// </summary>
         /// <param name="hostType">The host type.</param>
         public IEnumerable<object> GetAll(HostType hostType = HostType.Undefined) => _conventions.Value
-           .Where(cod => hostType == HostType.Undefined || cod.HostType == HostType.Undefined || cod.HostType == hostType || cod.HostType == _hostType)
+           .Where(
+                cod => cod.HostType == HostType.Undefined
+                 || ( hostType == HostType.Undefined && _hostType == HostType.Undefined ) // if nothing was given here ignore the default
+                 || ( hostType != HostType.Undefined ? cod.HostType == hostType : _hostType != HostType.Undefined && cod.HostType == _hostType )
+            )
            .Select(ToObject)
            .Where(x => x != null);
     }
@@ -301,8 +296,7 @@ namespace Rocket.Surgery.Conventions
         /// <param name="convention1">The convention1.</param>
         /// <param name="convention2">The convention2.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator ==(ConventionOrDelegate convention1, ConventionOrDelegate convention2)
-            => convention1.Equals(convention2);
+        public static bool operator ==(ConventionOrDelegate convention1, ConventionOrDelegate convention2) => convention1.Equals(convention2);
 
         /// <summary>
         /// Implements the operator !=.
@@ -310,16 +304,14 @@ namespace Rocket.Surgery.Conventions
         /// <param name="convention1">The convention1.</param>
         /// <param name="convention2">The convention2.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator !=(ConventionOrDelegate convention1, ConventionOrDelegate convention2)
-            => !( convention1 == convention2 );
+        public static bool operator !=(ConventionOrDelegate convention1, ConventionOrDelegate convention2) => !( convention1 == convention2 );
 
         /// <summary>
         /// Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
         /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object? obj)
-            => obj is ConventionOrDelegate delegateOrConvention && Equals(delegateOrConvention);
+        public override bool Equals(object? obj) => obj is ConventionOrDelegate delegateOrConvention && Equals(delegateOrConvention);
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -329,9 +321,8 @@ namespace Rocket.Surgery.Conventions
         /// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise,
         /// false.
         /// </returns>
-        public bool Equals(ConventionOrDelegate other)
-            => EqualityComparer<IConvention>.Default.Equals(Convention!, other.Convention!)
-             && EqualityComparer<Delegate>.Default.Equals(Delegate!, other.Delegate!);
+        public bool Equals(ConventionOrDelegate other) => EqualityComparer<IConvention>.Default.Equals(Convention!, other.Convention!)
+         && EqualityComparer<Delegate>.Default.Equals(Delegate!, other.Delegate!);
 
 
         /// <summary>
@@ -370,5 +361,4 @@ namespace Rocket.Surgery.Conventions
             return "None";
         }
     }
-
 }

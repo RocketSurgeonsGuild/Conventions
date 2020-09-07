@@ -106,8 +106,12 @@ namespace Rocket.Surgery.Conventions.Tests
             a.Should().Throw<NotSupportedException>();
         }
 
-        [Fact]
-        public void Should_Exclude_Unit_Test_Conventions()
+        [Theory]
+        [InlineData(HostType.Undefined, HostType.Live)]
+        [InlineData(HostType.Live, HostType.Live)]
+        [InlineData(HostType.Live, HostType.Undefined)]
+        [InlineData(HostType.UnitTest, HostType.Live)] // call has precedence
+        public void Should_Exclude_Unit_Test_Conventions(HostType ctor, HostType call)
         {
             var b = new B();
             var d1 = new ServiceConvention((context, configuration, services) => {});
@@ -119,13 +123,13 @@ namespace Rocket.Surgery.Conventions.Tests
             var f = new F();
 
             var provider = new ConventionProvider(
-                HostType.Undefined,
+                ctor,
                 new IConvention[] { b, c },
                 new object[] { d1, d, d2 },
                 new object[] { e, d3, f }
             );
 
-            provider.GetAll(HostType.Live)
+            provider.GetAll(call)
                .Should()
                .ContainInOrder(
                     d1,
@@ -138,8 +142,12 @@ namespace Rocket.Surgery.Conventions.Tests
                 );
         }
 
-        [Fact]
-        public void Should_Include_Unit_Test_Conventions()
+        [Theory]
+        [InlineData(HostType.Undefined, HostType.UnitTest)]
+        [InlineData(HostType.UnitTest, HostType.UnitTest)]
+        [InlineData(HostType.UnitTest, HostType.Undefined)]
+        [InlineData(HostType.Live, HostType.UnitTest)] // call has precedence
+        public void Should_Include_Unit_Test_Conventions(HostType ctor, HostType call)
         {
             var b = new B();
             var d1 = new ServiceConvention((context, configuration, services) => {});
@@ -151,13 +159,13 @@ namespace Rocket.Surgery.Conventions.Tests
             var f = new F();
 
             var provider = new ConventionProvider(
-                HostType.Undefined,
+                ctor,
                 new IConvention[] { b, c },
                 new object[] { d1, d, d2 },
                 new object[] { e, d3, f }
             );
 
-            provider.GetAll(HostType.UnitTest)
+            provider.GetAll(call)
                .Should()
                .ContainInOrder(
                     d1,
