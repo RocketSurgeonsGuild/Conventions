@@ -200,5 +200,136 @@ namespace TestProject.__conventions__
                 new [] { expected }
             ).ConfigureAwait(false);
         }
+
+        [Fact]
+        public async Task Should_Handle_Duplicate_Conventions()
+        {
+            var source = @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention(typeof(Contrib))]
+[assembly: Convention(typeof(Contrib))]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    internal class Contrib : IConvention { }
+}
+";
+            var expected = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+
+[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
+namespace TestProject.__conventions__
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    public static class __exports__
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
+        }
+    }
+}
+";
+
+            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+                source,
+                expected
+            ).ConfigureAwait(false);
+        }
+
+        [Fact]
+        public async Task Should_Handle_Nested_Conventions()
+        {
+            var source = @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention(typeof(ParentContrib.Contrib))]
+[assembly: Convention(typeof(ParentContrib.Contrib))]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    internal class ParentContrib {
+        internal class Contrib : IConvention { }
+    }
+}
+";
+            var expected = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+
+[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib))]
+namespace TestProject.__conventions__
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    public static class __exports__
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib>(serviceProvider), HostType.Undefined);
+        }
+    }
+}
+";
+
+            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+                source,
+                expected
+            ).ConfigureAwait(false);
+        }
+
+        [Fact]
+        public async Task Should_Handle_Nested_Static_Conventions()
+        {
+            var source = @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention(typeof(ParentContrib.Contrib))]
+[assembly: Convention(typeof(ParentContrib.Contrib))]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    internal static class ParentContrib {
+        internal class Contrib : IConvention { }
+    }
+}
+";
+            var expected = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+
+[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib))]
+namespace TestProject.__conventions__
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    public static class __exports__
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib>(serviceProvider), HostType.Undefined);
+        }
+    }
+}
+";
+
+            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+                source,
+                expected
+            ).ConfigureAwait(false);
+        }
+
     }
 }
