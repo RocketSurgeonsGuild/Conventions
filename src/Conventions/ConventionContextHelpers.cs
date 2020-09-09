@@ -11,9 +11,6 @@ namespace Rocket.Surgery.Conventions
 {
     internal static class ConventionContextHelpers
     {
-        private static readonly ConcurrentDictionary<Assembly, List<IConvention>> Conventions =
-            new ConcurrentDictionary<Assembly, List<IConvention>>();
-
         static IEnumerable<IConvention> GetAssemblyConventions(
             ConventionContextBuilder builder,
             IAssemblyCandidateFinder assemblyCandidateFinder,
@@ -56,23 +53,12 @@ namespace Rocket.Surgery.Conventions
 
             foreach (var assembly in assemblies.Except(builder._exceptAssemblyConventions))
             {
-                if (!Conventions.TryGetValue(assembly, out var types))
-                {
-                    types = assembly.GetCustomAttributes<ExportedConventionsAttribute>()
-                       .SelectMany(x => x.ExportedConventions)
-                       .Distinct()
-                       .Select(type => ActivatorUtilities.CreateInstance(builder.Properties, type))
-                       .Cast<IConvention>()
-                       .ToList();
-                    Conventions.TryAdd(assembly, types);
-                }
-                else if (logger?.IsEnabled(LogLevel.Debug) == true)
-                {
-                    logger.LogDebug(
-                        "Conventions from Assembly {Assembly} have already been scanned and activated!",
-                        assembly.GetName().Name
-                    );
-                }
+                var types = assembly.GetCustomAttributes<ExportedConventionsAttribute>()
+                   .SelectMany(x => x.ExportedConventions)
+                   .Distinct()
+                   .Select(type => ActivatorUtilities.CreateInstance(builder.Properties, type))
+                   .Cast<IConvention>()
+                   .ToList();
 
                 if (logger?.IsEnabled(LogLevel.Debug) == true)
                 {
@@ -100,8 +86,7 @@ namespace Rocket.Surgery.Conventions
                         }
                     )
                    .Where(
-                        type => !prependedConventionTypes.Value.Contains(type.GetType()) &&
-                            !appendedConventionTypes.Value.Contains(type.GetType())
+                        type => !prependedConventionTypes.Value.Contains(type.GetType()) && !appendedConventionTypes.Value.Contains(type.GetType())
                     )
                    .Select(
                         x =>
