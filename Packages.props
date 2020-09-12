@@ -46,6 +46,10 @@
     <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="4.7.1" />
     <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Configuration" Version="10.0.0" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Ini" Version="10.0.0" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Json" Version="10.0.0" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Yaml" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />

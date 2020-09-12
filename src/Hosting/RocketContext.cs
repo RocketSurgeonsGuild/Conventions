@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using JetBrains.Annotations;
+using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
@@ -9,10 +11,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
-using Rocket.Surgery.Conventions.Configuration;
-using Rocket.Surgery.Conventions.DependencyInjection;
-using JetBrains.Annotations;
-using McMaster.Extensions.CommandLineUtils;
 using Rocket.Surgery.Extensions.Configuration;
 
 namespace Rocket.Surgery.Hosting

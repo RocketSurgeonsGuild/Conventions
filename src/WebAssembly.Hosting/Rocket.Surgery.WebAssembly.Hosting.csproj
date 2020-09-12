@@ -7,7 +7,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\WebAssembly.Hosting.Abstractions\Rocket.Surgery.WebAssembly.Hosting.Abstractions.csproj" />
-        <ProjectReference Include="..\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.TestHost" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Tests" />
     </ItemGroup>
