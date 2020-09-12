@@ -7,6 +7,6 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
-        <ProjectReference Include="..\Configuration\Rocket.Surgery.Extensions.Configuration.csproj" />
+        <PackageReference Include="Rocket.Surgery.Extensions.Configuration" />
     </ItemGroup>
 </Project>

@@ -19,5 +19,6 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+        <PackageReference Include="Rocket.Surgery.Extensions.Configuration" />
     </ItemGroup>
 </Project>

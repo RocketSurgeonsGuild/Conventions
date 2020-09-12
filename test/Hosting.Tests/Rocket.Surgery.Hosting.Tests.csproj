@@ -3,7 +3,10 @@
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Ini" />
+    <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Json" />
+    <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Yaml" />
     <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
-      <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 </Project>

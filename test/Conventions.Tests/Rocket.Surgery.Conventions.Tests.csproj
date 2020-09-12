@@ -3,6 +3,9 @@
         <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Ini" />
+        <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Json" />
+        <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Yaml" />
         <ProjectReference Include="..\..\sample\Sample.DependencyOne\Sample.DependencyOne.csproj" />
         <ProjectReference Include="..\..\sample\Sample.DependencyThree\Sample.DependencyThree.csproj" />
         <ProjectReference Include="..\..\sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj" />
