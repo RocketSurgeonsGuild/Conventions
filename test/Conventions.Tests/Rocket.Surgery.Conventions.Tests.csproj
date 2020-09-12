@@ -9,10 +9,6 @@
         <ProjectReference Include="..\..\src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\..\src\Hosting.TestHost\Rocket.Surgery.Hosting.TestHost.csproj" />
-        <ProjectReference Include="..\..\src\Logging\Rocket.Surgery.Extensions.Logging.csproj" />
-        <ProjectReference Include="..\..\src\Configuration.Ini\Rocket.Surgery.Extensions.Configuration.Ini.csproj" />
-        <ProjectReference Include="..\..\src\Configuration.Json\Rocket.Surgery.Extensions.Configuration.Json.csproj" />
-        <ProjectReference Include="..\..\src\Configuration.Yaml\Rocket.Surgery.Extensions.Configuration.Yaml.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 </Project>

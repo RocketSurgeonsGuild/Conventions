@@ -13,7 +13,6 @@ using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using JetBrains.Annotations;
 using McMaster.Extensions.CommandLineUtils;
-using Rocket.Surgery.Extensions.Configuration;
 
 namespace Rocket.Surgery.Hosting
 {
