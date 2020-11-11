@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net461;net5.0</TargetFrameworks>
     <PackageDescription>Adds diagnostics command line utilities for diagnosing what conventions are available to be run</PackageDescription>
     <PackageTags>$(PackageTags);reflection;diagnostics</PackageTags>
     <NoWarn>$(NoWarn);CA1812</NoWarn>
@@ -11,7 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Terminal.Gui" />
-      <PackageReference Include="Microsoft.Extensions.DiagnosticAdapter" />
-      <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+    <PackageReference Include="Microsoft.Extensions.DiagnosticAdapter" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
   </ItemGroup>
 </Project>

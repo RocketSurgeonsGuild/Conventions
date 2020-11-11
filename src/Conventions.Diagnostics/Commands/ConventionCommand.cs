@@ -40,7 +40,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
             };
             frame.Add(list);
 
-            return ( frame, list );
+            return (frame, list);
         }
 
         private static (Label label, Label value) BuildLabelView(string name, View? relativeTo = null, int width = 12)
@@ -61,7 +61,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
                 CanFocus = false
             };
 
-            return ( label, value );
+            return (label, value);
         }
 
         private readonly IConventionProvider _scanner;
@@ -495,7 +495,8 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
             Type = convention;
             Definitions = definitions;
             HasAttribute = convention.Assembly.GetCustomAttributes<ExportedConventionsAttribute>().SelectMany(z => z.ExportedConventions)
-               .Any(x => x.GetTypeInfo() == convention);
+                .Union(convention.Assembly.GetCustomAttributes<ConventionAttribute>().Select(z => z.Type))
+                .Any(x => x.GetTypeInfo() == convention);
             IsPublic = convention.IsPublic;
         }
 
@@ -552,25 +553,25 @@ namespace Rocket.Surgery.Conventions.Diagnostics.Commands
         {
             Index = index;
             Kind = ConventionKind.Delegate;
-                Type = convention.Method.DeclaringType!.GetTypeInfo();
-                Assembly = Type.Assembly;
-                var name = convention.Method.Name;
-                var methodType = convention.Method.DeclaringType;
-                var rootName = methodType!.FullName;
+            Type = convention.Method.DeclaringType!.GetTypeInfo();
+            Assembly = Type.Assembly;
+            var name = convention.Method.Name;
+            var methodType = convention.Method.DeclaringType;
+            var rootName = methodType!.FullName;
 
-                if (methodType.IsNested)
-                {
-                    rootName = methodType.DeclaringType!.Name;
-                }
+            if (methodType.IsNested)
+            {
+                rootName = methodType.DeclaringType!.Name;
+            }
 
-                var regex = new Regex("<(\\w+?)>b_+\\d+?_+(\\d+?)", RegexOptions.Compiled);
-                var result = regex.Match(name);
-                if (result.Success && result.Groups.Count > 1)
-                {
-                    name = result.Groups[1].Value + "(" + result.Groups[2].Value + ")";
-                }
+            var regex = new Regex("<(\\w+?)>b_+\\d+?_+(\\d+?)", RegexOptions.Compiled);
+            var result = regex.Match(name);
+            if (result.Success && result.Groups.Count > 1)
+            {
+                name = result.Groups[1].Value + "(" + result.Groups[2].Value + ")";
+            }
 
-                Name = $"{rootName}+{name}";
+            Name = $"{rootName}+{name}";
         }
 
         public ConventionKind Kind { get; }

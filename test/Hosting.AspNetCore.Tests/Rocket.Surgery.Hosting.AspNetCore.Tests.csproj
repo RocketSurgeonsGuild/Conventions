@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
-      <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 </Project>
