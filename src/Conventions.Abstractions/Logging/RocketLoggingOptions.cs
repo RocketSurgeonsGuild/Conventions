@@ -14,6 +14,6 @@ namespace Rocket.Surgery.Conventions.Logging
         /// IApplicationState:LogLevel
         /// </summary>
         /// <value>The get log level.</value>
-        public Func<IConfiguration, LogLevel?> GetLogLevel { get; set; } = configuration => configuration.GetValue<LogLevel?>("ApplicationState:LogLevel");
+        public Func<IConfiguration, LogLevel?> GetLogLevel { get; set; } = configuration => Enum.TryParse<LogLevel>(configuration["ApplicationState:LogLevel"], out var ll) ? (LogLevel?)ll : null;
     }
 }

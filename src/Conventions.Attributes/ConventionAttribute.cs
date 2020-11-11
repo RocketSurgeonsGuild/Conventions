@@ -12,7 +12,6 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     /// <seealso cref="Attribute" />
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    [Conditional("CodeGeneration")]
     public sealed class ConventionAttribute : Attribute
     {
         /// <summary>

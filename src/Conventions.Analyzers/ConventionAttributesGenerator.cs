@@ -15,12 +15,12 @@ namespace Rocket.Surgery.Conventions
     [Generator]
     public class ConventionAttributesGenerator : ISourceGenerator
     {
-        public void Initialize(InitializationContext context)
+        public void Initialize(GeneratorInitializationContext context)
         {
             context.RegisterForSyntaxNotifications(() => new ConventionAttributeSyntaxReceiver());
         }
 
-        public void Execute(SourceGeneratorContext context)
+        public void Execute(GeneratorExecutionContext context)
         {
             if (!( context.SyntaxReceiver is ConventionAttributeSyntaxReceiver syntaxReceiver ))
             {
@@ -43,7 +43,7 @@ namespace Rocket.Surgery.Conventions
 
         private static string GetNamespaceForCompilation(Compilation compilation) => ( ( compilation.AssemblyName ?? "" ) + ".__conventions__" ).TrimStart('.');
 
-        private void HandleConventionImports(SourceGeneratorContext context, CSharpCompilation compilation, IReadOnlyCollection<SyntaxNode> importCandidates, bool hasExports)
+        private void HandleConventionImports(GeneratorExecutionContext context, CSharpCompilation compilation, IReadOnlyCollection<SyntaxNode> importCandidates, bool hasExports)
         {
             if (importCandidates.OfType<AttributeListSyntax>().Any())
             {
@@ -96,7 +96,7 @@ namespace Rocket.Surgery.Conventions
                 );
             }
 
-            static void addAssemblySource(SourceGeneratorContext context, string @namespace, BlockSyntax syntax)
+            static void addAssemblySource(GeneratorExecutionContext context, string @namespace, BlockSyntax syntax)
             {
                 var cu = CompilationUnit()
                    .WithUsings(
@@ -179,7 +179,7 @@ namespace Rocket.Surgery.Conventions
             );
         }
 
-        private bool HandleConventionExports(SourceGeneratorContext context, CSharpCompilation compilation, IReadOnlyCollection<AttributeListSyntax> exportCandidates)
+        private bool HandleConventionExports(GeneratorExecutionContext context, CSharpCompilation compilation, IReadOnlyCollection<AttributeListSyntax> exportCandidates)
         {
             var conventions = exportCandidates
                .SelectMany(candidate => GetExportedConventions(context, candidate))
@@ -249,7 +249,7 @@ namespace Rocket.Surgery.Conventions
                         if (attributeData.ConstructorArguments.Length is 1 && attributeData.ConstructorArguments[0].Kind == TypedConstantKind.Type
                          && attributeData.ConstructorArguments[0].Value is INamedTypeSymbol namedTypeSymbol)
                         {
-                            dependencies.Add(( DependencyDirectionDependentOf, ParseName(namedTypeSymbol.ToDisplayString()) ));
+                            dependencies.Add((DependencyDirectionDependentOf, ParseName(namedTypeSymbol.ToDisplayString())));
                         }
                     }
 
@@ -260,7 +260,7 @@ namespace Rocket.Surgery.Conventions
                         if (attributeData.ConstructorArguments.Length is 1 && attributeData.ConstructorArguments[0].Kind == TypedConstantKind.Type
                          && attributeData.ConstructorArguments[0].Value is INamedTypeSymbol namedTypeSymbol)
                         {
-                            dependencies.Add(( DependencyDirectionDependsOn, ParseName(namedTypeSymbol.ToDisplayString()) ));
+                            dependencies.Add((DependencyDirectionDependsOn, ParseName(namedTypeSymbol.ToDisplayString())));
                         }
                     }
 
@@ -389,7 +389,7 @@ namespace Rocket.Surgery.Conventions
             return true;
         }
 
-        private IEnumerable<INamedTypeSymbol> GetExportedConventions(SourceGeneratorContext context, AttributeListSyntax attributeListSyntax)
+        private IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorExecutionContext context, AttributeListSyntax attributeListSyntax)
         {
             var model = context.Compilation.GetSemanticModel(attributeListSyntax.SyntaxTree);
             var conventionAttribute = context.Compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.ConventionAttribute")!;
@@ -477,7 +477,7 @@ namespace Rocket.Surgery.Conventions
             static bool IsRootNamespace(ISymbol symbol)
             {
                 INamespaceSymbol? s = null;
-                return (s = symbol as INamespaceSymbol) != null && s.IsGlobalNamespace;
+                return ( s = symbol as INamespaceSymbol ) != null && s.IsGlobalNamespace;
             }
         }
     }

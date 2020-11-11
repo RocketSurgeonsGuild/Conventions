@@ -53,7 +53,7 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests
         {
             var generatedTree = await GenerateAsync<T>(new[] { source }, metadataReferences).ConfigureAwait(false);
             // normalize line endings to just LF
-            var generatedText =generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
+            var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
             // and append preamble to the expected
             var expectedText = NormalizeToLf(expected).Trim();
             generatedText.Last().Should().Be(expectedText);
@@ -64,12 +64,12 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests
         {
             var generatedTree = await GenerateAsync<T>(sources, metadataReferences).ConfigureAwait(false);
             // normalize line endings to just LF
-            var generatedText =generatedTree.Select(z => NormalizeToLf(z.GetText().ToString())).ToArray();
+            var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString())).ToArray();
             // and append preamble to the expected
             var expectedText = expected.Select(z => NormalizeToLf(z).Trim()).ToArray();
 
             generatedText.Should().HaveCount(expectedText.Length);
-            foreach (var (generated, expectedTxt) in generatedText.Zip(expectedText, (generated, expected) => ( generated, expected )))
+            foreach (var (generated, expectedTxt) in generatedText.Zip(expectedText, (generated, expected) => (generated, expected)))
             {
                 generated.Should().Be(expectedTxt);
             }
@@ -80,7 +80,7 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests
         {
             var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>()).ConfigureAwait(false);
             // normalize line endings to just LF
-            var generatedText =generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
+            var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
             // and append preamble to the expected
             var expectedText = NormalizeToLf(expected).Trim();
             generatedText.Last().Should().Be(expectedText);
@@ -91,7 +91,7 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests
         {
             var generatedTree = await GenerateAsync<T>(new[] { source }, metadataReferences).ConfigureAwait(false);
             // normalize line endings to just LF
-            var generatedText =generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
+            var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
             // and append preamble to the expected
             return generatedText.Last();
         }
@@ -101,7 +101,7 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests
         {
             var generatedTree = await GenerateAsync<T>(sources, metadataReferences).ConfigureAwait(false);
             // normalize line endings to just LF
-            var generatedText =generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
+            var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
             // and append preamble to the expected
             return generatedText.ToArray();
         }
@@ -111,7 +111,7 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests
         {
             var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>()).ConfigureAwait(false);
             // normalize line endings to just LF
-            var generatedText =generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
+            var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
             // and append preamble to the expected
             return generatedText.Last();
         }
@@ -149,9 +149,9 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests
 
             ISourceGenerator generator = new T();
 
-            var driver = new CSharpGeneratorDriver(compilation.SyntaxTrees[0].Options, ImmutableArray.Create(generator), default, ImmutableArray<AdditionalText>.Empty);
+            var driver = CSharpGeneratorDriver.Create(generator);
 
-            driver.RunFullGeneration(compilation, out var outputCompilation, out diagnostics);
+            driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out diagnostics);
             // Assert.Empty(diagnostics.Where(x => x.Severity >= DiagnosticSeverity.Warning));
 
             // the syntax tree added by the generator will be the last one in the compilation

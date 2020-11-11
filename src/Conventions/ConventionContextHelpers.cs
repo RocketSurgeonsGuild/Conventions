@@ -55,6 +55,7 @@ namespace Rocket.Surgery.Conventions
             {
                 var types = assembly.GetCustomAttributes<ExportedConventionsAttribute>()
                    .SelectMany(x => x.ExportedConventions)
+                   .Union(assembly.GetCustomAttributes<ConventionAttribute>().Select(z => z.Type))
                    .Distinct()
                    .Select(type => ActivatorUtilities.CreateInstance(builder.Properties, type))
                    .Cast<IConvention>()
@@ -149,16 +150,16 @@ namespace Rocket.Surgery.Conventions
 
         internal static IAssemblyCandidateFinder defaultAssemblyCandidateFinderFactory(object? source, ILogger? logger) => source switch
         {
-            AppDomain appDomain              => new AppDomainAssemblyCandidateFinder(appDomain, logger),
+            AppDomain appDomain => new AppDomainAssemblyCandidateFinder(appDomain, logger),
             IEnumerable<Assembly> assemblies => new DefaultAssemblyCandidateFinder(assemblies, logger),
-            _                                => throw new NotSupportedException("Unknown source when trying to create IAssemblyCandidateFinder")
+            _ => throw new NotSupportedException("Unknown source when trying to create IAssemblyCandidateFinder")
         };
 
         internal static IAssemblyProvider defaultAssemblyProviderFactory(object? source, ILogger? logger) => source switch
         {
-            AppDomain appDomain              => new AppDomainAssemblyProvider(appDomain, logger),
+            AppDomain appDomain => new AppDomainAssemblyProvider(appDomain, logger),
             IEnumerable<Assembly> assemblies => new DefaultAssemblyProvider(assemblies, logger),
-            _                                => throw new NotSupportedException("Unknown source when trying to create IAssemblyCandidateFinder")
+            _ => throw new NotSupportedException("Unknown source when trying to create IAssemblyCandidateFinder")
         };
     }
 }
