@@ -33,8 +33,8 @@ jobs:
           nuget-version: '5.x'
 
       - name: Download artifact
-        if: github.event_name != 'release'
         uses: dawidd6/action-download-artifact@v2
+        if: github.event.workflow_run.conclusion == 'success'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ci.yml
@@ -47,7 +47,7 @@ jobs:
 
       - name: nuget.org
         # continue-on-error: true
-        if: github.event_name == 'release' || github.event_name == 'prereleased'
+        if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && startsWith(github.event.workflow_run.head_branch, 'v') # this is the best approximation for a tag
         env:
           ApiKey: ${{ secrets.RSG_NUGET_API_KEY }}
         shell: pwsh
