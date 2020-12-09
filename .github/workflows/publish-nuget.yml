@@ -1,9 +1,6 @@
 name: Publish Nuget
 
 on:
-  release:
-    types:
-      - released
   workflow_run:
     workflows: ['ci']
     types:
@@ -50,7 +47,7 @@ jobs:
 
       - name: nuget.org
         # continue-on-error: true
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || github.event_name == 'prereleased'
         env:
           ApiKey: ${{ secrets.RSG_NUGET_API_KEY }}
         shell: pwsh
