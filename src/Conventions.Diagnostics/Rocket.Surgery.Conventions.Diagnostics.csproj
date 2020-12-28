@@ -6,6 +6,7 @@
     <NoWarn>$(NoWarn);CA1812</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+       <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" IncludeAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
     <ProjectReference Include="..\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
   </ItemGroup>

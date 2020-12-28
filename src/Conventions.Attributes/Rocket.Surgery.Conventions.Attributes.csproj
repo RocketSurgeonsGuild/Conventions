@@ -5,7 +5,7 @@
         <PackageTags>$(PackageTags);reflection</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" PrivateAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"  IncludeAssets="analyzers" ExcludeAssets="compile;runtime;native" PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Abstractions" />
@@ -19,6 +19,5 @@
         <None Include="build/*.*" Pack="true" PackagePath="build" />
         <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
         <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
-        <None Include="$(MSBuildThisFileDirectory)\..\Conventions.Analyzers\bin\$(Configuration)\netstandard2.0\Rocket.Surgery.Conventions.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 </Project>

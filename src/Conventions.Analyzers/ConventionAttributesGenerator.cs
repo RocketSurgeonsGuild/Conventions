@@ -41,13 +41,18 @@ namespace Rocket.Surgery.Conventions
             }
         }
 
-        private static string GetNamespaceForCompilation(Compilation compilation) => ( ( compilation.AssemblyName ?? "" ) + ".__conventions__" ).TrimStart('.');
+        private static string GetNamespaceForCompilation(Compilation compilation)
+        {
+            var @namespace = compilation.AssemblyName ?? "";
+            return ( @namespace.EndsWith(".Conventions") ? @namespace : ( @namespace + ".Conventions" ) ).TrimStart('.');
+        }
 
         private void HandleConventionImports(GeneratorExecutionContext context, CSharpCompilation compilation, IReadOnlyCollection<SyntaxNode> importCandidates, bool hasExports)
         {
+            IReadOnlyCollection<string>? references = null;
             if (importCandidates.OfType<AttributeListSyntax>().Any())
             {
-                var references = getReferences(compilation, hasExports);
+                references ??= getReferences(compilation, hasExports);
                 var block = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
                 addAssemblySource(context, GetNamespaceForCompilation(compilation), block);
             }
@@ -65,7 +70,7 @@ namespace Rocket.Surgery.Conventions
                             }
                         )
                     );
-                var references = getReferences(compilation, hasExports);
+                references ??= getReferences(compilation, hasExports);
                 var block = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
                 foreach (var declaration in importCandidates.OfType<ClassDeclarationSyntax>())
                 {
@@ -114,11 +119,11 @@ namespace Rocket.Surgery.Conventions
                             NamespaceDeclaration(ParseName(@namespace))
                                .WithMembers(
                                     SingletonList<MemberDeclarationSyntax>(
-                                        ClassDeclaration("__imports__")
+                                        ClassDeclaration("Imports")
                                            .WithAttributeLists(
                                                 SingletonList(AttributeList(SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated")))))
                                             )
-                                           .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
+                                           .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
                                            .WithMembers(createConventionsMemberDeclaration(syntax))
                                     )
                                 )
@@ -135,9 +140,15 @@ namespace Rocket.Surgery.Conventions
             static IReadOnlyCollection<string> getReferences(CSharpCompilation compilation, bool exports) => compilation.References
                .Select(compilation.GetAssemblyOrModuleSymbol)
                .OfType<IAssemblySymbol>()
-               .Where(z => z.TypeNames.Contains("__exports__"))
-               .Select(symbol => symbol.GetTypeByMetadataName($"{symbol.Name}.__conventions__.__exports__")!.ToDisplayString())
-               .Concat(exports ? new[] { GetNamespaceForCompilation(compilation) + ".__exports__" } : Enumerable.Empty<string>())
+                // __ for backwards compatiblity
+               .Where(z => z.TypeNames.Contains("__exports__") || z.TypeNames.Contains("Exports"))
+               .Select(
+                    symbol => (
+                        symbol.GetTypeByMetadataName($"{symbol.Name}.Conventions.Exports")
+                     ?? symbol.GetTypeByMetadataName($"{symbol.Name}.Exports")
+                     ?? symbol.GetTypeByMetadataName($"{symbol.Name}.__conventions__.__exports__") )!.ToDisplayString()
+                )
+               .Concat(exports ? new[] { GetNamespaceForCompilation(compilation) + ".Exports" } : Enumerable.Empty<string>())
                .ToArray();
 
             static BlockSyntax addEnumerateExportStatements(IReadOnlyCollection<string> references)
@@ -190,8 +201,7 @@ namespace Rocket.Surgery.Conventions
             if (!conventions.Any())
                 return false;
 
-            var @namespace = context.Compilation.AssemblyName ?? "";
-            @namespace = ( @namespace + ".__conventions__" ).TrimStart('.');
+            var @namespace = GetNamespaceForCompilation(context.Compilation);
 
             var liveConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.LiveConventionAttribute")!;
             var unitTestConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.UnitTestConventionAttribute")!;
@@ -249,7 +259,7 @@ namespace Rocket.Surgery.Conventions
                         if (attributeData.ConstructorArguments.Length is 1 && attributeData.ConstructorArguments[0].Kind == TypedConstantKind.Type
                          && attributeData.ConstructorArguments[0].Value is INamedTypeSymbol namedTypeSymbol)
                         {
-                            dependencies.Add((DependencyDirectionDependentOf, ParseName(namedTypeSymbol.ToDisplayString())));
+                            dependencies.Add(( DependencyDirectionDependentOf, ParseName(namedTypeSymbol.ToDisplayString()) ));
                         }
                     }
 
@@ -260,7 +270,7 @@ namespace Rocket.Surgery.Conventions
                         if (attributeData.ConstructorArguments.Length is 1 && attributeData.ConstructorArguments[0].Kind == TypedConstantKind.Type
                          && attributeData.ConstructorArguments[0].Value is INamedTypeSymbol namedTypeSymbol)
                         {
-                            dependencies.Add((DependencyDirectionDependsOn, ParseName(namedTypeSymbol.ToDisplayString())));
+                            dependencies.Add(( DependencyDirectionDependsOn, ParseName(namedTypeSymbol.ToDisplayString()) ));
                         }
                     }
 
@@ -322,9 +332,9 @@ namespace Rocket.Surgery.Conventions
             var helperClass =
                     NamespaceDeclaration(ParseName(@namespace)).WithMembers(
                         SingletonList<MemberDeclarationSyntax>(
-                            ClassDeclaration("__exports__")
+                            ClassDeclaration("Exports")
                                .WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated"))))))
-                               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
+                               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
                                .WithMembers(
                                     SingletonList<MemberDeclarationSyntax>(
                                         MethodDeclaration(
@@ -444,6 +454,7 @@ namespace Rocket.Surgery.Conventions
             IdentifierName("DependencyDirection"),
             IdentifierName("DependentOf")
         );
+
         public static string GetFullMetadataName(ISymbol? s)
         {
             if (s == null || IsRootNamespace(s))
@@ -481,6 +492,4 @@ namespace Rocket.Surgery.Conventions
             }
         }
     }
-
-
 }

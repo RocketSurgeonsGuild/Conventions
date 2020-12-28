@@ -18,6 +18,7 @@
 <!-- nuget packages -->
 | Package | NuGet |
 | ------- | ----- |
+| docs | [![nuget-version-bqabaqp1hshg-badge]![nuget-downloads-bqabaqp1hshg-badge]][nuget-bqabaqp1hshg] |
 | Rocket.Surgery.Conventions | [![nuget-version-jtmuuh8il9ng-badge]![nuget-downloads-jtmuuh8il9ng-badge]][nuget-jtmuuh8il9ng] |
 | Rocket.Surgery.Conventions.Abstractions | [![nuget-version-jn19kbpg2y2w-badge]![nuget-downloads-jn19kbpg2y2w-badge]][nuget-jn19kbpg2y2w] |
 | Rocket.Surgery.Conventions.Analyzers | [![nuget-version-jni/w9zchasw-badge]![nuget-downloads-jni/w9zchasw-badge]][nuget-jni/w9zchasw] |
@@ -47,6 +48,9 @@ TBD
 [github]: https://github.com/RocketSurgeonsGuild/Conventions/actions?query=workflow%3Aci
 [github-badge]: https://img.shields.io/github/workflow/status/RocketSurgeonsGuild/Conventions/ci.svg?label=github&logo=github&color=b845fc&logoColor=b845fc&style=flat "GitHub Actions Status"
 [github-history-badge]: https://buildstats.info/github/chart/RocketSurgeonsGuild/Conventions?includeBuildsFromPullRequest=false "GitHub Actions History"
+[nuget-bqabaqp1hshg]: https://www.nuget.org/packages/docs/
+[nuget-version-bqabaqp1hshg-badge]: https://img.shields.io/nuget/v/docs.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
+[nuget-downloads-bqabaqp1hshg-badge]: https://img.shields.io/nuget/dt/docs.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
 [nuget-jtmuuh8il9ng]: https://www.nuget.org/packages/Rocket.Surgery.Conventions/
 [nuget-version-jtmuuh8il9ng-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
 [nuget-downloads-jtmuuh8il9ng-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"

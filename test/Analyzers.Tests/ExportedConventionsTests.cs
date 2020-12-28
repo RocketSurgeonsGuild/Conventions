@@ -33,10 +33,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __exports__
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
@@ -80,7 +80,7 @@ using Rocket.Surgery.Conventions;
 namespace TestProject.__conventions__
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __exports__
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
@@ -129,7 +129,7 @@ using Rocket.Surgery.Conventions;
 namespace TestProject.__conventions__
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __exports__
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
@@ -182,7 +182,7 @@ using Rocket.Surgery.Conventions;
 namespace TestProject.__conventions__
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __exports__
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
@@ -226,7 +226,7 @@ using Rocket.Surgery.Conventions;
 namespace TestProject.__conventions__
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __exports__
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
@@ -270,7 +270,7 @@ using Rocket.Surgery.Conventions;
 namespace TestProject.__conventions__
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __exports__
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
@@ -314,7 +314,7 @@ using Rocket.Surgery.Conventions;
 namespace TestProject.__conventions__
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __exports__
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
