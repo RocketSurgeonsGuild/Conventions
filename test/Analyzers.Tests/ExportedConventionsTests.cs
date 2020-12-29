@@ -77,7 +77,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
@@ -126,7 +126,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
@@ -179,7 +179,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportedConventions(typeof(Contrib1), typeof(Contrib2), typeof(Contrib3), typeof(Contrib4))]
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
@@ -223,7 +223,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
@@ -267,7 +267,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib))]
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
@@ -311,7 +311,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib))]
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports

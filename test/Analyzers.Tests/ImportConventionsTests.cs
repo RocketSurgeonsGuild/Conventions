@@ -109,7 +109,7 @@ using Rocket.Surgery.Conventions;
 namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __imports__
+    internal static partial class Imports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
@@ -174,7 +174,7 @@ using Rocket.Surgery.Conventions;
 namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class Exports
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {

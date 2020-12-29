@@ -16,7 +16,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Should_Have_Exports_Method_Defined()
         {
-            var list = __conventions__.__exports__.GetConventions( new ServiceCollection().BuildServiceProvider())
+            var list = Conventions.Exports.GetConventions( new ServiceCollection().BuildServiceProvider())
                .Should().NotBeNull().And.Subject;
             list.As<IEnumerable<IConventionWithDependencies>>().Should().NotBeNull();
         }
@@ -24,7 +24,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Should_Have_Imports_Method_Defined_On_Assembly()
         {
-            var list = __conventions__.__imports__.GetConventions( new ServiceCollection().BuildServiceProvider())
+            var list = Conventions.Imports.GetConventions( new ServiceCollection().BuildServiceProvider())
                .Should().NotBeNull().And.Subject;
             list.As<IEnumerable<IConventionWithDependencies>>().Should().NotBeNull();
         }
@@ -32,7 +32,7 @@ namespace Rocket.Surgery.Conventions.Tests
         [Fact]
         public void Should_Have_Imports_Method_Defined_On_Assembly_Into_Provider()
         {
-            var list = __conventions__.__exports__.GetConventions( new ServiceCollection().BuildServiceProvider())
+            var list = Conventions.Exports.GetConventions( new ServiceCollection().BuildServiceProvider())
                .Should().NotBeNull().And.Subject;
 
             var items = list.As<IEnumerable<IConventionWithDependencies>>().Should().NotBeNull().And.Subject;

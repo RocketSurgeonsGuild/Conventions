@@ -2,6 +2,8 @@
   href: introduction.md
 - name: Convention Context
   href: convention-context.md
+- name: Defining Conventions
+  href: defining-conventions.md
 - name: Unit Testing
   href: unit-tests.md
 - name: Source Generation
