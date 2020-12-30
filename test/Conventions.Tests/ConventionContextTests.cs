@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
@@ -173,6 +174,61 @@ namespace Rocket.Surgery.Conventions.Tests
             items.GetService<IAbc4>().Should().BeNull();
         }
 
+        [Fact]
+        public void ShouldConstructTheConventionInjectingTheValues()
+        {
+            AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+            var data = A.Fake<IInjectData>();
+            var builder = AutoFake.Resolve<ConventionContextBuilder>()
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+               .AppendConvention<InjectableConvention>()
+               .Set(data)
+               .Set<IConfiguration>(new ConfigurationBuilder().Build());
+            var context = ConventionContext.From(builder);
+            var collection = new ServiceCollection().ApplyConventions(context);
+            collection.Should().Contain(z => z.ServiceType == typeof(IInjectData));
+        }
+
+        [Fact]
+        public void ShouldConstructTheConventionInjectingTheValuesIfOptional()
+        {
+            AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+            var data = A.Fake<IInjectData>();
+            var builder = AutoFake.Resolve<ConventionContextBuilder>()
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+               .AppendConvention<OptionalInjectableConvention>()
+               .Set(data)
+               .Set<IConfiguration>(new ConfigurationBuilder().Build());
+            var context = ConventionContext.From(builder).Set(data);
+            var collection = new ServiceCollection().ApplyConventions(context);
+            collection.Should().Contain(z => z.ServiceType == typeof(IInjectData));
+        }
+
+        [Fact]
+        public void ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
+        {
+            AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+            var builder = AutoFake.Resolve<ConventionContextBuilder>()
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+               .AppendConvention<InjectableConvention>()
+               .Set<IConfiguration>(new ConfigurationBuilder().Build());
+            Action a = () => ConventionContext.From(builder);
+            a.Should().Throw<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
+        {
+            AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+            var builder = AutoFake.Resolve<ConventionContextBuilder>()
+               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+               .AppendConvention<OptionalInjectableConvention>()
+               .Set<IConfiguration>(new ConfigurationBuilder().Build());
+            var context = ConventionContext.From(builder);
+            Action a = () => new ServiceCollection().ApplyConventions(context);
+            a.Should().NotThrow<InvalidOperationException>();
+        }
+
         public ConventionContextTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 
         public interface IAbc { }
@@ -182,6 +238,10 @@ namespace Rocket.Surgery.Conventions.Tests
         public interface IAbc3 { }
 
         public interface IAbc4 { }
+
+        public interface IInjectData { }
+
+        public class InjectData { }
 
         public class AbcConvention : IServiceConvention
         {
@@ -194,6 +254,41 @@ namespace Rocket.Surgery.Conventions.Tests
 
                 services.AddSingleton(A.Fake<IAbc>());
                 services.AddSingleton(A.Fake<IAbc2>());
+            }
+        }
+
+        public class InjectableConvention : IServiceConvention
+        {
+            private readonly IInjectData _convention;
+
+            public InjectableConvention(IInjectData convention) => _convention = convention;
+
+            public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
+            {
+                if (context == null)
+                {
+                    throw new ArgumentNullException(nameof(context));
+                }
+
+                services.AddSingleton(_convention);
+            }
+        }
+
+        public class OptionalInjectableConvention : IServiceConvention
+        {
+            private readonly IInjectData? _convention;
+
+            public OptionalInjectableConvention(IInjectData? convention = null) => _convention = convention;
+
+            public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
+            {
+                if (context == null)
+                {
+                    throw new ArgumentNullException(nameof(context));
+                }
+
+                if (_convention is { })
+                    services.AddSingleton(_convention);
             }
         }
     }

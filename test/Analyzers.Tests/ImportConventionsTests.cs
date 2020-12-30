@@ -25,18 +25,18 @@ using System;
 using System.Collections.Generic;
 using Rocket.Surgery.Conventions;
 
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __imports__
+    internal static partial class Imports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
-            foreach (var convention in Sample.DependencyOne.__conventions__.__exports__.GetConventions(serviceProvider))
+            foreach (var convention in Sample.DependencyOne.Conventions.Exports.GetConventions(serviceProvider))
                 yield return convention;
-            foreach (var convention in Sample.DependencyTwo.__conventions__.__exports__.GetConventions(serviceProvider))
+            foreach (var convention in Sample.DependencyTwo.Conventions.Exports.GetConventions(serviceProvider))
                 yield return convention;
-            foreach (var convention in Sample.DependencyThree.__conventions__.__exports__.GetConventions(serviceProvider))
+            foreach (var convention in Sample.DependencyThree.Conventions.Exports.GetConventions(serviceProvider))
                 yield return convention;
         }
     }
@@ -75,11 +75,11 @@ namespace TestProject
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
-            foreach (var convention in Sample.DependencyOne.__conventions__.__exports__.GetConventions(serviceProvider))
+            foreach (var convention in Sample.DependencyOne.Conventions.Exports.GetConventions(serviceProvider))
                 yield return convention;
-            foreach (var convention in Sample.DependencyTwo.__conventions__.__exports__.GetConventions(serviceProvider))
+            foreach (var convention in Sample.DependencyTwo.Conventions.Exports.GetConventions(serviceProvider))
                 yield return convention;
-            foreach (var convention in Sample.DependencyThree.__conventions__.__exports__.GetConventions(serviceProvider))
+            foreach (var convention in Sample.DependencyThree.Conventions.Exports.GetConventions(serviceProvider))
                 yield return convention;
         }
     }
@@ -106,10 +106,10 @@ using System;
 using System.Collections.Generic;
 using Rocket.Surgery.Conventions;
 
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __imports__
+    internal static partial class Imports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
@@ -158,7 +158,7 @@ namespace TestProject
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
-            foreach (var convention in TestProject.__conventions__.__exports__.GetConventions(serviceProvider))
+            foreach (var convention in TestProject.Conventions.Exports.GetConventions(serviceProvider))
                 yield return convention;
         }
     }
@@ -171,10 +171,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
-namespace TestProject.__conventions__
+namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    public static class __exports__
+    public static partial class Exports
     {
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {

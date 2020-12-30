@@ -9,14 +9,17 @@ using Rocket.Surgery.Hosting;
 
 namespace Diagnostics
 {
-    public static class Program
+    [ImportConventions]
+    public static partial class Program
     {
         public static Task<int> Main(string[] args) => CreateHostBuilder(args).RunCli();
 
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
-           .LaunchWith(RocketBooster.For(DependencyContext.Default))
+           .LaunchWith(RocketBooster.ForDependencyContext(DependencyContext.Default))
            .ConfigureRocketSurgery(
-                builder => builder.ConfigureServices(x => { }).ConfigureCommandLine((a, cl) => cl.OnRun(_ => 1))
+                builder => builder
+                   .ConfigureServices(x => { })
+                   .ConfigureCommandLine((a, cl) => cl.OnRun(_ => 1))
             );
     }
 }

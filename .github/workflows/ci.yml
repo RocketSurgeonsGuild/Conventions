@@ -100,3 +100,9 @@ jobs:
         with:
           name: 'nuget'
           path: 'artifacts/nuget/'
+      - name: 🏺 Publish Docs
+        if: always()
+        uses: actions/upload-artifact@v2.2.1
+        with:
+          name: 'docs'
+          path: 'artifacts/docs/'

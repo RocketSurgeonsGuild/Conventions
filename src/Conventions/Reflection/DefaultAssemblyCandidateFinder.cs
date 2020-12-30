@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// Default assembly candidate finder that uses a list of assemblies
     /// </summary>
     /// <seealso cref="IAssemblyCandidateFinder" />
-     class DefaultAssemblyCandidateFinder : IAssemblyCandidateFinder
+    internal class DefaultAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         /// <summary>
         /// The assemblies
@@ -24,7 +24,7 @@ namespace Rocket.Surgery.Conventions.Reflection
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DependencyContextAssemblyCandidateFinder" /> class.
+        /// Initializes a new instance of the <see cref="DefaultAssemblyCandidateFinder" /> class.
         /// </summary>
         /// <param name="assemblies">The assemblies.</param>
         /// <param name="logger">The logger.</param>

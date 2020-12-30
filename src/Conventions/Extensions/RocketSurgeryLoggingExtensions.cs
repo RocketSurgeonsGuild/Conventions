@@ -24,7 +24,13 @@ namespace Microsoft.Extensions.Logging
         /// <returns></returns>
         public static ILoggingBuilder ApplyConventions(this ILoggingBuilder loggingBuilder, IConventionContext conventionContext)
         {
-            var configuration = conventionContext.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context", nameof(conventionContext));
+            var configuration = conventionContext.Get<IConfiguration>();
+            if (configuration is null)
+            {
+                configuration = new ConfigurationBuilder().Build();
+                conventionContext.Logger.LogWarning("Configuration was not found in context");
+            }
+
             loggingBuilder.AddConfiguration(configuration.GetSection("Logging"));
             var logLevel = conventionContext.GetOrAdd(() => new RocketLoggingOptions()).GetLogLevel(configuration);
             if (logLevel.HasValue)

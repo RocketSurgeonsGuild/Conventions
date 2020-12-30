@@ -24,7 +24,7 @@ namespace Rocket.Surgery.Conventions
                 // any field with at least one attribute is a candidate for property generation
                 if (syntaxNode is AttributeListSyntax attributeListSyntax
                  && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
-                 && attributeListSyntax.Attributes.Any(z => z.Name.ToFullString().EndsWith("Convention", StringComparison.OrdinalIgnoreCase)))
+                 && attributeListSyntax.Attributes.Any(z => z.Name.ToFullString().TrimEnd().EndsWith("Convention", StringComparison.OrdinalIgnoreCase)))
                 {
                     ExportCandidates.Add(attributeListSyntax);
                 }
@@ -34,13 +34,13 @@ namespace Rocket.Surgery.Conventions
                 // any field with at least one attribute is a candidate for property generation
                 if (syntaxNode is AttributeListSyntax attributeListSyntax
                  && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
-                 && attributeListSyntax.Attributes.Any(z => z.Name.ToFullString().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)))
+                 && attributeListSyntax.Attributes.Any(z => z.Name.ToFullString().TrimEnd().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)))
                 {
                     ImportCandidates.Add(attributeListSyntax);
                 }
 
                 if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax
-                 && classDeclarationSyntax.AttributeLists.SelectMany(z => z.Attributes).Any(z => z.Name.ToFullString().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)))
+                 && classDeclarationSyntax.AttributeLists.SelectMany(z => z.Attributes).Any(z => z.Name.ToFullString().TrimEnd().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)))
                 {
                     ImportCandidates.Add(classDeclarationSyntax);
                 }

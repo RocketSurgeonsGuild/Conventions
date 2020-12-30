@@ -5,6 +5,7 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
+         <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" IncludeAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="../Conventions.Abstractions/Rocket.Surgery.Conventions.Abstractions.csproj" />
     </ItemGroup>
     <ItemGroup>

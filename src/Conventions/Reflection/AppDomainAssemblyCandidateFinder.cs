@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// Assembly candidate finder that uses <see cref="AppDomain" />
     /// </summary>
     /// <seealso cref="IAssemblyCandidateFinder" />
-    class AppDomainAssemblyCandidateFinder : IAssemblyCandidateFinder
+    internal class AppDomainAssemblyCandidateFinder : IAssemblyCandidateFinder
     {
         private readonly AppDomain _appDomain;
         private readonly ILogger _logger;
