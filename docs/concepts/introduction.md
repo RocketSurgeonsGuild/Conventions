@@ -68,5 +68,6 @@ The rules are straight forward.
 # Writing your own custom conventions
 Creating your own conventions is fairly easily, and can be done by using existing conventions or by executing it yourself.
 
-More information can be found [here](../guides/custom-conventions.md)
+> [!TIP]
+> More information can be found [here](../guides/custom-conventions.md)
 

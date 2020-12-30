@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions.Reflection
     /// Assembly provider that uses <see cref="AppDomain" />
     /// </summary>
     /// <seealso cref="IAssemblyProvider" />
-     class AppDomainAssemblyProvider : IAssemblyProvider
+    internal class AppDomainAssemblyProvider : IAssemblyProvider
     {
         private readonly ILogger _logger;
         private readonly Lazy<IEnumerable<Assembly>> _assembles;

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="xunit.analyzers" />
+        <PackageReference Include="xunit.runner.visualstudio" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
+        <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
+    </ItemGroup>
+</Project>

@@ -24,7 +24,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection ApplyConventions(this IServiceCollection services, IConventionContext conventionContext)
         {
-            var configuration = conventionContext.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context", nameof(conventionContext));
+            var configuration = conventionContext.Get<IConfiguration>();
+            if (configuration is null)
+            {
+                configuration = new ConfigurationBuilder().Build();
+                conventionContext.Logger.LogWarning("Configuration was not found in context");
+            }
+
             foreach (var item in conventionContext.Conventions.Get<IServiceConvention, ServiceConvention>())
             {
                 if (item is IServiceConvention convention)

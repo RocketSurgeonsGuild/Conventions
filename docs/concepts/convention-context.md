@@ -9,7 +9,8 @@ A convention context is created from a <xref:Rocket.Surgery.Conventions.Conventi
 
 You can add conventions manually, you can add them via attribute scanning, you can disable attribute scanning if you wish as well.  
 
-The assemblies used during scanning can be added by using an AppDomain, DependencyContext, or List of assemblies.
+> [!NOTE]
+> The assemblies used during scanning can be added by using an AppDomain, DependencyContext, or List of assemblies.
 
 ## Creating the context
 A context can be created from a <xref:Rocket.Surgery.Conventions.ConventionContextBuilder> by using [ConventionContext.From](xref:Rocket.Surgery.Conventions.ConventionContext#Rocket_Surgery_Conventions_ConventionContext_From_Rocket_Surgery_Conventions_ConventionContextBuilder_).
