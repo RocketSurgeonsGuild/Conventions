@@ -38,7 +38,7 @@ public partial class Solution : NukeBuild,
                         IGenerateCodeCoverageBadges,
                         IHaveConfiguration<Configuration>,
                         ICanLint,
-                        ICanHaveDocs
+                        ICanGenerateDocs
 {
     /// <summary>
     /// Support plugins are available for:
@@ -56,7 +56,8 @@ public partial class Solution : NukeBuild,
        .DependsOn(Restore)
        .DependsOn(Build)
        .DependsOn(Test)
-       .DependsOn(Pack);
+       .DependsOn(Pack)
+       .DependsOn(Docs);
 
     public Target Build => _ => _.Inherit<ICanBuildWithDotNetCore>(x => x.CoreBuild);
 
@@ -69,6 +70,7 @@ public partial class Solution : NukeBuild,
     public Target Clean => _ => _.Inherit<ICanClean>(x => x.Clean);
     public Target Restore => _ => _.Inherit<ICanRestoreWithDotNetCore>(x => x.CoreRestore);
     public Target Test => _ => _.Inherit<ICanTestWithDotNetCore>(x => x.CoreTest);
+    public Target Docs => _ => _.Inherit<ICanGenerateDocs>(x => x.CoreDocs);
 
     public Target BuildVersion => _ => _.Inherit<IHaveBuildVersion>(x => x.BuildVersion)
        .Before(Default)
@@ -78,7 +80,7 @@ public partial class Solution : NukeBuild,
     public Configuration Configuration { get; } = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 }
 
-public interface ICanHaveDocs : IHaveArtifacts
+public interface ICanGenerateDocs : IHaveArtifacts
 {
     public AbsolutePath DocumentationDirectory => NukeBuild.RootDirectory / "docs";
 
@@ -89,7 +91,7 @@ public interface ICanHaveDocs : IHaveArtifacts
     ?? ValueInjectionUtility.TryGetValue(() => Serve)
     ?? false;
 
-    public Target Docs => _ => _
+    public Target CoreDocs => _ => _
        .OnlyWhenStatic(() => DirectoryExists(DocumentationDirectory))
        .Executes(
         () =>
@@ -113,8 +115,7 @@ public interface ICanHaveDocs : IHaveArtifacts
                         )
                 );
 
-                var watcher = new FileSystemWatcher(DocumentationDirectory);
-                watcher.EnableRaisingEvents = true;
+                var watcher = new FileSystemWatcher(DocumentationDirectory) { EnableRaisingEvents = true };
                 while (true)
                 {
                     watcher.WaitForChanged(WatcherChangeTypes.All);
