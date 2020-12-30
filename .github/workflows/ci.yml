@@ -56,7 +56,6 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '5.0.x'
-
       - name: 🎁 dotnet tool restore
         run: |
           dotnet tool restore
@@ -69,6 +68,9 @@ jobs:
       - name: 🚦 Test
         run: |
           dotnet nuke Test Trigger_Code_Coverage_Reports Generate_Code_Coverage_Report_Cobertura Generate_Code_Coverage_Badges Generate_Code_Coverage_Summary Generate_Code_Coverage_Report --skip
+      - name: Docs
+        run: |
+          dotnet nuke Docs --skip
       - name: 📦 Pack
         run: |
           dotnet nuke Pack --skip

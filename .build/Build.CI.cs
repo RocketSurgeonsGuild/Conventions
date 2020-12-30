@@ -88,6 +88,13 @@ public partial class Solution
             If = "always()"
         });
 
+        buildJob.Steps.Add(new UploadArtifactStep("Publish Docs")
+        {
+            Name = "docs",
+            Path = "artifacts/docs/",
+            If = "always()"
+        });
+
 
         /*
 
