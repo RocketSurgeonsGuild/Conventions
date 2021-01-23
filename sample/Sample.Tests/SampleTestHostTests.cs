@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Sample.Tests
 {
+    #region codeblock
     public class SampleTestHostTests : IAsyncLifetime
     {
         private readonly IHost _host;
@@ -29,4 +30,5 @@ namespace Sample.Tests
             _host.Dispose();
         }
     }
+    #endregion
 }
