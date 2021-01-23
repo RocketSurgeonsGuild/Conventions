@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Sample.Core.Tests
 {
+    #region codeblock
     public class SampleTests
     {
         private readonly ConventionContextBuilder _builder;
@@ -28,4 +29,5 @@ namespace Sample.Core.Tests
             Assert.Equal("TestService", services.GetRequiredService<IService>().GetString());
         }
     }
+    #endregion
 }
