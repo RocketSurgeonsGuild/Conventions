@@ -42,15 +42,17 @@ Conventions are then interfaces that are implemented by the class some examples 
 * <xref:Rocket.Surgery.Conventions.Configuration.IConfigurationConvention>
 * <xref:Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention>
 * <xref:Rocket.Surgery.Conventions.Logging.ILoggingConvention>
+* <xref:Rocket.Surgery.Conventions.Setup.ISetupConvention>
 * <xref:Rocket.Surgery.Hosting.IHostingConvention>
 
-ad-hoc Conventions (or delegate Conventions) are a different kind of convention but written as a delegate, but they generally mirror the method given by the Convention interface.  
+ad-hoc Conventions (or delegate Conventions) are a different kind of convention but written as a delegate, but they mirror the method given by the Convention interface.  
 These can be used to during program startup just like `ConfigureServices` are used today. 
 
 Some examples are:
 * <xref:Rocket.Surgery.Conventions.Configuration.ConfigurationConvention>
 * <xref:Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention>
 * <xref:Rocket.Surgery.Conventions.Logging.LoggingConvention>
+* <xref:Rocket.Surgery.Conventions.Setup.SetupConvention>
 * <xref:Rocket.Surgery.Hosting.HostingConvention>
 
 ## Exporting a Convention

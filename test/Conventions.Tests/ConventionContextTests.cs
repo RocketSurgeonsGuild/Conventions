@@ -12,7 +12,9 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.Conventions.Setup;
 using Rocket.Surgery.Extensions.Testing;
+using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -96,6 +98,30 @@ namespace Rocket.Surgery.Conventions.Tests
             contextBuilder.PrependConvention(convention);
 
             ConventionContextHelpers.CreateProvider(contextBuilder, new TestAssemblyProvider(), Logger).GetAll().Should().Contain(convention);
+        }
+
+        [Fact]
+        public void Setups()
+        {
+            var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(Array.Empty<Assembly>());
+            var convention = A.Fake<ISetupConvention>();
+            contextBuilder.PrependConvention(convention);
+
+            var context = ConventionContext.From(contextBuilder);
+            A.CallTo(() => convention.Register(context)).MustHaveHappenedOnceExactly();
+        }
+
+        [Fact]
+        public void Setups_With_Delegate()
+        {
+            var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>())
+               .UseAssemblies(Array.Empty<Assembly>());
+            var convention = A.Fake<SetupConvention>();
+            contextBuilder.SetupConvention(convention);
+
+            var context = ConventionContext.From(contextBuilder);
+            A.CallTo(() => convention(context)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
