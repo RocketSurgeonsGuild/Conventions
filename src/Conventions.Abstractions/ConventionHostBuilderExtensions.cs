@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
+using Rocket.Surgery.Conventions.Setup;
 
 #pragma warning disable CS8601 // Possible null reference assignment.
 
@@ -17,6 +18,23 @@ namespace Rocket.Surgery.Conventions
     /// </summary>
     public static class ConventionHostBuilderExtensions
     {
+        /// <summary>
+        /// Setup a convention to run as soon as the context is created
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="delegate">The delegate.</param>
+        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
+        public static ConventionContextBuilder SetupConvention([NotNull] this ConventionContextBuilder container, SetupConvention @delegate)
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            container.AppendDelegate(@delegate);
+            return container;
+        }
+
         /// <summary>
         /// Configure the services delegate to the convention scanner
         /// </summary>

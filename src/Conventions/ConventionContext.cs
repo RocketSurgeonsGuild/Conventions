@@ -3,6 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Rocket.Surgery.Conventions.Extensions;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions
@@ -27,7 +28,9 @@ namespace Rocket.Surgery.Conventions
             var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
             var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
             var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
-            return new ConventionContext(provider, assemblyProvider, assemblyCandidateFinder, builder.Properties.ToDictionary(z => z.Key, z => z.Value));
+            var context = new ConventionContext(provider, assemblyProvider, assemblyCandidateFinder, builder.Properties.ToDictionary(z => z.Key, z => z.Value));
+            context.ApplyConventions();
+            return context;
         }
 
         /// <summary>

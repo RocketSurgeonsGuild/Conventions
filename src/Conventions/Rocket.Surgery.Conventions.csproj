@@ -19,7 +19,4 @@
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Abstractions" />
     </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Conventions" />
-    </ItemGroup>
 </Project>

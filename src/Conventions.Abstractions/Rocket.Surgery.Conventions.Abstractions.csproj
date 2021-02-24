@@ -22,7 +22,4 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Tests" />
     </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Scanners" />
-    </ItemGroup>
 </Project>
