@@ -5,7 +5,7 @@
         <PackageTags>$(PackageTags);reflection</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" IncludeAssets="analyzers" ExcludeAssets="compile;runtime;native" PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" IncludeAssets="analyzers" ExcludeAssets="compile;runtime;native" PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive" OutputItemType="Analyzer" />
         <ProjectReference Include="../Conventions.Attributes/Rocket.Surgery.Conventions.Attributes.csproj" />
         <PackageReference Include="Microsoft.Extensions.Logging" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
