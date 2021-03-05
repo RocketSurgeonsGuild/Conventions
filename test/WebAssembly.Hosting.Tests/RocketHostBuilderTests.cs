@@ -15,7 +15,8 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests
 {
-    public class RocketHostBuilderTests : AutoFakeTest
+    [ImportConventions]
+    public partial class RocketHostBuilderTests : AutoFakeTest
     {
         [Fact]
         public void Should_UseAppDomain()
@@ -42,6 +43,16 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests
         {
             var builder = LocalWebAssemblyHostBuilder.CreateDefault()
                .UseRocketBooster(RocketBooster.For(AppDomain.CurrentDomain));
+
+            var host = builder.Build();
+            host.Services.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Should_UseRocketBooster_With_Conventions()
+        {
+            var builder = LocalWebAssemblyHostBuilder.CreateDefault()
+               .UseRocketBooster(RocketBooster.For(AppDomain.CurrentDomain, GetConventions));
 
             var host = builder.Build();
             host.Services.Should().NotBeNull();
