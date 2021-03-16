@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Rocket.Surgery.Conventions
 {
@@ -10,6 +11,7 @@ namespace Rocket.Surgery.Conventions
     /// </remarks>
     /// <seealso cref="Attribute" />
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [Conditional("CodeGeneration")]
     public sealed class ExportConvention : Attribute
     {
 
