@@ -53,6 +53,46 @@ namespace TestProject.Conventions
             ).ConfigureAwait(false);
         }
 
+        [Fact]
+        public async Task Should_Pull_Through_A_Convention_With_ExportAttribute()
+        {
+            var source = @"
+using Rocket.Surgery.Conventions;
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    [ExportConvention]
+    internal class Contrib : IConvention { }
+}
+";
+            var expected = @"
+using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+
+[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
+[assembly: Convention(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
+namespace TestProject.Conventions
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    public static partial class Exports
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
+        }
+    }
+}
+";
+
+            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+                source,
+                expected
+            ).ConfigureAwait(false);
+        }
+
         [Theory]
         [InlineData(HostType.Live)]
         [InlineData(HostType.UnitTest)]
@@ -159,9 +199,9 @@ internal class Contrib1 : IConvention { }
             var source2 = @"
 using Rocket.Surgery.Conventions;
 
-[assembly: Convention(typeof(Contrib2))]
 [assembly: Convention(typeof(Contrib3))]
 
+[ExportConvention]
 internal class Contrib2 : IConvention { }
 internal class Contrib3 : IConvention { }
 ";
@@ -178,7 +218,8 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
-[assembly: ExportedConventions(typeof(Contrib1), typeof(Contrib2), typeof(Contrib3), typeof(Contrib4))]
+[assembly: ExportedConventions(typeof(Contrib1), typeof(Contrib3), typeof(Contrib4), typeof(Contrib2))]
+[assembly: Convention(typeof(Contrib2))]
 namespace TestProject.Conventions
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
@@ -187,9 +228,9 @@ namespace TestProject.Conventions
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib1>(serviceProvider), HostType.Undefined);
-            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib2>(serviceProvider), HostType.Undefined);
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib3>(serviceProvider), HostType.Undefined);
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib4>(serviceProvider), HostType.Undefined);
+            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib2>(serviceProvider), HostType.Undefined);
         }
     }
 }";
