@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Rocket.Surgery.Conventions
@@ -30,9 +31,9 @@ namespace Rocket.Surgery.Conventions
             var compliation = ( context.Compilation as CSharpCompilation )!;
             var hasExports = false;
 
-            if (syntaxReceiver.ExportCandidates.Count > 0)
+            if (syntaxReceiver.ExportCandidates.Count > 0 || syntaxReceiver.ExportedConventions.Count > 0)
             {
-                hasExports = HandleConventionExports(context, compliation, syntaxReceiver.ExportCandidates);
+                hasExports = HandleConventionExports(context, compliation, syntaxReceiver.ExportCandidates, syntaxReceiver.ExportedConventions);
             }
 
             if (syntaxReceiver.ImportCandidates.Count > 0)
@@ -190,10 +191,19 @@ namespace Rocket.Surgery.Conventions
             );
         }
 
-        private bool HandleConventionExports(GeneratorExecutionContext context, CSharpCompilation compilation, IReadOnlyCollection<AttributeListSyntax> exportCandidates)
+        private bool HandleConventionExports(
+            GeneratorExecutionContext context,
+            CSharpCompilation compilation,
+            IReadOnlyCollection<AttributeListSyntax> exportCandidates,
+            List<TypeDeclarationSyntax> exportedCandidates
+        )
         {
             var conventions = exportCandidates
                .SelectMany(candidate => GetExportedConventions(context, candidate))
+               .Concat(
+                    exportedCandidates
+                       .SelectMany(candidate => GetExportedConventions(context, candidate))
+                )
                .Distinct(SymbolEqualityComparer.Default)
                .OfType<INamedTypeSymbol>()
                .ToArray();
@@ -204,6 +214,7 @@ namespace Rocket.Surgery.Conventions
             var @namespace = GetNamespaceForCompilation(context.Compilation);
 
             var liveConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.LiveConventionAttribute")!;
+            var exportConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.ExportConventionAttribute")!;
             var unitTestConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.UnitTestConventionAttribute")!;
             var afterConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.AfterConventionAttribute")!;
             var dependsOnConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.DependsOnConventionAttribute")!;
@@ -388,15 +399,52 @@ namespace Rocket.Surgery.Conventions
                            .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
                     )
                 )
-               .WithMembers(SingletonList<MemberDeclarationSyntax>(helperClass))
-               .NormalizeWhitespace();
+               .WithMembers(SingletonList<MemberDeclarationSyntax>(helperClass));
+
+            if (exportedCandidates.Count > 0)
+            {
+                cu = cu.AddAttributeLists(
+                    exportedCandidates
+                       .SelectMany(candidate => GetExportedConventions(context, candidate))
+                       .Select(
+                            candidate => AttributeList(
+                                    SingletonSeparatedList(
+                                        Attribute(IdentifierName("Convention"))
+                                           .WithArgumentList(
+                                                AttributeArgumentList(
+                                                    SingletonSeparatedList(
+                                                        AttributeArgument(
+                                                            TypeOfExpression(
+                                                                ParseName(candidate.ToDisplayString())
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                    )
+                                )
+                               .WithTarget(
+                                    AttributeTargetSpecifier(
+                                        Token(SyntaxKind.AssemblyKeyword)
+                                    )
+                                )
+                        ).ToArray()
+                );
+            }
 
             context.AddSource(
                 $"Exported_Conventions.cs",
-                cu.SyntaxTree.GetRoot().GetText(Encoding.UTF8)
+                cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
             );
 
             return true;
+        }
+
+        private IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorExecutionContext context, BaseTypeDeclarationSyntax declarationSyntax)
+        {
+            var model = context.Compilation.GetSemanticModel(declarationSyntax.SyntaxTree);
+            if (model.GetDeclaredSymbol(declarationSyntax) is { } symbol)
+                yield return symbol;
         }
 
         private IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorExecutionContext context, AttributeListSyntax attributeListSyntax)
