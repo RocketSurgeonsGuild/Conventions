@@ -38,7 +38,7 @@ public partial class Solution : NukeBuild,
                         IGenerateCodeCoverageBadges,
                         IHaveConfiguration<Configuration>,
                         ICanLint,
-                        ICanGenerateDocs
+                        IGenerateDocFx
 {
     /// <summary>
     /// Support plugins are available for:
@@ -70,7 +70,7 @@ public partial class Solution : NukeBuild,
     public Target Clean => _ => _.Inherit<ICanClean>(x => x.Clean);
     public Target Restore => _ => _.Inherit<ICanRestoreWithDotNetCore>(x => x.CoreRestore);
     public Target Test => _ => _.Inherit<ICanTestWithDotNetCore>(x => x.CoreTest);
-    public Target Docs => _ => _.Inherit<ICanGenerateDocs>(x => x.CoreDocs);
+    public Target Docs => _ => _.Inherit<IGenerateDocFx>(x => x.CoreDocs);
 
     public Target BuildVersion => _ => _.Inherit<IHaveBuildVersion>(x => x.BuildVersion)
        .Before(Default)
@@ -78,52 +78,4 @@ public partial class Solution : NukeBuild,
 
     [Parameter("Configuration to build")]
     public Configuration Configuration { get; } = IsLocalBuild ? Configuration.Debug : Configuration.Release;
-}
-
-public interface ICanGenerateDocs : IHaveArtifacts
-{
-    public AbsolutePath DocumentationDirectory => NukeBuild.RootDirectory / "docs";
-
-    public AbsolutePath DocumentationsOutputDirectory => ArtifactsDirectory / "docs";
-
-    [Parameter("serve the docs")]
-    public bool? Serve => EnvironmentInfo.GetVariable<bool?>("Serve")
-    ?? ValueInjectionUtility.TryGetValue(() => Serve)
-    ?? false;
-
-    public Target CoreDocs => _ => _
-       .OnlyWhenStatic(() => DirectoryExists(DocumentationDirectory))
-       .Executes(
-        () =>
-        {
-            DocFXMetadata(z => z
-               .SetProcessWorkingDirectory(DocumentationDirectory)
-            );
-            DocFXBuild(z => z
-               .SetProcessWorkingDirectory(DocumentationDirectory)
-               .SetOutputFolder(ArtifactsDirectory)
-            );
-
-            if (Serve == true)
-            {
-                Task.Run(
-                    () =>
-                        DocFXServe(
-                            z => z
-                               .SetProcessWorkingDirectory(DocumentationDirectory)
-                               .SetFolder(DocumentationsOutputDirectory)
-                        )
-                );
-
-                var watcher = new FileSystemWatcher(DocumentationDirectory) { EnableRaisingEvents = true };
-                while (true)
-                {
-                    watcher.WaitForChanged(WatcherChangeTypes.All);
-                    DocFXBuild(z => z
-                       .SetProcessWorkingDirectory(DocumentationDirectory)
-                       .SetOutputFolder(ArtifactsDirectory));
-                }
-            }
-
-        });
 }
