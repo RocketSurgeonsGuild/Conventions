@@ -57,7 +57,7 @@
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="4.0.1" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Host.Storage" Version="4.0.1" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="2.1.0" />
-    <PackageReference Update="Terminal.Gui" Version="1.0.0" />
+    <PackageReference Update="Terminal.Gui" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Bogus" Version="33.0.2" />
