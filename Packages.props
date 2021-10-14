@@ -54,7 +54,7 @@
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="3.1.0" />
     <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.30" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="4.0.1" />
-    <PackageReference Update="Microsoft.Azure.WebJobs.Host.Storage" Version="4.0.1" />
+    <PackageReference Update="Microsoft.Azure.WebJobs.Host.Storage" Version="4.0.4" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="2.1.0" />
     <PackageReference Update="Terminal.Gui" Version="1.2.1" />
   </ItemGroup>
