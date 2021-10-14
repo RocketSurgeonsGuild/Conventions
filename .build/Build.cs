@@ -1,44 +1,37 @@
 using JetBrains.Annotations;
 using Nuke.Common;
+using Nuke.Common.CI;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
-using Nuke.Common.IO;
-using Nuke.Common.Tooling;
-using Nuke.Common.Tools.DocFX;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.MSBuild;
-using Nuke.Common.ValueInjection;
 using Rocket.Surgery.Nuke;
 using Rocket.Surgery.Nuke.DotNetCore;
-using System.IO;
-using System.Threading.Tasks;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.Tools.DocFX.DocFXTasks;
 
 [PublicAPI]
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
 [PackageIcon("https://raw.githubusercontent.com/RocketSurgeonsGuild/graphics/master/png/social-square-thrust-rounded.png")]
 [EnsureGitHooks(GitHook.PreCommit)]
-[EnsureReadmeIsUpdated]
+[EnsureReadmeIsUpdated("Readme.md")]
 [DotNetVerbosityMapping]
 [MSBuildVerbosityMapping]
 [NuGetVerbosityMapping]
+[ShutdownDotNetAfterServerBuild]
 public partial class Solution : NukeBuild,
-                        ICanRestoreWithDotNetCore,
-                        ICanBuildWithDotNetCore,
-                        ICanTestWithDotNetCore,
-                        ICanPackWithDotNetCore,
-                        IHaveDataCollector,
-                        ICanClean,
-                        ICanUpdateReadme,
-                        IGenerateCodeCoverageReport,
-                        IGenerateCodeCoverageSummary,
-                        IGenerateCodeCoverageBadges,
-                        IHaveConfiguration<Configuration>,
-                        ICanLint,
-                        IGenerateDocFx
+                                ICanRestoreWithDotNetCore,
+                                ICanBuildWithDotNetCore,
+                                ICanTestWithDotNetCore,
+                                ICanPackWithDotNetCore,
+                                IHaveDataCollector,
+                                ICanClean,
+                                ICanUpdateReadme,
+                                IGenerateCodeCoverageReport,
+                                IGenerateCodeCoverageSummary,
+                                IGenerateCodeCoverageBadges,
+                                IHaveConfiguration<Configuration>,
+                                ICanLint
 {
     /// <summary>
     /// Support plugins are available for:
@@ -56,8 +49,7 @@ public partial class Solution : NukeBuild,
        .DependsOn(Restore)
        .DependsOn(Build)
        .DependsOn(Test)
-       .DependsOn(Pack)
-       .DependsOn(Docs);
+       .DependsOn(Pack);
 
     public Target Build => _ => _.Inherit<ICanBuildWithDotNetCore>(x => x.CoreBuild);
 
@@ -68,9 +60,9 @@ public partial class Solution : NukeBuild,
     public GitVersion GitVersion { get; } = null!;
 
     public Target Clean => _ => _.Inherit<ICanClean>(x => x.Clean);
+    public Target Lint => _ => _.Inherit<ICanLint>(x => x.Lint);
     public Target Restore => _ => _.Inherit<ICanRestoreWithDotNetCore>(x => x.CoreRestore);
     public Target Test => _ => _.Inherit<ICanTestWithDotNetCore>(x => x.CoreTest);
-    public Target Docs => _ => _.Inherit<IGenerateDocFx>(x => x.CoreDocs);
 
     public Target BuildVersion => _ => _.Inherit<IHaveBuildVersion>(x => x.BuildVersion)
        .Before(Default)
