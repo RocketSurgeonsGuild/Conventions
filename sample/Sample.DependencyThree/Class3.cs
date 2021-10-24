@@ -4,10 +4,9 @@ using Sample.DependencyThree;
 
 [assembly: Convention(typeof(Class3))]
 
-namespace Sample.DependencyThree
+namespace Sample.DependencyThree;
+
+public class Class3 : IConvention
 {
-    public class Class3 : IConvention
-    {
-        public Class1? Class1 { get; set; }
-    }
+    public Class1? Class1 { get; set; }
 }

@@ -1,10 +1,11 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Routing;
 
-namespace Rocket.Surgery.WebAssembly.Hosting.Internals
+namespace Rocket.Surgery.WebAssembly.Hosting.Internals;
+
+internal class NoopNavigationInterception : INavigationInterception
 {
-    internal class NoopNavigationInterception : INavigationInterception
+    public Task EnableNavigationInterceptionAsync()
     {
-        public Task EnableNavigationInterceptionAsync() => Task.CompletedTask;
+        return Task.CompletedTask;
     }
 }

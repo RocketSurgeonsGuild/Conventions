@@ -1,20 +1,18 @@
-using System;
 using Microsoft.Extensions.Hosting;
 
-namespace Rocket.Surgery.Hosting.Internals
+namespace Rocket.Surgery.Hosting.Internals;
+
+internal class ConfigureContainerAdapter<TContainerBuilder> : IConfigureContainerAdapter
 {
-    internal class ConfigureContainerAdapter<TContainerBuilder> : IConfigureContainerAdapter
+    private readonly Action<HostBuilderContext, TContainerBuilder> _action;
+
+    public ConfigureContainerAdapter(Action<HostBuilderContext, TContainerBuilder> action)
     {
-        private Action<HostBuilderContext, TContainerBuilder> _action;
+        _action = action ?? throw new ArgumentNullException(nameof(action));
+    }
 
-        public ConfigureContainerAdapter(Action<HostBuilderContext, TContainerBuilder> action)
-        {
-            _action = action ?? throw new ArgumentNullException(nameof(action));
-        }
-
-        public void ConfigureContainer(HostBuilderContext hostContext, object containerBuilder)
-        {
-            _action(hostContext, (TContainerBuilder)containerBuilder);
-        }
+    public void ConfigureContainer(HostBuilderContext hostContext, object containerBuilder)
+    {
+        _action(hostContext, (TContainerBuilder)containerBuilder);
     }
 }

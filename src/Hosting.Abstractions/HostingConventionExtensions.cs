@@ -1,48 +1,45 @@
-using System;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Hosting;
 
 // ReSharper disable once CheckNamespace
-namespace Rocket.Surgery.Conventions
+namespace Rocket.Surgery.Conventions;
+
+/// <summary>
+///     Helper method for working with <see cref="ConventionContextBuilder" />
+/// </summary>
+public static class HostingConventionExtensions
 {
     /// <summary>
-    /// Helper method for working with <see cref="ConventionContextBuilder" />
+    ///     Configure the hosting delegate to the convention scanner
     /// </summary>
-    public static class HostingConventionExtensions
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, HostingConvention @delegate)
     {
-        /// <summary>
-        /// Configure the hosting delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns>IConventionHostBuilder.</returns>
-        public static ConventionContextBuilder ConfigureHosting([NotNull] this ConventionContextBuilder container, HostingConvention @delegate)
+        if (container == null)
         {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
-
-            container.AppendDelegate(@delegate);
-            return container;
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the hosting delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns>IConventionHostBuilder.</returns>
-        public static ConventionContextBuilder ConfigureHosting([NotNull] this ConventionContextBuilder container, Action<IHostBuilder> @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(@delegate);
+        return container;
+    }
 
-            container.AppendDelegate(new HostingConvention((context, builder) => @delegate(builder)));
-            return container;
+    /// <summary>
+    ///     Configure the hosting delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, Action<IHostBuilder> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
+
+        container.AppendDelegate(new HostingConvention((_, builder) => @delegate(builder)));
+        return container;
     }
 }

@@ -1,14 +1,13 @@
-namespace Rocket.Surgery.Hosting
+namespace Rocket.Surgery.Hosting;
+
+/// <summary>
+///     Class CommandLineResult.
+/// </summary>
+internal class CommandLineResult
 {
     /// <summary>
-    /// Class CommandLineResult.
+    ///     Gets or sets the value.
     /// </summary>
-    internal class CommandLineResult
-    {
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        /// <value>The value.</value>
-        public int Value { get; set; }
-    }
+    /// <value>The value.</value>
+    public int Value { get; set; }
 }

@@ -3,7 +3,8 @@ using Sample.DependencyOne;
 
 [assembly: Convention(typeof(Class1))]
 
-namespace Sample.DependencyOne
+namespace Sample.DependencyOne;
+
+public class Class1 : IConvention
 {
-    public class Class1 : IConvention { }
 }

@@ -1,4 +1,5 @@
-﻿namespace Rocket.Surgery.Conventions.Tests.Fixtures
+﻿namespace Rocket.Surgery.Conventions.Tests.Fixtures;
+
+public interface ITestConventionContext : IConventionContext
 {
-    public interface ITestConventionContext : IConventionContext { }
 }

@@ -1,12 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;netstandard2.0;net5.0</TargetFrameworks>
-        <PackageDescription>Adds support for loading configuration, services, logging, command line and more via simple and easy to setup assembly attributes</PackageDescription>
+        <TargetFrameworks>netstandard2.1;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+        <PackageDescription
+        >Adds support for loading configuration, services, logging, command line and more via simple and easy to setup assembly attributes</PackageDescription>
         <PackageTags>$(PackageTags);reflection</PackageTags>
         <RootNamespace>Rocket.Surgery.Conventions</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-         <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" IncludeAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+         <ProjectReference
+            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="all"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
     </ItemGroup>
     <ItemGroup>

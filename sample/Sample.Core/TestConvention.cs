@@ -6,15 +6,14 @@ using Sample.Core;
 
 [assembly: Convention(typeof(TestConvention))]
 
-namespace Sample.Core
+namespace Sample.Core;
+
+[UnitTestConvention]
+[AfterConvention(typeof(CoreConvention))]
+public class TestConvention : IServiceConvention
 {
-    [UnitTestConvention]
-    [AfterConvention(typeof(CoreConvention))]
-    public class TestConvention : IServiceConvention
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
     {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            services.AddSingleton<IService, TestService>();
-        }
+        services.AddSingleton<IService, TestService>();
     }
 }

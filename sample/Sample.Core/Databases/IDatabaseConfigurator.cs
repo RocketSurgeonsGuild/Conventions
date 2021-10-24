@@ -1,10 +1,11 @@
-﻿namespace Sample.Core.Databases
+﻿namespace Sample.Core.Databases;
+
+#region codeblock
+
+public interface IDatabaseConfigurator
 {
-    #region codeblock
-    public interface IDatabaseConfigurator
-    {
-        void AddTable(string name);
-        void AddView(string name);
-    }
-    #endregion
+    void AddTable(string name);
+    void AddView(string name);
 }
+
+#endregion

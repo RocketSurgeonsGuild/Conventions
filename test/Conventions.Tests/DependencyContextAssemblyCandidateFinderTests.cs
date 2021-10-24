@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
@@ -9,151 +7,158 @@ using Rocket.Surgery.Extensions.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Rocket.Surgery.Conventions.Tests
+namespace Rocket.Surgery.Conventions.Tests;
+
+public class DependencyContextAssemblyCandidateFinderTests : AutoFakeTest
 {
-    public class DependencyContextAssemblyCandidateFinderTests : AutoFakeTest
+    [Fact]
+    public void FindsAssembliesInCandidates_Params()
     {
-        [Fact]
-        public void FindsAssembliesInCandidates_Params()
+        var resolver = new DependencyContextAssemblyCandidateFinder(
+            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
+            Logger
+        );
+        var items = resolver.GetCandidateAssemblies(
+                                 "Rocket.Surgery.Conventions",
+                                 "Rocket.Surgery.Conventions.Abstractions",
+                                 "Rocket.Surgery.Conventions.Attributes"
+                             )
+                            .Select(x => x.GetName().Name)
+                            .ToArray();
+
+        foreach (var item in items)
         {
-            var resolver = new DependencyContextAssemblyCandidateFinder(
-                DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
-                Logger
-            );
-            var items = resolver.GetCandidateAssemblies(
-                    "Rocket.Surgery.Conventions",
-                    "Rocket.Surgery.Conventions.Abstractions",
-                    "Rocket.Surgery.Conventions.Attributes"
-                )
-               .Select(x => x.GetName().Name)
-               .ToArray();
-
-            foreach (var item in items)
-            {
-                Logger.LogInformation(item);
-            }
-
-            items
-               .Should()
-               .Contain(
-                    new[]
-                    {
-                        "Sample.DependencyOne",
-                        "Sample.DependencyTwo",
-                        "Sample.DependencyThree",
-                        "Rocket.Surgery.Conventions.Tests"
-                    }
-                );
-            items
-               .Last()
-               .Should()
-               .Be("Rocket.Surgery.Conventions.Tests");
+            Logger.LogInformation(item);
         }
 
-        [Fact]
-        public void FindsAssembliesInCandidates_Enumerable()
-        {
-            var resolver = new DependencyContextAssemblyCandidateFinder(
-                DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
-                Logger
+        items
+           .Should()
+           .Contain(
+                new[]
+                {
+                    "Sample.DependencyOne",
+                    "Sample.DependencyTwo",
+                    "Sample.DependencyThree",
+                    "Rocket.Surgery.Conventions.Tests"
+                }
             );
-            var items = resolver.GetCandidateAssemblies(
-                    new[] { "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions",
-                        "Rocket.Surgery.Conventions.Attributes" }.AsEnumerable()
-                )
-               .Select(x => x.GetName().Name)
-               .ToArray();
+        items
+           .Last()
+           .Should()
+           .Be("Rocket.Surgery.Conventions.Tests");
+    }
 
-            foreach (var item in items)
-            {
-                Logger.LogInformation(item);
-            }
+    [Fact]
+    public void FindsAssembliesInCandidates_Enumerable()
+    {
+        var resolver = new DependencyContextAssemblyCandidateFinder(
+            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
+            Logger
+        );
+        var items = resolver.GetCandidateAssemblies(
+                                 new[]
+                                 {
+                                     "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions",
+                                     "Rocket.Surgery.Conventions.Attributes"
+                                 }.AsEnumerable()
+                             )
+                            .Select(x => x.GetName().Name)
+                            .ToArray();
 
-            items
-               .Should()
-               .Contain(
-                    new[]
-                    {
-                        "Sample.DependencyOne",
-                        "Sample.DependencyTwo",
-                        "Sample.DependencyThree",
-                        "Rocket.Surgery.Conventions.Tests"
-                    }
-                );
-            items
-               .Last()
-               .Should()
-               .Be("Rocket.Surgery.Conventions.Tests");
+        foreach (var item in items)
+        {
+            Logger.LogInformation(item);
         }
 
-        [Fact]
-        public void FindsAssembliesInCandidates_Params_Multiples()
-        {
-            var resolver = new DependencyContextAssemblyCandidateFinder(
-                DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
-                Logger
+        items
+           .Should()
+           .Contain(
+                new[]
+                {
+                    "Sample.DependencyOne",
+                    "Sample.DependencyTwo",
+                    "Sample.DependencyThree",
+                    "Rocket.Surgery.Conventions.Tests"
+                }
             );
-            var items = resolver.GetCandidateAssemblies(
-                    new[] { "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions",
-                        "Rocket.Surgery.Conventions.Attributes" }
-                )
-               .Select(x => x.GetName().Name)
-               .ToArray();
-            var items2 = resolver.GetCandidateAssemblies(
-                    "Rocket.Surgery.Conventions",
-                    "Rocket.Surgery.Conventions.Abstractions",
-                    "Rocket.Surgery.Conventions.Attributes"
-                )
-               .Select(x => x.GetName().Name)
-               .ToArray();
+        items
+           .Last()
+           .Should()
+           .Be("Rocket.Surgery.Conventions.Tests");
+    }
 
-            foreach (var item in items)
-            {
-                Logger.LogInformation(item);
-            }
+    [Fact]
+    public void FindsAssembliesInCandidates_Params_Multiples()
+    {
+        var resolver = new DependencyContextAssemblyCandidateFinder(
+            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
+            Logger
+        );
+        var items = resolver.GetCandidateAssemblies(
+                                 new[]
+                                 {
+                                     "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions",
+                                     "Rocket.Surgery.Conventions.Attributes"
+                                 }
+                             )
+                            .Select(x => x.GetName().Name)
+                            .ToArray();
+        var items2 = resolver.GetCandidateAssemblies(
+                                  "Rocket.Surgery.Conventions",
+                                  "Rocket.Surgery.Conventions.Abstractions",
+                                  "Rocket.Surgery.Conventions.Attributes"
+                              )
+                             .Select(x => x.GetName().Name)
+                             .ToArray();
 
-            foreach (var item in items2)
-            {
-                Logger.LogInformation(item);
-            }
-
-            items
-               .Should()
-               .Contain(
-                    new[]
-                    {
-                        "Sample.DependencyOne",
-                        "Sample.DependencyTwo",
-                        "Sample.DependencyThree",
-                        "Rocket.Surgery.Conventions.Tests"
-                    }
-                );
-            items
-               .Last()
-               .Should()
-               .Be("Rocket.Surgery.Conventions.Tests");
-            items.Should().BeEquivalentTo(items2);
+        foreach (var item in items)
+        {
+            Logger.LogInformation(item);
         }
 
-        [Fact]
-        public void FindsAssembliesInCandidates_Empty()
+        foreach (var item in items2)
         {
-            var resolver = new DependencyContextAssemblyCandidateFinder(
-                DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
-                Logger
-            );
-            var items = resolver.GetCandidateAssemblies(Array.Empty<string>().AsEnumerable())
-               .Select(x => x.GetName().Name)
-               .ToArray();
-
-            foreach (var item in items)
-            {
-                Logger.LogInformation(item);
-            }
-
-            items.Should().BeEmpty();
+            Logger.LogInformation(item);
         }
 
-        public DependencyContextAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
+        items
+           .Should()
+           .Contain(
+                new[]
+                {
+                    "Sample.DependencyOne",
+                    "Sample.DependencyTwo",
+                    "Sample.DependencyThree",
+                    "Rocket.Surgery.Conventions.Tests"
+                }
+            );
+        items
+           .Last()
+           .Should()
+           .Be("Rocket.Surgery.Conventions.Tests");
+        items.Should().BeEquivalentTo(items2);
+    }
+
+    [Fact]
+    public void FindsAssembliesInCandidates_Empty()
+    {
+        var resolver = new DependencyContextAssemblyCandidateFinder(
+            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
+            Logger
+        );
+        var items = resolver.GetCandidateAssemblies(Array.Empty<string>().AsEnumerable())
+                            .Select(x => x.GetName().Name)
+                            .ToArray();
+
+        foreach (var item in items)
+        {
+            Logger.LogInformation(item);
+        }
+
+        items.Should().BeEmpty();
+    }
+
+    public DependencyContextAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : base(outputHelper)
+    {
     }
 }

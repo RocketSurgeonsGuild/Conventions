@@ -1,9 +1,8 @@
 using Microsoft.Extensions.Hosting;
 
-namespace Rocket.Surgery.Hosting.Internals
+namespace Rocket.Surgery.Hosting.Internals;
+
+internal interface IConfigureContainerAdapter
 {
-    internal interface IConfigureContainerAdapter
-    {
-        void ConfigureContainer(HostBuilderContext hostContext, object containerBuilder);
-    }
+    void ConfigureContainer(HostBuilderContext hostContext, object containerBuilder);
 }

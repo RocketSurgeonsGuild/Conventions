@@ -1,7 +1,9 @@
-﻿namespace Sample.Core
+﻿namespace Sample.Core;
+
+internal class TestService : IService
 {
-    internal class TestService : IService
+    public string GetString()
     {
-        public string GetString() => nameof(TestService);
+        return nameof(TestService);
     }
 }

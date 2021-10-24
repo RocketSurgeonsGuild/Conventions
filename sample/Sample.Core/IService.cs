@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿namespace Sample.Core;
 
-namespace Sample.Core
+public interface IService
 {
-    public interface IService
-    {
-        string GetString();
-    }
+    string GetString();
 }

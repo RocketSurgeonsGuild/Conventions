@@ -1,19 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using JetBrains.Annotations;
+﻿using System.Reflection;
 
-namespace Rocket.Surgery.Conventions.Reflection
+namespace Rocket.Surgery.Conventions.Reflection;
+
+/// <summary>
+///     A provider that gets a list of assemblies for a given context
+/// </summary>
+public interface IAssemblyProvider
 {
     /// <summary>
-    /// A provider that gets a list of assemblies for a given context
+    ///     Get the full list of assemblies
     /// </summary>
-    public interface IAssemblyProvider
-    {
-        /// <summary>
-        /// Get the full list of assemblies
-        /// </summary>
-        /// <returns>IEnumerable{Assembly}.</returns>
-        [NotNull]
-        IEnumerable<Assembly> GetAssemblies();
-    }
+    /// <returns>IEnumerable{Assembly}.</returns>
+    IEnumerable<Assembly> GetAssemblies();
 }

@@ -1,45 +1,46 @@
-using System;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Abstractions;
 
-namespace Rocket.Surgery.Conventions.CommandLine
+namespace Rocket.Surgery.Conventions.CommandLine;
+
+/// <summary>
+///     CommandLineServiceProvider.
+///     Implements the <see cref="IServiceProvider" />
+/// </summary>
+/// <seealso cref="IServiceProvider" />
+internal class CommandLineServiceProvider : IServiceProvider
 {
+    private readonly IModelAccessor _modelAccessor;
+
     /// <summary>
-    /// CommandLineServiceProvider.
-    /// Implements the <see cref="IServiceProvider" />
+    ///     Initializes a new instance of the <see cref="CommandLineServiceProvider" /> class.
     /// </summary>
-    /// <seealso cref="IServiceProvider" />
-    internal class CommandLineServiceProvider : IServiceProvider
+    /// <param name="modelAccessor">The model accessor.</param>
+    public CommandLineServiceProvider(IModelAccessor modelAccessor)
     {
-        private readonly IModelAccessor _modelAccessor;
+        _modelAccessor = modelAccessor;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CommandLineServiceProvider" /> class.
-        /// </summary>
-        /// <param name="modelAccessor">The model accessor.</param>
-        public CommandLineServiceProvider(IModelAccessor modelAccessor) => _modelAccessor = modelAccessor;
-
-        /// <summary>
-        /// Gets the service object of the specified type.
-        /// </summary>
-        /// <param name="serviceType">An object that specifies the type of service object to get.</param>
-        /// <returns>
-        /// A service object of type <paramref name="serviceType">serviceType</paramref>.   -or-  null if there is no
-        /// service object of type <paramref name="serviceType">serviceType</paramref>.
-        /// </returns>
-        public object? GetService(Type serviceType)
+    /// <summary>
+    ///     Gets the service object of the specified type.
+    /// </summary>
+    /// <param name="serviceType">An object that specifies the type of service object to get.</param>
+    /// <returns>
+    ///     A service object of type <paramref name="serviceType">serviceType</paramref>.   -or-  null if there is no
+    ///     service object of type <paramref name="serviceType">serviceType</paramref>.
+    /// </returns>
+    public object? GetService(Type serviceType)
+    {
+        if (typeof(IApplicationState).IsAssignableFrom(serviceType))
         {
-            if (typeof(IApplicationState).IsAssignableFrom(serviceType))
-            {
-                return _modelAccessor.GetModel();
-            }
-
-            if (serviceType == typeof(IConsole))
-            {
-                return PhysicalConsole.Singleton;
-            }
-
-            return null;
+            return _modelAccessor.GetModel();
         }
+
+        if (serviceType == typeof(IConsole))
+        {
+            return PhysicalConsole.Singleton;
+        }
+
+        return null;
     }
 }

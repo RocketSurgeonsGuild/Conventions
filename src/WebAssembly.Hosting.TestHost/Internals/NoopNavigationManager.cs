@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Rocket.Surgery.WebAssembly.Hosting.Internals
+namespace Rocket.Surgery.WebAssembly.Hosting.Internals;
+
+internal class NoopNavigationManager : NavigationManager
 {
-    internal class NoopNavigationManager : NavigationManager
+    protected override void NavigateToCore(string uri, bool forceLoad)
     {
-        protected override void NavigateToCore(string uri, bool forceLoad)
-        {
-            
-        }
     }
 }

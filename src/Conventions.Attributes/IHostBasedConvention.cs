@@ -1,7 +1,6 @@
-namespace Rocket.Surgery.Conventions
+namespace Rocket.Surgery.Conventions;
+
+internal interface IHostBasedConvention
 {
-    internal interface IHostBasedConvention
-    {
-        HostType HostType { get; }
-    }
+    HostType HostType { get; }
 }

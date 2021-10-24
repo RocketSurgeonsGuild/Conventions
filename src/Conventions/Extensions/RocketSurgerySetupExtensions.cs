@@ -1,32 +1,31 @@
 ﻿using Rocket.Surgery.Conventions.Setup;
 
-namespace Rocket.Surgery.Conventions.Extensions
+namespace Rocket.Surgery.Conventions.Extensions;
+
+/// <summary>
+///     Extension method to apply configuration conventions
+/// </summary>
+internal static class RocketSurgerySetupExtensions
 {
     /// <summary>
-    /// Extension method to apply configuration conventions
+    ///     Apply configuration conventions
     /// </summary>
-    internal static class RocketSurgerySetupExtensions
+    /// <param name="conventionContext"></param>
+    /// <returns></returns>
+    public static IConventionContext ApplyConventions(this IConventionContext conventionContext)
     {
-        /// <summary>
-        /// Apply configuration conventions
-        /// </summary>
-        /// <param name="conventionContext"></param>
-        /// <returns></returns>
-        public static IConventionContext ApplyConventions(this IConventionContext conventionContext)
+        foreach (var item in conventionContext.Conventions.Get<ISetupConvention, SetupConvention>())
         {
-            foreach (var item in conventionContext.Conventions.Get<ISetupConvention, SetupConvention>())
+            if (item is ISetupConvention convention)
             {
-                if (item is ISetupConvention convention)
-                {
-                    convention.Register(conventionContext);
-                }
-                else if (item is SetupConvention @delegate)
-                {
-                    @delegate(conventionContext);
-                }
+                convention.Register(conventionContext);
             }
-
-            return conventionContext;
+            else if (item is SetupConvention @delegate)
+            {
+                @delegate(conventionContext);
+            }
         }
+
+        return conventionContext;
     }
 }

@@ -6,16 +6,17 @@ using Sample.Core.Databases;
 
 [assembly: Convention(typeof(DatabaseServiceConvention))]
 
-namespace Sample.Core.Databases
+namespace Sample.Core.Databases;
+
+#region codeblock
+
+public class DatabaseServiceConvention : IServiceConvention
 {
-    #region codeblock
-    public class DatabaseServiceConvention : IServiceConvention
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
     {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            var configurator = new DatabaseConfigurator();
-            configurator.ApplyConventions(context);
-        }
+        var configurator = new DatabaseConfigurator();
+        configurator.ApplyConventions(context);
     }
-    #endregion
 }
+
+#endregion

@@ -1,6 +1,4 @@
-using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Sample.DependencyOne;
 using Sample.DependencyThree;
@@ -8,19 +6,19 @@ using Sample.DependencyTwo;
 using Xunit;
 using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
-namespace Rocket.Surgery.Conventions.Analyzers.Tests
+namespace Rocket.Surgery.Conventions.Analyzers.Tests;
+
+public class ImportConventionsTests
 {
-    public class ImportConventionsTests
+    [Fact]
+    public async Task Should_Generate_Static_Assembly_Level_Method()
     {
-        [Fact]
-        public async Task Should_Generate_Static_Assembly_Level_Method()
-        {
-            var source = @"
+        var source = @"
 using Rocket.Surgery.Conventions;
 
 [assembly: ImportConventions]
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Rocket.Surgery.Conventions;
@@ -43,17 +41,17 @@ namespace TestProject.Conventions
 }
 ";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
 
-        [Fact]
-        public async Task Should_Generate_Static_Class_Member_Level_Method()
-        {
-            var source = @"
+    [Fact]
+    public async Task Should_Generate_Static_Class_Member_Level_Method()
+    {
+        var source = @"
 using Rocket.Surgery.Conventions;
 
 namespace TestProject
@@ -64,7 +62,7 @@ namespace TestProject
     }
 }
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Rocket.Surgery.Conventions;
@@ -86,22 +84,22 @@ namespace TestProject
 }
 ";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
 
-        [Fact]
-        public async Task Should_Support_No_Exported_Convention_Assemblies()
-        {
-            var source = @"
+    [Fact]
+    public async Task Should_Support_No_Exported_Convention_Assemblies()
+    {
+        var source = @"
 using Rocket.Surgery.Conventions;
 
 [assembly: ImportConventions]
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Rocket.Surgery.Conventions;
@@ -119,13 +117,13 @@ namespace TestProject.Conventions
 }
 ";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(source, expected).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(source, expected).ConfigureAwait(false);
+    }
 
-        [Fact]
-        public async Task Should_Support_Imports_And_Exports_In_The_Same_Assembly()
-        {
-            var source1 = @"
+    [Fact]
+    public async Task Should_Support_Imports_And_Exports_In_The_Same_Assembly()
+    {
+        var source1 = @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -136,7 +134,7 @@ namespace Rocket.Surgery.Conventions.Tests
     internal class Contrib : IConvention { }
 }
 ";
-            var source2 = @"
+        var source2 = @"
 using Rocket.Surgery.Conventions;
 
 namespace TestProject
@@ -147,7 +145,7 @@ namespace TestProject
     }
 }
 ";
-            var expected1 = @"
+        var expected1 = @"
 using System;
 using System.Collections.Generic;
 using Rocket.Surgery.Conventions;
@@ -164,7 +162,7 @@ namespace TestProject
     }
 }
 ";
-            var expected2 = @"
+        var expected2 = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -184,28 +182,27 @@ namespace TestProject.Conventions
 }
 ";
 
-            var responses = await Generate<ConventionAttributesGenerator>(
-                System.Array.Empty<Assembly>(),
-                new[]
-                {
-                    source1, source2
-                }
-            ).ConfigureAwait(false);
-
-            foreach (var response in responses)
+        var responses = await Generate<ConventionAttributesGenerator>(
+            Array.Empty<Assembly>(),
+            new[]
             {
-                if (response.Contains("ExportedConventions", StringComparison.OrdinalIgnoreCase))
-                {
-                    response.Should().Be(NormalizeToLf(expected2).Trim());
-                }
-                else if (response.Contains("class Program", StringComparison.OrdinalIgnoreCase))
-                {
-                    response.Should().Be(NormalizeToLf(expected1).Trim());
-                }
-                else
-                {
-                    throw new Exception("Could not find item to compare");
-                }
+                source1, source2
+            }
+        ).ConfigureAwait(false);
+
+        foreach (var response in responses)
+        {
+            if (response.Contains("ExportedConventions", StringComparison.OrdinalIgnoreCase))
+            {
+                response.Should().Be(NormalizeToLf(expected2).Trim());
+            }
+            else if (response.Contains("class Program", StringComparison.OrdinalIgnoreCase))
+            {
+                response.Should().Be(NormalizeToLf(expected1).Trim());
+            }
+            else
+            {
+                throw new Exception("Could not find item to compare");
             }
         }
     }
