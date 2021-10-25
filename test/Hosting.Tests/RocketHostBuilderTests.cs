@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Rocket.Surgery.Hosting.Tests;
 
 [ImportConventions]
-public class RocketHostBuilderTests : AutoFakeTest
+public partial class RocketHostBuilderTests : AutoFakeTest
 {
     [Fact]
     public void Should_UseAppDomain()

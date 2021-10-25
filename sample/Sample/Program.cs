@@ -5,7 +5,7 @@ using Rocket.Surgery.Hosting;
 namespace Sample;
 
 [ImportConventions]
-public static class Program
+public static partial class Program
 {
     public static Task<int> Main(string[] args)
     {

@@ -8,7 +8,7 @@ using Xunit;
 namespace Rocket.Surgery.Conventions.Tests;
 
 [ImportConventions]
-public class StaticConventionTests
+public partial class StaticConventionTests
 {
     [Fact]
     public void Should_Have_Exports_Method_Defined()
