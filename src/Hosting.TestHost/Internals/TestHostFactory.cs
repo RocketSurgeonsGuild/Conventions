@@ -11,6 +11,9 @@ using Microsoft.Extensions.Hosting.Internal;
 
 namespace Rocket.Surgery.Hosting.Internals;
 
+/// <summary>
+///     Test host factory used to create test hosts
+/// </summary>
 public static class TestHostFactory
 {
     private static readonly ConditionalWeakTable<object, IConfiguration> _sharedConfigurations = new ConditionalWeakTable<object, IConfiguration>();
@@ -60,7 +63,7 @@ public static class TestHostFactory
 
             if (item != null)
             {
-                if (!_sharedConfigurations.TryGetValue(item, out configuration))
+                if (!_sharedConfigurations.TryGetValue(item, out configuration!))
                 {
                     var innerContext = CreateContext();
                     configuration = innerContext.Configuration;

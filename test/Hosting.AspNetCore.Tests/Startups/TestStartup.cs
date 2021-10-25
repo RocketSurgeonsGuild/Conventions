@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
+#pragma warning disable CA1822
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 
 internal class TestStartup

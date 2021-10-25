@@ -62,9 +62,12 @@ internal class CommandLine : ICommandLine
             state.IsDefaultCommand = result.SelectedCommand is IModelAccessor m &&
                                      m.GetModelType() == typeof(ApplicationState) && !result.SelectedCommand.IsShowingInformation;
 
-            foreach (var d in state.OnParseDelegates)
+            if (state.OnParseDelegates != null)
             {
-                d(state);
+                foreach (var d in state.OnParseDelegates)
+                {
+                    d(state);
+                }
             }
 
             myState = state;

@@ -23,6 +23,9 @@ public class DiagnosticLogger : ILogger
         return Names.TryGetValue(logLevel, out var value) ? value : "Log.Other";
     }
 
+    /// <summary>
+    ///     The underlying diagnostic source
+    /// </summary>
     public DiagnosticSource DiagnosticSource { get; }
 
     /// <summary>
@@ -90,7 +93,9 @@ public class DiagnosticLogger : ILogger
     /// <returns>An IDisposable that ends the logical operation scope on dispose.</returns>
     public IDisposable BeginScope<TState>(TState state)
     {
+#pragma warning disable CA2000
         var activity = DiagnosticSource.StartActivity(new Activity("Scope"), state);
+#pragma warning restore CA2000
         return new Disposable(DiagnosticSource, activity, state!);
     }
 

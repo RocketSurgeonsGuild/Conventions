@@ -195,7 +195,6 @@ internal class RocketContext
         }
 
         getContext().Properties.AddIfMissing(context.Configuration);
-        services.AddHealthChecks();
 
         services.ApplyConventions(getContext());
         new LoggingBuilder(services).ApplyConventions(getContext());

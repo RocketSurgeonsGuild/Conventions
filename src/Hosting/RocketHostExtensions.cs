@@ -162,7 +162,7 @@ public static class RocketHostExtensions
         builder.ConfigureRocketSurgery(x => x.UseCommandLine());
         using (var host = builder.Build())
         {
-            var logger = host.Services.GetService<ILoggerFactory>()
+            var logger = host.Services.GetRequiredService<ILoggerFactory>()
                              .CreateLogger("Cli");
             var result = host.Services.GetRequiredService<CommandLineResult>();
             try

@@ -53,6 +53,21 @@ public class TestWebAssemblyHost
             ;
     }
 
+    /// <summary>
+    ///     Create a convention test host build for the given <see cref="AppDomain" /> in the assembly.
+    /// </summary>
+    /// <param name="loggerFactory">Optional logger factory.</param>
+    public static TestWebAssemblyHost CreateDefault(ILoggerFactory? loggerFactory = null)
+    {
+        loggerFactory ??= NullLoggerFactory.Instance;
+        var logger = loggerFactory.CreateLogger(nameof(TestWebAssemblyHost));
+
+        return new TestWebAssemblyHost()
+              .WithLoggerFactory(loggerFactory)
+              .WithLogger(logger)
+            ;
+    }
+
     private static readonly ConditionalWeakTable<object, IConfiguration> _sharedConfigurations = new ConditionalWeakTable<object, IConfiguration>();
     private readonly ConventionContextBuilder _contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>()).Set(HostType.UnitTest);
     private ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;

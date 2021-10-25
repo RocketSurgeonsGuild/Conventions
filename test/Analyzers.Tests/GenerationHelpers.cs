@@ -11,7 +11,9 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
 public static class GenerationHelpers
 {
+#pragma warning disable CA1810
     static GenerationHelpers()
+#pragma warning restore CA1810
     {
         // this "core assemblies hack" is from https://stackoverflow.com/a/47196516/4418060
         var coreAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location)!;

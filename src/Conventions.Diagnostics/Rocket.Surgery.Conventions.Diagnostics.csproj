@@ -16,7 +16,6 @@
     <ProjectReference Include="..\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Terminal.Gui" />
     <PackageReference Include="Microsoft.Extensions.DiagnosticAdapter" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" />
   </ItemGroup>

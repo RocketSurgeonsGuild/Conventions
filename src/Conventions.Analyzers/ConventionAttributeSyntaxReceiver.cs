@@ -37,6 +37,8 @@ internal class ConventionAttributeSyntaxReceiver : ISyntaxReceiver
                                                                       && z.Attributes.Any(
                                                                              c => c.Name.ToFullString().TrimEnd().EndsWith(
                                                                                  "ExportConvention", StringComparison.Ordinal
+                                                                             ) || c.Name.ToFullString().TrimEnd().EndsWith(
+                                                                                 "ExportConventionAttribute", StringComparison.Ordinal
                                                                              )
                                                                          )
                                                                 )

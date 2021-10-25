@@ -20,8 +20,7 @@ public class RocketHostBuilderTests : AutoFakeTest
     [Fact]
     public void Should_UseAppDomain()
     {
-        var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-                                                 .ConfigureRocketSurgery(rb => rb.UseAppDomain(AppDomain.CurrentDomain));
+        var builder = TestWebAssemblyHost.CreateDefault().UseAppDomain(AppDomain.CurrentDomain).Create();
 
         var host = builder.Build();
         host.Services.Should().NotBeNull();
@@ -30,8 +29,7 @@ public class RocketHostBuilderTests : AutoFakeTest
     [Fact]
     public void Should_UseAssemblies()
     {
-        var builder = LocalWebAssemblyHostBuilder.CreateDefault()
-                                                 .ConfigureRocketSurgery(rb => rb.UseAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+        var builder = TestWebAssemblyHost.CreateDefault().UseAssemblies(AppDomain.CurrentDomain.GetAssemblies()).Create();
 
         var host = builder.Build();
         host.Services.Should().NotBeNull();

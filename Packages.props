@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <ItemGroup>
     <GlobalPackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
@@ -20,29 +20,28 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="BenchMarkDotNet" Version="0.13.1" />
-    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.0" />
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Ini" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
+    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Ini" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="6.0.0-rc.2.*" />
     <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.1.10" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="5.0.1" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Logging" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0-rc.2.*" />
+    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="6.0.0-rc.2.*" />
     <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.11.0" />
     <PackageReference Update="Rocket.Surgery.Extensions.Configuration" Version="11.2.0" />

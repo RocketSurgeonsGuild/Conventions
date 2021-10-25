@@ -1,4 +1,0 @@
-{
-    "age": "0",
-    "exclude": "^(Microsoft.AspNetCore.*|Microsoft.Extensions.*)"
-}

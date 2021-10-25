@@ -15,7 +15,7 @@ internal class ApplicationState : IApplicationState
     ///     Gets or sets the on parse delegates.
     /// </summary>
     /// <value>The on parse delegates.</value>
-    public List<OnParseDelegate> OnParseDelegates { get; internal set; } = new List<OnParseDelegate>();
+    public List<OnParseDelegate>? OnParseDelegates { get; internal set; } = new List<OnParseDelegate>();
 
     /// <summary>
     ///     Gets the log.

@@ -119,7 +119,9 @@ public class ConventionTestWebAssemblyHostTests : AutoFakeTest
 
     private class ServiceA
     {
+#pragma warning disable CS0414
         public string Value = nameof(ServiceA);
+#pragma warning restore CS0414
     }
 
     private static IConfiguration GetConfigurationFromChainedConfigurationProvider(IConfigurationProvider provider)
