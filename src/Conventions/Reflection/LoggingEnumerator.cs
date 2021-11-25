@@ -72,7 +72,7 @@ internal class LoggingEnumerator<T> : IEnumerator<T>
     /// <value>The current.</value>
     public T Current => _enumerator.Current;
 
-    object? global::System.Collections.IEnumerator.Current => Current;
+    object? System.Collections.IEnumerator.Current => Current;
 
     /// <summary>
     ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

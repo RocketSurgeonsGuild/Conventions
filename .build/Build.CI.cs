@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Nuke.Common.CI.GitHubActions;
 using Rocket.Surgery.Nuke;
 using Rocket.Surgery.Nuke.ContinuousIntegration;

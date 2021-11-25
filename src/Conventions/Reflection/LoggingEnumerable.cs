@@ -49,7 +49,7 @@ internal class LoggingEnumerable<T> : IEnumerable<T>
         return new LoggingEnumerator<T>(_enumerable.GetEnumerator(), _logAction);
     }
 
-    global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
     }

@@ -13,7 +13,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Sample\Sample.csproj" />
-        <ProjectReference Include="..\..\src\Hosting.TestHost\Rocket.Surgery.Hosting.TestHost.csproj" />
     </ItemGroup>
 
 </Project>

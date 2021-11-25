@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Hosting;
 using Sample.Core;
 using Xunit;
@@ -15,9 +17,10 @@ public class SampleTestHostTests : IAsyncLifetime
 
     public SampleTestHostTests()
     {
-        _host = TestHost.For(typeof(SampleTestHostTests))
-                        .Create()
-                        .Build();
+        var builder = ConventionContextBuilder.Create().ForTesting(typeof(SampleTestHostTests));
+        _host = new HostBuilder()
+               .ConfigureRocketSurgery(builder)
+               .Build();
     }
 
     [Fact]

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
@@ -21,6 +22,12 @@ internal class AssemblyCandidateResolver
 
     private readonly ILogger _logger;
     private readonly IDictionary<string, Dependency> _dependencies;
+
+    public static IEnumerable<Assembly> GetReferencedAssemblies(Assembly assembly)
+    {
+        var resolver = new AssemblyCandidateResolver(new[] { assembly }, new HashSet<string?>(StringComparer.OrdinalIgnoreCase), NullLogger.Instance);
+        return resolver.GetAssemblies();
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AssemblyCandidateResolver" /> class.
@@ -102,8 +109,9 @@ internal class AssemblyCandidateResolver
         }
     }
 
-    private DependencyClassification ComputeClassification(string dependency, ISet<string?> processedAssemblies)
+    private DependencyClassification ComputeClassification(string dependency, ISet<string?>? processedAssemblies = null)
     {
+        processedAssemblies ??= new HashSet<string?>();
         processedAssemblies.Add(dependency);
         // Prevents issues with looking at system assemblies
         if (dependency.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
@@ -150,6 +158,21 @@ internal class AssemblyCandidateResolver
     }
 
     /// <summary>
+    /// Gets all the related assemblies
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<Assembly> GetAssemblies()
+    {
+        foreach (var dependency in _dependencies)
+        {
+            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate or DependencyClassification.NotCandidate && dependency.Value.Assembly is not null)
+            {
+                yield return dependency.Value.Assembly;
+            }
+        }
+    }
+
+    /// <summary>
     ///     Gets the candidates.
     /// </summary>
     /// <returns>IEnumerable{Dependency}.</returns>
@@ -157,8 +180,7 @@ internal class AssemblyCandidateResolver
     {
         foreach (var dependency in _dependencies)
         {
-            if (ComputeClassification(dependency.Key, new HashSet<string?>()) ==
-                DependencyClassification.Candidate && dependency.Value.Assembly != null)
+            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate && dependency.Value.Assembly is not null)
             {
                 yield return dependency.Value;
             }
@@ -173,11 +195,11 @@ internal class AssemblyCandidateResolver
         /// <summary>
         ///     Initializes a new instance of the <see cref="Dependency" /> class.
         /// </summary>
-        /// <param name="assemblyName">Name of the assembly.</param>
+        /// <param name="assembly">Name of the assembly.</param>
         /// <param name="classification">The classification.</param>
-        public Dependency(Assembly assemblyName, DependencyClassification classification)
+        public Dependency(Assembly assembly, DependencyClassification classification)
         {
-            Assembly = assemblyName;
+            Assembly = assembly;
             Classification = classification;
         }
 

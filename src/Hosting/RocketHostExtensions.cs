@@ -54,6 +54,29 @@ public static class RocketHostExtensions
     }
 
     /// <summary>
+    ///     Configures the rocket Surgery.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="conventionContextBuilder">The convention context builder.</param>
+    /// <returns>IHostBuilder.</returns>
+    public static IHostBuilder ConfigureRocketSurgery(this IHostBuilder builder, ConventionContextBuilder conventionContextBuilder)
+    {
+        if (builder == null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        if (conventionContextBuilder == null)
+        {
+            throw new ArgumentNullException(nameof(conventionContextBuilder));
+        }
+
+        builder.Properties[typeof(IHostBuilder)] = builder;
+        SetupConventions(builder, conventionContextBuilder);
+        return builder;
+    }
+
+    /// <summary>
     ///     Uses the rocket booster.
     /// </summary>
     /// <param name="builder">The builder.</param>
@@ -77,6 +100,7 @@ public static class RocketHostExtensions
         }
 
         var b = func(builder);
+        SetupConventions(builder, b);
         action?.Invoke(b);
         return builder;
     }
@@ -105,6 +129,7 @@ public static class RocketHostExtensions
         }
 
         var b = func(builder);
+        SetupConventions(builder, b);
         action?.Invoke(b);
         return builder;
     }
@@ -188,10 +213,25 @@ public static class RocketHostExtensions
         if (builder.Properties.ContainsKey(typeof(ConventionContextBuilder)))
             return ( builder.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
 
-        var conventionContextBuilder = ConfigureRocketSurgery(
-            builder, new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default)
-        );
+        var conventionContextBuilder = Configure(builder, new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default));
         builder.Properties[typeof(ConventionContextBuilder)] = conventionContextBuilder;
+        // builder.Properties[typeof(IHostBuilder)] = builder;
+        return conventionContextBuilder;
+    }
+
+    /// <summary>
+    ///     Gets the or create builder.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="conventionContextBuilder">The convention context builder.</param>
+    /// <returns>RocketHostBuilder.</returns>
+    public static ConventionContextBuilder SetupConventions(IHostBuilder builder, ConventionContextBuilder conventionContextBuilder)
+    {
+        if (builder.Properties.ContainsKey(typeof(ConventionContextBuilder)))
+            return ( builder.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
+
+        builder.Properties[typeof(ConventionContextBuilder)] = conventionContextBuilder;
+        Configure(builder, conventionContextBuilder.UseDependencyContext(DependencyContext.Default));
         // builder.Properties[typeof(IHostBuilder)] = builder;
         return conventionContextBuilder;
     }
@@ -202,7 +242,7 @@ public static class RocketHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="contextBuilder"></param>
     /// <returns>RocketHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureRocketSurgery(IHostBuilder builder, ConventionContextBuilder contextBuilder)
+    public static ConventionContextBuilder Configure(IHostBuilder builder, ConventionContextBuilder contextBuilder)
     {
         var host = new RocketContext(builder, contextBuilder);
         builder
@@ -223,7 +263,7 @@ public static class RocketHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="context"></param>
     /// <returns>RocketHostBuilder.</returns>
-    public static IConventionContext ConfigureRocketSurgery(IHostBuilder builder, IConventionContext context)
+    public static IConventionContext Configure(IHostBuilder builder, IConventionContext context)
     {
         context.Properties.AddIfMissing(builder).AddIfMissing(HostType.Live);
         var host = new RocketContext(builder, context);

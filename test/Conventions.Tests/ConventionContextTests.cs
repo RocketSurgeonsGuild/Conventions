@@ -3,7 +3,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Setup;
@@ -19,12 +18,12 @@ public class ConventionContextTests : AutoFakeTest
     public void Constructs()
     {
         var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?> { [typeof(IHostEnvironment)] = AutoFake.Resolve<IHostEnvironment>() });
+        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?> { [typeof(IConvention)] = new AbcConvention() });
         var servicesBuilder = AutoFake.Resolve<ConventionContext>();
 
         servicesBuilder.AssemblyProvider.Should().BeSameAs(assemblyProvider);
         servicesBuilder.AssemblyCandidateFinder.Should().NotBeNull();
-        servicesBuilder.Properties.Should().ContainKey(typeof(IHostEnvironment));
+        servicesBuilder.Properties.Should().ContainKey(typeof(IConvention));
     }
 
     [Fact]

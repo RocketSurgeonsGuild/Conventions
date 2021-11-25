@@ -206,6 +206,7 @@ internal class CommandLineContext : ICommandLineContext
     /// <returns>ICommandLineContext.</returns>
     public ICommandLineContext OnParse(OnParseDelegate onParseDelegate)
     {
+        _application.Model.OnParseDelegates ??= new List<OnParseDelegate>();
         _application.Model.OnParseDelegates.Add(onParseDelegate);
         return this;
     }

@@ -17,7 +17,6 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
-        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.TestHost" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Tests" />
     </ItemGroup>
 </Project>

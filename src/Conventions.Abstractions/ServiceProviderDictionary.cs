@@ -165,7 +165,7 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
         return _values.TryGetValue(key, out value);
     }
 
-    global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
     }

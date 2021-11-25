@@ -20,6 +20,16 @@ public class ConventionContextBuilder
     internal AssemblyProviderFactory? _assemblyProviderFactory;
 
     /// <summary>
+    /// Create a default context builder
+    /// </summary>
+    /// <param name="properties"></param>
+    /// <returns></returns>
+    public static ConventionContextBuilder Create(IDictionary<object, object?>? properties = null)
+    {
+        return new ConventionContextBuilder(properties ?? new Dictionary<object, object?>());
+    }
+
+    /// <summary>
     ///     Create a context builder with a set of properties
     /// </summary>
     /// <param name="properties"></param>

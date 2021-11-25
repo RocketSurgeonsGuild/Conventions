@@ -60,7 +60,7 @@ public static class RocketBooster
     }
 
     /// <summary>
-    ///     For the specified conventions
+    ///     ForTesting the specified conventions
     /// </summary>
     /// <param name="conventionProvider">The conventions provider.</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
@@ -72,7 +72,7 @@ public static class RocketBooster
     }
 
     /// <summary>
-    ///     For the specified conventions
+    ///     ForTesting the specified conventions
     /// </summary>
     /// <param name="conventionProvider">The conventions provider.</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
