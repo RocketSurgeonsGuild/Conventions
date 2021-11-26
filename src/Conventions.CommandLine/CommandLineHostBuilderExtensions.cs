@@ -1,4 +1,5 @@
 using Rocket.Surgery.Conventions.CommandLine;
+using Spectre.Console.Cli;
 
 // ReSharper disable once CheckNamespace
 namespace Rocket.Surgery.Conventions;
@@ -6,7 +7,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Helper method for working with <see cref="ConventionContextBuilder" />
 /// </summary>
-public static class CommandLineHostBuilderExtensions
+public static class CommandAppHostBuilderExtensions
 {
     /// <summary>
     ///     Configure the commandline delegate to the convention scanner
@@ -31,7 +32,7 @@ public static class CommandLineHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, Action<ICommandLineContext> @delegate)
+    public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, Action<IConfigurator> @delegate)
     {
         if (container == null)
         {

@@ -19,6 +19,7 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Web.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />

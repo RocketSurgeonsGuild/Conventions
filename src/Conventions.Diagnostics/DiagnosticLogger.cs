@@ -16,11 +16,11 @@ public class DiagnosticLogger : ILogger
     internal static readonly IReadOnlyDictionary<LogLevel, string> Names =
         Enum.GetValues(typeof(LogLevel))
             .Cast<LogLevel>()
-            .ToDictionary(x => x, x => $"Log.{x}");
+            .ToDictionary(x => x, x => $"LogLevel.{x}");
 
     private static string GetName(LogLevel logLevel)
     {
-        return Names.TryGetValue(logLevel, out var value) ? value : "Log.Other";
+        return Names.TryGetValue(logLevel, out var value) ? value : "LogLevel.Other";
     }
 
     /// <summary>

@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
@@ -136,20 +135,20 @@ public partial class RocketHostBuilderTests : AutoFakeTest
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostBuilder>._)).MustHaveHappened();
     }
 
-    [Fact]
-    public void Should_ConfigureCommandLine()
-    {
-        var convention = A.Fake<CommandLineConvention>();
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(
-                               rb => rb
-                                    .UseDependencyContext(DependencyContext.Default)
-                                    .ConfigureCommandLine(convention)
-                           );
-
-        builder.Build();
-        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<ICommandLineContext>._)).MustHaveHappened();
-    }
+//    [Fact]
+//    public void Should_ConfigureCommandLine()
+//    {
+//        var convention = A.Fake<CommandLineConvention>();
+//        var builder = Host.CreateDefaultBuilder()
+//                          .ConfigureRocketSurgery(
+//                               rb => rb
+//                                    .UseDependencyContext(DependencyContext.Default)
+//                                    .ConfigureCommandLine(convention)
+//                           );
+//
+//        builder.Build();
+//        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<ICommandLineContext>._)).MustHaveHappened();
+//    }
 
     [Fact]
     public void Should_ConfigureLogging()
@@ -176,33 +175,33 @@ public partial class RocketHostBuilderTests : AutoFakeTest
         host.Services.Should().NotBeNull();
     }
 
-    [Fact]
-    public async Task Should_Run_Rocket_CommandLine()
-    {
-        var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
-                          .ConfigureRocketSurgery(
-                               rb => rb
-                                  .AppendDelegate(
-                                       new CommandLineConvention((a, c) => c.OnRun(state => 1337)),
-                                       new CommandLineConvention((a, c) => c.OnRun(state => 1337))
-                                   )
-                           );
-
-        ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1337);
-    }
-
-    [Fact]
-    public async Task Should_Inject_WebHost_Into_Command()
-    {
-        var builder = Host.CreateDefaultBuilder(new[] { "myself" })
-                          .ConfigureRocketSurgery(
-                               rb => rb
-                                    .AppendDelegate(new CommandLineConvention((a, c) => c.OnRun(state => 1337)))
-                                    .AppendDelegate(new CommandLineConvention((a, context) => context.AddCommand<MyCommand>("myself")))
-                           );
-
-        ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1234);
-    }
+//    [Fact]
+//    public async Task Should_Run_Rocket_CommandLine()
+//    {
+//        var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
+//                          .ConfigureRocketSurgery(
+//                               rb => rb
+//                                  .AppendDelegate(
+//                                       new CommandLineConvention((a, c) => c.OnRun(state => 1337)),
+//                                       new CommandLineConvention((a, c) => c.OnRun(state => 1337))
+//                                   )
+//                           );
+//
+//        ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1337);
+//    }
+//
+//    [Fact]
+//    public async Task Should_Inject_WebHost_Into_Command()
+//    {
+//        var builder = Host.CreateDefaultBuilder(new[] { "myself" })
+//                          .ConfigureRocketSurgery(
+//                               rb => rb
+//                                    .AppendDelegate(new CommandLineConvention((a, c) => c.OnRun(state => 1337)))
+//                                    .AppendDelegate(new CommandLineConvention((a, context) => context.AddCommand<MyCommand>("myself")))
+//                           );
+//
+//        ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1234);
+//    }
 
     public RocketHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
     {

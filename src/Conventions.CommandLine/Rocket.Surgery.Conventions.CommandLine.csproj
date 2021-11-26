@@ -13,16 +13,27 @@
             ReferenceOutputAssembly="false"
         />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="McMaster.Extensions.CommandLineUtils" />
+        <PackageReference Include="Spectre.Console" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+        <PackageReference Include="Rocket.Surgery.Extensions.Configuration" />
         <InternalsVisibleTo Include="Rocket.Surgery.Extensions.CommandLine.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Web.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Abstractions" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Temp\*.cs" />
+        <None Include="CommandLineHostBuilderExtensions.cs" />
+        <None Include="Temp\*.cs" />
     </ItemGroup>
 </Project>

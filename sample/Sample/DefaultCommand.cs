@@ -1,9 +1,11 @@
 ﻿using Rocket.Surgery.Conventions.CommandLine;
 using Sample.Core;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace Sample;
 
-public class DefaultCommand : IDefaultCommand
+public class DefaultCommand : Command
 {
     private readonly IService _service;
 
@@ -12,7 +14,7 @@ public class DefaultCommand : IDefaultCommand
         _service = service;
     }
 
-    public int Run(IApplicationState state)
+    public override int Execute(CommandContext context)
     {
         Console.WriteLine(_service.GetString());
         return 1;

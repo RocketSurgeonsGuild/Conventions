@@ -6,8 +6,8 @@
     <GlobalPackageReference Include="Rocket.Surgery.MSBuild.CI" Version="1.1.0" />
     <GlobalPackageReference Include="Rocket.Surgery.MSBuild.GitVersion" Version="1.1.0" />
     <GlobalPackageReference Include="Rocket.Surgery.MSBuild.JetBrains.Annotations" Version="1.1.0" Condition="'$(MSBuildProjectName)'!='.build'" />
-    <!-- <GlobalPackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="2.9.8" /> -->
-    <GlobalPackageReference Include="Rocket.Surgery.MSBuild.Metadata" Version="1.1.0" />
+      <!-- <GlobalPackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="2.9.8" /> -->
+      <GlobalPackageReference Include="Rocket.Surgery.MSBuild.Metadata" Version="1.1.0" />
     <GlobalPackageReference Include="Rocket.Surgery.MSBuild.SourceLink" Version="1.1.0" />
     <GlobalPackageReference Include="Roslynator.Analyzers" Version="3.2.2" />
   </ItemGroup>
@@ -50,11 +50,11 @@
     <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Yaml" Version="11.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="3.1.0" />
     <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.30" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="4.0.1" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Host.Storage" Version="4.0.4" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="2.1.0" />
+      <PackageReference Update="Spectre.Console" Version="0.42.0" />
     <PackageReference Update="Terminal.Gui" Version="1.2.1" />
   </ItemGroup>
   <ItemGroup>

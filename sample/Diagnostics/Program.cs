@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Hosting;
+using Spectre.Console.Cli;
 
 // [assembly: Convention(typeof(Program))]
 
@@ -10,9 +12,9 @@ namespace Diagnostics
     [ImportConventions]
     public static partial class Program
     {
-        public static Task<int> Main(string[] args)
+        public static Task Main(string[] args)
         {
-            return CreateHostBuilder(args).RunCli();
+            return CreateHostBuilder(args).RunConsoleAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

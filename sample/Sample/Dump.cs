@@ -1,11 +1,12 @@
-﻿using McMaster.Extensions.CommandLineUtils;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.CommandLine;
+using Spectre.Console.Cli;
 
 namespace Sample;
 
-[Command("dump")]
-public class Dump
+public class Dump : AsyncCommand
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<Dump> _logger;
@@ -16,7 +17,7 @@ public class Dump
         _logger = logger;
     }
 
-    public Task<int> OnExecuteAsync()
+    public override Task<int> ExecuteAsync(CommandContext context)
     {
         foreach (var item in _configuration.AsEnumerable().Reverse())
         {
@@ -24,5 +25,14 @@ public class Dump
         }
 
         return Task.FromResult(1);
+    }
+
+    [ExportConvention]
+    internal class DumpConvention : ICommandLineConvention
+    {
+        public void Register(IConventionContext context, IConfigurator app)
+        {
+            app.AddCommand<Dump>("dump");
+        }
     }
 }

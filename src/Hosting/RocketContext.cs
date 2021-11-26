@@ -1,4 +1,3 @@
-using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
@@ -9,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Extensions.Configuration;
+using LoggingBuilder = Microsoft.Extensions.DependencyInjection.LoggingBuilder;
 
 namespace Rocket.Surgery.Hosting;
 
@@ -19,9 +19,7 @@ internal class RocketContext
 {
     private readonly IHostBuilder _hostBuilder;
     private readonly Func<IConventionContext> getContext;
-
     private string[]? _args;
-    private ICommandLineExecutor? _exec;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RocketContext" /> class.
@@ -58,23 +56,6 @@ internal class RocketContext
     public void ComposeHostingConvention(IConfigurationBuilder configurationBuilder)
     {
         _hostBuilder.ApplyConventions(getContext());
-    }
-
-    /// <summary>
-    ///     Configures the cli.
-    /// </summary>
-    /// <param name="configurationBuilder">The configuration builder.</param>
-    public void ConfigureCli(IConfigurationBuilder configurationBuilder)
-    {
-        if (configurationBuilder == null)
-        {
-            throw new ArgumentNullException(nameof(configurationBuilder));
-        }
-
-        _exec = getContext().CreateCommandLine().Parse(_args ?? Array.Empty<string>());
-        _args = _exec.ApplicationState.RemainingArguments ?? Array.Empty<string>();
-        configurationBuilder.AddApplicationState(_exec.ApplicationState);
-        getContext().Properties.Set(_exec);
     }
 
     /// <summary>
@@ -203,6 +184,8 @@ internal class RocketContext
         {
             var result = new CommandLineResult();
             services.AddSingleton(result);
+
+            var app = App.Create(getContext());
             services.AddSingleton(exec.ApplicationState);
             // Remove the hosted service that bootstraps kestrel, we are executing a command here.
             var webHostedServices = services

@@ -18,7 +18,7 @@ public class DiagnosticLoggerTests : AutoFakeTest
         A.CallTo(
               () => AutoFake.Resolve<DiagnosticSource>()
                             .Write(
-                                 "Log.Trace",
+                                 "LogLevel.Trace",
                                  A<object>.That.Matches(
                                      x =>
                                          x.GetType().GetProperty("logLevel") != null &&
@@ -40,7 +40,7 @@ public class DiagnosticLoggerTests : AutoFakeTest
         A.CallTo(
               () => AutoFake.Resolve<DiagnosticSource>()
                             .Write(
-                                 "Log.Debug",
+                                 "LogLevel.Debug",
                                  A<object>.That.Matches(
                                      x =>
                                          x.GetType().GetProperty("logLevel") != null &&
@@ -62,7 +62,7 @@ public class DiagnosticLoggerTests : AutoFakeTest
         A.CallTo(
               () => AutoFake.Resolve<DiagnosticSource>()
                             .Write(
-                                 "Log.Information",
+                                 "LogLevel.Information",
                                  A<object>.That.Matches(
                                      x =>
                                          x.GetType().GetProperty("logLevel") != null &&
@@ -84,7 +84,7 @@ public class DiagnosticLoggerTests : AutoFakeTest
         A.CallTo(
               () => AutoFake.Resolve<DiagnosticSource>()
                             .Write(
-                                 "Log.Critical",
+                                 "LogLevel.Critical",
                                  A<object>.That.Matches(
                                      x =>
                                          x.GetType().GetProperty("logLevel") != null &&
@@ -106,7 +106,7 @@ public class DiagnosticLoggerTests : AutoFakeTest
         A.CallTo(
               () => AutoFake.Resolve<DiagnosticSource>()
                             .Write(
-                                 "Log.Error",
+                                 "LogLevel.Error",
                                  A<object>.That.Matches(
                                      x =>
                                          x.GetType().GetProperty("logLevel") != null &&
@@ -128,7 +128,7 @@ public class DiagnosticLoggerTests : AutoFakeTest
         A.CallTo(
               () => AutoFake.Resolve<DiagnosticSource>()
                             .Write(
-                                 "Log.Warning",
+                                 "LogLevel.Warning",
                                  A<object>.That.Matches(
                                      x =>
                                          x.GetType().GetProperty("logLevel") != null &&
