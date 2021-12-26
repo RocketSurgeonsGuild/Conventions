@@ -1,4 +1,6 @@
-﻿namespace Rocket.Surgery.Conventions.CommandLine;
+﻿using Spectre.Console.Cli;
+
+namespace Rocket.Surgery.Conventions.CommandLine;
 
 /// <summary>
 ///     ICommandLineConvention
@@ -11,6 +13,6 @@ public interface ICommandLineConvention : IConvention
     ///     Register additional services with the service collection
     /// </summary>
     /// <param name="context">The context.</param>
-    /// <param name="commandLineContext"></param>
-    void Register(IConventionContext context, ICommandLineContext commandLineContext);
+    /// <param name="app"></param>
+    void Register(IConventionContext context, IConfigurator app);
 }
