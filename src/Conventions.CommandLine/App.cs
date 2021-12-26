@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
@@ -58,8 +56,18 @@ public static class App
 
     public static ICommandApp Create<TDefaultCommand>(Action<ConventionContextBuilder>? buildConventions = null) where TDefaultCommand : class, ICommand
     {
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>()).UseDependencyContext(DependencyContext.Default);
+        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+           .UseDependencyContext(DependencyContext.Default);
         buildConventions?.Invoke(builder);
+        return Create<TDefaultCommand>(builder);
+    }
+
+    public static ICommandApp Create<TDefaultCommand>(Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions)
+        where TDefaultCommand : class, ICommand
+    {
+        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+                     .UseDependencyContext(DependencyContext.Default)
+                     .WithConventionsFrom(getConventions);
         return Create<TDefaultCommand>(builder);
     }
 
@@ -105,9 +113,9 @@ public static class App
         IConfigurationSource? source = null;
         foreach (var item in configurationBuilder.Sources.Reverse())
         {
-            if (item is CommandLineConfigurationSource ||
-                ( item is EnvironmentVariablesConfigurationSource env && ( string.IsNullOrWhiteSpace(env.Prefix) ||
-                                                                           string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) ) ||
+            var itemType = item.GetType();
+            if (itemType is { Name: "CommandLineConfigurationSource" } ||
+                itemType is { Name: "EnvironmentVariablesConfigurationSource" } ||
                 ( item is JsonConfigurationSource a && string.Equals(
                     a.Path,
                     "secrets.json",

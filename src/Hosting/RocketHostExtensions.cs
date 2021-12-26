@@ -57,6 +57,29 @@ public static class RocketHostExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="getConventions">The method to get the conventions.</param>
+    /// <returns>IHostBuilder.</returns>
+    public static IHostBuilder ConfigureRocketSurgery(this IHostBuilder builder, Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions)
+    {
+        if (builder == null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        if (getConventions == null)
+        {
+            throw new ArgumentNullException(nameof(getConventions));
+        }
+
+        builder.Properties[typeof(IHostBuilder)] = builder;
+        SetupConventions(builder).WithConventionsFrom(getConventions);
+        return builder;
+    }
+
+    /// <summary>
+    ///     Configures the rocket Surgery.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
     /// <param name="conventionContextBuilder">The convention context builder.</param>
     /// <returns>IHostBuilder.</returns>
     public static IHostBuilder ConfigureRocketSurgery(this IHostBuilder builder, ConventionContextBuilder conventionContextBuilder)
@@ -139,7 +162,7 @@ public static class RocketHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <returns>RocketHostBuilder.</returns>
-    public static ConventionContextBuilder SetupConventions(IHostBuilder builder)
+    internal static ConventionContextBuilder SetupConventions(IHostBuilder builder)
     {
         if (builder.Properties.ContainsKey(typeof(ConventionContextBuilder)))
             return ( builder.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
@@ -156,7 +179,7 @@ public static class RocketHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="conventionContextBuilder">The convention context builder.</param>
     /// <returns>RocketHostBuilder.</returns>
-    public static ConventionContextBuilder SetupConventions(IHostBuilder builder, ConventionContextBuilder conventionContextBuilder)
+    internal static ConventionContextBuilder SetupConventions(IHostBuilder builder, ConventionContextBuilder conventionContextBuilder)
     {
         if (builder.Properties.ContainsKey(typeof(ConventionContextBuilder)))
             return ( builder.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
@@ -173,14 +196,9 @@ public static class RocketHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="contextBuilder"></param>
     /// <returns>RocketHostBuilder.</returns>
-    public static ConventionContextBuilder Configure(IHostBuilder builder, ConventionContextBuilder contextBuilder)
+    internal static ConventionContextBuilder Configure(IHostBuilder builder, ConventionContextBuilder contextBuilder)
     {
-        var host = new RocketContext(builder, contextBuilder);
-        builder
-           .ConfigureHostConfiguration(host.ComposeHostingConvention)
-           .ConfigureHostConfiguration(host.CaptureArguments)
-           .ConfigureAppConfiguration(host.ConfigureAppConfiguration)
-           .ConfigureServices(host.ConfigureServices);
+        Configure(builder, ConventionContext.From(contextBuilder));
         builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
         // builder.Properties[typeof(IHostBuilder)] = builder;
         return contextBuilder;
@@ -192,13 +210,12 @@ public static class RocketHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="context"></param>
     /// <returns>RocketHostBuilder.</returns>
-    public static IConventionContext Configure(IHostBuilder builder, IConventionContext context)
+    internal static IConventionContext Configure(IHostBuilder builder, IConventionContext context)
     {
         context.Properties.AddIfMissing(builder).AddIfMissing(HostType.Live);
         var host = new RocketContext(builder, context);
         builder
            .ConfigureHostConfiguration(host.ComposeHostingConvention)
-           .ConfigureHostConfiguration(host.CaptureArguments)
            .ConfigureAppConfiguration(host.ConfigureAppConfiguration)
            .ConfigureServices(host.ConfigureServices);
 

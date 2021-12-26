@@ -49,6 +49,44 @@ namespace TestProject.Conventions
     }
 
     [Fact]
+    public async Task Should_Generate_Static_Assembly_Level_Method_FullName()
+    {
+        var source = @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventionsAttribute]
+";
+        var expected = @"
+using System;
+using System.Collections.Generic;
+using Rocket.Surgery.Conventions;
+
+namespace TestProject.Conventions
+{
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    internal static partial class Imports
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            foreach (var convention in Sample.DependencyOne.Conventions.Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in Sample.DependencyTwo.Conventions.Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in Sample.DependencyThree.Conventions.Exports.GetConventions(serviceProvider))
+                yield return convention;
+        }
+    }
+}
+";
+
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
+
+    [Fact]
     public async Task Should_Generate_Static_Class_Member_Level_Method()
     {
         var source = @"
@@ -57,6 +95,50 @@ using Rocket.Surgery.Conventions;
 namespace TestProject
 {
     [ImportConventions]
+    public partial class Program
+    {
+    }
+}
+";
+        var expected = @"
+using System;
+using System.Collections.Generic;
+using Rocket.Surgery.Conventions;
+
+namespace TestProject
+{
+    public partial class Program
+    {
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            foreach (var convention in Sample.DependencyOne.Conventions.Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in Sample.DependencyTwo.Conventions.Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in Sample.DependencyThree.Conventions.Exports.GetConventions(serviceProvider))
+                yield return convention;
+        }
+    }
+}
+";
+
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
+
+
+    [Fact]
+    public async Task Should_Generate_Static_Class_Member_Level_Method_FullName()
+    {
+        var source = @"
+using Rocket.Surgery.Conventions;
+
+namespace TestProject
+{
+    [ImportConventionsAttribute]
     public partial class Program
     {
     }

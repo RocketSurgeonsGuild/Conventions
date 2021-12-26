@@ -27,9 +27,7 @@ public sealed class ConventionContext : IConventionContext
         var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
         var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
-        var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties.ToDictionary(z => z.Key, z => z.Value));
-        context.ApplyConventions();
-        return context;
+        return new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties.ToDictionary(z => z.Key, z => z.Value));
     }
 
     /// <summary>
@@ -53,6 +51,8 @@ public sealed class ConventionContext : IConventionContext
         AssemblyProvider = assemblyProvider;
         AssemblyCandidateFinder = assemblyCandidateFinder;
         Properties = new ServiceProviderDictionary(properties);
+
+        this.ApplyConventions();
     }
 
     /// <summary>

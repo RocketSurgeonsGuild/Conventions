@@ -146,10 +146,10 @@ internal static class ConventionContextHelpers
             }
         }
 
-        if (builder._conventionProvider != null)
+        if (builder._conventionProviderFactory != null)
         {
             return new ConventionProvider(
-                builder.GetHostType(), builder._conventionProvider(builder.Properties), builder._prependedConventions, builder._appendedConventions
+                builder.GetHostType(), builder._conventionProviderFactory(builder.Properties), builder._prependedConventions, builder._appendedConventions
             );
         }
 

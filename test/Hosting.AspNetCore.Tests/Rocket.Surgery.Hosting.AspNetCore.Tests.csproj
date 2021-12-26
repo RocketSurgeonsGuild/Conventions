@@ -4,8 +4,12 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\Web.Hosting\Rocket.Surgery.Web.Hosting.csproj" Condition="$(TargetFramework) == 'net6.0'" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
+    <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Ini" />
+    <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Json" />
+    <PackageReference Include="Rocket.Surgery.Extensions.Configuration.Yaml" />
   </ItemGroup>
 </Project>

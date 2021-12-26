@@ -13,7 +13,7 @@ public class ConventionContextBuilder
     internal readonly List<object> _appendedConventions = new List<object>();
     internal readonly List<Type> _exceptConventions = new List<Type>();
     internal readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
-    internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProvider;
+    internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProviderFactory;
     internal bool _useAttributeConventions = true;
     internal object? _source;
     internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;
@@ -73,7 +73,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder EnableConventionAttributes()
     {
         _useAttributeConventions = true;
-        _conventionProvider = null;
+        _conventionProviderFactory = null;
         return this;
     }
 
@@ -84,7 +84,7 @@ public class ConventionContextBuilder
     /// <returns></returns>
     public ConventionContextBuilder WithConventionsFrom(Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> conventionProvider)
     {
-        _conventionProvider = conventionProvider;
+        _conventionProviderFactory = conventionProvider;
         return this;
     }
 
@@ -95,7 +95,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder DisableConventionAttributes()
     {
         _useAttributeConventions = false;
-        _conventionProvider = null;
+        _conventionProviderFactory = null;
         return this;
     }
 

@@ -135,21 +135,6 @@ public partial class RocketHostBuilderTests : AutoFakeTest
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostBuilder>._)).MustHaveHappened();
     }
 
-//    [Fact]
-//    public void Should_ConfigureCommandLine()
-//    {
-//        var convention = A.Fake<CommandLineConvention>();
-//        var builder = Host.CreateDefaultBuilder()
-//                          .ConfigureRocketSurgery(
-//                               rb => rb
-//                                    .UseDependencyContext(DependencyContext.Default)
-//                                    .ConfigureCommandLine(convention)
-//                           );
-//
-//        builder.Build();
-//        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<ICommandLineContext>._)).MustHaveHappened();
-//    }
-
     [Fact]
     public void Should_ConfigureLogging()
     {

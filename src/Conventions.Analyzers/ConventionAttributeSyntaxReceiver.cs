@@ -42,7 +42,7 @@ internal class ConventionAttributeSyntaxReceiver : ISyntaxReceiver
                                                                              )
                                                                          )
                                                                 )
-            )
+               )
             {
                 ExportedConventions.Add(baseType);
             }
@@ -52,14 +52,20 @@ internal class ConventionAttributeSyntaxReceiver : ISyntaxReceiver
             // any field with at least one attribute is a candidate for property generation
             if (syntaxNode is AttributeListSyntax attributeListSyntax
              && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
-             && attributeListSyntax.Attributes.Any(z => z.Name.ToFullString().TrimEnd().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)))
+             && attributeListSyntax.Attributes.Any(
+                    z => z.Name.ToFullString().TrimEnd().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)
+                      || z.Name.ToFullString().TrimEnd().EndsWith("ImportConventionsAttribute", StringComparison.OrdinalIgnoreCase)
+                ))
             {
                 ImportCandidates.Add(attributeListSyntax);
             }
 
             if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax
              && classDeclarationSyntax.AttributeLists.SelectMany(z => z.Attributes)
-                                      .Any(z => z.Name.ToFullString().TrimEnd().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)))
+                                      .Any(
+                                           z => z.Name.ToFullString().TrimEnd().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)
+                                             || z.Name.ToFullString().TrimEnd().EndsWith("ImportConventionsAttribute", StringComparison.OrdinalIgnoreCase)
+                                       ))
             {
                 ImportCandidates.Add(classDeclarationSyntax);
             }

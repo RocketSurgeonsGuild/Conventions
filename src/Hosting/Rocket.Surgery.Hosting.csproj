@@ -14,7 +14,6 @@
         />
         <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
-        <ProjectReference Include="..\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
         <ProjectReference Include="..\Hosting.Abstractions\Rocket.Surgery.Hosting.Abstractions.csproj" />
     </ItemGroup>
     <ItemGroup>
@@ -23,5 +22,6 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
         <PackageReference Include="Rocket.Surgery.Extensions.Configuration" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Web.Hosting" />
     </ItemGroup>
 </Project>

@@ -7,10 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Extensions.Configuration;
-using Spectre.Console;
-using Spectre.Console.Cli;
 using LoggingBuilder = Microsoft.Extensions.DependencyInjection.LoggingBuilder;
 
 namespace Rocket.Surgery.Hosting;
@@ -58,45 +55,6 @@ internal class RocketContext
     public void ComposeHostingConvention(IConfigurationBuilder configurationBuilder)
     {
         _hostBuilder.ApplyConventions(getContext());
-    }
-
-    /// <summary>
-    ///     Captures the arguments.
-    /// </summary>
-    /// <param name="configurationBuilder">The configuration builder.</param>
-    public void CaptureArguments(IConfigurationBuilder configurationBuilder)
-    {
-        if (configurationBuilder == null)
-        {
-            throw new ArgumentNullException(nameof(configurationBuilder));
-        }
-
-        var commandLineSource = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>()
-                                                    .FirstOrDefault();
-        if (commandLineSource != null)
-        {
-            var args = commandLineSource.Args;
-            var app = new CommandApp<CommandLineArgumentsExtractorCommand>();
-            if (!_hostBuilder.Properties.TryGetValue(typeof(HostingResult), out var r))
-            {
-                var hr = new HostingResult();
-                r = hr;
-                app.Configure(
-                    z => { z.Settings.Registrar.RegisterInstance(hr); }
-                );
-                app.Run(args);
-            }
-
-            if (r is HostingResult result)
-            {
-                commandLineSource.Args = result.Arguments?.Raw ?? args;
-
-                if (result.Configuration is not null)
-                {
-                    configurationBuilder.AddInMemoryCollection(result.Configuration);
-                }
-            }
-        }
     }
 
     /// <summary>
