@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Extensions.Configuration;
 using Spectre.Console.Cli;
@@ -19,11 +20,41 @@ public interface ICommandAppServiceProviderFactory
 
 class DefaultServiceProviderFactory : ICommandAppServiceProviderFactory
 {
+    private readonly IServiceProvider? _serviceProvider;
+
+    public DefaultServiceProviderFactory()
+    {
+
+    }
+
+    public DefaultServiceProviderFactory(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
     public IServiceProvider CreateServiceProvider(IServiceCollection services, IConventionContext conventionContext)
     {
         services.ApplyConventions(conventionContext);
         new LoggingBuilder(services).ApplyConventions(conventionContext);
+        if (_serviceProvider is null)
         return services.BuildServiceProvider();
+        return new FallbackServiceProvider(_serviceProvider, services.BuildServiceProvider());
+    }
+}
+
+class FallbackServiceProvider : IServiceProvider
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _fallbackServiceProvider;
+
+    public FallbackServiceProvider(IServiceProvider serviceProvider, IServiceProvider fallbackServiceProvider)
+    {
+        _serviceProvider = serviceProvider;
+        _fallbackServiceProvider = fallbackServiceProvider;
+    }
+
+    public object? GetService(Type serviceType)
+    {
+        return _serviceProvider.GetService(serviceType) ?? _fallbackServiceProvider.GetService(serviceType);
     }
 }
 
@@ -108,6 +139,31 @@ public static class App
         return app;
     }
 
+    public static ICommandApp Create(IHostBuilder hostBuilder)
+    {
+        ConventionContextBuilder builder;
+        if (hostBuilder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var o) && o is ConventionContextBuilder b)
+        {
+            builder = b;
+        }
+        else
+        {
+            builder = new ConventionContextBuilder(new Dictionary<object, object?>()).UseDependencyContext(DependencyContext.Default);
+            hostBuilder.Properties.Add(typeof(ConventionContextBuilder), builder);
+        }
+
+        var app = Create(builder);
+        app.Configure(
+            configurator =>
+            {
+                configurator.Settings.Registrar.RegisterInstance(hostBuilder);
+                configurator.Settings.Interceptor = new HostingInterceptor(hostBuilder, configurator.Settings.Interceptor);
+            }
+        );
+
+        return app;
+    }
+
     public static ICommandApp Create<TDefaultCommand>(Action<ConventionContextBuilder>? buildConventions = null) where TDefaultCommand : class, ICommand
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>()).UseDependencyContext(DependencyContext.Default);
@@ -124,11 +180,12 @@ public static class App
         return app;
     }
 
-    private  static void Configure(ICommandApp app, IConventionContext context)
+    private static void Configure(ICommandApp app, IConventionContext context)
     {
         app.Configure(
             configurator =>
             {
+                configurator.Settings.Registrar.RegisterInstance(context);
                 var configuration = ApplyConfiguration(context);
                 context.Set<IConfiguration>(configuration);
 
@@ -219,9 +276,9 @@ public class AppSettings : CommandSettings
     ///     Gets the log.
     /// </summary>
     /// <value>The log.</value>
-    [CommandOption("--log")]
+    [CommandOption("-l|--log")]
     [UsedImplicitly]
-    public LogLevel LogLevel { get; set; } = LogLevel.Information;
+    public LogLevel? LogLevel { get; set; }
 
     /// <summary>
     ///     Gets a value indicating whether this <see cref="AppSettings" /> is
@@ -231,9 +288,10 @@ public class AppSettings : CommandSettings
     [CommandOption("-v|--verbose")]
     [Description("Verbose logging")]
     [UsedImplicitly]
-    public bool Verbose {
-        get => LogLevel == LogLevel.Debug;
-        set => LogLevel = value ? LogLevel.Debug : LogLevel;
+    public bool Verbose
+    {
+        get => LogLevel == global::Microsoft.Extensions.Logging.LogLevel.Debug;
+        set => LogLevel = value ? global::Microsoft.Extensions.Logging.LogLevel.Debug : LogLevel;
     }
 
     /// <summary>
@@ -245,42 +303,77 @@ public class AppSettings : CommandSettings
     [UsedImplicitly]
     public bool Trace
     {
-        get => LogLevel == LogLevel.Trace;
-        set => LogLevel = value ? LogLevel.Trace : LogLevel;
+        get => LogLevel == global::Microsoft.Extensions.Logging.LogLevel.Trace;
+        set => LogLevel = value ? global::Microsoft.Extensions.Logging.LogLevel.Trace : LogLevel;
     }
 }
 
-
-/// <summary>
-///     ApplicationStateExtensions.
-/// </summary>
-public static class AppSettingsExtensions
+class HostingInterceptor : ICommandInterceptor
 {
-    /// <summary>
-    ///     Adds the state of the application.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="state">The state.</param>
-    /// <returns>IConfigurationBuilder.</returns>
-    public static IConfigurationBuilder AddAppSettings(
-        this IConfigurationBuilder builder,
-        AppSettings state
-    )
+    private readonly IHostBuilder _hostBuilder;
+    private readonly ICommandInterceptor? _commandInterceptor;
+
+    public HostingInterceptor(IHostBuilder hostBuilder, ICommandInterceptor? commandInterceptor)
     {
-        if (state == null)
+        _hostBuilder = hostBuilder;
+        _commandInterceptor = commandInterceptor;
+    }
+
+    public void Intercept(CommandContext context, CommandSettings settings)
+    {
+        _commandInterceptor?.Intercept(context, settings);
+        if (settings is not AppSettings appSettings) appSettings = new AppSettings();
+        var result = new HostingResult();
+        CommandLineArgumentsExtractorCommand.PopulateResult(result, context, appSettings);
+        _hostBuilder.Properties.Add(typeof(HostingResult), result);
+    }
+}
+
+class HostingCommand : AsyncCommand<AppSettings>
+{
+    private readonly IHostBuilder _hostBuilder;
+
+    public HostingCommand(IHostBuilder hostBuilder)
+    {
+        _hostBuilder = hostBuilder;
+    }
+
+    public override async Task<int> ExecuteAsync(CommandContext context, AppSettings settings)
+    {
+        var result = new HostingResult();
+        _hostBuilder.Properties.Add(typeof(HostingResult), result);
+        CommandLineArgumentsExtractorCommand.PopulateResult(result, context, settings);
+        await _hostBuilder.Build().RunAsync();
+        return 0;
+    }
+}
+
+class HostingResult
+{
+    public IDictionary<string, string>? Configuration { get; set; }
+    public IRemainingArguments? Arguments { get; set; }
+}
+
+class CommandLineArgumentsExtractorCommand : Command<AppSettings>
+{
+    private readonly HostingResult _result;
+
+    public CommandLineArgumentsExtractorCommand(HostingResult result) => _result = result;
+
+    public override int Execute(CommandContext context, AppSettings settings)
+    {
+        PopulateResult(_result, context, settings);
+        return 0;
+    }
+
+    public static void PopulateResult(HostingResult result, CommandContext context, AppSettings settings)
+    {
+        result.Configuration = new Dictionary<string, string>
         {
-            throw new ArgumentNullException(nameof(state));
-        }
-
-        builder.AddInMemoryCollection(
-            new Dictionary<string, string>
-            {
-                [nameof(AppSettings.Trace)] = state.Trace.ToString(CultureInfo.InvariantCulture),
-                [nameof(AppSettings.Verbose)] = state.Verbose.ToString(CultureInfo.InvariantCulture),
-                [nameof(AppSettings.LogLevel)] = state.LogLevel.ToString()
-            }.ToDictionary(z => $"{nameof(AppSettings)}:{z.Key}", z => z.Value)
-        );
-
-        return builder;
+            [nameof(AppSettings.Trace)] = settings.Trace.ToString(CultureInfo.InvariantCulture),
+            [nameof(AppSettings.Verbose)] = settings.Verbose.ToString(CultureInfo.InvariantCulture),
+            [nameof(AppSettings.LogLevel)] = settings.LogLevel.HasValue ? settings.LogLevel.Value.ToString() : ""
+        }.ToDictionary(z => $"{nameof(AppSettings)}:{z.Key}", z => z.Value);
+        result.Arguments = context.Remaining;
     }
 }

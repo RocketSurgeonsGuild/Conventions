@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
@@ -8,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Extensions.Configuration;
+using Spectre.Console;
+using Spectre.Console.Cli;
 using LoggingBuilder = Microsoft.Extensions.DependencyInjection.LoggingBuilder;
 
 namespace Rocket.Surgery.Hosting;
@@ -19,7 +22,6 @@ internal class RocketContext
 {
     private readonly IHostBuilder _hostBuilder;
     private readonly Func<IConventionContext> getContext;
-    private string[]? _args;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RocketContext" /> class.
@@ -73,26 +75,27 @@ internal class RocketContext
                                                     .FirstOrDefault();
         if (commandLineSource != null)
         {
-            _args = commandLineSource.Args.ToArray();
-        }
-    }
+            var args = commandLineSource.Args;
+            var app = new CommandApp<CommandLineArgumentsExtractorCommand>();
+            if (!_hostBuilder.Properties.TryGetValue(typeof(HostingResult), out var r))
+            {
+                var hr = new HostingResult();
+                r = hr;
+                app.Configure(
+                    z => { z.Settings.Registrar.RegisterInstance(hr); }
+                );
+                app.Run(args);
+            }
 
-    /// <summary>
-    ///     Replaces the arguments.
-    /// </summary>
-    /// <param name="configurationBuilder">The configuration builder.</param>
-    public void ReplaceArguments(IConfigurationBuilder configurationBuilder)
-    {
-        if (configurationBuilder == null)
-        {
-            throw new ArgumentNullException(nameof(configurationBuilder));
-        }
+            if (r is HostingResult result)
+            {
+                commandLineSource.Args = result.Arguments?.Raw ?? args;
 
-        var commandLineSource = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>()
-                                                    .FirstOrDefault();
-        if (commandLineSource != null)
-        {
-            commandLineSource.Args = _args;
+                if (result.Configuration is not null)
+                {
+                    configurationBuilder.AddInMemoryCollection(result.Configuration);
+                }
+            }
         }
     }
 
@@ -179,43 +182,5 @@ internal class RocketContext
 
         services.ApplyConventions(getContext());
         new LoggingBuilder(services).ApplyConventions(getContext());
-
-        if (getContext().Properties.TryGetValue(typeof(ICommandLineExecutor), out var o) && o is ICommandLineExecutor exec)
-        {
-            var result = new CommandLineResult();
-            services.AddSingleton(result);
-
-            var app = App.Create(getContext());
-            services.AddSingleton(exec.ApplicationState);
-            // Remove the hosted service that bootstraps kestrel, we are executing a command here.
-            var webHostedServices = services
-#pragma warning disable CA1307
-                                   .Where(x => x.ImplementationType?.FullName?.Contains("Microsoft.AspNetCore.Hosting") == true)
-#pragma warning restore CA1307
-                                   .ToArray();
-            if (!exec.IsDefaultCommand || exec.Application.IsShowingInformation)
-            {
-                services.Configure<ConsoleLifetimeOptions>(x => x.SuppressStatusMessages = true);
-                foreach (var descriptor in webHostedServices)
-                {
-                    services.Remove(descriptor);
-                }
-            }
-
-            var hasWebHostedService = webHostedServices.Any();
-            if (getContext().Properties.TryGetValue(typeof(CommandLineHostedService), out var _) || !exec.IsDefaultCommand)
-            {
-                services.AddSingleton<IHostedService>(
-                    _ =>
-                        new CommandLineHostedService(
-                            _,
-                            exec,
-                            _.GetRequiredService<IHostApplicationLifetime>(),
-                            result,
-                            hasWebHostedService
-                        )
-                );
-            }
-        }
     }
 }

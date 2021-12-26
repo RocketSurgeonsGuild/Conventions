@@ -12,6 +12,8 @@ namespace Rocket.Surgery.Conventions;
 /// <seealso cref="IConventionContext" />
 public sealed class ConventionContext : IConventionContext
 {
+    private readonly ConventionContextBuilder _builder;
+
     /// <summary>
     ///     Create a context from a given builder
     /// </summary>
@@ -25,7 +27,7 @@ public sealed class ConventionContext : IConventionContext
         var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
         var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
-        var context = new ConventionContext(provider, assemblyProvider, assemblyCandidateFinder, builder.Properties.ToDictionary(z => z.Key, z => z.Value));
+        var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties.ToDictionary(z => z.Key, z => z.Value));
         context.ApplyConventions();
         return context;
     }
@@ -33,17 +35,20 @@ public sealed class ConventionContext : IConventionContext
     /// <summary>
     ///     Creates a base context
     /// </summary>
+    /// <param name="builder"></param>
     /// <param name="conventionProvider"></param>
     /// <param name="assemblyCandidateFinder"></param>
     /// <param name="properties"></param>
     /// <param name="assemblyProvider"></param>
     internal ConventionContext(
+        ConventionContextBuilder builder,
         IConventionProvider conventionProvider,
         IAssemblyProvider assemblyProvider,
         IAssemblyCandidateFinder assemblyCandidateFinder,
         IDictionary<object, object?> properties
     )
     {
+        _builder = builder;
         Conventions = conventionProvider;
         AssemblyProvider = assemblyProvider;
         AssemblyCandidateFinder = assemblyCandidateFinder;
@@ -89,4 +94,15 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <value>The assembly candidate finder.</value>
     public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
+
+    /// <summary>
+    /// Return the source builder for this context (to create new contexts if required).
+    ///
+    /// Avoid doing this unless you absolutely need to.
+    /// </summary>
+    /// <returns></returns>
+    public ConventionContextBuilder ToBuilder()
+    {
+        return _builder;
+    }
 }

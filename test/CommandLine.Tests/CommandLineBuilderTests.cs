@@ -1,13 +1,14 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
-using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
+using Spectre.Console.Cli;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -51,68 +52,39 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider))
                      .ConfigureCommandLine(
                           (conventionContext, lineContext) =>
                           {
-                              lineContext.AddCommand<Remote>();
-                              lineContext.AddCommand<Fetch>();
+                              lineContext.AddBranch("remote", z => { z.AddCommand<Add>("add"); });
+                              lineContext.AddBranch("fetch", configurator => { configurator.AddCommand<Origin>("origin"); });
                           }
                       );
-        var response = ConventionContext.From(builder).CreateCommandLine();
-
-        response.Application.OptionHelp.Should().NotBeNull();
-
-        response.Execute(AutoFake.Resolve<IServiceProvider>(), "remote", "add", "-v").Should().Be(1);
-        Logger.LogInformation(response.Application.Commands.Find(x => x.Name == "remote")!.GetHelpText());
-        response.Application.Commands.Find(x => x.Name == "fetch")!.GetHelpText().Should().NotBeNullOrEmpty();
-    }
-
-    [Fact]
-    public void ShouldGetVersion()
-    {
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-
-        Action a = () => response.Application.ShowVersion();
-        a.Should().NotThrow();
+        var response = App.Create(ConventionContext.From(builder));
+        response.Run(new[] { "remote", "add", "-v" }).Should().Be(1);
     }
 
     [Fact]
     public void ExecuteWorks()
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
-            (context, lineContext) => { lineContext.OnRun(state => Task.FromResult((int)( state.GetLogLevel() ?? LogLevel.Information ))); }
+            (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
 
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+        var response = App.Create(ConventionContext.From(builder));
 
-        response.Execute(AutoFake.Resolve<IServiceProvider>()).Should().Be((int)LogLevel.Information);
-    }
-
-    [Fact]
-    public void RunWorks()
-    {
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-
-        builder.ConfigureCommandLine(
-            (context, lineContext) => { lineContext.OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information )); }
-        );
-
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-
-        response.Execute(AutoFake.Resolve<IServiceProvider>(), "run").Should().Be((int)LogLevel.Information);
+        response.Run(new[] { "test" }).Should().Be((int)LogLevel.Information);
     }
 
     [Fact]
     public void SupportsAppllicationStateWithCustomDependencyInjection()
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
 
         var service = A.Fake<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -124,88 +96,40 @@ public class CommandLineBuilderTests : AutoFakeTest
         builder.ConfigureCommandLine(
             (context, lineContext) =>
             {
-                lineContext.OnRun(
-                    state =>
+                lineContext.AddDelegate<AppSettings>(
+                    "test",
+                    (context, state) =>
                     {
-                        state.GetLogLevel().Should().Be(LogLevel.Error);
+                        state.LogLevel.Should().Be(LogLevel.Error);
                         return 1000;
                     }
                 );
             }
         );
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+        var response = App.Create(ConventionContext.From(builder));
 
-        var result = response.Execute(AutoFake.Resolve<IServiceProvider>(), "--log", "error");
+        var result = response.Run(new[] { "test", "--log", "error" });
 
         result.Should().Be(1000);
-    }
-
-    [Fact]
-    public void SupportsInjection_Without_Creating_The_SubContainer()
-    {
-        var sp = AutoFake.Provide(A.Fake<IServiceProvider>());
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-        builder.ConfigureCommandLine(
-            (context, builder) =>
-            {
-                builder.AddCommand<InjectionConstructor>("constructor");
-                builder.AddCommand<InjectionExecute>("execute");
-                builder.OnParse(state => { state.IsDefaultCommand.Should().BeFalse(); });
-            }
-        );
-
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-
-        response.Parse("constructor");
-        A.CallTo(() => sp.GetService(A<Type>._)).MustNotHaveHappened();
     }
 
     [Fact]
     public void SupportsInjection_Creating_On_Construction()
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
 
         builder.ConfigureCommandLine(
-            (context, builder) =>
-            {
-                builder.AddCommand<InjectionConstructor>("constructor");
-                builder.AddCommand<InjectionExecute>("execute");
-                builder.OnParse(state => { state.IsDefaultCommand.Should().BeFalse(); });
-            }
+            (context, builder) => { builder.AddCommand<InjectionConstructor>("constructor"); }
         );
 
         var service = AutoFake.Resolve<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
 
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+        var response = App.Create(ConventionContext.From(builder));
 
-        var result = response.Execute(ServiceProvider, "constructor");
-        result.Should().Be(1000);
-        A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
-    }
-
-    [Fact]
-    public void SupportsInjection_Creating_On_Execute()
-    {
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-
-        builder.ConfigureCommandLine(
-            (context, builder) =>
-            {
-                builder.AddCommand<InjectionConstructor>("constructor");
-                builder.AddCommand<InjectionExecute>("execute");
-            }
-        );
-
-        var service = AutoFake.Resolve<IService>();
-        A.CallTo(() => service.ReturnCode).Returns(1000);
-
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-
-        var result = response.Execute(ServiceProvider, "constructor");
+        var result = response.Run(new[] { "constructor" });
         result.Should().Be(1000);
         A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
     }
@@ -214,68 +138,33 @@ public class CommandLineBuilderTests : AutoFakeTest
     public void Sets_Values_In_Commands()
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
 
         builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-        response.Execute(
-            ServiceProvider,
-            "cwv",
-            "--api-domain",
-            "mydomain.com",
-            "--origin",
-            "origin1",
-            "--origin",
-            "origin2",
-            "--client-name",
-            "client1"
+        var response = App.Create(ConventionContext.From(builder));
+        response.Run(
+            new[]
+            {
+                "cwv",
+                "--api-domain",
+                "mydomain.com",
+                "--origin",
+                "origin1",
+                "--origin",
+                "origin2",
+                "--client-name",
+                "client1"
+            }
         );
-    }
-
-    [Fact]
-    public void Can_Add_A_Command_Without_A_Name()
-    {
-        var service = A.Fake<IService2>();
-        A.CallTo(() => service.SomeValue).Returns("Service2");
-        AutoFake.Provide(service);
-
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-
-        builder.ConfigureCommandLine((context, builder) => builder.AddCommand<ServiceInjection>());
-
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-
-        var result = response.Execute(ServiceProvider, "serviceinjection");
-
-        result.Should().Be(0);
-    }
-
-    [Fact]
-    public void Can_Add_A_Command_Without_A_Name_Using_Context()
-    {
-        var service = A.Fake<IService2>();
-        A.CallTo(() => service.SomeValue).Returns("Service2");
-        AutoFake.Provide(service);
-
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-        builder.ConfigureCommandLine(
-            (context, builder) => { builder.AddCommand<ServiceInjection>(); }
-        );
-
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-
-        var result = response.Execute(ServiceProvider, "serviceinjection");
-
-        result.Should().Be(0);
     }
 
     [Fact]
     public void Can_Add_A_Command_With_A_Name_Using_Context()
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
 
         var service = A.Fake<IService2>();
         A.CallTo(() => service.SomeValue).Returns("Service2");
@@ -289,120 +178,44 @@ public class CommandLineBuilderTests : AutoFakeTest
             }
         );
 
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+        var response = App.Create(ConventionContext.From(builder));
 
-        var result = response.Execute(ServiceProvider, "si");
+        var result = response.Run(new[] { "si" });
 
         result.Should().Be(0);
     }
 
-    [Fact]
-    public void Should_Call_OnParse_Delegates()
+    private class Add : Command
     {
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-        var context = builder as ICommandLineContext;
-
-        var onParseBuilder = A.Fake<OnParseDelegate>();
-        var onParseContext = A.Fake<OnParseDelegate>();
-
-        builder.ConfigureCommandLine(
-            (context, builder) =>
-            {
-                builder.OnParse(onParseBuilder);
-                builder.OnParse(onParseContext);
-            }
-        );
-
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-
-        response.Execute(ServiceProvider, "si");
-
-        A.CallTo(() => onParseBuilder(A<IApplicationState>._)).MustHaveHappened(1, Times.Exactly);
-        A.CallTo(() => onParseContext(A<IApplicationState>._)).MustHaveHappened(1, Times.Exactly);
-    }
-
-    [Fact]
-    public void Should_Call_Default_Command()
-    {
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-
-        builder.ConfigureCommandLine((context, builder) => builder.OnRun<Default>());
-        var result = ConventionContext.From(builder).CreateCommandLine().Execute(ServiceProvider);
-        result.Should().Be(-1);
-    }
-
-    [Fact]
-    public void Should_Call_Default_Command_Context()
-    {
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-        var context = builder as ICommandLineContext;
-
-        builder.ConfigureCommandLine((context, builder) => builder.OnRun<Default>());
-        var result = ConventionContext.From(builder).CreateCommandLine().Execute(ServiceProvider);
-        result.Should().Be(-1);
-    }
-
-    public CommandLineBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
-    {
-    }
-
-    [Command("remote")]
-    [Subcommand(typeof(Add))]
-    private class Remote
-    {
-        [UsedImplicitly]
-        public int OnExecute()
+        public override int Execute(CommandContext context)
         {
             return 1;
         }
     }
 
-    [Command("add")]
-    private class Add
+    private class Origin : Command
     {
-        [UsedImplicitly]
-        public int OnExecute()
+        public override int Execute(CommandContext context)
         {
             return 1;
         }
     }
 
-    [Command("fetch")]
-    [Subcommand(typeof(Origin))]
-    private class Fetch
-    {
-        [UsedImplicitly]
-        public int OnExecute()
-        {
-            return 2;
-        }
-    }
-
-    [Command("origin")]
-    private class Origin
-    {
-        [UsedImplicitly]
-        public int OnExecute()
-        {
-            return 2;
-        }
-    }
-
+//
     [Theory]
-    [InlineData("-v", LogLevel.Trace)]
+    [InlineData("-v", LogLevel.Debug)]
     [InlineData("-t", LogLevel.Trace)]
-    [InlineData("-d", LogLevel.Debug)]
     public void ShouldAllVerbosity(string command, LogLevel level)
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-        builder.ConfigureCommandLine((context, builder) => builder.OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information )));
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+        builder.ConfigureCommandLine(
+            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+        );
+        var response = App.Create(ConventionContext.From(builder));
 
-        var result = (LogLevel)response.Execute(AutoFake.Resolve<IServiceProvider>(), command);
+        var result = (LogLevel)response.Run(new[] { "test", command });
         result.Should().Be(level);
     }
 
@@ -416,45 +229,22 @@ public class CommandLineBuilderTests : AutoFakeTest
     public void ShouldAllowLogLevelIn(string command, LogLevel level)
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-        builder.ConfigureCommandLine((context, builder) => builder.OnRun(state => (int)( state.GetLogLevel() ?? LogLevel.Information )));
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+        builder.ConfigureCommandLine(
+            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+        );
 
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
+        var response = App.Create(ConventionContext.From(builder));
 
-        var result = (LogLevel)response.Execute(AutoFake.Resolve<IServiceProvider>(), command.Split(' '));
+        var result = (LogLevel)response.Run(new[] { "test" }.Concat(command.Split(' ')));
         result.Should().Be(level);
     }
 
-    [Theory]
-    [InlineData("-l invalid")]
-    [InlineData("-l ")]
-    public void ShouldDisallowInvalidLogLevels(string command)
-    {
-        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
-
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-
-        Action a = () => response.Execute(AutoFake.Resolve<IServiceProvider>(), command.Split(' '));
-        a.Should().Throw<CommandParsingException>();
-    }
-
-    [Command]
-    [Subcommand(typeof(SubCmd))]
-    private class Cmd
+    private class SubCmd : Command
     {
         [UsedImplicitly]
-        public int OnExecute()
-        {
-            return -1;
-        }
-    }
-
-    [Command("a")]
-    private class SubCmd
-    {
-        [UsedImplicitly]
-        public int OnExecute()
+        public override int Execute(CommandContext context)
         {
             return -1;
         }
@@ -476,25 +266,25 @@ public class CommandLineBuilderTests : AutoFakeTest
     public void StopsForHelp(string command)
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
-           .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, builder) =>
             {
-                builder.AddCommand<Cmd>("cmd1");
-                builder.AddCommand<Cmd>("cmd2");
-                builder.AddCommand<Cmd>("cmd3");
-                builder.AddCommand<Cmd>("cmd4");
-                builder.AddCommand<Cmd>("cmd5");
+                builder.AddBranch("cmd1", z => z.AddCommand<SubCmd>("a"));
+                builder.AddBranch("cmd2", z => z.AddCommand<SubCmd>("a"));
+                builder.AddBranch("cmd3", z => z.AddCommand<SubCmd>("a"));
+                builder.AddBranch("cmd4", z => z.AddCommand<SubCmd>("a"));
+                builder.AddBranch("cmd5", z => z.AddCommand<SubCmd>("a"));
             }
         );
 
-        var response = ConventionContext.From(builder).CreateCommandLine(typeof(CommandLineBuilderTests).GetTypeInfo().Assembly);
-        var result = response.Execute(AutoFake.Resolve<IServiceProvider>(), command.Split(' '));
+        var response = App.Create(ConventionContext.From(builder));
+        var result = response.Run(command.Split(' '));
         result.Should().BeGreaterOrEqualTo(0);
     }
 
-    [Command]
-    public class InjectionConstructor
+    public class InjectionConstructor : AsyncCommand
     {
         private readonly IService _service;
 
@@ -504,55 +294,31 @@ public class CommandLineBuilderTests : AutoFakeTest
         }
 
         [UsedImplicitly]
-        public async Task<int> OnExecuteAsync()
+        public override async Task<int> ExecuteAsync(CommandContext context)
         {
             await Task.Yield();
             return _service.ReturnCode;
         }
     }
 
-    [Command]
-    public class InjectionExecute
+    private class CommandWithValues : Command
     {
-        [UsedImplicitly]
-        public async Task<int> OnExecuteAsync(IService service)
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
-
-            await Task.Yield();
-            return service.ReturnCode;
-        }
-    }
-
-    [Command]
-    private class CommandWithValues
-    {
-        [Option("--api-domain", CommandOptionType.SingleValue, Description = "The auth0 Domain")]
+        [CommandOption("--api-domain")]
+        [Description("The auth0 Domain")]
         [UsedImplicitly]
         public string? ApiDomain { get; }
 
-        [Option(
-            "--client-name",
-            CommandOptionType.SingleValue,
-            Description = "The client name to create or update"
-        )]
+        [CommandOption("--client-name")]
+        [Description("The client name to create or update")]
         [UsedImplicitly]
         public string? ClientName { get; }
 
-        [Option(
-            "--origin",
-            CommandOptionType.MultipleValue,
-            Description =
-                "The origins that are allowed to access the client"
-        )]
+        [CommandOption("--origin")]
+        [Description("The origins that are allowed to access the client")]
         [UsedImplicitly]
         public IEnumerable<string> Origins { get; } = Enumerable.Empty<string>();
 
-        [UsedImplicitly]
-        public int OnExecute()
+        public override int Execute(CommandContext context)
         {
             ApiDomain.Should().Be("mydomain.com");
             ClientName.Should().Be("client1");
@@ -562,8 +328,7 @@ public class CommandLineBuilderTests : AutoFakeTest
         }
     }
 
-    [Command("ServiceInjection")]
-    private class ServiceInjection
+    private class ServiceInjection : Command
     {
         private readonly IService2 _service2;
 
@@ -573,14 +338,13 @@ public class CommandLineBuilderTests : AutoFakeTest
         }
 
         [UsedImplicitly]
-        public int OnExecute()
+        public override int Execute(CommandContext context)
         {
             return _service2.SomeValue == "Service2" ? 0 : 1;
         }
     }
 
-    [Command]
-    private class ServiceInjection2
+    private class ServiceInjection2 : Command
     {
         private readonly IService2 _service2;
 
@@ -590,17 +354,13 @@ public class CommandLineBuilderTests : AutoFakeTest
         }
 
         [UsedImplicitly]
-        public int OnExecute()
+        public override int Execute(CommandContext context)
         {
             return _service2.SomeValue == "Service2" ? 0 : 1;
         }
     }
 
-    private class Default : IDefaultCommand
+    public CommandLineBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
     {
-        public int Run(IApplicationState state)
-        {
-            return -1;
-        }
     }
 }

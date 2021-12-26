@@ -10,7 +10,7 @@ internal class TestAssemblyProvider : IAssemblyProvider
     {
         return new[]
         {
-            typeof(CommandLineContext).GetTypeInfo().Assembly,
+            typeof(CommandLineConvention).GetTypeInfo().Assembly,
             typeof(TestAssemblyProvider).GetTypeInfo().Assembly
         };
     }

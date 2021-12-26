@@ -179,8 +179,6 @@ public static class RocketHostExtensions
         builder
            .ConfigureHostConfiguration(host.ComposeHostingConvention)
            .ConfigureHostConfiguration(host.CaptureArguments)
-           .ConfigureHostConfiguration(host.ConfigureCli)
-           .ConfigureAppConfiguration(host.ReplaceArguments)
            .ConfigureAppConfiguration(host.ConfigureAppConfiguration)
            .ConfigureServices(host.ConfigureServices);
         builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
@@ -201,8 +199,6 @@ public static class RocketHostExtensions
         builder
            .ConfigureHostConfiguration(host.ComposeHostingConvention)
            .ConfigureHostConfiguration(host.CaptureArguments)
-           .ConfigureHostConfiguration(host.ConfigureCli)
-           .ConfigureAppConfiguration(host.ReplaceArguments)
            .ConfigureAppConfiguration(host.ConfigureAppConfiguration)
            .ConfigureServices(host.ConfigureServices);
 

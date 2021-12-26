@@ -43,4 +43,10 @@ public interface IConventionContext
     ///     Get the conventions from the context
     /// </summary>
     IConventionProvider Conventions { get; }
+
+    /// <summary>
+    /// Returns the source builder for this context
+    /// </summary>
+    /// <returns></returns>
+    ConventionContextBuilder ToBuilder();
 }
