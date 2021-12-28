@@ -1,11 +1,8 @@
 #if NET6_0_OR_GREATER
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Hosting;
 
 #pragma warning disable CA1031
 #pragma warning disable CA2000
@@ -61,7 +58,9 @@ public static class RocketWebHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="getConventions">The method to get the conventions.</param>
     /// <returns>IHostBuilder.</returns>
-    public static WebApplicationBuilder ConfigureRocketSurgery(this WebApplicationBuilder builder, Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions)
+    public static WebApplicationBuilder ConfigureRocketSurgery(
+        this WebApplicationBuilder builder, Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
     {
         if (builder == null)
         {
@@ -96,7 +95,6 @@ public static class RocketWebHostExtensions
             throw new ArgumentNullException(nameof(conventionContextBuilder));
         }
 
-        builder.Host.Properties[typeof(WebApplicationBuilder)] = builder;
         SetupConventions(builder, conventionContextBuilder);
         return builder;
     }
@@ -169,9 +167,9 @@ public static class RocketWebHostExtensions
         if (builder.Host.Properties.ContainsKey(typeof(ConventionContextBuilder)))
             return ( builder.Host.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
 
-        var conventionContextBuilder = Configure(builder, new ConventionContextBuilder(builder.Host.Properties!).UseDependencyContext(DependencyContext.Default));
-        builder.Host.Properties[typeof(ConventionContextBuilder)] = conventionContextBuilder;
-        // builder.Properties[typeof(WebApplicationBuilder)] = builder;
+        var conventionContextBuilder = Configure(
+            builder, new ConventionContextBuilder(builder.Host.Properties!).UseDependencyContext(DependencyContext.Default)
+        );
         return conventionContextBuilder;
     }
 
@@ -186,8 +184,7 @@ public static class RocketWebHostExtensions
         if (builder.Host.Properties.ContainsKey(typeof(ConventionContextBuilder)))
             return ( builder.Host.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
 
-        builder.Host.Properties[typeof(ConventionContextBuilder)] = conventionContextBuilder;
-        return Configure(builder, conventionContextBuilder.UseDependencyContext(DependencyContext.Default));
+        return Configure(builder, conventionContextBuilder);
     }
 
     /// <summary>
@@ -199,6 +196,8 @@ public static class RocketWebHostExtensions
     internal static ConventionContextBuilder Configure(WebApplicationBuilder builder, ConventionContextBuilder contextBuilder)
     {
         HostingListener.Attach(builder, contextBuilder);
+        builder.Host.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
+        builder.Host.Properties[typeof(WebApplicationBuilder)] = builder;
         return contextBuilder;
     }
 }

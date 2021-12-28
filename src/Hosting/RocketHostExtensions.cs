@@ -1,7 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 
 #pragma warning disable CA1031
@@ -48,7 +46,7 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        builder.Properties[typeof(IHostBuilder)] = builder;
+        ;
         action(SetupConventions(builder));
         return builder;
     }
@@ -59,7 +57,9 @@ public static class RocketHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="getConventions">The method to get the conventions.</param>
     /// <returns>IHostBuilder.</returns>
-    public static IHostBuilder ConfigureRocketSurgery(this IHostBuilder builder, Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions)
+    public static IHostBuilder ConfigureRocketSurgery(
+        this IHostBuilder builder, Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
     {
         if (builder == null)
         {
@@ -71,7 +71,6 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(getConventions));
         }
 
-        builder.Properties[typeof(IHostBuilder)] = builder;
         SetupConventions(builder).WithConventionsFrom(getConventions);
         return builder;
     }
@@ -94,7 +93,6 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(conventionContextBuilder));
         }
 
-        builder.Properties[typeof(IHostBuilder)] = builder;
         SetupConventions(builder, conventionContextBuilder);
         return builder;
     }
@@ -168,8 +166,6 @@ public static class RocketHostExtensions
             return ( builder.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
 
         var conventionContextBuilder = Configure(builder, new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default));
-        builder.Properties[typeof(ConventionContextBuilder)] = conventionContextBuilder;
-        // builder.Properties[typeof(IHostBuilder)] = builder;
         return conventionContextBuilder;
     }
 
@@ -184,9 +180,7 @@ public static class RocketHostExtensions
         if (builder.Properties.ContainsKey(typeof(ConventionContextBuilder)))
             return ( builder.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
 
-        builder.Properties[typeof(ConventionContextBuilder)] = conventionContextBuilder;
-        Configure(builder, conventionContextBuilder.UseDependencyContext(DependencyContext.Default));
-        // builder.Properties[typeof(IHostBuilder)] = builder;
+        Configure(builder, conventionContextBuilder);
         return conventionContextBuilder;
     }
 
@@ -198,27 +192,14 @@ public static class RocketHostExtensions
     /// <returns>RocketHostBuilder.</returns>
     internal static ConventionContextBuilder Configure(IHostBuilder builder, ConventionContextBuilder contextBuilder)
     {
-        Configure(builder, ConventionContext.From(contextBuilder));
-        builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
-        // builder.Properties[typeof(IHostBuilder)] = builder;
-        return contextBuilder;
-    }
-
-    /// <summary>
-    ///     Gets the or create builder.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="context"></param>
-    /// <returns>RocketHostBuilder.</returns>
-    internal static IConventionContext Configure(IHostBuilder builder, IConventionContext context)
-    {
-        context.Properties.AddIfMissing(builder).AddIfMissing(HostType.Live);
-        var host = new RocketContext(builder, context);
+        contextBuilder.Properties.AddIfMissing(builder).AddIfMissing(HostType.Live);
+        var host = new RocketContext(builder);
         builder
            .ConfigureHostConfiguration(host.ComposeHostingConvention)
            .ConfigureAppConfiguration(host.ConfigureAppConfiguration)
            .ConfigureServices(host.ConfigureServices);
-
-        return context;
+        builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
+        builder.Properties[typeof(IHostBuilder)] = builder;
+        return contextBuilder;
     }
 }

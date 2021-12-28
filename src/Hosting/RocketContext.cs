@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Configuration;
-using LoggingBuilder = Microsoft.Extensions.DependencyInjection.LoggingBuilder;
 
 namespace Rocket.Surgery.Hosting;
 
@@ -18,34 +16,17 @@ namespace Rocket.Surgery.Hosting;
 internal class RocketContext
 {
     private readonly IHostBuilder _hostBuilder;
-    private readonly Func<IConventionContext> getContext;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RocketContext" /> class.
     /// </summary>
     /// <param name="hostBuilder">The host builder.</param>
-    /// <param name="conventionContextBuilder"></param>
-    public RocketContext(IHostBuilder hostBuilder, ConventionContextBuilder conventionContextBuilder)
+    public RocketContext(IHostBuilder hostBuilder)
     {
         _hostBuilder = hostBuilder;
-        IConventionContext? context = null;
-        getContext = () =>
-        {
-            context ??= ConventionContext.From(conventionContextBuilder);
-            return context;
-        };
     }
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="RocketContext" /> class.
-    /// </summary>
-    /// <param name="hostBuilder">The host builder.</param>
-    /// <param name="context"></param>
-    public RocketContext(IHostBuilder hostBuilder, IConventionContext context)
-    {
-        _hostBuilder = hostBuilder;
-        getContext = () => context;
-    }
+    public IConventionContext ConventionContext => (IConventionContext)_hostBuilder.Properties[typeof(IConventionContext)];
 
     /// <summary>
     ///     Construct and compose hosting conventions
@@ -54,7 +35,13 @@ internal class RocketContext
     /// <exception cref="ArgumentNullException"></exception>
     public void ComposeHostingConvention(IConfigurationBuilder configurationBuilder)
     {
-        _hostBuilder.ApplyConventions(getContext());
+        if (!_hostBuilder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var conventionContextBuilderObject))
+            throw new KeyNotFoundException($"Could not find {nameof(ConventionContextBuilder)}");
+
+        var conventionContextBuilder = (ConventionContextBuilder)conventionContextBuilderObject!;
+        var contextObject = Conventions.ConventionContext.From(conventionContextBuilder);
+        _hostBuilder.Properties[typeof(IConventionContext)] = contextObject;
+        _hostBuilder.ApplyConventions(ConventionContext);
     }
 
     /// <summary>
@@ -77,9 +64,9 @@ internal class RocketContext
             throw new ArgumentNullException(nameof(configurationBuilder));
         }
 
-        getContext().Properties.AddIfMissing(context.HostingEnvironment);
+        ConventionContext.Properties.AddIfMissing(context.HostingEnvironment);
         configurationBuilder.UseLocalConfiguration(
-            getContext().GetOrAdd(() => new ConfigOptions()).UseEnvironment(context.HostingEnvironment.EnvironmentName)
+            ConventionContext.GetOrAdd(() => new ConfigOptions()).UseEnvironment(context.HostingEnvironment.EnvironmentName)
         );
 
         // Insert after all the normal configuration but before the environment specific configuration
@@ -107,7 +94,7 @@ internal class RocketContext
             ? configurationBuilder.Sources.Count - 1
             : configurationBuilder.Sources.IndexOf(source);
 
-        var cb = new ConfigurationBuilder().ApplyConventions(getContext(), configurationBuilder.Build());
+        var cb = new ConfigurationBuilder().ApplyConventions(ConventionContext, configurationBuilder.Build());
 
         configurationBuilder.Sources.Insert(
             index + 1,
@@ -136,9 +123,9 @@ internal class RocketContext
             throw new ArgumentNullException(nameof(services));
         }
 
-        getContext().Properties.AddIfMissing(context.Configuration);
+        ConventionContext.Properties.AddIfMissing(context.Configuration);
 
-        services.ApplyConventions(getContext());
-        new LoggingBuilder(services).ApplyConventions(getContext());
+        services.ApplyConventions(ConventionContext);
+        new LoggingBuilder(services).ApplyConventions(ConventionContext);
     }
 }

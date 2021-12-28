@@ -1,7 +1,4 @@
 using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -60,6 +57,7 @@ public static class DependencyModelTestConventionContextBuilderExtensions
         var logger = loggerFactory.CreateLogger("TestContext");
 
         return builder
+              .Set(HostType.UnitTest)
               .UseDependencyContext(context)
               .WithLoggerFactory(loggerFactory)
               .WithLogger(logger)

@@ -27,6 +27,7 @@
 | Rocket.Surgery.Conventions.Diagnostics | [![nuget-version-uqjej4fzhhvg-badge]![nuget-downloads-uqjej4fzhhvg-badge]][nuget-uqjej4fzhhvg] |
 | Rocket.Surgery.Hosting | [![nuget-version-haidmu8p33tw-badge]![nuget-downloads-haidmu8p33tw-badge]][nuget-haidmu8p33tw] |
 | Rocket.Surgery.Hosting.Abstractions | [![nuget-version-be0yledvjjja-badge]![nuget-downloads-be0yledvjjja-badge]][nuget-be0yledvjjja] |
+| Rocket.Surgery.Web.Hosting | [![nuget-version-mklhafvzne9g-badge]![nuget-downloads-mklhafvzne9g-badge]][nuget-mklhafvzne9g] |
 | Rocket.Surgery.WebAssembly.Hosting | [![nuget-version-w58+1hxy+jdq-badge]![nuget-downloads-w58+1hxy+jdq-badge]][nuget-w58+1hxy+jdq] |
 | Rocket.Surgery.WebAssembly.Hosting.Abstractions | [![nuget-version-210qyrjhfeiq-badge]![nuget-downloads-210qyrjhfeiq-badge]][nuget-210qyrjhfeiq] |
 <!-- nuget packages -->
@@ -72,6 +73,9 @@ TBD
 [nuget-be0yledvjjja]: https://www.nuget.org/packages/Rocket.Surgery.Hosting.Abstractions/
 [nuget-version-be0yledvjjja-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Hosting.Abstractions.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
 [nuget-downloads-be0yledvjjja-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Hosting.Abstractions.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
+[nuget-mklhafvzne9g]: https://www.nuget.org/packages/Rocket.Surgery.Web.Hosting/
+[nuget-version-mklhafvzne9g-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Web.Hosting.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
+[nuget-downloads-mklhafvzne9g-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Web.Hosting.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
 [nuget-w58+1hxy+jdq]: https://www.nuget.org/packages/Rocket.Surgery.WebAssembly.Hosting/
 [nuget-version-w58+1hxy+jdq-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.WebAssembly.Hosting.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
 [nuget-downloads-w58+1hxy+jdq-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.WebAssembly.Hosting.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
