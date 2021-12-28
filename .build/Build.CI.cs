@@ -12,8 +12,42 @@ using Rocket.Surgery.Nuke.GithubActions;
     GitHubActionsImage.UbuntuLatest,
     On = new[] { GitHubActionsTrigger.Push },
     OnPushTags = new[] { "v*" },
-    OnPushBranches = new[] { "master", "next" },
-    OnPullRequestBranches = new[] { "master", "next" },
+    OnPushBranches = new[] { "master", "main", "next" },
+    OnPushExcludePaths = new[]
+    {
+        ".codecov.yml",
+        ".editorconfig",
+        ".gitattributes",
+        ".gitignore",
+        ".gitmodules",
+        ".lintstagedrc.js",
+        ".prettierignore",
+        ".prettierrc",
+        "LICENSE",
+        "nukeeper.settings.json",
+        "omnisharp.json",
+        "package-lock.json",
+        "package.json",
+        "Readme.md"
+    },
+    OnPullRequestBranches = new[] { "master", "main", "next" },
+    OnPullRequestExcludePaths = new[]
+    {
+        ".codecov.yml",
+        ".editorconfig",
+        ".gitattributes",
+        ".gitignore",
+        ".gitmodules",
+        ".lintstagedrc.js",
+        ".prettierignore",
+        ".prettierrc",
+        "LICENSE",
+        "nukeeper.settings.json",
+        "omnisharp.json",
+        "package-lock.json",
+        "package.json",
+        "Readme.md"
+    },
     InvokedTargets = new[] { nameof(Default) },
     NonEntryTargets = new[]
     {
@@ -33,7 +67,9 @@ using Rocket.Surgery.Nuke.GithubActions;
 [UploadLogs]
 public partial class Solution
 {
-    public static RocketSurgeonGitHubActionsConfiguration Middleware(RocketSurgeonGitHubActionsConfiguration configuration)
+    public static RocketSurgeonGitHubActionsConfiguration Middleware(
+        RocketSurgeonGitHubActionsConfiguration configuration
+    )
     {
         var buildJob = configuration.Jobs.OfType<RocketSurgeonsGithubActionsJob>().First(z => z.Name == "Build");
         var checkoutStep = buildJob.Steps.OfType<CheckoutStep>().Single();
