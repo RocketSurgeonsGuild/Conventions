@@ -3,10 +3,7 @@
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IsPackable>true</IsPackable>
-        <RootNamespace>$(MSBuildProjectName.Replace('.Abstractions', '').Replace('.Attributes', '').Replace('.Analyzers', '').Replace('.Generators', ''))</RootNamespace>
+        <RootNamespace
+        >$(MSBuildProjectName.Replace('.Abstractions', '').Replace('.Attributes', '').Replace('.Analyzers', '').Replace('.Generators', ''))</RootNamespace>
     </PropertyGroup>
-    <ItemGroup>
-        <AdditionalFiles Condition="Exists('PublicAPI.Shipped.txt')" Include="PublicAPI.Shipped.txt" />
-        <AdditionalFiles Condition="Exists('PublicAPI.Unshipped.txt')" Include="PublicAPI.Unshipped.txt" />
-    </ItemGroup>
 </Project>

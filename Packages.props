@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <ItemGroup>
     <GlobalPackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
@@ -12,63 +12,62 @@
     <GlobalPackageReference Include="Roslynator.Analyzers" Version="3.2.2" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="GitVersion.Tool" Version="5.7.0" />
-    <PackageReference Update="docfx.console" Version="2.58.4" />
+    <PackageReference Update="GitVersion.Tool" Version="5.8.1" />
+    <PackageReference Update="docfx.console" Version="2.58.9" />
     <PackageReference Update="Nuke.Common" Version="5.3.0" />
-    <PackageReference Update="ReportGenerator" Version="4.8.13" />
-    <PackageReference Update="Rocket.Surgery.Nuke" Version="0.16.0" />
+    <PackageReference Update="ReportGenerator" Version="5.0.0" />
+    <PackageReference Update="Rocket.Surgery.Nuke" Version="0.16.4" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="BenchMarkDotNet" Version="0.13.1" />
-    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.0" />
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Ini" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.1.10" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="5.0.0" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="5.0.1" />
-    <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" />
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.11.0" />
-    <PackageReference Update="Rocket.Surgery.Extensions.Configuration" Version="11.2.0" />
-    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Ini" Version="11.2.0" />
-    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Json" Version="11.2.0" />
-    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Yaml" Version="11.2.0" />
+    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.*" />
+    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.*" />
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Ini" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.1.22" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Logging" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="6.0.*" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.*" />
+    <PackageReference Update="System.Diagnostics.DiagnosticSource" Version="6.0.*" />
+    <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Configuration" Version="11.2.1" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Ini" Version="11.2.1" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Json" Version="11.2.1" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Configuration.Yaml" Version="11.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="3.1.0" />
     <PackageReference Update="Microsoft.Azure.WebJobs" Version="3.0.30" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Extensions" Version="4.0.1" />
     <PackageReference Update="Microsoft.Azure.WebJobs.Host.Storage" Version="4.0.4" />
     <PackageReference Update="NetEscapades.Configuration.Yaml" Version="2.1.0" />
-    <PackageReference Update="Terminal.Gui" Version="1.2.1" />
+    <PackageReference Update="Spectre.Console" Version="0.43.0" />
+    <PackageReference Update="Terminal.Gui" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Bogus" Version="33.1.1" />
+    <PackageReference Update="Bogus" Version="34.0.1" />
     <PackageReference Update="coverlet.collector" Version="3.1.0" />
     <PackageReference Update="coverlet.msbuild" Version="3.1.0" />
     <PackageReference Update="FakeItEasy" Version="7.2.0" />
     <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.1.0" />
-    <PackageReference Update="FluentAssertions" Version="6.1.0" />
-    <PackageReference Update="FluentAssertions.Analyzers" Version="0.12.0" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Update="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="6.0.1" />
-    <PackageReference Update="Rocket.Surgery.Extensions.Testing.XUnit" Version="6.0.1" />
+    <PackageReference Update="FluentAssertions" Version="6.2.0" />
+    <PackageReference Update="FluentAssertions.Analyzers" Version="0.13.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="6.0.3" />
+    <PackageReference Update="Rocket.Surgery.Extensions.Testing.XUnit" Version="6.0.3" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />

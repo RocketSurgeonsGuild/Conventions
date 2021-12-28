@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
@@ -9,124 +7,128 @@ using Sample.DependencyThree;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Rocket.Surgery.Conventions.Tests
+namespace Rocket.Surgery.Conventions.Tests;
+
+public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
 {
-    public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
+    [Fact]
+    public void FindsAssembliesInCandidates_Params()
     {
-        [Fact]
-        public void FindsAssembliesInCandidates_Params()
+        var resolver = new DefaultAssemblyCandidateFinder(
+            new[]
+            {
+                typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly,
+                typeof(Class3).GetTypeInfo().Assembly
+            },
+            Logger
+        );
+        var items = resolver.GetCandidateAssemblies(
+                                 "Rocket.Surgery.Conventions",
+                                 "Rocket.Surgery.Conventions.Abstractions",
+                                 "Rocket.Surgery.Conventions.Attributes"
+                             )
+                            .Select(x => x.GetName().Name)
+                            .ToArray();
+
+        foreach (var item in items)
         {
-            var resolver = new DefaultAssemblyCandidateFinder(
+            Logger.LogInformation(item);
+        }
+
+        items
+           .Should()
+           .Contain(
                 new[]
                 {
-                    typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly,
-                    typeof(Class3).GetTypeInfo().Assembly
-                },
-                Logger
+                    "Sample.DependencyOne",
+                    "Sample.DependencyThree",
+                    "Sample.DependencyTwo",
+                    "Rocket.Surgery.Conventions.Tests"
+                }
             );
-            var items = resolver.GetCandidateAssemblies(
-                    "Rocket.Surgery.Conventions",
-                    "Rocket.Surgery.Conventions.Abstractions",
-                    "Rocket.Surgery.Conventions.Attributes"
-                )
-               .Select(x => x.GetName().Name)
-               .ToArray();
+        items
+           .Last()
+           .Should()
+           .Be("Rocket.Surgery.Conventions.Tests");
+    }
 
-            foreach (var item in items)
+    [Fact]
+    public void FindsAssembliesInCandidates_Params_Multiples()
+    {
+        var resolver = new DefaultAssemblyCandidateFinder(
+            new[]
             {
-                Logger.LogInformation(item);
-            }
+                typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly,
+                typeof(Class3).GetTypeInfo().Assembly
+            },
+            Logger
+        );
+        var items = resolver.GetCandidateAssemblies(
+                                 new[]
+                                 {
+                                     "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions",
+                                     "Rocket.Surgery.Conventions.Attributes"
+                                 }
+                             )
+                            .Select(x => x.GetName().Name)
+                            .ToArray();
+        var items2 = resolver.GetCandidateAssemblies(
+                                  "Rocket.Surgery.Conventions",
+                                  "Rocket.Surgery.Conventions.Abstractions",
+                                  "Rocket.Surgery.Conventions.Attributes"
+                              )
+                             .Select(x => x.GetName().Name)
+                             .ToArray();
 
-            items
-               .Should()
-               .Contain(
-                    new[]
-                    {
-                        "Sample.DependencyOne",
-                        "Sample.DependencyThree",
-                        "Sample.DependencyTwo",
-                        "Rocket.Surgery.Conventions.Tests"
-                    }
-                );
-            items
-               .Last()
-               .Should()
-               .Be("Rocket.Surgery.Conventions.Tests");
+        foreach (var item in items)
+        {
+            Logger.LogInformation(item);
         }
 
-        [Fact]
-        public void FindsAssembliesInCandidates_Params_Multiples()
+        foreach (var item in items2)
         {
-            var resolver = new DefaultAssemblyCandidateFinder(
+            Logger.LogInformation(item);
+        }
+
+        items
+           .Should()
+           .Contain(
                 new[]
                 {
-                    typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly,
-                    typeof(Class3).GetTypeInfo().Assembly
-                },
-                Logger
+                    "Sample.DependencyOne",
+                    "Sample.DependencyThree",
+                    "Sample.DependencyTwo",
+                    "Rocket.Surgery.Conventions.Tests"
+                }
             );
-            var items = resolver.GetCandidateAssemblies(
-                    new[] { "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions",
-                        "Rocket.Surgery.Conventions.Attributes" }
-                )
-               .Select(x => x.GetName().Name)
-               .ToArray();
-            var items2 = resolver.GetCandidateAssemblies(
-                    "Rocket.Surgery.Conventions",
-                    "Rocket.Surgery.Conventions.Abstractions",
-                    "Rocket.Surgery.Conventions.Attributes"
-                )
-               .Select(x => x.GetName().Name)
-               .ToArray();
+        items
+           .Last()
+           .Should()
+           .Be("Rocket.Surgery.Conventions.Tests");
+        items.Should().BeEquivalentTo(items2);
+    }
 
-            foreach (var item in items)
-            {
-                Logger.LogInformation(item);
-            }
+    [Fact]
+    public void FindsAssembliesInCandidates_Empty()
+    {
+        var resolver = new DefaultAssemblyCandidateFinder(
+            new[] { typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly },
+            Logger
+        );
+        var items = resolver.GetCandidateAssemblies(Array.Empty<string>().AsEnumerable())
+                            .Select(x => x.GetName().Name)
+                            .ToArray();
 
-            foreach (var item in items2)
-            {
-                Logger.LogInformation(item);
-            }
-
-            items
-               .Should()
-               .Contain(
-                    new[]
-                    {
-                        "Sample.DependencyOne",
-                        "Sample.DependencyThree",
-                        "Sample.DependencyTwo",
-                        "Rocket.Surgery.Conventions.Tests"
-                    }
-                );
-            items
-               .Last()
-               .Should()
-               .Be("Rocket.Surgery.Conventions.Tests");
-            items.Should().BeEquivalentTo(items2);
-        }
-
-        [Fact]
-        public void FindsAssembliesInCandidates_Empty()
+        foreach (var item in items)
         {
-            var resolver = new DefaultAssemblyCandidateFinder(
-                new[] { typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly },
-                Logger
-            );
-            var items = resolver.GetCandidateAssemblies(Array.Empty<string>().AsEnumerable())
-               .Select(x => x.GetName().Name)
-               .ToArray();
-
-            foreach (var item in items)
-            {
-                Logger.LogInformation(item);
-            }
-
-            items.Should().BeEmpty();
+            Logger.LogInformation(item);
         }
 
-        public DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) :
-            base(outputHelper, LogLevel.Trace) { }
+        items.Should().BeEmpty();
+    }
+
+    public DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) :
+        base(outputHelper, LogLevel.Trace)
+    {
     }
 }

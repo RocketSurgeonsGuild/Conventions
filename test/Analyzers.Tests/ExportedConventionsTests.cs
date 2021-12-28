@@ -1,21 +1,17 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Reactive;
-using System.Threading.Tasks;
 using Sample.DependencyOne;
 using Sample.DependencyThree;
 using Sample.DependencyTwo;
 using Xunit;
 using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
-namespace Rocket.Surgery.Conventions.Analyzers.Tests
+namespace Rocket.Surgery.Conventions.Analyzers.Tests;
+
+public class ExportedConventionsTests
 {
-    public class ExportedConventionsTests
+    [Fact]
+    public async Task Should_Pull_Through_A_Convention()
     {
-        [Fact]
-        public async Task Should_Pull_Through_A_Convention()
-        {
-            var source = @"
+        var source = @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -26,7 +22,7 @@ namespace Rocket.Surgery.Conventions.Tests
     internal class Contrib : IConvention { }
 }
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,26 +42,26 @@ namespace TestProject.Conventions
 }
 ";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
 
-        [Fact]
-        public async Task Should_Pull_Through_A_Convention_With_ExportAttribute()
-        {
-            var source = @"
+    [Fact]
+    public async Task Should_Pull_Through_A_Convention_With_ExportAttribute()
+    {
+        var source = @"
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Conventions.Tests
 {
-    [ExportConvention]
+    [ExportConventionAttribute]
     internal class Contrib : IConvention { }
 }
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -86,19 +82,19 @@ namespace TestProject.Conventions
 }
 ";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
 
-        [Theory]
-        [InlineData(HostType.Live)]
-        [InlineData(HostType.UnitTest)]
-        public async Task Should_Support_HostType_Conventions(HostType hostType)
-        {
-            var source = @"
+    [Theory]
+    [InlineData(HostType.Live)]
+    [InlineData(HostType.UnitTest)]
+    public async Task Should_Support_HostType_Conventions(HostType hostType)
+    {
+        var source = @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -110,7 +106,7 @@ namespace Rocket.Surgery.Conventions.Tests
     internal class Contrib : IConvention { }
 }
 ".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase);
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -128,23 +124,24 @@ namespace TestProject.Conventions
         }
     }
 }
-".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase);;
+".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase);
+        ;
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
 
-        [Theory]
-        [InlineData("AfterConventionAttribute",DependencyDirection.DependsOn)]
-        [InlineData("DependsOnConventionAttribute",DependencyDirection.DependsOn)]
-        [InlineData("BeforeConventionAttribute",DependencyDirection.DependentOf)]
-        [InlineData("DependentOfConventionAttribute",DependencyDirection.DependentOf)]
-        public async Task Should_Support_DependencyDirection_Conventions(string attributeName, DependencyDirection dependencyDirection)
-        {
-            var source = @"
+    [Theory]
+    [InlineData("AfterConventionAttribute", DependencyDirection.DependsOn)]
+    [InlineData("DependsOnConventionAttribute", DependencyDirection.DependsOn)]
+    [InlineData("BeforeConventionAttribute", DependencyDirection.DependentOf)]
+    [InlineData("DependentOfConventionAttribute", DependencyDirection.DependentOf)]
+    public async Task Should_Support_DependencyDirection_Conventions(string attributeName, DependencyDirection dependencyDirection)
+    {
+        var source = @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -159,7 +156,7 @@ namespace Rocket.Surgery.Conventions.Tests
     internal class D : IConvention { }
 }
 ".Replace("{AttributeName}", attributeName, StringComparison.OrdinalIgnoreCase);
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -177,42 +174,43 @@ namespace TestProject.Conventions
         }
     }
 }
-".Replace("{DependencyDirection}", dependencyDirection.ToString(), StringComparison.OrdinalIgnoreCase);;
+".Replace("{DependencyDirection}", dependencyDirection.ToString(), StringComparison.OrdinalIgnoreCase);
+        ;
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(ExcludeFromCodeCoverageAttribute).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(ExcludeFromCodeCoverageAttribute).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
 
-        [Fact]
-        public async Task Should_Pull_Through_All_Conventions()
-        {
-            var source1 = @"
+    [Fact]
+    public async Task Should_Pull_Through_All_Conventions()
+    {
+        var source1 = @"
 using Rocket.Surgery.Conventions;
 
 [assembly: Convention(typeof(Contrib1))]
 
 internal class Contrib1 : IConvention { }
 ";
-            var source2 = @"
+        var source2 = @"
 using Rocket.Surgery.Conventions;
 
 [assembly: Convention(typeof(Contrib3))]
 
-[ExportConvention]
+[ExportConventionAttribute]
 internal class Contrib2 : IConvention { }
 internal class Contrib3 : IConvention { }
 ";
-            var source3 = @"
+        var source3 = @"
 using Rocket.Surgery.Conventions;
 
 [assembly: Convention(typeof(Contrib4))]
 
 internal class Contrib4 : IConvention { }
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -235,17 +233,17 @@ namespace TestProject.Conventions
     }
 }";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                new[] { source1, source2, source3 },
-                new [] { expected }
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            new[] { source1, source2, source3 },
+            new[] { expected }
+        ).ConfigureAwait(false);
+    }
 
-        [Fact]
-        public async Task Should_Handle_Duplicate_Conventions()
-        {
-            var source = @"
+    [Fact]
+    public async Task Should_Handle_Duplicate_Conventions()
+    {
+        var source = @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -257,7 +255,7 @@ namespace Rocket.Surgery.Conventions.Tests
     internal class Contrib : IConvention { }
 }
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -277,17 +275,17 @@ namespace TestProject.Conventions
 }
 ";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
 
-        [Fact]
-        public async Task Should_Handle_Nested_Conventions()
-        {
-            var source = @"
+    [Fact]
+    public async Task Should_Handle_Nested_Conventions()
+    {
+        var source = @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -301,7 +299,7 @@ namespace Rocket.Surgery.Conventions.Tests
     }
 }
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -321,17 +319,17 @@ namespace TestProject.Conventions
 }
 ";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
+    }
 
-        [Fact]
-        public async Task Should_Handle_Nested_Static_Conventions()
-        {
-            var source = @"
+    [Fact]
+    public async Task Should_Handle_Nested_Static_Conventions()
+    {
+        var source = @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -345,7 +343,7 @@ namespace Rocket.Surgery.Conventions.Tests
     }
 }
 ";
-            var expected = @"
+        var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -365,12 +363,10 @@ namespace TestProject.Conventions
 }
 ";
 
-            await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-                new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
-                source,
-                expected
-            ).ConfigureAwait(false);
-        }
-
+        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            source,
+            expected
+        ).ConfigureAwait(false);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
@@ -8,32 +7,34 @@ using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Rocket.Surgery.Hosting.AspNetCore.Tests
+namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
+
+public class RocketWebHostStartupTests : AutoFakeTest
 {
-    public class RocketWebHostStartupTests : AutoFakeTest
+    [Fact]
+    public async Task Should_Start_Application()
     {
-        [Fact]
-        public async Task Should_Start_Application()
-        {
-            var builder = _baseBuilder;
-            builder.ConfigureWebHost(x => x.UseStartup<SimpleStartup>().UseTestServer());
+        var builder = _baseBuilder;
+        builder.ConfigureWebHost(x => x.UseStartup<SimpleStartup>().UseTestServer());
 
-            using var host = builder.Build();
-            await host.StartAsync().ConfigureAwait(false);
-            var server = host.GetTestServer();
-            var response = await server.CreateRequest("/")
-               .GetAsync().ConfigureAwait(false);
+        using var host = builder.Build();
+        await host.StartAsync().ConfigureAwait(false);
+        var server = host.GetTestServer();
+        var response = await server.CreateRequest("/")
+                                   .GetAsync().ConfigureAwait(false);
 
-            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            content.Should().Be("SimpleStartup -> Configure");
-            await host.StopAsync().ConfigureAwait(false);
-        }
-
-        public RocketWebHostStartupTests(ITestOutputHelper outputHelper) : base(outputHelper) => _baseBuilder = Host
-           .CreateDefaultBuilder()
-           .ConfigureWebHostDefaults(x => { })
-           .ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebHostBuilderTests).Assembly }));
-
-        private readonly IHostBuilder _baseBuilder;
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        content.Should().Be("SimpleStartup -> Configure");
+        await host.StopAsync().ConfigureAwait(false);
     }
+
+    public RocketWebHostStartupTests(ITestOutputHelper outputHelper) : base(outputHelper)
+    {
+        _baseBuilder = Host
+                      .CreateDefaultBuilder()
+                      .ConfigureWebHostDefaults(x => { })
+                      .ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebHostBuilderTests).Assembly }));
+    }
+
+    private readonly IHostBuilder _baseBuilder;
 }

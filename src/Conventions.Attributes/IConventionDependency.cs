@@ -1,20 +1,17 @@
-using System;
+namespace Rocket.Surgery.Conventions;
 
-namespace Rocket.Surgery.Conventions
+/// <summary>
+///     A dependency for a given convention
+/// </summary>
+public interface IConventionDependency
 {
     /// <summary>
-    /// A dependency for a given convention
+    ///     The type
     /// </summary>
-    public interface IConventionDependency
-    {
-        /// <summary>
-        /// The type
-        /// </summary>
-        Type Type { get; }
+    Type Type { get; }
 
-        /// <summary>
-        /// The direction
-        /// </summary>
-        DependencyDirection Direction { get; }
-    }
+    /// <summary>
+    ///     The direction
+    /// </summary>
+    DependencyDirection Direction { get; }
 }

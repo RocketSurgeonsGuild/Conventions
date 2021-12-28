@@ -1,17 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;netstandard2.0;net5.0</TargetFrameworks>
-        <PackageDescription>Adds support for loading configuration, services, logging, command line and more via simple and easy to setup assembly attributes</PackageDescription>
+        <TargetFrameworks>netstandard2.1;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+        <PackageDescription
+        >Adds support for loading configuration, services, logging, command line and more via simple and easy to setup assembly attributes</PackageDescription>
         <PackageTags>$(PackageTags);reflection</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" IncludeAssets="analyzers" ExcludeAssets="compile;runtime;native" PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive" OutputItemType="Analyzer" />
+        <ProjectReference
+            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="analyzers"
+            ExcludeAssets="compile;runtime;native"
+            PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
+            OutputItemType="Analyzer"
+        />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
-        <InternalsVisibleTo Include="Rocket.Surgery.Hosting.TestHost" />
-        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.TestHost" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
     </ItemGroup>

@@ -1,9 +1,9 @@
-﻿using System;
+﻿namespace Sample.Core;
 
-namespace Sample.Core
+internal class AService : IService
 {
-    internal class AService : IService
+    public string GetString()
     {
-        public string GetString() => nameof(AService);
+        return nameof(AService);
     }
 }

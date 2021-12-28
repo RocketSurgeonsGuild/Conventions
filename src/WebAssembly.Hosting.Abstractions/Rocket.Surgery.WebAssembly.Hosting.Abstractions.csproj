@@ -1,17 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net5.0</TargetFrameworks>
-        <PackageDescription>Adds helpers to easily bootstrap an application using conventions by just using the correct extension method.  This adds command line operations, additional configuration, logging and service injections by convention.</PackageDescription>
+        <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+        <PackageDescription
+        >Adds helpers to easily bootstrap an application using conventions by just using the correct extension method.  This adds command line operations, additional configuration, logging and service injections by convention.</PackageDescription>
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-         <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" IncludeAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+         <ProjectReference
+            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="all"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
         <ProjectReference Include="../Conventions.Abstractions/Rocket.Surgery.Conventions.Abstractions.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
-        <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.TestHost" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Tests" />
     </ItemGroup>
 </Project>

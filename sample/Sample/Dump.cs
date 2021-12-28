@@ -1,31 +1,38 @@
-﻿using McMaster.Extensions.CommandLineUtils;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading.Tasks;
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.CommandLine;
+using Spectre.Console.Cli;
 
-namespace Sample
+namespace Sample;
+
+public class Dump : AsyncCommand
 {
-    [Command("dump")]
-    public class Dump
-    {
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<Dump> _logger;
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<Dump> _logger;
 
-        public Dump(IConfiguration configuration, ILogger<Dump> logger)
+    public Dump(IConfiguration configuration, ILogger<Dump> logger)
+    {
+        _configuration = configuration;
+        _logger = logger;
+    }
+
+    public override Task<int> ExecuteAsync(CommandContext context)
+    {
+        foreach (var item in _configuration.AsEnumerable().Reverse())
         {
-            _configuration = configuration;
-            _logger = logger;
+            _logger.LogInformation("{Key}: {Value}", item.Key, item.Value ?? string.Empty);
         }
 
-        public Task<int> OnExecuteAsync()
-        {
-            foreach (var item in _configuration.AsEnumerable().Reverse())
-            {
-                _logger.LogInformation("{Key}: {Value}", item.Key, item.Value ?? string.Empty);
-            }
+        return Task.FromResult(1);
+    }
 
-            return Task.FromResult(1);
+    [ExportConvention]
+    internal class DumpConvention : ICommandLineConvention
+    {
+        public void Register(IConventionContext context, IConfigurator app)
+        {
+            app.AddCommand<Dump>("dump");
         }
     }
 }

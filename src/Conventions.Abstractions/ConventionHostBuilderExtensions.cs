@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,335 +8,337 @@ using Rocket.Surgery.Conventions.Setup;
 
 #pragma warning disable CS8601 // Possible null reference assignment.
 
-namespace Rocket.Surgery.Conventions
+namespace Rocket.Surgery.Conventions;
+
+/// <summary>
+///     Base convention extensions
+/// </summary>
+public static class ConventionHostBuilderExtensions
 {
     /// <summary>
-    /// Base convention extensions
+    ///     Setup a convention to run as soon as the context is created
     /// </summary>
-    public static class ConventionHostBuilderExtensions
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder SetupConvention(this ConventionContextBuilder container, SetupConvention @delegate)
     {
-        /// <summary>
-        /// Setup a convention to run as soon as the context is created
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder SetupConvention([NotNull] this ConventionContextBuilder container, SetupConvention @delegate)
+        if (container == null)
         {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
-
-            container.AppendDelegate(@delegate);
-            return container;
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the services delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureServices([NotNull] this ConventionContextBuilder container, ServiceConvention @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(@delegate);
+        return container;
+    }
 
-            container.AppendDelegate(@delegate);
-            return container;
+    /// <summary>
+    ///     Configure the services delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, ServiceConvention @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the services delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureServices([NotNull] this ConventionContextBuilder container, Action<IConfiguration, IServiceCollection> @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(@delegate);
+        return container;
+    }
 
-            container.AppendDelegate(new ServiceConvention((context, configuration, services) => @delegate(configuration, services)));
-            return container;
+    /// <summary>
+    ///     Configure the services delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Action<IConfiguration, IServiceCollection> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the services delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureServices([NotNull] this ConventionContextBuilder container, Action<IServiceCollection> @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(new ServiceConvention((_, configuration, services) => @delegate(configuration, services)));
+        return container;
+    }
 
-            container.AppendDelegate(new ServiceConvention((context, configuration, services) => @delegate(services)));
-            return container;
+    /// <summary>
+    ///     Configure the services delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Action<IServiceCollection> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the logging delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureLogging([NotNull] this ConventionContextBuilder container, LoggingConvention @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(new ServiceConvention((_, _, services) => @delegate(services)));
+        return container;
+    }
 
-            container.AppendDelegate(@delegate);
-            return container;
+    /// <summary>
+    ///     Configure the logging delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, LoggingConvention @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the logging delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureLogging([NotNull] this ConventionContextBuilder container, Action<IConfiguration, ILoggingBuilder> @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(@delegate);
+        return container;
+    }
 
-            container.AppendDelegate(new LoggingConvention((context, configuration, builder) => @delegate(configuration, builder)));
-            return container;
+    /// <summary>
+    ///     Configure the logging delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Action<IConfiguration, ILoggingBuilder> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the logging delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureLogging([NotNull] this ConventionContextBuilder container, Action<ILoggingBuilder> @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(new LoggingConvention((_, configuration, builder) => @delegate(configuration, builder)));
+        return container;
+    }
 
-            container.AppendDelegate(new LoggingConvention((context, configuration, builder) => @delegate(builder)));
-            return container;
+    /// <summary>
+    ///     Configure the logging delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Action<ILoggingBuilder> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the configuration delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureConfiguration([NotNull] this ConventionContextBuilder container, ConfigurationConvention @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(new LoggingConvention((_, _, builder) => @delegate(builder)));
+        return container;
+    }
 
-            container.AppendDelegate(@delegate);
-            return container;
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, ConfigurationConvention @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the configuration delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureConfiguration([NotNull] this ConventionContextBuilder container, Action<IConfiguration, IConfigurationBuilder> @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(@delegate);
+        return container;
+    }
 
-            container.AppendDelegate(new ConfigurationConvention((context, configuration, builder) => @delegate(configuration, builder)));
-            return container;
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureConfiguration(
+        this ConventionContextBuilder container, Action<IConfiguration, IConfigurationBuilder> @delegate
+    )
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Configure the configuration delegate to the convention scanner
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="delegate">The delegate.</param>
-        /// <returns><see cref="ConventionContextBuilder"/>.</returns>
-        public static ConventionContextBuilder ConfigureConfiguration([NotNull] this ConventionContextBuilder container, Action<IConfigurationBuilder> @delegate)
-        {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
+        container.AppendDelegate(new ConfigurationConvention((_, configuration, builder) => @delegate(configuration, builder)));
+        return container;
+    }
 
-            container.AppendDelegate(new ConfigurationConvention((context, configuration, builder) => @delegate(builder)));
-            return container;
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Action<IConfigurationBuilder> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
         }
 
-        /// <summary>
-        /// Get a value by type from the context
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="context">The context</param>
-        /// <returns>T.</returns>
-        public static T? Get<T>([NotNull] this ConventionContextBuilder context)
-            where T : class
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+        container.AppendDelegate(new ConfigurationConvention((_, _, builder) => @delegate(builder)));
+        return container;
+    }
 
-            return (T?)context.Properties[typeof(T)];
+    /// <summary>
+    ///     Get a value by type from the context
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="context">The context</param>
+    /// <returns>T.</returns>
+    public static T? Get<T>(this ConventionContextBuilder context)
+        where T : class
+    {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
         }
 
-        /// <summary>
-        /// Get a value by key from the context
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="context">The context</param>
-        /// <param name="key">The key where the value is saved</param>
-        /// <returns>T.</returns>
-        public static T? Get<T>([NotNull] this ConventionContextBuilder context, string key)
-            where T : class
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+        return (T?)context.Properties[typeof(T)];
+    }
 
-            return (T?)context.Properties[key];
+    /// <summary>
+    ///     Get a value by key from the context
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <returns>T.</returns>
+    public static T? Get<T>(this ConventionContextBuilder context, string key)
+        where T : class
+    {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
         }
 
-        /// <summary>
-        /// Get a value by key from the context
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="builder">The builder</param>
-        /// <param name="factory">The factory method in the event the type is not found</param>
-        /// <returns>T.</returns>
-        [NotNull]
-        public static T GetOrAdd<T>([NotNull] this ConventionContextBuilder builder, [NotNull] Func<T> factory)
-            where T : class
+        return (T?)context.Properties[key];
+    }
+
+    /// <summary>
+    ///     Get a value by key from the context
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="builder">The builder</param>
+    /// <param name="factory">The factory method in the event the type is not found</param>
+    /// <returns>T.</returns>
+    public static T GetOrAdd<T>(this ConventionContextBuilder builder, Func<T> factory)
+        where T : class
+    {
+        if (builder == null)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
+            throw new ArgumentNullException(nameof(builder));
+        }
 
-            if (factory == null)
-            {
-                throw new ArgumentNullException(nameof(factory));
-            }
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
 
-            if (builder.Properties[typeof(T)] is T value)
-            {
-                return value;
-            }
+        if (builder.Properties[typeof(T)] is T value)
+        {
+            return value;
+        }
 
+        value = factory();
+        builder.Set(value);
+
+        return value;
+    }
+
+    /// <summary>
+    ///     Get a value by key from the context
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="builder">The builder</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="factory">The factory method in the event the type is not found</param>
+    /// <returns>T.</returns>
+    public static T GetOrAdd<T>(this ConventionContextBuilder builder, string key, Func<T> factory)
+        where T : class
+    {
+        if (builder == null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+
+        if (!( builder.Properties[key] is T value ))
+        {
             value = factory();
             builder.Set(value);
-
-            return value;
         }
 
-        /// <summary>
-        /// Get a value by key from the context
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="builder">The builder</param>
-        /// <param name="key">The key where the value is saved</param>
-        /// <param name="factory">The factory method in the event the type is not found</param>
-        /// <returns>T.</returns>
-        [NotNull]
-        public static T GetOrAdd<T>([NotNull] this ConventionContextBuilder builder, string key, [NotNull] Func<T> factory)
-            where T : class
+        return value;
+    }
+
+    /// <summary>
+    ///     Get a value by type from the context
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="value">The value to save</param>
+    public static ConventionContextBuilder Set<T>(this ConventionContextBuilder context, T value)
+    {
+        if (context == null)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (factory == null)
-            {
-                throw new ArgumentNullException(nameof(factory));
-            }
-
-            if (!( builder.Properties[key] is T value ))
-            {
-                value = factory();
-                builder.Set(value);
-            }
-
-            return value;
+            throw new ArgumentNullException(nameof(context));
         }
 
-        /// <summary>
-        /// Get a value by type from the context
-        /// </summary>
-        /// <typeparam name="T">The type of the value</typeparam>
-        /// <param name="context">The context</param>
-        /// <param name="value">The value to save</param>
-        public static ConventionContextBuilder Set<T>([NotNull] this ConventionContextBuilder context, T value)
+        context.Properties[typeof(T)] = value;
+        return context;
+    }
+
+    /// <summary>
+    ///     Get a value by type from the context
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static ConventionContextBuilder Set<T>(this ConventionContextBuilder context, string key, T value)
+    {
+        if (context == null)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            context.Properties[typeof(T)] = value;
-            return context;
+            throw new ArgumentNullException(nameof(context));
         }
 
-        /// <summary>
-        /// Get a value by type from the context
-        /// </summary>
-        /// <typeparam name="T">The type of the value</typeparam>
-        /// <param name="context">The context</param>
-        /// <param name="key">The key where the value is saved</param>
-        /// <param name="value">The value to save</param>
-        public static ConventionContextBuilder Set<T>([NotNull] this ConventionContextBuilder context, string key, T value)
+        context.Properties[key] = value;
+        return context;
+    }
+
+    /// <summary>
+    ///     Check if this is a test host (to allow conventions to behave differently during unit tests)
+    /// </summary>
+    /// <param name="context">The context</param>
+    public static bool IsUnitTestHost(this ConventionContextBuilder context)
+    {
+        if (context == null)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            context.Properties[key] = value;
-            return context;
+            throw new ArgumentNullException(nameof(context));
         }
 
-        /// <summary>
-        /// Check if this is a test host (to allow conventions to behave differently during unit tests)
-        /// </summary>
-        /// <param name="context">The context</param>
-        public static bool IsUnitTestHost([NotNull] this ConventionContextBuilder context)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+        return context.GetHostType() == HostType.UnitTest;
+    }
 
-            return context.GetHostType() == HostType.UnitTest;
-        }
-
-        /// <summary>
-        /// Check if this is a test host (to allow conventions to behave differently during unit tests)
-        /// </summary>
-        /// <param name="context">The context</param>
-        public static HostType GetHostType(this ConventionContextBuilder context) => context.Properties.TryGetValue(typeof(HostType), out var hostType)
+    /// <summary>
+    ///     Check if this is a test host (to allow conventions to behave differently during unit tests)
+    /// </summary>
+    /// <param name="context">The context</param>
+    public static HostType GetHostType(this ConventionContextBuilder context)
+    {
+        return context.Properties.TryGetValue(typeof(HostType), out var hostType)
             ? (HostType)hostType!
             : HostType.Undefined;
     }

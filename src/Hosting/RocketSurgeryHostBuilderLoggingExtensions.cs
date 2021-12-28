@@ -1,39 +1,34 @@
-using System;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Logging;
 using Rocket.Surgery.Hosting;
 
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.Hosting
+namespace Microsoft.Extensions.Hosting;
+
+/// <summary>
+///     Extension method to apply logging conventions
+/// </summary>
+public static class RocketSurgeryHostBuilderLoggingExtensions
 {
     /// <summary>
-    /// Extension method to apply logging conventions
+    ///     Apply logging conventions
     /// </summary>
-    public static class RocketSurgeryHostBuilderLoggingExtensions
+    /// <param name="hostBuilder"></param>
+    /// <param name="conventionContext"></param>
+    /// <returns></returns>
+    public static IHostBuilder ApplyConventions(this IHostBuilder hostBuilder, IConventionContext conventionContext)
     {
-        /// <summary>
-        /// Apply logging conventions
-        /// </summary>
-        /// <param name="hostBuilder"></param>
-        /// <param name="conventionContext"></param>
-        /// <returns></returns>
-        public static IHostBuilder ApplyConventions(this IHostBuilder hostBuilder, IConventionContext conventionContext)
+        foreach (var item in conventionContext.Conventions.Get<IHostingConvention, HostingConvention>())
         {
-            foreach (var item in conventionContext.Conventions.Get<IHostingConvention, HostingConvention>())
+            if (item is IHostingConvention convention)
             {
-                if (item is IHostingConvention convention)
-                {
-                    convention.Register(conventionContext, hostBuilder);
-                }
-                else if (item is HostingConvention @delegate)
-                {
-                    @delegate(conventionContext, hostBuilder);
-                }
+                convention.Register(conventionContext, hostBuilder);
             }
-
-            return hostBuilder;
+            else if (item is HostingConvention @delegate)
+            {
+                @delegate(conventionContext, hostBuilder);
+            }
         }
+
+        return hostBuilder;
     }
 }

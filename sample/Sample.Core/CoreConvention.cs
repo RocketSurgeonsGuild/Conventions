@@ -5,13 +5,13 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 using Sample.Core;
 
 [assembly: Convention(typeof(CoreConvention))]
-namespace Sample.Core
+
+namespace Sample.Core;
+
+public class CoreConvention : IServiceConvention
 {
-    public class CoreConvention : IServiceConvention
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
     {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            services.AddSingleton<IService, AService>();
-        }
+        services.AddSingleton<IService, AService>();
     }
 }
