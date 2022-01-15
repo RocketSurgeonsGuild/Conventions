@@ -7,8 +7,8 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Configuration;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Extensions.Configuration;
 
 namespace Rocket.Surgery.Web.Hosting;
 
