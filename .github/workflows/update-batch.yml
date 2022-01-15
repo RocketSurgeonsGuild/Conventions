@@ -60,6 +60,7 @@ jobs:
       - run: dotnet tool install -g nukeeper
 
       - name: Run nukeeper
+        shell: pwsh
         run: |
           $title = '${{ github.event.pull_request.title }}'
           $prefix = '';
@@ -79,7 +80,7 @@ jobs:
           {
             $prefix = ($title.Split(' ')[1].Split('.') | select -First 1) -join '.'
           }
-          if ('${{ steps.prefix.outputs.value }}')
+          if ($prefix)
           {
             nukeeper update -m 100 -i "$prefix"
           }
