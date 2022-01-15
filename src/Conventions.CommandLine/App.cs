@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Extensions.Configuration;
+using Rocket.Surgery.Configuration;
 using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
