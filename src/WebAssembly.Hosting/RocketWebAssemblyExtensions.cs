@@ -1,8 +1,6 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 
 #pragma warning disable CA1031
@@ -47,23 +45,8 @@ public static class RocketWebAssemblyExtensions
             }
         }
 
-        IConventionServiceProviderFactory? factory = null;
-        if (conventionContext.Properties.TryGetValue(typeof(IConventionServiceProviderFactory), out var factoryObject))
-        {
-            if (factoryObject is Type factoryType)
-            {
-                factory = ActivatorUtilities.CreateInstance(conventionContext.Properties, factoryType) as IConventionServiceProviderFactory;
-            }
-            else if (factoryObject is IConventionServiceProviderFactory factoryInstance)
-            {
-                factory = factoryInstance;
-            }
-        }
-
         builder.Configuration.ApplyConventions(conventionContext, builder.Configuration);
-        builder.Services.ApplyConventions(conventionContext);
-        builder.Logging.ApplyConventions(conventionContext);
-        builder.ConfigureContainer(new DefaultServiceProviderFactory(factory, conventionContext));
+        builder.ConfigureContainer(ConventionServiceProviderFactory.Wrap(conventionContext));
         return builder;
     }
 
@@ -365,29 +348,5 @@ public static class RocketWebAssemblyExtensions
         ApplyConventions(builder, b);
         action?.Invoke(b);
         return builder;
-    }
-}
-
-internal class DefaultServiceProviderFactory : IServiceProviderFactory<IServiceCollection>
-{
-    private readonly IConventionServiceProviderFactory? _serviceProviderFactory;
-    private readonly IConventionContext _conventionContext;
-
-    public DefaultServiceProviderFactory(IConventionServiceProviderFactory? serviceProviderFactory, IConventionContext conventionContext)
-    {
-        _serviceProviderFactory = serviceProviderFactory;
-        _conventionContext = conventionContext;
-    }
-
-    public IServiceCollection CreateBuilder(IServiceCollection services)
-    {
-        return services;
-    }
-
-    public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
-    {
-        return _serviceProviderFactory == null
-            ? containerBuilder.BuildServiceProvider(_conventionContext.GetOrAdd(() => new ServiceProviderOptions()))
-            : _serviceProviderFactory.CreateServiceProvider(containerBuilder, _conventionContext);
     }
 }

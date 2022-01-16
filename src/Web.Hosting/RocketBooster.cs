@@ -1,8 +1,6 @@
-#if NET6_0_OR_GREATER
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Web.Hosting;
@@ -177,4 +175,3 @@ public static class RocketBooster
         return ForAssemblies(assemblies, getConventions);
     }
 }
-#endif

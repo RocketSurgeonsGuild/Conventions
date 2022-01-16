@@ -1,4 +1,3 @@
-#if NET6_0_OR_GREATER
 using Microsoft.AspNetCore.Builder;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Hosting;
@@ -34,4 +33,3 @@ public static class RocketSurgeryWebApplicationBuilderLoggingExtensions
         return webApplicationBuilder;
     }
 }
-#endif

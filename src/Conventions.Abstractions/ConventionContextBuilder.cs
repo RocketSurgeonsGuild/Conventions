@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Adapters;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -14,13 +15,14 @@ public class ConventionContextBuilder
     internal readonly List<Type> _exceptConventions = new List<Type>();
     internal readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
     internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProviderFactory;
+    internal Func<IConventionContext, IServiceFactoryAdapter>? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
     internal object? _source;
     internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;
     internal AssemblyProviderFactory? _assemblyProviderFactory;
 
     /// <summary>
-    /// Create a default context builder
+    ///     Create a default context builder
     /// </summary>
     /// <param name="properties"></param>
     /// <returns></returns>

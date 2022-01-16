@@ -17,6 +17,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.CommandLine" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Web.Hosting" />

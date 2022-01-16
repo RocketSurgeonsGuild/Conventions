@@ -1,4 +1,3 @@
-#if NET6_0_OR_GREATER
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
@@ -201,4 +200,3 @@ public static class RocketWebHostExtensions
         return contextBuilder;
     }
 }
-#endif

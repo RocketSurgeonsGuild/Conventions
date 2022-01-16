@@ -129,25 +129,8 @@ internal class RocketContext
         new LoggingBuilder(services).ApplyConventions(ConventionContext);
     }
 
-    public IServiceProviderFactory<IServiceCollection> UseServiceProviderFactory(HostBuilderContext context)
+    public IServiceProviderFactory<object> UseServiceProviderFactory(HostBuilderContext context)
     {
-        IConventionServiceProviderFactory? factory = null;
-        if (ConventionContext.Properties.TryGetValue(typeof(IConventionContext), out var conventionContextObject)
-         && conventionContextObject is IConventionContext conventionContext)
-        {
-            if (conventionContext.Properties.TryGetValue(typeof(IConventionServiceProviderFactory), out var factoryObject))
-            {
-                if (factoryObject is Type factoryType)
-                {
-                    factory = ActivatorUtilities.CreateInstance(conventionContext.Properties, factoryType) as IConventionServiceProviderFactory;
-                }
-                else if (factoryObject is IConventionServiceProviderFactory factoryInstance)
-                {
-                    factory = factoryInstance;
-                }
-            }
-        }
-
-        return new DefaultServiceProviderFactory(factory, ConventionContext);
+        return ConventionServiceProviderFactory.Wrap(ConventionContext, false);
     }
 }

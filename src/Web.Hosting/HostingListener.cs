@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
@@ -75,4 +74,3 @@ internal sealed class HostingListener : IObserver<DiagnosticListener>, IObserver
         }
     }
 }
-#endif
