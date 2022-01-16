@@ -11,6 +11,7 @@
     <PackageReference Include="Nuke.Common" />
     <PackageReference Include="GitVersion.Tool" ExcludeAssets="All" />
     <PackageReference Include="ReportGenerator" ExcludeAssets="All" />
+    <PackageReference Include="docfx.console" ExcludeAssets="All" />
     <PackageReference Include="Rocket.Surgery.Nuke" />
   </ItemGroup>
 

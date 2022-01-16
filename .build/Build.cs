@@ -49,6 +49,7 @@ public partial class Solution : NukeBuild,
                                   .DependsOn(Restore)
                                   .DependsOn(Build)
                                   .DependsOn(Test)
+                                  .DependsOn(Docs)
                                   .DependsOn(Pack);
 
     public Target Build => _ => _.Inherit<ICanBuildWithDotNetCore>(x => x.CoreBuild);
@@ -62,6 +63,7 @@ public partial class Solution : NukeBuild,
     public Target Lint => _ => _.Inherit<ICanLint>(x => x.Lint);
     public Target Restore => _ => _.Inherit<ICanRestoreWithDotNetCore>(x => x.CoreRestore);
     public Target Test => _ => _.Inherit<ICanTestWithDotNetCore>(x => x.CoreTest);
+    public Target Docs => _ => _.Inherit<IGenerateDocFx>(x => x.CoreDocs);
 
     public Target BuildVersion => _ => _.Inherit<IHaveBuildVersion>(x => x.BuildVersion)
                                         .Before(Default)

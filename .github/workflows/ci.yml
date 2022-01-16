@@ -100,6 +100,9 @@ jobs:
       - name: 🚦 Test
         run: |
           dotnet nuke Test TriggerCodeCoverageReports GenerateCodeCoverageReportCobertura GenerateCodeCoverageBadges GenerateCodeCoverageSummary GenerateCodeCoverageReport --skip
+      - name: Docs
+        run: |
+          dotnet nuke Docs --skip
       - name: 📦 Pack
         run: |
           dotnet nuke Pack --skip
