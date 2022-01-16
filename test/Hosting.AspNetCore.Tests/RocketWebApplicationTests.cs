@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration.Ini;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using NetEscapades.Configuration.Yaml;
-using Rocket.Surgery.Configuration;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Configuration;
 using Rocket.Surgery.Extensions.Testing;
