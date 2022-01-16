@@ -72,7 +72,7 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="contextBuilder"></param>
-    public static IConventionContext ApplyConventions(WebAssemblyHostBuilder builder, ConventionContextBuilder contextBuilder)
+    internal static IConventionContext ApplyConventions(WebAssemblyHostBuilder builder, ConventionContextBuilder contextBuilder)
     {
         return ApplyConventions(new WrappedWebAssemblyHostBuilder(builder), contextBuilder);
     }
@@ -82,7 +82,7 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="contextBuilder"></param>
-    public static IConventionContext ApplyConventions(IWebAssemblyHostBuilder builder, ConventionContextBuilder contextBuilder)
+    internal static IConventionContext ApplyConventions(IWebAssemblyHostBuilder builder, ConventionContextBuilder contextBuilder)
     {
         var context = ConventionContext.From(contextBuilder);
         builder.ConfigureRocketSurgery(context);
@@ -94,7 +94,7 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="context"></param>
-    private static IConventionContext ApplyConventions(WebAssemblyHostBuilder builder, IConventionContext context)
+    internal static IConventionContext ApplyConventions(WebAssemblyHostBuilder builder, IConventionContext context)
     {
         return ApplyConventions(new WrappedWebAssemblyHostBuilder(builder), context);
     }
@@ -104,7 +104,7 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="context"></param>
-    private static IConventionContext ApplyConventions(IWebAssemblyHostBuilder builder, IConventionContext context)
+    internal static IConventionContext ApplyConventions(IWebAssemblyHostBuilder builder, IConventionContext context)
     {
         builder.ConfigureRocketSurgery(context);
         return context;
@@ -273,6 +273,7 @@ public static class RocketWebAssemblyExtensions
         }
 
         var b = func(builder);
+        ApplyConventions(builder, b);
         action?.Invoke(b);
         return builder;
     }
@@ -302,6 +303,7 @@ public static class RocketWebAssemblyExtensions
 
         var innerBuilder = new WrappedWebAssemblyHostBuilder(builder);
         var b = func(innerBuilder);
+        ApplyConventions(builder, b);
         action?.Invoke(b);
         return builder;
     }
@@ -330,6 +332,7 @@ public static class RocketWebAssemblyExtensions
         }
 
         var b = func(builder);
+        ApplyConventions(builder, b);
         action?.Invoke(b);
         return builder;
     }
@@ -359,6 +362,7 @@ public static class RocketWebAssemblyExtensions
 
         var innerBuilder = new WrappedWebAssemblyHostBuilder(builder);
         var b = func(innerBuilder);
+        ApplyConventions(builder, b);
         action?.Invoke(b);
         return builder;
     }
