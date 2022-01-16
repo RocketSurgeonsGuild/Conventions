@@ -4,7 +4,7 @@ using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
-class ConventionTypeRegistrar : ITypeRegistrar
+internal class ConventionTypeRegistrar : ITypeRegistrar
 {
     private readonly IConventionContext _conventionContext;
     private readonly ServiceCollection _services;
@@ -33,7 +33,25 @@ class ConventionTypeRegistrar : ITypeRegistrar
     public ITypeResolver Build()
     {
         _services.AddSingleton(_conventionContext.Get<IConfiguration>());
-        var factory = _conventionContext.GetOrAdd<ICommandAppServiceProviderFactory>(() => new DefaultServiceProviderFactory());
+        IConventionServiceProviderFactory? factory = null;
+        if (_conventionContext.Properties.TryGetValue(typeof(IConventionServiceProviderFactory), out var factoryObject))
+        {
+            if (factoryObject is Type factoryType)
+            {
+                factory = ActivatorUtilities.CreateInstance(_conventionContext.Properties, factoryType) as IConventionServiceProviderFactory;
+            }
+            else if (factoryObject is IConventionServiceProviderFactory factoryInstance)
+            {
+                factory = factoryInstance;
+            }
+        }
+
+        if (factory == null)
+        {
+            factory = new DefaultServiceProviderFactory();
+        }
+
+        _conventionContext.Set(factory);
         return new ConventionTypeResolver(factory.CreateServiceProvider(_services, _conventionContext));
     }
 }

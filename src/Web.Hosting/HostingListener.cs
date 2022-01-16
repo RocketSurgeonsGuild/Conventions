@@ -1,14 +1,12 @@
 ﻿#if NET6_0_OR_GREATER
 using System.Diagnostics;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Hosting;
 
 namespace Rocket.Surgery.Web.Hosting;
 
-sealed class HostingListener : IObserver<DiagnosticListener>, IObserver<KeyValuePair<string, object?>>
+internal sealed class HostingListener : IObserver<DiagnosticListener>, IObserver<KeyValuePair<string, object?>>
 {
     private readonly WebApplicationBuilder _webApplicationBuilder;
     private readonly ConventionContextBuilder _conventionContextBuilder;
@@ -16,7 +14,10 @@ sealed class HostingListener : IObserver<DiagnosticListener>, IObserver<KeyValue
     private static readonly AsyncLocal<HostingListener> _currentListener = new();
     private readonly IDisposable? _subscription;
 
-    public static void Attach(WebApplicationBuilder webApplicationBuilder, ConventionContextBuilder conventionContextBuilder) => new HostingListener(webApplicationBuilder, conventionContextBuilder);
+    public static void Attach(WebApplicationBuilder webApplicationBuilder, ConventionContextBuilder conventionContextBuilder)
+    {
+        new HostingListener(webApplicationBuilder, conventionContextBuilder);
+    }
 
     internal HostingListener(WebApplicationBuilder webApplicationBuilder, ConventionContextBuilder conventionContextBuilder)
     {
@@ -65,6 +66,7 @@ sealed class HostingListener : IObserver<DiagnosticListener>, IObserver<KeyValue
             host.ComposeHostingConvention();
             host.ConfigureAppConfiguration();
             host.ConfigureServices();
+            host.UseServiceProviderFactory();
         }
 
         if (value.Key == "HostBuilt")
