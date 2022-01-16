@@ -1,22 +1,16 @@
 using DryIoc;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Conventions.DryIoc;
-using Rocket.Surgery.Extensions.DryIoc.Tests;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 using Xunit;
 using Xunit.Abstractions;
+using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 #pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021
-
-[assembly: Convention(typeof(DryIocBuilderTests.AbcConvention))]
-[assembly: Convention(typeof(DryIocBuilderTests.OtherConvention))]
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
@@ -234,47 +228,5 @@ public class DryIocBuilderTests : AutoFakeTest
     public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
-    }
-
-    public interface IAbc
-    {
-    }
-
-    public interface IAbc2
-    {
-    }
-
-    public interface IAbc3
-    {
-    }
-
-    public interface IAbc4
-    {
-    }
-
-    public interface IOtherAbc3
-    {
-    }
-
-    public interface IOtherAbc4
-    {
-    }
-
-    public class AbcConvention : IDryIocConvention
-    {
-        public IContainer Register(IConventionContext conventionContext, IConfiguration configuration, IServiceCollection services, IContainer container)
-        {
-            container.RegisterInstance(A.Fake<IAbc>());
-            services.AddSingleton(A.Fake<IAbc2>());
-            return container;
-        }
-    }
-
-    public class OtherConvention : IServiceConvention
-    {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            services.AddSingleton(A.Fake<IOtherAbc3>());
-        }
     }
 }

@@ -1,23 +1,16 @@
+#pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021
 using System.Diagnostics;
 using Autofac;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Autofac;
-using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Extensions.Autofac.Tests;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 using Xunit;
 using Xunit.Abstractions;
-
-#pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021
-
-[assembly: Convention(typeof(AutofacBuilderTests.AbcConvention))]
-[assembly: Convention(typeof(AutofacBuilderTests.OtherConvention))]
+using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
@@ -217,46 +210,5 @@ public class AutofacBuilderTests : AutoFakeTest
     public AutofacBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
     {
         AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-    }
-
-    public interface IAbc
-    {
-    }
-
-    public interface IAbc2
-    {
-    }
-
-    public interface IAbc3
-    {
-    }
-
-    public interface IAbc4
-    {
-    }
-
-    public interface IOtherAbc3
-    {
-    }
-
-    public interface IOtherAbc4
-    {
-    }
-
-    public class AbcConvention : IAutofacConvention
-    {
-        public void Register(IConventionContext conventionContext, IConfiguration configuration, IServiceCollection services, ContainerBuilder container)
-        {
-            container.RegisterInstance(A.Fake<IAbc>());
-            services.AddSingleton(A.Fake<IAbc2>());
-        }
-    }
-
-    public class OtherConvention : IServiceConvention
-    {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            services.AddSingleton(A.Fake<IOtherAbc3>());
-        }
     }
 }

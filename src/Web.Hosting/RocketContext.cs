@@ -99,8 +99,8 @@ internal class RocketContext
         _webApplicationBuilder.Logging.ApplyConventions(_context);
     }
 
-    public void UseServiceProviderFactory()
+    public IServiceProviderFactory<object> UseServiceProviderFactory()
     {
-        _webApplicationBuilder.Host.UseServiceProviderFactory(_ => ConventionServiceProviderFactory.Wrap(_context, false));
+        return ConventionServiceProviderFactory.Wrap(_context, false);
     }
 }
