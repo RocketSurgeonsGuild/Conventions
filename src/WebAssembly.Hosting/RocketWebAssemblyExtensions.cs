@@ -47,9 +47,23 @@ public static class RocketWebAssemblyExtensions
             }
         }
 
+        IConventionServiceProviderFactory? factory = null;
+        if (conventionContext.Properties.TryGetValue(typeof(IConventionServiceProviderFactory), out var factoryObject))
+        {
+            if (factoryObject is Type factoryType)
+            {
+                factory = ActivatorUtilities.CreateInstance(conventionContext.Properties, factoryType) as IConventionServiceProviderFactory;
+            }
+            else if (factoryObject is IConventionServiceProviderFactory factoryInstance)
+            {
+                factory = factoryInstance;
+            }
+        }
+
         builder.Configuration.ApplyConventions(conventionContext, builder.Configuration);
         builder.Services.ApplyConventions(conventionContext);
         builder.Logging.ApplyConventions(conventionContext);
+        builder.ConfigureContainer(new DefaultServiceProviderFactory(factory, conventionContext));
         return builder;
     }
 
@@ -80,7 +94,7 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="context"></param>
-    public static IConventionContext ApplyConventions(WebAssemblyHostBuilder builder, IConventionContext context)
+    private static IConventionContext ApplyConventions(WebAssemblyHostBuilder builder, IConventionContext context)
     {
         return ApplyConventions(new WrappedWebAssemblyHostBuilder(builder), context);
     }
@@ -90,7 +104,7 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="context"></param>
-    public static IConventionContext ApplyConventions(IWebAssemblyHostBuilder builder, IConventionContext context)
+    private static IConventionContext ApplyConventions(IWebAssemblyHostBuilder builder, IConventionContext context)
     {
         builder.ConfigureRocketSurgery(context);
         return context;
@@ -347,5 +361,29 @@ public static class RocketWebAssemblyExtensions
         var b = func(innerBuilder);
         action?.Invoke(b);
         return builder;
+    }
+}
+
+internal class DefaultServiceProviderFactory : IServiceProviderFactory<IServiceCollection>
+{
+    private readonly IConventionServiceProviderFactory? _serviceProviderFactory;
+    private readonly IConventionContext _conventionContext;
+
+    public DefaultServiceProviderFactory(IConventionServiceProviderFactory? serviceProviderFactory, IConventionContext conventionContext)
+    {
+        _serviceProviderFactory = serviceProviderFactory;
+        _conventionContext = conventionContext;
+    }
+
+    public IServiceCollection CreateBuilder(IServiceCollection services)
+    {
+        return services;
+    }
+
+    public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
+    {
+        return _serviceProviderFactory == null
+            ? containerBuilder.BuildServiceProvider(_conventionContext.GetOrAdd(() => new ServiceProviderOptions()))
+            : _serviceProviderFactory.CreateServiceProvider(containerBuilder, _conventionContext);
     }
 }
