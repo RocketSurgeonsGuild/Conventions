@@ -70,6 +70,10 @@
                     "type": "string",
                     "description": "Root directory during build execution"
                 },
+                "Serve": {
+                    "type": "boolean",
+                    "description": "serve the docs"
+                },
                 "Skip": {
                     "type": "array",
                     "description": "List of targets to be skipped. Empty list skips all dependencies",
@@ -80,10 +84,12 @@
                             "BuildVersion",
                             "Clean",
                             "CoreBuild",
+                            "CoreDocs",
                             "CorePack",
                             "CoreRestore",
                             "CoreTest",
                             "Default",
+                            "Docs",
                             "DotnetToolRestore",
                             "Generate_Code_Coverage_Badges",
                             "Generate_Code_Coverage_Report",
@@ -117,10 +123,12 @@
                             "BuildVersion",
                             "Clean",
                             "CoreBuild",
+                            "CoreDocs",
                             "CorePack",
                             "CoreRestore",
                             "CoreTest",
                             "Default",
+                            "Docs",
                             "DotnetToolRestore",
                             "Generate_Code_Coverage_Badges",
                             "Generate_Code_Coverage_Report",
