@@ -33,6 +33,44 @@ public static class ConventionHostBuilderExtensions
     }
 
     /// <summary>
+    ///     Set the service provider factory to be used for hosting or other systems.
+    /// </summary>
+    /// <param name="container"></param>
+    /// <param name="serviceProviderFactory"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static ConventionContextBuilder UseServiceProviderFactory(
+        this ConventionContextBuilder container,
+        IConventionServiceProviderFactory serviceProviderFactory
+    )
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.Set(serviceProviderFactory);
+        return container;
+    }
+
+    /// <summary>
+    ///     Set the service provider factory to be used for hosting or other systems.
+    /// </summary>
+    /// <param name="container"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static ConventionContextBuilder UseServiceProviderFactory<T>(this ConventionContextBuilder container) where T : IConventionServiceProviderFactory
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.Properties.Add(typeof(IConventionServiceProviderFactory), typeof(T));
+        return container;
+    }
+
+    /// <summary>
     ///     Configure the services delegate to the convention scanner
     /// </summary>
     /// <param name="container">The container.</param>

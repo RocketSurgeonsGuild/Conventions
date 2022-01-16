@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -37,7 +36,7 @@ public class CommandLineBuilderTests : AutoFakeTest
         var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
         var builder = AutoFake.Resolve<ConventionContextBuilder>().UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-        Action a = () => { builder.PrependConvention(A.Fake<ICommandLineConvention>()); };
+        var a = () => { builder.PrependConvention(A.Fake<ICommandLineConvention>()); };
         a.Should().NotThrow();
         a = () => { builder.AppendConvention(A.Fake<ICommandLineConvention>()); };
         a.Should().NotThrow();
@@ -52,7 +51,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider))
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider))
                      .ConfigureCommandLine(
                           (conventionContext, lineContext) =>
                           {
@@ -69,7 +68,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -84,7 +83,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
 
         var service = A.Fake<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -118,7 +117,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
 
         builder.ConfigureCommandLine(
             (context, builder) => { builder.AddCommand<InjectionConstructor>("constructor"); }
@@ -139,7 +138,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
 
         builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
         var response = App.Create(ConventionContext.From(builder));
@@ -164,7 +163,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
 
         var service = A.Fake<IService2>();
         A.CallTo(() => service.SomeValue).Returns("Service2");
@@ -209,7 +208,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -230,7 +229,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -267,7 +266,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<ICommandAppServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, builder) =>
             {

@@ -3,19 +3,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
-class DefaultServiceProviderFactory : ICommandAppServiceProviderFactory
+internal class DefaultServiceProviderFactory : IConventionServiceProviderFactory
 {
     private readonly IServiceProvider? _serviceProvider;
 
     public DefaultServiceProviderFactory()
     {
-
     }
 
     public DefaultServiceProviderFactory(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
+
     public IServiceProvider CreateServiceProvider(IServiceCollection services, IConventionContext conventionContext)
     {
         services.ApplyConventions(conventionContext);

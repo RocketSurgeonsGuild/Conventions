@@ -197,7 +197,8 @@ public static class RocketHostExtensions
         builder
            .ConfigureHostConfiguration(host.ComposeHostingConvention)
            .ConfigureAppConfiguration(host.ConfigureAppConfiguration)
-           .ConfigureServices(host.ConfigureServices);
+           .ConfigureServices(host.ConfigureServices)
+           .UseServiceProviderFactory(host.UseServiceProviderFactory);
         builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
         builder.Properties[typeof(IHostBuilder)] = builder;
         return contextBuilder;
