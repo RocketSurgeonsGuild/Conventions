@@ -171,6 +171,15 @@ public partial class Solution
             }
         );
 
+        buildJob.Steps.Add(
+            new UploadArtifactStep("Publish Docs")
+            {
+                Name = "docs",
+                Path = "artifacts/docs/",
+                If = "always()"
+            }
+        );
+
         return configuration;
     }
 }
