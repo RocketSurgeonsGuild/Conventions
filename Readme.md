@@ -22,9 +22,11 @@
 | Rocket.Surgery.Conventions.Abstractions | [![nuget-version-jn19kbpg2y2w-badge]![nuget-downloads-jn19kbpg2y2w-badge]][nuget-jn19kbpg2y2w] |
 | Rocket.Surgery.Conventions.Analyzers | [![nuget-version-jni/w9zchasw-badge]![nuget-downloads-jni/w9zchasw-badge]][nuget-jni/w9zchasw] |
 | Rocket.Surgery.Conventions.Attributes | [![nuget-version-8tcrwi81s0tq-badge]![nuget-downloads-8tcrwi81s0tq-badge]][nuget-8tcrwi81s0tq] |
+| Rocket.Surgery.Conventions.Autofac | [![nuget-version-tfn88tvvpxea-badge]![nuget-downloads-tfn88tvvpxea-badge]][nuget-tfn88tvvpxea] |
 | Rocket.Surgery.Conventions.CommandLine | [![nuget-version-mx7urhisoegw-badge]![nuget-downloads-mx7urhisoegw-badge]][nuget-mx7urhisoegw] |
 | Rocket.Surgery.Conventions.DependencyModel | [![nuget-version-9pbq5cbbcf5g-badge]![nuget-downloads-9pbq5cbbcf5g-badge]][nuget-9pbq5cbbcf5g] |
 | Rocket.Surgery.Conventions.Diagnostics | [![nuget-version-uqjej4fzhhvg-badge]![nuget-downloads-uqjej4fzhhvg-badge]][nuget-uqjej4fzhhvg] |
+| Rocket.Surgery.Conventions.DryIoc | [![nuget-version-ej1qdci5w77w-badge]![nuget-downloads-ej1qdci5w77w-badge]][nuget-ej1qdci5w77w] |
 | Rocket.Surgery.Hosting | [![nuget-version-haidmu8p33tw-badge]![nuget-downloads-haidmu8p33tw-badge]][nuget-haidmu8p33tw] |
 | Rocket.Surgery.Hosting.Abstractions | [![nuget-version-be0yledvjjja-badge]![nuget-downloads-be0yledvjjja-badge]][nuget-be0yledvjjja] |
 | Rocket.Surgery.Web.Hosting | [![nuget-version-mklhafvzne9g-badge]![nuget-downloads-mklhafvzne9g-badge]][nuget-mklhafvzne9g] |
@@ -58,6 +60,9 @@ TBD
 [nuget-8tcrwi81s0tq]: https://www.nuget.org/packages/Rocket.Surgery.Conventions.Attributes/
 [nuget-version-8tcrwi81s0tq-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.Attributes.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
 [nuget-downloads-8tcrwi81s0tq-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.Attributes.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
+[nuget-tfn88tvvpxea]: https://www.nuget.org/packages/Rocket.Surgery.Conventions.Autofac/
+[nuget-version-tfn88tvvpxea-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.Autofac.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
+[nuget-downloads-tfn88tvvpxea-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.Autofac.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
 [nuget-mx7urhisoegw]: https://www.nuget.org/packages/Rocket.Surgery.Conventions.CommandLine/
 [nuget-version-mx7urhisoegw-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.CommandLine.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
 [nuget-downloads-mx7urhisoegw-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.CommandLine.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
@@ -67,6 +72,9 @@ TBD
 [nuget-uqjej4fzhhvg]: https://www.nuget.org/packages/Rocket.Surgery.Conventions.Diagnostics/
 [nuget-version-uqjej4fzhhvg-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.Diagnostics.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
 [nuget-downloads-uqjej4fzhhvg-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.Diagnostics.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
+[nuget-ej1qdci5w77w]: https://www.nuget.org/packages/Rocket.Surgery.Conventions.DryIoc/
+[nuget-version-ej1qdci5w77w-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Conventions.DryIoc.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
+[nuget-downloads-ej1qdci5w77w-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Conventions.DryIoc.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"
 [nuget-haidmu8p33tw]: https://www.nuget.org/packages/Rocket.Surgery.Hosting/
 [nuget-version-haidmu8p33tw-badge]: https://img.shields.io/nuget/v/Rocket.Surgery.Hosting.svg?color=004880&logo=nuget&style=flat-square "NuGet Version"
 [nuget-downloads-haidmu8p33tw-badge]: https://img.shields.io/nuget/dt/Rocket.Surgery.Hosting.svg?color=004880&logo=nuget&style=flat-square "NuGet Downloads"

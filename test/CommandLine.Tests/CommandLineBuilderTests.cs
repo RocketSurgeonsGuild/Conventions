@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
@@ -51,7 +52,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider))
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider))
                      .ConfigureCommandLine(
                           (conventionContext, lineContext) =>
                           {
@@ -68,7 +69,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -83,7 +84,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
 
         var service = A.Fake<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -117,7 +118,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
 
         builder.ConfigureCommandLine(
             (context, builder) => { builder.AddCommand<InjectionConstructor>("constructor"); }
@@ -138,7 +139,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
 
         builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
         var response = App.Create(ConventionContext.From(builder));
@@ -163,7 +164,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
 
         var service = A.Fake<IService2>();
         A.CallTo(() => service.SomeValue).Returns("Service2");
@@ -208,7 +209,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -229,7 +230,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -266,7 +267,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .Set<IConventionServiceProviderFactory>(new DefaultServiceProviderFactory(ServiceProvider));
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
         builder.ConfigureCommandLine(
             (context, builder) =>
             {
@@ -361,5 +362,25 @@ public class CommandLineBuilderTests : AutoFakeTest
 
     public CommandLineBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
     {
+    }
+}
+
+internal class TestServiceProviderFactory : IServiceProviderFactory<IServiceCollection>
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    public TestServiceProviderFactory(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public IServiceCollection CreateBuilder(IServiceCollection services)
+    {
+        return services;
+    }
+
+    public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
+    {
+        return _serviceProvider;
     }
 }

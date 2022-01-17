@@ -1,4 +1,3 @@
-#if NET6_0_OR_GREATER
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
@@ -100,31 +99,8 @@ internal class RocketContext
         _webApplicationBuilder.Logging.ApplyConventions(_context);
     }
 
-    public void UseServiceProviderFactory()
+    public IServiceProviderFactory<object> UseServiceProviderFactory()
     {
-        _webApplicationBuilder.Host.UseServiceProviderFactory(
-            context =>
-            {
-                IConventionServiceProviderFactory? factory = null;
-                if (context.Properties.TryGetValue(typeof(IConventionContext), out var conventionContextObject)
-                 && conventionContextObject is IConventionContext conventionContext)
-                {
-                    if (conventionContext.Properties.TryGetValue(typeof(IConventionServiceProviderFactory), out var factoryObject))
-                    {
-                        if (factoryObject is Type factoryType)
-                        {
-                            factory = ActivatorUtilities.CreateInstance(conventionContext.Properties, factoryType) as IConventionServiceProviderFactory;
-                        }
-                        else if (factoryObject is IConventionServiceProviderFactory factoryInstance)
-                        {
-                            factory = factoryInstance;
-                        }
-                    }
-                }
-
-                return new DefaultServiceProviderFactory(factory, _context);
-            }
-        );
+        return ConventionServiceProviderFactory.Wrap(_context, false);
     }
 }
-#endif

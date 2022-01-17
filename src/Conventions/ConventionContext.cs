@@ -27,7 +27,8 @@ public sealed class ConventionContext : IConventionContext
         var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
         var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
-        return new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties.ToDictionary(z => z.Key, z => z.Value));
+        builder.Properties.Set(builder._serviceProviderFactory);
+        return new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
     }
 
     /// <summary>
@@ -43,14 +44,14 @@ public sealed class ConventionContext : IConventionContext
         IConventionProvider conventionProvider,
         IAssemblyProvider assemblyProvider,
         IAssemblyCandidateFinder assemblyCandidateFinder,
-        IDictionary<object, object?> properties
+        IServiceProviderDictionary properties
     )
     {
         _builder = builder;
         Conventions = conventionProvider;
         AssemblyProvider = assemblyProvider;
         AssemblyCandidateFinder = assemblyCandidateFinder;
-        Properties = new ServiceProviderDictionary(properties);
+        Properties = properties;
 
         this.ApplyConventions();
     }
@@ -96,9 +97,8 @@ public sealed class ConventionContext : IConventionContext
     public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
 
     /// <summary>
-    /// Return the source builder for this context (to create new contexts if required).
-    ///
-    /// Avoid doing this unless you absolutely need to.
+    ///     Return the source builder for this context (to create new contexts if required).
+    ///     Avoid doing this unless you absolutely need to.
     /// </summary>
     /// <returns></returns>
     public ConventionContextBuilder ToBuilder()

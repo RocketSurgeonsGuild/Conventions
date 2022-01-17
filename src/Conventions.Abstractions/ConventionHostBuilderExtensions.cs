@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Adapters;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
@@ -39,17 +40,17 @@ public static class ConventionHostBuilderExtensions
     /// <param name="serviceProviderFactory"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static ConventionContextBuilder UseServiceProviderFactory(
+    public static ConventionContextBuilder UseServiceProviderFactory<TContainerBuilder>(
         this ConventionContextBuilder container,
-        IConventionServiceProviderFactory serviceProviderFactory
-    )
+        IServiceProviderFactory<TContainerBuilder> serviceProviderFactory
+    ) where TContainerBuilder : notnull
     {
         if (container == null)
         {
             throw new ArgumentNullException(nameof(container));
         }
 
-        container.Set(serviceProviderFactory);
+        container._serviceProviderFactory = x => new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory);
         return container;
     }
 
@@ -57,16 +58,20 @@ public static class ConventionHostBuilderExtensions
     ///     Set the service provider factory to be used for hosting or other systems.
     /// </summary>
     /// <param name="container"></param>
+    /// <param name="serviceProviderFactory"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static ConventionContextBuilder UseServiceProviderFactory<T>(this ConventionContextBuilder container) where T : IConventionServiceProviderFactory
+    public static ConventionContextBuilder UseServiceProviderFactory<TContainerBuilder>(
+        this ConventionContextBuilder container,
+        Func<IConventionContext, IServiceProviderFactory<TContainerBuilder>> serviceProviderFactory
+    ) where TContainerBuilder : notnull
     {
         if (container == null)
         {
             throw new ArgumentNullException(nameof(container));
         }
 
-        container.Properties.Add(typeof(IConventionServiceProviderFactory), typeof(T));
+        container._serviceProviderFactory = x => new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory(x));
         return container;
     }
 

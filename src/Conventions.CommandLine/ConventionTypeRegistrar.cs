@@ -33,25 +33,9 @@ internal class ConventionTypeRegistrar : ITypeRegistrar
     public ITypeResolver Build()
     {
         _services.AddSingleton(_conventionContext.Get<IConfiguration>());
-        IConventionServiceProviderFactory? factory = null;
-        if (_conventionContext.Properties.TryGetValue(typeof(IConventionServiceProviderFactory), out var factoryObject))
-        {
-            if (factoryObject is Type factoryType)
-            {
-                factory = ActivatorUtilities.CreateInstance(_conventionContext.Properties, factoryType) as IConventionServiceProviderFactory;
-            }
-            else if (factoryObject is IConventionServiceProviderFactory factoryInstance)
-            {
-                factory = factoryInstance;
-            }
-        }
 
-        if (factory == null)
-        {
-            factory = new DefaultServiceProviderFactory();
-        }
-
-        _conventionContext.Set(factory);
-        return new ConventionTypeResolver(factory.CreateServiceProvider(_services, _conventionContext));
+        var factory = ConventionServiceProviderFactory.From(_conventionContext);
+        var provider = factory.CreateServiceProvider(factory.CreateBuilder(_services));
+        return new ConventionTypeResolver(provider);
     }
 }

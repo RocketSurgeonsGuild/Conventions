@@ -18,7 +18,7 @@ public class ConventionContextTests : AutoFakeTest
     public void Constructs()
     {
         var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?> { [typeof(IConvention)] = new AbcConvention() });
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary { [typeof(IConvention)] = new AbcConvention() });
         var servicesBuilder = AutoFake.Resolve<ConventionContext>();
 
         servicesBuilder.AssemblyProvider.Should().BeSameAs(assemblyProvider);
@@ -29,7 +29,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ReturnsNullOfNoValue()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var container = AutoFake.Resolve<ConventionContext>();
         container[typeof(string)].Should().BeNull();
     }
@@ -38,7 +38,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void SetAValue()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var container = AutoFake.Resolve<ConventionContext>();
         container[typeof(string)] = "abc";
         container[typeof(string)].Should().Be("abc");
@@ -47,7 +47,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void StoresAndReturnsItems()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var servicesBuilder = AutoFake.Resolve<ConventionContext>();
 
         var value = new object();
@@ -67,7 +67,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void GetAStronglyTypedValue()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var container = AutoFake.Resolve<ConventionContext>();
         container[typeof(string)] = "abc";
         container.Get<string>().Should().Be("abc");
@@ -76,7 +76,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void SetAStronglyTypedValue()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var container = AutoFake.Resolve<ConventionContext>();
         container.Set("abc");
         container.Get<string>().Should().Be("abc");
@@ -85,7 +85,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void AddConventions()
     {
-        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>());
+        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary());
         var convention = A.Fake<IServiceConvention>();
         contextBuilder.PrependConvention(convention);
 
@@ -95,7 +95,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void Setups()
     {
-        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>())
+        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
            .UseAssemblies(Array.Empty<Assembly>());
         var convention = A.Fake<ISetupConvention>();
         contextBuilder.PrependConvention(convention);
@@ -107,7 +107,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void Setups_With_Delegate()
     {
-        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>())
+        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
            .UseAssemblies(Array.Empty<Assembly>());
         var convention = A.Fake<SetupConvention>();
         contextBuilder.SetupConvention(convention);
@@ -119,7 +119,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
-        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>())
+        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
                             .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = ConventionContext.From(contextBuilder);
@@ -139,7 +139,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
-        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>())
+        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
                             .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = ConventionContext.From(contextBuilder);
@@ -160,7 +160,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
-        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>())
+        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
                             .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = ConventionContext.From(contextBuilder);
@@ -179,7 +179,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var builder = AutoFake.Resolve<ConventionContextBuilder>().UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                               .AppendConvention(new AbcConvention());
         builder.Set<IConfiguration>(new ConfigurationBuilder().Build());
@@ -196,7 +196,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ShouldConstructTheConventionInjectingTheValues()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
         var builder = AutoFake.Resolve<ConventionContextBuilder>()
                               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
@@ -211,7 +211,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ShouldConstructTheConventionInjectingTheValuesIfOptional()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
         var builder = AutoFake.Resolve<ConventionContextBuilder>()
                               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
@@ -226,7 +226,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var builder = AutoFake.Resolve<ConventionContextBuilder>()
                               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                               .AppendConvention<InjectableConvention>()
@@ -238,7 +238,7 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public void ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new Dictionary<object, object?>());
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var builder = AutoFake.Resolve<ConventionContextBuilder>()
                               .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                               .AppendConvention<OptionalInjectableConvention>()
