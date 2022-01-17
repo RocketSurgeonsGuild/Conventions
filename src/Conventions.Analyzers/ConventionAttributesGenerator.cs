@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -13,34 +14,117 @@ namespace Rocket.Surgery.Conventions;
 ///     Generator to handle materializing conventions as code instead of loading them at runtime
 /// </summary>
 [Generator]
-public class ConventionAttributesGenerator : ISourceGenerator
+public class ConventionAttributesGenerator : IIncrementalGenerator
 {
-    /// <inheritdoc />
-    public void Initialize(GeneratorInitializationContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(() => new ConventionAttributeSyntaxReceiver());
-    }
+        var exportCandidates = context
+                              .SyntaxProvider
+                              .CreateSyntaxProvider(
+                                   static (node, token) =>
+                                   {
+                                       return node is AttributeListSyntax { Target.Identifier.RawKind: (int)SyntaxKind.AssemblyKeyword } attributeListSyntax
+                                           && attributeListSyntax.Attributes.Any(
+                                                  z => z.Name.ToFullString().TrimEnd().EndsWith("Convention", StringComparison.Ordinal)
+                                              );
+                                   },
+                                   static (syntaxContext, token) =>
+                                       syntaxContext.Node is AttributeListSyntax attributeListSyntax
+                                           ? ( attributeListSyntax, syntaxContext.SemanticModel )
+                                           : default
+                               )
+                              .Combine(context.CompilationProvider)
+                              .Select(
+                                   (z, token) =>
+                                   {
+                                       var (attributeListSyntax, model) = z.Left;
+                                       var compilation = z.Right;
+                                       var conventionAttribute = z.Right.GetTypeByMetadataName("Rocket.Surgery.Conventions.ConventionAttribute")!;
+                                       return ( attributeListSyntax, model, compilation, conventionAttribute );
+                                   }
+                               )
+                              .Where(z => z.conventionAttribute != null)
+                              .SelectMany((z, _) => GetExportedConventions(z.attributeListSyntax, z.model, z.compilation, z.conventionAttribute!))
+                              .WithComparer(SymbolEqualityComparer.Default);
+        ;
+        var exportedConventions = context
+                                 .SyntaxProvider
+                                 .CreateSyntaxProvider(
+                                      static (node, token) =>
+                                      {
+                                          return node is TypeDeclarationSyntax baseType and (ClassDeclarationSyntax or RecordDeclarationSyntax)
+                                              && baseType.AttributeLists.Any(
+                                                     z => z.Target is null or { Identifier: { RawKind: (int)SyntaxKind.ClassKeyword } }
+                                                       && z.Attributes.Any(
+                                                              c => c.Name.ToFullString().TrimEnd().EndsWith("ExportConvention", StringComparison.Ordinal)
+                                                                || c.Name.ToFullString().TrimEnd().EndsWith(
+                                                                       "ExportConventionAttribute", StringComparison.Ordinal
+                                                                   )
+                                                          )
+                                                 );
+                                      },
+                                      static (syntaxContext, token) => syntaxContext.Node is TypeDeclarationSyntax baseType
+                                          ? ( baseType, syntaxContext.SemanticModel )
+                                          : default
+                                  )
+                                 .SelectMany((z, _) => GetExportedConventions(z.baseType, z.SemanticModel))
+                                 .WithComparer(SymbolEqualityComparer.Default);
 
-    /// <inheritdoc />
-    public void Execute(GeneratorExecutionContext context)
-    {
-        if (!( context.SyntaxReceiver is ConventionAttributeSyntaxReceiver syntaxReceiver ))
-        {
-            return;
-        }
+        var combinedExports = exportCandidates.Collect()
+                                              .Combine(exportedConventions.Collect())
+                                              .SelectMany(
+                                                   (tuple, token) =>
+                                                       tuple.Left.AddRange(tuple.Right).Distinct(SymbolEqualityComparer.Default).OfType<INamedTypeSymbol>()
+                                               )
+                                              .WithComparer(SymbolEqualityComparer.Default);
 
-        var compliation = ( context.Compilation as CSharpCompilation )!;
-        var hasExports = false;
+        context.RegisterSourceOutput(
+            context.CompilationProvider
+                   .Select((compilation, token) => ConventionAttributeData.Create(GetNamespaceForCompilation(compilation), compilation))
+                   .Combine(combinedExports.Collect())
+                   .Combine(exportedConventions.Collect())
+                   .Select((z, token) => ( data: z.Left.Left, conventions: z.Left.Right, exportedConventions: z.Right )),
+            static (productionContext, tuple) => HandleConventionExports(productionContext, tuple.data, tuple.conventions, tuple.exportedConventions)
+        );
 
-        if (syntaxReceiver.ExportCandidates.Count > 0 || syntaxReceiver.ExportedConventions.Count > 0)
-        {
-            hasExports = HandleConventionExports(context, compliation, syntaxReceiver.ExportCandidates, syntaxReceiver.ExportedConventions);
-        }
-
-        if (syntaxReceiver.ImportCandidates.Count > 0)
-        {
-            HandleConventionImports(context, compliation, syntaxReceiver.ImportCandidates, hasExports);
-        }
+        var importCandidates = context
+                              .SyntaxProvider
+                              .CreateSyntaxProvider(
+                                   static (node, token) =>
+                                   {
+                                       return (
+                                                  node is AttributeListSyntax attributeListSyntax
+                                               && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
+                                               && attributeListSyntax.Attributes.Any(
+                                                      z => z.Name.ToFullString().TrimEnd().EndsWith("ImportConventions", StringComparison.OrdinalIgnoreCase)
+                                                        || z.Name.ToFullString().TrimEnd().EndsWith(
+                                                               "ImportConventionsAttribute", StringComparison.OrdinalIgnoreCase
+                                                           )
+                                                  )
+                                              )
+                                            ||
+                                              (
+                                                  node is ClassDeclarationSyntax classDeclarationSyntax
+                                               && classDeclarationSyntax.AttributeLists.SelectMany(z => z.Attributes)
+                                                                        .Any(
+                                                                             z => z.Name.ToFullString().TrimEnd().EndsWith(
+                                                                                      "ImportConventions", StringComparison.OrdinalIgnoreCase
+                                                                                  )
+                                                                               || z.Name.ToFullString().TrimEnd().EndsWith(
+                                                                                      "ImportConventionsAttribute", StringComparison.OrdinalIgnoreCase
+                                                                                  )
+                                                                         )
+                                              );
+                                   },
+                                   static (syntaxContext, token) => syntaxContext.Node
+                               );
+        context.RegisterSourceOutput(
+            context.CompilationProvider
+                   .Combine(importCandidates.Collect())
+                   .Combine(combinedExports.Collect())
+                   .Select((z, token) => ( compilation: z.Left.Left, hasExports: z.Right.Any(), exportedCandidates: z.Left.Right )),
+            static (productionContext, tuple) => HandleConventionImports(productionContext, tuple.compilation, tuple.exportedCandidates, tuple.hasExports)
+        );
     }
 
     private static string GetNamespaceForCompilation(Compilation compilation)
@@ -50,7 +134,7 @@ public class ConventionAttributesGenerator : ISourceGenerator
     }
 
     private static void HandleConventionImports(
-        GeneratorExecutionContext context, CSharpCompilation compilation, IReadOnlyCollection<SyntaxNode> importCandidates, bool hasExports
+        SourceProductionContext context, Compilation compilation, ImmutableArray<SyntaxNode> importCandidates, bool hasExports
     )
     {
         IReadOnlyCollection<string>? references = null;
@@ -105,7 +189,7 @@ public class ConventionAttributesGenerator : ISourceGenerator
             );
         }
 
-        static void addAssemblySource(GeneratorExecutionContext context, string @namespace, BlockSyntax syntax)
+        static void addAssemblySource(SourceProductionContext context, string @namespace, BlockSyntax syntax)
         {
             var cu = CompilationUnit()
                     .WithUsings(
@@ -132,7 +216,9 @@ public class ConventionAttributesGenerator : ISourceGenerator
                                                  )
                                              )
                                             .WithModifiers(
-                                                 TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword))
+                                                 TokenList(
+                                                     Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)
+                                                 )
                                              )
                                             .WithMembers(createConventionsMemberDeclaration(syntax))
                                      )
@@ -147,12 +233,12 @@ public class ConventionAttributesGenerator : ISourceGenerator
             );
         }
 
-        static IReadOnlyCollection<string> getReferences(CSharpCompilation compilation, bool exports)
+        static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports)
         {
             return compilation.References
                               .Select(compilation.GetAssemblyOrModuleSymbol)
                               .OfType<IAssemblySymbol>()
-                               // __ for backwards compatiblity
+                               // __ for backwards compatibility
                               .Where(z => z.TypeNames.Contains("__exports__") || z.TypeNames.Contains("Exports"))
                               .Select(
                                    symbol => (
@@ -206,35 +292,14 @@ public class ConventionAttributesGenerator : ISourceGenerator
         }
     }
 
-    private static bool HandleConventionExports(
-        GeneratorExecutionContext context,
-        CSharpCompilation compilation,
-        IReadOnlyCollection<AttributeListSyntax> exportCandidates,
-        List<TypeDeclarationSyntax> exportedCandidates
+    private static void HandleConventionExports(
+        SourceProductionContext context,
+        ConventionAttributeData data,
+        ImmutableArray<INamedTypeSymbol> conventions,
+        ImmutableArray<INamedTypeSymbol> exportedConventions
     )
     {
-        var conventions = exportCandidates
-                         .SelectMany(candidate => GetExportedConventions(context, candidate))
-                         .Concat(
-                              exportedCandidates
-                                 .SelectMany(candidate => GetExportedConventions(context, candidate))
-                          )
-                         .Distinct(SymbolEqualityComparer.Default)
-                         .OfType<INamedTypeSymbol>()
-                         .ToArray();
-
-        if (!conventions.Any())
-            return false;
-
-        var @namespace = GetNamespaceForCompilation(context.Compilation);
-
-        var liveConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.LiveConventionAttribute")!;
-        var exportConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.ExportConventionAttribute")!;
-        var unitTestConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.UnitTestConventionAttribute")!;
-        var afterConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.AfterConventionAttribute")!;
-        var dependsOnConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.DependsOnConventionAttribute")!;
-        var beforeConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.BeforeConventionAttribute")!;
-        var dependentOfConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.DependentOfConventionAttribute")!;
+        if (!conventions.Any()) return;
 
         var helperClassBody = Block();
 
@@ -278,8 +343,8 @@ public class ConventionAttributesGenerator : ISourceGenerator
             {
                 if (attributeData.AttributeClass == null)
                     continue;
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, beforeConventionAttribute)
-                 || SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, dependentOfConventionAttribute))
+                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.BeforeConventionAttribute)
+                 || SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.DependentOfConventionAttribute))
                 {
                     // throw diagnostic if this is wrong?
                     if (attributeData.ConstructorArguments.Length is 1 && attributeData.ConstructorArguments[0].Kind == TypedConstantKind.Type
@@ -289,8 +354,8 @@ public class ConventionAttributesGenerator : ISourceGenerator
                     }
                 }
 
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, afterConventionAttribute)
-                 || SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, dependsOnConventionAttribute))
+                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.AfterConventionAttribute)
+                 || SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.DependsOnConventionAttribute))
                 {
                     // throw diagnostic if this is wrong?
                     if (attributeData.ConstructorArguments.Length is 1 && attributeData.ConstructorArguments[0].Kind == TypedConstantKind.Type
@@ -300,12 +365,12 @@ public class ConventionAttributesGenerator : ISourceGenerator
                     }
                 }
 
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, unitTestConventionAttribute))
+                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.UnitTestConventionAttribute))
                 {
                     hostType = HostTypeUnitTestHost;
                 }
 
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, liveConventionAttribute))
+                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LiveConventionAttribute))
                 {
                     hostType = HostTypeLive;
                 }
@@ -356,11 +421,13 @@ public class ConventionAttributesGenerator : ISourceGenerator
 
 
         var helperClass =
-                NamespaceDeclaration(ParseName(@namespace)).WithMembers(
+                NamespaceDeclaration(ParseName(data.Namespace)).WithMembers(
                     SingletonList<MemberDeclarationSyntax>(
                         ClassDeclaration("Exports")
                            .WithAttributeLists(
-                                SingletonList(AttributeList(SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated")))))
+                                SingletonList(
+                                    AttributeList(SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated"))))
+                                )
                             )
                            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
                            .WithMembers(
@@ -418,34 +485,32 @@ public class ConventionAttributesGenerator : ISourceGenerator
                  )
                 .WithMembers(SingletonList<MemberDeclarationSyntax>(helperClass));
 
-        if (exportedCandidates.Count > 0)
+        if (exportedConventions.Length > 0)
         {
             cu = cu.AddAttributeLists(
-                exportedCandidates
-                   .SelectMany(candidate => GetExportedConventions(context, candidate))
-                   .Select(
-                        candidate => AttributeList(
-                                SingletonSeparatedList(
-                                    Attribute(IdentifierName("Convention"))
-                                       .WithArgumentList(
-                                            AttributeArgumentList(
-                                                SingletonSeparatedList(
-                                                    AttributeArgument(
-                                                        TypeOfExpression(
-                                                            ParseName(candidate.ToDisplayString())
-                                                        )
+                exportedConventions.Select(
+                    candidate => AttributeList(
+                            SingletonSeparatedList(
+                                Attribute(IdentifierName("Convention"))
+                                   .WithArgumentList(
+                                        AttributeArgumentList(
+                                            SingletonSeparatedList(
+                                                AttributeArgument(
+                                                    TypeOfExpression(
+                                                        ParseName(candidate.ToDisplayString())
                                                     )
                                                 )
                                             )
                                         )
-                                )
+                                    )
                             )
-                           .WithTarget(
-                                AttributeTargetSpecifier(
-                                    Token(SyntaxKind.AssemblyKeyword)
-                                )
+                        )
+                       .WithTarget(
+                            AttributeTargetSpecifier(
+                                Token(SyntaxKind.AssemblyKeyword)
                             )
-                    ).ToArray()
+                        )
+                ).ToArray()
             );
         }
 
@@ -453,8 +518,6 @@ public class ConventionAttributesGenerator : ISourceGenerator
             "Exported_Conventions.cs",
             cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
         );
-
-        return true;
     }
 
     private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorExecutionContext context, BaseTypeDeclarationSyntax declarationSyntax)
@@ -487,6 +550,37 @@ public class ConventionAttributesGenerator : ISourceGenerator
 
             yield return context.Compilation.GetTypeByMetadataName(GetFullMetadataName(symbol.Type))!;
         }
+    }
+
+    private static IEnumerable<INamedTypeSymbol> GetExportedConventions(
+        AttributeListSyntax attributeListSyntax, SemanticModel model, Compilation compilation, INamedTypeSymbol conventionAttribute
+    )
+    {
+        foreach (var attribute in attributeListSyntax.Attributes)
+        {
+            if (attribute.ArgumentList == null || attribute.ArgumentList.Arguments.Count is 0 or > 1)
+                continue;
+
+            var nameInfo = model.GetTypeInfo(attribute.Name);
+            if (nameInfo.Type?.ToDisplayString() != conventionAttribute.ToDisplayString())
+                continue;
+
+            var arg = attribute.ArgumentList.Arguments.Single();
+            if (!( arg.Expression is TypeOfExpressionSyntax typeOfExpressionSyntax ))
+                continue;
+
+            var symbol = model.GetTypeInfo(typeOfExpressionSyntax.Type);
+            if (symbol.Type == null)
+                continue;
+
+            yield return compilation.GetTypeByMetadataName(GetFullMetadataName(symbol.Type))!;
+        }
+    }
+
+    private static IEnumerable<INamedTypeSymbol> GetExportedConventions(BaseTypeDeclarationSyntax declarationSyntax, SemanticModel model)
+    {
+        if (model.GetDeclaredSymbol(declarationSyntax) is { } symbol)
+            yield return symbol;
     }
 
 

@@ -44,7 +44,7 @@ public static class GenerationHelpers
     internal static readonly ImmutableArray<PortableExecutableReference> MetadataReferences;
 
     public static async Task AssertGeneratedAsExpected<T>(IEnumerable<Assembly> metadataReferences, string source, string expected)
-        where T : ISourceGenerator, new()
+        where T : new()
     {
         var generatedTree = await GenerateAsync<T>(new[] { source }, metadataReferences).ConfigureAwait(false);
         // normalize line endings to just LF
@@ -55,7 +55,7 @@ public static class GenerationHelpers
     }
 
     public static async Task AssertGeneratedAsExpected<T>(IEnumerable<Assembly> metadataReferences, IEnumerable<string> sources, IEnumerable<string> expected)
-        where T : ISourceGenerator, new()
+        where T : new()
     {
         var generatedTree = await GenerateAsync<T>(sources, metadataReferences).ConfigureAwait(false);
         // normalize line endings to just LF
@@ -71,7 +71,7 @@ public static class GenerationHelpers
     }
 
     public static async Task AssertGeneratedAsExpected<T>(string source, string expected)
-        where T : ISourceGenerator, new()
+        where T : new()
     {
         var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>()).ConfigureAwait(false);
         // normalize line endings to just LF
@@ -82,7 +82,7 @@ public static class GenerationHelpers
     }
 
     public static async Task<string> Generate<T>(IEnumerable<Assembly> metadataReferences, string source)
-        where T : ISourceGenerator, new()
+        where T : new()
     {
         var generatedTree = await GenerateAsync<T>(new[] { source }, metadataReferences).ConfigureAwait(false);
         // normalize line endings to just LF
@@ -92,7 +92,7 @@ public static class GenerationHelpers
     }
 
     public static async Task<string[]> Generate<T>(IEnumerable<Assembly> metadataReferences, IEnumerable<string> sources)
-        where T : ISourceGenerator, new()
+        where T : new()
     {
         var generatedTree = await GenerateAsync<T>(sources, metadataReferences).ConfigureAwait(false);
         // normalize line endings to just LF
@@ -102,7 +102,7 @@ public static class GenerationHelpers
     }
 
     public static async Task<string> Generate<T>(string source)
-        where T : ISourceGenerator, new()
+        where T : new()
     {
         var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>()).ConfigureAwait(false);
         // normalize line endings to just LF
@@ -111,13 +111,8 @@ public static class GenerationHelpers
         return generatedText.Last();
     }
 
-    public static string NormalizeToLf(string input)
-    {
-        return input.Replace(CrLf, Lf);
-    }
-
     public static async Task<IEnumerable<SyntaxTree>> GenerateAsync<T>(IEnumerable<string> sources, IEnumerable<Assembly> metadataReferences)
-        where T : ISourceGenerator, new()
+        where T : new()
     {
         var references = metadataReferences
                         .Concat(
@@ -145,9 +140,11 @@ public static class GenerationHelpers
         var diagnostics = compilation.GetDiagnostics();
         Assert.Empty(diagnostics.Where(x => x.Severity >= DiagnosticSeverity.Warning));
 
-        ISourceGenerator generator = new T();
-
-        var driver = CSharpGeneratorDriver.Create(generator);
+        var generator = new T();
+        var driver =
+            generator is ISourceGenerator sourceGenerator ? CSharpGeneratorDriver.Create(sourceGenerator) :
+            generator is IIncrementalGenerator incrementalGenerator ? CSharpGeneratorDriver.Create(incrementalGenerator) :
+            throw new NotSupportedException("Generator type not supported");
 
         driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out diagnostics);
         // Assert.Empty(diagnostics.Where(x => x.Severity >= DiagnosticSeverity.Warning));
@@ -188,5 +185,10 @@ public static class GenerationHelpers
         }
 
         return project;
+    }
+
+    public static string NormalizeToLf(string input)
+    {
+        return input.Replace(CrLf, Lf);
     }
 }
