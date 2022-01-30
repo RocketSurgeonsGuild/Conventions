@@ -395,11 +395,11 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ConventionConfigurationData configurationData)
         {
             return compilation.References
-                              .Select(x => compilation.GetAssemblyOrModuleSymbol(x))
+                              .Select(compilation.GetAssemblyOrModuleSymbol)
+                              .OfType<IAssemblySymbol>()
                               .Select(
-                                   s =>
+                                   symbol =>
                                    {
-                                       if (s is not IAssemblySymbol symbol) return "";
                                        try
                                        {
                                            var data = ConventionConfigurationData.FromAssemblyAttributes(symbol, "Exports");
