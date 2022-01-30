@@ -26,7 +26,7 @@ internal class RocketContext
         _hostBuilder = hostBuilder;
     }
 
-    public IConventionContext ConventionContext => (IConventionContext)_hostBuilder.Properties[typeof(IConventionContext)];
+    public IConventionContext Context => (IConventionContext)_hostBuilder.Properties[typeof(IConventionContext)];
 
     /// <summary>
     ///     Construct and compose hosting conventions
@@ -39,9 +39,9 @@ internal class RocketContext
             throw new KeyNotFoundException($"Could not find {nameof(ConventionContextBuilder)}");
 
         var conventionContextBuilder = (ConventionContextBuilder)conventionContextBuilderObject!;
-        var contextObject = Conventions.ConventionContext.From(conventionContextBuilder);
+        var contextObject = ConventionContext.From(conventionContextBuilder);
         _hostBuilder.Properties[typeof(IConventionContext)] = contextObject;
-        _hostBuilder.ApplyConventions(ConventionContext);
+        _hostBuilder.ApplyConventions(Context);
     }
 
     /// <summary>
@@ -64,9 +64,9 @@ internal class RocketContext
             throw new ArgumentNullException(nameof(configurationBuilder));
         }
 
-        ConventionContext.Properties.AddIfMissing(context.HostingEnvironment);
+        Context.Properties.AddIfMissing(context.HostingEnvironment);
         configurationBuilder.UseLocalConfiguration(
-            ConventionContext.GetOrAdd(() => new ConfigOptions()).UseEnvironment(context.HostingEnvironment.EnvironmentName)
+            Context.GetOrAdd(() => new ConfigOptions()).UseEnvironment(context.HostingEnvironment.EnvironmentName)
         );
 
         // Insert after all the normal configuration but before the environment specific configuration
@@ -94,7 +94,7 @@ internal class RocketContext
             ? configurationBuilder.Sources.Count - 1
             : configurationBuilder.Sources.IndexOf(source);
 
-        var cb = new ConfigurationBuilder().ApplyConventions(ConventionContext, configurationBuilder.Build());
+        var cb = new ConfigurationBuilder().ApplyConventions(Context, configurationBuilder.Build());
 
         configurationBuilder.Sources.Insert(
             index + 1,
@@ -123,14 +123,14 @@ internal class RocketContext
             throw new ArgumentNullException(nameof(services));
         }
 
-        ConventionContext.Properties.AddIfMissing(context.Configuration);
+        Context.Properties.AddIfMissing(context.Configuration);
 
-        services.ApplyConventions(ConventionContext);
-        new LoggingBuilder(services).ApplyConventions(ConventionContext);
+        services.ApplyConventions(Context);
+        new LoggingBuilder(services).ApplyConventions(Context);
     }
 
     public IServiceProviderFactory<object> UseServiceProviderFactory(HostBuilderContext context)
     {
-        return ConventionServiceProviderFactory.Wrap(ConventionContext, false);
+        return ConventionServiceProviderFactory.Wrap(Context, false);
     }
 }

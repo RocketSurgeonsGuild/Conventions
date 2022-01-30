@@ -1,6 +1,3 @@
-using Sample.DependencyOne;
-using Sample.DependencyThree;
-using Sample.DependencyTwo;
 using Xunit;
 using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
@@ -28,12 +25,20 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""TestProject.Conventions"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
 namespace TestProject.Conventions
 {
+    /// <summary>
+    /// The class defined for exporting conventions from this assembly
+    /// </summary>
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
     {
+        /// <summary>
+        /// The conventions exports from this assembly
+        /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
@@ -43,9 +48,10 @@ namespace TestProject.Conventions
 ";
 
         await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            await CreateDeps(),
             source,
-            expected
+            expected,
+            "Exported_Conventions.cs"
         ).ConfigureAwait(false);
     }
 
@@ -67,13 +73,21 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""TestProject.Conventions"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
 [assembly: Convention(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
 namespace TestProject.Conventions
 {
+    /// <summary>
+    /// The class defined for exporting conventions from this assembly
+    /// </summary>
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
     {
+        /// <summary>
+        /// The conventions exports from this assembly
+        /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
@@ -83,9 +97,10 @@ namespace TestProject.Conventions
 ";
 
         await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            await CreateDeps(),
             source,
-            expected
+            expected,
+            "Exported_Conventions.cs"
         ).ConfigureAwait(false);
     }
 
@@ -112,12 +127,20 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""TestProject.Conventions"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
 namespace TestProject.Conventions
 {
+    /// <summary>
+    /// The class defined for exporting conventions from this assembly
+    /// </summary>
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
     {
+        /// <summary>
+        /// The conventions exports from this assembly
+        /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.{HostType});
@@ -128,9 +151,10 @@ namespace TestProject.Conventions
         ;
 
         await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            await CreateDeps(),
             source,
-            expected
+            expected,
+            "Exported_Conventions.cs"
         ).ConfigureAwait(false);
     }
 
@@ -162,12 +186,20 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""TestProject.Conventions"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
 namespace TestProject.Conventions
 {
+    /// <summary>
+    /// The class defined for exporting conventions from this assembly
+    /// </summary>
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
     {
+        /// <summary>
+        /// The conventions exports from this assembly
+        /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Live).WithDependency(DependencyDirection.{DependencyDirection}, typeof(Rocket.Surgery.Conventions.Tests.D));
@@ -180,7 +212,8 @@ namespace TestProject.Conventions
         await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
             new[] { typeof(ExcludeFromCodeCoverageAttribute).Assembly },
             source,
-            expected
+            expected,
+            "Exported_Conventions.cs"
         ).ConfigureAwait(false);
     }
 
@@ -190,6 +223,7 @@ namespace TestProject.Conventions
         var source1 = @"
 using Rocket.Surgery.Conventions;
 
+[assembly: ExportConventions(Namespace = ""Source.Space"")]
 [assembly: Convention(typeof(Contrib1))]
 
 internal class Contrib1 : IConvention { }
@@ -210,19 +244,58 @@ using Rocket.Surgery.Conventions;
 
 internal class Contrib4 : IConvention { }
 ";
+        var expectedImports = @"using System;
+using System.Collections.Generic;
+using Rocket.Surgery.Conventions;
+
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.Namespace"", ""TestProject.Conventions"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.ClassName"", ""Imports"")]
+namespace TestProject.Conventions
+{
+    /// <summary>
+    /// The class defined for importing conventions into this assembly
+    /// </summary>
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    internal static partial class Imports
+    {
+        /// <summary>
+        /// The conventions imported into this assembly
+        /// </summary>
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        {
+            foreach (var convention in Dep1.Dep1Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in Dep2.Dep2Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in Source.Space.Exports.GetConventions(serviceProvider))
+                yield return convention;
+        }
+    }
+}";
+
         var expected = @"
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""Source.Space"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
 [assembly: ExportedConventions(typeof(Contrib1), typeof(Contrib3), typeof(Contrib4), typeof(Contrib2))]
 [assembly: Convention(typeof(Contrib2))]
-namespace TestProject.Conventions
+namespace Source.Space
 {
+    /// <summary>
+    /// The class defined for exporting conventions from this assembly
+    /// </summary>
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
     {
+        /// <summary>
+        /// The conventions exports from this assembly
+        /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Contrib1>(serviceProvider), HostType.Undefined);
@@ -234,9 +307,9 @@ namespace TestProject.Conventions
 }";
 
         await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            await CreateDeps(),
             new[] { source1, source2, source3 },
-            new[] { expected }
+            new[] { expected, expectedImports }
         ).ConfigureAwait(false);
     }
 
@@ -261,12 +334,20 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""TestProject.Conventions"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
 namespace TestProject.Conventions
 {
+    /// <summary>
+    /// The class defined for exporting conventions from this assembly
+    /// </summary>
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
     {
+        /// <summary>
+        /// The conventions exports from this assembly
+        /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
@@ -276,9 +357,10 @@ namespace TestProject.Conventions
 ";
 
         await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            await CreateDeps(),
             source,
-            expected
+            expected,
+            "Exported_Conventions.cs"
         ).ConfigureAwait(false);
     }
 
@@ -305,12 +387,20 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""TestProject.Conventions"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib))]
 namespace TestProject.Conventions
 {
+    /// <summary>
+    /// The class defined for exporting conventions from this assembly
+    /// </summary>
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
     {
+        /// <summary>
+        /// The conventions exports from this assembly
+        /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib>(serviceProvider), HostType.Undefined);
@@ -320,9 +410,10 @@ namespace TestProject.Conventions
 ";
 
         await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            await CreateDeps(),
             source,
-            expected
+            expected,
+            "Exported_Conventions.cs"
         ).ConfigureAwait(false);
     }
 
@@ -349,12 +440,20 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""TestProject.Conventions"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib))]
 namespace TestProject.Conventions
 {
+    /// <summary>
+    /// The class defined for exporting conventions from this assembly
+    /// </summary>
     [System.Runtime.CompilerServices.CompilerGenerated]
     public static partial class Exports
     {
+        /// <summary>
+        /// The conventions exports from this assembly
+        /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib>(serviceProvider), HostType.Undefined);
@@ -364,9 +463,10 @@ namespace TestProject.Conventions
 ";
 
         await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            new[] { typeof(Class1).Assembly, typeof(Class2).Assembly, typeof(Class3).Assembly },
+            await CreateDeps(),
             source,
-            expected
+            expected,
+            "Exported_Conventions.cs"
         ).ConfigureAwait(false);
     }
 }

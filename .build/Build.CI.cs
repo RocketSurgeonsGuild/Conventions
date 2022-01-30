@@ -31,6 +31,7 @@ internal class LocalConstants
     "ci-ignore",
     GitHubActionsImage.WindowsLatest,
     GitHubActionsImage.UbuntuLatest,
+    AutoGenerate = false,
     On = new[] { GitHubActionsTrigger.Push },
     OnPushTags = new[] { "v*" },
     OnPushBranches = new[] { "master", "main", "next" },
@@ -42,6 +43,7 @@ internal class LocalConstants
     GitHubActionsImage.MacOsLatest,
     GitHubActionsImage.WindowsLatest,
     GitHubActionsImage.UbuntuLatest,
+    AutoGenerate = false,
     On = new[] { GitHubActionsTrigger.Push },
     OnPushTags = new[] { "v*" },
     OnPushBranches = new[] { "master", "main", "next" },
@@ -167,15 +169,6 @@ public partial class Solution
             {
                 Name = "nuget",
                 Path = "artifacts/nuget/",
-                If = "always()"
-            }
-        );
-
-        buildJob.Steps.Add(
-            new UploadArtifactStep("Publish Docs")
-            {
-                Name = "docs",
-                Path = "artifacts/docs/",
                 If = "always()"
             }
         );
