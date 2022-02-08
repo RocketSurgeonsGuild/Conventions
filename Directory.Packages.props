@@ -34,7 +34,7 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Ini" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
