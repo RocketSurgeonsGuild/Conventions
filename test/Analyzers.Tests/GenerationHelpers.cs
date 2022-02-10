@@ -212,8 +212,10 @@ public static class GenerationHelpers
         var (outputCompilation, startingSyntaxTress) = await InnerGenerateCompilationAsync<T>(sources, metadataReferences, compilationReferences);
 
         // the syntax tree added by the generator will be the last one in the compilation
-        return outputCompilation
-              .SyntaxTrees.TakeLast(outputCompilation.SyntaxTrees.Count() - startingSyntaxTress);
+        return Enumerable.TakeLast(
+            outputCompilation.SyntaxTrees,
+            outputCompilation.SyntaxTrees.Count() - startingSyntaxTress
+        );
     }
 
     private static async Task<(Compilation compilation, int trees)> InnerGenerateCompilationAsync<T>(

@@ -1,10 +1,8 @@
 using System.Reflection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Rocket.Surgery.Conventions.Reflection;
 
 #pragma warning disable CA2000
 
@@ -17,7 +15,7 @@ public static class TestConventionContextBuilderExtensions
 {
     private static void EnsureConfigured(ConventionContextBuilder builder)
     {
-        if (builder.Properties.ContainsKey($"__EnsureConfigured__"))
+        if (builder.Properties.ContainsKey("__EnsureConfigured__"))
         {
             return;
         }
@@ -28,7 +26,7 @@ public static class TestConventionContextBuilderExtensions
         builder.Set<ILogger>(NullLogger.Instance);
 
         builder.ConfigureServices(
-            (services) =>
+            services =>
             {
                 var loggerFactory = builder.GetOrAdd<ILoggerFactory>(() => NullLoggerFactory.Instance);
                 if (loggerFactory != NullLoggerFactory.Instance)
