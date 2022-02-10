@@ -1,5 +1,8 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -41,4 +44,81 @@ internal static class Helpers
             return ( s = symbol as INamespaceSymbol ) != null && s.IsGlobalNamespace;
         }
     }
+
+    internal static AttributeListSyntax AddAssemblyAttribute(string key, string value)
+    {
+        return AttributeList(
+                SingletonSeparatedList(
+                    Attribute(QualifiedName(QualifiedName(IdentifierName("System"), IdentifierName("Reflection")), IdentifierName("AssemblyMetadata")))
+                       .WithArgumentList(
+                            AttributeArgumentList(
+                                SeparatedList(
+                                    new[]
+                                    {
+                                        AttributeArgument(
+                                            LiteralExpression(
+                                                SyntaxKind.StringLiteralExpression,
+                                                Literal(key)
+                                            )
+                                        ),
+                                        AttributeArgument(
+                                            LiteralExpression(
+                                                SyntaxKind.StringLiteralExpression,
+                                                Literal(value)
+                                            )
+                                        )
+                                    }
+                                )
+                            )
+                        )
+                )
+            )
+           .WithTarget(
+                AttributeTargetSpecifier(
+                    Token(SyntaxKind.AssemblyKeyword)
+                )
+            );
+    }
+
+    internal static SyntaxTrivia GetXmlSummary(string text)
+    {
+        return Trivia(
+            DocumentationCommentTrivia(
+                SyntaxKind.SingleLineDocumentationCommentTrivia,
+                List(
+                    new XmlNodeSyntax[]
+                    {
+                        XmlText()
+                           .WithTextTokens(
+                                TokenList(XmlTextLiteral(TriviaList(DocumentationCommentExterior("///")), " ", " ", TriviaList()))
+                            ),
+                        XmlExampleElement(
+                                SingletonList<XmlNodeSyntax>(
+                                    XmlText()
+                                       .WithTextTokens(
+                                            TokenList(
+                                                XmlNewLine,
+                                                XmlTextLiteral(
+                                                    TriviaList(DocumentationCommentExterior("    ///")),
+                                                    $" {text}",
+                                                    $" {text}", TriviaList()
+                                                ),
+                                                XmlNewLine,
+                                                XmlTextLiteral(
+                                                    TriviaList(DocumentationCommentExterior("    ///")), " ", " ", TriviaList()
+                                                )
+                                            )
+                                        )
+                                )
+                            )
+                           .WithStartTag(XmlElementStartTag(XmlName(Identifier("summary"))))
+                           .WithEndTag(XmlElementEndTag(XmlName(Identifier("summary")))),
+                        XmlText().WithTextTokens(TokenList(XmlNewLine))
+                    }
+                )
+            )
+        );
+    }
+
+    private static readonly SyntaxToken XmlNewLine = XmlTextNewLine(TriviaList(), Environment.NewLine, Environment.NewLine, TriviaList());
 }

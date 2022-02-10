@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
@@ -7,7 +5,6 @@ namespace Rocket.Surgery.Conventions;
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class, AllowMultiple = true)]
-[Conditional("CodeGeneration")]
-public sealed class ImportConventionsAttribute : Attribute
+public sealed class ImportConventionsAttribute : ConventionsConfigurationAttribute
 {
 }
