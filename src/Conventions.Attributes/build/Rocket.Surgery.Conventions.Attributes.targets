@@ -13,6 +13,10 @@
         <ExportConventionsClassName Condition="'$(ExportConventionsClassName)' == ''">Exports</ExportConventionsClassName>        
         <ExportConventionsMethodName Condition="'$(ExportConventionsMethodName)' == ''">GetConventions</ExportConventionsMethodName>    
     </PropertyGroup>
+    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>        
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">true</ExportConventionsAssembly>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
         <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>             
         <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">false</ExportConventionsAssembly>    

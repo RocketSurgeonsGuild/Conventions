@@ -6,6 +6,8 @@ namespace Rocket.Surgery.Conventions;
 
 internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, string? Namespace, string ClassName, string MethodName)
 {
+    public bool Postfix { get; init; }
+
     private record InnerConventionConfigurationData(bool Assembly, string? Namespace, string ClassName, string MethodName)
     {
         public bool DefinedNamespace { get; init; }
@@ -116,11 +118,12 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                    (tuple, token) => new ConventionConfigurationData(
                        tuple.Left.WasConfigured,
                        tuple.Left.Assembly,
-                       tuple.Left.DefinedNamespace ? tuple.Left.Namespace! : GetNamespaceForCompilation(tuple.Right),
+                       tuple.Left.DefinedNamespace ? tuple.Left.Namespace! : GetNamespaceForCompilation(tuple.Right, defaults.Postfix),
                        tuple.Left.ClassName,
                        tuple.Left.MethodName
                    )
-               );
+               )
+              .Select((data, token) => data with { Namespace = data.Namespace == "global" ? "" : data.Namespace });
     }
 
     public static ConventionConfigurationData FromAssemblyAttributes(IAssemblySymbol assemblySymbol, ConventionConfigurationData defaults)
