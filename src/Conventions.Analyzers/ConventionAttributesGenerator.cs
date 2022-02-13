@@ -17,8 +17,8 @@ namespace Rocket.Surgery.Conventions;
 [Generator]
 public class ConventionAttributesGenerator : IIncrementalGenerator
 {
-    private static readonly ConventionConfigurationData _exportsDefaultConfiguration = new(false, true, "", "Exports", "GetConventions");
-    private static readonly ConventionConfigurationData _importsDefaultConfiguration = new(false, true, "", "Imports", "GetConventions");
+    private static readonly ConventionConfigurationData _exportsDefaultConfiguration = new(false, true, "", "Exports", "GetConventions") { Postfix = true };
+    private static readonly ConventionConfigurationData _importsDefaultConfiguration = new(false, true, "", "Imports", "GetConventions") { Postfix = true };
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

@@ -6,9 +6,10 @@ namespace Rocket.Surgery.Conventions;
 
 internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, string? Namespace, string ClassName, string MethodName)
 {
+    public bool Postfix { get; init; }
+
     private record InnerConventionConfigurationData(bool Assembly, string? Namespace, string ClassName, string MethodName)
     {
-        public bool Postfix { get; init; } = true;
         public bool DefinedNamespace { get; init; }
         public bool WasConfigured { get; init; }
 
@@ -47,13 +48,6 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value))
                     {
                         data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true };
-                    }
-
-                    if (config.GlobalOptions.TryGetValue(
-                            $"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Postfix)}", out value
-                        ))
-                    {
-                        data = data with { Postfix = bool.TryParse(value, out var b) && b, WasConfigured = true };
                     }
 
                     return data;
@@ -108,10 +102,6 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                                     {
                                         Assembly = (bool)syntax.Token.Value!
                                     },
-                                    nameof(InnerConventionConfigurationData.Postfix) => data with
-                                    {
-                                        Postfix = (bool)syntax.Token.Value!
-                                    },
                                     _ => data
                                 };
                             }
@@ -128,11 +118,12 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                    (tuple, token) => new ConventionConfigurationData(
                        tuple.Left.WasConfigured,
                        tuple.Left.Assembly,
-                       tuple.Left.DefinedNamespace ? tuple.Left.Namespace! : GetNamespaceForCompilation(tuple.Right, tuple.Left.Postfix),
+                       tuple.Left.DefinedNamespace ? tuple.Left.Namespace! : GetNamespaceForCompilation(tuple.Right, defaults.Postfix),
                        tuple.Left.ClassName,
                        tuple.Left.MethodName
                    )
-               );
+               )
+              .Select((data, token) => data with { Namespace = data.Namespace == "global" ? "" : data.Namespace });
     }
 
     public static ConventionConfigurationData FromAssemblyAttributes(IAssemblySymbol assemblySymbol, ConventionConfigurationData defaults)
@@ -184,7 +175,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
         );
     }
 
-    private static string GetNamespaceForCompilation(Compilation compilation, bool postfix)
+    private static string GetNamespaceForCompilation(Compilation compilation, bool postfix = false)
     {
         var @namespace = compilation.AssemblyName ?? "";
         if (postfix)
