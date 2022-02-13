@@ -1,2 +1,1 @@
-﻿[assembly: ImportConventions]
-App.Create<DefaultCommand>(Imports.GetConventions).RunAsync(args);
+﻿App.Create<DefaultCommand>(Imports.GetConventions).RunAsync(args);

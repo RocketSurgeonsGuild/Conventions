@@ -1,5 +1,14 @@
 ﻿<Project>
-<!--    <ItemGroup>-->
-<!--        <Analyzer Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..))\analyzers\dotnet\cs\Rocket.Surgery.Conventions.Analyzers.dll" Condition="'$(Language)'=='C#'"/>-->
-<!--    </ItemGroup>-->
+    <ItemGroup>        
+        <CompilerVisibleProperty Include="ImportConventionsAssembly" />
+        <CompilerVisibleProperty Include="ImportConventionsNamespace" />
+        <CompilerVisibleProperty Include="ImportConventionsClassName" />
+        <CompilerVisibleProperty Include="ImportConventionsMethodName" />
+        <CompilerVisibleProperty Include="ImportConventionsPostfix" />
+        <CompilerVisibleProperty Include="ExportConventionsAssembly" />
+        <CompilerVisibleProperty Include="ExportConventionsNamespace" />
+        <CompilerVisibleProperty Include="ExportConventionsClassName" />
+        <CompilerVisibleProperty Include="ExportConventionsMethodName" />
+        <CompilerVisibleProperty Include="ExportConventionsPostfix" />
+    </ItemGroup>
 </Project>

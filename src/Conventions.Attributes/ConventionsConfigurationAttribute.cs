@@ -6,9 +6,20 @@
 public abstract class ConventionsConfigurationAttribute : Attribute
 {
     /// <summary>
+    ///     Create a new class (using <see cref="ClassName" />) with these conventions
+    /// </summary>
+    public bool Assembly { get; set; }
+
+    /// <summary>
+    ///     Should the default namespace has a the .Conventions postfix
+    /// </summary>
+    /// <returns></returns>
+    public bool Postfix { get; set; } = true;
+
+    /// <summary>
     ///     The desired namespace for the emitted classes to go
     /// </summary>
-    public string Namespace { get; set; } = null!;
+    public string? Namespace { get; set; } = null;
 
     /// <summary>
     ///     The desired class name for the emitted class.
@@ -17,4 +28,9 @@ public abstract class ConventionsConfigurationAttribute : Attribute
     ///     Default Imports or Exports
     /// </remarks>
     public string ClassName { get; set; } = null!;
+
+    /// <summary>
+    ///     The method name to use when attaching to a class
+    /// </summary>
+    public string MethodName { get; set; } = null!;
 }
