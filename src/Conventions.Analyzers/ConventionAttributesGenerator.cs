@@ -11,118 +11,18 @@ namespace Rocket.Surgery.Conventions;
 // TODO: analyzers
 //
 
-internal record ConventionConfigurationData(string Namespace, string ClassName)
-{
-    private record InnerConventionConfigurationData(string? Namespace, string ClassName);
-
-    public static IncrementalValueProvider<ConventionConfigurationData> Create(
-        IncrementalGeneratorInitializationContext context, string attributeName, string className
-    )
-    {
-        return context.SyntaxProvider
-                      .CreateSyntaxProvider(
-                           (node, token) => node is AttributeListSyntax attributeListSyntax
-                                         && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
-                                         && findAttribute(attributeListSyntax, attributeName) is not null,
-                           (syntaxContext, token) =>
-                               syntaxContext.Node is AttributeListSyntax attributeListSyntax
-                                   ? findAttribute(attributeListSyntax, attributeName)
-                                   : default
-                       )
-                      .Where(z => z is not null)
-                      .Select(
-                           (attribute, _) =>
-                           {
-                               var data = new InnerConventionConfigurationData(null, className);
-                               if (attribute is null || attribute.ArgumentList is null or { Arguments.Count: 0 }) return data;
-                               foreach (var arg in attribute.ArgumentList.Arguments)
-                               {
-                                   if (arg is { NameEquals: null } or { Expression: null or not LiteralExpressionSyntax }) continue;
-                                   var syntax = (LiteralExpressionSyntax)arg.Expression;
-
-                                   data = arg.NameEquals.Name.Identifier.Text switch
-                                   {
-                                       nameof(InnerConventionConfigurationData.Namespace) => data with { Namespace = (string)syntax.Token.Value! },
-                                       nameof(InnerConventionConfigurationData.ClassName) => data with { ClassName = (string)syntax.Token.Value! },
-                                       _                                                  => data
-                                   };
-                               }
-
-                               return data;
-                           }
-                       )
-                      .Collect()
-                      .Select((z, t) => z.FirstOrDefault() ?? new InnerConventionConfigurationData(null, className))
-                      .Combine(context.CompilationProvider)
-                      .Select(
-                           (tuple, token) => new ConventionConfigurationData(
-                               tuple.Left.Namespace ?? GetNamespaceForCompilation(tuple.Right),
-                               tuple.Left.ClassName
-                           )
-                       );
-    }
-
-    public static ConventionConfigurationData FromAssemblyAttributes(IAssemblySymbol assemblySymbol, string type)
-    {
-        var data = new InnerConventionConfigurationData(null, type);
-        var prefix = $"Rocket.Surgery.ConventionConfigurationData.{type}";
-        foreach (var attribute in assemblySymbol.GetAttributes())
-        {
-            if (attribute is not { AttributeClass.MetadataName : "AssemblyMetadataAttribute", ConstructorArguments: { Length: 2 } }) continue;
-            var key = (string)attribute.ConstructorArguments[0].Value!;
-            if (!key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
-
-            var value = (string)attribute.ConstructorArguments[1].Value!;
-            data = key.Split('.').Last() switch
-            {
-                nameof(Namespace) => data with { Namespace = value },
-                nameof(ClassName) => data with { ClassName = value },
-                _                 => data
-            };
-        }
-
-        return new ConventionConfigurationData(data.Namespace ?? assemblySymbol.Identity.Name, data.ClassName);
-    }
-
-    public SyntaxList<AttributeListSyntax> ToAttributes(string type)
-    {
-        return List(
-            new[]
-            {
-                AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Namespace)}", Namespace),
-                AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(ClassName)}", ClassName)
-            }
-        );
-    }
-
-    private static AttributeSyntax? findAttribute(AttributeListSyntax list, string name)
-    {
-        return list.Attributes.FirstOrDefault(
-            z => z.Name.ToFullString().TrimEnd().EndsWith(
-                     name, StringComparison.OrdinalIgnoreCase
-                 )
-              || z.Name.ToFullString().TrimEnd().EndsWith(
-                     $"{name}Attribute", StringComparison.OrdinalIgnoreCase
-                 )
-        );
-    }
-
-    private static string GetNamespaceForCompilation(Compilation compilation)
-    {
-        var @namespace = compilation.AssemblyName ?? "";
-        return ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.');
-    }
-}
-
 /// <summary>
 ///     Generator to handle materializing conventions as code instead of loading them at runtime
 /// </summary>
 [Generator]
 public class ConventionAttributesGenerator : IIncrementalGenerator
 {
+    private static readonly ConventionConfigurationData _exportsDefaultConfiguration = new(false, true, "", "Exports", "GetConventions");
+    private static readonly ConventionConfigurationData _importsDefaultConfiguration = new(false, true, "", "Imports", "GetConventions");
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var exportConfigurationCandidate = ConventionConfigurationData.Create(context, "ExportConventions", "Exports");
+        var exportConfigurationCandidate = ConventionConfigurationData.Create(context, "ExportConventions", _exportsDefaultConfiguration);
         var exportCandidates = context
                               .SyntaxProvider
                               .CreateSyntaxProvider(
@@ -152,7 +52,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                               .Where(z => z.conventionAttribute != null)
                               .SelectMany((z, _) => GetExportedConventions(z.attributeListSyntax, z.model, z.compilation, z.conventionAttribute!))
                               .WithComparer(SymbolEqualityComparer.Default);
-        ;
+
         var exportedConventions = context
                                  .SyntaxProvider
                                  .CreateSyntaxProvider(
@@ -194,7 +94,8 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             static (productionContext, tuple) => HandleConventionExports(productionContext, tuple.data, tuple.conventions, tuple.exportedConventions)
         );
 
-        var importConfigurationCandidate = ConventionConfigurationData.Create(context, "ImportConventions", "Imports");
+        var importConfigurationCandidate = ConventionConfigurationData.Create(context, "ImportConventions", _importsDefaultConfiguration)
+                                                                      .Select((z, _) => !z.WasConfigured && z.Assembly ? z with { Assembly = false } : z);
 
         var importCandidates = context
                               .SyntaxProvider
@@ -240,14 +141,11 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     )
     {
         IReadOnlyCollection<string>? references = null;
-        references = getReferences(compilation, hasExports, exportConfiguration);
+        references = getReferences(compilation, hasExports && exportConfiguration.Assembly, exportConfiguration);
 
-        var importsNamespace = importConfiguration.Namespace;
+        var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
 
-        addAssemblySource(
-            context, references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references),
-            importConfiguration
-        );
+        addAssemblySource(context, functionBody, importConfiguration);
 
         if (importCandidates.OfType<ClassDeclarationSyntax>().Any())
         {
@@ -259,10 +157,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                             UsingDirective(ParseName("System")),
                             UsingDirective(ParseName("System.Collections.Generic")),
                             UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                            UsingDirective(ParseName(importsNamespace)),
                         }
                     )
                 );
+            if (importConfiguration.Assembly && !string.IsNullOrWhiteSpace(importConfiguration.Namespace))
+            {
+                cu = cu.AddUsings(UsingDirective(ParseName(importConfiguration.Namespace!)));
+            }
+
             foreach (var declaration in importCandidates.OfType<ClassDeclarationSyntax>())
             {
                 var model = compilation.GetSemanticModel(declaration.SyntaxTree);
@@ -271,52 +173,59 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     continue; // TODO: Diagnostic
                 var @namespace = symbol.ContainingNamespace;
 
+                var methodDeclaration = MethodDeclaration(
+                                            GenericName(Identifier("IEnumerable")).WithTypeArgumentList(
+                                                TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies")))
+                                            ),
+                                            Identifier(importConfiguration.MethodName)
+                                        )
+                                       .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
+                                       .WithParameterList(
+                                            ParameterList(
+                                                SingletonSeparatedList(
+                                                    Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
+                                                )
+                                            )
+                                        )
+                                       .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"));
+                if (importConfiguration.Assembly)
+                {
+                    methodDeclaration = methodDeclaration
+                                       .WithExpressionBody(
+                                            ArrowExpressionClause(
+                                                InvocationExpression(
+                                                        MemberAccessExpression(
+                                                            SyntaxKind.SimpleMemberAccessExpression,
+                                                            IdentifierName(importConfiguration.ClassName),
+                                                            IdentifierName(importConfiguration.MethodName)
+                                                        )
+                                                    )
+                                                   .WithArgumentList(
+                                                        ArgumentList(SingletonSeparatedList(Argument(IdentifierName("serviceProvider"))))
+                                                    )
+                                            )
+                                        )
+                                       .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                }
+                else
+                {
+                    methodDeclaration = methodDeclaration
+                       .WithBody(functionBody);
+                }
+
                 var derivedClass = ClassDeclaration(declaration.Identifier)
                                   .WithModifiers(declaration.Modifiers)
                                   .WithConstraintClauses(declaration.ConstraintClauses)
                                   .WithTypeParameterList(declaration.TypeParameterList)
-                                  .WithMembers(
-                                       SingletonList<MemberDeclarationSyntax>(
-                                           MethodDeclaration(
-                                                   GenericName(Identifier("IEnumerable")).WithTypeArgumentList(
-                                                       TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies")))
-                                                   ),
-                                                   Identifier("GetConventions")
-                                               )
-                                              .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
-                                              .WithParameterList(
-                                                   ParameterList(
-                                                       SingletonSeparatedList(
-                                                           Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
-                                                       )
-                                                   )
-                                               )
-                                              .WithExpressionBody(
-                                                   ArrowExpressionClause(
-                                                       InvocationExpression(
-                                                               MemberAccessExpression(
-                                                                   SyntaxKind.SimpleMemberAccessExpression,
-                                                                   IdentifierName(importConfiguration.ClassName),
-                                                                   IdentifierName("GetConventions")
-                                                               )
-                                                           )
-                                                          .WithArgumentList(
-                                                               ArgumentList(SingletonSeparatedList(Argument(IdentifierName("serviceProvider"))))
-                                                           )
-                                                   )
-                                               )
-                                              .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                                              .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"))
-                                       )
-                                   )
-                                  .NormalizeWhitespace()
-                    ;
-                cu = cu.WithMembers(
-                    SingletonList<MemberDeclarationSyntax>(
-                        NamespaceDeclaration(ParseName(@namespace.ToDisplayString()))
-                           .WithMembers(SingletonList<MemberDeclarationSyntax>(derivedClass))
-                    )
-                );
+                                  .WithMembers(SingletonList<MemberDeclarationSyntax>(methodDeclaration))
+                                  .NormalizeWhitespace();
+                cu = cu
+                   .WithMembers(
+                        SingletonList<MemberDeclarationSyntax>(
+                            NamespaceDeclaration(ParseName(@namespace.ToDisplayString()))
+                               .WithMembers(SingletonList<MemberDeclarationSyntax>(derivedClass))
+                        )
+                    );
             }
 
             context.AddSource(
@@ -327,6 +236,43 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
         static void addAssemblySource(SourceProductionContext context, BlockSyntax syntax, ConventionConfigurationData configurationData)
         {
+            var members =
+                ClassDeclaration(configurationData.ClassName)
+                   .WithAttributeLists(
+                        SingletonList(
+                            AttributeList(
+                                    SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated")))
+                                )
+                               .WithLeadingTrivia(GetXmlSummary("The class defined for importing conventions into this assembly"))
+                        )
+                    )
+                   .WithModifiers(
+                        TokenList(
+                            Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)
+                        )
+                    )
+                   .WithMembers(
+                        SingletonList<MemberDeclarationSyntax>(
+                            MethodDeclaration(
+                                    GenericName(Identifier("IEnumerable")).WithTypeArgumentList(
+                                        TypeArgumentList(
+                                            SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies"))
+                                        )
+                                    ),
+                                    Identifier(configurationData.MethodName)
+                                )
+                               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
+                               .WithParameterList(
+                                    ParameterList(
+                                        SingletonSeparatedList(
+                                            Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
+                                        )
+                                    )
+                                )
+                               .WithBody(syntax)
+                               .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"))
+                        )
+                    );
             var cu = CompilationUnit()
                     .WithAttributeLists(configurationData.ToAttributes("Imports"))
                     .WithUsings(
@@ -338,57 +284,20 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                  UsingDirective(ParseName("Rocket.Surgery.Conventions")),
                              }
                          )
-                     )
-                    .WithMembers(
-                         SingletonList<MemberDeclarationSyntax>(
-                             NamespaceDeclaration(ParseName(configurationData.Namespace))
-                                .WithMembers(
-                                     SingletonList<MemberDeclarationSyntax>(
-                                         ClassDeclaration(configurationData.ClassName)
-                                            .WithAttributeLists(
-                                                 SingletonList(
-                                                     AttributeList(
-                                                             SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated")))
-                                                         )
-                                                        .WithLeadingTrivia(GetXmlSummary("The class defined for importing conventions into this assembly"))
-                                                 )
-                                             )
-                                            .WithModifiers(
-                                                 TokenList(
-                                                     Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)
-                                                 )
-                                             )
-                                            .WithMembers(
-                                                 SingletonList<MemberDeclarationSyntax>(
-                                                     MethodDeclaration(
-                                                             GenericName(Identifier("IEnumerable")).WithTypeArgumentList(
-                                                                 TypeArgumentList(
-                                                                     SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies"))
-                                                                 )
-                                                             ),
-                                                             Identifier("GetConventions")
-                                                         )
-                                                        .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
-                                                        .WithParameterList(
-                                                             ParameterList(
-                                                                 SingletonSeparatedList(
-                                                                     Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
-                                                                 )
-                                                             )
-                                                         )
-                                                        .WithBody(syntax)
-                                                        .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"))
-                                                 )
-                                             )
-                                     )
-                                 )
-                         )
-                     )
-                    .NormalizeWhitespace();
+                     );
+            if (configurationData.Assembly)
+            {
+                cu = cu
+                   .AddMembers(
+                        string.IsNullOrWhiteSpace(configurationData.Namespace)
+                            ? members
+                            : NamespaceDeclaration(ParseName(configurationData.Namespace!)).AddMembers(members)
+                    );
+            }
 
             context.AddSource(
                 "Imported_Assembly_Conventions.cs",
-                cu.SyntaxTree.GetRoot().GetText(Encoding.UTF8)
+                cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
             );
         }
 
@@ -402,22 +311,43 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                    {
                                        try
                                        {
-                                           var data = ConventionConfigurationData.FromAssemblyAttributes(symbol, "Exports");
-                                           return (
-                                               symbol.GetTypeByMetadataName($"{data.Namespace}.{data.ClassName}")
-                                            ?? symbol.GetTypeByMetadataName($"{data.Namespace}.Conventions.{data.ClassName}")
-                                            ?? symbol.GetTypeByMetadataName($"{symbol.Name}.Conventions.Exports")
-                                            ?? symbol.GetTypeByMetadataName($"{symbol.Name}.Exports")
-                                            ?? symbol.GetTypeByMetadataName($"{symbol.Name}.__conventions__.__exports__") )?.ToDisplayString() ?? "";
+                                           var data = ConventionConfigurationData.FromAssemblyAttributes(symbol, _exportsDefaultConfiguration);
+                                           var configuredMetadata =
+                                               string.IsNullOrWhiteSpace(data.Namespace)
+                                                   ? symbol.GetTypeByMetadataName(data.ClassName)
+                                                   : symbol.GetTypeByMetadataName($"{data.Namespace}.Conventions.{data.ClassName}")
+                                                  ?? symbol.GetTypeByMetadataName($"{data.Namespace}.{data.ClassName}");
+                                           if (configuredMetadata is { })
+                                           {
+                                               return configuredMetadata.ToDisplayString() + $".{data.MethodName}";
+                                           }
+
+                                           var legacyMetadata = symbol.GetTypeByMetadataName($"{symbol.Name}.Conventions.Exports")
+                                                             ?? symbol.GetTypeByMetadataName($"{symbol.Name}.Exports")
+                                                             ?? symbol.GetTypeByMetadataName($"{symbol.Name}.__conventions__.__exports__");
+                                           if (legacyMetadata is { })
+                                           {
+                                               return legacyMetadata.ToDisplayString() + ".GetConventions";
+                                           }
+
+                                           return null!;
                                        }
                                        catch
                                        {
-                                           return "";
+                                           return null!;
                                        }
                                    }
                                )
                               .Where(z => !string.IsNullOrWhiteSpace(z))
-                              .Concat(exports ? new[] { configurationData.Namespace + "." + configurationData.ClassName } : Enumerable.Empty<string>())
+                              .Concat(
+                                   exports
+                                       ? new[]
+                                       {
+                                           ( string.IsNullOrWhiteSpace(configurationData.Namespace) ? "" : configurationData.Namespace + "." )
+                                         + configurationData.ClassName + "." + configurationData.MethodName
+                                       }
+                                       : Enumerable.Empty<string>()
+                               )
                               .ToArray();
         }
 
@@ -430,7 +360,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     ForEachStatement(
                             IdentifierName("var"),
                             Identifier("convention"),
-                            InvocationExpression(ParseExpression(reference + ".GetConventions"))
+                            InvocationExpression(ParseExpression(reference))
                                .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("serviceProvider"))))),
                             YieldStatement(SyntaxKind.YieldReturnStatement, IdentifierName("convention"))
                         )
@@ -569,41 +499,35 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             );
         }
 
-
         var helperClass =
-                NamespaceDeclaration(ParseName(data.Namespace)).WithMembers(
-                    SingletonList<MemberDeclarationSyntax>(
-                        ClassDeclaration(data.Configuration.ClassName)
-                           .WithAttributeLists(
-                                SingletonList(
-                                    AttributeList(SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated"))))
-                                       .WithLeadingTrivia(GetXmlSummary("The class defined for exporting conventions from this assembly"))
-                                )
-                            )
-                           .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
-                           .WithMembers(
-                                SingletonList<MemberDeclarationSyntax>(
-                                    MethodDeclaration(
-                                            GenericName(Identifier("IEnumerable")).WithTypeArgumentList(
-                                                TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies")))
-                                            ),
-                                            "GetConventions"
-                                        )
-                                       .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
-                                       .WithParameterList(
-                                            ParameterList(
-                                                SingletonSeparatedList(
-                                                    Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
-                                                )
-                                            )
-                                        )
-                                       .WithBody(helperClassBody)
-                                       .WithLeadingTrivia(GetXmlSummary("The conventions exports from this assembly"))
-                                )
-                            )
+            ClassDeclaration(data.Configuration.ClassName)
+               .WithAttributeLists(
+                    SingletonList(
+                        AttributeList(SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated"))))
+                           .WithLeadingTrivia(GetXmlSummary("The class defined for exporting conventions from this assembly"))
                     )
                 )
-            ;
+               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
+               .WithMembers(
+                    SingletonList<MemberDeclarationSyntax>(
+                        MethodDeclaration(
+                                GenericName(Identifier("IEnumerable")).WithTypeArgumentList(
+                                    TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies")))
+                                ),
+                                data.Configuration.MethodName
+                            )
+                           .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
+                           .WithParameterList(
+                                ParameterList(
+                                    SingletonSeparatedList(
+                                        Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
+                                    )
+                                )
+                            )
+                           .WithBody(helperClassBody)
+                           .WithLeadingTrivia(GetXmlSummary("The conventions exports from this assembly"))
+                    )
+                );
 
         var cu = CompilationUnit()
                 .WithUsings(
@@ -633,8 +557,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                              )
                          )
                         .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
-                 )
-                .WithMembers(SingletonList<MemberDeclarationSyntax>(helperClass));
+                 );
+
+        if (data.Configuration.Assembly)
+        {
+            cu = cu.AddMembers(
+                string.IsNullOrWhiteSpace(data.Namespace) ? helperClass : NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass)
+            );
+        }
 
         if (exportedConventions.Length > 0)
         {

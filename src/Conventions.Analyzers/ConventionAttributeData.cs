@@ -3,8 +3,12 @@
 namespace Rocket.Surgery.Conventions;
 
 internal record ConventionAttributeData(
-    INamedTypeSymbol LiveConventionAttribute, INamedTypeSymbol ExportCandidates, INamedTypeSymbol UnitTestConventionAttribute,
-    INamedTypeSymbol AfterConventionAttribute, INamedTypeSymbol DependsOnConventionAttribute, INamedTypeSymbol BeforeConventionAttribute,
+    INamedTypeSymbol LiveConventionAttribute,
+    INamedTypeSymbol ExportCandidates,
+    INamedTypeSymbol UnitTestConventionAttribute,
+    INamedTypeSymbol AfterConventionAttribute,
+    INamedTypeSymbol DependsOnConventionAttribute,
+    INamedTypeSymbol BeforeConventionAttribute,
     INamedTypeSymbol DependentOfConventionAttribute,
     ConventionConfigurationData Configuration
 )

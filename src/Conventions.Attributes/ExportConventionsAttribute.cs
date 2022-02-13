@@ -4,7 +4,7 @@ namespace Rocket.Surgery.Conventions;
 ///     An attribute that lets you configure how exported conventions will behave
 /// </summary>
 /// <seealso cref="Attribute" />
-[AttributeUsage(AttributeTargets.Assembly)]
+[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class)]
 public sealed class ExportConventionsAttribute : ConventionsConfigurationAttribute
 {
 }

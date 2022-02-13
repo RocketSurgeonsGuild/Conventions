@@ -1,7 +1,7 @@
 <Project>
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+    <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Attributes/build/Rocket.Surgery.Conventions.Attributes.props" />
     <PropertyGroup>
         <IsPackable>false</IsPackable>
-<!--		<EnableCentralPackageVersions>false</EnableCentralPackageVersions>-->
     </PropertyGroup>
 </Project>

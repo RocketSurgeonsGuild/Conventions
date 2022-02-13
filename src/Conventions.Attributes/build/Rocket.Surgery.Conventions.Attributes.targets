@@ -1,2 +1,42 @@
 ﻿<Project>
+    
+        <PropertyGroup>            
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and '$(UsingMicrosoftNETSdkWeb)' == 'true'"
+        >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'"
+        >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and '$(UsingMicrosoftNETSdkRazor)' == 'true'"
+        >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and '$(UsingMicrosoftNETSdkWorker)' == 'true'"
+        >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == '' and '$(OutputType)' == 'Exe'">true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == '' and '$(OutputType)' == 'exe'">true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == ''">false</_ConventionApplicationDetected>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>
+        <ImportConventionsClassName Condition="'$(ImportConventionsClassName)' == ''">Imports</ImportConventionsClassName>        
+        <ImportConventionsMethodName Condition="'$(ImportConventionsMethodName)' == ''">GetConventions</ImportConventionsMethodName>        
+        <ImportConventionsPostfix Condition="'$(ImportConventionsPostfix)' == ''">false</ImportConventionsPostfix>
+        
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">false</ExportConventionsAssembly>
+        <ExportConventionsClassName Condition="'$(ExportConventionsClassName)' == ''">Exports</ExportConventionsClassName>        
+        <ExportConventionsMethodName Condition="'$(ExportConventionsMethodName)' == ''">GetConventions</ExportConventionsMethodName>        
+        <ExportConventionsPostfix Condition="'$(ExportConventionsPostfix)' == ''">true</ExportConventionsPostfix>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' != 'true'">
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">false</ImportConventionsAssembly>
+        <ImportConventionsClassName Condition="'$(ImportConventionsClassName)' == ''">Imports</ImportConventionsClassName>        
+        <ImportConventionsMethodName Condition="'$(ImportConventionsMethodName)' == ''">GetConventions</ImportConventionsMethodName>        
+        <ImportConventionsPostfix Condition="'$(ImportConventionsPostfix)' == ''">false</ImportConventionsPostfix>
+        
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">true</ExportConventionsAssembly>
+        <ExportConventionsClassName Condition="'$(ExportConventionsClassName)' == ''">Exports</ExportConventionsClassName>        
+        <ExportConventionsMethodName Condition="'$(ExportConventionsMethodName)' == ''">GetConventions</ExportConventionsMethodName>        
+        <ExportConventionsPostfix Condition="'$(ExportConventionsPostfix)' == ''">true</ExportConventionsPostfix>        
+    </PropertyGroup>
 </Project>

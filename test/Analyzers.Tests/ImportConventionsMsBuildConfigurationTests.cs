@@ -1,20 +1,14 @@
-using System.Reflection;
-using FluentAssertions;
+﻿using System.Reflection;
 using Xunit;
-using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public class ImportConventionsTests
+public class ImportConventionsMsBuildConfigurationTests
 {
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method()
     {
-        var source = @"
-using Rocket.Surgery.Conventions;
-
-[assembly: ImportConventions]
-";
+        var source = @"";
         var expected = @"
 using System;
 using System.Collections.Generic;
@@ -47,18 +41,21 @@ namespace TestProject.Conventions
 }
 ";
 
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            await CreateDeps(),
+        await GenerationHelpers.AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            await GenerationHelpers.CreateDeps(),
             source,
-            expected
+            expected,
+            properties: new Dictionary<string, string?>
+            {
+                ["ImportConventionsAssembly"] = "true",
+            }
         ).ConfigureAwait(false);
     }
 
     [Fact]
     public async Task Should_Not_Generate_Static_Assembly_Level_Method_By_Default()
     {
-        var source = @"
-";
+        var source = @"";
         var expected = @"
 using System;
 using System.Collections.Generic;
@@ -68,21 +65,21 @@ using Rocket.Surgery.Conventions;
 [assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.ClassName"", ""Imports"")]
 [assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.MethodName"", ""GetConventions"")]";
 
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            await CreateDeps(),
+        await GenerationHelpers.AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            await GenerationHelpers.CreateDeps(),
             source,
-            expected
+            expected,
+            properties: new Dictionary<string, string?>
+            {
+                ["ImportConventionsAssembly"] = "false",
+            }
         ).ConfigureAwait(false);
     }
 
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_Namespace()
     {
-        var source = @"
-using Rocket.Surgery.Conventions;
-
-[assembly: ImportConventions(Namespace = ""Test.My.Namespace"", ClassName = ""MyImports"")]
-";
+        var source = @"";
         var expected = @"
 using System;
 using System.Collections.Generic;
@@ -115,10 +112,15 @@ namespace Test.My.Namespace
 }
 ";
 
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            await CreateDeps(),
+        await GenerationHelpers.AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            await GenerationHelpers.CreateDeps(),
             source,
-            expected
+            expected,
+            properties: new Dictionary<string, string?>
+            {
+                ["ImportConventionsNamespace"] = "Test.My.Namespace",
+                ["ImportConventionsClassName"] = "MyImports",
+            }
         ).ConfigureAwait(false);
     }
 
@@ -126,11 +128,7 @@ namespace Test.My.Namespace
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_No_Namespace()
     {
-        var source = @"
-using Rocket.Surgery.Conventions;
-
-[assembly: ImportConventions(Namespace = """", ClassName = ""MyImports"")]
-";
+        var source = @"";
         var expected = @"
 using System;
 using System.Collections.Generic;
@@ -160,16 +158,69 @@ internal static partial class MyImports
 }
 ";
 
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            await CreateDeps(),
+        await GenerationHelpers.AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            await GenerationHelpers.CreateDeps(),
             source,
-            expected
+            expected,
+            properties: new Dictionary<string, string?>
+            {
+                ["ImportConventionsNamespace"] = "",
+                ["ImportConventionsClassName"] = "MyImports",
+            }
         ).ConfigureAwait(false);
     }
 
-
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_MethodName()
+    {
+        var source = @"";
+        var expected = @"
+using System;
+using System.Collections.Generic;
+using Rocket.Surgery.Conventions;
+
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.Namespace"", ""Test.My.Namespace"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.ClassName"", ""MyImports"")]
+[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.MethodName"", ""ImportConventions"")]
+namespace Test.My.Namespace
+{
+    /// <summary>
+    /// The class defined for importing conventions into this assembly
+    /// </summary>
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    internal static partial class MyImports
+    {
+        /// <summary>
+        /// The conventions imported into this assembly
+        /// </summary>
+        public static IEnumerable<IConventionWithDependencies> ImportConventions(IServiceProvider serviceProvider)
+        {
+            foreach (var convention in Dep1.Dep1Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in Dep2Exports.GetConventions(serviceProvider))
+                yield return convention;
+            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(serviceProvider))
+                yield return convention;
+        }
+    }
+}
+";
+
+        await GenerationHelpers.AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            await GenerationHelpers.CreateDeps(),
+            source,
+            expected,
+            properties: new Dictionary<string, string?>
+            {
+                ["ImportConventionsNamespace"] = "Test.My.Namespace",
+                ["ImportConventionsClassName"] = "MyImports",
+                ["ImportConventionsMethodName"] = "ImportConventions",
+            }
+        ).ConfigureAwait(false);
+    }
+
+    [Fact]
+    public async Task Should_Use_Assembly_Configuration_If_Defined()
     {
         var source = @"
 using Rocket.Surgery.Conventions;
@@ -208,21 +259,22 @@ namespace Test.My.Namespace
 }
 ";
 
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            await CreateDeps(),
+        await GenerationHelpers.AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            await GenerationHelpers.CreateDeps(),
             source,
-            expected
+            expected,
+            properties: new Dictionary<string, string?>
+            {
+                ["ImportConventionsNamespace"] = "Test.Other.Namespace",
+                ["ImportConventionsMethodName"] = "ImportsConventions",
+            }
         ).ConfigureAwait(false);
     }
 
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_FullName()
     {
-        var source = @"
-using Rocket.Surgery.Conventions;
-
-[assembly: ImportConventionsAttribute]
-";
+        var source = @"";
         var expected = @"
 using System;
 using System.Collections.Generic;
@@ -255,128 +307,21 @@ namespace TestProject.Conventions
 }
 ";
 
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            await CreateDeps(),
+        await GenerationHelpers.AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+            await GenerationHelpers.CreateDeps(),
             source,
-            expected
-        ).ConfigureAwait(false);
-    }
-
-    [Fact]
-    public async Task Should_Generate_Static_Class_Member_Level_Method()
-    {
-        var source = @"
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    [ImportConventions]
-    public partial class Program
-    {
-    }
-}
-";
-        var expectedImports = @"using System;
-using System.Collections.Generic;
-using Rocket.Surgery.Conventions;
-
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.Namespace"", ""TestProject.Conventions"")]
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.ClassName"", ""Imports"")]
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.MethodName"", ""GetConventions"")]";
-        var expected = @"
-using System;
-using System.Collections.Generic;
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    public partial class Program
-    {
-        /// <summary>
-        /// The conventions imported into this assembly
-        /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
-        {
-            foreach (var convention in Dep1.Dep1Exports.GetConventions(serviceProvider))
-                yield return convention;
-            foreach (var convention in Dep2Exports.GetConventions(serviceProvider))
-                yield return convention;
-            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(serviceProvider))
-                yield return convention;
-        }
-    }
-}
-";
-
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            await CreateDeps(),
-            new[] { source },
-            new[] { expectedImports, expected }
-        ).ConfigureAwait(false);
-    }
-
-
-    [Fact]
-    public async Task Should_Generate_Static_Class_Member_Level_Method_FullName()
-    {
-        var source = @"
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    [ImportConventionsAttribute]
-    public partial class Program
-    {
-    }
-}
-";
-        var expectedImports = @"using System;
-using System.Collections.Generic;
-using Rocket.Surgery.Conventions;
-
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.Namespace"", ""TestProject.Conventions"")]
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.ClassName"", ""Imports"")]
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.MethodName"", ""GetConventions"")]";
-        var expected = @"
-using System;
-using System.Collections.Generic;
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    public partial class Program
-    {
-        /// <summary>
-        /// The conventions imported into this assembly
-        /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
-        {
-            foreach (var convention in Dep1.Dep1Exports.GetConventions(serviceProvider))
-                yield return convention;
-            foreach (var convention in Dep2Exports.GetConventions(serviceProvider))
-                yield return convention;
-            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(serviceProvider))
-                yield return convention;
-        }
-    }
-}
-";
-
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
-            await CreateDeps(),
-            new[] { source },
-            new[] { expectedImports, expected }
+            expected,
+            properties: new Dictionary<string, string?>
+            {
+                ["ImportConventionsAssembly"] = "true",
+            }
         ).ConfigureAwait(false);
     }
 
     [Fact]
     public async Task Should_Support_No_Exported_Convention_Assemblies()
     {
-        var source = @"
-using Rocket.Surgery.Conventions;
-
-[assembly: ImportConventions]
-";
+        var source = @"";
         var expectedImports = @"using System;
 using System.Collections.Generic;
 using Rocket.Surgery.Conventions;
@@ -401,120 +346,15 @@ namespace TestProject.Conventions
         }
     }
 }";
-        await AssertGeneratedAsExpected<ConventionAttributesGenerator>(
+        await GenerationHelpers.AssertGeneratedAsExpected<ConventionAttributesGenerator>(
             Enumerable.Empty<Assembly>(), new[] { source }, new[]
             {
                 expectedImports
+            },
+            new Dictionary<string, string?>
+            {
+                ["ImportConventionsAssembly"] = "true"
             }
         ).ConfigureAwait(false);
-    }
-
-    [Fact]
-    public async Task Should_Support_Imports_And_Exports_In_The_Same_Assembly()
-    {
-        var source1 = @"
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Tests;
-
-[assembly: Convention(typeof(Contrib))]
-
-namespace Rocket.Surgery.Conventions.Tests
-{
-    internal class Contrib : IConvention { }
-}
-";
-        var source2 = @"
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    [ImportConventions]
-    public partial class Program
-    {
-    }
-}
-";
-        var expectedImports = @"using System;
-using System.Collections.Generic;
-using Rocket.Surgery.Conventions;
-
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.Namespace"", ""TestProject.Conventions"")]
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.ClassName"", ""Imports"")]
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Imports.MethodName"", ""GetConventions"")]";
-        var expected1 = @"
-using System;
-using System.Collections.Generic;
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    public partial class Program
-    {
-        /// <summary>
-        /// The conventions imported into this assembly
-        /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
-        {
-            foreach (var convention in TestProject.Conventions.Exports.GetConventions(serviceProvider))
-                yield return convention;
-        }
-    }
-}
-";
-        var expected2 = @"
-using System;
-using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Conventions;
-
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.Namespace"", ""TestProject.Conventions"")]
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.ClassName"", ""Exports"")]
-[assembly: System.Reflection.AssemblyMetadata(""Rocket.Surgery.ConventionConfigurationData.Exports.MethodName"", ""GetConventions"")]
-[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
-namespace TestProject.Conventions
-{
-    /// <summary>
-    /// The class defined for exporting conventions from this assembly
-    /// </summary>
-    [System.Runtime.CompilerServices.CompilerGenerated]
-    public static partial class Exports
-    {
-        /// <summary>
-        /// The conventions exports from this assembly
-        /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
-        {
-            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
-        }
-    }
-}";
-
-        var responses = await Generate<ConventionAttributesGenerator>(
-            Array.Empty<Assembly>(),
-            new[]
-            {
-                source1, source2
-            }
-        ).ConfigureAwait(false);
-
-        foreach (var response in responses)
-        {
-            if (response.Contains("ExportedConventions", StringComparison.OrdinalIgnoreCase))
-            {
-                response.Should().Be(NormalizeToLf(expected2).Trim());
-            }
-            else if (response.Contains("class Program", StringComparison.OrdinalIgnoreCase))
-            {
-                response.Should().Be(NormalizeToLf(expected1).Trim());
-            }
-            else if (response.Contains("\"Imports\"", StringComparison.OrdinalIgnoreCase))
-            {
-                response.Should().Be(NormalizeToLf(expectedImports).Trim());
-            }
-            else
-            {
-                throw new Exception("Could not find item to compare");
-            }
-        }
     }
 }

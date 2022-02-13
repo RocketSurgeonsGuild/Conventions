@@ -3,6 +3,7 @@ using System.Reflection;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,11 +49,12 @@ public static class GenerationHelpers
         IEnumerable<Assembly> metadataReferences,
         string source,
         string expected,
-        string? expectedFileHint = null
+        string? expectedFileHint = null,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(new[] { source }, metadataReferences, Array.Empty<MetadataReference>()).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(new[] { source }, metadataReferences, Array.Empty<MetadataReference>(), properties).ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree
                            .Where(z => string.IsNullOrWhiteSpace(expectedFileHint) || z.FilePath.Contains(expectedFileHint, StringComparison.OrdinalIgnoreCase))
@@ -67,11 +69,12 @@ public static class GenerationHelpers
         IEnumerable<MetadataReference> metadataReferences,
         string source,
         string expected,
-        string? expectedFileHint = null
+        string? expectedFileHint = null,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>(), metadataReferences).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>(), metadataReferences, properties).ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree
                            .Where(z => string.IsNullOrWhiteSpace(expectedFileHint) || z.FilePath.Contains(expectedFileHint, StringComparison.OrdinalIgnoreCase))
@@ -84,11 +87,12 @@ public static class GenerationHelpers
     public static async Task AssertGeneratedAsExpected<T>(
         IEnumerable<Assembly> metadataReferences,
         IEnumerable<string> sources,
-        IEnumerable<string> expected
+        IEnumerable<string> expected,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(sources, metadataReferences, Array.Empty<MetadataReference>()).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(sources, metadataReferences, Array.Empty<MetadataReference>(), properties).ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString())).ToArray();
         // and append preamble to the expected
@@ -104,11 +108,12 @@ public static class GenerationHelpers
     public static async Task AssertGeneratedAsExpected<T>(
         IEnumerable<MetadataReference> metadataReferences,
         IEnumerable<string> sources,
-        IEnumerable<string> expected
+        IEnumerable<string> expected,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(sources, Array.Empty<Assembly>(), metadataReferences).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(sources, Array.Empty<Assembly>(), metadataReferences, properties).ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString())).ToArray();
         // and append preamble to the expected
@@ -124,11 +129,13 @@ public static class GenerationHelpers
     public static async Task AssertGeneratedAsExpected<T>(
         string source,
         string expected,
-        string? expectedFileHint = null
+        string? expectedFileHint = null,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>(), Array.Empty<MetadataReference>()).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>(), Array.Empty<MetadataReference>(), properties)
+           .ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree
                            .Where(z => string.IsNullOrWhiteSpace(expectedFileHint) || z.FilePath.Contains(expectedFileHint, StringComparison.OrdinalIgnoreCase))
@@ -140,11 +147,12 @@ public static class GenerationHelpers
 
     public static async Task<string> Generate<T>(
         IEnumerable<Assembly> metadataReferences,
-        string source
+        string source,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(new[] { source }, metadataReferences, Array.Empty<MetadataReference>()).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(new[] { source }, metadataReferences, Array.Empty<MetadataReference>(), properties).ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
         // and append preamble to the expected
@@ -153,11 +161,12 @@ public static class GenerationHelpers
 
     public static async Task<string> Generate<T>(
         IEnumerable<MetadataReference> metadataReferences,
-        string source
+        string source,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>(), metadataReferences).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>(), metadataReferences, properties).ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
         // and append preamble to the expected
@@ -166,11 +175,12 @@ public static class GenerationHelpers
 
     public static async Task<string[]> Generate<T>(
         IEnumerable<Assembly> metadataReferences,
-        IEnumerable<string> sources
+        IEnumerable<string> sources,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(sources, metadataReferences, Array.Empty<MetadataReference>()).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(sources, metadataReferences, Array.Empty<MetadataReference>(), properties).ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
         // and append preamble to the expected
@@ -179,21 +189,26 @@ public static class GenerationHelpers
 
     public static async Task<string[]> Generate<T>(
         IEnumerable<MetadataReference> metadataReferences,
-        IEnumerable<string> sources
+        IEnumerable<string> sources,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(sources, Array.Empty<Assembly>(), metadataReferences).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(sources, Array.Empty<Assembly>(), metadataReferences, properties).ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
         // and append preamble to the expected
         return generatedText.ToArray();
     }
 
-    public static async Task<string> Generate<T>(string source)
+    public static async Task<string> Generate<T>(
+        string source,
+        IDictionary<string, string?>? properties = null
+    )
         where T : new()
     {
-        var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>(), Array.Empty<MetadataReference>()).ConfigureAwait(false);
+        var generatedTree = await GenerateAsync<T>(new[] { source }, Array.Empty<Assembly>(), Array.Empty<MetadataReference>(), properties)
+           .ConfigureAwait(false);
         // normalize line endings to just LF
         var generatedText = generatedTree.Select(z => NormalizeToLf(z.GetText().ToString()));
         // and append preamble to the expected
@@ -203,17 +218,17 @@ public static class GenerationHelpers
     public static async Task<IEnumerable<SyntaxTree>> GenerateAsync<T>(
         IEnumerable<string> sources,
         IEnumerable<Assembly> metadataReferences,
-        IEnumerable<MetadataReference> compilationReferences
+        IEnumerable<MetadataReference> compilationReferences,
+        IDictionary<string, string?>? properties
     )
         where T : new()
     {
         // Assert.Empty(diagnostics.Where(x => x.Severity >= DiagnosticSeverity.Warning));
 
-        var (outputCompilation, startingSyntaxTress) = await InnerGenerateCompilationAsync<T>(sources, metadataReferences, compilationReferences);
+        var (outputCompilation, startingSyntaxTress) = await InnerGenerateCompilationAsync<T>(sources, metadataReferences, compilationReferences, properties);
 
         // the syntax tree added by the generator will be the last one in the compilation
-        return Enumerable.TakeLast(
-            outputCompilation.SyntaxTrees,
+        return outputCompilation.SyntaxTrees.TakeLast(
             outputCompilation.SyntaxTrees.Count() - startingSyntaxTress
         );
     }
@@ -222,6 +237,7 @@ public static class GenerationHelpers
         IEnumerable<string> sources,
         IEnumerable<Assembly> metadataReferences,
         IEnumerable<MetadataReference> compilationReferences,
+        IDictionary<string, string?>? properties,
         string? projectName = null
     )
         where T : new()
@@ -256,8 +272,13 @@ public static class GenerationHelpers
 
         var generator = new T();
         var driver =
-            generator is ISourceGenerator sourceGenerator ? CSharpGeneratorDriver.Create(sourceGenerator) :
-            generator is IIncrementalGenerator incrementalGenerator ? CSharpGeneratorDriver.Create(incrementalGenerator) :
+            generator is ISourceGenerator sourceGenerator ? CSharpGeneratorDriver.Create(
+                new[] { sourceGenerator }, optionsProvider: new OptionsProvider(properties ?? new Dictionary<string, string?>())
+            ) :
+            generator is IIncrementalGenerator incrementalGenerator ? CSharpGeneratorDriver.Create(
+                new[] { incrementalGenerator }.Select(GeneratorExtensions.AsSourceGenerator),
+                optionsProvider: new OptionsProvider(properties ?? new Dictionary<string, string?>())
+            ) :
             throw new NotSupportedException("Generator type not supported");
 
         driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out diagnostics);
@@ -271,11 +292,12 @@ public static class GenerationHelpers
         IEnumerable<string> sources,
         IEnumerable<Assembly> metadataReferences,
         IEnumerable<MetadataReference> compilationReferences,
-        string projectName
+        string projectName,
+        IDictionary<string, string?>? properties = null
     )
         where T : new()
     {
-        var compilation = ( await InnerGenerateCompilationAsync<T>(sources, metadataReferences, compilationReferences, projectName) ).compilation;
+        var compilation = ( await InnerGenerateCompilationAsync<T>(sources, metadataReferences, compilationReferences, properties, projectName) ).compilation;
 
         var memoryStream = new MemoryStream();
         var result = compilation.Emit(memoryStream, options: new EmitOptions(outputNameOverride: projectName));
@@ -319,9 +341,44 @@ public static class GenerationHelpers
         return project;
     }
 
+    private class OptionsProvider : AnalyzerConfigOptionsProvider
+    {
+        public OptionsProvider(IDictionary<string, string?> properties)
+        {
+            GlobalOptions = new OptionsObject(properties);
+        }
+
+        public override AnalyzerConfigOptions GetOptions(SyntaxTree tree)
+        {
+            return GlobalOptions;
+        }
+
+        public override AnalyzerConfigOptions GetOptions(AdditionalText textFile)
+        {
+            return GlobalOptions;
+        }
+
+        public override AnalyzerConfigOptions GlobalOptions { get; }
+    }
+
+    private class OptionsObject : AnalyzerConfigOptions
+    {
+        private readonly IDictionary<string, string?> _properties;
+
+        public OptionsObject(IDictionary<string, string?> properties)
+        {
+            _properties = properties.ToDictionary(z => $"build_property.{z.Key}", z => z.Value);
+        }
+
+        public override bool TryGetValue(string key, [NotNullWhen(true)] out string? value)
+        {
+            return _properties.TryGetValue(key, out value);
+        }
+    }
+
     public static string NormalizeToLf(string input)
     {
-        return input.Replace(CrLf, Lf);
+        return input.Replace(CrLf, Lf, StringComparison.Ordinal);
     }
 
     public static async Task<IEnumerable<MetadataReference>> CreateDeps()
@@ -362,7 +419,7 @@ public class Class1 : IConvention
                 @"using Rocket.Surgery.Conventions;
 using Sample.DependencyTwo;
 
-[assembly: ExportConventions(Namespace = ""Dep2"", ClassName = ""Dep2Exports"")]
+[assembly: ExportConventions(Namespace = null, ClassName = ""Dep2Exports"")]
 [assembly: Convention(typeof(Class2))]
 
 namespace Sample.DependencyTwo;
