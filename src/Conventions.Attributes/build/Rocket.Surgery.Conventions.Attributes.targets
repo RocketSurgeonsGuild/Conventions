@@ -1,20 +1,8 @@
-﻿<Project>
-    
-        <PropertyGroup>            
+﻿<Project>    
+    <PropertyGroup>
         <_ConventionApplicationDetected
-            Condition="'$(_ConventionApplicationDetected)' == '' and '$(UsingMicrosoftNETSdkWeb)' == 'true'"
+            Condition="'$(_ConventionApplicationDetected)' == '' and ('$(OutputType)' != 'Library' or '$(OutputType)' != 'library')"
         >true</_ConventionApplicationDetected>
-        <_ConventionApplicationDetected
-            Condition="'$(_ConventionApplicationDetected)' == '' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'"
-        >true</_ConventionApplicationDetected>
-        <_ConventionApplicationDetected
-            Condition="'$(_ConventionApplicationDetected)' == '' and '$(UsingMicrosoftNETSdkRazor)' == 'true'"
-        >true</_ConventionApplicationDetected>
-        <_ConventionApplicationDetected
-            Condition="'$(_ConventionApplicationDetected)' == '' and '$(UsingMicrosoftNETSdkWorker)' == 'true'"
-        >true</_ConventionApplicationDetected>
-        <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == '' and '$(OutputType)' == 'Exe'">true</_ConventionApplicationDetected>
-        <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == '' and '$(OutputType)' == 'exe'">true</_ConventionApplicationDetected>
         <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == ''">false</_ConventionApplicationDetected>
     </PropertyGroup>
     <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
