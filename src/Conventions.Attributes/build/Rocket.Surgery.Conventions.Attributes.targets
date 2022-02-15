@@ -4,27 +4,25 @@
             Condition="'$(_ConventionApplicationDetected)' == '' and ('$(OutputType)' != 'Library' or '$(OutputType)' != 'library')"
         >true</_ConventionApplicationDetected>
         <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == ''">false</_ConventionApplicationDetected>
+        
+        <ImportConventionsNamespace Condition="'$(ImportConventionsNamespace)' == ''">$(RootNamespace)</ImportConventionsNamespace>
+        <ImportConventionsClassName Condition="'$(ImportConventionsClassName)' == ''">Imports</ImportConventionsClassName>        
+        <ImportConventionsMethodName Condition="'$(ImportConventionsMethodName)' == ''">GetConventions</ImportConventionsMethodName>   
+        
+        <ExportConventionsNamespace Condition="'$(ExportConventionsNamespace)' == ''">$(RootNamespace).Conventions</ExportConventionsNamespace>
+        <ExportConventionsClassName Condition="'$(ExportConventionsClassName)' == ''">Exports</ExportConventionsClassName>        
+        <ExportConventionsMethodName Condition="'$(ExportConventionsMethodName)' == ''">GetConventions</ExportConventionsMethodName>    
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>        
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">true</ExportConventionsAssembly>
     </PropertyGroup>
     <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
-        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>
-        <ImportConventionsClassName Condition="'$(ImportConventionsClassName)' == ''">Imports</ImportConventionsClassName>        
-        <ImportConventionsMethodName Condition="'$(ImportConventionsMethodName)' == ''">GetConventions</ImportConventionsMethodName>        
-        <ImportConventionsPostfix Condition="'$(ImportConventionsPostfix)' == ''">false</ImportConventionsPostfix>
-        
-        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">false</ExportConventionsAssembly>
-        <ExportConventionsClassName Condition="'$(ExportConventionsClassName)' == ''">Exports</ExportConventionsClassName>        
-        <ExportConventionsMethodName Condition="'$(ExportConventionsMethodName)' == ''">GetConventions</ExportConventionsMethodName>        
-        <ExportConventionsPostfix Condition="'$(ExportConventionsPostfix)' == ''">true</ExportConventionsPostfix>
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>             
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">false</ExportConventionsAssembly>    
     </PropertyGroup>
     <PropertyGroup Condition="'$(_ConventionApplicationDetected)' != 'true'">
-        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">false</ImportConventionsAssembly>
-        <ImportConventionsClassName Condition="'$(ImportConventionsClassName)' == ''">Imports</ImportConventionsClassName>        
-        <ImportConventionsMethodName Condition="'$(ImportConventionsMethodName)' == ''">GetConventions</ImportConventionsMethodName>        
-        <ImportConventionsPostfix Condition="'$(ImportConventionsPostfix)' == ''">false</ImportConventionsPostfix>
-        
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">false</ImportConventionsAssembly>        
         <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">true</ExportConventionsAssembly>
-        <ExportConventionsClassName Condition="'$(ExportConventionsClassName)' == ''">Exports</ExportConventionsClassName>        
-        <ExportConventionsMethodName Condition="'$(ExportConventionsMethodName)' == ''">GetConventions</ExportConventionsMethodName>        
-        <ExportConventionsPostfix Condition="'$(ExportConventionsPostfix)' == ''">true</ExportConventionsPostfix>        
     </PropertyGroup>
 </Project>
