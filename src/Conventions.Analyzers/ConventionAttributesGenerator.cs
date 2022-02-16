@@ -397,24 +397,8 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 continue;
             }
 
-            var createConvention =
-                InvocationExpression(
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            IdentifierName("ActivatorUtilities"),
-                            GenericName(Identifier("CreateInstance"))
-                               .WithTypeArgumentList(
-                                    TypeArgumentList(SingletonSeparatedList<TypeSyntax>(ParseName(convention.ToDisplayString())))
-                                )
-                        )
-                    )
-                   .WithArgumentList(
-                        ArgumentList(
-                            SingletonSeparatedList(
-                                Argument(IdentifierName("serviceProvider"))
-                            )
-                        )
-                    );
+
+            var createConvention = NewConventionOrActivate(convention);
 
             var attributes = convention.GetAttributes();
             var hostType = HostTypeUndefined;
@@ -601,36 +585,59 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         );
     }
 
-    private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorExecutionContext context, BaseTypeDeclarationSyntax declarationSyntax)
+    private static ExpressionSyntax NewConventionOrActivate(INamedTypeSymbol convention)
     {
-        var model = context.Compilation.GetSemanticModel(declarationSyntax.SyntaxTree);
-        if (model.GetDeclaredSymbol(declarationSyntax) is { } symbol)
-            yield return symbol;
-    }
-
-    private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorExecutionContext context, AttributeListSyntax attributeListSyntax)
-    {
-        var model = context.Compilation.GetSemanticModel(attributeListSyntax.SyntaxTree);
-        var conventionAttribute = context.Compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.ConventionAttribute")!;
-        foreach (var attribute in attributeListSyntax.Attributes)
+        if (convention.Constructors.Length is 0)
         {
-            if (attribute.ArgumentList == null || attribute.ArgumentList.Arguments.Count is 0 or > 1)
-                continue;
-
-            var nameInfo = model.GetTypeInfo(attribute.Name);
-            if (nameInfo.Type?.ToDisplayString() != conventionAttribute.ToDisplayString())
-                continue;
-
-            var arg = attribute.ArgumentList.Arguments.Single();
-            if (!( arg.Expression is TypeOfExpressionSyntax typeOfExpressionSyntax ))
-                continue;
-
-            var symbol = model.GetTypeInfo(typeOfExpressionSyntax.Type);
-            if (symbol.Type == null)
-                continue;
-
-            yield return context.Compilation.GetTypeByMetadataName(GetFullMetadataName(symbol.Type))!;
+            return ObjectCreationExpression(ParseName(convention.ToDisplayString()));
         }
+
+        if (convention.Constructors.Count(z => z.DeclaredAccessibility is Accessibility.Internal or Accessibility.Public) == 1)
+        {
+            var constructor = convention.Constructors.First(z => z.DeclaredAccessibility is Accessibility.Internal or Accessibility.Public);
+            var arguments = ArgumentList();
+            foreach (var parameter in constructor.Parameters)
+            {
+                arguments = arguments.AddArguments(
+                    Argument(
+                        InvocationExpression(
+                                MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    IdentifierName("serviceProvider"),
+                                    IdentifierName("GetService")
+                                )
+                            )
+                           .WithArgumentList(
+                                ArgumentList(
+                                    SingletonSeparatedList(
+                                        Argument(ParseName(parameter.Type.ToDisplayString()))
+                                    )
+                                )
+                            )
+                    )
+                );
+            }
+
+            return ObjectCreationExpression(ParseName(convention.ToDisplayString()), arguments, null);
+        }
+
+        return InvocationExpression(
+                MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    IdentifierName("ActivatorUtilities"),
+                    GenericName(Identifier("CreateInstance"))
+                       .WithTypeArgumentList(
+                            TypeArgumentList(SingletonSeparatedList<TypeSyntax>(ParseName(convention.ToDisplayString())))
+                        )
+                )
+            )
+           .WithArgumentList(
+                ArgumentList(
+                    SingletonSeparatedList(
+                        Argument(IdentifierName("serviceProvider"))
+                    )
+                )
+            );
     }
 
     private static IEnumerable<INamedTypeSymbol> GetExportedConventions(
