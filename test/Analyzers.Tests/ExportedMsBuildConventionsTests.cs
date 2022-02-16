@@ -41,7 +41,7 @@ namespace Source.Space
         /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
-            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
+            yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined);
         }
     }
 }
@@ -95,7 +95,7 @@ public static partial class Exports
     /// </summary>
     public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
     {
-        yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
+        yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined);
     }
 }
 ";
@@ -150,7 +150,7 @@ namespace TestProject.Conventions
         /// </summary>
         public static IEnumerable<IConventionWithDependencies> SourceMethod(IServiceProvider serviceProvider)
         {
-            yield return new ConventionWithDependencies(ActivatorUtilities.CreateInstance<Rocket.Surgery.Conventions.Tests.Contrib>(serviceProvider), HostType.Undefined);
+            yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined);
         }
     }
 }
