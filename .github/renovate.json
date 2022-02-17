@@ -94,7 +94,7 @@
             "automergeStrategy": "rebase"
         },
         {
-            "matchPackagePatterns": ["^ReportGenerator", "^reportgenerator"],
+            "matchPackagePatterns": ["^ReportGenerator", "^reportgenerator", "^dotnet-reportgenerator"],
             "groupName": "reportgenerator",
             "labels": [":truck: private-dependencies"],
             "automerge": true,
