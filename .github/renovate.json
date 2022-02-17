@@ -1,0 +1,38 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": ["local>RocketSurgeonsGuild/.github:renovate-config"],
+    "concurrentRequestLimit": 999,
+    "packageRules": [
+        {
+            "matchManagers": ["nuget"],
+            "matchPackagePatterns": [
+                "^Nuke.Common",
+                "^JetBrains\\.ReSharper",
+                "^ReportGenerator",
+                "^GitVersion",
+                "^Bogus",
+                "^coverlet",
+                "^FakeItEasy",
+                "^FluentAssertions",
+                "^xunit",
+                "^Microsoft\\.NET\\.Test\\.Sdk$",
+                "^Rocket\\.Surgery\\.MSBuild$",
+                "^Rocket\\.Surgery\\.Nuke$",
+                "^Rocket\\.Surgery\\.Extensions\\.Testing",
+                "^Roslynator\\.Analyzers"
+            ],
+            "addLabels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchSourceUrlPrefixes": ["https://github.com/RocketSurgeonsGuild/Conventions"],
+            "groupName": "Rocket Surgery Conventions (deps)"
+        },
+        {
+            "matchSourceUrlPrefixes": ["https://github.com/RocketSurgeonsGuild"],
+            "matchPackagePatterns": ["^Rocket\\.Surgery\\.$"],
+            "groupName": "Rocket Surgery Other (deps)"
+        }
+    ]
+}
