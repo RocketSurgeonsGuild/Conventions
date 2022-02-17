@@ -1,37 +1,137 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": ["local>RocketSurgeonsGuild/.github:renovate-config"],
-    "concurrentRequestLimit": 999,
+    "prHourlyLimit": 10,
+    "hostRules": [
+        {
+            "concurrentRequestLimit": 999
+        }
+    ],
+    "labels": [":package: dependencies"],
+    "github-actions": {
+        "fileMatch": ["(^workflow-templates|\\.github\\/workflows)\\/[^/]+\\.ya?ml$", "(^|\\/)action\\.ya?ml$"],
+        "automerge": true,
+        "automergeStrategy": "rebase",
+        "groupName": "github actions",
+        "labels": [":truck: private-dependencies"]
+    },
+    "npm": {
+        "fileMatch": ["(^|/)package.json$"],
+        "automerge": true,
+        "automergeStrategy": "rebase",
+        "groupName": "github actions",
+        "labels": [":truck: private-dependencies"]
+    },
+    "dotnet": {},
     "packageRules": [
         {
+            "description": "dotnet monorepo",
+            "enabled": false,
+            "matchSourceUrlPrefixes": [
+                "https://github.com/dotnet/aspnetcore",
+                "https://github.com/dotnet/efcore",
+                "https://github.com/dotnet/extensions",
+                "https://github.com/dotnet/runtime"
+            ]
+        },
+        {
             "matchManagers": ["nuget"],
-            "matchPackagePatterns": [
-                "^Nuke.Common",
-                "^JetBrains\\.ReSharper",
-                "^ReportGenerator",
-                "^GitVersion",
-                "^Bogus",
-                "^coverlet",
-                "^FakeItEasy",
-                "^FluentAssertions",
-                "^xunit",
-                "^Microsoft\\.NET\\.Test\\.Sdk$",
-                "^Rocket\\.Surgery\\.MSBuild$",
-                "^Rocket\\.Surgery\\.Nuke$",
-                "^Rocket\\.Surgery\\.Extensions\\.Testing",
-                "^Roslynator\\.Analyzers"
-            ],
-            "addLabels": [":truck: private-dependencies"],
+            "groupName": "build dependencies",
+            "matchPackagePatterns": ["^Nuke.Common", "^Microsoft\\.NET\\.Test\\.Sdk$", "^Rocket\\.Surgery\\.MSBuild$", "^Rocket\\.Surgery\\.Nuke$"],
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^Roslynator"],
+            "groupName": "roslynator",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^FluentAssertions"],
+            "groupName": "fluentassertions",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^NSubstitute"],
+            "groupName": "nsubstitute",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^Moq"],
+            "groupName": "moq",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^FakeItEasy"],
+            "groupName": "fakeiteasy",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^coverlet"],
+            "groupName": "coverlet",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^Bogus"],
+            "groupName": "bogus",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^ReportGenerator"],
+            "groupName": "reportgenerator",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^JetBrains"],
+            "groupName": "jetbrains",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^xunit"],
+            "groupName": "xunit",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchManagers": ["nuget"],
+            "matchPackagePatterns": ["^System\\.Collections\\.Immutable", "^System\\.Interactive", "^System\\.Reactive", "^Humanizer"],
+            "labels": [":package: dependencies"],
             "automerge": true,
             "automergeStrategy": "rebase"
         },
         {
             "matchSourceUrlPrefixes": ["https://github.com/RocketSurgeonsGuild/Conventions"],
+            "labels": [":package: dependencies"],
             "groupName": "Rocket Surgery Conventions (deps)"
         },
         {
+            "matchSourceUrlPrefixes": ["https://github.com/RocketSurgeonsGuild/Testing"],
+            "labels": [":truck: private-dependencies"],
+            "groupName": "Rocket Surgery Testing (deps)"
+        },
+        {
             "matchSourceUrlPrefixes": ["https://github.com/RocketSurgeonsGuild"],
-            "matchPackagePatterns": ["^Rocket\\.Surgery\\.$"],
+            "labels": [":package: dependencies"],
             "groupName": "Rocket Surgery Other (deps)"
         }
     ]
