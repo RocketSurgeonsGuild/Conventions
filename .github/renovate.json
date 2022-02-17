@@ -8,19 +8,21 @@
             "concurrentRequestLimit": 999
         }
     ],
+    "platformAutomerge": true,
+    "automergeType": "pr",
+    "automergeStrategy": "rebase",
     "labels": [":package: dependencies"],
     "rebaseLabel": ":trident: rebase",
     "stopUpdatingLabel": ":vertical_traffic_light: stop updating",
     "github-actions": {
         "fileMatch": ["(^workflow-templates|\\.github\\/workflows)\\/[^/]+\\.ya?ml$", "(^|\\/)action\\.ya?ml$"],
         "automerge": true,
-        "automergeStrategy": "rebase",
         "groupName": "github actions",
         "labels": [":truck: private-dependencies"]
     },
     "js": {
         "automerge": true,
-        "automergeStrategy": "rebase",
+
         "groupName": "github actions",
         "labels": [":truck: private-dependencies"]
     },
@@ -41,92 +43,79 @@
             "groupName": "build dependencies",
             "matchPackagePatterns": ["^Nuke.Common", "^Microsoft\\.NET\\.Test\\.Sdk$", "^Rocket\\.Surgery\\.MSBuild$", "^Rocket\\.Surgery\\.Nuke$"],
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^Roslynator"],
             "groupName": "roslynator",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^FluentAssertions"],
             "groupName": "fluentassertions",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^NSubstitute"],
             "groupName": "nsubstitute",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^Moq"],
             "groupName": "moq",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^FakeItEasy"],
             "groupName": "fakeiteasy",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^coverlet"],
             "groupName": "coverlet",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^Bogus"],
             "groupName": "bogus",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^ReportGenerator", "^reportgenerator", "^dotnet-reportgenerator"],
             "groupName": "reportgenerator",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^JetBrains", "^jetbrains"],
             "groupName": "jetbrains",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^GitVersion", "^gitversion"],
             "groupName": "gitversion",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchPackagePatterns": ["^xunit"],
             "groupName": "xunit",
             "labels": [":truck: private-dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchManagers": ["nuget"],
             "matchPackagePatterns": ["^System\\.Collections\\.Immutable", "^System\\.Interactive", "^System\\.Reactive", "^Humanizer"],
             "labels": [":package: dependencies"],
-            "automerge": true,
-            "automergeStrategy": "rebase"
+            "automerge": true
         },
         {
             "matchSourceUrlPrefixes": ["https://github.com/RocketSurgeonsGuild/Conventions"],
