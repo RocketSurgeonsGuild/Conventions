@@ -11,6 +11,7 @@
     "platformAutomerge": true,
     "automergeType": "pr",
     "automergeStrategy": "rebase",
+    "rebaseWhen": "auto",
     "labels": [":package: dependencies"],
     "rebaseLabel": ":trident: rebase",
     "stopUpdatingLabel": ":vertical_traffic_light: stop updating",
@@ -22,7 +23,6 @@
     },
     "js": {
         "automerge": true,
-
         "groupName": "github actions",
         "labels": [":truck: private-dependencies"]
     },
