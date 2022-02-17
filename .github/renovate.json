@@ -94,15 +94,22 @@
             "automergeStrategy": "rebase"
         },
         {
-            "matchPackagePatterns": ["^ReportGenerator"],
+            "matchPackagePatterns": ["^ReportGenerator", "^reportgenerator"],
             "groupName": "reportgenerator",
             "labels": [":truck: private-dependencies"],
             "automerge": true,
             "automergeStrategy": "rebase"
         },
         {
-            "matchPackagePatterns": ["^JetBrains"],
+            "matchPackagePatterns": ["^JetBrains", "^jetbrains"],
             "groupName": "jetbrains",
+            "labels": [":truck: private-dependencies"],
+            "automerge": true,
+            "automergeStrategy": "rebase"
+        },
+        {
+            "matchPackagePatterns": ["^GitVersion", "^gitversion"],
+            "groupName": "gitversion",
             "labels": [":truck: private-dependencies"],
             "automerge": true,
             "automergeStrategy": "rebase"
