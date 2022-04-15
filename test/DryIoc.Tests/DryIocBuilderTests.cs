@@ -130,9 +130,9 @@ public class DryIocBuilderTests : AutoFakeTest
                                     .ConfigureDryIoc(
                                          (conventionContext, configuration, services, container) =>
                                          {
-                                             container.UseInstance(A.Fake<IAbc>());
+                                             container.Use(A.Fake<IAbc>());
                                              services.AddSingleton(A.Fake<IAbc2>());
-                                             container.UseInstance(A.Fake<IAbc4>());
+                                             container.Use(A.Fake<IAbc4>());
                                              return container;
                                          }
                                      )
