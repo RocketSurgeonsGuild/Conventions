@@ -128,9 +128,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
                                               .ConfigureDryIoc(
                                                    (conventionContext, configuration, services, container) =>
                                                    {
-                                                       container.UseInstance(A.Fake<DryIocFixtures.IAbc>());
+                                                       container.Use(A.Fake<DryIocFixtures.IAbc>());
                                                        services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
-                                                       container.UseInstance(A.Fake<DryIocFixtures.IAbc4>());
+                                                       container.Use(A.Fake<DryIocFixtures.IAbc4>());
                                                        return container;
                                                    }
                                                )
