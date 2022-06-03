@@ -59,7 +59,7 @@
     <PackageVersion Include="Microsoft.Azure.WebJobs.Host.Storage" Version="4.0.4" />
     <PackageVersion Include="NetEscapades.Configuration.Yaml" Version="2.2.0" />
     <PackageVersion Include="Spectre.Console" Version="0.44.0" />
-    <PackageVersion Include="Terminal.Gui" Version="1.5.0" />
+    <PackageVersion Include="Terminal.Gui" Version="1.6.4" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="34.0.2" />
