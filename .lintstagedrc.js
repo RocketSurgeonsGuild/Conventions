@@ -1,3 +1,5 @@
+var micromatch = require('micromatch');
+
 function forEachChunk(chunks, callback, chunkSize = 50) {
     var mappedFiles = [];
     var files = chunks.concat();
@@ -18,11 +20,9 @@ function cleanupcode(filenames) {
 }
 
 module.exports = {
-    '*.cs': filenames => {
-        return [`echo "'${filenames.join(`' '`)}'" | dotnet format --include -`].concat(cleanupcode(filenames));
+    '!(*verified|*received).cs': filenames => {
+        return [`echo "'${match.join(`' '`)}'" | dotnet format --include -`].concat(cleanupcode(match));
     },
-    '*.{csproj,targets,props,xml}': filenames =>
-        forEachChunk(filenames, chunk => [`prettier --write '${chunk.join(`' '`)}'`]),
-    '*.{js,ts,jsx,tsx,json,yml,yaml}': filenames =>
-        forEachChunk(filenames, chunk => [`prettier --write '${chunk.join(`' '`)}'`]),
+    '*.{csproj,targets,props,xml}': filenames => forEachChunk(filenames, chunk => [`prettier --write '${chunk.join(`' '`)}'`]),
+    '*.{js,ts,jsx,tsx,json,yml,yaml}': filenames => forEachChunk(filenames, chunk => [`prettier --write '${chunk.join(`' '`)}'`]),
 };
