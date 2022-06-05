@@ -601,19 +601,19 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 arguments = arguments.AddArguments(
                     Argument(
                         InvocationExpression(
-                                MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    IdentifierName("serviceProvider"),
-                                    IdentifierName("GetService")
-                                )
-                            )
-                           .WithArgumentList(
-                                ArgumentList(
-                                    SingletonSeparatedList(
-                                        Argument(ParseName(parameter.Type.ToDisplayString()))
+                            MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                IdentifierName("serviceProvider"),
+                                GenericName("GetService")
+                                   .WithTypeArgumentList(
+                                        TypeArgumentList(
+                                            SingletonSeparatedList<TypeSyntax>(
+                                                ParseName(parameter.Type.WithNullableAnnotation(NullableAnnotation.None).ToDisplayString())
+                                            )
+                                        )
                                     )
-                                )
                             )
+                        )
                     )
                 );
             }

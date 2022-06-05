@@ -33,7 +33,14 @@ public static class GenerationHelpers
         var coreMetaReferences =
             coreAssemblyNames.Select(x => MetadataReference.CreateFromFile(Path.Combine(coreAssemblyPath, x)));
         MetadataReferences = coreMetaReferences.ToImmutableArray();
+        AllGenerators = typeof(ConventionAttributesGenerator).Assembly.GetTypes()
+                                                             .Where(
+                                                                  z => typeof(IIncrementalGenerator).IsAssignableFrom(z)
+                                                                    && z.GetCustomAttributes<GeneratorAttribute>().Any()
+                                                              ).ToImmutableArray();
     }
+
+    public static ImmutableArray<Type> AllGenerators { get; }
 
     internal const string CrLf = "\r\n";
     internal const string Lf = "\n";
@@ -231,6 +238,57 @@ public static class GenerationHelpers
         return outputCompilation.SyntaxTrees.TakeLast(
             outputCompilation.SyntaxTrees.Count() - startingSyntaxTress
         );
+    }
+
+    public static Task<GeneratorDriverRunResult> GenerateAll(
+        string source,
+        IEnumerable<Assembly>? metadataReferences = null,
+        IEnumerable<MetadataReference>? compilationReferences = null,
+        IDictionary<string, string?>? properties = null
+    )
+    {
+        return GenerateAll(new[] { source }, metadataReferences, compilationReferences, properties);
+    }
+
+    public static async Task<GeneratorDriverRunResult> GenerateAll(
+        IEnumerable<string> sources,
+        IEnumerable<Assembly>? metadataReferences = null,
+        IEnumerable<MetadataReference>? compilationReferences = null,
+        IDictionary<string, string?>? properties = null
+    )
+    {
+        var references = ( metadataReferences ?? Array.Empty<Assembly>() )
+                        .Concat(
+                             new[]
+                             {
+                                 typeof(ActivatorUtilities).Assembly,
+                                 typeof(ConventionAttribute).Assembly,
+                                 typeof(ConventionContext).Assembly,
+                                 typeof(IConventionContext).Assembly,
+                                 typeof(IServiceProvider).Assembly,
+                             }
+                         )
+                        .Distinct()
+                        .Select(x => MetadataReference.CreateFromFile(x.Location))
+                        .Concat(compilationReferences ?? Array.Empty<MetadataReference>())
+                        .ToArray();
+        var project = CreateProject(references, TestProjectName, sources.ToArray());
+
+        var compilation = (CSharpCompilation)( await project.GetCompilationAsync() )!;
+        if (compilation is null)
+        {
+            throw new InvalidOperationException("Could not compile the sources");
+        }
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            AllGenerators.Select(z => Activator.CreateInstance(z) as IIncrementalGenerator).Select(z => z.AsSourceGenerator()).ToImmutableArray(),
+            ImmutableArray<AdditionalText>.Empty,
+            compilation.SyntaxTrees[0].Options as CSharpParseOptions,
+            new OptionsProvider(properties ?? new Dictionary<string, string?>())
+        );
+
+        driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
+        return driver.GetRunResult();
     }
 
     private static async Task<(Compilation compilation, int trees)> InnerGenerateCompilationAsync<T>(
