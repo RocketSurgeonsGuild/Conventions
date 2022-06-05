@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
@@ -8,5 +8,9 @@
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
         <ProjectReference Include="..\..\src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+    </ItemGroup>
+    <ItemGroup>        
+        <PackageReference Include="Verify.Xunit" />
+        <PackageReference Include="Verify.SourceGenerators" />
     </ItemGroup>
 </Project>
