@@ -1,5 +1,3 @@
-var micromatch = require('micromatch');
-
 function forEachChunk(chunks, callback, chunkSize = 50) {
     var mappedFiles = [];
     var files = chunks.concat();
