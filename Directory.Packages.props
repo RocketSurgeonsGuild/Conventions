@@ -50,10 +50,10 @@
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Configuration" Version="11.4.0" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Configuration.Ini" Version="11.4.0" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Configuration.Json" Version="11.4.0" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Configuration.Yaml" Version="11.4.0" />
+    <PackageVersion Include="Rocket.Surgery.Extensions.Configuration" Version="11.4.1" />
+    <PackageVersion Include="Rocket.Surgery.Extensions.Configuration.Ini" Version="11.4.1" />
+    <PackageVersion Include="Rocket.Surgery.Extensions.Configuration.Json" Version="11.4.1" />
+    <PackageVersion Include="Rocket.Surgery.Extensions.Configuration.Yaml" Version="11.4.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.Azure.WebJobs" Version="3.0.33" />
