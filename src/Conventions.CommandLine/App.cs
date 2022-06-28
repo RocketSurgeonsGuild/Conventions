@@ -134,15 +134,17 @@ public static class App
             : configurationBuilder.Sources.IndexOf(source);
 
         var cb = new ConfigurationBuilder().ApplyConventions(conventionContext, configurationBuilder.Build());
-
-        configurationBuilder.Sources.Insert(
-            index + 1,
-            new ChainedConfigurationSource
-            {
-                Configuration = cb.Build(),
-                ShouldDisposeConfiguration = true
-            }
-        );
+        if (cb.Sources.Count > 0)
+        {
+            configurationBuilder.Sources.Insert(
+                index + 1,
+                new ChainedConfigurationSource
+                {
+                    Configuration = cb.Build(),
+                    ShouldDisposeConfiguration = true
+                }
+            );
+        }
 
         return configurationBuilder.Build();
     }
