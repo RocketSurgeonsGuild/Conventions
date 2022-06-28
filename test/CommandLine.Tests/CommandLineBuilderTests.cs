@@ -165,23 +165,27 @@ public class CommandLineBuilderTests : AutoFakeTest
         var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                      .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
-
-        var service = A.Fake<IService2>();
-        A.CallTo(() => service.SomeValue).Returns("Service2");
-        AutoFake.Provide(service);
-
         builder.ConfigureCommandLine(
-            (c, builder) =>
-            {
-                var context = builder;
-                context.AddCommand<ServiceInjection2>("si");
-            }
+            (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
 
         var response = App.Create(ConventionContext.From(builder));
 
-        var result = response.Run(new[] { "si" });
+        response.Run(new[] { "test" }).Should().Be((int)LogLevel.Information);
+    }
 
+    [Fact]
+    public void Should_Configure_Logging_Correctly()
+    {
+        var builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .UseServiceProviderFactory(new TestServiceProviderFactory(ServiceProvider));
+
+        builder.ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"));
+
+        var response = App.Create(builder);
+
+        var result = response.Run(new[] { "logger" });
         result.Should().Be(0);
     }
 
@@ -341,6 +345,23 @@ public class CommandLineBuilderTests : AutoFakeTest
         public override int Execute(CommandContext context)
         {
             return _service2.SomeValue == "Service2" ? 0 : 1;
+        }
+    }
+
+    public class LoggerInjection : Command
+    {
+        private readonly ILogger<LoggerInjection> _logger;
+
+        private LoggerInjection(ILogger<LoggerInjection> logger)
+        {
+            _logger = logger;
+        }
+
+        [UsedImplicitly]
+        public override int Execute(CommandContext context)
+        {
+            _logger.LogInformation(nameof(LoggerInjection));
+            return 0;
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
@@ -33,6 +34,11 @@ internal class ConventionTypeRegistrar : ITypeRegistrar
     public ITypeResolver Build()
     {
         _services.AddSingleton(_conventionContext.Get<IConfiguration>());
+
+        if (_services.All(z => z.ServiceType != typeof(ILoggerFactory)))
+        {
+            _services.AddLogging();
+        }
 
         var factory = ConventionServiceProviderFactory.From(_conventionContext);
         var provider = factory.CreateServiceProvider(factory.CreateBuilder(_services));
