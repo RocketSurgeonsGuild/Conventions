@@ -14,6 +14,8 @@ public class ConventionContextBuilder
     internal readonly List<object> _appendedConventions = new List<object>();
     internal readonly List<Type> _exceptConventions = new List<Type>();
     internal readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
+    internal readonly List<object> _includeConventions = new List<object>();
+    internal readonly List<Assembly> _includeAssemblyConventions = new List<Assembly>();
     internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProviderFactory;
     internal Func<IConventionContext, IServiceFactoryAdapter>? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
@@ -54,6 +56,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder UseAppDomain(AppDomain appDomain)
     {
         _source = appDomain;
+        _conventionProviderFactory = null;
         return this;
     }
 
@@ -65,6 +68,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder UseAssemblies(IEnumerable<Assembly> assemblies)
     {
         _source = assemblies;
+        _conventionProviderFactory = null;
         return this;
     }
 
@@ -97,7 +101,6 @@ public class ConventionContextBuilder
     public ConventionContextBuilder DisableConventionAttributes()
     {
         _useAttributeConventions = false;
-        _conventionProviderFactory = null;
         return this;
     }
 
@@ -296,7 +299,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependDelegate(Delegate @delegate, params Delegate[] delegates)
     {
-        _appendedConventions.Add(@delegate);
+        _prependedConventions.Add(@delegate);
         _prependedConventions.AddRange(delegates);
         return this;
     }
@@ -346,6 +349,54 @@ public class ConventionContextBuilder
     {
         _exceptAssemblyConventions.Add(assembly);
         _exceptAssemblyConventions.AddRange(assemblies);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an exception to the scanner to exclude a specific convention
+    /// </summary>
+    /// <param name="types">The convention types to exclude.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public ConventionContextBuilder IncludeConvention(IEnumerable<Type> types)
+    {
+        _includeConventions.AddRange(types);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an exception to the scanner to exclude a specific convention
+    /// </summary>
+    /// <param name="type">The first type to exclude</param>
+    /// <param name="types">The additional types to exclude.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public ConventionContextBuilder IncludeConvention(Type type, params Type[] types)
+    {
+        _includeConventions.Add(type);
+        _includeConventions.AddRange(types);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an exception to the scanner to exclude a specific convention
+    /// </summary>
+    /// <param name="assemblies">The convention types to exclude.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public ConventionContextBuilder IncludeConvention(IEnumerable<Assembly> assemblies)
+    {
+        _includeAssemblyConventions.AddRange(assemblies);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an exception to the scanner to exclude a specific convention
+    /// </summary>
+    /// <param name="assembly">The assembly to exclude</param>
+    /// <param name="assemblies">The additional types to exclude.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public ConventionContextBuilder IncludeConvention(Assembly assembly, params Assembly[] assemblies)
+    {
+        _includeAssemblyConventions.Add(assembly);
+        _includeAssemblyConventions.AddRange(assemblies);
         return this;
     }
 }

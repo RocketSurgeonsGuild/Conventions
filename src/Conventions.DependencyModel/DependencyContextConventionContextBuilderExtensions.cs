@@ -43,6 +43,7 @@ public static class DependencyContextConventionContextBuilderExtensions
         builder._source = dependencyContext;
         builder._assemblyProviderFactory = dependencyContextAssemblyProviderFactory;
         builder._assemblyCandidateFinderFactory = dependencyContextAssemblyCandidateFinderFactory;
+        builder._conventionProviderFactory = null;
         return builder;
     }
 }

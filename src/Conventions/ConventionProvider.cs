@@ -88,6 +88,27 @@ internal class ConventionProvider : IConventionProvider
     /// </summary>
     /// <param name="hostType"></param>
     /// <param name="contributions">The contributions.</param>
+    /// <param name="additionalContributions">The additional contributions.</param>
+    /// <param name="prependedContributionsOrDelegates">The prepended contributions or delegates.</param>
+    /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
+    public ConventionProvider(
+        HostType hostType,
+        IEnumerable<IConventionWithDependencies> contributions,
+        IEnumerable<IConvention> additionalContributions,
+        IEnumerable<object> prependedContributionsOrDelegates,
+        IEnumerable<object> appendedContributionsOrDelegates
+    ) : this(
+        hostType, contributions.Select(FromConvention).Concat(additionalContributions.Select(FromConvention)), prependedContributionsOrDelegates,
+        appendedContributionsOrDelegates
+    )
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
+    /// </summary>
+    /// <param name="hostType"></param>
+    /// <param name="contributions">The contributions.</param>
     /// <param name="prependedContributionsOrDelegates">The prepended contributions or delegates.</param>
     /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
     private ConventionProvider(
@@ -185,15 +206,15 @@ internal class ConventionProvider : IConventionProvider
         return new ConventionOrDelegate(convention, hostType, dependencies);
     }
 
-    private static object? ToObject(ConventionOrDelegate delegateOrConvention)
-    {
-        return (object?)delegateOrConvention.Delegate ?? delegateOrConvention.Convention;
-    }
-
 
     private static ConventionOrDelegate FromConvention(IConventionWithDependencies convention)
     {
         return new ConventionOrDelegate(convention);
+    }
+
+    private static object? ToObject(ConventionOrDelegate delegateOrConvention)
+    {
+        return (object?)delegateOrConvention.Delegate ?? delegateOrConvention.Convention;
     }
 
     /// <summary>
