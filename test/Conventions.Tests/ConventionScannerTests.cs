@@ -136,6 +136,66 @@ public class ConventionScannerTests : AutoFakeTest
                 .NotContain(x => x!.GetType() == typeof(Contrib));
     }
 
+
+    [Fact]
+    public void ShouldScanIncludeContributionTypes()
+    {
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>();
+        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+
+        A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+         .Returns(
+              new[]
+              {
+                  typeof(Class1).GetTypeInfo().Assembly,
+                  typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly
+              }
+          );
+
+        var contribution = A.Fake<IServiceConvention>();
+        var contribution2 = A.Fake<IServiceConvention>();
+
+        scanner.AppendConvention(contribution);
+        scanner.PrependConvention(contribution2);
+        scanner.IncludeConvention(typeof(Contrib));
+
+        var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
+
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .Contain(x => x!.GetType() == typeof(Contrib));
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .ContainInOrder(contribution2, contribution);
+    }
+
+    [Fact]
+    public void ShouldScanIncludeContributionAssemblies()
+    {
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>();
+        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+
+        A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+         .Returns(
+              new[]
+              {
+                  typeof(Class1).GetTypeInfo().Assembly,
+                  typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly
+              }
+          );
+
+        var contribution = A.Fake<IServiceConvention>();
+
+        scanner.PrependConvention(contribution);
+        scanner.IncludeConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
+
+        var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
+
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .Contain(x => x!.GetType() == typeof(Contrib));
+    }
+
     public ConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
     {
     }

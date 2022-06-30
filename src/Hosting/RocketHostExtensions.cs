@@ -193,14 +193,14 @@ public static class RocketHostExtensions
     internal static ConventionContextBuilder Configure(IHostBuilder builder, ConventionContextBuilder contextBuilder)
     {
         contextBuilder.Properties.AddIfMissing(builder).AddIfMissing(HostType.Live);
+        builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
+        builder.Properties[typeof(IHostBuilder)] = builder;
         var host = new RocketContext(builder);
         builder
            .ConfigureHostConfiguration(host.ComposeHostingConvention)
            .ConfigureAppConfiguration(host.ConfigureAppConfiguration)
            .ConfigureServices(host.ConfigureServices)
            .UseServiceProviderFactory(host.UseServiceProviderFactory);
-        builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
-        builder.Properties[typeof(IHostBuilder)] = builder;
         return contextBuilder;
     }
 }
