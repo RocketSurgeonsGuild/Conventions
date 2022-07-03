@@ -19,7 +19,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
         <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>             
-        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">false</ExportConventionsAssembly>    
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">true</ExportConventionsAssembly>    
     </PropertyGroup>
     <PropertyGroup Condition="'$(_ConventionApplicationDetected)' != 'true'">
         <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">false</ImportConventionsAssembly>        
