@@ -63,6 +63,7 @@ public static class TestConventionContextBuilderExtensions
         var logger = loggerFactory.CreateLogger("TestContext");
 
         return builder
+              .Set(HostType.UnitTest)
               .UseAppDomain(appDomain)
               .WithLoggerFactory(loggerFactory)
               .WithLogger(logger)
@@ -85,6 +86,7 @@ public static class TestConventionContextBuilderExtensions
         var logger = loggerFactory.CreateLogger("TestContext");
 
         return builder
+              .Set(HostType.UnitTest)
               .UseAssemblies(assemblies)
               .WithLoggerFactory(loggerFactory)
               .WithLogger(logger)
