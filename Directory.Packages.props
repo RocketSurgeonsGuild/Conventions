@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="6.4.0" />
     <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageVersion Include="BenchMarkDotNet" Version="0.13.1" />
+    <PackageVersion Include="BenchMarkDotNet" Version="0.13.2" />
     <PackageVersion Include="DryIoc.dll" Version="5.1.0" />
     <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="6.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
