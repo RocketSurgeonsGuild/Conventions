@@ -11,7 +11,7 @@ public static class ModuleInitializer
         VerifySourceGenerators.Enable();
 
         DiffRunner.Disabled = true;
-        VerifierSettings.DerivePathInfo(
+        DerivePathInfo(
             (sourceFile, projectDirectory, type, method) =>
             {
                 static string GetTypeName(Type type)
