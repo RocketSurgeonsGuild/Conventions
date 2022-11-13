@@ -145,6 +145,11 @@ jobs:
         with:
           name: 'nuget'
           path: 'artifacts/nuget/'
+      - name: 🏺 Publish Documentation
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: 'docs'
+          path: 'artifacts/docs/'
   Publish:
     needs:
       - Build
