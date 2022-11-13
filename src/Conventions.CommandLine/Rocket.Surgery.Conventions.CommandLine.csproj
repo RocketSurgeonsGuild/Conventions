@@ -17,6 +17,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Spectre.Console" />
+        <PackageReference Include="Spectre.Console.Cli" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
         <PackageReference Include="Rocket.Surgery.Extensions.Configuration" />
         <InternalsVisibleTo Include="Rocket.Surgery.Extensions.CommandLine.Tests" />

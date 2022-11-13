@@ -12,6 +12,7 @@
     <PackageVersion Include="Roslynator.Analyzers" Version="4.1.2" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.1.2" />
     <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.1.2" />
+    <PackageVersion Include="Spectre.Console.Analyzer" Version="0.45.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="GitVersion.Tool" Version="5.11.1" />
@@ -61,6 +62,8 @@
     <PackageVersion Include="Microsoft.Azure.WebJobs.Host.Storage" Version="4.1.0" />
     <PackageVersion Include="NetEscapades.Configuration.Yaml" Version="2.2.0" />
     <PackageVersion Include="Spectre.Console" Version="0.45.0" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.45.0" />
+    <PackageVersion Include="Spectre.Console.Testing" Version="0.45.0" />
     <PackageVersion Include="Terminal.Gui" Version="1.8.2" />
   </ItemGroup>
   <ItemGroup>
