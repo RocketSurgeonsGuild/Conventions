@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <NoPackageAnalysis>true</NoPackageAnalysis>
+        <_Analyzer_Roslyn_Version_>$(MSBuildProjectName.Replace("Rocket.Surgery.LaunchPad.Analyzers.", ""))</_Analyzer_Roslyn_Version_>
+        <DefineConstants>$(DefineConstants);ROSLYN4_4</DefineConstants>
+        <IsPackable>false</IsPackable>
+        <AssemblyName>Rocket.Surgery.Conventions.Analyzers</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" VersionOverride="4.4.0" PrivateAssets="all" />
+    </ItemGroup>
+    <ItemGroup>        
+        <Compile Include="..\Conventions.Analyzers\**\*.cs" Exclude="..\Conventions.Analyzers\obj\**\*.cs" />
+    </ItemGroup>
+</Project>
