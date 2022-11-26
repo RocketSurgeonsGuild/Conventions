@@ -46,6 +46,7 @@ using Rocket.Surgery.Nuke.GithubActions;
 [UploadLogs]
 [TitleEvents]
 [ContinuousIntegrationConventions]
+[LocalBuildConventions]
 public partial class Pipeline
 {
     public static RocketSurgeonGitHubActionsConfiguration CiIgnoreMiddleware(RocketSurgeonGitHubActionsConfiguration configuration)

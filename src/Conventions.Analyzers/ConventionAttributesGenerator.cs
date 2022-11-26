@@ -25,6 +25,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         var exportConfigurationCandidate = ConventionConfigurationData.Create(context, "ExportConventions", _exportsDefaultConfiguration);
         var exportCandidates = context
                               .SyntaxProvider
+#if ROSLYN4_4
+                              .ForAttributeWithMetadataName(
+                                   "Rocket.Surgery.Conventions.ConventionAttribute",
+                                   (node, token) => true,
+                                   (syntaxContext, token) => GetExportedConventions(syntaxContext)
+                               )
+                              .SelectMany((z, _) => z)
+#else
                               .CreateSyntaxProvider(
                                    static (node, token) =>
                                    {
@@ -51,10 +59,18 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                )
                               .Where(z => z.conventionAttribute != null)
                               .SelectMany((z, _) => GetExportedConventions(z.attributeListSyntax, z.model, z.compilation, z.conventionAttribute!))
+#endif
                               .WithComparer(SymbolEqualityComparer.Default);
 
         var exportedConventions = context
                                  .SyntaxProvider
+#if ROSLYN4_4
+                                 .ForAttributeWithMetadataName(
+                                      "Rocket.Surgery.Conventions.ExportConventionAttribute",
+                                      (node, token) => node is TypeDeclarationSyntax,
+                                      (syntaxContext, token) => (INamedTypeSymbol)syntaxContext.TargetSymbol
+                                  )
+#else
                                  .CreateSyntaxProvider(
                                       static (node, token) =>
                                       {
@@ -74,6 +90,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                           : default
                                   )
                                  .SelectMany((z, _) => GetExportedConventions(z.baseType, z.SemanticModel))
+#endif
                                  .WithComparer(SymbolEqualityComparer.Default);
 
         var combinedExports = exportCandidates.Collect()
@@ -99,6 +116,13 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
         var importCandidates = context
                               .SyntaxProvider
+#if ROSLYN4_4
+                              .ForAttributeWithMetadataName(
+                                   "Rocket.Surgery.Conventions.ImportConventionsAttribute",
+                                   (node, token) => node is TypeDeclarationSyntax,
+                                   (syntaxContext, token) => syntaxContext.TargetNode
+                               )
+#else
                               .CreateSyntaxProvider(
                                    static (node, token) =>
                                    {
@@ -114,7 +138,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                                      );
                                    },
                                    static (syntaxContext, token) => syntaxContext.Node
-                               );
+                               )
+#endif
+            ;
         context.RegisterSourceOutput(
             context.CompilationProvider
                    .Combine(importCandidates.Collect())
@@ -640,6 +666,20 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             );
     }
 
+#if ROSLYN4_4
+    private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorAttributeSyntaxContext context)
+    {
+        foreach (var attribute in context.Attributes)
+        {
+            if (attribute.AttributeClass is null)
+                continue;
+            if (attribute.ConstructorArguments is not { Length: 1 })
+                continue;
+            if (attribute.ConstructorArguments[0].Value is INamedTypeSymbol sy)
+                yield return sy;
+        }
+    }
+#else
     private static IEnumerable<INamedTypeSymbol> GetExportedConventions(
         AttributeListSyntax attributeListSyntax, SemanticModel model, Compilation compilation, INamedTypeSymbol conventionAttribute
     )
@@ -664,6 +704,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             yield return compilation.GetTypeByMetadataName(GetFullMetadataName(symbol.Type))!;
         }
     }
+#endif
 
     private static IEnumerable<INamedTypeSymbol> GetExportedConventions(BaseTypeDeclarationSyntax declarationSyntax, SemanticModel model)
     {

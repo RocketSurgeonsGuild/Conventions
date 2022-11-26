@@ -21,7 +21,8 @@ public static class ModuleInitializer
 
                 var typeName = GetTypeName(type);
 
-                return new(Path.Combine(Path.GetDirectoryName(sourceFile)!, "snapshots"), typeName, method.Name);
+                var path = Path.Combine(Path.GetDirectoryName(sourceFile)!, "snapshots");
+                return new(path, typeName, method.Name);
             }
         );
     }
