@@ -186,6 +186,7 @@ public static class RocketWebHostExtensions
         return Configure(builder, conventionContextBuilder);
     }
 
+#if NET6_0
     /// <summary>
     ///     Gets the or create builder.
     /// </summary>
@@ -211,4 +212,35 @@ public static class RocketWebHostExtensions
         );
         return contextBuilder;
     }
+#elif NET7_0_OR_GREATER
+    /// <summary>
+    ///     Gets the or create builder.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="contextBuilder"></param>
+    /// <returns>RocketHostBuilder.</returns>
+    internal static ConventionContextBuilder Configure(WebApplicationBuilder builder, ConventionContextBuilder contextBuilder)
+    {
+        contextBuilder.Properties.AddIfMissing(builder).AddIfMissing(HostType.Live);
+        contextBuilder.Set(builder.Configuration);
+        contextBuilder.Set(builder.Environment);
+        contextBuilder.Set<IHostEnvironment>(builder.Environment);
+
+        builder.Host.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
+        builder.Host.Properties[typeof(WebApplicationBuilder)] = builder;
+        builder.Host.UseServiceProviderFactory(
+            _ => LazyConventionServiceProviderFactory.Create(
+                () =>
+                {
+                    var host = new RocketContext(builder, ConventionContext.From(contextBuilder));
+                    host.ComposeHostingConvention();
+                    host.ConfigureAppConfiguration();
+                    host.ConfigureServices();
+                    return host.UseServiceProviderFactory();
+                }
+            )
+        );
+        return contextBuilder;
+    }
+#endif
 }

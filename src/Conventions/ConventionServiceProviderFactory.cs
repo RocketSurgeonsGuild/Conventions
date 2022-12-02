@@ -53,3 +53,28 @@ internal class ConventionServiceProviderFactory : IServiceFactoryAdapter, IServi
         throw new NotSupportedException("Could not create service provider from provided container builder");
     }
 }
+
+internal class LazyConventionServiceProviderFactory : IServiceFactoryAdapter, IServiceProviderFactory<object>
+{
+    private readonly Lazy<IServiceProviderFactory<object>> _factory;
+
+    public static IServiceProviderFactory<object> Create(Func<IServiceProviderFactory<object>> factory)
+    {
+        return new LazyConventionServiceProviderFactory(factory);
+    }
+
+    private LazyConventionServiceProviderFactory(Func<IServiceProviderFactory<object>> factory)
+    {
+        _factory = new Lazy<IServiceProviderFactory<object>>(factory);
+    }
+
+    public object CreateBuilder(IServiceCollection services)
+    {
+        return _factory.Value.CreateBuilder(services);
+    }
+
+    public IServiceProvider CreateServiceProvider(object containerBuilder)
+    {
+        return _factory.Value.CreateServiceProvider(containerBuilder);
+    }
+}

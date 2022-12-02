@@ -44,6 +44,7 @@ internal class RocketContext
     /// </summary>
     public void ConfigureAppConfiguration()
     {
+        _context.Properties.AddIfMissing<IConfiguration>(_webApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_webApplicationBuilder.Environment);
         _context.Properties.AddIfMissing<IHostEnvironment>(_webApplicationBuilder.Environment);
         _webApplicationBuilder.Configuration.UseLocalConfiguration(
