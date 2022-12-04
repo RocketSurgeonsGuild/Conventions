@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using NetEscapades.Configuration.Yaml;
+using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
@@ -57,7 +58,9 @@ public class RocketWebApplicationTests : AutoFakeTest
     {
         var host = WebApplication
                   .CreateBuilder()
-                  .LaunchWith(Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly }));
+                  .LaunchWith(
+                       Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly })
+                   );
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -65,7 +68,7 @@ public class RocketWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void Creates_RocketHost_WithModifiedConfiguration()
+    public void Creates_RocketHost_WithModifiedConfiguration_Json()
     {
         var host = WebApplication
                   .CreateBuilder()
@@ -78,6 +81,22 @@ public class RocketWebApplicationTests : AutoFakeTest
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
         configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(0);
+    }
+
+    [Fact]
+    public void Creates_RocketHost_WithModifiedConfiguration_Yaml()
+    {
+        var host = WebApplication
+                  .CreateBuilder()
+                  .LaunchWith(
+                       Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly }),
+                       z => z.ExceptConvention(typeof(JsonConvention))
+                   );
+
+        var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
+
+        configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(0);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
     }
 
     public RocketWebApplicationTests(ITestOutputHelper outputHelper) : base(outputHelper)

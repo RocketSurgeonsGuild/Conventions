@@ -6,6 +6,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" />
     <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\src\Conventions.Configuration.Json\Rocket.Surgery.Conventions.Configuration.Json.csproj" />
     <ProjectReference Include="..\..\src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
     <PackageReference Include="bunit.web" />
   </ItemGroup>

@@ -69,7 +69,7 @@ internal class RocketContext
             }
         );
 
-        _webApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
+        _webApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
             sources => sources.OfType<FileConfigurationSource>().FirstOrDefault(
                 x => string.Equals(x.Path, "appsettings.json", StringComparison.OrdinalIgnoreCase)
             ),
@@ -80,7 +80,7 @@ internal class RocketContext
 
         if (!string.IsNullOrEmpty(_webApplicationBuilder.Environment.EnvironmentName))
         {
-            _webApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
+            _webApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
                 sources => sources
                           .OfType<FileConfigurationSource>()
                           .FirstOrDefault(
@@ -94,7 +94,7 @@ internal class RocketContext
             );
         }
 
-        _webApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
+        _webApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
             sources => sources
                       .OfType<FileConfigurationSource>()
                       .FirstOrDefault(x => string.Equals(x.Path, "appsettings.local.json", StringComparison.OrdinalIgnoreCase)),

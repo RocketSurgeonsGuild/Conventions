@@ -85,7 +85,7 @@ internal class RocketContext
             }
         );
 
-        configurationBuilder.InsertConfigurationSourceAfter(
+        configurationBuilder.ReplaceConfigurationSourceAt(
             sources => sources.OfType<FileConfigurationSource>().FirstOrDefault(
                 x => string.Equals(x.Path, "appsettings.json", StringComparison.OrdinalIgnoreCase)
             ),
@@ -96,7 +96,7 @@ internal class RocketContext
 
         if (!string.IsNullOrEmpty(context.HostingEnvironment.EnvironmentName))
         {
-            configurationBuilder.InsertConfigurationSourceAfter(
+            configurationBuilder.ReplaceConfigurationSourceAt(
                 sources => sources
                           .OfType<FileConfigurationSource>()
                           .FirstOrDefault(
@@ -108,7 +108,7 @@ internal class RocketContext
             );
         }
 
-        configurationBuilder.InsertConfigurationSourceAfter(
+        configurationBuilder.ReplaceConfigurationSourceAt(
             sources => sources
                       .OfType<FileConfigurationSource>()
                       .FirstOrDefault(x => string.Equals(x.Path, "appsettings.local.json", StringComparison.OrdinalIgnoreCase)),

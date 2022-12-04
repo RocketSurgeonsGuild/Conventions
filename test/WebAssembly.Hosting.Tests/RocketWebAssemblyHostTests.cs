@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.JSInterop;
+using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Xunit;
 
@@ -72,7 +73,7 @@ public class RocketWebAssemblyHostTests
     }
 
     [Fact]
-    public async Task Creates_RocketHost_WithModifiedConfiguration()
+    public async Task Creates_RocketHost_WithModifiedConfiguration_Json()
     {
         var host = await Helpers.CreateWebAssemblyHostBuilder()
                                 .LaunchWith(
@@ -84,5 +85,20 @@ public class RocketWebAssemblyHostTests
 
         configuration.Providers.OfType<JsonStreamConfigurationProvider>().Should().HaveCount(3);
         configuration.Providers.OfType<YamlStreamConfigurationProvider>().Should().HaveCount(0);
+    }
+
+    [Fact]
+    public async Task Creates_RocketHost_WithModifiedConfiguration_Yaml()
+    {
+        var host = await Helpers.CreateWebAssemblyHostBuilder()
+                                .LaunchWith(
+                                     RocketBooster.For(new[] { typeof(RocketWebAssemblyHostTests).Assembly }),
+                                     z => z.ExceptConvention(typeof(JsonConvention))
+                                 );
+
+        var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
+
+        configuration.Providers.OfType<JsonStreamConfigurationProvider>().Should().HaveCount(3);
+        configuration.Providers.OfType<YamlStreamConfigurationProvider>().Should().HaveCount(6);
     }
 }
