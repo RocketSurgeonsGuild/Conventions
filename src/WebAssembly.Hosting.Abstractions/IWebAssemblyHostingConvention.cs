@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.WebAssembly.Hosting;
@@ -14,5 +15,5 @@ public interface IWebAssemblyHostingConvention : IConvention
     /// </summary>
     /// <param name="context">The context.</param>
     /// <param name="builder"></param>
-    void Register(IConventionContext context, IWebAssemblyHostBuilder builder);
+    void Register(IConventionContext context, WebAssemblyHostBuilder builder);
 }

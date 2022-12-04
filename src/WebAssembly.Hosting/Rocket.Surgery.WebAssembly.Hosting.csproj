@@ -6,7 +6,7 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-         <ProjectReference
+        <ProjectReference
             Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
             IncludeAssets="all"
             OutputItemType="Analyzer"

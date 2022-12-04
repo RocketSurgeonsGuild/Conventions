@@ -19,7 +19,8 @@
         <PackageReference Include="Spectre.Console" />
         <PackageReference Include="Spectre.Console.Cli" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-        <PackageReference Include="Rocket.Surgery.Extensions.Configuration" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
         <InternalsVisibleTo Include="Rocket.Surgery.Extensions.CommandLine.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />

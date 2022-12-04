@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Extensions.Configuration;
+using Rocket.Surgery.Conventions.Configuration;
 
 namespace Rocket.Surgery.Web.Hosting;
 
@@ -47,8 +47,60 @@ internal class RocketContext
         _context.Properties.AddIfMissing<IConfiguration>(_webApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_webApplicationBuilder.Environment);
         _context.Properties.AddIfMissing<IHostEnvironment>(_webApplicationBuilder.Environment);
-        _webApplicationBuilder.Configuration.UseLocalConfiguration(
-            _context.GetOrAdd(() => new ConfigOptions()).UseEnvironment(_webApplicationBuilder.Environment.EnvironmentName)
+
+        // This code is duplicated per host (web host, generic host, and wasm host)
+        _webApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
+            sources => sources
+                      .OfType<FileConfigurationSource>()
+                      .FirstOrDefault(
+                           x => string.Equals(
+                               x.Path, $"appsettings.{_webApplicationBuilder.Environment.EnvironmentName}.json", StringComparison.OrdinalIgnoreCase
+                           )
+                       ),
+            new IConfigurationSource[]
+            {
+                new JsonConfigurationSource
+                {
+                    FileProvider = _webApplicationBuilder.Configuration.GetFileProvider(),
+                    Path = "appsettings.local.json",
+                    Optional = true,
+                    ReloadOnChange = true
+                }
+            }
+        );
+
+        _webApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
+            sources => sources.OfType<FileConfigurationSource>().FirstOrDefault(
+                x => string.Equals(x.Path, "appsettings.json", StringComparison.OrdinalIgnoreCase)
+            ),
+            _context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
+                    .SelectMany(z => z.Invoke(_webApplicationBuilder.Configuration))
+                    .Select(z => z.Factory(null))
+        );
+
+        if (!string.IsNullOrEmpty(_webApplicationBuilder.Environment.EnvironmentName))
+        {
+            _webApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
+                sources => sources
+                          .OfType<FileConfigurationSource>()
+                          .FirstOrDefault(
+                               x => string.Equals(
+                                   x.Path, $"appsettings.{_webApplicationBuilder.Environment.EnvironmentName}.json", StringComparison.OrdinalIgnoreCase
+                               )
+                           ),
+                _context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
+                        .SelectMany(z => z.Invoke(_webApplicationBuilder.Configuration, _webApplicationBuilder.Environment.EnvironmentName))
+                        .Select(z => z.Factory(null))
+            );
+        }
+
+        _webApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
+            sources => sources
+                      .OfType<FileConfigurationSource>()
+                      .FirstOrDefault(x => string.Equals(x.Path, "appsettings.local.json", StringComparison.OrdinalIgnoreCase)),
+            _context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
+                    .SelectMany(z => z.Invoke(_webApplicationBuilder.Configuration, "local"))
+                    .Select(z => z.Factory(null))
         );
 
         // Insert after all the normal configuration but before the environment specific configuration
@@ -60,11 +112,7 @@ internal class RocketContext
             if (item is CommandLineConfigurationSource ||
                 ( item is EnvironmentVariablesConfigurationSource env && ( string.IsNullOrWhiteSpace(env.Prefix) ||
                                                                            string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) ) ||
-                ( item is JsonConfigurationSource a && string.Equals(
-                    a.Path,
-                    "secrets.json",
-                    StringComparison.OrdinalIgnoreCase
-                ) ))
+                ( item is FileConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase) ))
             {
                 continue;
             }
@@ -78,15 +126,17 @@ internal class RocketContext
             : configurationBuilder.Sources.IndexOf(source);
 
         var cb = new ConfigurationBuilder().ApplyConventions(_context, _webApplicationBuilder.Configuration);
-
-        configurationBuilder.Sources.Insert(
-            index + 1,
-            new ChainedConfigurationSource
-            {
-                Configuration = cb.Build(),
-                ShouldDisposeConfiguration = true
-            }
-        );
+        if (cb.Sources is { Count: > 0 })
+        {
+            configurationBuilder.Sources.Insert(
+                index + 1,
+                new ChainedConfigurationSource
+                {
+                    Configuration = cb.Build(),
+                    ShouldDisposeConfiguration = true
+                }
+            );
+        }
     }
 
     /// <summary>
