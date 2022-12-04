@@ -198,16 +198,16 @@ public static class RocketWebHostExtensions
         builder.Host.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
         builder.Host.Properties[typeof(WebApplicationBuilder)] = builder;
         builder.Host.UseServiceProviderFactory(
-            _ =>
-            {
-                contextBuilder.Set(_.Configuration);
-                contextBuilder.Set(_.HostingEnvironment);
-                var host = new RocketContext(builder, ConventionContext.From(contextBuilder));
-                host.ComposeHostingConvention();
-                host.ConfigureAppConfiguration();
-                host.ConfigureServices();
-                return host.UseServiceProviderFactory();
-            }
+            _ => LazyConventionServiceProviderFactory.Create(
+                () =>
+                {
+                    var host = new RocketContext(builder, ConventionContext.From(contextBuilder));
+                    host.ComposeHostingConvention();
+                    host.ConfigureAppConfiguration();
+                    host.ConfigureServices();
+                    return host.UseServiceProviderFactory();
+                }
+            )
         );
         return contextBuilder;
     }

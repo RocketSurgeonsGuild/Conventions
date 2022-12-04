@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Rocket.Surgery.WebAssembly.Hosting;
 
 // ReSharper disable once CheckNamespace
@@ -31,7 +32,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, Action<IWebAssemblyHostBuilder> @delegate)
+    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, Action<WebAssemblyHostBuilder> @delegate)
     {
         if (container == null)
         {

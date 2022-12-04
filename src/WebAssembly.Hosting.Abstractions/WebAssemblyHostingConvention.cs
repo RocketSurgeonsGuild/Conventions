@@ -1,4 +1,5 @@
-﻿using Rocket.Surgery.Conventions;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.WebAssembly.Hosting;
 
@@ -6,4 +7,4 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 ///     Delegate HostingConventionAction
 /// </summary>
 /// <param name="context">The context.</param>
-public delegate void WebAssemblyHostingConvention(IConventionContext context, IWebAssemblyHostBuilder builder);
+public delegate void WebAssemblyHostingConvention(IConventionContext context, WebAssemblyHostBuilder builder);

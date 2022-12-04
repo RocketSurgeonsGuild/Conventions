@@ -1,29 +1,27 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29006.145
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8FFDF555-DB50-45F9-9A2D-6410F39151C3}"
 	ProjectSection(SolutionItems) = preProject
-		src\Directory.Build.props = src\Directory.Build.props
-		src\Directory.Build.targets = src\Directory.Build.targets
-		src\.editorconfig = src\.editorconfig
+		src/Directory.Build.props = src/Directory.Build.props
+		src/Directory.Build.targets = src/Directory.Build.targets
+		src/.editorconfig = src/.editorconfig
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DF33E0FB-9790-4654-B60F-8AB22E0CC3D1}"
 	ProjectSection(SolutionItems) = preProject
-		test\Directory.Build.props = test\Directory.Build.props
-		test\Directory.Build.targets = test\Directory.Build.targets
-		test\.editorconfig = test\.editorconfig
+		test/Directory.Build.props = test/Directory.Build.props
+		test/Directory.Build.targets = test/Directory.Build.targets
+		test/.editorconfig = test/.editorconfig
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", ".build\.build.csproj", "{55EFAE2F-A7CA-4917-A381-4A6EF5E79610}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{E3DCB78E-EE06-4EA3-88AC-762D8910387C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{96A0AEB7-ACFA-491C-8FA5-2A1BE4E8B718}"
 	ProjectSection(SolutionItems) = preProject
-		sample\Directory.Build.props = sample\Directory.Build.props
+		sample/Directory.Build.props = sample/Directory.Build.props
+		sample/Directory.Build.targets = sample/Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.DependencyOne", "sample\Sample.DependencyOne\Sample.DependencyOne.csproj", "{4A67F092-0AFF-4358-B9C5-9FD06469F21C}"
@@ -35,6 +33,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diagnostics", "sample\Diagnostics\Diagnostics.csproj", "{60352223-EEDC-4C1B-ACAC-D28622D5357B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{6E25DD54-88B0-4647-9AB1-2575C5253B52}"
+	ProjectSection(SolutionItems) = preProject
+		benchmarks/Directory.Build.props = benchmarks/Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hosting.Benchmarks", "benchmarks\Hosting.Benchmarks\Hosting.Benchmarks.csproj", "{3E4C7202-8D87-4A52-A50A-0F0CC62BA70B}"
 EndProject
@@ -75,6 +76,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docs", "docs\docs.csproj", "{554E6E10-0535-4416-9525-BA33E3EB5BB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D64E763C-BDA9-4139-B324-4193FE068DA4}"
+	ProjectSection(SolutionItems) = preProject
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "sample\Sample\Sample.csproj", "{BC24883F-0B4A-4A01-A6ED-50154B15C298}"
 EndProject
@@ -101,6 +104,68 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Conventions.Analyzers.Tests.roslyn4.0", "test\Analyzers.Tests.roslyn4.0\Rocket.Surgery.Conventions.Analyzers.Tests.roslyn4.0.csproj", "{7396D157-5DF1-46A0-9A45-4B0F53F80800}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Conventions.Analyzers.Tests.roslyn4.4", "test\Analyzers.Tests.roslyn4.4\Rocket.Surgery.Conventions.Analyzers.Tests.roslyn4.4.csproj", "{9E86814E-2C4B-4CEC-911A-DED5FB73C7D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{AE3FEC8E-20F1-492C-A131-3EFD0196E7A5}"
+	ProjectSection(SolutionItems) = preProject
+		.config/dotnet-tools.json = .config/dotnet-tools.json
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		Directory.Packages.support.props = Directory.Packages.support.props
+		Directory.Build.targets = Directory.Build.targets
+		.editorconfig = .editorconfig
+		build.cmd = build.cmd
+		build.ps1 = build.ps1
+		build.sh = build.sh
+		GitReleaseManager.yaml = GitReleaseManager.yaml
+		.appveyor.yml = .appveyor.yml
+		.codecov.yml = .codecov.yml
+		GitVersion.yml = GitVersion.yml
+		LICENSE = LICENSE
+		Readme.md = Readme.md
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.gitmodules = .gitmodules
+		.prettierignore = .prettierignore
+		.prettierrc = .prettierrc
+		.lintstagedrc.js = .lintstagedrc.js
+		NuGet.config = NuGet.config
+		package.json = package.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{7CF3978C-6394-4092-AF5D-7AD77C7D5170}"
+	ProjectSection(SolutionItems) = preProject
+		.github/labels.yml = .github/labels.yml
+		.github/release.yml = .github/release.yml
+		.github/renovate.json = .github/renovate.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{DB0B5F99-B2F3-4888-B36E-22887F994ACC}"
+	ProjectSection(SolutionItems) = preProject
+		.github/workflows/ci-ignore.yml = .github/workflows/ci-ignore.yml
+		.github/workflows/ci.yml = .github/workflows/ci.yml
+		.github/workflows/close-milestone.yml = .github/workflows/close-milestone.yml
+		.github/workflows/dependabot-merge.yml = .github/workflows/dependabot-merge.yml
+		.github/workflows/draft-release.yml = .github/workflows/draft-release.yml
+		.github/workflows/publish-docs.yml = .github/workflows/publish-docs.yml
+		.github/workflows/sync-labels.yml = .github/workflows/sync-labels.yml
+		.github/workflows/update-milestone.yml = .github/workflows/update-milestone.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".husky", ".husky", "{833B6922-4C63-4058-8E4A-3167489B18FA}"
+	ProjectSection(SolutionItems) = preProject
+		.husky/pre-commit = .husky/pre-commit
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{888D214B-CD66-4122-81D2-27C9A2B0F34F}"
+	ProjectSection(SolutionItems) = preProject
+		.vscode/launch.json = .vscode/launch.json
+		.vscode/settings.json = .vscode/settings.json
+		.vscode/tasks.json = .vscode/tasks.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Conventions.Configuration.Yaml", "src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj", "{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Surgery.Conventions.Configuration.Json", "src\Conventions.Configuration.Json\Rocket.Surgery.Conventions.Configuration.Json.csproj", "{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -550,12 +615,36 @@ Global
 		{9E86814E-2C4B-4CEC-911A-DED5FB73C7D8}.Release|x64.Build.0 = Release|Any CPU
 		{9E86814E-2C4B-4CEC-911A-DED5FB73C7D8}.Release|x86.ActiveCfg = Release|Any CPU
 		{9E86814E-2C4B-4CEC-911A-DED5FB73C7D8}.Release|x86.Build.0 = Release|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Debug|x86.Build.0 = Debug|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Release|x64.Build.0 = Release|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D}.Release|x86.Build.0 = Release|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Debug|x64.Build.0 = Debug|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Debug|x86.Build.0 = Debug|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Release|x64.ActiveCfg = Release|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Release|x64.Build.0 = Release|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Release|x86.ActiveCfg = Release|Any CPU
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{55EFAE2F-A7CA-4917-A381-4A6EF5E79610} = {E3DCB78E-EE06-4EA3-88AC-762D8910387C}
+		{55EFAE2F-A7CA-4917-A381-4A6EF5E79610} = {AE3FEC8E-20F1-492C-A131-3EFD0196E7A5}
 		{4A67F092-0AFF-4358-B9C5-9FD06469F21C} = {96A0AEB7-ACFA-491C-8FA5-2A1BE4E8B718}
 		{F4B6AB74-9949-4CB7-A0D7-C7A51827394D} = {96A0AEB7-ACFA-491C-8FA5-2A1BE4E8B718}
 		{07E9A423-1C40-4EBC-9E28-B109CCDFD770} = {96A0AEB7-ACFA-491C-8FA5-2A1BE4E8B718}
@@ -592,6 +681,12 @@ Global
 		{0A07ED0F-175F-4FE2-BA80-20DC63139DF8} = {8FFDF555-DB50-45F9-9A2D-6410F39151C3}
 		{7396D157-5DF1-46A0-9A45-4B0F53F80800} = {DF33E0FB-9790-4654-B60F-8AB22E0CC3D1}
 		{9E86814E-2C4B-4CEC-911A-DED5FB73C7D8} = {DF33E0FB-9790-4654-B60F-8AB22E0CC3D1}
+		{7CF3978C-6394-4092-AF5D-7AD77C7D5170} = {AE3FEC8E-20F1-492C-A131-3EFD0196E7A5}
+		{DB0B5F99-B2F3-4888-B36E-22887F994ACC} = {7CF3978C-6394-4092-AF5D-7AD77C7D5170}
+		{833B6922-4C63-4058-8E4A-3167489B18FA} = {AE3FEC8E-20F1-492C-A131-3EFD0196E7A5}
+		{888D214B-CD66-4122-81D2-27C9A2B0F34F} = {AE3FEC8E-20F1-492C-A131-3EFD0196E7A5}
+		{2B6D82A7-3C3A-49C5-9C00-A92CFAECCE0D} = {8FFDF555-DB50-45F9-9A2D-6410F39151C3}
+		{E1057DB4-D09A-4D4D-BFDD-C14BDC725E58} = {8FFDF555-DB50-45F9-9A2D-6410F39151C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {439897C2-CCBD-44FE-B2DC-A3E4670ADA59}

@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.WebAssembly.Hosting;
@@ -13,7 +14,7 @@ public static class RocketBooster
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
-    public static Func<IWebAssemblyHostBuilder, ConventionContextBuilder> ForAppDomain(AppDomain appDomain)
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAppDomain(AppDomain appDomain)
     {
         return builder => new ConventionContextBuilder(new Dictionary<object, object?>()).UseAppDomain(appDomain);
     }
@@ -24,7 +25,7 @@ public static class RocketBooster
     /// <param name="appDomain">The application domain.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
-    public static Func<IWebAssemblyHostBuilder, ConventionContextBuilder> ForAppDomain(
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAppDomain(
         AppDomain appDomain,
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
     )
@@ -37,7 +38,7 @@ public static class RocketBooster
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
-    public static Func<IWebAssemblyHostBuilder, ConventionContextBuilder> For(AppDomain appDomain)
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(AppDomain appDomain)
     {
         return ForAppDomain(appDomain);
     }
@@ -48,7 +49,7 @@ public static class RocketBooster
     /// <param name="appDomain">The application domain.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
-    public static Func<IWebAssemblyHostBuilder, ConventionContextBuilder> For(
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(
         AppDomain appDomain,
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
     )
@@ -57,11 +58,35 @@ public static class RocketBooster
     }
 
     /// <summary>
+    ///     Fors the specified application domain.
+    /// </summary>
+    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
+    {
+        return ForAppDomain(AppDomain.CurrentDomain, getConventions);
+    }
+
+    /// <summary>
+    ///     Fors the specified application domain.
+    /// </summary>
+    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForConventions(
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
+    {
+        return ForAppDomain(AppDomain.CurrentDomain, getConventions);
+    }
+
+    /// <summary>
     ///     Fors the assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
-    public static Func<IWebAssemblyHostBuilder, ConventionContextBuilder> ForAssemblies(IEnumerable<Assembly> assemblies)
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAssemblies(IEnumerable<Assembly> assemblies)
     {
         return builder => new ConventionContextBuilder(new Dictionary<object, object?>()).UseAssemblies(assemblies);
     }
@@ -72,7 +97,7 @@ public static class RocketBooster
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
-    public static Func<IWebAssemblyHostBuilder, ConventionContextBuilder> ForAssemblies(
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAssemblies(
         IEnumerable<Assembly> assemblies,
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
     )
@@ -85,7 +110,7 @@ public static class RocketBooster
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
-    public static Func<IWebAssemblyHostBuilder, ConventionContextBuilder> For(IEnumerable<Assembly> assemblies)
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(IEnumerable<Assembly> assemblies)
     {
         return ForAssemblies(assemblies);
     }
@@ -96,7 +121,7 @@ public static class RocketBooster
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
-    public static Func<IWebAssemblyHostBuilder, ConventionContextBuilder> For(
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(
         IEnumerable<Assembly> assemblies,
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
     )

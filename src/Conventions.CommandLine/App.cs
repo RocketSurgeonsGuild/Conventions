@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Extensions.Configuration;
+using Rocket.Surgery.Conventions.Configuration;
 using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
@@ -107,7 +106,26 @@ public static class App
     private static IConfigurationRoot ApplyConfiguration(IConventionContext conventionContext)
     {
         var configurationBuilder = new ConfigurationBuilder();
-        configurationBuilder.UseLocalConfiguration(conventionContext.GetOrAdd(() => new ConfigOptions()));
+        configurationBuilder.AddJsonFile("appsettings.json", true, true);
+        foreach (var newSource in conventionContext
+                                 .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
+                                 .SelectMany(z => z.Invoke(configurationBuilder))
+                                 .Select(z => z.Factory(null))
+                )
+        {
+            configurationBuilder.Add(newSource);
+        }
+
+        // TODO: Environment based config??
+        configurationBuilder.AddJsonFile("appsettings.local.json", true, true);
+        foreach (var newSource in conventionContext
+                                 .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
+                                 .SelectMany(z => z.Invoke(configurationBuilder, "local"))
+                                 .Select(z => z.Factory(null))
+                )
+        {
+            configurationBuilder.Add(newSource);
+        }
 
         // Insert after all the normal configuration but before the environment specific configuration
         IConfigurationSource? source = null;
@@ -116,11 +134,7 @@ public static class App
             var itemType = item.GetType();
             if (itemType is { Name: "CommandLineConfigurationSource" } ||
                 itemType is { Name: "EnvironmentVariablesConfigurationSource" } ||
-                ( item is JsonConfigurationSource a && string.Equals(
-                    a.Path,
-                    "secrets.json",
-                    StringComparison.OrdinalIgnoreCase
-                ) ))
+                ( item is FileConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase) ))
             {
                 continue;
             }
@@ -134,7 +148,7 @@ public static class App
             : configurationBuilder.Sources.IndexOf(source);
 
         var cb = new ConfigurationBuilder().ApplyConventions(conventionContext, configurationBuilder.Build());
-        if (cb.Sources.Count > 0)
+        if (cb.Sources is { Count: > 0 })
         {
             configurationBuilder.Sources.Insert(
                 index + 1,
