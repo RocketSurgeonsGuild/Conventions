@@ -4,29 +4,29 @@
         <PackageVersion Include="Microsoft.Extensions.DiagnosticAdapter" Version="3.1.32" />
         <PackageVersion Update="DryIoc.dll" Version="5.3.1" />
         <PackageVersion Update="DryIoc.Microsoft.DependencyInjection" Version="6.1.0" />
-        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.Ini" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.Json" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.31" />
+        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Configuration" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Configuration.Ini" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Configuration.Json" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.32" />
         <PackageVersion Update="Microsoft.Extensions.DependencyModel" Version="3.1.25" />
         <PackageVersion Update="Microsoft.Extensions.DiagnosticAdapter" Version="3.1.32" />
-        <PackageVersion Update="Microsoft.Extensions.Hosting" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Logging" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Logging.Abstractions" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Logging.Configuration" Version="3.1.31" />
-        <PackageVersion Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.31" />
+        <PackageVersion Update="Microsoft.Extensions.Hosting" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Logging" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Logging.Abstractions" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Logging.Configuration" Version="3.1.32" />
+        <PackageVersion Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.32" />
         <PackageVersion Update="System.Diagnostics.DiagnosticSource" Version="4.7.1" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">     
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.11" />
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.11" />
-        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="6.0.11" />   
+        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.12" />
+        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.12" />
+        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="6.0.12" />   
         <PackageVersion Update="Microsoft.Extensions.Configuration" Version="6.0.1" />
         <PackageVersion Update="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
         <PackageVersion Update="Microsoft.Extensions.Configuration.CommandLine" Version="6.0.0" />
