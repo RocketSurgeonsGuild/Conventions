@@ -262,6 +262,18 @@ internal class AppSettingsConfigurationProvider : CommandLineConfigurationProvid
             Data.Add("Logging:LogLevel:Default", appSettings.LogLevel.Value.ToString());
             Data.Add("Logging:Debug:LogLevel:Default", appSettings.LogLevel.Value.ToString());
             Data.Add("Logging:Console:LogLevel:Default", appSettings.LogLevel.Value.ToString());
+
+            var serilogStringValue = appSettings.LogLevel.Value switch
+            {
+                LogLevel.Trace    => "Verbose",
+                LogLevel.Critical => "Fatal",
+                LogLevel.None     => null,
+                _                 => appSettings.LogLevel.Value.ToString()
+            };
+            if (serilogStringValue is not null)
+            {
+                Data.Add("Serilog:MinimumLevel:Default", serilogStringValue);
+            }
         }
 
         OnReload();
