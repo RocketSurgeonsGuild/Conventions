@@ -216,8 +216,8 @@ public class CommandLineBuilderTests : AutoFakeTest
 
 //
     [Theory]
-    [InlineData("-d", LogLevel.Debug)]
-    [InlineData("-t", LogLevel.Trace)]
+    [InlineData("--verbose", LogLevel.Debug)]
+    [InlineData("--trace", LogLevel.Trace)]
     public void ShouldAllVerbosity(string command, LogLevel level)
     {
         var builder = ConventionContextBuilder.Create()
