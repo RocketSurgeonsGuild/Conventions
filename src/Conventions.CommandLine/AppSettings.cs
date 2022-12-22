@@ -4,8 +4,19 @@ using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
+/// <summary>
+///     Default class used for application settings
+/// </summary>
 public class AppSettings : CommandSettings
 {
+    /// <summary>
+    ///     The version was requested with the application start.
+    /// </summary>
+    [CommandOption("-v|--version", IsHidden = true)]
+    [Description("Version of the application")]
+    [UsedImplicitly]
+    public bool Version { get; set; }
+
     /// <summary>
     ///     Gets the log.
     /// </summary>
