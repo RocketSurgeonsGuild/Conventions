@@ -95,8 +95,6 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
                 }
             }
         );
-        services.Configure<ConsoleLifetimeOptions>(options => options.SuppressStatusMessages = true);
-
         services.AddSingleton(consoleResult);
         services.AddHostedService<ConsoleWorker>();
         services.AddSingleton(context.Get<AppSettingsConfigurationSource>()!);

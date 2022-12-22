@@ -1,4 +1,5 @@
 ﻿await Host.CreateDefaultBuilder(args)
+          .UseConsoleLifetime(z => z.SuppressStatusMessages = true)
           .LaunchWith(
                RocketBooster.For(Imports.GetConventions),
                z => z
