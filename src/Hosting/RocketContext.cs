@@ -138,7 +138,7 @@ internal class RocketContext
             ? configurationBuilder.Sources.Count - 1
             : configurationBuilder.Sources.IndexOf(source);
 
-        var cb = new ConfigurationBuilder().ApplyConventions(Context, configurationBuilder.Build());
+        var cb = new ConfigurationBuilder().ApplyConventions(Context, context.Configuration);
         if (cb.Sources is { Count: > 0 })
         {
             configurationBuilder.Sources.Insert(

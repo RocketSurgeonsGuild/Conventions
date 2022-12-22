@@ -46,7 +46,6 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        ;
         action(SetupConventions(builder));
         return builder;
     }

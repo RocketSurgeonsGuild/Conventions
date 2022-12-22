@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;netstandard2.0;net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1;net6.0;net7.0</TargetFrameworks>
         <PackageDescription>Provides the ability to provide additional commands to the hosted application by convention.</PackageDescription>
         <PackageTags>$(PackageTags);command line;cli;command</PackageTags>
         <NoWarn>$(NoWarn);RCS1102;CA1812</NoWarn>
@@ -14,11 +14,12 @@
         />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
+        <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Spectre.Console" />
         <PackageReference Include="Spectre.Console.Cli" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
         <InternalsVisibleTo Include="Rocket.Surgery.Extensions.CommandLine.Tests" />

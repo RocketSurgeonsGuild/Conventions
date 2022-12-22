@@ -1,22 +1,27 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
-internal class ConventionTypeRegistrar : ITypeRegistrar
+internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
 {
-    private readonly IConventionContext _conventionContext;
-    private readonly ServiceCollection _services;
+    private IServiceProvider _serviceProvider;
+    private readonly IServiceCollection _services;
+    private Dictionary<Type, object> _instances = new();
+    private ServiceProvider? _internalServices;
 
-    public ConventionTypeRegistrar(IConventionContext conventionContext)
+    public ConventionTypeRegistrar()
     {
-        _conventionContext = conventionContext;
         _services = new ServiceCollection();
     }
 
-    public void Register(Type service, Type implementation)
+    public void Register(
+        Type service,
+#if NET6_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type implementation
+    )
     {
         _services.AddSingleton(service, implementation);
     }
@@ -31,17 +36,31 @@ internal class ConventionTypeRegistrar : ITypeRegistrar
         _services.AddSingleton(service, _ => factory());
     }
 
+    internal void SetServiceProvider(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    internal object? GetService(Type type)
+    {
+        try
+        {
+            return _internalServices?.GetService(type);
+        }
+        catch (InvalidOperationException)
+        {
+            return null;
+        }
+    }
+
+    object? IServiceProvider.GetService(Type type)
+    {
+        return GetService(type);
+    }
+
     public ITypeResolver Build()
     {
-        _services.AddSingleton(_conventionContext.Get<IConfiguration>());
-
-        if (_services.All(z => z.ServiceType != typeof(ILoggerFactory)))
-        {
-            _services.AddLogging();
-        }
-
-        var factory = ConventionServiceProviderFactory.From(_conventionContext);
-        var provider = factory.CreateServiceProvider(factory.CreateBuilder(_services));
-        return new ConventionTypeResolver(provider);
+        _internalServices = _services.BuildServiceProvider();
+        return new ConventionTypeResolver(_serviceProvider, this);
     }
 }

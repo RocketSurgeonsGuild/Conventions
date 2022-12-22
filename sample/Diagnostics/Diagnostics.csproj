@@ -13,5 +13,6 @@
         />
         <ProjectReference Include="../../src/Conventions.Diagnostics/Rocket.Surgery.Conventions.Diagnostics.csproj" />
         <ProjectReference Include="../../src/Hosting/Rocket.Surgery.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
     </ItemGroup>
 </Project>
