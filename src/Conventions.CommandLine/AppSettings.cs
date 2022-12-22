@@ -10,7 +10,7 @@ public class AppSettings : CommandSettings
     ///     Gets the log.
     /// </summary>
     /// <value>The log.</value>
-    [CommandOption("-l|--log")]
+    [CommandOption("-l|--log|--loglevel")]
     [UsedImplicitly]
     public LogLevel? LogLevel { get; set; }
 
@@ -19,25 +19,25 @@ public class AppSettings : CommandSettings
     ///     verbose.
     /// </summary>
     /// <value><c>true</c> if verbose; otherwise, <c>false</c>.</value>
-    [CommandOption("-v|--verbose")]
+    [CommandOption("--verbose")]
     [Description("Verbose logging")]
     [UsedImplicitly]
     public bool Verbose
     {
-        get => LogLevel == global::Microsoft.Extensions.Logging.LogLevel.Debug;
-        set => LogLevel = value ? global::Microsoft.Extensions.Logging.LogLevel.Debug : LogLevel;
+        get => LogLevel == Microsoft.Extensions.Logging.LogLevel.Debug;
+        set => LogLevel = value ? Microsoft.Extensions.Logging.LogLevel.Debug : LogLevel;
     }
 
     /// <summary>
     ///     Gets a value indicating whether this <see cref="AppSettings" /> is trace.
     /// </summary>
     /// <value><c>true</c> if trace; otherwise, <c>false</c>.</value>
-    [CommandOption("-t|--trace")]
+    [CommandOption("--trace")]
     [Description("Trace logging")]
     [UsedImplicitly]
     public bool Trace
     {
-        get => LogLevel == global::Microsoft.Extensions.Logging.LogLevel.Trace;
-        set => LogLevel = value ? global::Microsoft.Extensions.Logging.LogLevel.Trace : LogLevel;
+        get => LogLevel == Microsoft.Extensions.Logging.LogLevel.Trace;
+        set => LogLevel = value ? Microsoft.Extensions.Logging.LogLevel.Trace : LogLevel;
     }
 }

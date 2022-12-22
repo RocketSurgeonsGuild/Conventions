@@ -3,17 +3,26 @@ using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
-class ConventionTypeResolver : ITypeResolver
+internal class ConventionTypeResolver : ITypeResolver
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _instances;
 
-    public ConventionTypeResolver(IServiceProvider serviceProvider)
+    public ConventionTypeResolver(IServiceProvider serviceProvider, IServiceProvider instances)
     {
         _serviceProvider = serviceProvider;
+        _instances = instances;
     }
 
-    public object? Resolve(Type? type)
+    public object? Resolve(
+#if NET6_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type? type
+    )
     {
-        return ActivatorUtilities.GetServiceOrCreateInstance(_serviceProvider, type!);
+        return _serviceProvider.GetService(type)
+            ?? _instances.GetService(type)
+            ?? ActivatorUtilities.GetServiceOrCreateInstance(_serviceProvider, type!);
     }
 }

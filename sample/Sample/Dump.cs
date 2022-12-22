@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.CommandLine;
 using Spectre.Console.Cli;
 
 namespace Sample;
 
-public class Dump : AsyncCommand
+public class Dump : AsyncCommand<AppSettings>
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<Dump> _logger;
@@ -17,7 +15,7 @@ public class Dump : AsyncCommand
         _logger = logger;
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context)
+    public override Task<int> ExecuteAsync(CommandContext context, AppSettings settings)
     {
         foreach (var item in _configuration.AsEnumerable().Reverse())
         {

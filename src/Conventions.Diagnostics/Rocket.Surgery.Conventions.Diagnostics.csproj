@@ -13,7 +13,6 @@
             ReferenceOutputAssembly="false"
         />
     <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
-    <ProjectReference Include="..\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference

@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
@@ -18,8 +17,8 @@ public static partial class Program
 {
     public static Task<int> Main(string[] args)
     {
-        return App.Create(CreateHostBuilder(args))
-                  .RunAsync(args);
+        return CreateHostBuilder(args)
+           .RunAsync();
     }
 
     public static IHostBuilder CreateHostBuilder(string[] args)
@@ -34,15 +33,12 @@ public static partial class Program
 }
 
 [ExportConvention]
-class Convention : ICommandLineConvention, IServiceConvention
+internal class Convention : ICommandLineConvention, IServiceConvention
 {
     public void Register(IConventionContext context, IConfigurator app)
     {
-        app.AddDelegate("test", c =>
-            {
-
-                return 1;
-            }
+        app.AddDelegate(
+            "test", c => { return 1; }
         );
         app.AddCommand<MyCommand>("dump");
     }
@@ -52,7 +48,7 @@ class Convention : ICommandLineConvention, IServiceConvention
     }
 }
 
-class MyCommand : AsyncCommand<AppSettings>
+internal class MyCommand : AsyncCommand<AppSettings>
 {
     private readonly IHostBuilder _hostBuilder;
     private readonly IAnsiConsole _console;
