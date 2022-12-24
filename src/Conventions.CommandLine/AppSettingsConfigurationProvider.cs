@@ -59,12 +59,8 @@ internal class AppSettingsConfigurationProvider : CommandLineConfigurationProvid
 
     public void Default()
     {
-        base.Load();
+        Load();
         OnReload();
-    }
-
-    public override void Load()
-    {
     }
 
     /// <summary>
