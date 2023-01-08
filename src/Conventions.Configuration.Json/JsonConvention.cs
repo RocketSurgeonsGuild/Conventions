@@ -10,7 +10,7 @@ public class JsonConvention : ISetupConvention
 {
     public void Register(IConventionContext context)
     {
-        context.AddApplicationConfiguration(
+        context.AppendApplicationConfiguration(
             configurationBuilder =>
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")) || context.Properties.ContainsKey("BlazorWasm"))
@@ -24,7 +24,7 @@ public class JsonConvention : ISetupConvention
                 };
             }
         );
-        context.AddEnvironmentConfiguration(
+        context.AppendEnvironmentConfiguration(
             (configurationBuilder, environment) =>
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")) || context.Properties.ContainsKey("BlazorWasm"))
