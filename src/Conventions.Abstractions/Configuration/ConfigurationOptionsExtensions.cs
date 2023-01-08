@@ -8,11 +8,12 @@ namespace Rocket.Surgery.Conventions.Configuration;
 public static class ConfigurationOptionsExtensions
 {
     /// <summary>
-    ///     Add an application configuration
+    ///     Append an application configuration
     /// </summary>
     /// <param name="context"></param>
     /// <param name="delegate"></param>
     /// <returns></returns>
+    [Obsolete("Use AppendApplicationConfiguration instead")]
     public static IConventionContext AddApplicationConfiguration(this IConventionContext context, ConfigurationBuilderApplicationDelegate @delegate)
     {
         var delegates = context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new());
@@ -21,15 +22,68 @@ public static class ConfigurationOptionsExtensions
     }
 
     /// <summary>
-    ///     Add an environment configuration
+    ///     Append an environment configuration
     /// </summary>
     /// <param name="context"></param>
     /// <param name="delegate"></param>
     /// <returns></returns>
+    [Obsolete("Use AppendEnvironmentConfiguration instead")]
     public static IConventionContext AddEnvironmentConfiguration(this IConventionContext context, ConfigurationBuilderEnvironmentDelegate @delegate)
     {
         var delegates = context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new());
         delegates.Add(@delegate);
+        return context;
+    }
+
+    /// <summary>
+    ///     Append an application configuration
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="delegate"></param>
+    /// <returns></returns>
+    public static IConventionContext AppendApplicationConfiguration(this IConventionContext context, ConfigurationBuilderApplicationDelegate @delegate)
+    {
+        var delegates = context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new());
+        delegates.Add(@delegate);
+        return context;
+    }
+
+    /// <summary>
+    ///     Append an environment configuration
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="delegate"></param>
+    /// <returns></returns>
+    public static IConventionContext AppendEnvironmentConfiguration(this IConventionContext context, ConfigurationBuilderEnvironmentDelegate @delegate)
+    {
+        var delegates = context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new());
+        delegates.Add(@delegate);
+        return context;
+    }
+
+    /// <summary>
+    ///     Prepend an application configuration
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="delegate"></param>
+    /// <returns></returns>
+    public static IConventionContext PrependApplicationConfiguration(this IConventionContext context, ConfigurationBuilderApplicationDelegate @delegate)
+    {
+        var delegates = context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new());
+        delegates.Insert(0, @delegate);
+        return context;
+    }
+
+    /// <summary>
+    ///     Prepend an environment configuration
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="delegate"></param>
+    /// <returns></returns>
+    public static IConventionContext PrependEnvironmentConfiguration(this IConventionContext context, ConfigurationBuilderEnvironmentDelegate @delegate)
+    {
+        var delegates = context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new());
+        delegates.Insert(0, @delegate);
         return context;
     }
 
