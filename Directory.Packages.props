@@ -58,7 +58,7 @@
     <PackageVersion Include="Microsoft.Azure.WebJobs.Host.Storage" Version="4.1.0" />
     <PackageVersion Include="NetEscapades.Configuration.Yaml" Version="2.2.0" />
     <PackageVersion Include="Spectre.Console" Version="0.45.0" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.45.0" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.46.0" />
     <PackageVersion Include="Spectre.Console.Testing" Version="0.45.0" />
     <PackageVersion Include="Terminal.Gui" Version="1.9.0" />
   </ItemGroup>
