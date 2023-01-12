@@ -26,20 +26,21 @@ internal class AppSettingsConfigurationProvider : CommandLineConfigurationProvid
 
     public void Update(CommandContext commandContext, AppSettings appSettings)
     {
-        Data = new Dictionary<string, string>
-               {
-                   [nameof(AppSettings.Trace)] = appSettings.Trace.ToString(CultureInfo.InvariantCulture),
-                   [nameof(AppSettings.Verbose)] = appSettings.Verbose.ToString(CultureInfo.InvariantCulture),
-                   [nameof(AppSettings.LogLevel)] = appSettings.LogLevel.HasValue ? appSettings.LogLevel.Value.ToString() : ""
-               }
-              .Select(z => new KeyValuePair<string, string>($"{nameof(AppSettings)}:{z.Key}", z.Value))
-              .Concat(commandContext.Remaining.Parsed.Select(z => new KeyValuePair<string, string>(z.Key, z.Last()!)))
-              .ToDictionary(z => z.Key, z => z.Value);
+        Load();
+        var additionalData = new Dictionary<string, string>
+                             {
+                                 [nameof(AppSettings.Trace)] = appSettings.Trace.ToString(CultureInfo.InvariantCulture),
+                                 [nameof(AppSettings.Verbose)] = appSettings.Verbose.ToString(CultureInfo.InvariantCulture),
+                                 [nameof(AppSettings.LogLevel)] = appSettings.LogLevel.HasValue ? appSettings.LogLevel.Value.ToString() : ""
+                             }
+                            .Select(z => new KeyValuePair<string, string>($"{nameof(AppSettings)}:{z.Key}", z.Value))
+                            .Concat(commandContext.Remaining.Parsed.Select(z => new KeyValuePair<string, string>(z.Key, z.Last()!)))
+                            .ToDictionary(z => z.Key, z => z.Value);
         if (appSettings.LogLevel.HasValue)
         {
-            Data.Add("Logging:LogLevel:Default", appSettings.LogLevel.Value.ToString());
-            Data.Add("Logging:Debug:LogLevel:Default", appSettings.LogLevel.Value.ToString());
-            Data.Add("Logging:Console:LogLevel:Default", appSettings.LogLevel.Value.ToString());
+            additionalData.Add("Logging:LogLevel:Default", appSettings.LogLevel.Value.ToString());
+            additionalData.Add("Logging:Debug:LogLevel:Default", appSettings.LogLevel.Value.ToString());
+            additionalData.Add("Logging:Console:LogLevel:Default", appSettings.LogLevel.Value.ToString());
 
             var serilogStringValue = appSettings.LogLevel.Value switch
             {
@@ -50,16 +51,15 @@ internal class AppSettingsConfigurationProvider : CommandLineConfigurationProvid
             };
             if (serilogStringValue is not null)
             {
-                Data.Add("Serilog:MinimumLevel:Default", serilogStringValue);
+                additionalData.Add("Serilog:MinimumLevel:Default", serilogStringValue);
             }
         }
 
-        OnReload();
-    }
+        foreach (var item in additionalData)
+        {
+            Data[item.Key] = item.Value;
+        }
 
-    public void Default()
-    {
-        Load();
         OnReload();
     }
 
