@@ -21,20 +21,9 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
             (builderContext, configurationBuilder) =>
             {
                 var sourcesToRemove = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>().ToList();
-
-                var commandLineConfigurationSource = sourcesToRemove.FirstOrDefault();
-                var appSettings = new AppSettingsConfigurationSource(sourcesToRemove.FirstOrDefault());
+                var appSettings = new AppSettingsConfigurationSource(sourcesToRemove.FirstOrDefault()?.Args ?? Array.Empty<string>());
+                configurationBuilder.Add(appSettings);
                 context.Set(appSettings);
-                var index = configurationBuilder.Sources.IndexOf(commandLineConfigurationSource);
-                if (index > -1)
-                {
-                    configurationBuilder.Sources.Insert(index, appSettings);
-                }
-
-                foreach (var source in sourcesToRemove)
-                {
-                    configurationBuilder.Sources.Remove(source);
-                }
             }
         );
     }

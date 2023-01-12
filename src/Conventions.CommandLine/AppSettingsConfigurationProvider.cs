@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Globalization;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 
@@ -10,17 +9,13 @@ namespace Rocket.Surgery.Conventions.CommandLine;
 /// <summary>
 ///     In-memory implementation of <see cref="IConfigurationProvider" />
 /// </summary>
-internal class AppSettingsConfigurationProvider : CommandLineConfigurationProvider, IEnumerable<KeyValuePair<string, string>>
+internal class AppSettingsConfigurationProvider : ConfigurationProvider, IEnumerable<KeyValuePair<string, string>>
 {
     /// <summary>
     ///     Initialize a new instance from the source.
     /// </summary>
-    /// <param name="args"></param>
-    /// <param name="switchMappings"></param>
     public AppSettingsConfigurationProvider(
-        IEnumerable<string> args,
-        IDictionary<string, string>? switchMappings = null
-    ) : base(args, switchMappings)
+    )
     {
     }
 
