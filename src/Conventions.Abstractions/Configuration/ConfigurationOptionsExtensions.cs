@@ -98,7 +98,8 @@ public static class ConfigurationOptionsExtensions
         if (source != null)
         {
             var index = builder.Sources.IndexOf(source);
-            foreach (var newSource in createSourceFrom)
+            // We add in reverse order to keep the same order going in.
+            foreach (var newSource in createSourceFrom.Reverse())
             {
                 builder.Sources.Insert(index + 1, newSource);
             }
@@ -127,7 +128,8 @@ public static class ConfigurationOptionsExtensions
         {
             var index = builder.Sources.IndexOf(source);
             builder.Sources.RemoveAt(index);
-            foreach (var newSource in iConfigurationSources)
+            // We add in reverse order to keep the same order going in.
+            foreach (var newSource in iConfigurationSources.Reverse())
             {
                 builder.Sources.Insert(index, newSource);
             }

@@ -28,11 +28,6 @@ internal class AppSettingsConfigurationSource : IConfigurationSource
         _provider.Update(commandContext, appSettings);
     }
 
-    public void Default()
-    {
-        _provider.Default();
-    }
-
     /// <summary>
     ///     Builds the <see cref="AppSettingsConfigurationSource" /> for this source.
     /// </summary>
@@ -40,6 +35,7 @@ internal class AppSettingsConfigurationSource : IConfigurationSource
     /// <returns>A <see cref="AppSettingsConfigurationSource" /></returns>
     public IConfigurationProvider Build(IConfigurationBuilder builder)
     {
+        _provider.Load();
         return _provider;
     }
 }
