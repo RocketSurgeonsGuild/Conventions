@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
 using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
@@ -9,19 +8,14 @@ namespace Rocket.Surgery.Conventions.CommandLine;
 /// </summary>
 internal class AppSettingsConfigurationSource : IConfigurationSource
 {
+    public IEnumerable<string> Args { get; }
     private readonly AppSettingsConfigurationProvider _provider;
-    private readonly CommandLineConfigurationSource? _commandLineConfigurationSource;
 
-    public AppSettingsConfigurationSource(CommandLineConfigurationSource? commandLineConfigurationSource)
+    public AppSettingsConfigurationSource(IEnumerable<string> args)
     {
-        _commandLineConfigurationSource = commandLineConfigurationSource;
-        _provider = new AppSettingsConfigurationProvider(
-            commandLineConfigurationSource?.Args ?? Array.Empty<string>(),
-            commandLineConfigurationSource?.SwitchMappings ?? new Dictionary<string, string>()
-        );
+        Args = args;
+        _provider = new AppSettingsConfigurationProvider();
     }
-
-    public IEnumerable<string> Args => _commandLineConfigurationSource?.Args ?? Array.Empty<string>();
 
     public void Update(CommandContext commandContext, AppSettings appSettings)
     {
@@ -35,7 +29,6 @@ internal class AppSettingsConfigurationSource : IConfigurationSource
     /// <returns>A <see cref="AppSettingsConfigurationSource" /></returns>
     public IConfigurationProvider Build(IConfigurationBuilder builder)
     {
-        _provider.Load();
         return _provider;
     }
 }
