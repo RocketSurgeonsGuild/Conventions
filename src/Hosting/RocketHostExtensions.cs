@@ -46,7 +46,9 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        action(SetupConventions(builder));
+        var contextBuilder = GetOrCreate(builder, () => new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default));
+        action(contextBuilder);
+        Configure(builder, contextBuilder);
         return builder;
     }
 
@@ -70,7 +72,8 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(getConventions));
         }
 
-        SetupConventions(builder).WithConventionsFrom(getConventions);
+        var contextBuilder = GetOrCreate(builder, () => new ConventionContextBuilder(builder.Properties).WithConventionsFrom(getConventions));
+        Configure(builder, contextBuilder);
         return builder;
     }
 
@@ -92,7 +95,7 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(conventionContextBuilder));
         }
 
-        SetupConventions(builder, conventionContextBuilder);
+        Configure(builder, conventionContextBuilder);
         return builder;
     }
 
@@ -119,9 +122,9 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(func));
         }
 
-        var b = func(builder);
-        SetupConventions(builder, b);
+        var b = GetOrCreate(builder, () => func(builder));
         action?.Invoke(b);
+        Configure(builder, b);
         return builder;
     }
 
@@ -148,39 +151,21 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(func));
         }
 
-        var b = func(builder);
-        SetupConventions(builder, b);
+        var b = GetOrCreate(builder, () => func(builder));
         action?.Invoke(b);
+        Configure(builder, b);
         return builder;
     }
 
     /// <summary>
-    ///     Gets the or create builder.
+    ///     Method used to get an existing <see cref="ConventionContextBuilder" /> or create and insert a new one.
     /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <returns>RocketHostBuilder.</returns>
-    internal static ConventionContextBuilder SetupConventions(IHostBuilder builder)
+    /// <param name="builder"></param>
+    /// <param name="factory"></param>
+    /// <returns></returns>
+    internal static ConventionContextBuilder GetOrCreate(IHostBuilder builder, Func<ConventionContextBuilder> factory)
     {
-        if (builder.Properties.ContainsKey(typeof(ConventionContextBuilder)))
-            return ( builder.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
-
-        var conventionContextBuilder = Configure(builder, new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default));
-        return conventionContextBuilder;
-    }
-
-    /// <summary>
-    ///     Gets the or create builder.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="conventionContextBuilder">The convention context builder.</param>
-    /// <returns>RocketHostBuilder.</returns>
-    internal static ConventionContextBuilder SetupConventions(IHostBuilder builder, ConventionContextBuilder conventionContextBuilder)
-    {
-        if (builder.Properties.ContainsKey(typeof(ConventionContextBuilder)))
-            return ( builder.Properties[typeof(ConventionContextBuilder)] as ConventionContextBuilder )!;
-
-        Configure(builder, conventionContextBuilder);
-        return conventionContextBuilder;
+        return builder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value) ? ( value as ConventionContextBuilder )! : factory();
     }
 
     /// <summary>
@@ -191,9 +176,15 @@ public static class RocketHostExtensions
     /// <returns>RocketHostBuilder.</returns>
     internal static ConventionContextBuilder Configure(IHostBuilder builder, ConventionContextBuilder contextBuilder)
     {
-        contextBuilder.Properties.AddIfMissing(builder).AddIfMissing(HostType.Live);
+        contextBuilder.Properties
+                      .AddIfMissing(builder)
+                      .AddIfMissing(contextBuilder)
+                      .AddIfMissing(HostType.Live);
         builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
         builder.Properties[typeof(IHostBuilder)] = builder;
+
+        if (contextBuilder.Properties.ContainsKey(typeof(RocketHostExtensions))) return contextBuilder;
+        contextBuilder.Properties.Add(typeof(RocketHostExtensions), true);
         var host = new RocketContext(builder);
         builder
            .ConfigureHostConfiguration(host.ComposeHostingConvention)

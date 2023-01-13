@@ -18,7 +18,11 @@ public static class RocketBooster
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<IHostBuilder, ConventionContextBuilder> ForDependencyContext(DependencyContext dependencyContext)
     {
-        return builder => RocketHostExtensions.SetupConventions(builder).UseDependencyContext(dependencyContext);
+        return builder =>
+        {
+            var contextBuilder = new ConventionContextBuilder(builder.Properties).UseDependencyContext(dependencyContext);
+            return RocketHostExtensions.Configure(builder, contextBuilder);
+        };
     }
 
     /// <summary>
@@ -68,7 +72,11 @@ public static class RocketBooster
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> conventionProvider
     )
     {
-        return builder => RocketHostExtensions.SetupConventions(builder).WithConventionsFrom(conventionProvider);
+        return builder =>
+        {
+            var contextBuilder = new ConventionContextBuilder(builder.Properties).WithConventionsFrom(conventionProvider);
+            return RocketHostExtensions.Configure(builder, contextBuilder);
+        };
     }
 
     /// <summary>
@@ -88,7 +96,11 @@ public static class RocketBooster
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<IHostBuilder, ConventionContextBuilder> ForAppDomain(AppDomain appDomain)
     {
-        return builder => RocketHostExtensions.SetupConventions(builder).UseAppDomain(appDomain);
+        return builder =>
+        {
+            var contextBuilder = new ConventionContextBuilder(builder.Properties).UseAppDomain(appDomain);
+            return RocketHostExtensions.Configure(builder, contextBuilder);
+        };
     }
 
     /// <summary>
@@ -135,7 +147,11 @@ public static class RocketBooster
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<IHostBuilder, ConventionContextBuilder> ForAssemblies(IEnumerable<Assembly> assemblies)
     {
-        return builder => RocketHostExtensions.SetupConventions(builder).UseAssemblies(assemblies);
+        return builder =>
+        {
+            var contextBuilder = new ConventionContextBuilder(builder.Properties).UseAssemblies(assemblies);
+            return RocketHostExtensions.Configure(builder, contextBuilder);
+        };
     }
 
     /// <summary>
