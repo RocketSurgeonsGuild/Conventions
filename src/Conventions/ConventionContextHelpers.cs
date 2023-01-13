@@ -162,6 +162,7 @@ internal static class ConventionContextHelpers
         var includedConventions = builder._includeAssemblyConventions.SelectMany(assembly => GetConventionsFromAssembly(builder, assembly, logger))
                                          .Concat(builder._includeConventions.OfType<IConvention>());
 
+
         if (builder._conventionProviderFactory != null)
         {
             return new ConventionProvider(

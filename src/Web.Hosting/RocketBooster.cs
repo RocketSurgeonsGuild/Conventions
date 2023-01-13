@@ -17,7 +17,11 @@ public static class RocketBooster
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<WebApplicationBuilder, ConventionContextBuilder> ForDependencyContext(DependencyContext dependencyContext)
     {
-        return builder => RocketWebHostExtensions.SetupConventions(builder).UseDependencyContext(dependencyContext);
+        return builder =>
+        {
+            var contextBuilder = new ConventionContextBuilder(builder.Host.Properties!).UseDependencyContext(dependencyContext);
+            return RocketWebHostExtensions.Configure(builder, contextBuilder);
+        };
     }
 
     /// <summary>
@@ -67,7 +71,11 @@ public static class RocketBooster
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> conventionProvider
     )
     {
-        return builder => RocketWebHostExtensions.SetupConventions(builder).WithConventionsFrom(conventionProvider);
+        return builder =>
+        {
+            var contextBuilder = new ConventionContextBuilder(builder.Host.Properties!).WithConventionsFrom(conventionProvider);
+            return RocketWebHostExtensions.Configure(builder, contextBuilder);
+        };
     }
 
     /// <summary>
@@ -87,7 +95,11 @@ public static class RocketBooster
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<WebApplicationBuilder, ConventionContextBuilder> ForAppDomain(AppDomain appDomain)
     {
-        return builder => RocketWebHostExtensions.SetupConventions(builder).UseAppDomain(appDomain);
+        return builder =>
+        {
+            var contextBuilder = new ConventionContextBuilder(builder.Host.Properties!).UseAppDomain(appDomain);
+            return RocketWebHostExtensions.Configure(builder, contextBuilder);
+        };
     }
 
     /// <summary>
@@ -134,7 +146,11 @@ public static class RocketBooster
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<WebApplicationBuilder, ConventionContextBuilder> ForAssemblies(IEnumerable<Assembly> assemblies)
     {
-        return builder => RocketWebHostExtensions.SetupConventions(builder).UseAssemblies(assemblies);
+        return builder =>
+        {
+            var contextBuilder = new ConventionContextBuilder(builder.Host.Properties).UseAssemblies(assemblies);
+            return RocketWebHostExtensions.Configure(builder, contextBuilder);
+        };
     }
 
     /// <summary>

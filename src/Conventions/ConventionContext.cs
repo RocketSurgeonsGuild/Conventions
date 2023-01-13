@@ -13,6 +13,7 @@ namespace Rocket.Surgery.Conventions;
 public sealed class ConventionContext : IConventionContext
 {
     private readonly ConventionContextBuilder _builder;
+    private const string ConventionsSetup = "__ConventionsSetup__" + nameof(ConventionContext);
 
     /// <summary>
     ///     Create a context from a given builder
@@ -28,7 +29,13 @@ public sealed class ConventionContext : IConventionContext
         var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
         builder.Properties.Set(builder._serviceProviderFactory);
-        return new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
+        var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
+
+        if (context.Properties.ContainsKey(ConventionsSetup)) return context;
+
+        context.ApplyConventions();
+        context.Properties.Add(ConventionsSetup, true);
+        return context;
     }
 
     /// <summary>
@@ -39,7 +46,7 @@ public sealed class ConventionContext : IConventionContext
     /// <param name="assemblyCandidateFinder"></param>
     /// <param name="properties"></param>
     /// <param name="assemblyProvider"></param>
-    internal ConventionContext(
+    private ConventionContext(
         ConventionContextBuilder builder,
         IConventionProvider conventionProvider,
         IAssemblyProvider assemblyProvider,
@@ -52,8 +59,6 @@ public sealed class ConventionContext : IConventionContext
         AssemblyProvider = assemblyProvider;
         AssemblyCandidateFinder = assemblyCandidateFinder;
         Properties = properties;
-
-        this.ApplyConventions();
     }
 
     /// <summary>
