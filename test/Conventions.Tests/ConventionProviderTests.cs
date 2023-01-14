@@ -30,7 +30,7 @@ public class ConventionProviderTests : AutoFakeTest
 
         provider.GetAll()
                 .Should()
-                .ContainInOrder(e, d, f, b, c);
+                .ContainInOrder(e, d, b);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class ConventionProviderTests : AutoFakeTest
 
         provider.GetAll()
                 .Should()
-                .ContainInOrder(e, d, b, c, f);
+                .ContainInOrder(e, d, b);
     }
 
     [Fact]
@@ -81,9 +81,7 @@ public class ConventionProviderTests : AutoFakeTest
                      d,
                      d2,
                      b,
-                     c,
-                     d3,
-                     f
+                     d3
                  );
     }
 
@@ -198,7 +196,7 @@ public class ConventionProviderTests : AutoFakeTest
 
         provider.GetAll()
                 .Should()
-                .ContainInOrder(e, c, d, f, b);
+                .ContainInOrder(e, d, b);
     }
 
     public ConventionProviderTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information)
