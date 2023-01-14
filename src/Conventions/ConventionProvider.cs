@@ -240,10 +240,8 @@ internal class ConventionProvider : IConventionProvider
         return _conventions.Value
                            .Where(
                                 cod => cod.HostType == HostType.Undefined
-                                    || ( hostType == HostType.Undefined && _hostType == HostType.Undefined ) // if nothing was given here ignore the default
-                                    || ( hostType != HostType.Undefined
-                                           ? cod.HostType == hostType
-                                           : _hostType != HostType.Undefined && cod.HostType == _hostType )
+                                    || ( hostType != HostType.Undefined && cod.HostType == hostType )
+                                    || cod.HostType == _hostType
                             )
                            .Select(ToObject)
                            .Where(x => x != null!)!;
