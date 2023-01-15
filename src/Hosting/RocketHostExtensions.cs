@@ -72,7 +72,9 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(getConventions));
         }
 
-        var contextBuilder = GetOrCreate(builder, () => new ConventionContextBuilder(builder.Properties).WithConventionsFrom(getConventions));
+        var contextBuilder = GetOrCreate(
+            builder, () => new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default).WithConventionsFrom(getConventions)
+        );
         Configure(builder, contextBuilder);
         return builder;
     }

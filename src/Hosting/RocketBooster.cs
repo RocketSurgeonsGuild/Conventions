@@ -74,7 +74,8 @@ public static class RocketBooster
     {
         return builder =>
         {
-            var contextBuilder = new ConventionContextBuilder(builder.Properties).WithConventionsFrom(conventionProvider);
+            var contextBuilder = new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default)
+                                                                                 .WithConventionsFrom(conventionProvider);
             return RocketHostExtensions.Configure(builder, contextBuilder);
         };
     }

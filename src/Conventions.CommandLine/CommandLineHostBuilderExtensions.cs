@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.CommandLine;
 using Spectre.Console.Cli;
 
@@ -24,6 +25,7 @@ public static class CommandAppHostBuilderExtensions
             throw new ArgumentNullException(nameof(container));
         }
 
+        EnsureShouldRun(container);
         container.AppendDelegate(@delegate);
         return container;
     }
@@ -41,6 +43,7 @@ public static class CommandAppHostBuilderExtensions
             throw new ArgumentNullException(nameof(container));
         }
 
+        EnsureShouldRun(container);
         container.AppendDelegate(new CommandLineConvention((_, context) => @delegate(context)));
         return container;
     }
@@ -58,6 +61,7 @@ public static class CommandAppHostBuilderExtensions
             throw new ArgumentNullException(nameof(container));
         }
 
+        EnsureShouldRun(container);
         container.AppendDelegate(@delegate);
         return container;
     }
@@ -75,6 +79,7 @@ public static class CommandAppHostBuilderExtensions
             throw new ArgumentNullException(nameof(container));
         }
 
+        EnsureShouldRun(container);
         container.AppendDelegate(new CommandAppConvention((_, context) => @delegate(context)));
         return container;
     }
@@ -92,6 +97,7 @@ public static class CommandAppHostBuilderExtensions
             throw new ArgumentNullException(nameof(container));
         }
 
+        EnsureShouldRun(container);
         container.AppendDelegate(new CommandAppConvention((_, context) => context.SetDefaultCommand<TDefaultCommand>()));
         return container;
     }
@@ -115,9 +121,24 @@ public static class CommandAppHostBuilderExtensions
     public static async Task<int> RunAsync(this IHostBuilder builder, CancellationToken cancellationToken = default)
     {
         using var host = builder.Build();
-        var result = host.Services.GetRequiredService<ConsoleResult>();
+        var result = host.Services.GetService<ConsoleResult>();
+        if (result == null)
+        {
+            host.Services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(CommandAppHostBuilderExtensions)).LogWarning(
+                "No commands have been configured, are you trying to run a console app? Try adding some commands for it to work correctly."
+            );
+        }
+
         await host.StartAsync(cancellationToken);
         await host.WaitForShutdownAsync(cancellationToken);
-        return result.ExitCode ?? 0;
+        return result?.ExitCode ?? 0;
+    }
+
+    private static void EnsureShouldRun(ConventionContextBuilder container)
+    {
+        if (!container.Properties.TryGetValue(typeof(ConsoleConvention), out _))
+        {
+            container.Properties.Add(typeof(ConsoleConvention), true);
+        }
     }
 }
