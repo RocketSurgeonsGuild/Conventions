@@ -6,25 +6,74 @@ using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions;
 
-internal static class ConventionContextHelpers
+internal static partial class ConventionContextHelpers
 {
-    private static readonly Action<ILogger, IEnumerable<string>, Exception?> ScanningForConventionsInAssemblies =
-        LoggerMessage.Define<IEnumerable<string>>(LogLevel.Debug, 1337, "Scanning for conventions in assemblies: {Assemblies}");
+    [LoggerMessage(1337, LogLevel.Debug, "Scanning for conventions in assemblies: {Assemblies}")]
+    static partial void ScanningForConventionsInAssemblies(ILogger logger, IEnumerable<string> assemblies);
 
-    private static readonly Action<ILogger, IEnumerable<string>, Exception?> SkippingConventionsInAssemblies =
-        LoggerMessage.Define<IEnumerable<string>>(LogLevel.Debug, 1337, "Skipping conventions in assemblies: {Assemblies}");
+    [LoggerMessage(1337, LogLevel.Debug, "Skipping conventions in assemblies: {Assemblies}")]
+    static partial void SkippingConventionsInAssemblies(ILogger logger, IEnumerable<string> assemblies);
 
-    private static readonly Action<ILogger, IEnumerable<string>, Exception?> SkippingExistingConventionTypes =
-        LoggerMessage.Define<IEnumerable<string>>(LogLevel.Debug, 1337, "Skipping existing convention types: {Types}");
+    [LoggerMessage(1337, LogLevel.Debug, "Skipping existing convention types: {Types}")]
+    static partial void SkippingExistingConventionTypes(ILogger logger, IEnumerable<string> types);
 
-    private static readonly Action<ILogger, string, IEnumerable<string>, Exception?> FoundConventionsInAssembly =
-        LoggerMessage.Define<string, IEnumerable<string>>(LogLevel.Debug, 1337, "Found conventions in Assembly {Assembly} ({@Conventions})");
+    [LoggerMessage(1337, LogLevel.Debug, "Skipping explicitly included convention types: {Types}")]
+    static partial void SkippingExplicitConventionTypes(ILogger logger, IEnumerable<string> types);
 
-    private static readonly Action<ILogger, string, string, Exception?> TraceScanningPrefilter =
-        LoggerMessage.Define<string, string>(LogLevel.Trace, 1337, "Scanning => Prefilter: {Assembly} / {Type}");
+    [LoggerMessage(1337, LogLevel.Debug, "Found conventions in Assembly {Assembly} ({Conventions})")]
+    static partial void FoundConventionsInAssembly(ILogger logger, string assembly, IEnumerable<string> conventions);
 
-    private static readonly Action<ILogger, string, string, Exception?> TraceScanningPostFlter =
-        LoggerMessage.Define<string, string>(LogLevel.Trace, 1337, "Scanning => Postfilter: {Assembly} / {Type}");
+    [LoggerMessage(1337, LogLevel.Trace, "Scanning => Prefilter: {Assembly} / {Type}")]
+    static partial void TraceScanningPrefilter(ILogger logger, string assembly, string type);
+
+    [LoggerMessage(1337, LogLevel.Trace, "Scanning => Postfilter: {Assembly} / {Type}")]
+    static partial void TraceScanningPostFilter(ILogger logger, string assembly, string type);
+
+
+    private static IEnumerable<IConventionWithDependencies> GetStaticConventions(
+        ConventionContextBuilder builder,
+        ILogger? logger
+    )
+    {
+        logger ??= NullLogger.Instance;
+        var conventions = builder._conventionProviderFactory!(builder.Properties);
+
+        var prependedConventionTypes = new Lazy<HashSet<Type>>(
+            () => new HashSet<Type>(
+                builder._prependedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()
+            )
+        );
+        var appendedConventionTypes = new Lazy<HashSet<Type>>(
+            () => new HashSet<Type>(
+                builder._appendedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()
+            )
+        );
+
+        if (builder._exceptAssemblyConventions.Count > 0)
+        {
+            SkippingConventionsInAssemblies(
+                logger,
+                builder._exceptAssemblyConventions.Select(x => x.GetName().Name!)
+            );
+        }
+
+        if (builder._exceptConventions.Count > 0)
+        {
+            SkippingExplicitConventionTypes(
+                logger,
+                builder._exceptConventions.Select(x => x.FullName!)
+            );
+        }
+
+        SkippingExistingConventionTypes(
+            logger,
+            prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName!)
+        );
+
+        return conventions
+              .Where(z => builder._exceptConventions.All(x => x != z.Convention.GetType()))
+              .Where(z => builder._exceptAssemblyConventions.All(x => x != z.Convention.GetType().Assembly));
+    }
 
     private static IEnumerable<IConvention> GetAssemblyConventions(
         ConventionContextBuilder builder,
@@ -50,27 +99,34 @@ internal static class ConventionContextHelpers
             )
         );
 
-        ScanningForConventionsInAssemblies(logger, assemblies.Select(x => x.GetName().Name!), null);
+        ScanningForConventionsInAssemblies(logger, assemblies.Select(x => x.GetName().Name!));
         if (builder._exceptAssemblyConventions.Count > 0)
         {
             SkippingConventionsInAssemblies(
                 logger,
-                builder._exceptAssemblyConventions.Select(x => x.GetName().Name!),
-                null
+                builder._exceptAssemblyConventions.Select(x => x.GetName().Name!)
+            );
+        }
+
+        if (builder._exceptConventions.Count > 0)
+        {
+            SkippingExplicitConventionTypes(
+                logger,
+                builder._exceptConventions.Select(x => x.FullName!)
             );
         }
 
         SkippingExistingConventionTypes(
             logger,
-            prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName!),
-            null
+            prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName!)
         );
 
         return assemblies.Except(builder._exceptAssemblyConventions)
                          .SelectMany(z => GetConventionsFromAssembly(builder, z, logger))
+                         .Where(z => builder._exceptConventions.All(x => x != z.GetType()))
                          .Where(
-                              type => !prependedConventionTypes.Value.Contains(type.GetType()) &&
-                                      !appendedConventionTypes.Value.Contains(type.GetType())
+                              type => !prependedConventionTypes.Value.Contains(type.GetType())
+                                   && !appendedConventionTypes.Value.Contains(type.GetType())
                           );
     }
 
@@ -88,8 +144,7 @@ internal static class ConventionContextHelpers
         FoundConventionsInAssembly(
             logger,
             assembly.GetName().Name!,
-            types.Select(z => z.GetType().FullName!),
-            null
+            types.Select(z => z.GetType().FullName!)
         );
 
         foreach (var item in types
@@ -99,8 +154,7 @@ internal static class ConventionContextHelpers
                                      TraceScanningPrefilter(
                                          logger,
                                          assembly.GetName().Name!,
-                                         x.GetType().FullName!,
-                                         null
+                                         x.GetType().FullName!
                                      );
 
 
@@ -110,11 +164,10 @@ internal static class ConventionContextHelpers
                             .Select(
                                  x =>
                                  {
-                                     TraceScanningPostFlter(
+                                     TraceScanningPostFilter(
                                          logger,
                                          assembly.GetName().Name!,
-                                         x.GetType().FullName!,
-                                         null
+                                         x.GetType().FullName!
                                      );
 
                                      return x;
@@ -167,23 +220,25 @@ internal static class ConventionContextHelpers
         {
             return new ConventionProvider(
                 builder.GetHostType(),
-                builder._conventionProviderFactory(builder.Properties),
+                GetStaticConventions(builder, logger),
                 includedConventions,
                 builder._prependedConventions,
                 builder._appendedConventions
             );
         }
 
-        var contributionTypes = builder._useAttributeConventions
-            ? GetAssemblyConventions(builder, assemblyCandidateFinder, logger)
-               .Where(z => builder._exceptConventions.All(x => x != z.GetType()))
-            : Enumerable.Empty<IConvention>();
         return new ConventionProvider(
-            builder.GetHostType(), contributionTypes.Concat(includedConventions), builder._prependedConventions, builder._appendedConventions
+            builder.GetHostType(),
+            builder._useAttributeConventions
+                ? GetAssemblyConventions(builder, assemblyCandidateFinder, logger)
+                : Enumerable.Empty<IConvention>()
+                            .Concat(includedConventions),
+            builder._prependedConventions,
+            builder._appendedConventions
         );
     }
 
-    internal static IAssemblyCandidateFinder defaultAssemblyCandidateFinderFactory(object? source, ILogger? logger)
+    internal static IAssemblyCandidateFinder DefaultAssemblyCandidateFinderFactory(object? source, ILogger? logger)
     {
         return source switch
         {
@@ -193,7 +248,7 @@ internal static class ConventionContextHelpers
         };
     }
 
-    internal static IAssemblyProvider defaultAssemblyProviderFactory(object? source, ILogger? logger)
+    internal static IAssemblyProvider DefaultAssemblyProviderFactory(object? source, ILogger? logger)
     {
         return source switch
         {

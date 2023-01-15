@@ -22,8 +22,8 @@ public sealed class ConventionContext : IConventionContext
     /// <returns></returns>
     public static IConventionContext From(ConventionContextBuilder builder)
     {
-        builder._assemblyCandidateFinderFactory ??= ConventionContextHelpers.defaultAssemblyCandidateFinderFactory;
-        builder._assemblyProviderFactory ??= ConventionContextHelpers.defaultAssemblyProviderFactory;
+        builder._assemblyCandidateFinderFactory ??= ConventionContextHelpers.DefaultAssemblyCandidateFinderFactory;
+        builder._assemblyProviderFactory ??= ConventionContextHelpers.DefaultAssemblyProviderFactory;
 
         var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
         var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
