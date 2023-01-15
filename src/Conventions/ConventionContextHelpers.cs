@@ -229,10 +229,11 @@ internal static partial class ConventionContextHelpers
 
         return new ConventionProvider(
             builder.GetHostType(),
-            builder._useAttributeConventions
-                ? GetAssemblyConventions(builder, assemblyCandidateFinder, logger)
-                : Enumerable.Empty<IConvention>()
-                            .Concat(includedConventions),
+            (
+                builder._useAttributeConventions
+                    ? GetAssemblyConventions(builder, assemblyCandidateFinder, logger)
+                    : Enumerable.Empty<IConvention>() )
+           .Concat(includedConventions),
             builder._prependedConventions,
             builder._appendedConventions
         );
