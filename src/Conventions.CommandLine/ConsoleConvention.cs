@@ -40,21 +40,6 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
         var command = new CommandApp(registry);
         var consoleResult = new ConsoleResult();
 
-        services.AddSingleton<IAnsiConsole>(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);
-        services.AddSingleton<IRemainingArguments>(_ => (IRemainingArguments)registry.GetService(typeof(IRemainingArguments))!);
-
-        foreach (var item in context.Conventions.Get<ICommandAppConvention, CommandAppConvention>())
-        {
-            if (item is ICommandAppConvention convention)
-            {
-                convention.Register(context, command);
-            }
-            else if (item is CommandAppConvention @delegate)
-            {
-                @delegate(context, command);
-            }
-        }
-
         command.Configure(
             configurator =>
             {
@@ -67,6 +52,11 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
 
                 foreach (var item in context.Conventions.Get<ICommandLineConvention, CommandLineConvention>())
                 {
+                    if (!context.Properties.TryGetValue(typeof(ConsoleConvention), out _))
+                    {
+                        context.Properties.Add(typeof(ConsoleConvention), true);
+                    }
+
                     if (item is ICommandLineConvention convention)
                     {
                         convention.Register(context, configurator);
@@ -84,6 +74,15 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
                 }
             }
         );
+
+        // We don't want to run if there were no possible command conventions.
+        if (!context.Properties.TryGetValue(typeof(ConsoleConvention), out _))
+        {
+            return;
+        }
+
+        services.AddSingleton<IAnsiConsole>(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);
+        services.AddSingleton<IRemainingArguments>(_ => (IRemainingArguments)registry.GetService(typeof(IRemainingArguments))!);
         services.AddSingleton(consoleResult);
         services.AddHostedService<ConsoleWorker>();
         services.AddSingleton(context.Get<AppSettingsConfigurationSource>()!);

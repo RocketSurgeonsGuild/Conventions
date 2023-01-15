@@ -51,6 +51,19 @@ public class CommandLineBuilderTests : AutoFakeTest
     }
 
     [Fact]
+    public async Task ShouldNotBeEnabledIfNoCommandsAreConfigured()
+    {
+        var builder = ConventionContextBuilder.Create()
+                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+
+        var response = Host.CreateDefaultBuilder(new[] { "remote", "add", "-v" })
+                           .ConfigureRocketSurgery(builder);
+        var host = await response.StartAsync();
+        host.Services.GetService<ConsoleResult>().Should().BeNull();
+    }
+
+    [Fact]
     public void ShouldEnableHelpOnAllCommands()
     {
         var builder = ConventionContextBuilder.Create()
