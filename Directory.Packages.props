@@ -19,7 +19,7 @@
     <PackageVersion Include="docfx.console" Version="2.59.4" />
     <PackageVersion Include="Nuke.Common" Version="6.3.0" />
     <PackageVersion Include="ReportGenerator" Version="5.1.17" />
-    <PackageVersion Include="Rocket.Surgery.Nuke" Version="0.19.2" />
+    <PackageVersion Include="Rocket.Surgery.Nuke" Version="0.19.3" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="6.5.0" />
