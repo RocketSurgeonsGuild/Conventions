@@ -13,7 +13,7 @@ public abstract class ConventionsConfigurationAttribute : Attribute
     /// <summary>
     ///     The desired namespace for the emitted classes to go
     /// </summary>
-    public string? Namespace { get; set; } = null;
+    public string? Namespace { get; set; }
 
     /// <summary>
     ///     The desired class name for the emitted class.

@@ -6,9 +6,6 @@ using Microsoft.JSInterop;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 
-#pragma warning disable CA1031
-#pragma warning disable CA2000
-
 namespace Rocket.Surgery.WebAssembly.Hosting;
 
 /// <summary>
@@ -48,7 +45,12 @@ public static class RocketWebAssemblyExtensions
             IConfigurationSource? source = null;
             try
             {
-                var content = runtime.InvokeUnmarshalled<string, byte[]>("Blazor._internal.getConfig", factory.Path);
+                var content = runtime.InvokeUnmarshalled<string, byte[]?>("Blazor._internal.getConfig", factory.Path);
+                if (content is null)
+                {
+                    return null;
+                }
+
                 source = factory.Factory(new MemoryStream(content));
             }
             catch (HttpRequestException)
@@ -69,6 +71,7 @@ public static class RocketWebAssemblyExtensions
                       .SelectMany(z => z.Invoke(configurationBuilder))
                       .Select(z => GetConfigurationSource(jsRuntime, z))
                       .Where(z => z is not null)
+                      .Select(z => z!)
                       .ToArray();
 
         var envTasks = conventionContext
@@ -76,6 +79,7 @@ public static class RocketWebAssemblyExtensions
                       .SelectMany(z => z.Invoke(configurationBuilder, builder.HostEnvironment.Environment))
                       .Select(z => GetConfigurationSource(jsRuntime, z))
                       .Where(z => z is not null)
+                      .Select(z => z!)
                       .ToArray();
 
         var localTasks = conventionContext
@@ -83,9 +87,13 @@ public static class RocketWebAssemblyExtensions
                         .SelectMany(z => z.Invoke(configurationBuilder, "local"))
                         .Select(z => GetConfigurationSource(jsRuntime, z))
                         .Where(z => z is not null)
+                        .Select(z => z!)
                         .ToArray();
 
-        configurationBuilder.Add(localTask);
+        if (localTask is not null)
+        {
+            configurationBuilder.Add(localTask);
+        }
 
         // [0] is appsettings.json
         foreach (var result in appTasks)
