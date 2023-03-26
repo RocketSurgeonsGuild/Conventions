@@ -14,7 +14,12 @@ public sealed class ConventionAttribute : Attribute
     /// </summary>
     /// <param name="type">The type.</param>
     /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
-    public ConventionAttribute(Type type)
+    public ConventionAttribute(
+#if NET6_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type
+    )
     {
         if (type == null)
         {
@@ -28,5 +33,8 @@ public sealed class ConventionAttribute : Attribute
     ///     The convention type
     /// </summary>
     /// <value>The type.</value>
+#if NET6_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
     public Type Type { get; }
 }

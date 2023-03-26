@@ -12,5 +12,5 @@ public delegate IEnumerable<ConfigurationBuilderDelegateResult> ConfigurationBui
 ///     The result from a given application
 /// </summary>
 /// <param name="Path"></param>
-/// <param name="Source"></param>
+/// <param name="Factory"></param>
 public record ConfigurationBuilderDelegateResult(string Path, Func<Stream?, IConfigurationSource> Factory);

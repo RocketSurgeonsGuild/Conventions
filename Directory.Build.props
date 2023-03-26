@@ -23,6 +23,8 @@
         <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
         <ImplicitUsings>enable</ImplicitUsings>
         <IsTrimmable>true</IsTrimmable>
+        <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     </PropertyGroup>
     <ItemGroup>
         <None

@@ -120,5 +120,5 @@ internal static class Helpers
         );
     }
 
-    private static readonly SyntaxToken XmlNewLine = XmlTextNewLine(TriviaList(), Environment.NewLine, Environment.NewLine, TriviaList());
+    private static readonly SyntaxToken XmlNewLine = XmlTextNewLine(TriviaList(), "\n", "\n", TriviaList());
 }
