@@ -53,7 +53,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Azure.WebJobs" Version="3.0.36" />
+    <PackageVersion Include="Microsoft.Azure.WebJobs" Version="3.0.37" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions" Version="4.0.1" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Host.Storage" Version="4.1.0" />
     <PackageVersion Include="NetEscapades.Configuration.Yaml" Version="3.0.0" />
