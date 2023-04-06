@@ -60,7 +60,7 @@
     <PackageVersion Include="Spectre.Console" Version="0.46.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.46.0" />
     <PackageVersion Include="Spectre.Console.Testing" Version="0.46.0" />
-    <PackageVersion Include="Terminal.Gui" Version="1.10.0" />
+    <PackageVersion Include="Terminal.Gui" Version="1.10.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="34.0.2" />
