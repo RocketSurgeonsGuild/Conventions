@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.Azure.WebJobs" Version="3.0.37" />
-    <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions" Version="4.0.1" />
+    <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions" Version="5.0.0" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Host.Storage" Version="5.0.0" />
     <PackageVersion Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
     <PackageVersion Include="Spectre.Console" Version="0.46.0" />
