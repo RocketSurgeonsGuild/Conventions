@@ -24,7 +24,7 @@
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="7.0.1" />
     <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageVersion Include="BenchMarkDotNet" Version="0.13.6" />
+    <PackageVersion Include="BenchMarkDotNet" Version="0.13.7" />
     <PackageVersion Include="bunit.web" Version="1.22.19" />
     <PackageVersion Include="DryIoc.dll" Version="5.4.0" />
     <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="6.2.0" />
