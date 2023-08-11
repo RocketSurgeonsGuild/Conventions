@@ -22,7 +22,7 @@
     <PackageVersion Include="Rocket.Surgery.Nuke" Version="0.19.7" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Autofac" Version="7.0.1" />
+    <PackageVersion Include="Autofac" Version="7.1.0" />
     <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageVersion Include="BenchMarkDotNet" Version="0.13.7" />
     <PackageVersion Include="bunit.web" Version="1.22.19" />
