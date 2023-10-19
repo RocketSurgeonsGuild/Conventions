@@ -2,7 +2,7 @@
 <Project>
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
         <PackageVersion Include="Microsoft.Extensions.DiagnosticAdapter" Version="3.1.32" />
-        <PackageVersion Update="DryIoc.dll" Version="5.4.1" />
+        <PackageVersion Update="DryIoc.dll" Version="5.4.2" />
         <PackageVersion Update="DryIoc.Microsoft.DependencyInjection" Version="6.2.0" />
         <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="3.1.32" />
         <PackageVersion Update="System.Diagnostics.DiagnosticSource" Version="4.7.1" />
