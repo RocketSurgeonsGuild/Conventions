@@ -155,6 +155,7 @@ public static class ConventionContextExtensions
     public static HostType GetHostType(this IConventionContext context)
     {
         return context.Properties.TryGetValue(typeof(HostType), out var hostType)
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             ? (HostType)hostType!
             : HostType.Undefined;
     }

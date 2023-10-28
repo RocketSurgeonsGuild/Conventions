@@ -46,7 +46,11 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        var contextBuilder = GetOrCreate(builder, () => new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default));
+        var contextBuilder = GetOrCreate(
+            builder, () => new ConventionContextBuilder(builder.Properties)
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+               .UseDependencyContext(DependencyContext.Default!)
+        );
         action(contextBuilder);
         Configure(builder, contextBuilder);
         return builder;
@@ -73,7 +77,10 @@ public static class RocketHostExtensions
         }
 
         var contextBuilder = GetOrCreate(
-            builder, () => new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default).WithConventionsFrom(getConventions)
+            builder, () => new ConventionContextBuilder(builder.Properties)
+                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                          .UseDependencyContext(DependencyContext.Default!)
+                          .WithConventionsFrom(getConventions)
         );
         Configure(builder, contextBuilder);
         return builder;

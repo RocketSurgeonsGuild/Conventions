@@ -28,7 +28,8 @@ public sealed class ConventionContext : IConventionContext
         var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
         var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
-        builder.Properties.Set(builder._serviceProviderFactory);
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        builder.Properties.Set(builder._serviceProviderFactory!);
         var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
 
         if (context.Properties.ContainsKey(ConventionsSetup)) return context;
@@ -66,9 +67,12 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <param name="item">The item.</param>
     /// <returns>System.Object.</returns>
-    public object? this[object item]
+    public object this[object item]
     {
-        get => Properties.TryGetValue(item, out var value) ? value : null;
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+#pragma warning disable CS8603 // Possible null reference return.
+        get => Properties.TryGetValue(item, out var value) ? value : null!;
+#pragma warning restore CS8603 // Possible null reference return.
         set => Properties[item] = value;
     }
 

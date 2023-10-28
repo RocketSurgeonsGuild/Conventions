@@ -74,8 +74,10 @@ public static class RocketBooster
     {
         return builder =>
         {
-            var contextBuilder = new ConventionContextBuilder(builder.Properties).UseDependencyContext(DependencyContext.Default)
-                                                                                 .WithConventionsFrom(conventionProvider);
+            var contextBuilder = new ConventionContextBuilder(builder.Properties)
+                                 // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                .UseDependencyContext(DependencyContext.Default!)
+                                .WithConventionsFrom(conventionProvider);
             return RocketHostExtensions.Configure(builder, contextBuilder);
         };
     }

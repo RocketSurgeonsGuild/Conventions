@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
@@ -11,7 +10,6 @@ internal class ConsoleWorker : IHostedService
     private readonly IHostApplicationLifetime _hostLifetime;
     private readonly ConsoleResult _consoleResult;
     private readonly AppSettingsConfigurationSource _appSettingsConfigurationSource;
-    private readonly IOptions<ConsoleLifetimeOptions> _options;
     private readonly ILogger<ConsoleWorker> _logger;
 
     public ConsoleWorker(
@@ -19,8 +17,7 @@ internal class ConsoleWorker : IHostedService
         ICommandApp commandApp,
         IHostApplicationLifetime hostLifetime,
         ConsoleResult consoleResult,
-        AppSettingsConfigurationSource appSettingsConfigurationSource,
-        IOptions<ConsoleLifetimeOptions> options
+        AppSettingsConfigurationSource appSettingsConfigurationSource
     )
     {
         _logger = logger;
@@ -28,7 +25,6 @@ internal class ConsoleWorker : IHostedService
         _hostLifetime = hostLifetime;
         _consoleResult = consoleResult;
         _appSettingsConfigurationSource = appSettingsConfigurationSource;
-        _options = options;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

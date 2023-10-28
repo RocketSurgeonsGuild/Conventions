@@ -7,7 +7,7 @@ using Rocket.Surgery.WebAssembly.Hosting;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-internal class TestAssemblyProvider : IAssemblyProvider
+internal sealed  class TestAssemblyProvider : IAssemblyProvider
 {
     public IEnumerable<Assembly> GetAssemblies()
     {

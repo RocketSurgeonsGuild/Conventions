@@ -175,7 +175,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <typeparam name="T">The type of the value</typeparam>
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <param name="value">The value to save</param>
-    public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, T value)
+    public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, T value) where T : notnull
     {
         if (serviceProviderDictionary == null)
         {
@@ -193,7 +193,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <param name="key">The key where the value is saved</param>
     /// <param name="value">The value to save</param>
-    public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value)
+    public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value) where T : notnull
     {
         if (serviceProviderDictionary == null)
         {
@@ -210,7 +210,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <typeparam name="T">The type of the value</typeparam>
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <param name="value">The value to save</param>
-    public static IServiceProviderDictionary AddIfMissing<T>(this IServiceProviderDictionary serviceProviderDictionary, T value)
+    public static IServiceProviderDictionary AddIfMissing<T>(this IServiceProviderDictionary serviceProviderDictionary, T value) where T : notnull
     {
         if (serviceProviderDictionary == null)
         {
@@ -231,7 +231,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <param name="key">The key where the value is saved</param>
     /// <param name="value">The value to save</param>
-    public static IServiceProviderDictionary AddIfMissing<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value)
+    public static IServiceProviderDictionary AddIfMissing<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value) where T : notnull
     {
         if (serviceProviderDictionary == null)
         {

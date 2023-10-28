@@ -12,6 +12,4 @@ namespace Rocket.Surgery.Conventions;
 [AttributeUsage(AttributeTargets.Class)]
 [Conditional("CodeGeneration")]
 [PublicAPI]
-public sealed class ExportConventionAttribute : Attribute
-{
-}
+public sealed class ExportConventionAttribute : Attribute;

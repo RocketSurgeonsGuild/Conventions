@@ -95,7 +95,5 @@ public class ServiceProviderDictionaryExtensionsTests
         A.CallToSet(() => context[typeof(IMyType)]).MustHaveHappenedOnceExactly();
     }
 
-    public interface IMyType
-    {
-    }
+    public interface IMyType;
 }

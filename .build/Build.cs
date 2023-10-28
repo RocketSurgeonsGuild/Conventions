@@ -44,6 +44,7 @@ public partial class Pipeline : NukeBuild,
     }
 
     private Target Default => _ => _
+                                   // ReSharper restore AllUnderscoreLocalParameterName
                                   .DependsOn(Restore)
                                   .DependsOn(Build)
                                   .DependsOn(Test)

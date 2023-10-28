@@ -24,7 +24,8 @@ public static class DependencyModelTestConventionContextBuilderExtensions
     )
     {
         if (type == null) throw new ArgumentNullException(nameof(type));
-        return ForTesting(builder, DependencyContext.Load(type.Assembly), loggerFactory, contentRootPath);
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        return ForTesting(builder, DependencyContext.Load(type.Assembly)!, loggerFactory, contentRootPath);
     }
 
     /// <summary>
@@ -39,7 +40,8 @@ public static class DependencyModelTestConventionContextBuilderExtensions
     )
     {
         if (assembly == null) throw new ArgumentNullException(nameof(assembly));
-        return ForTesting(builder, DependencyContext.Load(assembly), loggerFactory, contentRootPath);
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        return ForTesting(builder, DependencyContext.Load(assembly)!, loggerFactory, contentRootPath);
     }
 
     /// <summary>

@@ -5,6 +5,4 @@ namespace Rocket.Surgery.Conventions;
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class)]
-public sealed class ExportConventionsAttribute : ConventionsConfigurationAttribute
-{
-}
+public sealed class ExportConventionsAttribute : ConventionsConfigurationAttribute;

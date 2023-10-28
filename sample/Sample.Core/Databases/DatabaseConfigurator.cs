@@ -1,15 +1,9 @@
 ﻿namespace Sample.Core.Databases;
 
-internal class DatabaseConfigurator : IDatabaseConfigurator
+internal sealed class DatabaseConfigurator : IDatabaseConfigurator
 {
-    public DatabaseConfigurator()
-    {
-        Tables = new List<string>();
-        Views = new List<string>();
-    }
-
-    public ICollection<string> Tables { get; }
-    public ICollection<string> Views { get; }
+    public ICollection<string> Tables { get; } = new List<string>();
+    public ICollection<string> Views { get; } = new List<string>();
 
     public void AddTable(string name)
     {

@@ -17,6 +17,7 @@ internal record ConventionAttributeData(
 
     public static ConventionAttributeData Create(ConventionConfigurationData data, Compilation compilation)
     {
+        // ReSharper disable NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         var liveConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.LiveConventionAttribute")!;
         var exportConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.ExportConventionAttribute")!;
         var unitTestConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.UnitTestConventionAttribute")!;
@@ -24,14 +25,15 @@ internal record ConventionAttributeData(
         var dependsOnConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.DependsOnConventionAttribute")!;
         var beforeConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.BeforeConventionAttribute")!;
         var dependentOfConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.DependentOfConventionAttribute")!;
+        // ReSharper enable NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return new(
-            liveConventionAttribute!,
-            exportConventionAttribute!,
-            unitTestConventionAttribute!,
-            afterConventionAttribute!,
-            dependsOnConventionAttribute!,
-            beforeConventionAttribute!,
-            dependentOfConventionAttribute!,
+            liveConventionAttribute,
+            exportConventionAttribute,
+            unitTestConventionAttribute,
+            afterConventionAttribute,
+            dependsOnConventionAttribute,
+            beforeConventionAttribute,
+            dependentOfConventionAttribute,
             data
         );
     }

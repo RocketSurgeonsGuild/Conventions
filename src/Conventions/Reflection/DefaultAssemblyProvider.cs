@@ -25,6 +25,7 @@ internal class DefaultAssemblyProvider : IAssemblyProvider
     /// <param name="logger">The logger</param>
     public DefaultAssemblyProvider(IEnumerable<Assembly> assemblies, ILogger? logger = null)
     {
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         _assembles = assemblies.Where(x => x != null!).ToArray();
         _logger = logger ?? NullLogger.Instance;
     }
@@ -34,6 +35,7 @@ internal class DefaultAssemblyProvider : IAssemblyProvider
         _logFoundAssembly(
             _logger,
             nameof(DefaultAssemblyProvider),
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             value.GetName().Name!,
             null
         );

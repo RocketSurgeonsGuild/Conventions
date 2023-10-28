@@ -252,29 +252,17 @@ public class ConventionContextTests : AutoFakeTest
     {
     }
 
-    public interface IAbc
-    {
-    }
+    public interface IAbc;
 
-    public interface IAbc2
-    {
-    }
+    public interface IAbc2;
 
-    public interface IAbc3
-    {
-    }
+    public interface IAbc3;
 
-    public interface IAbc4
-    {
-    }
+    public interface IAbc4;
 
-    public interface IInjectData
-    {
-    }
+    public interface IInjectData;
 
-    public class InjectData
-    {
-    }
+    public class InjectData;
 
     public class AbcConvention : IServiceConvention
     {

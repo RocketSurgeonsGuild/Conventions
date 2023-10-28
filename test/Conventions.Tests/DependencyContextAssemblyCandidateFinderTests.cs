@@ -15,7 +15,7 @@ public class DependencyContextAssemblyCandidateFinderTests : AutoFakeTest
     public void FindsAssembliesInCandidates_Params()
     {
         var resolver = new DependencyContextAssemblyCandidateFinder(
-            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
+            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly)!,
             Logger
         );
         var items = resolver.GetCandidateAssemblies(
@@ -52,7 +52,7 @@ public class DependencyContextAssemblyCandidateFinderTests : AutoFakeTest
     public void FindsAssembliesInCandidates_Enumerable()
     {
         var resolver = new DependencyContextAssemblyCandidateFinder(
-            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
+            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly)!,
             Logger
         );
         var items = resolver.GetCandidateAssemblies(
@@ -91,7 +91,7 @@ public class DependencyContextAssemblyCandidateFinderTests : AutoFakeTest
     public void FindsAssembliesInCandidates_Params_Multiples()
     {
         var resolver = new DependencyContextAssemblyCandidateFinder(
-            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
+            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly)!,
             Logger
         );
         var items = resolver.GetCandidateAssemblies(
@@ -143,7 +143,7 @@ public class DependencyContextAssemblyCandidateFinderTests : AutoFakeTest
     public void FindsAssembliesInCandidates_Empty()
     {
         var resolver = new DependencyContextAssemblyCandidateFinder(
-            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly),
+            DependencyContext.Load(typeof(DependencyContextAssemblyCandidateFinderTests).GetTypeInfo().Assembly)!,
             Logger
         );
         var items = resolver.GetCandidateAssemblies(Array.Empty<string>().AsEnumerable())

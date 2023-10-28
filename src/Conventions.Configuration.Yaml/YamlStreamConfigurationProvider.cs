@@ -8,6 +8,7 @@ namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 /// </summary>
 public class YamlStreamConfigurationProvider : StreamConfigurationProvider
 {
+    /// <inheritdoc />
     public YamlStreamConfigurationProvider(YamlStreamConfigurationSource source) : base(source)
     {
     }

@@ -1,20 +1,16 @@
 ﻿using Sample.Core;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Sample;
 
-public class DefaultCommand : Command<AppSettings>
+public class DefaultCommand(IService service) : Command<AppSettings>
 {
-    private readonly IService _service;
-
-    public DefaultCommand(IService service)
-    {
-        _service = service;
-    }
-
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
     public override int Execute(CommandContext context, AppSettings settings)
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
     {
-        Console.WriteLine(_service.GetString());
+        AnsiConsole.WriteLine(service.GetString());
         return 1;
     }
 }

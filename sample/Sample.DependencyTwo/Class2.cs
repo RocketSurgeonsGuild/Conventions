@@ -6,6 +6,4 @@ using Sample.DependencyTwo;
 
 namespace Sample.DependencyTwo;
 
-public class Class2 : IConvention
-{
-}
+public class Class2 : IConvention;

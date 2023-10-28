@@ -19,7 +19,9 @@ public class Dump : AsyncCommand<AppSettings>
     {
         foreach (var item in _configuration.AsEnumerable().Reverse())
         {
+#pragma warning disable CA1848
             _logger.LogInformation("{Key}: {Value}", item.Key, item.Value ?? string.Empty);
+#pragma warning restore CA1848
         }
 
         return Task.FromResult(1);

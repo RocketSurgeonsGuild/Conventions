@@ -35,6 +35,9 @@ internal class AssemblyCandidateResolver
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="referenceAssemblies">The reference assemblies.</param>
     /// <param name="logger">The logger.</param>
+    #if NET6_0_OR_GREATER
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+    #endif
     public AssemblyCandidateResolver(
         IReadOnlyList<Assembly> assemblies,
         ISet<string?> referenceAssemblies,
@@ -57,6 +60,9 @@ internal class AssemblyCandidateResolver
         _dependencies = dependenciesWithNoDuplicates;
     }
 
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetReferencedAssemblies()")]
+#endif
     private void RecursiveAddDependencies(
         Assembly assembly,
         ISet<string?> referenceAssemblies,
@@ -94,6 +100,7 @@ internal class AssemblyCandidateResolver
 #pragma warning disable CA1031
             catch (Exception e)
             {
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                 _logger.FailedToLoadAssembly(dependency.Name!, e);
 
                 continue;
@@ -109,6 +116,9 @@ internal class AssemblyCandidateResolver
         }
     }
 
+#if NET6_0_OR_GREATER
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+#endif
     private DependencyClassification ComputeClassification(string dependency, ISet<string?>? processedAssemblies = null)
     {
         processedAssemblies ??= new HashSet<string?>();

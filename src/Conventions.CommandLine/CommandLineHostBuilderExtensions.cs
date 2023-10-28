@@ -10,7 +10,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Helper method for working with <see cref="ConventionContextBuilder" />
 /// </summary>
-public static class CommandAppHostBuilderExtensions
+public static partial class CommandAppHostBuilderExtensions
 {
     /// <summary>
     ///     Configure the commandline delegate to the convention scanner
@@ -124,15 +124,16 @@ public static class CommandAppHostBuilderExtensions
         var result = host.Services.GetService<ConsoleResult>();
         if (result == null)
         {
-            host.Services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(CommandAppHostBuilderExtensions)).LogWarning(
-                "No commands have been configured, are you trying to run a console app? Try adding some commands for it to work correctly."
-            );
+            LogWarning(host.Services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(CommandAppHostBuilderExtensions)));
         }
 
         await host.StartAsync(cancellationToken);
         await host.WaitForShutdownAsync(cancellationToken);
         return result?.ExitCode ?? 0;
     }
+
+    [LoggerMessage(Message = "No commands have been configured, are you trying to run a console app? Try adding some commands for it to work correctly.", Level = LogLevel.Warning)]
+    static partial void LogWarning(ILogger logger);
 
     private static void EnsureShouldRun(ConventionContextBuilder container)
     {

@@ -3,12 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
-internal class LoggingBuilder : ILoggingBuilder
+internal sealed class LoggingBuilder(IServiceCollection services) : ILoggingBuilder
 {
-    public LoggingBuilder(IServiceCollection services)
-    {
-        Services = services;
-    }
-
-    public IServiceCollection Services { get; }
+    public IServiceCollection Services { get; } = services;
 }

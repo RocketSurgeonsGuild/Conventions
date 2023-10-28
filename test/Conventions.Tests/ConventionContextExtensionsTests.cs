@@ -124,9 +124,7 @@ public class ConventionContextExtensionsTests
         A.CallToSet(() => context[typeof(IMyType)]).MustHaveHappenedOnceExactly();
     }
 
-    public interface IMyType
-    {
-    }
+    public interface IMyType;
 
     [Theory]
     [InlineData(HostType.Undefined)]

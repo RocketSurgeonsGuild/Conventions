@@ -2,32 +2,21 @@ using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
-internal class ConsoleInterceptor : ICommandInterceptor
-{
-    private readonly AppSettingsConfigurationSource _appSettingsConfigurationSource;
-    private readonly ConsoleResult _consoleResult;
-    private readonly ICommandInterceptor? _commandInterceptor;
-
-    public ConsoleInterceptor(
+internal class ConsoleInterceptor(
         AppSettingsConfigurationSource appSettingsConfigurationSource,
-        ConsoleResult consoleResult,
         ICommandInterceptor? commandInterceptor
     )
-    {
-        _appSettingsConfigurationSource = appSettingsConfigurationSource;
-        _consoleResult = consoleResult;
-        _commandInterceptor = commandInterceptor;
-    }
-
+    : ICommandInterceptor
+{
     public void Intercept(CommandContext context, CommandSettings settings)
     {
-        _commandInterceptor?.Intercept(context, settings);
+        commandInterceptor?.Intercept(context, settings);
         if (settings is not AppSettings appSettings)
         {
 //            _consoleResult.ExitCode = CommandLineConstants.WaitCode;
             return;
         }
 
-        _appSettingsConfigurationSource.Update(context, appSettings);
+        appSettingsConfigurationSource.Update(context, appSettings);
     }
 }

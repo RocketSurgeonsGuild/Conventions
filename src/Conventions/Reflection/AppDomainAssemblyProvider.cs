@@ -26,6 +26,7 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
     {
         _assembles = new Lazy<IEnumerable<Assembly>>(
             () =>
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                 ( appDomain ?? AppDomain.CurrentDomain ).GetAssemblies().Where(x => x != null!)
         );
         _logger = logger ?? NullLogger.Instance;
@@ -36,6 +37,7 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
         _logFoundAssembly(
             _logger,
             nameof(AppDomainAssemblyProvider),
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             value.GetName().Name!,
             null
         );

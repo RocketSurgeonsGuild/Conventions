@@ -29,7 +29,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
 
         scanner.Get<IServiceConvention, ServiceConvention>()
                .Should()
-               .Contain(x => x!.GetType() == typeof(Contrib));
+               .Contain(x => x is Contrib);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
-                .NotContain(x => x!.GetType() == typeof(Contrib));
+                .NotContain(x => x is Contrib);
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
                 .ContainInOrder(contribution2, contribution);
@@ -104,7 +104,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
-                .NotContain(x => x!.GetType() == typeof(Contrib));
+                .NotContain(x => x is Contrib);
     }
 
 
@@ -124,7 +124,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
-                .Contain(x => x!.GetType() == typeof(Contrib));
+                .Contain(x => x is Contrib);
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
                 .ContainInOrder(contribution2, contribution);
@@ -143,7 +143,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
-                .Contain(x => x!.GetType() == typeof(Contrib));
+                .Contain(x => x is Contrib);
     }
 
     public ConventionStaticScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)

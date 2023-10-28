@@ -1,6 +1,7 @@
 ﻿namespace Sample.Core;
 
-internal class TestService : IService
+[UsedImplicitly]
+internal sealed class TestService : IService
 {
     public string GetString()
     {

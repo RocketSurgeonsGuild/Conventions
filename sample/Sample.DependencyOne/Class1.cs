@@ -6,6 +6,4 @@ using Sample.DependencyOne;
 
 namespace Sample.DependencyOne;
 
-public class Class1 : IConvention
-{
-}
+public class Class1 : IConvention;

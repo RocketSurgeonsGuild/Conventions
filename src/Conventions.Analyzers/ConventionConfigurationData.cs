@@ -56,10 +56,10 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
         var assemblyConfiguration =
             context.SyntaxProvider
                    .CreateSyntaxProvider(
-                        (node, token) => node is AttributeListSyntax attributeListSyntax
+                        (node, _) => node is AttributeListSyntax attributeListSyntax
                                       && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
                                       && findAttribute(attributeListSyntax, attributeName) is not null,
-                        (syntaxContext, token) =>
+                        (syntaxContext, _) =>
                             syntaxContext.Node is AttributeListSyntax attributeListSyntax
                                 ? findAttribute(attributeListSyntax, attributeName)
                                 : default
@@ -88,18 +88,22 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                                 {
                                     nameof(InnerConventionConfigurationData.Namespace) => data with
                                     {
+                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                         Namespace = (string)syntax.Token.Value!, DefinedNamespace = true
                                     },
                                     nameof(InnerConventionConfigurationData.ClassName) => data with
                                     {
+                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                         ClassName = (string)syntax.Token.Value!
                                     },
                                     nameof(InnerConventionConfigurationData.MethodName) => data with
                                     {
+                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                         MethodName = (string)syntax.Token.Value!
                                     },
                                     nameof(InnerConventionConfigurationData.Assembly) => data with
                                     {
+                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                         Assembly = (bool)syntax.Token.Value!
                                     },
                                     _ => data
@@ -115,15 +119,16 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
               .Select((z, _) => z.Left.WasConfigured ? z.Left : z.Right)
               .Combine(context.CompilationProvider)
               .Select(
-                   (tuple, token) => new ConventionConfigurationData(
+                   (tuple, _) => new ConventionConfigurationData(
                        tuple.Left.WasConfigured,
                        tuple.Left.Assembly,
+                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                        tuple.Left.DefinedNamespace ? tuple.Left.Namespace! : GetNamespaceForCompilation(tuple.Right, defaults.Postfix),
                        tuple.Left.ClassName,
                        tuple.Left.MethodName
                    )
                )
-              .Select((data, token) => data with { Namespace = data.Namespace == "global" ? "" : data.Namespace });
+              .Select((data, _) => data with { Namespace = data.Namespace == "global" ? "" : data.Namespace });
     }
 
     public static ConventionConfigurationData FromAssemblyAttributes(IAssemblySymbol assemblySymbol, ConventionConfigurationData defaults)
@@ -133,9 +138,11 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
         foreach (var attribute in assemblySymbol.GetAttributes())
         {
             if (attribute is not { AttributeClass.MetadataName : "AssemblyMetadataAttribute", ConstructorArguments: { Length: 2 } }) continue;
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             var key = (string)attribute.ConstructorArguments[0].Value!;
             if (!key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
 
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             var value = (string)attribute.ConstructorArguments[1].Value!;
             data = key.Split('.').Last() switch
             {

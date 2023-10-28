@@ -30,6 +30,7 @@ internal class AppDomainAssemblyCandidateFinder : IAssemblyCandidateFinder
         {
             _logger.FoundCandidateAssembly(
                 nameof(AppDomainAssemblyCandidateFinder),
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                 value.GetName().Name!,
                 candidates
             );
@@ -49,6 +50,7 @@ internal class AppDomainAssemblyCandidateFinder : IAssemblyCandidateFinder
             new HashSet<string?>(candidates, StringComparer.OrdinalIgnoreCase),
             _logger
         );
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return candidatesResolver.GetCandidates().Select(x => x.Assembly!).ToArray();
     }
 
@@ -62,6 +64,7 @@ internal class AppDomainAssemblyCandidateFinder : IAssemblyCandidateFinder
         var value = candidates as string[] ?? candidates.ToArray();
         return LoggingEnumerable.Create(
             GetCandidateLibraries(value)
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                .Where(x => x != null!)
                .Reverse(),
             LogValue(value)

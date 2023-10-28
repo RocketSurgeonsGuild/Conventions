@@ -3,6 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Adapters;
 
+#if NET7_0_OR_GREATER
+using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
+using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
+#else
+using PropertiesType = System.Collections.Generic.IDictionary<object, object?>;
+using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object?>;
+#endif
+
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
@@ -28,18 +36,18 @@ public class ConventionContextBuilder
     /// </summary>
     /// <param name="properties"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder Create(IDictionary<object, object?>? properties = null)
+    public static ConventionContextBuilder Create(PropertiesType? properties = null)
     {
-        return new ConventionContextBuilder(properties ?? new Dictionary<object, object?>());
+        return new ConventionContextBuilder(properties ?? new PropertiesDictionary());
     }
 
     /// <summary>
     ///     Create a context builder with a set of properties
     /// </summary>
     /// <param name="properties"></param>
-    public ConventionContextBuilder(IDictionary<object, object?>? properties)
+    public ConventionContextBuilder(PropertiesType? properties)
     {
-        Properties = new ServiceProviderDictionary(properties ?? new Dictionary<object, object?>());
+        Properties = new ServiceProviderDictionary(properties ?? new PropertiesDictionary());
     }
 
     /// <summary>

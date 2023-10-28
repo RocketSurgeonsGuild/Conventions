@@ -5,9 +5,9 @@ namespace Rocket.Surgery.Conventions.CommandLine;
 
 internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
 {
-    private IServiceProvider _serviceProvider;
+    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+    private IServiceProvider _serviceProvider = null!;
     private readonly IServiceCollection _services;
-    private Dictionary<Type, object> _instances = new();
     private ServiceProvider? _internalServices;
 
     public ConventionTypeRegistrar()
@@ -17,13 +17,12 @@ internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
 
     public void Register(
         Type service,
-#if NET6_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
         Type implementation
     )
     {
+#pragma warning disable IL2067
         _services.AddSingleton(service, implementation);
+#pragma warning restore IL2067
     }
 
     public void RegisterInstance(Type service, object implementation)
