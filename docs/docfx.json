@@ -1,68 +1,45 @@
 {
-  "metadata": [
-    {
-      "src": [
+    "metadata": [
         {
-          "src": "../",
-          "files": [
-            "src/**.csproj"
-          ],
-          "exclude": [
-            "**/bin/**",
-            "**/obj/**",
-            "docs/**"
-          ]
+            "src": [
+                {
+                    "src": "../",
+                    "files": ["src/**.csproj"],
+                    "exclude": ["**/bin/**", "**/obj/**", "docs/**"]
+                }
+            ],
+            "dest": "api"
         }
-      ],
-      "dest": "api"
-    }
-  ],
-  "build": {
-    "content": [
-      {
-        "files": [
-          "api/**.yml",
-          "api/index.md"
-        ]
-      },
-      {
-        "files": [
-          "concepts/**.md",
-          "concepts/**/toc.yml",
-          "guides/**.md",
-          "guides/**/toc.yml",
-          "toc.yml",
-          "*.md"
-        ]
-      }
     ],
-    "resource": [
-      {
-        "files": [
-          "images/**"
-        ]
-      }
-    ],
-    "overwrite": [
-      {
-        "files": [
-          "apidoc/**.md"
+    "build": {
+        "content": [
+            {
+                "files": ["api/**.yml", "api/index.md"]
+            },
+            {
+                "files": ["concepts/**.md", "concepts/**/toc.yml", "guides/**.md", "guides/**/toc.yml", "toc.yml", "*.md"]
+            }
         ],
-        "exclude": [
-          "obj/**",
-          "_site/**"
-        ]
-      }
-    ],
-    "dest": "docs",
-    "globalMetadataFiles": [],
-    "fileMetadataFiles": [],
-    "template": [      "default", "theme"    ],
-    "postProcessors": [],
-    "markdownEngineName": "markdig",
-    "noLangKeyword": false,
-    "keepFileLink": false,
-    "cleanupCacheHistory": false,
-    "disableGitFeatures": false
-  }
+        "resource": [
+            {
+                "files": ["images/**"]
+            }
+        ],
+        "overwrite": [
+            {
+                "files": ["apidoc/**.md"],
+                "exclude": ["obj/**", "_site/**"]
+            }
+        ],
+        "dest": "../artifacts/docs",
+        "globalMetadataFiles": [],
+        "fileMetadataFiles": [],
+        "template": ["default", "theme"],
+        "postProcessors": [],
+        "markdownEngineName": "markdig",
+        "noLangKeyword": false,
+        "keepFileLink": false,
+        "cleanupCacheHistory": false,
+        "disableGitFeatures": false
+    }
 }
