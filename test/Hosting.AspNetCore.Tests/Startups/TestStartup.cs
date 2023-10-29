@@ -6,19 +6,10 @@ using Microsoft.Extensions.Configuration;
 #pragma warning disable CA1822
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 
-internal class TestStartup
+internal sealed class TestStartup(IWebHostEnvironment environment, IConfiguration configuration)
 {
-    public TestStartup(
-        IWebHostEnvironment environment,
-        IConfiguration configuration
-    )
-    {
-        Environment = environment;
-        Configuration = configuration;
-    }
-
-    public IWebHostEnvironment Environment { get; }
-    public IConfiguration Configuration { get; }
+    public IWebHostEnvironment Environment { get; } = environment;
+    public IConfiguration Configuration { get; } = configuration;
 
     public void Configure(IApplicationBuilder app)
     {

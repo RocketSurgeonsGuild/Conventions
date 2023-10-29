@@ -8,7 +8,7 @@ using Rocket.Surgery.Conventions.Tests;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-internal class Contrib : IServiceConvention
+internal sealed class Contrib : IServiceConvention
 {
     public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
     {

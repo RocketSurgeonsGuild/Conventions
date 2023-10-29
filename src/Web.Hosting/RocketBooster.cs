@@ -19,6 +19,7 @@ public static class RocketBooster
     {
         return builder =>
         {
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             var contextBuilder = new ConventionContextBuilder(builder.Host.Properties!).UseDependencyContext(dependencyContext);
             return RocketWebHostExtensions.Configure(builder, contextBuilder);
         };
@@ -73,8 +74,13 @@ public static class RocketBooster
     {
         return builder =>
         {
-            var contextBuilder = new ConventionContextBuilder(builder.Host.Properties!).UseDependencyContext(DependencyContext.Default)
-                                                                                       .WithConventionsFrom(conventionProvider);
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+#pragma warning disable RCS1249
+            var contextBuilder = new ConventionContextBuilder(builder.Host.Properties!)
+#pragma warning restore RCS1249
+                                 // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                .UseDependencyContext(DependencyContext.Default!)
+                                .WithConventionsFrom(conventionProvider);
             return RocketWebHostExtensions.Configure(builder, contextBuilder);
         };
     }
@@ -98,7 +104,10 @@ public static class RocketBooster
     {
         return builder =>
         {
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+#pragma warning disable RCS1249
             var contextBuilder = new ConventionContextBuilder(builder.Host.Properties!).UseAppDomain(appDomain);
+#pragma warning restore RCS1249
             return RocketWebHostExtensions.Configure(builder, contextBuilder);
         };
     }
@@ -149,7 +158,8 @@ public static class RocketBooster
     {
         return builder =>
         {
-            var contextBuilder = new ConventionContextBuilder(builder.Host.Properties).UseAssemblies(assemblies);
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+            var contextBuilder = new ConventionContextBuilder(builder.Host.Properties!).UseAssemblies(assemblies);
             return RocketWebHostExtensions.Configure(builder, contextBuilder);
         };
     }

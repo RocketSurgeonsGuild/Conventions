@@ -14,7 +14,7 @@ namespace Rocket.Surgery.Web.Hosting;
 /// <summary>
 ///     Class RocketContext.
 /// </summary>
-internal class RocketContext
+internal sealed class RocketContext
 {
     private readonly WebApplicationBuilder _webApplicationBuilder;
     private readonly IConventionContext _context;

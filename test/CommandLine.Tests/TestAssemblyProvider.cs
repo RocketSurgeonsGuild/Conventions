@@ -4,7 +4,7 @@ using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Extensions.CommandLine.Tests;
 
-internal class TestAssemblyProvider : IAssemblyProvider
+internal sealed class TestAssemblyProvider : IAssemblyProvider
 {
     public IEnumerable<Assembly> GetAssemblies()
     {

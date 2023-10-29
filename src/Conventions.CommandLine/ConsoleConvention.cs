@@ -9,16 +9,20 @@ using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
+/// <summary>
+/// Convention for console applications
+/// </summary>
 [ExportConvention]
 public class ConsoleConvention : IServiceConvention, IHostingConvention
 {
     private bool _isHostBuilder;
 
+    /// <inheritdoc />
     public void Register(IConventionContext context, IHostBuilder builder)
     {
         _isHostBuilder = true;
         builder.ConfigureAppConfiguration(
-            (builderContext, configurationBuilder) =>
+            (_, configurationBuilder) =>
             {
                 var sourcesToRemove = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>().ToList();
                 var appSettings = new AppSettingsConfigurationSource(sourcesToRemove.FirstOrDefault()?.Args ?? Array.Empty<string>());
@@ -28,6 +32,7 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
         );
     }
 
+    /// <inheritdoc />
     public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
     {
         // We just bail out, the environment is not correct!
@@ -44,8 +49,8 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
             configurator =>
             {
                 var interceptor = new ConsoleInterceptor(
+                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                     context.Get<AppSettingsConfigurationSource>()!,
-                    consoleResult,
                     configurator.Settings.Interceptor
                 );
                 configurator.SetInterceptor(interceptor);
@@ -81,10 +86,13 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
             return;
         }
 
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         services.AddSingleton<IAnsiConsole>(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         services.AddSingleton<IRemainingArguments>(_ => (IRemainingArguments)registry.GetService(typeof(IRemainingArguments))!);
         services.AddSingleton(consoleResult);
         services.AddHostedService<ConsoleWorker>();
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         services.AddSingleton(context.Get<AppSettingsConfigurationSource>()!);
         services.AddSingleton<ICommandApp>(
             provider =>

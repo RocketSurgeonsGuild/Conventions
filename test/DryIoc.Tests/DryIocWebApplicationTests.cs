@@ -217,10 +217,10 @@ public class DryIocWebApplicationTests : AutoFakeTest
                           .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         using var host = builder.Build();
-        await host.StartAsync().ConfigureAwait(false);
+        await host.StartAsync();
         var container = host.Services.GetRequiredService<IContainer>();
         container.Should().NotBeNull();
-        await host.StopAsync().ConfigureAwait(false);
+        await host.StopAsync();
     }
 
     public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(outputHelper)

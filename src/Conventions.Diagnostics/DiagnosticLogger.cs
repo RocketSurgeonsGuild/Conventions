@@ -8,6 +8,9 @@ namespace Rocket.Surgery.Conventions.Diagnostics;
 ///     Implements the <see cref="ILogger" />
 /// </summary>
 /// <seealso cref="ILogger" />
+#if !NETFRAMEWORK
+[RequiresUnreferencedCode("DiagnosticLogger is used for diagnostic logging and may not work in all environments")]
+#endif
 public class DiagnosticLogger : ILogger
 {
     /// <summary>

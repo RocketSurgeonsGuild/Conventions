@@ -898,6 +898,7 @@ dotnet_diagnostic.ca2007.severity = none
 
 # RS0027: Public API with optional parameter(s) should have the most parameters amongst its public overloads.
 # dotnet_diagnostic.RS0027.severity = warning
+dotnet_diagnostic.cs0436.severity = none
 
 # ReSharper properties
 resharper_align_linq_query = true
@@ -1038,6 +1039,9 @@ dotnet_naming_symbols.unity_serialized_field_symbols.applicable_accessibilities 
 dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds =
 dotnet_naming_symbols.unity_serialized_field_symbols.resharper_applicable_kinds = unity_serialised_field
 dotnet_naming_symbols.unity_serialized_field_symbols.resharper_required_modifiers = instance
+
+# not general purpose
+dotnet_diagnostic.ca1711.severity = none
 
 [*.{appxmanifest,asax,ascx,aspx,axaml,build,cg,cginc,compute,dtd,fs,fsi,fsscript,fsx,hlsl,hlsli,hlslinc,master,ml,mli,nuspec,paml,resw,resx,shader,skin,usf,ush,vb,xaml,xamlx,xoml,xsd}]
 indent_style = space

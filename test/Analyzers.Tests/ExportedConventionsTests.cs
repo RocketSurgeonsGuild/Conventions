@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -121,11 +120,11 @@ namespace Rocket.Surgery.Conventions.Tests
     }
 
     [Theory]
-    [InlineData("AfterConventionAttribute", DependencyDirection.DependsOn)]
-    [InlineData("DependsOnConventionAttribute", DependencyDirection.DependsOn)]
-    [InlineData("BeforeConventionAttribute", DependencyDirection.DependentOf)]
-    [InlineData("DependentOfConventionAttribute", DependencyDirection.DependentOf)]
-    public async Task Should_Support_DependencyDirection_Conventions(string attributeName, DependencyDirection dependencyDirection)
+    [InlineData("AfterConventionAttribute")]
+    [InlineData("DependsOnConventionAttribute")]
+    [InlineData("BeforeConventionAttribute")]
+    [InlineData("DependentOfConventionAttribute")]
+    public async Task Should_Support_DependencyDirection_Conventions(string attributeName)
     {
         var source = @"
 using Rocket.Surgery.Conventions;

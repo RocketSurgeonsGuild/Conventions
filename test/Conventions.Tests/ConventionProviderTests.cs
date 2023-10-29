@@ -204,13 +204,11 @@ public class ConventionProviderTests : AutoFakeTest
     }
 
     [DependentOfConvention(typeof(C))]
-    private class B : IConvention
-    {
-    }
+    private sealed class B : IConvention;
 
     [DependsOnConvention(typeof(D))]
     [UnitTestConvention]
-    private class C : IServiceConvention
+    private sealed class C : IServiceConvention
     {
         public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
         {
@@ -219,7 +217,7 @@ public class ConventionProviderTests : AutoFakeTest
     }
 
     [AfterConvention(typeof(E))]
-    private class D : ITestConvention
+    private sealed class D : ITestConvention
     {
         public void Register(ITestConventionContext context)
         {
@@ -227,23 +225,15 @@ public class ConventionProviderTests : AutoFakeTest
         }
     }
 
-    private class E : IConvention
-    {
-    }
+    private sealed class E : IConvention;
 
     [DependsOnConvention(typeof(E))]
     [LiveConvention]
-    private class F : IConvention
-    {
-    }
+    private sealed class F : IConvention;
 
-    private class Cyclic1 : IConvention
-    {
-    }
+    private sealed class Cyclic1 : IConvention;
 
     [BeforeConvention(typeof(Cyclic1))]
     [DependsOnConvention(typeof(Cyclic1))]
-    private class Cyclic2 : IConvention
-    {
-    }
+    private sealed class Cyclic2 : IConvention;
 }

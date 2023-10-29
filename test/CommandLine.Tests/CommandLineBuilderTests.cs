@@ -211,7 +211,7 @@ public class CommandLineBuilderTests : AutoFakeTest
         result.Should().Be(0);
     }
 
-    private class Add : Command
+    private sealed class Add : Command
     {
         public override int Execute(CommandContext context)
         {
@@ -219,7 +219,7 @@ public class CommandLineBuilderTests : AutoFakeTest
         }
     }
 
-    private class Origin : Command
+    private sealed class Origin : Command
     {
         public override int Execute(CommandContext context)
         {
@@ -269,7 +269,7 @@ public class CommandLineBuilderTests : AutoFakeTest
         result.Should().Be(level);
     }
 
-    private class SubCmd : Command
+    private sealed class SubCmd : Command
     {
         [UsedImplicitly]
         public override int Execute(CommandContext context)
@@ -330,7 +330,7 @@ public class CommandLineBuilderTests : AutoFakeTest
         }
     }
 
-    private class CommandWithValues : Command
+    private sealed class CommandWithValues : Command
     {
         [CommandOption("--api-domain")]
         [Description("The auth0 Domain")]
@@ -411,15 +411,8 @@ public class CommandLineBuilderTests : AutoFakeTest
     }
 }
 
-internal class TestServiceProviderFactory : IServiceProviderFactory<IServiceCollection>
+internal sealed class TestServiceProviderFactory(IServiceProvider serviceProvider) : IServiceProviderFactory<IServiceCollection>
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public TestServiceProviderFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public IServiceCollection CreateBuilder(IServiceCollection services)
     {
         return services;
@@ -427,6 +420,6 @@ internal class TestServiceProviderFactory : IServiceProviderFactory<IServiceColl
 
     public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
     {
-        return _serviceProvider;
+        return serviceProvider;
     }
 }

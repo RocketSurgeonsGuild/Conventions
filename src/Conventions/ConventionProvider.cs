@@ -142,6 +142,7 @@ internal class ConventionProvider : IConventionProvider
                                           {
                                               return (
                                                   convention,
+                                                  // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                                   type: convention.Convention!.GetType(),
                                                   dependsOn: convention.Dependencies.Where(x => x.Direction == DependencyDirection.DependsOn)
                                                                        .Select(z => z.Type),
@@ -244,7 +245,11 @@ internal class ConventionProvider : IConventionProvider
                                     || cod.HostType == _hostType
                             )
                            .Select(ToObject)
-                           .Where(x => x != null!)!;
+                           .Where(
+                                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                x => x != null!
+                                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                            )!;
     }
 }
 
@@ -260,6 +265,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     ///     A nether case, if no delegate is found
     /// </summary>
     /// <value>The none.</value>
+    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
     public static ConventionOrDelegate None { get; } = default!;
 
     /// <summary>
@@ -369,8 +375,10 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     /// </returns>
     public bool Equals(ConventionOrDelegate other)
     {
-        return EqualityComparer<IConvention>.Default.Equals(Convention!, other.Convention!)
-            && EqualityComparer<Delegate>.Default.Equals(Delegate!, other.Delegate!);
+#pragma warning disable CS8604 // Possible null reference argument.
+        return EqualityComparer<IConvention>.Default.Equals(Convention, other.Convention)
+            && EqualityComparer<Delegate>.Default.Equals(Delegate, other.Delegate);
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 
 
@@ -381,8 +389,10 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     public override int GetHashCode()
     {
         var hashCode = 190459212;
-        hashCode = ( hashCode * -1521134295 ) + EqualityComparer<IConvention>.Default.GetHashCode(Convention!);
-        hashCode = ( hashCode * -1521134295 ) + EqualityComparer<Delegate>.Default.GetHashCode(Delegate!);
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        hashCode = ( hashCode * -1521134295 ) + ( Convention is not null ? EqualityComparer<IConvention>.Default.GetHashCode(Convention) : 0 );
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        hashCode = ( hashCode * -1521134295 ) + ( Delegate is not null ? EqualityComparer<Delegate>.Default.GetHashCode(Delegate) : 0 );
         return hashCode;
     }
 

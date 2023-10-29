@@ -32,6 +32,7 @@ internal class DependencyContextAssemblyCandidateFinder : IAssemblyCandidateFind
         {
             _logger.FoundCandidateAssembly(
                 nameof(DependencyContextAssemblyCandidateFinder),
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                 value.GetName().Name!,
                 candidates
             );
@@ -54,6 +55,7 @@ internal class DependencyContextAssemblyCandidateFinder : IAssemblyCandidateFind
 
     private Assembly TryLoad(AssemblyName assemblyName)
     {
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         _logger.TryingToLoadAssembly(assemblyName.Name!);
 
         try
@@ -63,7 +65,9 @@ internal class DependencyContextAssemblyCandidateFinder : IAssemblyCandidateFind
 #pragma warning disable CA1031
         catch (Exception e)
         {
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             _logger.FailedToLoadAssembly(assemblyName.Name!, e);
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             return default!;
         }
 #pragma warning restore CA1031
@@ -85,6 +89,7 @@ internal class DependencyContextAssemblyCandidateFinder : IAssemblyCandidateFind
                         library.GetDefaultAssemblyNames(_dependencyContext)
                 )
                .Select(TryLoad)
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                .Where(x => x != null!)
                .Reverse(),
             LogValue(value)

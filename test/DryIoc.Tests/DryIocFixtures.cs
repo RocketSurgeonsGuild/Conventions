@@ -8,31 +8,19 @@ using Rocket.Surgery.Conventions.DryIoc;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocFixtures
+public static class DryIocFixtures
 {
-    public interface IAbc
-    {
-    }
+    public interface IAbc;
 
-    public interface IAbc2
-    {
-    }
+    public interface IAbc2;
 
-    public interface IAbc3
-    {
-    }
+    public interface IAbc3;
 
-    public interface IAbc4
-    {
-    }
+    public interface IAbc4;
 
-    public interface IOtherAbc3
-    {
-    }
+    public interface IOtherAbc3;
 
-    public interface IOtherAbc4
-    {
-    }
+    public interface IOtherAbc4;
 
     [ExportConvention]
     public class AbcConvention : IDryIocConvention

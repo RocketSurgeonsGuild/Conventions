@@ -47,8 +47,12 @@ public static class RocketWebHostExtensions
 
         var contextBuilder = GetOrCreate(
             builder, () =>
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+#pragma warning disable RCS1249
                 new ConventionContextBuilder(builder.Host.Properties!)
-                   .UseDependencyContext(DependencyContext.Default)
+#pragma warning restore RCS1249
+                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                   .UseDependencyContext(DependencyContext.Default!)
         );
         action(contextBuilder);
         Configure(builder, contextBuilder);
@@ -77,8 +81,11 @@ public static class RocketWebHostExtensions
 
         var contextBuilder = GetOrCreate(
             builder, () =>
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
                 new ConventionContextBuilder(builder.Host.Properties)
-                   .UseDependencyContext(DependencyContext.Default)
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                   .UseDependencyContext(DependencyContext.Default!)
                    .WithConventionsFrom(getConventions)
         );
         Configure(builder, contextBuilder);
@@ -173,7 +180,7 @@ public static class RocketWebHostExtensions
     /// <returns></returns>
     private static ConventionContextBuilder GetOrCreate(WebApplicationBuilder builder, Func<ConventionContextBuilder> factory)
     {
-        return builder.Host.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value) ? ( value as ConventionContextBuilder )! : factory();
+        return builder.Host.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value) && value is ConventionContextBuilder cb ? cb : factory();
     }
 
     /// <summary>

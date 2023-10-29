@@ -5,9 +5,13 @@ using Rocket.Surgery.Conventions.Setup;
 
 namespace Rocket.Surgery.Conventions.Configuration.Json;
 
+/// <summary>
+/// Json configuraiton conventions
+/// </summary>
 [ExportConvention]
 public class JsonConvention : ISetupConvention
 {
+    /// <inheritdoc />
     public void Register(IConventionContext context)
     {
         context.AppendApplicationConfiguration(

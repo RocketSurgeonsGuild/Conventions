@@ -26,14 +26,14 @@ public class RocketWebApplicationTests : AutoFakeTest
 
         await using var host = builder.Build();
         new SimpleStartup().Configure(host);
-        await host.StartAsync().ConfigureAwait(false);
+        await host.StartAsync();
         var server = host.GetTestServer();
         var response = await server.CreateRequest("/")
-                                   .GetAsync().ConfigureAwait(false);
+                                   .GetAsync();
 
-        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync();
         content.Should().Be("SimpleStartup -> Configure");
-        await host.StopAsync().ConfigureAwait(false);
+        await host.StopAsync();
     }
 
     [Fact]

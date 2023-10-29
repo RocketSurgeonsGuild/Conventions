@@ -8,31 +8,19 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
-public class AutofacFixtures
+public static class AutofacFixtures
 {
-    public interface IAbc
-    {
-    }
+    public interface IAbc;
 
-    public interface IAbc2
-    {
-    }
+    public interface IAbc2;
 
-    public interface IAbc3
-    {
-    }
+    public interface IAbc3;
 
-    public interface IAbc4
-    {
-    }
+    public interface IAbc4;
 
-    public interface IOtherAbc3
-    {
-    }
+    public interface IOtherAbc3;
 
-    public interface IOtherAbc4
-    {
-    }
+    public interface IOtherAbc4;
 
     [ExportConvention]
     public class AbcConvention : IAutofacConvention

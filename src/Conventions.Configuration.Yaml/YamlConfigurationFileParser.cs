@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
@@ -8,7 +9,8 @@ internal class YamlConfigurationFileParser
 {
     private readonly IDictionary<string, string?> _data = new SortedDictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
     private readonly Stack<string> _context = new Stack<string>();
-    private string _currentPath;
+    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+    private string _currentPath = null!;
 
     public IDictionary<string, string?> Parse(Stream input)
     {
@@ -17,7 +19,8 @@ internal class YamlConfigurationFileParser
 
         // https://dotnetfiddle.net/rrR2Bb
         var yaml = new YamlStream();
-        yaml.Load(new StreamReader(input, true));
+        using var reader = new StreamReader(input, true);
+        yaml.Load(reader);
 
         if (yaml.Documents.Any())
         {
@@ -33,7 +36,8 @@ internal class YamlConfigurationFileParser
     private void VisitYamlNodePair(KeyValuePair<YamlNode, YamlNode> yamlNodePair)
     {
         var context = ( (YamlScalarNode)yamlNodePair.Key ).Value;
-        VisitYamlNode(context, yamlNodePair.Value);
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        VisitYamlNode(context!, yamlNodePair.Value);
     }
 
     private void VisitYamlNode(string context, YamlNode node)
@@ -56,7 +60,7 @@ internal class YamlConfigurationFileParser
 
     private void VisitYamlScalarNode(string context, YamlScalarNode yamlValue)
     {
-        //a node with a single 1-1 mapping 
+        //a node with a single 1-1 mapping
         EnterContext(context);
         var currentKey = _currentPath;
 
@@ -65,7 +69,7 @@ internal class YamlConfigurationFileParser
             throw new FormatException("FormatError_KeyIsDuplicated - " + currentKey);
         }
 
-        _data[currentKey] = IsNullValue(yamlValue) ? null : yamlValue.Value;
+        _data[currentKey] = YamlConfigurationFileParser.IsNullValue(yamlValue) ? null : yamlValue.Value;
         ExitContext();
     }
 
@@ -101,7 +105,7 @@ internal class YamlConfigurationFileParser
     {
         for (var i = 0; i < node.Children.Count; i++)
         {
-            VisitYamlNode(i.ToString(), node.Children[i]);
+            VisitYamlNode(i.ToString(NumberFormatInfo.InvariantInfo), node.Children[i]);
         }
     }
 
@@ -117,7 +121,7 @@ internal class YamlConfigurationFileParser
         _currentPath = ConfigurationPath.Combine(_context.Reverse());
     }
 
-    private bool IsNullValue(YamlScalarNode yamlValue)
+    private static bool IsNullValue(YamlScalarNode yamlValue)
     {
         return yamlValue.Style == ScalarStyle.Plain
             && (

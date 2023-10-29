@@ -83,7 +83,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
         var builder = Host.CreateDefaultBuilder()
                           .ConfigureRocketSurgery(
                                rb => rb
-                                  .UseDependencyContext(DependencyContext.Default)
+                                  .UseDependencyContext(DependencyContext.Default!)
                            );
 
         var host = builder.Build();
@@ -97,7 +97,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
         var builder = Host.CreateDefaultBuilder()
                           .ConfigureRocketSurgery(
                                rb => rb
-                                    .UseDependencyContext(DependencyContext.Default)
+                                    .UseDependencyContext(DependencyContext.Default!)
                                     .ConfigureServices(convention)
                            );
 
@@ -112,7 +112,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
         var builder = Host.CreateDefaultBuilder()
                           .ConfigureRocketSurgery(
                                rb => rb
-                                    .UseDependencyContext(DependencyContext.Default)
+                                    .UseDependencyContext(DependencyContext.Default!)
                                     .ConfigureConfiguration(convention)
                            );
 
@@ -127,7 +127,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
         var builder = Host.CreateDefaultBuilder()
                           .ConfigureRocketSurgery(
                                rb => rb
-                                    .UseDependencyContext(DependencyContext.Default)
+                                    .UseDependencyContext(DependencyContext.Default!)
                                     .ConfigureHosting(convention)
                            );
 
@@ -142,7 +142,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
         var builder = Host.CreateDefaultBuilder()
                           .ConfigureRocketSurgery(
                                rb => rb
-                                    .UseDependencyContext(DependencyContext.Default)
+                                    .UseDependencyContext(DependencyContext.Default!)
                                     .ConfigureLogging(convention)
                            );
 
@@ -172,7 +172,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
 //                                   )
 //                           );
 //
-//        ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1337);
+//        ( await builder.RunCli() ).Should().Be(1337);
 //    }
 //
 //    [Fact]
@@ -185,7 +185,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
 //                                    .AppendDelegate(new CommandLineConvention((a, context) => context.AddCommand<MyCommand>("myself")))
 //                           );
 //
-//        ( await builder.RunCli().ConfigureAwait(false) ).Should().Be(1234);
+//        ( await builder.RunCli() ).Should().Be(1234);
 //    }
 
     public RocketHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)

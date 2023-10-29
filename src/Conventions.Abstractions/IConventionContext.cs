@@ -13,7 +13,7 @@ public interface IConventionContext
     /// </summary>
     /// <param name="item">The item.</param>
     /// <returns>System.Object.</returns>
-    object? this[object item] { get; set; }
+    object this[object item] { get; set; }
 
     /// <summary>
     ///     A central location for sharing state between components during the convention building process.

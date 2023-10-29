@@ -81,7 +81,7 @@ public static class DryIocConventionRocketHostExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        builder.AppendDelegate(new DryIocConvention((context, configuration, services, container) => @delegate(services, container)));
+        builder.AppendDelegate(new DryIocConvention((_, _, services, container) => @delegate(services, container)));
         return builder;
     }
 
@@ -102,7 +102,7 @@ public static class DryIocConventionRocketHostExtensions
 
         builder.AppendDelegate(
             new DryIocConvention(
-                (context, configuration, services, container) =>
+                (_, configuration, services, container) =>
                 {
                     @delegate(configuration, services, container);
                     return container;
@@ -128,7 +128,7 @@ public static class DryIocConventionRocketHostExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        builder.AppendDelegate(new DryIocConvention((context, configuration, services, container) => @delegate(configuration, services, container)));
+        builder.AppendDelegate(new DryIocConvention((_, configuration, services, container) => @delegate(configuration, services, container)));
         return builder;
     }
 
@@ -147,7 +147,7 @@ public static class DryIocConventionRocketHostExtensions
 
         builder.AppendDelegate(
             new DryIocConvention(
-                (context, configuration, services, container) =>
+                (_, _, services, container) =>
                 {
                     @delegate(services, container);
                     return container;
@@ -170,7 +170,7 @@ public static class DryIocConventionRocketHostExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        builder.AppendDelegate(new DryIocConvention((context, configuration, services, container) => @delegate(container)));
+        builder.AppendDelegate(new DryIocConvention((_, _, _, container) => @delegate(container)));
         return builder;
     }
 
@@ -189,7 +189,7 @@ public static class DryIocConventionRocketHostExtensions
 
         builder.AppendDelegate(
             new DryIocConvention(
-                (context, configuration, services, container) =>
+                (_, _, _, container) =>
                 {
                     @delegate(container);
                     return container;

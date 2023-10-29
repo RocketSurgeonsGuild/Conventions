@@ -16,7 +16,7 @@ public static class RocketBooster
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAppDomain(AppDomain appDomain)
     {
-        return builder => new ConventionContextBuilder(new Dictionary<object, object?>()).UseAppDomain(appDomain);
+        return _ => new ConventionContextBuilder(null).UseAppDomain(appDomain);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public static class RocketBooster
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAssemblies(IEnumerable<Assembly> assemblies)
     {
-        return builder => new ConventionContextBuilder(new Dictionary<object, object?>()).UseAssemblies(assemblies);
+        return _ => new ConventionContextBuilder(null).UseAssemblies(assemblies);
     }
 
     /// <summary>

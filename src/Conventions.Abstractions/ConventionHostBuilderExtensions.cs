@@ -50,7 +50,7 @@ public static class ConventionHostBuilderExtensions
             throw new ArgumentNullException(nameof(container));
         }
 
-        container._serviceProviderFactory = x => new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory);
+        container._serviceProviderFactory = _ => new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory);
         return container;
     }
 
@@ -382,6 +382,7 @@ public static class ConventionHostBuilderExtensions
     public static HostType GetHostType(this ConventionContextBuilder context)
     {
         return context.Properties.TryGetValue(typeof(HostType), out var hostType)
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             ? (HostType)hostType!
             : HostType.Undefined;
     }

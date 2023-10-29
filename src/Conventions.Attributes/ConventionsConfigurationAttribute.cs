@@ -3,6 +3,7 @@
 /// <summary>
 ///     Base class to be used for both imports and exports for configuration
 /// </summary>
+[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class)]
 public abstract class ConventionsConfigurationAttribute : Attribute
 {
     /// <summary>
@@ -21,10 +22,12 @@ public abstract class ConventionsConfigurationAttribute : Attribute
     /// <remarks>
     ///     Default Imports or Exports
     /// </remarks>
+    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
     public string ClassName { get; set; } = null!;
 
     /// <summary>
     ///     The method name to use when attaching to a class
     /// </summary>
+    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
     public string MethodName { get; set; } = null!;
 }

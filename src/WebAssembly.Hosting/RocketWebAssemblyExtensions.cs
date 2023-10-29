@@ -38,55 +38,39 @@ public static class RocketWebAssemblyExtensions
             }
         }
 
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         var jsRuntime = (IJSUnmarshalledRuntime)builder.Services.First(z => z.ServiceType == typeof(IJSRuntime)).ImplementationInstance!;
-
-        static IConfigurationSource? GetConfigurationSource(IJSUnmarshalledRuntime runtime, ConfigurationBuilderDelegateResult factory)
-        {
-            IConfigurationSource? source = null;
-            try
-            {
-                var content = runtime.InvokeUnmarshalled<string, byte[]?>("Blazor._internal.getConfig", factory.Path);
-                if (content is null)
-                {
-                    return null;
-                }
-
-                source = factory.Factory(new MemoryStream(content));
-            }
-            catch (HttpRequestException)
-            {
-            }
-
-            return source;
-        }
 
         var configurationBuilder = (IConfigurationBuilder)builder.Configuration;
 
-        var localTask = GetConfigurationSource(
-            jsRuntime, new ConfigurationBuilderDelegateResult("appsettings.local.json", stream => new JsonStreamConfigurationSource { Stream = stream })
+        var localTask = getConfigurationSource(
+            jsRuntime, new ConfigurationBuilderDelegateResult("appsettings.local.json", stream => new JsonStreamConfigurationSource { Stream = stream ?? throw new ArgumentNullException(nameof(stream)) })
         );
 
         var appTasks = conventionContext
                       .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
                       .SelectMany(z => z.Invoke(configurationBuilder))
-                      .Select(z => GetConfigurationSource(jsRuntime, z))
+                      .Select(z => getConfigurationSource(jsRuntime, z))
                       .Where(z => z is not null)
+                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                       .Select(z => z!)
                       .ToArray();
 
         var envTasks = conventionContext
                       .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
                       .SelectMany(z => z.Invoke(configurationBuilder, builder.HostEnvironment.Environment))
-                      .Select(z => GetConfigurationSource(jsRuntime, z))
+                      .Select(z => getConfigurationSource(jsRuntime, z))
                       .Where(z => z is not null)
+                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                       .Select(z => z!)
                       .ToArray();
 
         var localTasks = conventionContext
                         .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
                         .SelectMany(z => z.Invoke(configurationBuilder, "local"))
-                        .Select(z => GetConfigurationSource(jsRuntime, z))
+                        .Select(z => getConfigurationSource(jsRuntime, z))
                         .Where(z => z is not null)
+                         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                         .Select(z => z!)
                         .ToArray();
 
@@ -126,6 +110,26 @@ public static class RocketWebAssemblyExtensions
 
         builder.ConfigureContainer(ConventionServiceProviderFactory.Wrap(conventionContext));
         return Task.FromResult(builder);
+
+        static IConfigurationSource? getConfigurationSource(IJSUnmarshalledRuntime runtime, ConfigurationBuilderDelegateResult factory)
+        {
+            IConfigurationSource? source = null;
+            try
+            {
+                var content = runtime.InvokeUnmarshalled<string, byte[]?>("Blazor._internal.getConfig", factory.Path);
+                if (content is null)
+                {
+                    return null;
+                }
+
+                source = factory.Factory(new MemoryStream(content));
+            }
+            catch (HttpRequestException)
+            {
+            }
+
+            return source;
+        }
     }
 
     /// <summary>
@@ -171,7 +175,7 @@ public static class RocketWebAssemblyExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object?>());
+        var contextBuilder = new ConventionContextBuilder(null);
         builderAction.Invoke(contextBuilder);
         await ApplyConventions(builder, contextBuilder);
 

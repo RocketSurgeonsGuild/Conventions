@@ -38,7 +38,7 @@ internal class Convention : ICommandLineConvention, IServiceConvention
     public void Register(IConventionContext context, IConfigurator app)
     {
         app.AddDelegate(
-            "test", c => { return 1; }
+            "test", _ => 1
         );
         app.AddCommand<MyCommand>("dump");
     }

@@ -20,6 +20,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     private static readonly ConventionConfigurationData _exportsDefaultConfiguration = new(false, true, "", "Exports", "GetConventions") { Postfix = true };
     private static readonly ConventionConfigurationData _importsDefaultConfiguration = new(false, true, "", "Imports", "GetConventions") { Postfix = true };
 
+    /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var exportConfigurationCandidate = ConventionConfigurationData.Create(context, "ExportConventions", _exportsDefaultConfiguration);
@@ -28,13 +29,13 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 #if ROSLYN4_4
                               .ForAttributeWithMetadataName(
                                    "Rocket.Surgery.Conventions.ConventionAttribute",
-                                   (node, token) => true,
-                                   (syntaxContext, token) => GetExportedConventions(syntaxContext)
+                                   (_, _) => true,
+                                   (syntaxContext, _) => GetExportedConventions(syntaxContext)
                                )
                               .SelectMany((z, _) => z)
 #else
                               .CreateSyntaxProvider(
-                                   static (node, token) =>
+                                   static (node, _) =>
                                    {
                                        return node is AttributeListSyntax { Target.Identifier.RawKind: (int)SyntaxKind.AssemblyKeyword } attributeListSyntax
                                            && attributeListSyntax.Attributes.Any(
@@ -42,23 +43,24 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                        z.Name.ToFullString().TrimEnd().EndsWith("ConventionAttribute", StringComparison.Ordinal)
                                               );
                                    },
-                                   static (syntaxContext, token) =>
+                                   static (syntaxContext, _) =>
                                        syntaxContext.Node is AttributeListSyntax attributeListSyntax
                                            ? ( attributeListSyntax, syntaxContext.SemanticModel )
                                            : default
                                )
                               .Combine(context.CompilationProvider)
                               .Select(
-                                   (z, token) =>
+                                   (z, _) =>
                                    {
                                        var (attributeListSyntax, model) = z.Left;
                                        var compilation = z.Right;
+                                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                        var conventionAttribute = z.Right.GetTypeByMetadataName("Rocket.Surgery.Conventions.ConventionAttribute")!;
                                        return ( attributeListSyntax, model, compilation, conventionAttribute );
                                    }
                                )
                               .Where(z => z.conventionAttribute != null)
-                              .SelectMany((z, _) => GetExportedConventions(z.attributeListSyntax, z.model, z.compilation, z.conventionAttribute!))
+                              .SelectMany((z, _) => GetExportedConventions(z.attributeListSyntax, z.model, z.compilation, z.conventionAttribute))
 #endif
                               .WithComparer(SymbolEqualityComparer.Default);
 
@@ -67,12 +69,12 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 #if ROSLYN4_4
                                  .ForAttributeWithMetadataName(
                                       "Rocket.Surgery.Conventions.ExportConventionAttribute",
-                                      (node, token) => node is TypeDeclarationSyntax,
-                                      (syntaxContext, token) => (INamedTypeSymbol)syntaxContext.TargetSymbol
+                                      (node, _) => node is TypeDeclarationSyntax,
+                                      (syntaxContext, _) => (INamedTypeSymbol)syntaxContext.TargetSymbol
                                   )
 #else
                                  .CreateSyntaxProvider(
-                                      static (node, token) =>
+                                      static (node, _) =>
                                       {
                                           return node is TypeDeclarationSyntax baseType and (ClassDeclarationSyntax or RecordDeclarationSyntax)
                                               && baseType.AttributeLists.Any(
@@ -85,7 +87,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                           )
                                                  );
                                       },
-                                      static (syntaxContext, token) => syntaxContext.Node is TypeDeclarationSyntax baseType
+                                      static (syntaxContext, _) => syntaxContext.Node is TypeDeclarationSyntax baseType
                                           ? ( baseType, syntaxContext.SemanticModel )
                                           : default
                                   )
@@ -96,7 +98,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         var combinedExports = exportCandidates.Collect()
                                               .Combine(exportedConventions.Collect())
                                               .SelectMany(
-                                                   (tuple, token) =>
+                                                   (tuple, _) =>
                                                        tuple.Left.AddRange(tuple.Right).Distinct(SymbolEqualityComparer.Default).OfType<INamedTypeSymbol>()
                                                )
                                               .WithComparer(SymbolEqualityComparer.Default);
@@ -104,10 +106,10 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(
             context.CompilationProvider
                    .Combine(exportConfigurationCandidate)
-                   .Select((z, token) => ConventionAttributeData.Create(z.Right, z.Left))
+                   .Select((z, _) => ConventionAttributeData.Create(z.Right, z.Left))
                    .Combine(combinedExports.Collect())
                    .Combine(exportedConventions.Collect())
-                   .Select((z, token) => ( data: z.Left.Left, conventions: z.Left.Right, exportedConventions: z.Right )),
+                   .Select((z, _) => ( data: z.Left.Left, conventions: z.Left.Right, exportedConventions: z.Right )),
             static (productionContext, tuple) => HandleConventionExports(productionContext, tuple.data, tuple.conventions, tuple.exportedConventions)
         );
 
@@ -119,12 +121,12 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 #if ROSLYN4_4
                               .ForAttributeWithMetadataName(
                                    "Rocket.Surgery.Conventions.ImportConventionsAttribute",
-                                   (node, token) => node is TypeDeclarationSyntax,
-                                   (syntaxContext, token) => syntaxContext.TargetNode
+                                   (node, _) => node is TypeDeclarationSyntax,
+                                   (syntaxContext, _) => syntaxContext.TargetNode
                                )
 #else
                               .CreateSyntaxProvider(
-                                   static (node, token) =>
+                                   static (node, _) =>
                                    {
                                        return node is ClassDeclarationSyntax classDeclarationSyntax
                                            && classDeclarationSyntax.AttributeLists.SelectMany(z => z.Attributes)
@@ -137,7 +139,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                                               )
                                                                      );
                                    },
-                                   static (syntaxContext, token) => syntaxContext.Node
+                                   static (syntaxContext, _) => syntaxContext.Node
                                )
 #endif
             ;
@@ -148,7 +150,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                    .Combine(importConfigurationCandidate)
                    .Combine(exportConfigurationCandidate)
                    .Select(
-                        (z, token) => ( compilation: z.Left.Left.Left.Left, hasExports: z.Left.Left.Right.Any(), exportedCandidates: z.Left.Left.Left.Right,
+                        (z, _) => ( compilation: z.Left.Left.Left.Left, hasExports: z.Left.Left.Right.Any(), exportedCandidates: z.Left.Left.Left.Right,
                                         importConfiguration: z.Left.Right, exportConfiguration: z.Right )
                     ),
             static (productionContext, tuple) => HandleConventionImports(
@@ -166,8 +168,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         ConventionConfigurationData exportConfiguration
     )
     {
-        IReadOnlyCollection<string>? references = null;
-        references = getReferences(compilation, hasExports && exportConfiguration.Assembly, exportConfiguration);
+        var references = getReferences(compilation, hasExports && exportConfiguration.Assembly, exportConfiguration);
 
         var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
 
@@ -188,7 +189,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 );
             if (importConfiguration.Assembly && !string.IsNullOrWhiteSpace(importConfiguration.Namespace))
             {
-                cu = cu.AddUsings(UsingDirective(ParseName(importConfiguration.Namespace!)));
+                cu = cu.AddUsings(UsingDirective(ParseName(importConfiguration.Namespace)));
             }
 
             foreach (var declaration in importCandidates.OfType<ClassDeclarationSyntax>())
@@ -317,7 +318,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                    .AddMembers(
                         string.IsNullOrWhiteSpace(configurationData.Namespace)
                             ? members
-                            : NamespaceDeclaration(ParseName(configurationData.Namespace!)).AddMembers(members)
+                            : NamespaceDeclaration(ParseName(configurationData.Namespace)).AddMembers(members)
                     );
             }
 
@@ -356,10 +357,12 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                return legacyMetadata.ToDisplayString() + ".GetConventions";
                                            }
 
+                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                            return null!;
                                        }
                                        catch
                                        {
+                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                            return null!;
                                        }
                                    }
@@ -701,16 +704,17 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             if (symbol.Type == null)
                 continue;
 
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             yield return compilation.GetTypeByMetadataName(GetFullMetadataName(symbol.Type))!;
         }
     }
-#endif
 
     private static IEnumerable<INamedTypeSymbol> GetExportedConventions(BaseTypeDeclarationSyntax declarationSyntax, SemanticModel model)
     {
         if (model.GetDeclaredSymbol(declarationSyntax) is { } symbol)
             yield return symbol;
     }
+#endif
 
 
     private static readonly MemberAccessExpressionSyntax HostTypeUndefined = MemberAccessExpression(

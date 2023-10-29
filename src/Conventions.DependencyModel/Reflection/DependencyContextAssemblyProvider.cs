@@ -26,6 +26,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
             () =>
                 context.GetDefaultAssemblyNames()
                        .Select(TryLoad)
+                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                        .Where(x => x != null!)
                        .ToArray()
         );
@@ -34,11 +35,13 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
 
     private void LogValue(Assembly value)
     {
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         _logger.FoundAssembly(nameof(DependencyContextAssemblyProvider), value.GetName().Name!);
     }
 
     private Assembly TryLoad(AssemblyName assemblyName)
     {
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         _logger.TryingToLoadAssembly(assemblyName.Name!);
 
         try
@@ -48,6 +51,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
 #pragma warning disable CA1031
         catch (Exception e)
         {
+                                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             _logger.FailedToLoadAssembly(assemblyName.Name!, e);
             return default!;
         }

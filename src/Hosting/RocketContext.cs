@@ -38,7 +38,7 @@ internal class RocketContext
         if (!_hostBuilder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var conventionContextBuilderObject))
             throw new KeyNotFoundException($"Could not find {nameof(ConventionContextBuilder)}");
 
-        var conventionContextBuilder = (ConventionContextBuilder)conventionContextBuilderObject!;
+        var conventionContextBuilder = (ConventionContextBuilder)conventionContextBuilderObject;
         var contextObject = ConventionContext.From(conventionContextBuilder);
         _hostBuilder.Properties[typeof(IConventionContext)] = contextObject;
         _hostBuilder.ApplyConventions(Context);

@@ -7,4 +7,5 @@ namespace Rocket.Surgery.Hosting;
 ///     Delegate HostingConventionAction
 /// </summary>
 /// <param name="context">The context.</param>
+/// <param name="builder">The builder.</param>
 public delegate void HostingConvention(IConventionContext context, IHostBuilder builder);

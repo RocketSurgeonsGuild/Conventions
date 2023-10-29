@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace Rocket.Surgery.Conventions.Analyzers.Tests;
+﻿namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
 [UsesVerify]
 public class ImportConventionsMsBuildConfigurationTests

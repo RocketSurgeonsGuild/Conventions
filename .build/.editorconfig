@@ -1,0 +1,3 @@
+[*]
+#### .NET Coding Conventions ####
+resharper_all_underscore_local_parameter_name_highlighting = none
