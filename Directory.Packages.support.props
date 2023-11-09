@@ -2,34 +2,11 @@
 <Project>
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
         <PackageVersion Include="Microsoft.Extensions.DiagnosticAdapter" Version="3.1.32" />
-        <PackageVersion Update="DryIoc.dll" Version="5.4.2" />
-        <PackageVersion Update="DryIoc.Microsoft.DependencyInjection" Version="6.2.0" />
         <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="3.1.32" />
-        <PackageVersion Update="System.Diagnostics.DiagnosticSource" Version="4.7.1" />
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' or '$(TargetFramework)' == 'net6.0'">    
-        <PackageVersion Update="Microsoft.Extensions.Configuration" Version="6.0.1" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.CommandLine" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.Ini" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-        <PackageVersion Update="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
-        <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Hosting" Version="6.0.1" />
-        <PackageVersion Update="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Logging" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
-        <PackageVersion Update="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
-        <PackageVersion Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" /> 
-    </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">     
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
         <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.24" />
         <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.24" />
-        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="6.0.24" />   
-        <PackageVersion Update="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
+        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="6.0.24" />
     </ItemGroup>
 </Project>
