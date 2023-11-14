@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
         <_Analyzer_Roslyn_Version_>$(MSBuildProjectName.Replace("Rocket.Surgery.Conventions.Analyzers.Tests.", ""))</_Analyzer_Roslyn_Version_>
-        <DefineConstants>$(DefineConstants);ROSLYN4_0</DefineConstants>        
+        <DefineConstants>$(DefineConstants);ROSLYN4_0</DefineConstants>
         <RootNamespace>Rocket.Surgery.Conventions.Analyzers.Tests</RootNamespace>
         <AssemblyName>Rocket.Surgery.Conventions.Analyzers.Tests</AssemblyName>
     </PropertyGroup>
@@ -16,8 +16,7 @@
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
         <Compile Include="..\Analyzers.Tests\**\*.cs" Exclude="..\Analyzers.Tests\obj\**\*.cs" />
     </ItemGroup>
-    <ItemGroup>        
-        <PackageReference Include="Verify.Xunit" />
+    <ItemGroup>
         <PackageReference Include="Verify.SourceGenerators" />
     </ItemGroup>
 </Project>

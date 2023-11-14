@@ -13,6 +13,8 @@
         <PackageReference Include="xunit" />
         <PackageReference Include="xunit.analyzers" />
         <PackageReference Include="xunit.runner.visualstudio" />
+        <PackageReference Include="Verify.Xunit" />
+        <PackageReference Include="System.Collections.Immutable" VersionOverride="7.0.0" />
     </ItemGroup>
     <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Attributes/build/Rocket.Surgery.Conventions.Attributes.targets" />
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
