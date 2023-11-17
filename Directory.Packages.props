@@ -13,6 +13,7 @@
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.6.2" />
     <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.6.2" />
     <PackageVersion Include="Spectre.Console.Analyzer" Version="0.47.0" />
+    <PackageVersion Include="Verify.AngleSharp" Version="4.3.1" />
     <PackageVersion Include="Verify.ImageMagick" Version="3.2.2" />
     <PackageVersion Include="YamlDotNet" Version="13.7.1" />
   </ItemGroup>

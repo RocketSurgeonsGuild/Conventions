@@ -7,6 +7,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Microsoft.Playwright" />
+        <PackageReference Include="Verify.AngleSharp" />
         <PackageReference Include="Verify.ImageMagick" />
         <PackageReference Include="Verify.Playwright" />
         <ProjectReference Include="..\..\sample\Sample.BlazorWasm\Sample.BlazorWasm.csproj" />
