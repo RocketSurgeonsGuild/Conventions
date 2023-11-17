@@ -29,7 +29,7 @@
         <AssemblyMetadata Include="ContentRootPath" Value="$([System.IO.Path]::GetDirectoryName($(MSBuildThisFileDirectory)))" />
     </ItemGroup>
     <ItemGroup>
-        <Content Update="wwwroot\appsettings.json">
+        <Content Update="wwwroot\appsettings.yml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Update="wwwroot\appsettings.Development.yaml">

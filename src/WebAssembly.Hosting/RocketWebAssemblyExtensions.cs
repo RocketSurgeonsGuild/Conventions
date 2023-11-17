@@ -18,7 +18,7 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionContext"></param>
-    public async static Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static async Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         IConventionContext conventionContext
     )
@@ -38,17 +38,31 @@ public static class RocketWebAssemblyExtensions
             }
         }
 
-        var foundConfigurationFiles = Assembly.GetEntryAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
+        var foundConfigurationFiles = Assembly.GetEntryAssembly()
+                                             ?.GetCustomAttributes<AssemblyMetadataAttribute>()
                                               .Where(z => z.Key == "BlazorConfigurationFile")
+                                               // ReSharper disable once NullableWarningSuppressionIsUsed
                                               .Select(z => z.Value!)
                                               .SelectMany(z => z.Split(';', StringSplitOptions.RemoveEmptyEntries))
-                                              .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                                              .ToHashSet(StringComparer.OrdinalIgnoreCase)
+                                   ?? new();
 
+#pragma warning disable CA1859
         var configurationBuilder = (IConfigurationBuilder)builder.Configuration;
+#pragma warning restore CA1859
         using var http = new HttpClient()
         {
             BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
         };
+        
+        // notes to the next person that sees this.
+        // if blazor does not find it's own configuration files (appsettings, appsettings.{environment}) they never get added to the configuration collection
+        // in that case they never exist.  So unlike the other defaults where we have to replace the items.
+        // If they exist then we just append.  If they don't we're adding anyway.
+        // One place this might be an issue is if you have both appsettings.Development.json and appsettings.Development.yaml (or whatever)
+        //   In this case the load order will be appsettings.json, appsettings.Development.json, appsettings.yaml, appsettings.Development.yaml
+        //   Instead of the more desired order appsettings.json, appsettings.yaml, appsettings.Development.json, appsettings.Development.yaml
+        // However this case is fairly rare as I would not expect an application to maintain both kinds of configuration files.
 
         var appTasks = conventionContext
                       .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
@@ -63,13 +77,15 @@ public static class RocketWebAssemblyExtensions
                         .SelectMany(z => z.Invoke(configurationBuilder, "local"))
                         .ToArray();
 
-        var tasks = appTasks.Concat(envTasks).Concat(localTasks)
-                            .Where(z => foundConfigurationFiles.Contains(z.Path))
-                            .Select(z => getConfigurationSource(http, z))
-                            .Where(z => z is not null)
-                             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                            .Select(z => z!)
-                            .ToArray();
+        var tasks = appTasks
+                   .Concat(envTasks)
+                   .Concat(localTasks)
+                   .Where(z => foundConfigurationFiles.Contains(z.Path))
+                   .Select(z => getConfigurationSource(http, z))
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+                   .Where(z => z is not null)
+                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                   .Select(z => z!);
 
         foreach (var task in await Task.WhenAll(tasks))
         {
@@ -103,10 +119,6 @@ public static class RocketWebAssemblyExtensions
             }
             catch (HttpRequestException)
             {
-            }
-            catch (Exception e)
-            {
-                throw;
             }
 
             return source;

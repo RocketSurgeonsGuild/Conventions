@@ -21,29 +21,8 @@
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
     </ItemGroup>
     <ItemGroup>
-      <None Update="build\Rocket.Surgery.Conventions.Attributes.props">
-        <Pack>true</Pack>
-        <PackagePath>build</PackagePath>
-      </None>
-      <None Update="build\Rocket.Surgery.Conventions.Attributes.targets">
-        <Pack>true</Pack>
-        <PackagePath>build</PackagePath>
-      </None>
-      <None Update="buildMultiTargeting\Rocket.Surgery.Conventions.Attributes.props">
-        <Pack>true</Pack>
-        <PackagePath>buildMultiTargeting</PackagePath>
-      </None>
-      <None Update="buildMultiTargeting\Rocket.Surgery.Conventions.Attributes.targets">
-        <Pack>true</Pack>
-        <PackagePath>buildMultiTargeting</PackagePath>
-      </None>
-      <None Update="buildTransitive\Rocket.Surgery.Conventions.Attributes.props">
-        <Pack>true</Pack>
-        <PackagePath>buildTransitive</PackagePath>
-      </None>
-      <None Update="buildTransitive\Rocket.Surgery.Conventions.Attributes.targets">
-        <Pack>true</Pack>
-        <PackagePath>buildTransitive</PackagePath>
-      </None>
+        <None Include="build/*.*" Pack="true" PackagePath="build" />
+        <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
+        <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
     </ItemGroup>
 </Project>

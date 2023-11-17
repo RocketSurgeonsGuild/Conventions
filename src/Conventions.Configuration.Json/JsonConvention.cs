@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+#if !BROWSER
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Rocket.Surgery.Conventions.Setup;
@@ -15,48 +15,16 @@ public class JsonConvention : ISetupConvention
     public void Register(IConventionContext context)
     {
         context.AppendApplicationConfiguration(
-            configurationBuilder =>
-            {
-#if BROWSER
-                return Array.Empty<ConfigurationBuilderDelegateResult>();
-#else
-                return new[]
-                {
-                    new ConfigurationBuilderDelegateResult("appsettings.json", LoadJsonFile(configurationBuilder, "appsettings.json"))
-                };
-#endif
-            }
+            configurationBuilder => new[] { new ConfigurationBuilderDelegateResult("appsettings.json", LoadJsonFile(configurationBuilder, "appsettings.json")) }
         );
         context.AppendEnvironmentConfiguration(
-            (configurationBuilder, environment) =>
+            (configurationBuilder, environment) => new[]
             {
-#if BROWSER
-                if (environment == "local")
-                {
-                    return new[]
-                    {
-                        new ConfigurationBuilderDelegateResult(
-                            "appsettings.local.json",
-                            stream => new JsonStreamConfigurationSource { Stream = stream ?? throw new ArgumentNullException(nameof(stream)) }
-                        )
-                    };
-                }
-
-                return Array.Empty<ConfigurationBuilderDelegateResult>();
-#else
-                return new[]
-                {
-                    new ConfigurationBuilderDelegateResult(
-                        $"appsettings.{environment}.json",
-                        LoadJsonFile(configurationBuilder, $"appsettings.{environment}.json")
-                    )
-                };
-#endif
+                new ConfigurationBuilderDelegateResult($"appsettings.{environment}.json", LoadJsonFile(configurationBuilder, $"appsettings.{environment}.json"))
             }
         );
     }
 
-#if !BROWSER
     private static Func<Stream?, IConfigurationSource> LoadJsonFile(IConfigurationBuilder configurationBuilder, string path)
     {
         return _ => new JsonConfigurationSource
@@ -67,5 +35,5 @@ public class JsonConvention : ISetupConvention
             Optional = true
         };
     }
-#endif
 }
+#endif
