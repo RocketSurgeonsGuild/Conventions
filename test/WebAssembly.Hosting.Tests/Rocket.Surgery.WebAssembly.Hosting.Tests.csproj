@@ -1,14 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <!-- TODO: fix net8.0 suppor here -->
-    <TargetFrameworks>net6.0</TargetFrameworks>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" />
-    <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
-    <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\..\src\Conventions.Configuration.Json\Rocket.Surgery.Conventions.Configuration.Json.csproj" />
-    <ProjectReference Include="..\..\src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
-    <PackageReference Include="bunit.web" />
-  </ItemGroup>
+    <PropertyGroup>
+        <!-- TODO: fix net8.0 suppor here -->
+        <TargetFramework>net8.0-browser</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Microsoft.Playwright" />
+        <PackageReference Include="Verify.ImageMagick" />
+        <PackageReference Include="Verify.Playwright" />
+        <ProjectReference Include="..\..\sample\Sample.BlazorWasm\Sample.BlazorWasm.csproj" />
+        <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\..\src\Conventions.Configuration.Json\Rocket.Surgery.Conventions.Configuration.Json.csproj" />
+        <ProjectReference Include="..\..\src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
+        <PackageReference Include="bunit.web" />
+    </ItemGroup>
 </Project>

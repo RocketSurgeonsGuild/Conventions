@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1;netstandard2.0;net6.0;net7.0;net8.0;net8.0-browser</TargetFrameworks>
         <PackageDescription>Adds support for loading yaml configuration files</PackageDescription>
         <PackageTags>$(PackageTags);reflection</PackageTags>
     </PropertyGroup>
@@ -19,5 +19,31 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Web.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="build\Rocket.Surgery.Conventions.Attributes.props">
+        <Pack>true</Pack>
+        <PackagePath>build</PackagePath>
+      </None>
+      <None Update="build\Rocket.Surgery.Conventions.Attributes.targets">
+        <Pack>true</Pack>
+        <PackagePath>build</PackagePath>
+      </None>
+      <None Update="buildMultiTargeting\Rocket.Surgery.Conventions.Attributes.props">
+        <Pack>true</Pack>
+        <PackagePath>buildMultiTargeting</PackagePath>
+      </None>
+      <None Update="buildMultiTargeting\Rocket.Surgery.Conventions.Attributes.targets">
+        <Pack>true</Pack>
+        <PackagePath>buildMultiTargeting</PackagePath>
+      </None>
+      <None Update="buildTransitive\Rocket.Surgery.Conventions.Attributes.props">
+        <Pack>true</Pack>
+        <PackagePath>buildTransitive</PackagePath>
+      </None>
+      <None Update="buildTransitive\Rocket.Surgery.Conventions.Attributes.targets">
+        <Pack>true</Pack>
+        <PackagePath>buildTransitive</PackagePath>
+      </None>
     </ItemGroup>
 </Project>

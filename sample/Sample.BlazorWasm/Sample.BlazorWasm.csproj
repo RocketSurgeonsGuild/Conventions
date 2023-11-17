@@ -1,37 +1,44 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+    <Import Project="../../src/Conventions.Configuration.Json/build/Rocket.Surgery.Conventions.Configuration.Json.props" />
+    <Import Project="../../src/Conventions.Configuration.Yaml/build/Rocket.Surgery.Conventions.Configuration.Yaml.props" />
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0-browser</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
 
-  <ItemGroup>
+    <ItemGroup>
         <ProjectReference
             Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
             IncludeAssets="all"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
-    <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
-  </ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+        <ProjectReference Include="..\..\src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
+        <ProjectReference Include="..\..\src\Conventions.Configuration.Json\Rocket.Surgery.Conventions.Configuration.Json.csproj" />
+        <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\appsettings.Development.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\appsettings.local.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <AssemblyMetadata Include="ContentRootPath" Value="$([System.IO.Path]::GetDirectoryName($(MSBuildThisFileDirectory)))" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Update="wwwroot\appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Update="wwwroot\appsettings.Development.yaml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Update="wwwroot\appsettings.local.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <Import Project="../../src/Conventions.Configuration.Yaml/build/Rocket.Surgery.Conventions.Configuration.Yaml.targets" />
+    <Import Project="../../src/Conventions.Configuration.Json/build/Rocket.Surgery.Conventions.Configuration.Json.targets" />
 </Project>

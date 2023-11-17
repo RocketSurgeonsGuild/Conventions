@@ -37,3 +37,5 @@ internal sealed class Helpers
         return builder;
     }
 }
+
+// ReSharper disable once ClassNeverInstantiated.Global

@@ -8,7 +8,6 @@
         <ProjectReference Include="..\..\src\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
         <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
         <ProjectReference Include="..\..\src\Web.Hosting\Rocket.Surgery.Web.Hosting.csproj" />
-        <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 </Project>

@@ -17,25 +17,33 @@ public class JsonConvention : ISetupConvention
         context.AppendApplicationConfiguration(
             configurationBuilder =>
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")) || context.Properties.ContainsKey("BlazorWasm"))
-                {
-                    return Array.Empty<ConfigurationBuilderDelegateResult>();
-                }
-
+#if BROWSER
+                return Array.Empty<ConfigurationBuilderDelegateResult>();
+#else
                 return new[]
                 {
                     new ConfigurationBuilderDelegateResult("appsettings.json", LoadJsonFile(configurationBuilder, "appsettings.json"))
                 };
+#endif
             }
         );
         context.AppendEnvironmentConfiguration(
             (configurationBuilder, environment) =>
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")) || context.Properties.ContainsKey("BlazorWasm"))
+#if BROWSER
+                if (environment == "local")
                 {
-                    return Array.Empty<ConfigurationBuilderDelegateResult>();
+                    return new[]
+                    {
+                        new ConfigurationBuilderDelegateResult(
+                            "appsettings.local.json",
+                            stream => new JsonStreamConfigurationSource { Stream = stream ?? throw new ArgumentNullException(nameof(stream)) }
+                        )
+                    };
                 }
 
+                return Array.Empty<ConfigurationBuilderDelegateResult>();
+#else
                 return new[]
                 {
                     new ConfigurationBuilderDelegateResult(
@@ -43,10 +51,12 @@ public class JsonConvention : ISetupConvention
                         LoadJsonFile(configurationBuilder, $"appsettings.{environment}.json")
                     )
                 };
+#endif
             }
         );
     }
 
+#if !BROWSER
     private static Func<Stream?, IConfigurationSource> LoadJsonFile(IConfigurationBuilder configurationBuilder, string path)
     {
         return _ => new JsonConfigurationSource
@@ -57,4 +67,5 @@ public class JsonConvention : ISetupConvention
             Optional = true
         };
     }
+#endif
 }

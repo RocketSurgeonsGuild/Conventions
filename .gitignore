@@ -210,3 +210,4 @@ codealike.json
 
 # Rider
 .idea/
+*.received.*
