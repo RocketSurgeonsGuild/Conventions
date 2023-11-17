@@ -1,26 +1,22 @@
-using System.Globalization;
 using Microsoft.Extensions.Configuration;
-using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 
-internal class YamlConfigurationFileParser
+internal class YamlConfigurationStreamParser
 {
-    private readonly IDictionary<string, string?> _data = new SortedDictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+    private readonly IDictionary<string, string> _data = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     private readonly Stack<string> _context = new Stack<string>();
-    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-    private string _currentPath = null!;
+    private string _currentPath;
 
-    public IDictionary<string, string?> Parse(Stream input)
+    public IDictionary<string, string> Parse(Stream input)
     {
         _data.Clear();
         _context.Clear();
 
         // https://dotnetfiddle.net/rrR2Bb
         var yaml = new YamlStream();
-        using var reader = new StreamReader(input, true);
-        yaml.Load(reader);
+        yaml.Load(new StreamReader(input, detectEncodingFromByteOrderMarks: true));
 
         if (yaml.Documents.Any())
         {
@@ -36,8 +32,7 @@ internal class YamlConfigurationFileParser
     private void VisitYamlNodePair(KeyValuePair<YamlNode, YamlNode> yamlNodePair)
     {
         var context = ( (YamlScalarNode)yamlNodePair.Key ).Value;
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        VisitYamlNode(context!, yamlNodePair.Value);
+        VisitYamlNode(context, yamlNodePair.Value);
     }
 
     private void VisitYamlNode(string context, YamlNode node)
@@ -66,10 +61,10 @@ internal class YamlConfigurationFileParser
 
         if (_data.ContainsKey(currentKey))
         {
-            throw new FormatException("FormatError_KeyIsDuplicated - " + currentKey);
+            throw new FormatException($"A duplicate key '{currentKey}' was found.");
         }
 
-        _data[currentKey] = YamlConfigurationFileParser.IsNullValue(yamlValue) ? null : yamlValue.Value;
+        _data[currentKey] = IsNullValue(yamlValue) ? null : yamlValue.Value;
         ExitContext();
     }
 
@@ -103,9 +98,9 @@ internal class YamlConfigurationFileParser
 
     private void VisitYamlSequenceNode(YamlSequenceNode node)
     {
-        for (var i = 0; i < node.Children.Count; i++)
+        for (int i = 0; i < node.Children.Count; i++)
         {
-            VisitYamlNode(i.ToString(NumberFormatInfo.InvariantInfo), node.Children[i]);
+            VisitYamlNode(i.ToString(), node.Children[i]);
         }
     }
 
@@ -121,9 +116,9 @@ internal class YamlConfigurationFileParser
         _currentPath = ConfigurationPath.Combine(_context.Reverse());
     }
 
-    private static bool IsNullValue(YamlScalarNode yamlValue)
+    private bool IsNullValue(YamlScalarNode yamlValue)
     {
-        return yamlValue.Style == ScalarStyle.Plain
+        return yamlValue.Style == YamlDotNet.Core.ScalarStyle.Plain
             && (
                    yamlValue.Value == "~"
                 || yamlValue.Value == "null"

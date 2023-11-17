@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+#if !BROWSER
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Rocket.Surgery.Conventions.Setup;
@@ -15,34 +15,12 @@ public class JsonConvention : ISetupConvention
     public void Register(IConventionContext context)
     {
         context.AppendApplicationConfiguration(
-            configurationBuilder =>
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")) || context.Properties.ContainsKey("BlazorWasm"))
-                {
-                    return Array.Empty<ConfigurationBuilderDelegateResult>();
-                }
-
-                return new[]
-                {
-                    new ConfigurationBuilderDelegateResult("appsettings.json", LoadJsonFile(configurationBuilder, "appsettings.json"))
-                };
-            }
+            configurationBuilder => new[] { new ConfigurationBuilderDelegateResult("appsettings.json", LoadJsonFile(configurationBuilder, "appsettings.json")) }
         );
         context.AppendEnvironmentConfiguration(
-            (configurationBuilder, environment) =>
+            (configurationBuilder, environment) => new[]
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")) || context.Properties.ContainsKey("BlazorWasm"))
-                {
-                    return Array.Empty<ConfigurationBuilderDelegateResult>();
-                }
-
-                return new[]
-                {
-                    new ConfigurationBuilderDelegateResult(
-                        $"appsettings.{environment}.json",
-                        LoadJsonFile(configurationBuilder, $"appsettings.{environment}.json")
-                    )
-                };
+                new ConfigurationBuilderDelegateResult($"appsettings.{environment}.json", LoadJsonFile(configurationBuilder, $"appsettings.{environment}.json"))
             }
         );
     }
@@ -58,3 +36,4 @@ public class JsonConvention : ISetupConvention
         };
     }
 }
+#endif

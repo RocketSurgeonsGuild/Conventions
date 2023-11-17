@@ -1,6 +1,6 @@
-using System.Runtime.InteropServices;
+#if !BROWSER
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
-using NetEscapades.Configuration.Yaml;
 using Rocket.Surgery.Conventions.Setup;
 
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
@@ -17,44 +17,20 @@ public class YamlConvention : ISetupConvention
         context.AppendApplicationConfiguration(
             configurationBuilder =>
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")) || context.Properties.ContainsKey("BlazorWasm"))
+                return new ConfigurationBuilderDelegateResult[]
                 {
-                    return new[]
-                    {
-                        new ConfigurationBuilderDelegateResult("appsettings.yaml", LoadBlazorWasmYamlFile),
-                        new ConfigurationBuilderDelegateResult("appsettings.yml", LoadBlazorWasmYamlFile)
-                    };
-                }
-
-                return new[]
-                {
-                    new ConfigurationBuilderDelegateResult("appsettings.yaml", LoadYamlFile(configurationBuilder, "appsettings.yaml")),
-                    new ConfigurationBuilderDelegateResult("appsettings.yml", LoadYamlFile(configurationBuilder, "appsettings.yml"))
+                    new ("appsettings.yaml", LoadYamlFile(configurationBuilder, "appsettings.yaml")),
+                    new ("appsettings.yml", LoadYamlFile(configurationBuilder, "appsettings.yml"))
                 };
             }
         );
         context.AppendEnvironmentConfiguration(
             (configurationBuilder, environment) =>
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")) || context.Properties.ContainsKey("BlazorWasm"))
+                return new ConfigurationBuilderDelegateResult[]
                 {
-                    return new[]
-                    {
-                        new ConfigurationBuilderDelegateResult($"appsettings.{environment}.yaml", LoadBlazorWasmYamlFile),
-                        new ConfigurationBuilderDelegateResult($"appsettings.{environment}.yml", LoadBlazorWasmYamlFile)
-                    };
-                }
-
-                return new[]
-                {
-                    new ConfigurationBuilderDelegateResult(
-                        $"appsettings.{environment}.yaml",
-                        LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yaml")
-                    ),
-                    new ConfigurationBuilderDelegateResult(
-                        $"appsettings.{environment}.yml",
-                        LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yml")
-                    )
+                    new ($"appsettings.{environment}.yaml",LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yaml")),
+                    new ($"appsettings.{environment}.yml",LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yml"))
                 };
             }
         );
@@ -70,17 +46,5 @@ public class YamlConvention : ISetupConvention
             Optional = true
         };
     }
-
-    private static IConfigurationSource LoadBlazorWasmYamlFile(Stream? stream)
-    {
-        if (stream is null)
-        {
-            throw new NotSupportedException("Yaml is not supported without a stream");
-        }
-
-        return new YamlStreamConfigurationSource
-        {
-            Stream = stream
-        };
-    }
 }
+#endif

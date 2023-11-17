@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFramework>net8.0-browser</TargetFramework>
         <PackageDescription
         >Adds helpers to easily bootstrap an application using conventions by just using the correct extension method.  This adds command line operations, additional configuration, logging and service injections by convention.</PackageDescription>
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>

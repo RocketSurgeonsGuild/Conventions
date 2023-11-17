@@ -1,0 +1,6 @@
+﻿<Project>
+    <ItemGroup>
+        <_BlazorJsonConfigurationFiles Include="wwwroot\appsettings*.json" />
+        <AssemblyMetadata Include="BlazorConfigurationFile" Value="@(_BlazorJsonConfigurationFiles -> '%(Filename)%(Extension)')" />
+    </ItemGroup>
+</Project>

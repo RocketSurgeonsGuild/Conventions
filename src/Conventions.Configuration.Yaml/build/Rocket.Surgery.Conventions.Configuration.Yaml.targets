@@ -1,0 +1,7 @@
+﻿<Project>
+    <ItemGroup>
+        <_BlazorYamlConfigurationFiles Include="wwwroot\appsettings*.yml" />
+        <_BlazorYamlConfigurationFiles Include="wwwroot\appsettings*.yaml" />
+        <AssemblyMetadata Include="BlazorConfigurationFile" Value="@(_BlazorYamlConfigurationFiles -> '%(Filename)%(Extension)')" />
+    </ItemGroup>
+</Project>
