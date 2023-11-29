@@ -1,92 +1,92 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
-  <ItemGroup>
-    <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.CI" Version="1.1.5" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.GitVersion" Version="1.1.5" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.JetBrains.Annotations" Version="1.1.5" Condition="'$(MSBuildProjectName)'!='.build'" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.SourceLink" Version="1.1.5" />
-    <PackageVersion Include="Polyfill" Version="1.32.1" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.6.4" />
-    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.6.4" />
-    <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.6.4" />
-    <PackageVersion Include="Spectre.Console.Analyzer" Version="0.48.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="GitVersion.Tool" Version="5.12.0" />
-    <PackageVersion Include="docfx.console" Version="2.59.4" />
-    <PackageVersion Include="Nuke.Common" Version="7.0.6" />
-    <PackageVersion Include="ReportGenerator" Version="5.2.0" />
-    <PackageVersion Include="Rocket.Surgery.Nuke" Version="1.8.6" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="Autofac" Version="7.1.0" />
-    <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageVersion Include="BenchMarkDotNet" Version="0.13.10" />
-    <PackageVersion Include="bunit.web" Version="1.25.3" />
-    <PackageVersion Include="DryIoc.dll" Version="5.4.3" />
-    <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="6.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Ini" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
-    <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
-    <PackageVersion Include="YamlDotNet" Version="13.7.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="Microsoft.Azure.WebJobs" Version="3.0.39" />
-    <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions" Version="5.0.0" />
-    <PackageVersion Include="Microsoft.Azure.WebJobs.Host.Storage" Version="5.0.0" />
-    <PackageVersion Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
-    <PackageVersion Include="Spectre.Console" Version="0.48.0" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.48.0" />
-    <PackageVersion Include="Spectre.Console.Testing" Version="0.48.0" />
-    <PackageVersion Include="Terminal.Gui" Version="1.14.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="Bogus" Version="34.0.2" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
-    <PackageVersion Include="FakeItEasy" Version="8.0.0" />
-    <PackageVersion Include="FakeItEasy.Analyzer.CSharp" Version="6.1.1" />
-    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
-    <PackageVersion Include="FluentAssertions.Analyzers" Version="0.26.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.40.0" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="8.0.3" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="8.0.3" />
-    <PackageVersion Include="xunit" Version="2.6.2" />
-    <PackageVersion Include="xunit.analyzers" Version="1.6.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
-    <PackageVersion Include="Verify.AngleSharp" Version="4.3.1" />
-    <PackageVersion Include="Verify.ImageMagick" Version="3.2.2" />
-    <PackageVersion Include="Verify.Xunit" Version="22.6.0" />
-    <PackageVersion Include="Verify.Playwright" Version="2.3.0" />
-    <PackageVersion Include="Verify.SourceGenerators" Version="2.2.0" />
-  </ItemGroup>
-  <Import
+    <ItemGroup>
+        <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+        <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
+        <PackageVersion Include="Rocket.Surgery.MSBuild.CI" Version="1.1.5" />
+        <PackageVersion Include="Rocket.Surgery.MSBuild.GitVersion" Version="1.1.5" />
+        <PackageVersion Include="Rocket.Surgery.MSBuild.JetBrains.Annotations" Version="1.1.5" Condition="'$(MSBuildProjectName)'!='.build'" />
+        <PackageVersion Include="Rocket.Surgery.MSBuild.SourceLink" Version="1.1.5" />
+        <PackageVersion Include="Polyfill" Version="1.32.1" />
+        <PackageVersion Include="Roslynator.Analyzers" Version="4.6.4" />
+        <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.6.4" />
+        <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.6.4" />
+        <PackageVersion Include="Spectre.Console.Analyzer" Version="0.48.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="GitVersion.Tool" Version="5.12.0" />
+        <PackageVersion Include="docfx.console" Version="2.59.4" />
+        <PackageVersion Include="Nuke.Common" Version="7.0.6" />
+        <PackageVersion Include="ReportGenerator" Version="5.2.0" />
+        <PackageVersion Include="Rocket.Surgery.Nuke" Version="1.8.6" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="Autofac" Version="7.1.0" />
+        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageVersion Include="BenchMarkDotNet" Version="0.13.10" />
+        <PackageVersion Include="bunit.web" Version="1.25.3" />
+        <PackageVersion Include="DryIoc.dll" Version="5.4.3" />
+        <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="6.2.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Ini" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+        <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
+        <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+        <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
+        <PackageVersion Include="YamlDotNet" Version="13.7.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="Microsoft.Azure.WebJobs" Version="3.0.39" />
+        <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions" Version="5.0.0" />
+        <PackageVersion Include="Microsoft.Azure.WebJobs.Host.Storage" Version="5.0.0" />
+        <PackageVersion Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
+        <PackageVersion Include="Spectre.Console" Version="0.48.0" />
+        <PackageVersion Include="Spectre.Console.Cli" Version="0.48.0" />
+        <PackageVersion Include="Spectre.Console.Testing" Version="0.48.0" />
+        <PackageVersion Include="Terminal.Gui" Version="1.14.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="Bogus" Version="34.0.2" />
+        <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+        <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
+        <PackageVersion Include="FakeItEasy" Version="8.0.0" />
+        <PackageVersion Include="FakeItEasy.Analyzer.CSharp" Version="6.1.1" />
+        <PackageVersion Include="FluentAssertions" Version="6.12.0" />
+        <PackageVersion Include="FluentAssertions.Analyzers" Version="0.26.0" />
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <PackageVersion Include="Microsoft.Playwright" Version="1.40.0" />
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="8.0.3" />
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="8.0.3" />
+        <PackageVersion Include="xunit" Version="2.6.2" />
+        <PackageVersion Include="xunit.analyzers" Version="1.6.0" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
+        <PackageVersion Include="Verify.AngleSharp" Version="4.3.1" />
+        <PackageVersion Include="Verify.ImageMagick" Version="3.2.2" />
+        <PackageVersion Include="Verify.Xunit" Version="22.6.0" />
+        <PackageVersion Include="Verify.Playwright" Version="2.3.0" />
+        <PackageVersion Include="Verify.SourceGenerators" Version="2.2.0" />
+    </ItemGroup>
+    <Import
         Project="$(MSBuildThisFileDirectory)/Directory.Packages.support.props"
         Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')"
     />

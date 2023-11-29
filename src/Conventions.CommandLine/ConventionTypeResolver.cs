@@ -18,11 +18,9 @@ internal class ConventionTypeResolver : ITypeResolver
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return _serviceProvider.GetService(type!)
-               // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            ?? _instances.GetService(type!)
-#pragma warning disable IL2067
-               // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            ?? ActivatorUtilities.GetServiceOrCreateInstance(_serviceProvider, type!);
-#pragma warning restore IL2067
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+         ?? _instances.GetService(type!)
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+         ?? ActivatorUtilities.GetServiceOrCreateInstance(_serviceProvider, type!);
     }
 }
