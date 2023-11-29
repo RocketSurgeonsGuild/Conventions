@@ -24,6 +24,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
         <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <!--        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+<!--                <WarningsAsErrors></WarningsAsErrors>-->
+<!--                <WarningsNotAsErrors></WarningsNotAsErrors>-->
+    </PropertyGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
+        <NoWarn>$(NoWarn);CA1510</NoWarn>
     </PropertyGroup>
     <ItemGroup>
         <None

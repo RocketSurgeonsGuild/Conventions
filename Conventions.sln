@@ -149,6 +149,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github/workflows/publish-docs.yml = .github/workflows/publish-docs.yml
 		.github/workflows/sync-labels.yml = .github/workflows/sync-labels.yml
 		.github/workflows/update-milestone.yml = .github/workflows/update-milestone.yml
+		.github/workflows/lint.yml = .github/workflows/lint.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".husky", ".husky", "{833B6922-4C63-4058-8E4A-3167489B18FA}"
