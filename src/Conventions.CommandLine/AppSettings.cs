@@ -10,14 +10,6 @@ namespace Rocket.Surgery.Conventions.CommandLine;
 public class AppSettings : CommandSettings
 {
     /// <summary>
-    ///     The version was requested with the application start.
-    /// </summary>
-    [CommandOption("-v|--version", IsHidden = true)]
-    [Description("Version of the application")]
-    [UsedImplicitly]
-    public bool Version { get; set; }
-
-    /// <summary>
     ///     Gets the log.
     /// </summary>
     /// <value>The log.</value>

@@ -12,7 +12,6 @@ using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 using Spectre.Console.Cli;
-using Xunit;
 using Xunit.Abstractions;
 
 #pragma warning disable CA1034
@@ -53,46 +52,52 @@ public class CommandLineBuilderTests : AutoFakeTest
     [Fact]
     public async Task ShouldNotBeEnabledIfNoCommandsAreConfigured()
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-        var response = Host.CreateDefaultBuilder(new[] { "remote", "add", "-v" })
-                           .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "remote", "add", "-v", })
+                      .ConfigureRocketSurgery(builder);
         var host = await response.StartAsync();
         host.Services.GetService<ConsoleResult>().Should().BeNull();
     }
 
     [Fact]
-    public void ShouldEnableHelpOnAllCommands()
+    public void ShouldEnableVersionOnAllCommands()
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                                              .ConfigureCommandLine(
-                                                   (conventionContext, lineContext) =>
-                                                   {
-                                                       lineContext.AddBranch("remote", z => { z.AddCommand<Add>("add"); });
-                                                       lineContext.AddBranch("fetch", configurator => { configurator.AddCommand<Origin>("origin"); });
-                                                   }
-                                               );
-        var response = Host.CreateDefaultBuilder(new[] { "remote", "add", "-v" })
-                           .ConfigureRocketSurgery(builder);
-        response.Run().Should().Be(1);
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .ConfigureCommandLine(
+                          (conventionContext, lineContext) =>
+                          {
+                              lineContext.AddBranch("remote", z => z.AddCommand<Add>("add"));
+                              lineContext.AddBranch("fetch", configurator => configurator.AddCommand<Origin>("origin"));
+                          }
+                      );
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "remote", "add", "-v", })
+                      .ConfigureRocketSurgery(builder);
+        response.Run().Should().Be(0);
     }
 
     [Fact]
     public void ExecuteWorks()
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
         builder.ConfigureCommandLine(
             (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
 
-        var response = Host.CreateDefaultBuilder(new[] { "test" })
-                           .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "test", })
+                      .ConfigureRocketSurgery(builder);
 
         response.Run().Should().Be((int)LogLevel.Information);
     }
@@ -100,9 +105,10 @@ public class CommandLineBuilderTests : AutoFakeTest
     [Fact]
     public void SupportsAppllicationStateWithCustomDependencyInjection()
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
         var service = A.Fake<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -124,8 +130,9 @@ public class CommandLineBuilderTests : AutoFakeTest
                 );
             }
         );
-        var response = Host.CreateDefaultBuilder(new[] { "test", "--log", "error" })
-                           .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "test", "--log", "error", })
+                      .ConfigureRocketSurgery(builder);
 
         var result = response.Run();
 
@@ -137,16 +144,17 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         var service = AutoFake.Resolve<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                                              .ConfigureServices(
-                                                   z => { z.AddSingleton(service); }
-                                               );
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .ConfigureServices(
+                          z => { z.AddSingleton(service); }
+                      );
 
         builder.ConfigureCommandLine((context, builder) => { builder.AddCommand<InjectionConstructor>("constructor"); });
 
-        var response = Host.CreateDefaultBuilder(new[] { "constructor" }).ConfigureRocketSurgery(builder);
+        var response = Host.CreateDefaultBuilder(new[] { "constructor", }).ConfigureRocketSurgery(builder);
 
         var result = response.Run();
         result.Should().Be(1000);
@@ -156,26 +164,28 @@ public class CommandLineBuilderTests : AutoFakeTest
     [Fact]
     public void Sets_Values_In_Commands()
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
         builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
-        var response = Host.CreateDefaultBuilder(
-                                new[]
-                                {
-                                    "cwv",
-                                    "--api-domain",
-                                    "mydomain.com",
-                                    "--origin",
-                                    "origin1",
-                                    "--origin",
-                                    "origin2",
-                                    "--client-name",
-                                    "client1"
-                                }
-                            )
-                           .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(
+                           new[]
+                           {
+                               "cwv",
+                               "--api-domain",
+                               "mydomain.com",
+                               "--origin",
+                               "origin1",
+                               "--origin",
+                               "origin2",
+                               "--client-name",
+                               "client1",
+                           }
+                       )
+                      .ConfigureRocketSurgery(builder);
         response.Run(
         );
     }
@@ -183,16 +193,18 @@ public class CommandLineBuilderTests : AutoFakeTest
     [Fact]
     public void Can_Add_A_Command_With_A_Name_Using_Context()
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                                              .ConfigureCommandLine(
-                                                   (context, lineContext) => lineContext.AddDelegate<AppSettings>(
-                                                       "test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information )
-                                                   )
-                                               );
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .ConfigureCommandLine(
+                          (context, lineContext) => lineContext.AddDelegate<AppSettings>(
+                              "test",
+                              (context, state) => (int)( state.LogLevel ?? LogLevel.Information )
+                          )
+                      );
 
-        var response = Host.CreateDefaultBuilder(new[] { "test" }).ConfigureRocketSurgery(builder);
+        var response = Host.CreateDefaultBuilder(new[] { "test", }).ConfigureRocketSurgery(builder);
 
         response.Run().Should().Be((int)LogLevel.Information);
     }
@@ -200,16 +212,20 @@ public class CommandLineBuilderTests : AutoFakeTest
     [Fact]
     public void Should_Configure_Logging_Correctly()
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"));
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"));
 
-        var response = Host.CreateDefaultBuilder(new[] { "logger" })
-                           .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "logger", })
+                      .ConfigureRocketSurgery(builder);
 
         var result = response.Run();
         result.Should().Be(0);
     }
+
+    public CommandLineBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 
     private sealed class Add : Command
     {
@@ -233,14 +249,16 @@ public class CommandLineBuilderTests : AutoFakeTest
     [InlineData("--trace", LogLevel.Trace)]
     public void ShouldAllVerbosity(string command, LogLevel level)
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
-        var response = Host.CreateDefaultBuilder(new[] { "test", command })
-                           .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "test", command, })
+                      .ConfigureRocketSurgery(builder);
 
         var result = (LogLevel)response.Run();
         result.Should().Be(level);
@@ -255,15 +273,17 @@ public class CommandLineBuilderTests : AutoFakeTest
     [InlineData("-l critical", LogLevel.Critical)]
     public void ShouldAllowLogLevelIn(string command, LogLevel level)
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
 
-        var response = Host.CreateDefaultBuilder(new[] { "test" }.Concat(command.Split(' ')).ToArray())
-                           .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "test", }.Concat(command.Split(' ')).ToArray())
+                      .ConfigureRocketSurgery(builder);
 
         var result = (LogLevel)response.Run();
         result.Should().Be(level);
@@ -293,9 +313,10 @@ public class CommandLineBuilderTests : AutoFakeTest
     [InlineData("cmd5 a --help")]
     public void StopsForHelp(string command)
     {
-        var builder = ConventionContextBuilder.Create()
-                                              .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
+        var builder = ConventionContextBuilder
+                     .Create()
+                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
         builder.ConfigureCommandLine(
             (context, builder) =>
             {
@@ -307,8 +328,9 @@ public class CommandLineBuilderTests : AutoFakeTest
             }
         );
 
-        var response = Host.CreateDefaultBuilder(command.Split(' ').ToArray())
-                           .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(command.Split(' ').ToArray())
+                      .ConfigureRocketSurgery(builder);
         var result = response.Run();
         result.Should().BeGreaterOrEqualTo(0);
     }
@@ -404,10 +426,6 @@ public class CommandLineBuilderTests : AutoFakeTest
         {
             return _service2.SomeValue == "Service2" ? 0 : 1;
         }
-    }
-
-    public CommandLineBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
-    {
     }
 }
 
