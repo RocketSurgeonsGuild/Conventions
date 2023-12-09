@@ -77,9 +77,9 @@
         <PackageVersion Include="Microsoft.Playwright" Version="1.40.0" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="8.0.3" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="8.0.3" />
-        <PackageVersion Include="xunit" Version="2.6.2" />
-        <PackageVersion Include="xunit.analyzers" Version="1.6.0" />
-        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
+        <PackageVersion Include="xunit" Version="2.6.3" />
+        <PackageVersion Include="xunit.analyzers" Version="1.7.0" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.5" />
         <PackageVersion Include="Verify.AngleSharp" Version="4.3.1" />
         <PackageVersion Include="Verify.ImageMagick" Version="3.2.2" />
         <PackageVersion Include="Verify.Xunit" Version="22.8.0" />
