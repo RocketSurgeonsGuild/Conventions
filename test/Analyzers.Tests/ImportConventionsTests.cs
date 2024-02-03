@@ -2,7 +2,6 @@ using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-[UsesVerify]
 public class ImportConventionsTests
 {
     [Fact]
@@ -150,7 +149,7 @@ namespace TestProject
 }
 ";
 
-        await Verify(GenerateAll(new[] { source1, source2 }));
+        await Verify(GenerateAll(new[] { source1, source2, }));
     }
 
     [Fact]
@@ -180,7 +179,8 @@ namespace TestProject
 
         await Verify(
             GenerateAll(
-                new[] { source1, source2 }, properties: new Dictionary<string, string?>
+                new[] { source1, source2, },
+                properties: new Dictionary<string, string?>
                 {
                     ["ExportConventionsAssembly"] = "false",
                 }

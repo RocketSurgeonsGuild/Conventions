@@ -1,6 +1,5 @@
 ﻿namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-[UsesVerify]
 public class ImportConventionsMsBuildConfigurationTests
 {
     [Fact]
@@ -10,7 +9,9 @@ public class ImportConventionsMsBuildConfigurationTests
 
         await Verify(
             await GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ImportConventionsAssembly"] = "true",
                 }
@@ -25,7 +26,9 @@ public class ImportConventionsMsBuildConfigurationTests
 
         await Verify(
             await GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ImportConventionsAssembly"] = "false",
                 }
@@ -40,7 +43,9 @@ public class ImportConventionsMsBuildConfigurationTests
 
         await Verify(
             await GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ImportConventionsNamespace"] = "Test.My.Namespace",
                     ["ImportConventionsClassName"] = "MyImports",
@@ -57,7 +62,9 @@ public class ImportConventionsMsBuildConfigurationTests
 
         await Verify(
             await GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ImportConventionsNamespace"] = "",
                     ["ImportConventionsClassName"] = "MyImports",
@@ -73,7 +80,9 @@ public class ImportConventionsMsBuildConfigurationTests
 
         await Verify(
             await GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ImportConventionsNamespace"] = "Test.My.Namespace",
                     ["ImportConventionsClassName"] = "MyImports",
@@ -94,7 +103,9 @@ using Rocket.Surgery.Conventions;
 
         await Verify(
             await GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ImportConventionsNamespace"] = "Test.Other.Namespace",
                     ["ImportConventionsMethodName"] = "ImportsConventions",
@@ -110,7 +121,9 @@ using Rocket.Surgery.Conventions;
 
         await Verify(
             await GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ImportConventionsAssembly"] = "true",
                 }
@@ -127,7 +140,7 @@ using Rocket.Surgery.Conventions;
                 source,
                 properties: new Dictionary<string, string?>
                 {
-                    ["ImportConventionsAssembly"] = "true"
+                    ["ImportConventionsAssembly"] = "true",
                 }
             )
         );

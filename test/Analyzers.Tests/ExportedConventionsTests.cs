@@ -3,7 +3,6 @@ using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-[UsesVerify]
 public class ExportedConventionsTests
 {
     [Fact]
@@ -98,53 +97,6 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
     }
 
-    [Theory]
-    [InlineData(HostType.Live)]
-    [InlineData(HostType.UnitTest)]
-    public async Task Should_Support_HostType_Conventions(HostType hostType)
-    {
-        var source = @"
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Tests;
-
-[assembly: Convention(typeof(Contrib))]
-
-namespace Rocket.Surgery.Conventions.Tests
-{
-    [{HostType}Convention]
-    internal class Contrib : IConvention { }
-}
-".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase);
-
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps())).UseTextForParameters(hostType.ToString());
-    }
-
-    [Theory]
-    [InlineData("AfterConventionAttribute")]
-    [InlineData("DependsOnConventionAttribute")]
-    [InlineData("BeforeConventionAttribute")]
-    [InlineData("DependentOfConventionAttribute")]
-    public async Task Should_Support_DependencyDirection_Conventions(string attributeName)
-    {
-        var source = @"
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Tests;
-
-[assembly: Convention(typeof(Contrib))]
-
-namespace Rocket.Surgery.Conventions.Tests
-{
-    [{AttributeName}(typeof(D))]
-    [LiveConvention, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    internal class Contrib : IConvention { }
-
-    internal class D : IConvention { }
-}
-".Replace("{AttributeName}", attributeName, StringComparison.OrdinalIgnoreCase);
-
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps())).UseTextForParameters(attributeName);
-    }
-
     [Fact]
     public async Task Should_Pull_Through_All_Conventions()
     {
@@ -173,7 +125,7 @@ using Rocket.Surgery.Conventions;
 internal class Contrib4 : IConvention { }
 ";
 
-        await Verify(GenerateAll(new[] { source1, source2, source3 }, compilationReferences: await CreateDeps()));
+        await Verify(GenerateAll(new[] { source1, source2, source3, }, compilationReferences: await CreateDeps()));
     }
 
     [Fact]
@@ -318,6 +270,53 @@ public class AutoMapperOptions
     public ServiceLifetime ServiceLifetime { get; set; } = ServiceLifetime.Transient;
 }
 ";
-        await Verify(GenerateAll(source, new[] { typeof(ServiceLifetime).Assembly }));
+        await Verify(GenerateAll(source, new[] { typeof(ServiceLifetime).Assembly, }));
+    }
+
+    [Theory]
+    [InlineData(HostType.Live)]
+    [InlineData(HostType.UnitTest)]
+    public async Task Should_Support_HostType_Conventions(HostType hostType)
+    {
+        var source = @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention(typeof(Contrib))]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    [{HostType}Convention]
+    internal class Contrib : IConvention { }
+}
+".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase);
+
+        await Verify(GenerateAll(source, compilationReferences: await CreateDeps())).UseTextForParameters(hostType.ToString());
+    }
+
+    [Theory]
+    [InlineData("AfterConventionAttribute")]
+    [InlineData("DependsOnConventionAttribute")]
+    [InlineData("BeforeConventionAttribute")]
+    [InlineData("DependentOfConventionAttribute")]
+    public async Task Should_Support_DependencyDirection_Conventions(string attributeName)
+    {
+        var source = @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention(typeof(Contrib))]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    [{AttributeName}(typeof(D))]
+    [LiveConvention, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    internal class Contrib : IConvention { }
+
+    internal class D : IConvention { }
+}
+".Replace("{AttributeName}", attributeName, StringComparison.OrdinalIgnoreCase);
+
+        await Verify(GenerateAll(source, compilationReferences: await CreateDeps())).UseTextForParameters(attributeName);
     }
 }
