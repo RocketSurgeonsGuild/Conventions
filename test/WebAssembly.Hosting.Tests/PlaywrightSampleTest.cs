@@ -3,7 +3,6 @@ using Microsoft.Playwright;
 
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests;
 
-[UsesVerify]
 public class PlaywrightSampleTest : IClassFixture<PlaywrightFixture>
 {
     private readonly PlaywrightFixture _playwrightFixture;

@@ -1,6 +1,5 @@
 ﻿namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-[UsesVerify]
 public class ImportConventionsMsBuildConfigurationTests
 {
     [Fact]

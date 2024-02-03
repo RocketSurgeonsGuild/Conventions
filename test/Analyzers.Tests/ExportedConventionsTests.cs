@@ -3,7 +3,6 @@ using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-[UsesVerify]
 public class ExportedConventionsTests
 {
     [Fact]
