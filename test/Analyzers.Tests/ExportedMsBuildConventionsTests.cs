@@ -19,7 +19,9 @@ namespace Rocket.Surgery.Conventions.Tests
 
         await Verify(
             GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ExportConventionsNamespace"] = "Source.Space",
                     ["ExportConventionsClassName"] = "SourceClass",
@@ -45,7 +47,9 @@ namespace Rocket.Surgery.Conventions.Tests
 
         await Verify(
             GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ExportConventionsNamespace"] = "",
                 }
@@ -71,7 +75,9 @@ namespace Rocket.Surgery.Conventions.Tests
 
         await Verify(
             GenerationHelpers.GenerateAll(
-                source, compilationReferences: await GenerationHelpers.CreateDeps(), properties: new Dictionary<string, string?>
+                source,
+                compilationReferences: await GenerationHelpers.CreateDeps(),
+                properties: new Dictionary<string, string?>
                 {
                     ["ExportConventionsMethodName"] = "SourceMethod",
                 }
