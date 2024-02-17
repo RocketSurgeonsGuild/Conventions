@@ -13,6 +13,7 @@ internal static class GeneratorTestContextBuilderExtensions
     {
         return builder.AddCompilationReferences(GenerationHelpers.CreateDeps());
     }
+
     public static GeneratorTestContextBuilder AddCommonReferences(this GeneratorTestContextBuilder builder)
     {
         return builder.AddReferences(
@@ -25,18 +26,22 @@ internal static class GeneratorTestContextBuilderExtensions
         );
     }
 
-
-    private static ImmutableArray<Type> AllGenerators { get; } = typeof(ConventionAttributesGenerator).Assembly.GetTypes()
-                                                                                                     .Where(
-                                                                                                          z => typeof(IIncrementalGenerator).IsAssignableFrom(z)
-                                                                                                           && z.GetCustomAttributes<GeneratorAttribute>().Any()
-                                                                                                      ).ToImmutableArray();
     public static GeneratorTestContextBuilder AddCommonGenerators(this GeneratorTestContextBuilder builder)
     {
         foreach (var generator in AllGenerators)
         {
             builder = builder.WithGenerator(generator);
         }
+
         return builder;
     }
+
+
+    private static ImmutableArray<Type> AllGenerators { get; } = typeof(ConventionAttributesGenerator)
+                                                                .Assembly.GetTypes()
+                                                                .Where(
+                                                                     z => typeof(IIncrementalGenerator).IsAssignableFrom(z)
+                                                                      && z.GetCustomAttributes<GeneratorAttribute>().Any()
+                                                                 )
+                                                                .ToImmutableArray();
 }

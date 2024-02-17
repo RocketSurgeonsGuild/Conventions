@@ -9,18 +9,19 @@ public abstract class GeneratorTest(ITestOutputHelper outputHelper) : LoggerTest
 {
     protected GeneratorTestContextBuilder Builder { get; private set; } = null!;
 
-
-    public virtual Task InitializeAsync()
-    {
-        Builder = GeneratorTestContextBuilder.Create()
-                                             .AddCommonReferences()
-                                             .AddCommonGenerators();
-        return Task.CompletedTask;
-    }
-
     protected GeneratorTestContextBuilder WithSharedDeps()
     {
         return Builder = Builder.AddSharedDeps();
+    }
+
+
+    public virtual Task InitializeAsync()
+    {
+        Builder = GeneratorTestContextBuilder
+                 .Create()
+                 .AddCommonReferences()
+                 .AddCommonGenerators();
+        return Task.CompletedTask;
     }
 
     public Task DisposeAsync()

@@ -1,5 +1,4 @@
 using Xunit.Abstractions;
-using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 

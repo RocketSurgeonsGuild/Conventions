@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
