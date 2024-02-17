@@ -1,4 +1,4 @@
-﻿//HintName: Exported_Conventions.cs
+﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Exported_Conventions.cs
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,14 +1,17 @@
 using Microsoft.Extensions.DependencyInjection;
-using static Rocket.Surgery.Conventions.Analyzers.Tests.GenerationHelpers;
+using Serilog;
+using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public class ExportedConventionsTests
+public class ExportedConventionsTests(ITestOutputHelper outputHelper) : GeneratorTest(outputHelper)
 {
     [Fact]
     public async Task Should_Pull_Through_A_Convention()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -18,15 +21,20 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     internal class Contrib : IConvention { }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Pull_Through_A_Convention_With_Custom_Namespace()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -37,15 +45,20 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     internal class Contrib : IConvention { }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Pull_Through_A_Convention_With_No_Namespace()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -56,16 +69,21 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     internal class Contrib : IConvention { }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
 
     [Fact]
     public async Task Should_Pull_Through_A_Convention_With_Custom_MethodName()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -76,15 +94,20 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     internal class Contrib : IConvention { }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Pull_Through_A_Convention_With_ExportAttribute()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Conventions.Tests
@@ -92,23 +115,28 @@ namespace Rocket.Surgery.Conventions.Tests
     [ExportConventionAttribute]
     internal class Contrib : IConvention { }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Pull_Through_All_Conventions()
     {
-        var source1 = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportConventions(Namespace = ""Source.Space"")]
 [assembly: Convention(typeof(Contrib1))]
 
 internal class Contrib1 : IConvention { }
-";
-        var source2 = @"
+",
+                               @"
 using Rocket.Surgery.Conventions;
 
 [assembly: Convention(typeof(Contrib3))]
@@ -116,22 +144,27 @@ using Rocket.Surgery.Conventions;
 [ExportConventionAttribute]
 internal class Contrib2 : IConvention { }
 internal class Contrib3 : IConvention { }
-";
-        var source3 = @"
+",
+                               @"
 using Rocket.Surgery.Conventions;
 
 [assembly: Convention(typeof(Contrib4))]
 
 internal class Contrib4 : IConvention { }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(new[] { source1, source2, source3, }, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Handle_Duplicate_Conventions()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -142,15 +175,20 @@ namespace Rocket.Surgery.Conventions.Tests
 {
     internal class Contrib : IConvention { }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Handle_Conventions_With_One_Constructor()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -165,15 +203,20 @@ namespace Rocket.Surgery.Conventions.Tests
         internal class Contrib : IConvention { public Contrib(IService service, IServiceB serviceB, IServiceC? serviceC = null) {} }
     }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Handle_Nested_Conventions()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -186,15 +229,20 @@ namespace Rocket.Surgery.Conventions.Tests
         internal class Contrib : IConvention { }
     }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Handle_Nested_Static_Conventions()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -207,15 +255,20 @@ namespace Rocket.Surgery.Conventions.Tests
         internal class Contrib : IConvention { }
     }
 }
-";
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps()));
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Handle_Conventions_With_Nullable_Constructor_Parameters()
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
@@ -253,8 +306,6 @@ public class AutoMapperConvention : IServiceConvention
     /// <param name=""services""></param>
     public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
     {
-        var assemblies = context.AssemblyCandidateFinder.GetCandidateAssemblies(nameof(AutoMapper)).ToArray();
-        services.AddAutoMapper(assemblies, _options.ServiceLifetime);
     }
 }
 
@@ -269,8 +320,12 @@ public class AutoMapperOptions
     /// <value>The service lifetime.</value>
     public ServiceLifetime ServiceLifetime { get; set; } = ServiceLifetime.Transient;
 }
-";
-        await Verify(GenerateAll(source, new[] { typeof(ServiceLifetime).Assembly, }));
+"
+                           )
+                          .AddReferences(typeof(ServiceLifetime))
+                          .Build()
+                          .GenerateAsync();
+        await Verify(result);
     }
 
     [Theory]
@@ -278,7 +333,9 @@ public class AutoMapperOptions
     [InlineData(HostType.UnitTest)]
     public async Task Should_Support_HostType_Conventions(HostType hostType)
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -289,9 +346,12 @@ namespace Rocket.Surgery.Conventions.Tests
     [{HostType}Convention]
     internal class Contrib : IConvention { }
 }
-".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase);
+".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase)
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps())).UseTextForParameters(hostType.ToString());
+        await Verify(result).UseTextForParameters(hostType.ToString());
     }
 
     [Theory]
@@ -301,7 +361,9 @@ namespace Rocket.Surgery.Conventions.Tests
     [InlineData("DependentOfConventionAttribute")]
     public async Task Should_Support_DependencyDirection_Conventions(string attributeName)
     {
-        var source = @"
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
@@ -315,8 +377,11 @@ namespace Rocket.Surgery.Conventions.Tests
 
     internal class D : IConvention { }
 }
-".Replace("{AttributeName}", attributeName, StringComparison.OrdinalIgnoreCase);
+".Replace("{AttributeName}", attributeName, StringComparison.OrdinalIgnoreCase)
+                           )
+                          .Build()
+                          .GenerateAsync();
 
-        await Verify(GenerateAll(source, compilationReferences: await CreateDeps())).UseTextForParameters(attributeName);
+        await Verify(result).UseTextForParameters(attributeName);
     }
 }

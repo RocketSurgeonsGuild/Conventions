@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
+        <PackageReference Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" />
         <ProjectReference
             Include="..\..\src\Conventions.Analyzers.$(_Analyzer_Roslyn_Version_)\Rocket.Surgery.Conventions.Analyzers.$(_Analyzer_Roslyn_Version_).csproj"
         />

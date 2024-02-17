@@ -109,7 +109,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                    .Select((z, _) => ConventionAttributeData.Create(z.Right, z.Left))
                    .Combine(combinedExports.Collect())
                    .Combine(exportedConventions.Collect())
-                   .Select((z, _) => ( data: z.Left.Left, conventions: z.Left.Right, exportedConventions: z.Right )),
+                   .Select((z, _) => ( data: z.Left.Left, conventions: z.Left.Right.OrderBy(z => z.ToDisplayString()).ToImmutableArray(), exportedConventions: z.Right.OrderBy(z => z.ToDisplayString()).ToImmutableArray() )),
             static (productionContext, tuple) => HandleConventionExports(productionContext, tuple.data, tuple.conventions, tuple.exportedConventions)
         );
 
@@ -377,6 +377,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                        }
                                        : Enumerable.Empty<string>()
                                )
+                              .OrderBy(z => z)
                               .ToArray();
         }
 

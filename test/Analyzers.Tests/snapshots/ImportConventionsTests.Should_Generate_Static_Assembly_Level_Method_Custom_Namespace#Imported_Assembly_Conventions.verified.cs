@@ -1,4 +1,4 @@
-﻿//HintName: Imported_Assembly_Conventions.cs
+﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Imported_Assembly_Conventions.cs
 using System;
 using System.Collections.Generic;
 using Rocket.Surgery.Conventions;

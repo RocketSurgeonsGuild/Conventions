@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using DiffEngine;
+using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
@@ -8,7 +9,7 @@ public static class ModuleInitializer
     [ModuleInitializer]
     public static void Init()
     {
-        VerifySourceGenerators.Initialize();
+        VerifyGeneratorTextContext.Initialize(includeInputs: false, includeOptions: true);
 
         DiffRunner.Disabled = true;
         DerivePathInfo(

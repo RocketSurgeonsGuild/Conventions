@@ -1,148 +1,106 @@
-﻿namespace Rocket.Surgery.Conventions.Analyzers.Tests;
+﻿using Xunit.Abstractions;
 
-public class ImportConventionsMsBuildConfigurationTests
+namespace Rocket.Surgery.Conventions.Analyzers.Tests;
+
+public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOutputHelper) : GeneratorTest(testOutputHelper)
 {
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method()
     {
-        var source = @"";
+        var result = await WithSharedDeps()
+                    .AddGlobalOption("build_property.ImportConventionsAssembly", "true")
+                    .Build()
+                    .GenerateAsync();
 
-        await Verify(
-            await GenerationHelpers.GenerateAll(
-                source,
-                compilationReferences: await GenerationHelpers.CreateDeps(),
-                properties: new Dictionary<string, string?>
-                {
-                    ["ImportConventionsAssembly"] = "true",
-                }
-            )
-        );
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Not_Generate_Static_Assembly_Level_Method_By_Default()
     {
-        var source = @"";
+        var result = await WithSharedDeps()
+                    .AddGlobalOption("build_property.ImportConventionsAssembly", "false")
+                    .Build()
+                    .GenerateAsync();
 
-        await Verify(
-            await GenerationHelpers.GenerateAll(
-                source,
-                compilationReferences: await GenerationHelpers.CreateDeps(),
-                properties: new Dictionary<string, string?>
-                {
-                    ["ImportConventionsAssembly"] = "false",
-                }
-            )
-        );
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_Namespace()
     {
-        var source = @"";
+        var result = await WithSharedDeps()
+                    .AddGlobalOption("build_property.ImportConventionsNamespace", "Test.My.Namespace")
+                    .AddGlobalOption("build_property.ImportConventionsClassName", "MyImports")
+                    .Build()
+                    .GenerateAsync();
 
-        await Verify(
-            await GenerationHelpers.GenerateAll(
-                source,
-                compilationReferences: await GenerationHelpers.CreateDeps(),
-                properties: new Dictionary<string, string?>
-                {
-                    ["ImportConventionsNamespace"] = "Test.My.Namespace",
-                    ["ImportConventionsClassName"] = "MyImports",
-                }
-            )
-        );
+        await Verify(result);
     }
 
 
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_No_Namespace()
     {
-        var source = @"";
+        var result = await WithSharedDeps()
+                    .AddGlobalOption("build_property.ImportConventionsNamespace", "")
+                    .AddGlobalOption("build_property.ImportConventionsClassName", "MyImports")
+                    .Build()
+                    .GenerateAsync();
 
-        await Verify(
-            await GenerationHelpers.GenerateAll(
-                source,
-                compilationReferences: await GenerationHelpers.CreateDeps(),
-                properties: new Dictionary<string, string?>
-                {
-                    ["ImportConventionsNamespace"] = "",
-                    ["ImportConventionsClassName"] = "MyImports",
-                }
-            )
-        );
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_MethodName()
     {
-        var source = @"";
+        var result = await WithSharedDeps()
+                    .AddGlobalOption("build_property.ImportConventionsNamespace", "Test.My.Namespace")
+                    .AddGlobalOption("build_property.ImportConventionsClassName", "MyImports")
+                    .AddGlobalOption("build_property.ImportConventionsMethodName", "ImportConventions")
+                    .Build()
+                    .GenerateAsync();
 
-        await Verify(
-            await GenerationHelpers.GenerateAll(
-                source,
-                compilationReferences: await GenerationHelpers.CreateDeps(),
-                properties: new Dictionary<string, string?>
-                {
-                    ["ImportConventionsNamespace"] = "Test.My.Namespace",
-                    ["ImportConventionsClassName"] = "MyImports",
-                    ["ImportConventionsMethodName"] = "ImportConventions",
-                }
-            )
-        );
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Use_Assembly_Configuration_If_Defined()
     {
-        var source = @"
-using Rocket.Surgery.Conventions;
+        var result = await WithSharedDeps()
+                    .AddSources(
+                         @"using Rocket.Surgery.Conventions;
 
 [assembly: ImportConventions(Namespace = ""Test.My.Namespace"", ClassName = ""MyImports"", MethodName = ""ImportConventions"")]
-";
+"
+                     )
+                    .AddGlobalOption("build_property.ImportConventionsNamespace", "Test.Other.Namespace")
+                    .AddGlobalOption("build_property.ImportConventionsMethodName", "ImportsConventions")
+                    .Build()
+                    .GenerateAsync();
 
-        await Verify(
-            await GenerationHelpers.GenerateAll(
-                source,
-                compilationReferences: await GenerationHelpers.CreateDeps(),
-                properties: new Dictionary<string, string?>
-                {
-                    ["ImportConventionsNamespace"] = "Test.Other.Namespace",
-                    ["ImportConventionsMethodName"] = "ImportsConventions",
-                }
-            )
-        );
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_FullName()
     {
-        var source = @"";
+        var result = await WithSharedDeps()
+                    .AddGlobalOption("build_property.ImportConventionsAssembly", "true")
+                    .Build()
+                    .GenerateAsync();
 
-        await Verify(
-            await GenerationHelpers.GenerateAll(
-                source,
-                compilationReferences: await GenerationHelpers.CreateDeps(),
-                properties: new Dictionary<string, string?>
-                {
-                    ["ImportConventionsAssembly"] = "true",
-                }
-            )
-        );
+        await Verify(result);
     }
 
     [Fact]
     public async Task Should_Support_No_Exported_Convention_Assemblies()
     {
-        var source = @"";
-        await Verify(
-            await GenerationHelpers.GenerateAll(
-                source,
-                properties: new Dictionary<string, string?>
-                {
-                    ["ImportConventionsAssembly"] = "true",
-                }
-            )
-        );
+        var result = await Builder
+                    .AddGlobalOption("build_property.ImportConventionsAssembly", "true")
+                    .Build()
+                    .GenerateAsync();
+
+        await Verify(result);
     }
 }
