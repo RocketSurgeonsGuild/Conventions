@@ -1,5 +1,3 @@
-using System.Runtime.Loader;
-using Microsoft.CodeAnalysis.CSharp;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
