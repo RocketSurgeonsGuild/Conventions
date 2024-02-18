@@ -1,3 +1,4 @@
+using System.Runtime.Loader;
 using Microsoft.CodeAnalysis.CSharp;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
@@ -5,19 +6,16 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
 public static class GenerationHelpers
 {
-    public static CSharpCompilation[] CreateDeps()
+    public static async Task<GeneratorTestResults[]> CreateDeps(GeneratorTestContextBuilder rootBuilder)
     {
-        var baseBuilder = GeneratorTestContextBuilder
-                         .Create()
-                         .AddCommonReferences()
-                         .AddCommonGenerators();
-        var c1 = Class1(baseBuilder);
-        var c2 = Class2(baseBuilder);
-        var c3 = Class3(baseBuilder, c1);
+        var baseBuilder = rootBuilder;
+        var c1 = await Class1(baseBuilder);
+        var c2 = await Class2(baseBuilder);
+        var c3 = await Class3(baseBuilder, c1);
         return new[] { c1, c2, c3, };
     }
 
-    public static CSharpCompilation Class1(GeneratorTestContextBuilder builder)
+    public static Task<GeneratorTestResults> Class1(GeneratorTestContextBuilder builder)
     {
         return builder
               .WithProjectName("SampleDependencyOne")
@@ -36,10 +34,10 @@ public class Class1 : IConvention
 "
                )
               .Build()
-              .Compile();
+              .GenerateAsync();
     }
 
-    public static CSharpCompilation Class2(GeneratorTestContextBuilder builder)
+    public static Task<GeneratorTestResults> Class2(GeneratorTestContextBuilder builder)
     {
         return builder
               .WithProjectName("SampleDependencyTwo")
@@ -57,10 +55,10 @@ public class Class2 : IConvention
 }"
                )
               .Build()
-              .Compile();
+              .GenerateAsync();
     }
 
-    public static CSharpCompilation Class3(GeneratorTestContextBuilder builder, CSharpCompilation class1)
+    public static Task<GeneratorTestResults> Class3(GeneratorTestContextBuilder builder, GeneratorTestResults class1)
     {
         return builder
               .WithProjectName("SampleDependencyThree")
@@ -81,6 +79,6 @@ public class Class3 : IConvention
 "
                )
               .Build()
-              .Compile();
+              .GenerateAsync();
     }
 }

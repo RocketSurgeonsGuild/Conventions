@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,7 @@ internal static class GeneratorTestContextBuilderExtensions
 {
     public static GeneratorTestContextBuilder AddSharedDeps(this GeneratorTestContextBuilder builder)
     {
-        return builder.AddCompilationReferences(GenerationHelpers.CreateDeps());
+        return builder.AddCompilationReferences(GenerationHelpers.CreateDeps(builder).GetAwaiter().GetResult());
     }
 
     public static GeneratorTestContextBuilder AddCommonReferences(this GeneratorTestContextBuilder builder)
