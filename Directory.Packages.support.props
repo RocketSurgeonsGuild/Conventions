@@ -5,13 +5,13 @@
         <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="3.1.32" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.24" />
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.24" />
-        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="6.0.24" />
+        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.27" />
+        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.27" />
+        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="6.0.27" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.14" />
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.14" />
-        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="7.0.14" />
+        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.16" />
+        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.16" />
+        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="7.0.16" />
     </ItemGroup>
 </Project>
