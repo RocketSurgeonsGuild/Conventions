@@ -27,8 +27,9 @@ public class RocketWebApplicationTests : AutoFakeTest
         new SimpleStartup().Configure(host);
         await host.StartAsync();
         var server = host.GetTestServer();
-        var response = await server.CreateRequest("/")
-                                   .GetAsync();
+        var response = await server
+                            .CreateRequest("/")
+                            .GetAsync();
 
         var content = await response.Content.ReadAsStringAsync();
         content.Should().Be("SimpleStartup -> Configure");
@@ -39,7 +40,8 @@ public class RocketWebApplicationTests : AutoFakeTest
     public void Creates_RocketHost_ForAppDomain()
     {
         var host = WebApplication
-                  .CreateBuilder().LaunchWith(Web.Hosting.RocketBooster.For(AppDomain.CurrentDomain));
+                  .CreateBuilder()
+                  .LaunchWith(Web.Hosting.RocketBooster.For(AppDomain.CurrentDomain));
         host.Should().BeAssignableTo<WebApplicationBuilder>();
     }
 
@@ -100,9 +102,11 @@ public class RocketWebApplicationTests : AutoFakeTest
 
     public RocketWebApplicationTests(ITestOutputHelper outputHelper) : base(outputHelper)
     {
-        _baseBuilder = WebApplication
-                      .CreateBuilder()
-                      .ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebHostBuilderTests).Assembly }));
+        _baseBuilder = RocketWebHostExtensions.ConfigureRocketSurgery(
+            WebApplication
+               .CreateBuilder(),
+            x => x.UseAssemblies(new[] { typeof(RocketWebHostBuilderTests).Assembly })
+        );
     }
 
     private readonly WebApplicationBuilder _baseBuilder;

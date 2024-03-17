@@ -31,4 +31,29 @@ public static class RocketSurgeryHostBuilderLoggingExtensions
 
         return hostBuilder;
     }
+
+    #if NET8_0_OR_GREATER
+    /// <summary>
+    ///     Apply logging conventions
+    /// </summary>
+    /// <param name="hostBuilder"></param>
+    /// <param name="conventionContext"></param>
+    /// <returns></returns>
+    public static IHostApplicationBuilder ApplyConventions(this IHostApplicationBuilder hostBuilder, IConventionContext conventionContext)
+    {
+        foreach (var item in conventionContext.Conventions.Get<IHostApplicationConvention, HostApplicationConvention>())
+        {
+            if (item is IHostApplicationConvention convention)
+            {
+                convention.Register(conventionContext, hostBuilder);
+            }
+            else if (item is HostApplicationConvention @delegate)
+            {
+                @delegate(conventionContext, hostBuilder);
+            }
+        }
+
+        return hostBuilder;
+    }
+    #endif
 }

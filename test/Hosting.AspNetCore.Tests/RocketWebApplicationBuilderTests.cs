@@ -14,9 +14,9 @@ public class RocketWebApplicationBuilderTests : AutoFakeTest
     [Fact]
     public void Should_Build_The_Host_Correctly()
     {
-        var builder = WebApplication
-                     .CreateBuilder()
-                     .ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly }));
+        var builder = RocketWebHostExtensions.ConfigureRocketSurgery(
+                          WebApplication
+                             .CreateBuilder(), x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly }));
         builder.WebHost.UseTestServer();
 
         using var host = builder.Build();

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿#if NET8_0_OR_GREATER
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
@@ -8,26 +8,24 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
-using Rocket.Surgery.Hosting;
-
-namespace Rocket.Surgery.Web.Hosting;
+namespace Rocket.Surgery.Hosting;
 
 /// <summary>
 ///     Class RocketContext.
 /// </summary>
-internal sealed class RocketContext
+internal sealed class RocketApplicationBuilderContext
 {
-    private readonly WebApplicationBuilder _webApplicationBuilder;
+    private readonly IHostApplicationBuilder _hostApplicationBuilder;
     private readonly IConventionContext _context;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RocketContext" /> class.
     /// </summary>
-    /// <param name="webApplicationBuilder">The host builder.</param>
+    /// <param name="hostApplicationBuilder">The host builder.</param>
     /// <param name="context"></param>
-    public RocketContext(WebApplicationBuilder webApplicationBuilder, IConventionContext context)
+    public RocketApplicationBuilderContext(IHostApplicationBuilder hostApplicationBuilder, IConventionContext context)
     {
-        _webApplicationBuilder = webApplicationBuilder;
+        _hostApplicationBuilder = hostApplicationBuilder;
         _context = context;
     }
 
@@ -37,7 +35,7 @@ internal sealed class RocketContext
     /// <exception cref="ArgumentNullException"></exception>
     public void ComposeHostingConvention()
     {
-        _webApplicationBuilder.ApplyConventions(_context);
+        _hostApplicationBuilder.ApplyConventions(_context);
     }
 
     /// <summary>
@@ -45,11 +43,10 @@ internal sealed class RocketContext
     /// </summary>
     public void ConfigureAppConfiguration()
     {
-        _context.Properties.AddIfMissing(_webApplicationBuilder.Configuration);
-        _context.Properties.AddIfMissing<IConfiguration>(_webApplicationBuilder.Configuration);
-        _context.Properties.AddIfMissing(_webApplicationBuilder.Environment);
-        _context.Properties.AddIfMissing<IHostEnvironment>(_webApplicationBuilder.Environment);
-        RocketInternalsShared.SharedHostConfiguration(_context, _webApplicationBuilder.Configuration, _webApplicationBuilder.Configuration, _webApplicationBuilder.Environment);
+        _context.Properties.AddIfMissing(_hostApplicationBuilder.Configuration);
+        _context.Properties.AddIfMissing<IConfiguration>(_hostApplicationBuilder.Configuration);
+        _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment);
+        RocketInternalsShared.SharedHostConfiguration(_context, _hostApplicationBuilder.Configuration, _hostApplicationBuilder.Configuration, _hostApplicationBuilder.Environment);
     }
 
     /// <summary>
@@ -57,8 +54,8 @@ internal sealed class RocketContext
     /// </summary>
     public void ConfigureServices()
     {
-        _webApplicationBuilder.Services.ApplyConventions(_context);
-        _webApplicationBuilder.Logging.ApplyConventions(_context);
+        _hostApplicationBuilder.Services.ApplyConventions(_context);
+        _hostApplicationBuilder.Logging.ApplyConventions(_context);
     }
 
     public IServiceProviderFactory<object> UseServiceProviderFactory()
@@ -66,3 +63,4 @@ internal sealed class RocketContext
         return ConventionServiceProviderFactory.Wrap(_context, false);
     }
 }
+#endif

@@ -42,4 +42,40 @@ public static class HostingConventionExtensions
         container.AppendDelegate(new HostingConvention((_, builder) => @delegate(builder)));
         return container;
     }
+
+    #if NET8_0_OR_GREATER
+    /// <summary>
+    ///     Configure the hosting delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, HostApplicationConvention @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the hosting delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, Action<IHostApplicationBuilder> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new HostApplicationConvention((_, builder) => @delegate(builder)));
+        return container;
+    }
+    #endif
 }
