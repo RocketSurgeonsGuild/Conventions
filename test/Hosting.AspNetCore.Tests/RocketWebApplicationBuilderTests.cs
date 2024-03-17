@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.TestHost;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Rocket.Surgery.Web.Hosting;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
+// ReSharper disable once CheckNamespace
+namespace AspNetCore.Tests;
 
 public class RocketWebApplicationBuilderTests : AutoFakeTest
 {
@@ -16,7 +16,9 @@ public class RocketWebApplicationBuilderTests : AutoFakeTest
     {
         var builder = WebApplication
                      .CreateBuilder()
-                     .ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly }));
+                     .ConfigureRocketSurgery(
+                          x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly, })
+                      );
         builder.WebHost.UseTestServer();
 
         using var host = builder.Build();
@@ -27,8 +29,6 @@ public class RocketWebApplicationBuilderTests : AutoFakeTest
         host.StopAsync();
     }
 
-    public RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
-    {
-    }
+    public RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 }
 #endif

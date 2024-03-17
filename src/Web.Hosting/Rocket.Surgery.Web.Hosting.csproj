@@ -7,6 +7,7 @@
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <Compile Include="../Hosting/RocketInternalsShared.cs" />
         <ProjectReference
             Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
             IncludeAssets="all"
