@@ -10,7 +10,6 @@ using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Rocket.Surgery.Web.Hosting;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
@@ -50,7 +49,7 @@ public class RocketWebApplicationTests : AutoFakeTest
     {
         var host = WebApplication
                   .CreateBuilder()
-                  .LaunchWith(Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly }));
+                  .LaunchWith(Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }));
         host.Should().BeAssignableTo<WebApplicationBuilder>();
     }
 
@@ -60,7 +59,7 @@ public class RocketWebApplicationTests : AutoFakeTest
         var host = WebApplication
                   .CreateBuilder()
                   .LaunchWith(
-                       Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly })
+                       Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, })
                    );
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
@@ -74,7 +73,7 @@ public class RocketWebApplicationTests : AutoFakeTest
         var host = WebApplication
                   .CreateBuilder()
                   .LaunchWith(
-                       Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly }),
+                       Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }),
                        z => z.ExceptConvention(typeof(YamlConvention))
                    );
 
@@ -90,7 +89,7 @@ public class RocketWebApplicationTests : AutoFakeTest
         var host = WebApplication
                   .CreateBuilder()
                   .LaunchWith(
-                       Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly }),
+                       Web.Hosting.RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }),
                        z => z.ExceptConvention(typeof(JsonConvention))
                    );
 
@@ -102,11 +101,11 @@ public class RocketWebApplicationTests : AutoFakeTest
 
     public RocketWebApplicationTests(ITestOutputHelper outputHelper) : base(outputHelper)
     {
-        _baseBuilder = RocketWebHostExtensions.ConfigureRocketSurgery(
-            WebApplication
-               .CreateBuilder(),
-            x => x.UseAssemblies(new[] { typeof(RocketWebHostBuilderTests).Assembly })
-        );
+        _baseBuilder = WebApplication
+                      .CreateBuilder()
+                      .ConfigureRocketSurgery(
+                           x => x.UseAssemblies(new[] { typeof(RocketWebHostBuilderTests).Assembly, })
+                       );
     }
 
     private readonly WebApplicationBuilder _baseBuilder;

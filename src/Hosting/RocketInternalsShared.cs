@@ -10,7 +10,12 @@ namespace Rocket.Surgery.Hosting;
 
 internal static class RocketInternalsShared
 {
-    internal static void SharedHostConfiguration(IConventionContext context, IConfigurationBuilder configurationBuilder, IConfiguration configuration, IHostEnvironment environment)
+    internal static void SharedHostConfiguration(
+        IConventionContext context,
+        IConfigurationBuilder configurationBuilder,
+        IConfiguration configuration,
+        IHostEnvironment environment
+    )
     {
         // This code is duplicated per host (web host, generic host, and wasm host)
         configurationBuilder.InsertConfigurationSourceAfter(

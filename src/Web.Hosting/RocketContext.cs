@@ -1,13 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Hosting;
 
 namespace Rocket.Surgery.Web.Hosting;
@@ -49,7 +45,12 @@ internal sealed class RocketContext
         _context.Properties.AddIfMissing<IConfiguration>(_webApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_webApplicationBuilder.Environment);
         _context.Properties.AddIfMissing<IHostEnvironment>(_webApplicationBuilder.Environment);
-        RocketInternalsShared.SharedHostConfiguration(_context, _webApplicationBuilder.Configuration, _webApplicationBuilder.Configuration, _webApplicationBuilder.Environment);
+        RocketInternalsShared.SharedHostConfiguration(
+            _context,
+            _webApplicationBuilder.Configuration,
+            _webApplicationBuilder.Configuration,
+            _webApplicationBuilder.Environment
+        );
     }
 
     /// <summary>

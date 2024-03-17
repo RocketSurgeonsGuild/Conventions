@@ -1,13 +1,10 @@
 ﻿#if NET8_0_OR_GREATER
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Configuration;
+
 namespace Rocket.Surgery.Hosting;
 
 /// <summary>
@@ -46,7 +43,12 @@ internal sealed class RocketApplicationBuilderContext
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing<IConfiguration>(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment);
-        RocketInternalsShared.SharedHostConfiguration(_context, _hostApplicationBuilder.Configuration, _hostApplicationBuilder.Configuration, _hostApplicationBuilder.Environment);
+        RocketInternalsShared.SharedHostConfiguration(
+            _context,
+            _hostApplicationBuilder.Configuration,
+            _hostApplicationBuilder.Configuration,
+            _hostApplicationBuilder.Environment
+        );
     }
 
     /// <summary>
