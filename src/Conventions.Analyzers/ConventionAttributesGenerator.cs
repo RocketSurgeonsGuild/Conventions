@@ -24,16 +24,10 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var exportConfigurationCandidate = ConventionConfigurationData.Create(context, "ExportConventions", _exportsDefaultConfiguration);
+
+        #if ROSLYN4_0
         var exportCandidates = context
                               .SyntaxProvider
-                               #if ROSLYN4_4
-                              .ForAttributeWithMetadataName(
-                                   "Rocket.Surgery.Conventions.ConventionAttribute",
-                                   (_, _) => true,
-                                   (syntaxContext, _) => GetExportedConventions(syntaxContext)
-                               )
-                              .SelectMany((z, _) => z)
-                               #else
                               .CreateSyntaxProvider(
                                    static (node, _) =>
                                    {
@@ -61,18 +55,10 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                )
                               .Where(z => z.conventionAttribute != null)
                               .SelectMany((z, _) => GetExportedConventions(z.attributeListSyntax, z.model, z.compilation, z.conventionAttribute))
-                               #endif
                               .WithComparer(SymbolEqualityComparer.Default);
 
         var exportedConventions = context
                                  .SyntaxProvider
-                                  #if ROSLYN4_4
-                                 .ForAttributeWithMetadataName(
-                                      "Rocket.Surgery.Conventions.ExportConventionAttribute",
-                                      (node, _) => node is TypeDeclarationSyntax,
-                                      (syntaxContext, _) => (INamedTypeSymbol)syntaxContext.TargetSymbol
-                                  )
-                                  #else
                                  .CreateSyntaxProvider(
                                       static (node, _) =>
                                       {
@@ -96,8 +82,8 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                           : default
                                   )
                                  .SelectMany((z, _) => GetExportedConventions(z.baseType, z.SemanticModel))
-                                  #endif
                                  .WithComparer(SymbolEqualityComparer.Default);
+
 
         var combinedExports = exportCandidates
                              .Collect()
@@ -107,6 +93,51 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                       tuple.Left.AddRange(tuple.Right).Distinct(SymbolEqualityComparer.Default).OfType<INamedTypeSymbol>()
                               )
                              .WithComparer(SymbolEqualityComparer.Default);
+        #else
+        var exportCandidates = context
+                              .SyntaxProvider
+                              .ForAttributeWithMetadataName(
+                                   "Rocket.Surgery.Conventions.ConventionAttribute",
+                                   (_, _) => true,
+                                   (syntaxContext, _) => GetExportedConventions(syntaxContext)
+                               )
+                              .SelectMany((z, _) => z)
+                              .WithComparer(SymbolEqualityComparer.Default);
+        var exportCandidates2 = context
+                               .SyntaxProvider
+                               .ForAttributeWithMetadataName(
+                                    "Rocket.Surgery.Conventions.ConventionAttribute`1",
+                                    (_, _) => true,
+                                    (syntaxContext, _) => GetExportedConventions(syntaxContext)
+                                )
+                               .SelectMany((z, _) => z)
+                               .WithComparer(SymbolEqualityComparer.Default);
+
+        var exportedConventions = context
+                                 .SyntaxProvider
+                                 .ForAttributeWithMetadataName(
+                                      "Rocket.Surgery.Conventions.ExportConventionAttribute",
+                                      (node, _) => node is TypeDeclarationSyntax,
+                                      (syntaxContext, _) => (INamedTypeSymbol)syntaxContext.TargetSymbol
+                                  )
+                                 .WithComparer(SymbolEqualityComparer.Default);
+
+        var combinedExports = exportCandidates
+                             .Collect()
+                             .Combine(exportCandidates2.Collect())
+                             .SelectMany(
+                                  (tuple, _) =>
+                                      tuple.Left.AddRange(tuple.Right).Distinct(SymbolEqualityComparer.Default).OfType<INamedTypeSymbol>()
+                              )
+                             .Collect()
+                             .Combine(exportedConventions.Collect())
+                             .SelectMany(
+                                  (tuple, _) =>
+                                      tuple.Left.AddRange(tuple.Right).Distinct(SymbolEqualityComparer.Default).OfType<INamedTypeSymbol>()
+                              )
+                             .WithComparer(SymbolEqualityComparer.Default);
+
+        #endif
 
         context.RegisterSourceOutput(
             context
@@ -126,15 +157,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                           .Create(context, "ImportConventions", _importsDefaultConfiguration)
                                           .Select((z, _) => !z.WasConfigured && z.Assembly ? z with { Assembly = false, } : z);
 
+        #if ROSLYN4_0
         var importCandidates = context
                               .SyntaxProvider
-                               #if ROSLYN4_4
-                              .ForAttributeWithMetadataName(
-                                   "Rocket.Surgery.Conventions.ImportConventionsAttribute",
-                                   (node, _) => node is TypeDeclarationSyntax,
-                                   (syntaxContext, _) => syntaxContext.TargetNode
-                               )
-            #else
                               .CreateSyntaxProvider(
                                    static (node, _) =>
                                    {
@@ -159,6 +184,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                            );
                                    },
                                    static (syntaxContext, _) => syntaxContext.Node
+                               )
+            #else
+        var importCandidates = context
+                              .SyntaxProvider
+                              .ForAttributeWithMetadataName(
+                                   "Rocket.Surgery.Conventions.ImportConventionsAttribute",
+                                   (node, _) => node is TypeDeclarationSyntax,
+                                   (syntaxContext, _) => syntaxContext.TargetNode
                                )
             #endif
             ;
@@ -459,7 +492,6 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 continue;
             }
 
-
             var createConvention = NewConventionOrActivate(convention);
 
             var attributes = convention.GetAttributes();
@@ -467,30 +499,42 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             var dependencies = new List<(MemberAccessExpressionSyntax direction, TypeSyntax type)>();
             foreach (var attributeData in attributes)
             {
-                if (attributeData.AttributeClass == null)
-                    continue;
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.BeforeConventionAttribute)
-                 || SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.DependentOfConventionAttribute))
+                switch (attributeData)
                 {
-                    // throw diagnostic if this is wrong?
-                    if (attributeData.ConstructorArguments.Length is 1
-                     && attributeData.ConstructorArguments[0].Kind == TypedConstantKind.Type
-                     && attributeData.ConstructorArguments[0].Value is INamedTypeSymbol namedTypeSymbol)
+                    case
                     {
-                        dependencies.Add(( DependencyDirectionDependentOf, ParseName(namedTypeSymbol.ToDisplayString()) ));
-                    }
-                }
-
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.AfterConventionAttribute)
-                 || SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.DependsOnConventionAttribute))
-                {
-                    // throw diagnostic if this is wrong?
-                    if (attributeData.ConstructorArguments.Length is 1
-                     && attributeData.ConstructorArguments[0].Kind == TypedConstantKind.Type
-                     && attributeData.ConstructorArguments[0].Value is INamedTypeSymbol namedTypeSymbol)
+                        AttributeClass:
+                        {
+                            Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute",
+                            TypeArguments: [INamedTypeSymbol dependencyDirectionDependentOfSymbol,],
+                        },
+                    }:
+                        dependencies.Add(( DependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol.ToDisplayString()) ));
+                        break;
+                    case
                     {
-                        dependencies.Add(( DependencyDirectionDependsOn, ParseName(namedTypeSymbol.ToDisplayString()) ));
-                    }
+                        AttributeClass.Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute",
+                        ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependentOfSymbol2, },],
+                    }:
+                        dependencies.Add(( DependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol2.ToDisplayString()) ));
+                        break;
+                    case
+                    {
+                        AttributeClass:
+                        {
+                            Name: "DependsOnConventionAttribute" or "AfterConventionAttribute",
+                            TypeArguments: [INamedTypeSymbol dependencyDirectionDependsOnSymbol,],
+                        },
+                    }:
+                        dependencies.Add(( DependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol.ToDisplayString()) ));
+                        break;
+                    case
+                    {
+                        AttributeClass.Name: "DependsOnConventionAttribute" or "AfterConventionAttribute",
+                        ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependsOnSymbol2, },],
+                    }:
+                        dependencies.Add(( DependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol2.ToDisplayString()) ));
+                        break;
                 }
 
                 if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.UnitTestConventionAttribute))
@@ -498,7 +542,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     hostType = HostTypeUnitTestHost;
                 }
 
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LiveConventionAttribute))
+                else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LiveConventionAttribute))
                 {
                     hostType = HostTypeLive;
                 }
@@ -707,17 +751,15 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             );
     }
 
-    #if ROSLYN4_4
+    #if !ROSLYN4_0
     private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorAttributeSyntaxContext context)
     {
         foreach (var attribute in context.Attributes)
         {
-            if (attribute.AttributeClass is null)
-                continue;
-            if (attribute.ConstructorArguments is not { Length: 1, })
-                continue;
-            if (attribute.ConstructorArguments[0].Value is INamedTypeSymbol sy)
-                yield return sy;
+            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta,], })
+                yield return ta;
+            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv, },], })
+                yield return sv;
         }
     }
     #else
@@ -730,23 +772,26 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     {
         foreach (var attribute in attributeListSyntax.Attributes)
         {
-            if (attribute.ArgumentList == null || attribute.ArgumentList.Arguments.Count is 0 or > 1)
+            if (attribute.ArgumentList == null)
                 continue;
 
             var nameInfo = model.GetTypeInfo(attribute.Name);
             if (nameInfo.Type?.ToDisplayString() != conventionAttribute.ToDisplayString())
                 continue;
 
-            var arg = attribute.ArgumentList.Arguments.Single();
-            if (!( arg.Expression is TypeOfExpressionSyntax typeOfExpressionSyntax ))
-                continue;
+            if (attribute.ArgumentList.Arguments.Count is 1)
+            {
+                var arg = attribute.ArgumentList.Arguments.Single();
+                if (arg.Expression is not TypeOfExpressionSyntax typeOfExpressionSyntax)
+                    continue;
 
-            var symbol = model.GetTypeInfo(typeOfExpressionSyntax.Type);
-            if (symbol.Type == null)
-                continue;
+                var symbol = model.GetTypeInfo(typeOfExpressionSyntax.Type);
+                if (symbol.Type == null)
+                    continue;
 
-            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            yield return compilation.GetTypeByMetadataName(GetFullMetadataName(symbol.Type))!;
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                yield return compilation.GetTypeByMetadataName(GetFullMetadataName(symbol.Type))!;
+            }
         }
     }
 
