@@ -14,6 +14,11 @@
             OutputItemType="Analyzer"
         />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference
+            Include="Polyfill"
+            IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
+            PrivateAssets="All"
+        />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />

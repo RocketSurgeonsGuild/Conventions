@@ -2,7 +2,7 @@
 using Sample.DependencyTwo;
 
 [assembly: ExportConventions(Namespace = null, ClassName = "Dep2Exports")]
-[assembly: Convention(typeof(Class2))]
+[assembly: Convention<Class2>]
 
 namespace Sample.DependencyTwo;
 

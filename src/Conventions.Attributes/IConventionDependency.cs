@@ -8,6 +8,7 @@ public interface IConventionDependency
     /// <summary>
     ///     The type
     /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     Type Type { get; }
 
     /// <summary>

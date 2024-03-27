@@ -4,7 +4,7 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(Contrib))]
+[assembly: Convention<Contrib>]
 
 namespace Rocket.Surgery.Conventions.Tests;
 

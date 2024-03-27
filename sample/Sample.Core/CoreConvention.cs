@@ -4,7 +4,7 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Sample.Core;
 
-[assembly: Convention(typeof(CoreConvention))]
+[assembly: Convention<CoreConvention>]
 
 namespace Sample.Core;
 

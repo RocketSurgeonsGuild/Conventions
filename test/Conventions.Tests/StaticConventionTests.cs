@@ -11,7 +11,7 @@ public partial class StaticConventionTests
     public void Should_Have_Exports_Method_Defined()
     {
         var list = Conventions.Exports.GetConventions(new ServiceCollection().BuildServiceProvider())
-                              .Should().NotBeNull().And.Subject;
+                         .Should().NotBeNull().And.Subject;
         list.As<IEnumerable<IConventionWithDependencies>>().Should().NotBeNull();
     }
 

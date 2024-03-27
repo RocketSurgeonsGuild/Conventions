@@ -14,7 +14,7 @@ internal class ConventionTypeResolver : ITypeResolver
         _instances = instances;
     }
 
-    public object? Resolve(Type? type)
+    public object? Resolve([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type? type)
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return _serviceProvider.GetService(type!)

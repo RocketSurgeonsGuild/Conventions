@@ -139,11 +139,12 @@ internal static partial class ConventionContextHelpers
     public static IEnumerable<IConvention> GetConventionsFromAssembly(ConventionContextBuilder builder, Assembly assembly, ILogger? logger)
     {
         logger ??= NullLogger.Instance;
+        object selector([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type) => ActivatorUtilities.CreateInstance(builder.Properties, type);
         var types = assembly.GetCustomAttributes<ExportedConventionsAttribute>()
                             .SelectMany(x => x.ExportedConventions)
                             .Union(assembly.GetCustomAttributes<ConventionAttribute>().Select(z => z.Type))
                             .Distinct()
-                            .Select(type => ActivatorUtilities.CreateInstance(builder.Properties, type))
+                            .Select(selector)
                             .Cast<IConvention>()
                             .ToList();
 
