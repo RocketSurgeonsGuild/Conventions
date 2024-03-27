@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
@@ -17,7 +15,10 @@ public sealed class AfterConventionAttribute : Attribute, IConventionDependency
     /// </summary>
     /// <param name="type">The type.</param>
     /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
-    public AfterConventionAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type) => _type = ThrowHelper.EnsureTypeIsConvention(type);
+    public AfterConventionAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
+    {
+        _type = ThrowHelper.EnsureTypeIsConvention(type);
+    }
 
     DependencyDirection IConventionDependency.Direction => DependencyDirection.DependsOn;
     Type IConventionDependency.Type => _type;
@@ -28,7 +29,8 @@ public sealed class AfterConventionAttribute : Attribute, IConventionDependency
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class AfterConventionAttribute<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Attribute, IConventionDependency
+public sealed class AfterConventionAttribute<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Attribute,
+    IConventionDependency
     where T : IConvention
 {
     DependencyDirection IConventionDependency.Direction => DependencyDirection.DependsOn;

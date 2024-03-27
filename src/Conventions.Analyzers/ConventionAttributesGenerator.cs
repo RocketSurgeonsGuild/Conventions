@@ -185,7 +185,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                    },
                                    static (syntaxContext, _) => syntaxContext.Node
                                )
-        #else
+            #else
         var importCandidates = context
                               .SyntaxProvider
                               .ForAttributeWithMetadataName(
@@ -501,16 +501,38 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             {
                 switch (attributeData)
                 {
-                    case { AttributeClass: { Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute", TypeArguments: [INamedTypeSymbol dependencyDirectionDependentOfSymbol] } }:
+                    case
+                    {
+                        AttributeClass:
+                        {
+                            Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute",
+                            TypeArguments: [INamedTypeSymbol dependencyDirectionDependentOfSymbol,],
+                        },
+                    }:
                         dependencies.Add(( DependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol.ToDisplayString()) ));
                         break;
-                    case { AttributeClass.Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute", ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependentOfSymbol2 }] }:
+                    case
+                    {
+                        AttributeClass.Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute",
+                        ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependentOfSymbol2, },],
+                    }:
                         dependencies.Add(( DependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol2.ToDisplayString()) ));
                         break;
-                    case { AttributeClass: { Name: "DependsOnConventionAttribute" or "AfterConventionAttribute", TypeArguments: [INamedTypeSymbol dependencyDirectionDependsOnSymbol] } }:
+                    case
+                    {
+                        AttributeClass:
+                        {
+                            Name: "DependsOnConventionAttribute" or "AfterConventionAttribute",
+                            TypeArguments: [INamedTypeSymbol dependencyDirectionDependsOnSymbol,],
+                        },
+                    }:
                         dependencies.Add(( DependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol.ToDisplayString()) ));
                         break;
-                    case { AttributeClass.Name: "DependsOnConventionAttribute" or "AfterConventionAttribute", ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependsOnSymbol2 }] }:
+                    case
+                    {
+                        AttributeClass.Name: "DependsOnConventionAttribute" or "AfterConventionAttribute",
+                        ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependsOnSymbol2, },],
+                    }:
                         dependencies.Add(( DependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol2.ToDisplayString()) ));
                         break;
                 }
@@ -734,9 +756,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     {
         foreach (var attribute in context.Attributes)
         {
-            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta,] })
+            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta,], })
                 yield return ta;
-            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv },], })
+            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv, },], })
                 yield return sv;
         }
     }

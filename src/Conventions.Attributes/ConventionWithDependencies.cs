@@ -19,17 +19,6 @@ public sealed class ConventionWithDependencies : IConventionWithDependencies
         _dependencies = new();
     }
 
-    /// <inheritdoc />
-    public IConvention Convention { get; }
-
-    /// <summary>
-    ///     The dependencies
-    /// </summary>
-    public IEnumerable<IConventionDependency> Dependencies => _dependencies.OfType<IConventionDependency>();
-
-    /// <inheritdoc />
-    public HostType HostType { get; }
-
     /// <summary>
     ///     Adds a new dependency to the list
     /// </summary>
@@ -41,4 +30,15 @@ public sealed class ConventionWithDependencies : IConventionWithDependencies
         _dependencies.Add(new(direction, type));
         return this;
     }
+
+    /// <inheritdoc />
+    public IConvention Convention { get; }
+
+    /// <summary>
+    ///     The dependencies
+    /// </summary>
+    public IEnumerable<IConventionDependency> Dependencies => _dependencies.OfType<IConventionDependency>();
+
+    /// <inheritdoc />
+    public HostType HostType { get; }
 }

@@ -8,12 +8,6 @@
 public sealed class ExportedConventionsAttribute : Attribute
 {
     /// <summary>
-    ///     The convention types
-    /// </summary>
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    public Type[] ExportedConventions { get; }
-
-    /// <summary>
     ///     The type to be used with the convention type
     /// </summary>
     /// <param name="exportedConventions">The exported conventions.</param>
@@ -22,4 +16,10 @@ public sealed class ExportedConventionsAttribute : Attribute
     {
         ExportedConventions = exportedConventions;
     }
+
+    /// <summary>
+    ///     The convention types
+    /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    public Type[] ExportedConventions { get; }
 }

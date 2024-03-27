@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -23,14 +22,15 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c },
-            new object[] { d, f },
-            new object[] { e }
+            new IConvention[] { b, c, },
+            new object[] { d, f, },
+            new object[] { e, }
         );
 
-        provider.GetAll()
-                .Should()
-                .ContainInOrder(e, d, b);
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(e, d, b);
     }
 
     [Fact]
@@ -44,14 +44,15 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c },
-            new object[] { d },
-            new object[] { e, f }
+            new IConvention[] { b, c, },
+            new object[] { d, },
+            new object[] { e, f, }
         );
 
-        provider.GetAll()
-                .Should()
-                .ContainInOrder(e, d, b);
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(e, d, b);
     }
 
     [Fact]
@@ -68,21 +69,22 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c },
-            new object[] { d1, d, d2 },
-            new object[] { e, d3, f }
+            new IConvention[] { b, c, },
+            new object[] { d1, d, d2, },
+            new object[] { e, d3, f, }
         );
 
-        provider.GetAll()
-                .Should()
-                .ContainInOrder(
-                     d1,
-                     e,
-                     d,
-                     d2,
-                     b,
-                     d3
-                 );
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(
+                d1,
+                e,
+                d,
+                d2,
+                b,
+                d3
+            );
     }
 
     [Fact]
@@ -93,13 +95,39 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { c1, c2 },
+            new IConvention[] { c1, c2, },
             Array.Empty<object>(),
             Array.Empty<object>()
         );
 
         Action a = () => provider.GetAll();
         a.Should().Throw<NotSupportedException>();
+    }
+
+    [Fact]
+    public void Should_Sort_ConventionWithDependencies_Correctly()
+    {
+        var b = new B();
+        var c = new C();
+        var d = new D();
+        var e = new E();
+        var f = new F();
+
+        var provider = new ConventionProvider(
+            HostType.Undefined,
+            new IConventionWithDependencies[]
+            {
+                new ConventionWithDependencies(b, HostType.Undefined).WithDependency(DependencyDirection.DependsOn, typeof(C)),
+                new ConventionWithDependencies(c, HostType.Undefined).WithDependency(DependencyDirection.DependentOf, typeof(D)),
+            },
+            new object[] { d, f, },
+            new object[] { e, }
+        );
+
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(e, d, b);
     }
 
     [Theory]
@@ -120,22 +148,23 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             ctor,
-            new IConvention[] { b, c },
-            new object[] { d1, d, d2 },
-            new object[] { e, d3, f }
+            new IConvention[] { b, c, },
+            new object[] { d1, d, d2, },
+            new object[] { e, d3, f, }
         );
 
-        provider.GetAll(call)
-                .Should()
-                .ContainInOrder(
-                     d1,
-                     e,
-                     d,
-                     d2,
-                     b,
-                     d3,
-                     f
-                 );
+        provider
+           .GetAll(call)
+           .Should()
+           .ContainInOrder(
+                d1,
+                e,
+                d,
+                d2,
+                b,
+                d3,
+                f
+            );
     }
 
     [Theory]
@@ -156,47 +185,23 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             ctor,
-            new IConvention[] { b, c },
-            new object[] { d1, d, d2 },
-            new object[] { e, d3, f }
+            new IConvention[] { b, c, },
+            new object[] { d1, d, d2, },
+            new object[] { e, d3, f, }
         );
 
-        provider.GetAll(call)
-                .Should()
-                .ContainInOrder(
-                     d1,
-                     e,
-                     d,
-                     d2,
-                     b,
-                     c,
-                     d3
-                 );
-    }
-
-    [Fact]
-    public void Should_Sort_ConventionWithDependencies_Correctly()
-    {
-        var b = new B();
-        var c = new C();
-        var d = new D();
-        var e = new E();
-        var f = new F();
-
-        var provider = new ConventionProvider(
-            HostType.Undefined,
-            new IConventionWithDependencies[]
-            {
-                new ConventionWithDependencies(b, HostType.Undefined).WithDependency(DependencyDirection.DependsOn, typeof(C)),
-                new ConventionWithDependencies(c, HostType.Undefined).WithDependency(DependencyDirection.DependentOf, typeof(D)),
-            },
-            new object[] { d, f },
-            new object[] { e }
-        );
-
-        provider.GetAll()
-                .Should()
-                .ContainInOrder(e, d, b);
+        provider
+           .GetAll(call)
+           .Should()
+           .ContainInOrder(
+                d1,
+                e,
+                d,
+                d2,
+                b,
+                c,
+                d3
+            );
     }
 
     [DependentOfConvention<C>]

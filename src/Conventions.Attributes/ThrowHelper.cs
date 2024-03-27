@@ -13,6 +13,7 @@ internal static class ThrowHelper
 
         return type;
     }
+
     public static TypeInfo EnsureTypeIsConvention(TypeInfo type)
     {
         if (!typeof(IConvention).IsAssignableFrom(type))
@@ -22,5 +23,4 @@ internal static class ThrowHelper
 
         return type;
     }
-    
 }

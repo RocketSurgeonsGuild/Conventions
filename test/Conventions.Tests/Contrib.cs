@@ -10,7 +10,5 @@ namespace Rocket.Surgery.Conventions.Tests;
 
 internal sealed class Contrib : IServiceConvention
 {
-    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-    {
-    }
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) { }
 }
