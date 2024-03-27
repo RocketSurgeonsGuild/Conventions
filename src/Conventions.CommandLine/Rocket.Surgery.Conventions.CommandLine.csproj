@@ -12,6 +12,11 @@
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
+        <PackageReference
+            Include="Polyfill"
+            IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
+            PrivateAssets="All"
+        />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
