@@ -23,12 +23,13 @@ public static partial class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
-        return Host.CreateDefaultBuilder(args)
-                   .LaunchWith(RocketBooster.For(GetConventions))
-                   .ConfigureRocketSurgery(
-                        builder => builder
-                           .ConfigureServices(_ => { })
-                    );
+        return Host
+              .CreateDefaultBuilder(args)
+              .LaunchWith(RocketBooster.For(GetConventions))
+              .ConfigureRocketSurgery(
+                   builder => builder
+                      .ConfigureServices(_ => { })
+               );
     }
 }
 
@@ -38,14 +39,13 @@ internal class Convention : ICommandLineConvention, IServiceConvention
     public void Register(IConventionContext context, IConfigurator app)
     {
         app.AddDelegate(
-            "test", _ => 1
+            "test",
+            _ => 1
         );
         app.AddCommand<MyCommand>("dump");
     }
 
-    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-    {
-    }
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) { }
 }
 
 internal class MyCommand : AsyncCommand<AppSettings>
@@ -63,8 +63,11 @@ internal class MyCommand : AsyncCommand<AppSettings>
     {
         using var host = _hostBuilder.Build();
         await host.StartAsync();
-        var config = host.Services.GetRequiredService<IConfiguration>() as IConfigurationRoot;
-        _console.WriteLine(config.GetDebugView());
+        if (host.Services.GetRequiredService<IConfiguration>() is IConfigurationRoot root)
+        {
+            _console.WriteLine(root.GetDebugView());
+        }
+
         return 0;
     }
 }

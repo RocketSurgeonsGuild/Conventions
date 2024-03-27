@@ -51,7 +51,7 @@ namespace Hosting.Benchmarks
         public async Task Rocket_Surgery_Hosting()
         {
             using var host = Host.CreateDefaultBuilder(Array.Empty<string>())
-                                 .LaunchWith(RocketBooster.For(DependencyContext.Default))
+                                 .LaunchWith(RocketBooster.For(DependencyContext.Default!))
                                  .ConfigureLogging(x => x.ClearProviders())
                                  .Build();
             await host.StartAsync().ConfigureAwait(false);
@@ -73,7 +73,7 @@ namespace Hosting.Benchmarks
         public async Task Rocket_Surgery_Hosting_With_Service()
         {
             using var host = Host.CreateDefaultBuilder(Array.Empty<string>())
-                                 .LaunchWith(RocketBooster.For(DependencyContext.Default))
+                                 .LaunchWith(RocketBooster.For(DependencyContext.Default!))
                                  .ConfigureLogging(x => x.ClearProviders())
                                  .ConfigureServices(x => x.AddHostedService<HostedService>())
                                  .Build();

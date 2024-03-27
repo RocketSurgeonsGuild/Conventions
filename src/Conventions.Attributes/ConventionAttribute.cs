@@ -14,7 +14,7 @@ public class ConventionAttribute : Attribute
     /// </summary>
     /// <param name="type">The type.</param>
     /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
-    public ConventionAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
+    public ConventionAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] Type type)
     {
         Type = type ?? throw new ArgumentNullException(nameof(type));
     }
@@ -23,7 +23,6 @@ public class ConventionAttribute : Attribute
     ///     The convention type
     /// </summary>
     /// <value>The type.</value>
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type Type { get; }
 }
 
@@ -34,4 +33,4 @@ public class ConventionAttribute : Attribute
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-public sealed class ConventionAttribute<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() : ConventionAttribute(typeof(T));
+public sealed class ConventionAttribute<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] T>() : ConventionAttribute(typeof(T));

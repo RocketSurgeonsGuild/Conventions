@@ -8,9 +8,7 @@ namespace Rocket.Surgery.Conventions.Diagnostics;
 ///     Implements the <see cref="ILogger" />
 /// </summary>
 /// <seealso cref="ILogger" />
-#if !NETFRAMEWORK
 [RequiresUnreferencedCode("DiagnosticLogger is used for diagnostic logging and may not work in all environments")]
-#endif
 public class DiagnosticLogger : ILogger
 {
     /// <summary>
@@ -94,12 +92,12 @@ public class DiagnosticLogger : ILogger
     /// <typeparam name="TState">The type of the t state.</typeparam>
     /// <param name="state">The identifier for the scope.</param>
     /// <returns>An IDisposable that ends the logical operation scope on dispose.</returns>
-    public IDisposable BeginScope<TState>(TState state)
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull
     {
 #pragma warning disable CA2000
         var activity = DiagnosticSource.StartActivity(new Activity("Scope"), state);
 #pragma warning restore CA2000
-        return new Disposable(DiagnosticSource, activity, state!);
+        return new Disposable(DiagnosticSource, activity, state);
     }
 
     /// <summary>
@@ -107,6 +105,7 @@ public class DiagnosticLogger : ILogger
     ///     Implements the <see cref="IDisposable" />
     /// </summary>
     /// <seealso cref="IDisposable" />
+    [RequiresUnreferencedCode("DiagnosticLogger is used for diagnostic logging and may not work in all environments")]
     private class Disposable : IDisposable
     {
         private readonly DiagnosticSource _diagnosticSource;

@@ -64,7 +64,7 @@ public static class YamlConfigurationExtensions
     /// <param name="optional">Whether the file is optional.</param>
     /// <param name="reloadOnChange">Whether the configuration should be reloaded if the file changes.</param>
     /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-    public static IConfigurationBuilder AddYamlFile(this IConfigurationBuilder builder, IFileProvider provider, string path, bool optional, bool reloadOnChange)
+    public static IConfigurationBuilder AddYamlFile(this IConfigurationBuilder builder, IFileProvider? provider, string path, bool optional, bool reloadOnChange)
     {
         if (builder == null)
         {
@@ -121,7 +121,7 @@ public static class YamlConfigurationExtensions
             Data = readStream(stream)
         };
 
-        static IDictionary<string, string> readStream(Stream s)
+        static IDictionary<string, string?> readStream(Stream s)
         {
             try
             {

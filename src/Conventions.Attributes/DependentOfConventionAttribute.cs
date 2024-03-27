@@ -7,7 +7,6 @@ namespace Rocket.Surgery.Conventions;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class DependentOfConventionAttribute : Attribute, IConventionDependency
 {
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     private readonly Type _type;
 
     /// <summary>
@@ -15,7 +14,7 @@ public sealed class DependentOfConventionAttribute : Attribute, IConventionDepen
     /// </summary>
     /// <param name="type">The type.</param>
     /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
-    public DependentOfConventionAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
+    public DependentOfConventionAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] Type type)
     {
         _type = ThrowHelper.EnsureTypeIsConvention(type);
     }
@@ -29,7 +28,7 @@ public sealed class DependentOfConventionAttribute : Attribute, IConventionDepen
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class DependentOfConventionAttribute<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Attribute,
+public sealed class DependentOfConventionAttribute<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] T> : Attribute,
     IConventionDependency
     where T : IConvention
 {

@@ -12,7 +12,7 @@ public sealed class ExportedConventionsAttribute : Attribute
     /// </summary>
     /// <param name="exportedConventions">The exported conventions.</param>
     /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
-    public ExportedConventionsAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] params Type[] exportedConventions)
+    public ExportedConventionsAttribute(params Type[] exportedConventions)
     {
         ExportedConventions = exportedConventions;
     }
@@ -20,6 +20,5 @@ public sealed class ExportedConventionsAttribute : Attribute
     /// <summary>
     ///     The convention types
     /// </summary>
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type[] ExportedConventions { get; }
 }

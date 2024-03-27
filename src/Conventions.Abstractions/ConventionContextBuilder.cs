@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Adapters;
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
 #else

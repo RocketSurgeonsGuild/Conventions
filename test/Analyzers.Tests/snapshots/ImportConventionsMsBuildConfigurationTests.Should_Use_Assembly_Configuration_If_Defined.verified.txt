@@ -7,10 +7,6 @@
     build_property.ImportConventionsMethodName: ImportsConventions,
     build_property.ImportConventionsNamespace: Test.Other.Namespace
   },
-  ParseOptions: {
-    LanguageVersion: CSharp11,
-    DocumentationMode: Parse
-  },
   References: [
     <in-memory assembly>,
     <in-memory assembly>,

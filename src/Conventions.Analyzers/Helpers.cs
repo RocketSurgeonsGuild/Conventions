@@ -10,7 +10,7 @@ internal static class Helpers
 {
     public static string GetFullMetadataName(ISymbol? s)
     {
-        if (s == null || IsRootNamespace(s))
+        if (s == null || isRootNamespace(s))
         {
             return string.Empty;
         }
@@ -20,7 +20,7 @@ internal static class Helpers
 
         s = s.ContainingSymbol;
 
-        while (!IsRootNamespace(s))
+        while (!isRootNamespace(s))
         {
             if (s is ITypeSymbol && last is ITypeSymbol)
             {
@@ -38,14 +38,14 @@ internal static class Helpers
 
         return sb.ToString();
 
-        static bool IsRootNamespace(ISymbol symbol)
+        static bool isRootNamespace(ISymbol symbol)
         {
             INamespaceSymbol? s;
             return ( s = symbol as INamespaceSymbol ) != null && s.IsGlobalNamespace;
         }
     }
 
-    internal static AttributeListSyntax AddAssemblyAttribute(string key, string value)
+    internal static AttributeListSyntax AddAssemblyAttribute(string key, string? value)
     {
         return AttributeList(
                 SingletonSeparatedList(
@@ -53,21 +53,14 @@ internal static class Helpers
                        .WithArgumentList(
                             AttributeArgumentList(
                                 SeparatedList(
-                                    new[]
-                                    {
+                                    [
+                                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(key))),
                                         AttributeArgument(
-                                            LiteralExpression(
-                                                SyntaxKind.StringLiteralExpression,
-                                                Literal(key)
-                                            )
-                                        ),
-                                        AttributeArgument(
-                                            LiteralExpression(
-                                                SyntaxKind.StringLiteralExpression,
-                                                Literal(value)
-                                            )
+                                            value is null
+                                                ? LiteralExpression(SyntaxKind.NullLiteralExpression)
+                                                : LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(value))
                                         )
-                                    }
+                                    ]
                                 )
                             )
                         )
@@ -85,9 +78,8 @@ internal static class Helpers
         return Trivia(
             DocumentationCommentTrivia(
                 SyntaxKind.SingleLineDocumentationCommentTrivia,
-                List(
-                    new XmlNodeSyntax[]
-                    {
+                List<XmlNodeSyntax>(
+                    [
                         XmlText()
                            .WithTextTokens(
                                 TokenList(XmlTextLiteral(TriviaList(DocumentationCommentExterior("///")), " ", " ", TriviaList()))
@@ -101,11 +93,15 @@ internal static class Helpers
                                                 XmlTextLiteral(
                                                     TriviaList(DocumentationCommentExterior("    ///")),
                                                     $" {text}",
-                                                    $" {text}", TriviaList()
+                                                    $" {text}",
+                                                    TriviaList()
                                                 ),
                                                 XmlNewLine,
                                                 XmlTextLiteral(
-                                                    TriviaList(DocumentationCommentExterior("    ///")), " ", " ", TriviaList()
+                                                    TriviaList(DocumentationCommentExterior("    ///")),
+                                                    " ",
+                                                    " ",
+                                                    TriviaList()
                                                 )
                                             )
                                         )
@@ -114,7 +110,7 @@ internal static class Helpers
                            .WithStartTag(XmlElementStartTag(XmlName(Identifier("summary"))))
                            .WithEndTag(XmlElementEndTag(XmlName(Identifier("summary")))),
                         XmlText().WithTextTokens(TokenList(XmlNewLine))
-                    }
+                    ]
                 )
             )
         );

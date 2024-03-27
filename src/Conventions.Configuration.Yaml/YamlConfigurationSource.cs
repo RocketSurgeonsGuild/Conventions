@@ -8,6 +8,7 @@ namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 /// </summary>
 public class YamlConfigurationSource : FileConfigurationSource
 {
+    /// <inheritdoc />
     public override IConfigurationProvider Build(IConfigurationBuilder builder)
     {
         EnsureDefaults(builder);

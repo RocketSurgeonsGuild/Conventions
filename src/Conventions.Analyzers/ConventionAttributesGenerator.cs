@@ -185,7 +185,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                    },
                                    static (syntaxContext, _) => syntaxContext.Node
                                )
-            #else
+        #else
         var importCandidates = context
                               .SyntaxProvider
                               .ForAttributeWithMetadataName(
@@ -245,9 +245,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                         }
                     )
                 );
-            if (importConfiguration.Assembly && !string.IsNullOrWhiteSpace(importConfiguration.Namespace))
+            if (importConfiguration is { Assembly: true, Namespace: { Length: > 0 } importNamespace })
             {
-                cu = cu.AddUsings(UsingDirective(ParseName(importConfiguration.Namespace)));
+                cu = cu.AddUsings(UsingDirective(ParseName(importNamespace)));
             }
 
             foreach (var declaration in importCandidates.OfType<ClassDeclarationSyntax>())
@@ -374,13 +374,13 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                              }
                          )
                      );
-            if (configurationData.Assembly)
+            if (configurationData is { Assembly: true })
             {
                 cu = cu
                    .AddMembers(
-                        string.IsNullOrWhiteSpace(configurationData.Namespace)
-                            ? members
-                            : NamespaceDeclaration(ParseName(configurationData.Namespace)).AddMembers(members)
+                        configurationData is { Namespace: { Length: > 0 } relativeNamespace }
+                            ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
+                            : members
                     );
             }
 
@@ -655,7 +655,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         if (data.Configuration.Assembly)
         {
             cu = cu.AddMembers(
-                string.IsNullOrWhiteSpace(data.Namespace) ? helperClass : NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass)
+                data is { Namespace.Length: > 0, } ? NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass) : helperClass
             );
         }
 

@@ -40,10 +40,10 @@ public sealed class PlaywrightFixture : IAsyncLifetime
         PlaywrightInstance.Dispose();
     }
 
-    public IHost Host { get; set; }
-    public string ContentRoot { get; private set; }
+    public IHost Host { get; set; } = null!;
+    public string ContentRoot { get; private set; } = null!;
 
-    protected IHost CreateWebHost()
+    private IHost CreateWebHost()
     {
         ContentRoot = typeof(App).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                                  .FindFirst(x => x.Key == "ContentRootPath")?.Value
@@ -67,7 +67,7 @@ public sealed class PlaywrightFixture : IAsyncLifetime
 
     private class StaticSiteStartup
     {
-        public string PathBase { get; init; }
+        public string PathBase { get; init; } = null!;
 
         public void ConfigureServices(IServiceCollection serviceCollection)
         {
@@ -98,7 +98,7 @@ public sealed class PlaywrightFixture : IAsyncLifetime
     {
         var isDone = new ManualResetEvent(false);
 
-        ExceptionDispatchInfo edi = null;
+        ExceptionDispatchInfo? edi = null;
         new Thread(
             () =>
             {

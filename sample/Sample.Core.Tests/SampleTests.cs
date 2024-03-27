@@ -14,9 +14,9 @@ public class SampleTests
 
     public SampleTests()
     {
-        _builder = new ConventionContextBuilder(new Dictionary<object, object?>())
+        _builder = new ConventionContextBuilder(new Dictionary<object, object>())
                   .Set(HostType.UnitTest)
-                  .UseDependencyContext(DependencyContext.Load(typeof(SampleTests).Assembly));
+                  .UseDependencyContext(DependencyContext.Load(typeof(SampleTests).Assembly)!);
     }
 
     [Fact]

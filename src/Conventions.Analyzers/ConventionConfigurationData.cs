@@ -15,7 +15,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
 
         public static InnerConventionConfigurationData FromDefaults(ConventionConfigurationData configurationData)
         {
-            return new InnerConventionConfigurationData(configurationData.Assembly, null, configurationData.ClassName, configurationData.MethodName);
+            return new(configurationData.Assembly, null, configurationData.ClassName, configurationData.MethodName);
         }
     }
 
@@ -32,87 +32,88 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                     var data = InnerConventionConfigurationData.FromDefaults(defaults);
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value))
                     {
-                        data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true };
+                        data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
                     }
 
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value))
                     {
-                        data = data with { ClassName = value, WasConfigured = true };
+                        data = data with { ClassName = value, WasConfigured = true, };
                     }
 
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.MethodName)}", out value))
                     {
-                        data = data with { MethodName = value, WasConfigured = true };
+                        data = data with { MethodName = value, WasConfigured = true, };
                     }
 
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value))
                     {
-                        data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true };
+                        data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
                     }
 
                     return data;
                 }
             );
         var assemblyConfiguration =
-            context.SyntaxProvider
-                   .CreateSyntaxProvider(
-                        (node, _) => node is AttributeListSyntax attributeListSyntax
-                                      && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
-                                      && findAttribute(attributeListSyntax, attributeName) is not null,
-                        (syntaxContext, _) =>
-                            syntaxContext.Node is AttributeListSyntax attributeListSyntax
-                                ? findAttribute(attributeListSyntax, attributeName)
-                                : default
-                    )
-                   .Where(z => z is not null)
-                   .Collect()
-                   .Select(
-                        (attributes, _) =>
+            context
+               .SyntaxProvider
+               .CreateSyntaxProvider(
+                    (node, _) => node is AttributeListSyntax attributeListSyntax
+                     && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
+                     && FindAttribute(attributeListSyntax, attributeName) is { },
+                    (syntaxContext, _) =>
+                        syntaxContext.Node is AttributeListSyntax attributeListSyntax
+                            ? FindAttribute(attributeListSyntax, attributeName)
+                            : default
+                )
+               .Where(z => z is { })
+               .Collect()
+               .Select(
+                    (attributes, _) =>
+                    {
+                        var data = InnerConventionConfigurationData.FromDefaults(defaults);
+                        if (!attributes.Any())
                         {
-                            var data = InnerConventionConfigurationData.FromDefaults(defaults);
-                            if (!attributes.Any())
-                            {
-                                return data;
-                            }
-
-                            data = data with { WasConfigured = true };
-
-                            var attribute = attributes.First();
-                            if (attribute is null || attribute.ArgumentList is null or { Arguments.Count: 0 }) return data;
-                            foreach (var arg in attribute.ArgumentList.Arguments)
-                            {
-                                if (arg is { NameEquals: null } or { Expression: null or not LiteralExpressionSyntax }) continue;
-                                var syntax = (LiteralExpressionSyntax)arg.Expression;
-
-                                data = arg.NameEquals.Name.Identifier.Text switch
-                                {
-                                    nameof(InnerConventionConfigurationData.Namespace) => data with
-                                    {
-                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                        Namespace = (string)syntax.Token.Value!, DefinedNamespace = true
-                                    },
-                                    nameof(InnerConventionConfigurationData.ClassName) => data with
-                                    {
-                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                        ClassName = (string)syntax.Token.Value!
-                                    },
-                                    nameof(InnerConventionConfigurationData.MethodName) => data with
-                                    {
-                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                        MethodName = (string)syntax.Token.Value!
-                                    },
-                                    nameof(InnerConventionConfigurationData.Assembly) => data with
-                                    {
-                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                        Assembly = (bool)syntax.Token.Value!
-                                    },
-                                    _ => data
-                                };
-                            }
-
                             return data;
                         }
-                    );
+
+                        data = data with { WasConfigured = true, };
+
+                        var attribute = attributes.First();
+                        if (attribute is null || attribute.ArgumentList is null or { Arguments.Count: 0, }) return data;
+                        foreach (var arg in attribute.ArgumentList.Arguments)
+                        {
+                            if (arg is { NameEquals: null, } or { Expression: null or not LiteralExpressionSyntax, }) continue;
+                            var syntax = (LiteralExpressionSyntax)arg.Expression;
+
+                            data = arg.NameEquals.Name.Identifier.Text switch
+                                   {
+                                       nameof(InnerConventionConfigurationData.Namespace) => data with
+                                       {
+                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                           Namespace = (string)syntax.Token.Value!, DefinedNamespace = true,
+                                       },
+                                       nameof(InnerConventionConfigurationData.ClassName) => data with
+                                       {
+                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                           ClassName = (string)syntax.Token.Value!,
+                                       },
+                                       nameof(InnerConventionConfigurationData.MethodName) => data with
+                                       {
+                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                           MethodName = (string)syntax.Token.Value!,
+                                       },
+                                       nameof(InnerConventionConfigurationData.Assembly) => data with
+                                       {
+                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                           Assembly = (bool)syntax.Token.Value!,
+                                       },
+                                       _ => data,
+                                   };
+                        }
+
+                        return data;
+                    }
+                );
 
         return assemblyConfiguration
               .Combine(msBuildConfiguration)
@@ -128,33 +129,30 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                        tuple.Left.MethodName
                    )
                )
-              .Select((data, _) => data with { Namespace = data.Namespace == "global" ? "" : data.Namespace });
+              .Select((data, _) => data with { Namespace = data.Namespace == "global" ? "" : data.Namespace, });
     }
 
     public static ConventionConfigurationData FromAssemblyAttributes(IAssemblySymbol assemblySymbol, ConventionConfigurationData defaults)
     {
         var data = InnerConventionConfigurationData.FromDefaults(defaults);
         var prefix = $"Rocket.Surgery.ConventionConfigurationData.{defaults.ClassName}";
-        foreach (var attribute in assemblySymbol.GetAttributes())
+        foreach (var attribute in assemblySymbol.GetAttributes().Where(z => z is { AttributeClass.MetadataName : "AssemblyMetadataAttribute" }))
         {
-            if (attribute is not { AttributeClass.MetadataName : "AssemblyMetadataAttribute", ConstructorArguments: { Length: 2 } }) continue;
-            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            var key = (string)attribute.ConstructorArguments[0].Value!;
-            if (!key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
-
-            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            var value = (string)attribute.ConstructorArguments[1].Value!;
+            if (attribute is not
+                {
+                    ConstructorArguments: [{ Value: string { Length: > 0, } key, }, var value,],
+                }
+             || !key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
             data = key.Split('.').Last() switch
-            {
-//                nameof(Assembly)   => data with { Assembly = bool.Parse(value) },
-                nameof(Namespace)  => data with { Namespace = value },
-                nameof(ClassName)  => data with { ClassName = value },
-                nameof(MethodName) => data with { MethodName = value },
-                _                  => data
-            };
+                   {
+                       nameof(Namespace)  => data with { Namespace = (string?)value.Value, },
+                       nameof(ClassName)  => data with { ClassName = (string)value.Value!, },
+                       nameof(MethodName) => data with { MethodName = (string)value.Value!, },
+                       _                  => data,
+                   };
         }
 
-        return new ConventionConfigurationData(false, data.Assembly, data.Namespace ?? assemblySymbol.Identity.Name, data.ClassName, data.MethodName);
+        return new(false, data.Assembly, data.Namespace, data.ClassName, data.MethodName);
     }
 
     public SyntaxList<AttributeListSyntax> ToAttributes(string type)
@@ -162,7 +160,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
         return SyntaxFactory.List(
             new[]
             {
-                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Namespace)}", Namespace ?? ""),
+                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Namespace)}", Namespace),
                 Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(ClassName)}", ClassName),
                 Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(MethodName)}", MethodName),
 //                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Assembly)}", Assembly.ToString()),
@@ -170,15 +168,11 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
         );
     }
 
-    private static AttributeSyntax? findAttribute(AttributeListSyntax list, string name)
+    private static AttributeSyntax? FindAttribute(AttributeListSyntax list, string name)
     {
         return list.Attributes.FirstOrDefault(
-            z => z.Name.ToFullString().TrimEnd().EndsWith(
-                     name, StringComparison.OrdinalIgnoreCase
-                 )
-              || z.Name.ToFullString().TrimEnd().EndsWith(
-                     $"{name}Attribute", StringComparison.OrdinalIgnoreCase
-                 )
+            z => z.Name.ToFullString().TrimEnd().EndsWith(name, StringComparison.OrdinalIgnoreCase)
+             || z.Name.ToFullString().TrimEnd().EndsWith($"{name}Attribute", StringComparison.OrdinalIgnoreCase)
         );
     }
 
