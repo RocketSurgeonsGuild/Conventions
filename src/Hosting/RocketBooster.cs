@@ -21,10 +21,10 @@ public static class RocketBooster
     public static Func<IHostBuilder, ConventionContextBuilder> ForDependencyContext(DependencyContext dependencyContext)
     {
         return builder =>
-        {
-            var contextBuilder = new ConventionContextBuilder(builder.Properties).UseDependencyContext(dependencyContext);
-            return RocketHostExtensions.Configure(builder, contextBuilder);
-        };
+               {
+                   var contextBuilder = new ConventionContextBuilder(builder.Properties).UseDependencyContext(dependencyContext);
+                   return RocketHostExtensions.Configure(builder, contextBuilder);
+               };
     }
 
     /// <summary>
@@ -75,13 +75,13 @@ public static class RocketBooster
     )
     {
         return builder =>
-        {
-            var contextBuilder = new ConventionContextBuilder(builder.Properties)
-                                 // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                .UseDependencyContext(DependencyContext.Default!)
-                                .WithConventionsFrom(conventionProvider);
-            return RocketHostExtensions.Configure(builder, contextBuilder);
-        };
+               {
+                   var contextBuilder = new ConventionContextBuilder(builder.Properties)
+                                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                       .UseDependencyContext(DependencyContext.Default!)
+                                       .WithConventionsFrom(conventionProvider);
+                   return RocketHostExtensions.Configure(builder, contextBuilder);
+               };
     }
 
     /// <summary>
@@ -102,10 +102,10 @@ public static class RocketBooster
     public static Func<IHostBuilder, ConventionContextBuilder> ForAppDomain(AppDomain appDomain)
     {
         return builder =>
-        {
-            var contextBuilder = new ConventionContextBuilder(builder.Properties).UseAppDomain(appDomain);
-            return RocketHostExtensions.Configure(builder, contextBuilder);
-        };
+               {
+                   var contextBuilder = new ConventionContextBuilder(builder.Properties).UseAppDomain(appDomain);
+                   return RocketHostExtensions.Configure(builder, contextBuilder);
+               };
     }
 
     /// <summary>
@@ -139,7 +139,8 @@ public static class RocketBooster
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
     public static Func<IHostBuilder, ConventionContextBuilder> For(
-        AppDomain appDomain, Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+        AppDomain appDomain,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
     )
     {
         return ForAppDomain(appDomain, getConventions);
@@ -153,10 +154,10 @@ public static class RocketBooster
     public static Func<IHostBuilder, ConventionContextBuilder> ForAssemblies(IEnumerable<Assembly> assemblies)
     {
         return builder =>
-        {
-            var contextBuilder = new ConventionContextBuilder(builder.Properties).UseAssemblies(assemblies);
-            return RocketHostExtensions.Configure(builder, contextBuilder);
-        };
+               {
+                   var contextBuilder = new ConventionContextBuilder(builder.Properties).UseAssemblies(assemblies);
+                   return RocketHostExtensions.Configure(builder, contextBuilder);
+               };
     }
 
     /// <summary>

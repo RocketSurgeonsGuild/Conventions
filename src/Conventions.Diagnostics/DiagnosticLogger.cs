@@ -15,19 +15,15 @@ public class DiagnosticLogger : ILogger
     ///     The names
     /// </summary>
     internal static readonly IReadOnlyDictionary<LogLevel, string> Names =
-        Enum.GetValues(typeof(LogLevel))
-            .Cast<LogLevel>()
-            .ToDictionary(x => x, x => $"LogLevel.{x}");
+        Enum
+           .GetValues(typeof(LogLevel))
+           .Cast<LogLevel>()
+           .ToDictionary(x => x, x => $"LogLevel.{x}");
 
     private static string GetName(LogLevel logLevel)
     {
         return Names.TryGetValue(logLevel, out var value) ? value : "LogLevel.Other";
     }
-
-    /// <summary>
-    ///     The underlying diagnostic source
-    /// </summary>
-    public DiagnosticSource DiagnosticSource { get; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DiagnosticLogger" /> class.
@@ -37,6 +33,11 @@ public class DiagnosticLogger : ILogger
     {
         DiagnosticSource = diagnosticSource;
     }
+
+    /// <summary>
+    ///     The underlying diagnostic source
+    /// </summary>
+    public DiagnosticSource DiagnosticSource { get; }
 
     /// <summary>
     ///     Writes a log entry.
@@ -71,7 +72,7 @@ public class DiagnosticLogger : ILogger
                 eventId,
                 state = (object?)state,
                 exception,
-                message = formatter(state, exception)
+                message = formatter(state, exception),
             }
         );
     }
@@ -94,9 +95,9 @@ public class DiagnosticLogger : ILogger
     /// <returns>An IDisposable that ends the logical operation scope on dispose.</returns>
     public IDisposable BeginScope<TState>(TState state) where TState : notnull
     {
-#pragma warning disable CA2000
-        var activity = DiagnosticSource.StartActivity(new Activity("Scope"), state);
-#pragma warning restore CA2000
+        #pragma warning disable CA2000
+        var activity = DiagnosticSource.StartActivity(new("Scope"), state);
+        #pragma warning restore CA2000
         return new Disposable(DiagnosticSource, activity, state);
     }
 

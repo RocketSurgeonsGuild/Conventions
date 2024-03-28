@@ -14,7 +14,10 @@ public sealed class AfterConventionAttribute : Attribute, IConventionDependency
     /// </summary>
     /// <param name="type">The type.</param>
     /// <exception cref="NotSupportedException">Type must inherit from " + nameof(IConvention)</exception>
-    public AfterConventionAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] Type type)
+    public AfterConventionAttribute(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)]
+        Type type
+    )
     {
         _type = ThrowHelper.EnsureTypeIsConvention(type);
     }
@@ -28,7 +31,9 @@ public sealed class AfterConventionAttribute : Attribute, IConventionDependency
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class AfterConventionAttribute<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] T> : Attribute,
+public sealed class AfterConventionAttribute<
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)]
+    T> : Attribute,
     IConventionDependency
     where T : IConvention
 {

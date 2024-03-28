@@ -185,7 +185,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                    },
                                    static (syntaxContext, _) => syntaxContext.Node
                                )
-        #else
+            #else
         var importCandidates = context
                               .SyntaxProvider
                               .ForAttributeWithMetadataName(
@@ -245,7 +245,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                         }
                     )
                 );
-            if (importConfiguration is { Assembly: true, Namespace: { Length: > 0 } importNamespace })
+            if (importConfiguration is { Assembly: true, Namespace: { Length: > 0, } importNamespace, })
             {
                 cu = cu.AddUsings(UsingDirective(ParseName(importNamespace)));
             }
@@ -374,11 +374,11 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                              }
                          )
                      );
-            if (configurationData is { Assembly: true })
+            if (configurationData is { Assembly: true, })
             {
                 cu = cu
                    .AddMembers(
-                        configurationData is { Namespace: { Length: > 0 } relativeNamespace }
+                        configurationData is { Namespace: { Length: > 0, } relativeNamespace, }
                             ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
                             : members
                     );

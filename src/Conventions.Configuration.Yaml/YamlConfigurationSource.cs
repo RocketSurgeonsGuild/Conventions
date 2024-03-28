@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 
 /// <summary>
-/// A YAML file based <see cref="FileConfigurationSource"/>.
+///     A YAML file based <see cref="FileConfigurationSource" />.
 /// </summary>
 public class YamlConfigurationSource : FileConfigurationSource
 {

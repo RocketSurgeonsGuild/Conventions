@@ -9,8 +9,6 @@ internal record ConventionAttributeData
     ConventionConfigurationData Configuration
 )
 {
-    public string? Namespace => Configuration.Namespace;
-
     public static ConventionAttributeData Create(ConventionConfigurationData data, Compilation compilation)
     {
         // ReSharper disable NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
@@ -19,4 +17,6 @@ internal record ConventionAttributeData
         // ReSharper enable NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return new(liveConventionAttribute, unitTestConventionAttribute, data);
     }
+
+    public string? Namespace => Configuration.Namespace;
 }
