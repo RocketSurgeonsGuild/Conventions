@@ -12,7 +12,7 @@ internal static partial class ConventionContextHelpers
     {
         logger ??= NullLogger.Instance;
 
-        object selector([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
+        object selector([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] Type type)
         {
             return ActivatorUtilities.CreateInstance(builder.Properties, type);
         }

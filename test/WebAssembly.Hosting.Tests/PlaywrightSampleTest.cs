@@ -2,22 +2,15 @@ using Microsoft.Playwright;
 
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests;
 
-public class PlaywrightSampleTest : IClassFixture<PlaywrightFixture>
+public class PlaywrightSampleTest(PlaywrightFixture playwrightFixture) : IClassFixture<PlaywrightFixture>
 {
     [Fact]
     public async Task LetsGo()
     {
-        var browser = _playwrightFixture.Browser;
+        var browser = playwrightFixture.Browser;
         var page = await browser.NewPageAsync();
-        await page.GotoAsync(_playwrightFixture.Uri);
+        await page.GotoAsync(playwrightFixture.Uri);
         await page.WaitForSelectorAsync(".loading-progress", new() { State = WaitForSelectorState.Detached, });
         await Verify(page);
     }
-
-    public PlaywrightSampleTest(PlaywrightFixture playwrightFixture)
-    {
-        _playwrightFixture = playwrightFixture;
-    }
-
-    private readonly PlaywrightFixture _playwrightFixture;
 }

@@ -20,7 +20,6 @@ internal readonly struct ConventionDependency : IEquatable<ConventionDependency>
     /// <summary>
     ///     The <see cref="IConvention" /> type to link to
     /// </summary>
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type Type { get; }
 
     /// <summary>

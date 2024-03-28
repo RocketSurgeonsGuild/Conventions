@@ -7,10 +7,6 @@
     build_property.ExportConventionsClassName: SourceClass,
     build_property.ExportConventionsNamespace: Source.Space
   },
-  ParseOptions: {
-    LanguageVersion: CSharp11,
-    DocumentationMode: Parse
-  },
   References: [
     <in-memory assembly>,
     <in-memory assembly>,

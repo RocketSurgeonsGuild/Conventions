@@ -1,0 +1,26 @@
+﻿{
+  FinalDiagnostics: [],
+  GeneratorDiagnostics: {
+    Rocket.Surgery.Conventions.ConventionAttributesGenerator: []
+  },
+  GlobalOptions: {
+    build_property.ImportConventionsAssembly: true
+  },
+  References: [
+    <in-memory assembly>,
+    <in-memory assembly>,
+    <in-memory assembly>,
+    Microsoft.Extensions.Configuration.Abstractions.dll,
+    Microsoft.Extensions.DependencyInjection.Abstractions.dll,
+    mscorlib.dll,
+    netstandard.dll,
+    Rocket.Surgery.Conventions.Abstractions.dll,
+    Rocket.Surgery.Conventions.Attributes.dll,
+    Rocket.Surgery.Conventions.dll,
+    System.ComponentModel.dll,
+    System.Core.dll,
+    System.dll,
+    System.Private.CoreLib.dll,
+    System.Runtime.dll
+  ]
+}

@@ -1,15 +1,14 @@
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Adapters;
-
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
 #else
 using PropertiesType = System.Collections.Generic.IDictionary<object, object?>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object?>;
 #endif
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Adapters;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -18,19 +17,6 @@ namespace Rocket.Surgery.Conventions;
 /// </summary>
 public class ConventionContextBuilder
 {
-    internal readonly List<object> _prependedConventions = new List<object>();
-    internal readonly List<object> _appendedConventions = new List<object>();
-    internal readonly List<Type> _exceptConventions = new List<Type>();
-    internal readonly List<Assembly> _exceptAssemblyConventions = new List<Assembly>();
-    internal readonly List<object> _includeConventions = new List<object>();
-    internal readonly List<Assembly> _includeAssemblyConventions = new List<Assembly>();
-    internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProviderFactory;
-    internal Func<IConventionContext, IServiceFactoryAdapter>? _serviceProviderFactory;
-    internal bool _useAttributeConventions = true;
-    internal object? _source;
-    internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;
-    internal AssemblyProviderFactory? _assemblyProviderFactory;
-
     /// <summary>
     ///     Create a default context builder
     /// </summary>
@@ -38,8 +24,21 @@ public class ConventionContextBuilder
     /// <returns></returns>
     public static ConventionContextBuilder Create(PropertiesType? properties = null)
     {
-        return new ConventionContextBuilder(properties ?? new PropertiesDictionary());
+        return new(properties ?? new PropertiesDictionary());
     }
+
+    internal readonly List<object> _prependedConventions = new();
+    internal readonly List<object> _appendedConventions = new();
+    internal readonly List<Type> _exceptConventions = new();
+    internal readonly List<Assembly> _exceptAssemblyConventions = new();
+    internal readonly List<object> _includeConventions = new();
+    internal readonly List<Assembly> _includeAssemblyConventions = new();
+    internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProviderFactory;
+    internal Func<IConventionContext, IServiceFactoryAdapter>? _serviceProviderFactory;
+    internal bool _useAttributeConventions = true;
+    internal object? _source;
+    internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;
+    internal AssemblyProviderFactory? _assemblyProviderFactory;
 
     /// <summary>
     ///     Create a context builder with a set of properties

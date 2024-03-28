@@ -3,5 +3,6 @@
     <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Attributes/build/Rocket.Surgery.Conventions.Attributes.props" />
     <PropertyGroup>
         <IsPackable>false</IsPackable>
+        <NoWarn>$(NoWarn);CA1050</NoWarn>
     </PropertyGroup>
 </Project>

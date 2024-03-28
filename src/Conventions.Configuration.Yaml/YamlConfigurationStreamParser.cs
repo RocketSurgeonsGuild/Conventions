@@ -1,22 +1,23 @@
 using Microsoft.Extensions.Configuration;
+using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 
 internal class YamlConfigurationStreamParser
 {
-    private readonly IDictionary<string, string> _data = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    private readonly Stack<string> _context = new Stack<string>();
-    private string _currentPath;
+    private readonly IDictionary<string, string?> _data = new SortedDictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+    private readonly Stack<string> _context = new();
+    private string _currentPath = "";
 
-    public IDictionary<string, string> Parse(Stream input)
+    public IDictionary<string, string?> Parse(Stream input)
     {
         _data.Clear();
         _context.Clear();
 
         // https://dotnetfiddle.net/rrR2Bb
         var yaml = new YamlStream();
-        yaml.Load(new StreamReader(input, detectEncodingFromByteOrderMarks: true));
+        yaml.Load(new StreamReader(input, true));
 
         if (yaml.Documents.Any())
         {
@@ -31,7 +32,7 @@ internal class YamlConfigurationStreamParser
 
     private void VisitYamlNodePair(KeyValuePair<YamlNode, YamlNode> yamlNodePair)
     {
-        var context = ( (YamlScalarNode)yamlNodePair.Key ).Value;
+        if (yamlNodePair is not { Key: YamlScalarNode { Value: { Length: > 0, } context, }, }) return;
         VisitYamlNode(context, yamlNodePair.Value);
     }
 
@@ -98,7 +99,7 @@ internal class YamlConfigurationStreamParser
 
     private void VisitYamlSequenceNode(YamlSequenceNode node)
     {
-        for (int i = 0; i < node.Children.Count; i++)
+        for (var i = 0; i < node.Children.Count; i++)
         {
             VisitYamlNode(i.ToString(), node.Children[i]);
         }
@@ -118,12 +119,12 @@ internal class YamlConfigurationStreamParser
 
     private bool IsNullValue(YamlScalarNode yamlValue)
     {
-        return yamlValue.Style == YamlDotNet.Core.ScalarStyle.Plain
-            && (
-                   yamlValue.Value == "~"
-                || yamlValue.Value == "null"
-                || yamlValue.Value == "Null"
-                || yamlValue.Value == "NULL"
-               );
+        return yamlValue.Style == ScalarStyle.Plain
+         && (
+                yamlValue.Value == "~"
+             || yamlValue.Value == "null"
+             || yamlValue.Value == "Null"
+             || yamlValue.Value == "NULL"
+            );
     }
 }

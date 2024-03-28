@@ -8,28 +8,22 @@ namespace Rocket.Surgery.Conventions.Diagnostics;
 ///     Implements the <see cref="ILogger" />
 /// </summary>
 /// <seealso cref="ILogger" />
-#if !NETFRAMEWORK
 [RequiresUnreferencedCode("DiagnosticLogger is used for diagnostic logging and may not work in all environments")]
-#endif
 public class DiagnosticLogger : ILogger
 {
     /// <summary>
     ///     The names
     /// </summary>
     internal static readonly IReadOnlyDictionary<LogLevel, string> Names =
-        Enum.GetValues(typeof(LogLevel))
-            .Cast<LogLevel>()
-            .ToDictionary(x => x, x => $"LogLevel.{x}");
+        Enum
+           .GetValues(typeof(LogLevel))
+           .Cast<LogLevel>()
+           .ToDictionary(x => x, x => $"LogLevel.{x}");
 
     private static string GetName(LogLevel logLevel)
     {
         return Names.TryGetValue(logLevel, out var value) ? value : "LogLevel.Other";
     }
-
-    /// <summary>
-    ///     The underlying diagnostic source
-    /// </summary>
-    public DiagnosticSource DiagnosticSource { get; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DiagnosticLogger" /> class.
@@ -39,6 +33,11 @@ public class DiagnosticLogger : ILogger
     {
         DiagnosticSource = diagnosticSource;
     }
+
+    /// <summary>
+    ///     The underlying diagnostic source
+    /// </summary>
+    public DiagnosticSource DiagnosticSource { get; }
 
     /// <summary>
     ///     Writes a log entry.
@@ -73,7 +72,7 @@ public class DiagnosticLogger : ILogger
                 eventId,
                 state = (object?)state,
                 exception,
-                message = formatter(state, exception)
+                message = formatter(state, exception),
             }
         );
     }
@@ -94,12 +93,12 @@ public class DiagnosticLogger : ILogger
     /// <typeparam name="TState">The type of the t state.</typeparam>
     /// <param name="state">The identifier for the scope.</param>
     /// <returns>An IDisposable that ends the logical operation scope on dispose.</returns>
-    public IDisposable BeginScope<TState>(TState state)
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull
     {
-#pragma warning disable CA2000
-        var activity = DiagnosticSource.StartActivity(new Activity("Scope"), state);
-#pragma warning restore CA2000
-        return new Disposable(DiagnosticSource, activity, state!);
+        #pragma warning disable CA2000
+        var activity = DiagnosticSource.StartActivity(new("Scope"), state);
+        #pragma warning restore CA2000
+        return new Disposable(DiagnosticSource, activity, state);
     }
 
     /// <summary>
@@ -107,6 +106,7 @@ public class DiagnosticLogger : ILogger
     ///     Implements the <see cref="IDisposable" />
     /// </summary>
     /// <seealso cref="IDisposable" />
+    [RequiresUnreferencedCode("DiagnosticLogger is used for diagnostic logging and may not work in all environments")]
     private class Disposable : IDisposable
     {
         private readonly DiagnosticSource _diagnosticSource;

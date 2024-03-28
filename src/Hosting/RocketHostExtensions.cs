@@ -4,6 +4,7 @@ using Rocket.Surgery.Conventions;
 
 #pragma warning disable CA1031
 #pragma warning disable CA2000
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
 
 // ReSharper disable once CheckNamespace
 namespace Rocket.Surgery.Hosting;

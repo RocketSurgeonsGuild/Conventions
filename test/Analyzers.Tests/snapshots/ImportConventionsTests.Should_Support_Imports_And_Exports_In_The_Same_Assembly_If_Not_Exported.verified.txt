@@ -6,10 +6,6 @@
   GlobalOptions: {
     build_property.ExportConventionsAssembly: false
   },
-  ParseOptions: {
-    LanguageVersion: CSharp11,
-    DocumentationMode: Parse
-  },
   References: [
     Microsoft.Extensions.Configuration.Abstractions.dll,
     Microsoft.Extensions.DependencyInjection.Abstractions.dll,

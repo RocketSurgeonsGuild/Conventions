@@ -9,7 +9,7 @@ public static class ModuleInitializer
     [ModuleInitializer]
     public static void Init()
     {
-        VerifyGeneratorTextContext.Initialize(false);
+        VerifyGeneratorTextContext.Initialize(Customizers.Default);
 
         DiffRunner.Disabled = true;
         DerivePathInfo(

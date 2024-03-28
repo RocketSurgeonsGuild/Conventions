@@ -1,12 +1,15 @@
 #pragma warning disable IDE0058 // Expression value is never used
 
-#if NET7_0_OR_GREATER
+
+#if NET8_0_OR_GREATER
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
 #else
 using PropertiesType = System.Collections.Generic.IDictionary<object, object?>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object?>;
 #endif
+using System.Collections;
+
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
@@ -40,27 +43,27 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     /// </summary>
     /// <param name="key">The key.</param>
     /// <returns>System.Object.</returns>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public object this[object key]
-#else
+        #else
     public object? this[object key]
-#endif
+        #endif
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         get => _values.TryGetValue(key, out var b) ? b : null!;
         set => _values[key] = value;
     }
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     IEnumerable<object> IReadOnlyDictionary<object, object>.Keys => Keys;
-#else
+    #else
     IEnumerable<object> IReadOnlyDictionary<object, object?>.Keys => Keys;
-#endif
+    #endif
 
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     IEnumerable<object> IReadOnlyDictionary<object, object>.Values => Values;
-#else
+    #else
     IEnumerable<object?> IReadOnlyDictionary<object, object?>.Values => Values;
-#endif
+    #endif
 
     /// <summary>
     ///     Gets the keys.
@@ -72,11 +75,11 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     ///     Gets the values.
     /// </summary>
     /// <value>The values.</value>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public ICollection<object> Values => _values.Values;
-#else
+    #else
     public ICollection<object?> Values => _values.Values;
-#endif
+    #endif
 
     /// <summary>
     ///     Gets the count.
@@ -95,11 +98,11 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public void Add(object key, object value)
-#else
+        #else
     public void Add(object key, object? value)
-#endif
+        #endif
     {
         _values[key] = value;
     }
@@ -108,11 +111,11 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     ///     Adds the specified item.
     /// </summary>
     /// <param name="item">The item.</param>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public void Add(KeyValuePair<object, object> item)
-#else
+        #else
     public void Add(KeyValuePair<object, object?> item)
-#endif
+        #endif
     {
         _values.Add(item.Key, item.Value);
     }
@@ -130,11 +133,11 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     /// </summary>
     /// <param name="item">The item.</param>
     /// <returns><c>true</c> if [contains] [the specified item]; otherwise, <c>false</c>.</returns>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public bool Contains(KeyValuePair<object, object> item)
-#else
+        #else
     public bool Contains(KeyValuePair<object, object?> item)
-#endif
+        #endif
     {
         return _values.Contains(item);
     }
@@ -154,11 +157,11 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     /// </summary>
     /// <param name="array">The array.</param>
     /// <param name="arrayIndex">Index of the array.</param>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public void CopyTo(KeyValuePair<object, object>[] array, int arrayIndex)
-#else
+        #else
     public void CopyTo(KeyValuePair<object, object?>[] array, int arrayIndex)
-#endif
+        #endif
     {
         _values.CopyTo(array, arrayIndex);
     }
@@ -167,11 +170,11 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     ///     Gets the enumerator.
     /// </summary>
     /// <returns>IEnumerator{KeyValuePair{System.Object, System.Object}}.</returns>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public IEnumerator<KeyValuePair<object, object>> GetEnumerator()
-#else
+        #else
     public IEnumerator<KeyValuePair<object, object?>> GetEnumerator()
-#endif
+        #endif
     {
         return _values.GetEnumerator();
     }
@@ -191,11 +194,11 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     /// </summary>
     /// <param name="item">The item.</param>
     /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public bool Remove(KeyValuePair<object, object> item)
-#else
+        #else
     public bool Remove(KeyValuePair<object, object?> item)
-#endif
+        #endif
     {
         // ReSharper disable once AssignNullToNotNullAttribute
         return _values.Remove(item);
@@ -207,17 +210,17 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
     /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-#if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public bool TryGetValue(object key, out object value)
-#else
+        #else
     public bool TryGetValue(object key, out object? value)
-#endif
+        #endif
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return _values.TryGetValue(key, out value!);
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
     }

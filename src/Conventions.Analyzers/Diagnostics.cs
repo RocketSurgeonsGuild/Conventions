@@ -4,7 +4,7 @@ namespace Rocket.Surgery.Conventions;
 
 internal static class Diagnostics
 {
-    public static DiagnosticDescriptor ConventionHasToManyConstructors { get; } = new DiagnosticDescriptor(
+    public static DiagnosticDescriptor ConventionHasToManyConstructors { get; } = new(
         "RSG0001",
         "Convention has to Many Constructors",
         "Conventions only allow one (or the default) constructor",
@@ -13,7 +13,7 @@ internal static class Diagnostics
         true
     );
 
-    public static DiagnosticDescriptor ConventionCannotBeGeneric { get; } = new DiagnosticDescriptor(
+    public static DiagnosticDescriptor ConventionCannotBeGeneric { get; } = new(
         "RSG0002",
         "Convention cannot be generic",
         "Conventions cannot be generic types",

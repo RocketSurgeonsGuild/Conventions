@@ -6,10 +6,6 @@
   GlobalOptions: {
     build_property.ImportConventionsAssembly: true
   },
-  ParseOptions: {
-    LanguageVersion: CSharp11,
-    DocumentationMode: Parse
-  },
   References: [
     <in-memory assembly>,
     <in-memory assembly>,

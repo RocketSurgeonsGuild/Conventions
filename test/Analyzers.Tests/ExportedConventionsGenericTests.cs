@@ -9,7 +9,7 @@ public class ExportedConventionsGenericTests(ITestOutputHelper outputHelper) : G
     [Fact]
     public async Task Should_Pull_Through_A_Convention()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -32,7 +32,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Pull_Through_A_Convention_With_Custom_Namespace()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -56,7 +56,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Pull_Through_A_Convention_With_No_Namespace()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -81,7 +81,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Pull_Through_A_Convention_With_Custom_MethodName()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -105,7 +105,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Pull_Through_A_Convention_With_ExportAttribute()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -126,7 +126,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Pull_Through_All_Conventions()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -162,7 +162,7 @@ internal class Contrib4 : IConvention { }
     [Fact]
     public async Task Should_Handle_Duplicate_Conventions()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -186,7 +186,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Handle_Conventions_With_One_Constructor()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -214,7 +214,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Handle_Nested_Conventions()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -240,7 +240,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Handle_Nested_Static_Conventions()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -266,7 +266,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [Fact]
     public async Task Should_Handle_Conventions_With_Nullable_Constructor_Parameters()
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Microsoft.Extensions.Configuration;
@@ -333,7 +333,7 @@ public class AutoMapperOptions
     [InlineData(HostType.UnitTest)]
     public async Task Should_Support_HostType_Conventions(HostType hostType)
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;
@@ -361,7 +361,7 @@ namespace Rocket.Surgery.Conventions.Tests
     [InlineData("DependentOfConventionAttribute")]
     public async Task Should_Support_DependencyDirection_Conventions(string attributeName)
     {
-        var result = await WithSharedDeps()
+        var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
 using Rocket.Surgery.Conventions;

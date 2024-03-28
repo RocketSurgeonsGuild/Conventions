@@ -3,24 +3,18 @@ using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
-internal class ConventionTypeResolver : ITypeResolver
+internal class ConventionTypeResolver(IServiceProvider serviceProvider, IServiceProvider instances) : ITypeResolver
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IServiceProvider _instances;
-
-    public ConventionTypeResolver(IServiceProvider serviceProvider, IServiceProvider instances)
-    {
-        _serviceProvider = serviceProvider;
-        _instances = instances;
-    }
-
+    #pragma warning disable IL2092
     public object? Resolve([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type? type)
+    #pragma warning restore IL2092
     {
+        if (type is null) return null;
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        return _serviceProvider.GetService(type!)
+        return serviceProvider.GetService(type!)
             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-         ?? _instances.GetService(type!)
+         ?? instances.GetService(type!)
             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-         ?? ActivatorUtilities.GetServiceOrCreateInstance(_serviceProvider, type!);
+         ?? ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, type!);
     }
 }

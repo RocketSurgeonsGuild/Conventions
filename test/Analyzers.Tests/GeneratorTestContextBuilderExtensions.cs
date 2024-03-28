@@ -14,6 +14,11 @@ internal static class GeneratorTestContextBuilderExtensions
         return builder.AddCompilationReferences(GenerationHelpers.CreateDeps(builder).GetAwaiter().GetResult());
     }
 
+    public static GeneratorTestContextBuilder AddSharedGenericDeps(this GeneratorTestContextBuilder builder)
+    {
+        return builder.AddCompilationReferences(GenerationHelpers.CreateGenericDeps(builder).GetAwaiter().GetResult());
+    }
+
     public static GeneratorTestContextBuilder AddCommonReferences(this GeneratorTestContextBuilder builder)
     {
         return builder.AddReferences(
