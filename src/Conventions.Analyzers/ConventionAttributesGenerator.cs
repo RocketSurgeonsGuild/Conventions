@@ -300,7 +300,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 }
 
                 var derivedClass = ClassDeclaration(declaration.Identifier)
-                                  .WithModifiers(declaration.Modifiers)
+                                  .WithModifiers(TokenList(declaration.Modifiers.Select(z => z.WithoutTrivia())))
                                   .WithConstraintClauses(declaration.ConstraintClauses)
                                   .WithTypeParameterList(declaration.TypeParameterList)
                                   .WithMembers(SingletonList<MemberDeclarationSyntax>(methodDeclaration))
