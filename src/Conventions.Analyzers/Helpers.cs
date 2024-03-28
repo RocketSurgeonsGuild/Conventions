@@ -59,7 +59,7 @@ internal static class Helpers
                                             value is null
                                                 ? LiteralExpression(SyntaxKind.NullLiteralExpression)
                                                 : LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(value))
-                                        )
+                                        ),
                                     ]
                                 )
                             )
@@ -109,7 +109,7 @@ internal static class Helpers
                             )
                            .WithStartTag(XmlElementStartTag(XmlName(Identifier("summary"))))
                            .WithEndTag(XmlElementEndTag(XmlName(Identifier("summary")))),
-                        XmlText().WithTextTokens(TokenList(XmlNewLine))
+                        XmlText().WithTextTokens(TokenList(XmlNewLine)),
                     ]
                 )
             )

@@ -6,19 +6,6 @@ namespace Rocket.Surgery.Conventions;
 
 internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, string? Namespace, string ClassName, string MethodName)
 {
-    public bool Postfix { get; init; }
-
-    private record InnerConventionConfigurationData(bool Assembly, string? Namespace, string ClassName, string MethodName)
-    {
-        public bool DefinedNamespace { get; init; }
-        public bool WasConfigured { get; init; }
-
-        public static InnerConventionConfigurationData FromDefaults(ConventionConfigurationData configurationData)
-        {
-            return new(configurationData.Assembly, null, configurationData.ClassName, configurationData.MethodName);
-        }
-    }
-
     public static IncrementalValueProvider<ConventionConfigurationData> Create(
         IncrementalGeneratorInitializationContext context,
         string attributeName,
@@ -136,7 +123,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
     {
         var data = InnerConventionConfigurationData.FromDefaults(defaults);
         var prefix = $"Rocket.Surgery.ConventionConfigurationData.{defaults.ClassName}";
-        foreach (var attribute in assemblySymbol.GetAttributes().Where(z => z is { AttributeClass.MetadataName : "AssemblyMetadataAttribute" }))
+        foreach (var attribute in assemblySymbol.GetAttributes().Where(z => z is { AttributeClass.MetadataName : "AssemblyMetadataAttribute", }))
         {
             if (attribute is not
                 {
@@ -153,19 +140,6 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
         }
 
         return new(false, data.Assembly, data.Namespace, data.ClassName, data.MethodName);
-    }
-
-    public SyntaxList<AttributeListSyntax> ToAttributes(string type)
-    {
-        return SyntaxFactory.List(
-            new[]
-            {
-                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Namespace)}", Namespace),
-                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(ClassName)}", ClassName),
-                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(MethodName)}", MethodName),
-//                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Assembly)}", Assembly.ToString()),
-            }
-        );
     }
 
     private static AttributeSyntax? FindAttribute(AttributeListSyntax list, string name)
@@ -185,5 +159,31 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
         }
 
         return @namespace;
+    }
+
+    public bool Postfix { get; init; }
+
+    public SyntaxList<AttributeListSyntax> ToAttributes(string type)
+    {
+        return SyntaxFactory.List(
+            new[]
+            {
+                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Namespace)}", Namespace),
+                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(ClassName)}", ClassName),
+                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(MethodName)}", MethodName),
+//                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Assembly)}", Assembly.ToString()),
+            }
+        );
+    }
+
+    private record InnerConventionConfigurationData(bool Assembly, string? Namespace, string ClassName, string MethodName)
+    {
+        public static InnerConventionConfigurationData FromDefaults(ConventionConfigurationData configurationData)
+        {
+            return new(configurationData.Assembly, null, configurationData.ClassName, configurationData.MethodName);
+        }
+
+        public bool DefinedNamespace { get; init; }
+        public bool WasConfigured { get; init; }
     }
 }

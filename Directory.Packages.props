@@ -54,10 +54,10 @@
         <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
         <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
         <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-        <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
-        <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.4.0" />
-        <PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="4.4.0" />
-        <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.4.0" />
+        <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
+        <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
+        <PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="4.9.2" />
+        <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.9.2" />
         <PackageVersion Include="YamlDotNet" Version="15.1.2" />
     </ItemGroup>
     <ItemGroup>

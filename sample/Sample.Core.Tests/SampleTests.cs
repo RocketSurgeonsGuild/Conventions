@@ -10,15 +10,6 @@ namespace Sample.Core.Tests;
 
 public class SampleTests
 {
-    private readonly ConventionContextBuilder _builder;
-
-    public SampleTests()
-    {
-        _builder = new ConventionContextBuilder(new Dictionary<object, object>())
-                  .Set(HostType.UnitTest)
-                  .UseDependencyContext(DependencyContext.Load(typeof(SampleTests).Assembly)!);
-    }
-
     [Fact]
     public void Should_Register_Services()
     {
@@ -27,6 +18,15 @@ public class SampleTests
         var services = new ServiceCollection().ApplyConventions(context).BuildServiceProvider();
         Assert.Equal("TestService", services.GetRequiredService<IService>().GetString());
     }
+
+    public SampleTests()
+    {
+        _builder = new ConventionContextBuilder(new Dictionary<object, object>())
+                  .Set(HostType.UnitTest)
+                  .UseDependencyContext(DependencyContext.Load(typeof(SampleTests).Assembly)!);
+    }
+
+    private readonly ConventionContextBuilder _builder;
 }
 
 #endregion

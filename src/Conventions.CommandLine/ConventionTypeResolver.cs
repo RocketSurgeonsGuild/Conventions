@@ -9,7 +9,7 @@ internal class ConventionTypeResolver(IServiceProvider serviceProvider, IService
     public object? Resolve([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type? type)
     #pragma warning restore IL2092
     {
-            if (type is null) return null;
+        if (type is null) return null;
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return serviceProvider.GetService(type!)
             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression

@@ -41,7 +41,8 @@ internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
     public void Register(
         Type service,
         #pragma warning disable IL2092
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementation
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        Type implementation
         #pragma warning restore IL2092
     )
     {

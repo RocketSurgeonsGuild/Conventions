@@ -12,6 +12,7 @@ public static class GenerationHelpers
         var c3 = await Class3(baseBuilder, c1);
         return new[] { c1, c2, c3, };
     }
+
     public static async Task<GeneratorTestResults[]> CreateGenericDeps(GeneratorTestContextBuilder rootBuilder)
     {
         var baseBuilder = rootBuilder;
@@ -87,6 +88,7 @@ public class Class3 : IConvention
               .Build()
               .GenerateAsync();
     }
+
     public static Task<GeneratorTestResults> GenericClass1(GeneratorTestContextBuilder builder)
     {
         return builder
