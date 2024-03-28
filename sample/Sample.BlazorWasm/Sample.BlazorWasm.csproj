@@ -3,7 +3,7 @@
     <Import Project="../../src/Conventions.Configuration.Yaml/build/Rocket.Surgery.Conventions.Configuration.Yaml.props" />
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net8.0-browser</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
