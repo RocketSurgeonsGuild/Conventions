@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using DiffEngine;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
@@ -24,6 +25,14 @@ public static class ModuleInitializer
 
                 var path = Path.Combine(Path.GetDirectoryName(sourceFile)!, "snapshots");
                 return new(path, typeName, method.Name);
+            }
+        );
+
+        VerifierSettings.AddScrubber(
+            (builder, counter) =>
+            {
+                if (typeof(ConventionAttributesGenerator).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>() is { Version: { Length: > 0, } version, })
+                    builder.Replace(version, "version");
             }
         );
     }

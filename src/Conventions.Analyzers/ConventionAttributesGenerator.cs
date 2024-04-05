@@ -326,9 +326,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 ClassDeclaration(configurationData.ClassName)
                    .WithAttributeLists(
                         SingletonList(
-                            AttributeList(
-                                    SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated")))
-                                )
+                            CompilerGeneratedAttributes
                                .WithLeadingTrivia(GetXmlSummary("The class defined for importing conventions into this assembly"))
                         )
                     )
@@ -595,7 +593,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             ClassDeclaration(data.Configuration.ClassName)
                .WithAttributeLists(
                     SingletonList(
-                        AttributeList(SingletonSeparatedList(Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated"))))
+                        CompilerGeneratedAttributes
                            .WithLeadingTrivia(GetXmlSummary("The class defined for exporting conventions from this assembly"))
                     )
                 )

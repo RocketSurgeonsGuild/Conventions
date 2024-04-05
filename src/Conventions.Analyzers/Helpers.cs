@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -44,6 +45,38 @@ internal static class Helpers
             return ( s = symbol as INamespaceSymbol ) != null && s.IsGlobalNamespace;
         }
     }
+
+
+    internal static AttributeListSyntax CompilerGeneratedAttributes =
+        AttributeList(
+            SeparatedList(
+                [
+                    Attribute(ParseName("System.CodeDom.Compiler.GeneratedCode"))
+                       .WithArgumentList(
+                            AttributeArgumentList(
+                                SeparatedList(
+                                    [
+                                        AttributeArgument(
+                                            LiteralExpression(
+                                                SyntaxKind.StringLiteralExpression,
+                                                Literal(typeof(Helpers).Assembly.GetName().Name)
+                                            )
+                                        ),
+                                        AttributeArgument(
+                                            LiteralExpression(
+                                                SyntaxKind.StringLiteralExpression,
+                                                Literal(typeof(Helpers).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? "generated")
+                                            )
+                                        ),
+                                    ]
+                                )
+                            )
+                        ),
+                    Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated")),
+                    Attribute(ParseName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")),
+                ]
+            )
+        );
 
     internal static AttributeListSyntax AddAssemblyAttribute(string key, string? value)
     {
