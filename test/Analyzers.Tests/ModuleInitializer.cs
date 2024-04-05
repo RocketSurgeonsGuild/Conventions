@@ -29,11 +29,11 @@ public static class ModuleInitializer
         );
 
         VerifierSettings.AddScrubber(
-            ( (builder, counter) =>
-              {
-                  if (typeof(ConventionAttributesGenerator).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>() is { Version: { Length: > 0 } version })
-                      builder.Replace(version, "version");
-              } )
+            (builder, counter) =>
+            {
+                if (typeof(ConventionAttributesGenerator).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>() is { Version: { Length: > 0, } version, })
+                    builder.Replace(version, "version");
+            }
         );
     }
 }

@@ -1,4 +1,3 @@
-using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -55,7 +54,8 @@ internal static class Helpers
                     Attribute(ParseName("System.CodeDom.Compiler.GeneratedCode"))
                        .WithArgumentList(
                             AttributeArgumentList(
-                                SeparatedList([
+                                SeparatedList(
+                                    [
                                         AttributeArgument(
                                             LiteralExpression(
                                                 SyntaxKind.StringLiteralExpression,
@@ -67,13 +67,13 @@ internal static class Helpers
                                                 SyntaxKind.StringLiteralExpression,
                                                 Literal(typeof(Helpers).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? "generated")
                                             )
-                                        )
+                                        ),
                                     ]
                                 )
                             )
                         ),
                     Attribute(ParseName("System.Runtime.CompilerServices.CompilerGenerated")),
-                    Attribute(ParseName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"))
+                    Attribute(ParseName("System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")),
                 ]
             )
         );
