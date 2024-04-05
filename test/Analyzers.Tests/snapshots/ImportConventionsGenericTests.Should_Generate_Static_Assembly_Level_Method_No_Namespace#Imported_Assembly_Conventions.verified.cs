@@ -9,7 +9,7 @@ using Rocket.Surgery.Conventions;
 /// <summary>
 /// The class defined for importing conventions into this assembly
 /// </summary>
-[System.Runtime.CompilerServices.CompilerGenerated]
+[System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal static partial class MyImports
 {
     /// <summary>

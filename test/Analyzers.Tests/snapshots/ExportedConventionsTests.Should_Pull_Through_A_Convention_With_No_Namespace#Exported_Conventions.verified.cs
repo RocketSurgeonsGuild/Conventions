@@ -11,7 +11,7 @@ using Rocket.Surgery.Conventions;
 /// <summary>
 /// The class defined for exporting conventions from this assembly
 /// </summary>
-[System.Runtime.CompilerServices.CompilerGenerated]
+[System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public static partial class Exports
 {
     /// <summary>
