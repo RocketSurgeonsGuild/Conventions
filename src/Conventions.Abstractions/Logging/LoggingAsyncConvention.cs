@@ -11,4 +11,9 @@ namespace Rocket.Surgery.Conventions.Logging;
 /// <param name="builder"></param>
 /// <param name="cancellationToken"></param>
 [PublicAPI]
-public delegate ValueTask LoggingAsyncConvention(IConventionContext context, IConfiguration configuration, ILoggingBuilder builder, CancellationToken cancellationToken);
+public delegate ValueTask LoggingAsyncConvention(
+    IConventionContext context,
+    IConfiguration configuration,
+    ILoggingBuilder builder,
+    CancellationToken cancellationToken
+);

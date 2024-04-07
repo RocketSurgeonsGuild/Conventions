@@ -15,10 +15,10 @@ public class RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : 
     public async Task Should_Build_The_Host_Correctly()
     {
         var builder = await WebApplication
-                     .CreateBuilder()
-                     .ConfigureRocketSurgery(
-                          x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly, })
-                      );
+                           .CreateBuilder()
+                           .ConfigureRocketSurgery(
+                                x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly, })
+                            );
         builder.WebHost.UseTestServer();
 
         await using var host = builder.Build();

@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
-using Xunit;
 
 namespace Rocket.Surgery.Hosting.Tests;
 
@@ -22,16 +21,18 @@ public class RocketHostTests
     [Fact]
     public async Task Creates_RocketHost_ForAssemblies()
     {
-        var host = await Host.CreateApplicationBuilder()
-                       .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
+        var host = await Host
+                        .CreateApplicationBuilder()
+                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }));
         host.Should().BeAssignableTo<IHostBuilder>();
     }
 
     [Fact]
     public async Task Creates_RocketHost_WithConfiguration()
     {
-        var host = await Host.CreateApplicationBuilder()
-                       .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
+        var host = await Host
+                        .CreateApplicationBuilder()
+                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }));
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -41,11 +42,12 @@ public class RocketHostTests
     [Fact]
     public async Task Creates_RocketHost_WithModifiedConfiguration_Json()
     {
-        var host = await Host.CreateApplicationBuilder()
-                       .LaunchWith(
-                            RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }),
-                            z => z.ExceptConvention(typeof(YamlConvention))
-                        );
+        var host = await Host
+                        .CreateApplicationBuilder()
+                        .LaunchWith(
+                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }),
+                             z => z.ExceptConvention(typeof(YamlConvention))
+                         );
 
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
@@ -56,11 +58,12 @@ public class RocketHostTests
     [Fact]
     public async Task Creates_RocketHost_WithModifiedConfiguration_Yaml()
     {
-        var host = await Host.CreateApplicationBuilder()
-                       .LaunchWith(
-                            RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }),
-                            z => z.ExceptConvention(typeof(JsonConvention))
-                        );
+        var host = await Host
+                        .CreateApplicationBuilder()
+                        .LaunchWith(
+                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }),
+                             z => z.ExceptConvention(typeof(JsonConvention))
+                         );
 
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 

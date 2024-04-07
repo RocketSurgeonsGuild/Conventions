@@ -65,12 +65,15 @@ public static class RocketHostApplicationExtensions
         AppDelegate func,
         Func<ConventionContextBuilder, ValueTask> action,
         CancellationToken cancellationToken = default
-    ) where T : IHostApplicationBuilder => UseRocketBooster(
-        builder,
-        func,
-        (b, _) => action.Invoke(b),
-        cancellationToken
-    );
+    ) where T : IHostApplicationBuilder
+    {
+        return UseRocketBooster(
+            builder,
+            func,
+            (b, _) => action.Invoke(b),
+            cancellationToken
+        );
+    }
 
     /// <summary>
     ///     Uses the rocket booster.
@@ -85,16 +88,19 @@ public static class RocketHostApplicationExtensions
         AppDelegate func,
         Action<ConventionContextBuilder> action,
         CancellationToken cancellationToken = default
-    ) where T : IHostApplicationBuilder => UseRocketBooster(
-        builder,
-        func,
-        (b, _) =>
-        {
-            action.Invoke(b);
-            return ValueTask.CompletedTask;
-        },
-        cancellationToken
-    );
+    ) where T : IHostApplicationBuilder
+    {
+        return UseRocketBooster(
+            builder,
+            func,
+            (b, _) =>
+            {
+                action.Invoke(b);
+                return ValueTask.CompletedTask;
+            },
+            cancellationToken
+        );
+    }
 
     /// <summary>
     ///     Uses the rocket booster.
@@ -107,7 +113,10 @@ public static class RocketHostApplicationExtensions
         this T builder,
         AppDelegate func,
         CancellationToken cancellationToken = default
-    ) where T : IHostApplicationBuilder => UseRocketBooster(builder, func, (_, _) => ValueTask.CompletedTask, cancellationToken);
+    ) where T : IHostApplicationBuilder
+    {
+        return UseRocketBooster(builder, func, (_, _) => ValueTask.CompletedTask, cancellationToken);
+    }
 
 
     /// <summary>
@@ -123,7 +132,10 @@ public static class RocketHostApplicationExtensions
         AppDelegate func,
         Action<ConventionContextBuilder> action,
         CancellationToken cancellationToken = default
-    ) where T : IHostApplicationBuilder => UseRocketBooster(builder, func, action, cancellationToken);
+    ) where T : IHostApplicationBuilder
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
 
     /// <summary>
     ///     Launches the with.
@@ -138,7 +150,10 @@ public static class RocketHostApplicationExtensions
         AppDelegate func,
         Func<ConventionContextBuilder, ValueTask> action,
         CancellationToken cancellationToken = default
-    ) where T : IHostApplicationBuilder => UseRocketBooster(builder, func, action, cancellationToken);
+    ) where T : IHostApplicationBuilder
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
 
     /// <summary>
     ///     Launches the with.
@@ -153,7 +168,10 @@ public static class RocketHostApplicationExtensions
         AppDelegate func,
         Func<ConventionContextBuilder, CancellationToken, ValueTask> action,
         CancellationToken cancellationToken = default
-    ) where T : IHostApplicationBuilder => UseRocketBooster(builder, func, action, cancellationToken);
+    ) where T : IHostApplicationBuilder
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
 
     /// <summary>
     ///     Launches the with.
@@ -162,8 +180,10 @@ public static class RocketHostApplicationExtensions
     /// <param name="func">The function.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>IHostApplicationBuilder.</returns>
-    public static ValueTask<T> LaunchWith<T>(this T builder, AppDelegate func, CancellationToken cancellationToken) where T : IHostApplicationBuilder =>
-        UseRocketBooster(builder, func, cancellationToken);
+    public static ValueTask<T> LaunchWith<T>(this T builder, AppDelegate func, CancellationToken cancellationToken) where T : IHostApplicationBuilder
+    {
+        return UseRocketBooster(builder, func, cancellationToken);
+    }
 
     /// <summary>
     ///     Launches the with.
@@ -172,8 +192,10 @@ public static class RocketHostApplicationExtensions
     /// <param name="func">The function.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>IHostApplicationBuilder.</returns>
-    public static ValueTask<T> LaunchWith<T>(this T builder, AppDelegate func) where T : IHostApplicationBuilder =>
-        UseRocketBooster(builder, func, CancellationToken.None);
+    public static ValueTask<T> LaunchWith<T>(this T builder, AppDelegate func) where T : IHostApplicationBuilder
+    {
+        return UseRocketBooster(builder, func, CancellationToken.None);
+    }
 
     /// <summary>
     ///     Configures the rocket Surgery.
@@ -185,7 +207,10 @@ public static class RocketHostApplicationExtensions
         this T builder,
         CancellationToken cancellationToken =
             default
-    ) where T : IHostApplicationBuilder => ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
+    ) where T : IHostApplicationBuilder
+    {
+        return ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
+    }
 
     /// <summary>
     ///     Configures the rocket Surgery.
@@ -307,9 +332,12 @@ public static class RocketHostApplicationExtensions
         IHostApplicationBuilder builder,
         Func<CancellationToken, ValueTask<ConventionContextBuilder>> factory,
         CancellationToken cancellationToken
-    ) => builder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value)
-        ? ValueTask.FromResult(value as ConventionContextBuilder)!
-        : factory(cancellationToken);
+    )
+    {
+        return builder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value)
+            ? ValueTask.FromResult(value as ConventionContextBuilder)!
+            : factory(cancellationToken);
+    }
 
     /// <summary>
     ///     Gets the or create builder.

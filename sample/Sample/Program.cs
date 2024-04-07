@@ -5,7 +5,7 @@ var builder = await Host
                    .LaunchWith(
                         RocketBooster.For(Imports.GetConventions),
                         z => z
-//                   .SetDefaultCommand<DefaultCommand>()
+                            //                   .SetDefaultCommand<DefaultCommand>()
                            .ConfigureCommandLine(configurator => configurator.AddCommand<Dump>("dump"))
                     );
 builder.Services.Configure<ConsoleLifetimeOptions>(z => z.SuppressStatusMessages = true);

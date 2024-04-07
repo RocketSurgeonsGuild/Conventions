@@ -1,11 +1,11 @@
 using System.Reflection;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyModel;
 using Rocket.Surgery.Conventions;
 using AppDelegate =
     System.Func<Microsoft.AspNetCore.Builder.WebApplicationBuilder, System.Threading.CancellationToken,
         System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.ConventionContextBuilder>>;
-using ConventionsDelegate = System.Func<System.IServiceProvider, System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.IConventionWithDependencies>>;
+using ConventionsDelegate =
+    System.Func<System.IServiceProvider, System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.IConventionWithDependencies>>;
 
 namespace Rocket.Surgery.Web.Hosting;
 
@@ -15,7 +15,6 @@ namespace Rocket.Surgery.Web.Hosting;
 [PublicAPI]
 public static class RocketBooster
 {
-
     /// <summary>
     ///     Fors the dependency context.
     /// </summary>

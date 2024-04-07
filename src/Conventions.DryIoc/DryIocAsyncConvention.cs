@@ -14,5 +14,9 @@ namespace Rocket.Surgery.Conventions.DryIoc;
 /// <param name="cancellationToken"></param>
 [PublicAPI]
 public delegate IContainer DryIocAsyncConvention(
-    IConventionContext conventionContext, IConfiguration configuration, IServiceCollection services, IContainer container, CancellationToken cancellationToken
+    IConventionContext conventionContext,
+    IConfiguration configuration,
+    IServiceCollection services,
+    IContainer container,
+    CancellationToken cancellationToken
 );

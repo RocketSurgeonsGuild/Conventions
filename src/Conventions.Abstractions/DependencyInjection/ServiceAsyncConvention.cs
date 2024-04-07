@@ -11,4 +11,9 @@ namespace Rocket.Surgery.Conventions.DependencyInjection;
 /// <param name="services"></param>
 /// <param name="cancellationToken"></param>
 [PublicAPI]
-public delegate ValueTask ServiceAsyncConvention(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken);
+public delegate ValueTask ServiceAsyncConvention(
+    IConventionContext context,
+    IConfiguration configuration,
+    IServiceCollection services,
+    CancellationToken cancellationToken
+);

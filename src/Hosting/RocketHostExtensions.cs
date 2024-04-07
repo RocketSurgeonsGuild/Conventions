@@ -51,7 +51,10 @@ public static class RocketHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <returns>IHostBuilder.</returns>
-    public static IHostBuilder ConfigureRocketSurgery(this IHostBuilder builder) => ConfigureRocketSurgery(builder, _ => { });
+    public static IHostBuilder ConfigureRocketSurgery(this IHostBuilder builder)
+    {
+        return ConfigureRocketSurgery(builder, _ => { });
+    }
 
     /// <summary>
     ///     Configures the rocket Surgery.

@@ -46,7 +46,7 @@ internal static class RocketInternalsShared
         var index = SharedHostConfigurationInternal(context, configurationBuilder, configuration, environment);
         // Insert after all the normal configuration but before the environment specific configuration
 
-        var cb =  new ConfigurationBuilder().ApplyConventions(context, configuration);
+        var cb = new ConfigurationBuilder().ApplyConventions(context, configuration);
         if (cb.Sources is { Count: > 0, })
         {
             configurationBuilder.Sources.Insert(

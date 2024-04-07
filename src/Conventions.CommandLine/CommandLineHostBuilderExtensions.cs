@@ -141,6 +141,7 @@ public static partial class CommandAppHostBuilderExtensions
         await host.WaitForShutdownAsync(cancellationToken);
         return result?.ExitCode ?? 0;
     }
+
     /// <summary>
     ///     Run the host as a commandline application and return the result
     /// </summary>
@@ -161,7 +162,10 @@ public static partial class CommandAppHostBuilderExtensions
         return result?.ExitCode ?? Environment.ExitCode;
     }
 
-    [LoggerMessage(Message = "No commands have been configured, are you trying to run a console app? Try adding some commands for it to work correctly.", Level = LogLevel.Warning)]
+    [LoggerMessage(
+        Message = "No commands have been configured, are you trying to run a console app? Try adding some commands for it to work correctly.",
+        Level = LogLevel.Warning
+    )]
     static partial void LogWarning(ILogger logger);
 
     private static void EnsureShouldRun(ConventionContextBuilder container)

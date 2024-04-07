@@ -23,7 +23,10 @@ internal class ConsoleWorker
         return Task.CompletedTask;
     }
 
-    public Task StartingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public Task StartingAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 
     public async Task StartedAsync(CancellationToken cancellationToken)
     {
@@ -45,11 +48,14 @@ internal class ConsoleWorker
         }
     }
 
-    public Task StoppingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public Task StoppingAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 
     public Task StoppedAsync(CancellationToken cancellationToken)
     {
-        Environment.ExitCode = consoleResult switch { { ExitCode: CommandLineConstants.WaitCode } => 0, { ExitCode: { } i } => i, { ExitCode: null, } => 0, };
+        Environment.ExitCode = consoleResult switch { { ExitCode: CommandLineConstants.WaitCode, } => 0, { ExitCode: { } i, } => i, { ExitCode: null, } => 0, };
         return Task.CompletedTask;
     }
 }

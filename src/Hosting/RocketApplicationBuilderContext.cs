@@ -44,13 +44,15 @@ internal sealed class RocketApplicationBuilderContext
         _context.Properties.AddIfMissing<IConfiguration>(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment);
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment.GetType().FullName!, _hostApplicationBuilder.Environment);
-        await RocketInternalsShared.SharedHostConfigurationAsync(
-            _context,
-            _hostApplicationBuilder.Configuration,
-            _hostApplicationBuilder.Configuration,
-            _hostApplicationBuilder.Environment,
-            cancellationToken
-        ).ConfigureAwait(false);
+        await RocketInternalsShared
+             .SharedHostConfigurationAsync(
+                  _context,
+                  _hostApplicationBuilder.Configuration,
+                  _hostApplicationBuilder.Configuration,
+                  _hostApplicationBuilder.Environment,
+                  cancellationToken
+              )
+             .ConfigureAwait(false);
     }
 
     /// <summary>

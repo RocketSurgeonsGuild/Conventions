@@ -62,12 +62,15 @@ public static class RocketWebHostExtensions
         AppDelegate func,
         Func<ConventionContextBuilder, ValueTask> action,
         CancellationToken cancellationToken = default
-    ) => UseRocketBooster(
+    )
+    {
+        return UseRocketBooster(
             builder,
             func,
             (b, _) => action.Invoke(b),
             cancellationToken
         );
+    }
 
     /// <summary>
     ///     Uses the rocket booster.
@@ -82,16 +85,19 @@ public static class RocketWebHostExtensions
         AppDelegate func,
         Action<ConventionContextBuilder> action,
         CancellationToken cancellationToken = default
-    ) => UseRocketBooster(
-        builder,
-        func,
-        (b, _) =>
-        {
-            action.Invoke(b);
-            return ValueTask.CompletedTask;
-        },
-        cancellationToken
-    );
+    )
+    {
+        return UseRocketBooster(
+            builder,
+            func,
+            (b, _) =>
+            {
+                action.Invoke(b);
+                return ValueTask.CompletedTask;
+            },
+            cancellationToken
+        );
+    }
 
     /// <summary>
     ///     Uses the rocket booster.
@@ -104,7 +110,10 @@ public static class RocketWebHostExtensions
         this WebApplicationBuilder builder,
         AppDelegate func,
         CancellationToken cancellationToken = default
-    ) => UseRocketBooster(builder, func, (_, _) => ValueTask.CompletedTask, cancellationToken);
+    )
+    {
+        return UseRocketBooster(builder, func, (_, _) => ValueTask.CompletedTask, cancellationToken);
+    }
 
 
     /// <summary>
@@ -120,7 +129,10 @@ public static class RocketWebHostExtensions
         AppDelegate func,
         Action<ConventionContextBuilder> action,
         CancellationToken cancellationToken = default
-    ) => UseRocketBooster(builder, func, action, cancellationToken);
+    )
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
 
     /// <summary>
     ///     Launches the with.
@@ -135,7 +147,10 @@ public static class RocketWebHostExtensions
         AppDelegate func,
         Func<ConventionContextBuilder, ValueTask> action,
         CancellationToken cancellationToken = default
-    ) => UseRocketBooster(builder, func, action, cancellationToken);
+    )
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
 
     /// <summary>
     ///     Launches the with.
@@ -150,7 +165,10 @@ public static class RocketWebHostExtensions
         AppDelegate func,
         Func<ConventionContextBuilder, CancellationToken, ValueTask> action,
         CancellationToken cancellationToken = default
-    ) => UseRocketBooster(builder, func, action, cancellationToken);
+    )
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
 
     /// <summary>
     ///     Launches the with.
@@ -159,8 +177,10 @@ public static class RocketWebHostExtensions
     /// <param name="func">The function.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static ValueTask<WebApplicationBuilder> LaunchWith(this WebApplicationBuilder builder, AppDelegate func, CancellationToken cancellationToken) =>
-        UseRocketBooster(builder, func, cancellationToken);
+    public static ValueTask<WebApplicationBuilder> LaunchWith(this WebApplicationBuilder builder, AppDelegate func, CancellationToken cancellationToken)
+    {
+        return UseRocketBooster(builder, func, cancellationToken);
+    }
 
     /// <summary>
     ///     Launches the with.
@@ -169,8 +189,10 @@ public static class RocketWebHostExtensions
     /// <param name="func">The function.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static ValueTask<WebApplicationBuilder> LaunchWith(this WebApplicationBuilder builder, AppDelegate func) =>
-        UseRocketBooster(builder, func, CancellationToken.None);
+    public static ValueTask<WebApplicationBuilder> LaunchWith(this WebApplicationBuilder builder, AppDelegate func)
+    {
+        return UseRocketBooster(builder, func, CancellationToken.None);
+    }
 
     /// <summary>
     ///     Configures the rocket Surgery.
@@ -178,8 +200,10 @@ public static class RocketWebHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static ValueTask<WebApplicationBuilder> ConfigureRocketSurgery(this WebApplicationBuilder builder, CancellationToken cancellationToken = default) =>
-        ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
+    public static ValueTask<WebApplicationBuilder> ConfigureRocketSurgery(this WebApplicationBuilder builder, CancellationToken cancellationToken = default)
+    {
+        return ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
+    }
 
     /// <summary>
     ///     Configures the rocket Surgery.
@@ -284,35 +308,6 @@ public static class RocketWebHostExtensions
     }
 
     /// <summary>
-    ///     Method used to get an existing <see cref="ConventionContextBuilder" /> or create and insert a new one.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="factory"></param>
-    /// <returns></returns>
-    private static ConventionContextBuilder GetOrCreate(WebApplicationBuilder builder, Func<ConventionContextBuilder> factory)
-    {
-        return builder.Host.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value) && value is ConventionContextBuilder cb ? cb : factory();
-    }
-
-    /// <summary>
-    ///     Method used to get an existing <see cref="ConventionContextBuilder" /> or create and insert a new one.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="factory"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    private static async ValueTask<ConventionContextBuilder> GetOrCreate(
-        WebApplicationBuilder builder,
-        Func<CancellationToken, ValueTask<ConventionContextBuilder>> factory,
-        CancellationToken cancellationToken
-    )
-    {
-        return builder.Host.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value) && value is ConventionContextBuilder cb
-            ? cb
-            : await factory(cancellationToken);
-    }
-
-    /// <summary>
     ///     Gets the or create builder.
     /// </summary>
     /// <param name="builder">The builder.</param>
@@ -343,5 +338,34 @@ public static class RocketWebHostExtensions
         contextBuilder.Properties.Add(typeof(RocketWebHostExtensions), true);
         builder.Host.UseServiceProviderFactory(host.UseServiceProviderFactory());
         return contextBuilder;
+    }
+
+    /// <summary>
+    ///     Method used to get an existing <see cref="ConventionContextBuilder" /> or create and insert a new one.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="factory"></param>
+    /// <returns></returns>
+    private static ConventionContextBuilder GetOrCreate(WebApplicationBuilder builder, Func<ConventionContextBuilder> factory)
+    {
+        return builder.Host.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value) && value is ConventionContextBuilder cb ? cb : factory();
+    }
+
+    /// <summary>
+    ///     Method used to get an existing <see cref="ConventionContextBuilder" /> or create and insert a new one.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="factory"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    private static async ValueTask<ConventionContextBuilder> GetOrCreate(
+        WebApplicationBuilder builder,
+        Func<CancellationToken, ValueTask<ConventionContextBuilder>> factory,
+        CancellationToken cancellationToken
+    )
+    {
+        return builder.Host.Properties.TryGetValue(typeof(ConventionContextBuilder), out var value) && value is ConventionContextBuilder cb
+            ? cb
+            : await factory(cancellationToken);
     }
 }

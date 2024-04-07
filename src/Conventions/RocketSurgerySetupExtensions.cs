@@ -37,7 +37,10 @@ internal static class RocketSurgerySetupExtensions
     /// <param name="conventionContext"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask<IConventionContext> ApplyConventionsAsync(this IConventionContext conventionContext, CancellationToken cancellationToken = default)
+    public static async ValueTask<IConventionContext> ApplyConventionsAsync(
+        this IConventionContext conventionContext,
+        CancellationToken cancellationToken = default
+    )
     {
         foreach (var item in conventionContext.Conventions.Get<
                      ISetupConvention,

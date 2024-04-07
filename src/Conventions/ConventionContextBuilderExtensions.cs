@@ -51,13 +51,17 @@ public static class ConventionContextBuilderExtensions
     /// <param name="configuration"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask<IServiceProvider> CreateServiceProviderAsync(this IConventionContext context, IConfiguration? configuration = null, CancellationToken cancellationToken = default)
+    public static async ValueTask<IServiceProvider> CreateServiceProviderAsync(
+        this IConventionContext context,
+        IConfiguration? configuration = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var cb = new ConfigurationBuilder();
         configuration ??= context.Get<IConfiguration>();
         if (configuration is { })
             cb.AddConfiguration(configuration);
-        configuration = (await cb.ApplyConventionsAsync(context, configuration, cancellationToken: cancellationToken)).Build();
+        configuration = ( await cb.ApplyConventionsAsync(context, configuration, cancellationToken) ).Build();
         context.Set(configuration);
         var services = new ServiceCollection();
         services.AddSingleton(configuration);
@@ -73,7 +77,11 @@ public static class ConventionContextBuilderExtensions
     /// <param name="configuration"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask<IServiceProvider> CreateServiceProviderAsync(this ConventionContextBuilder builder, IConfiguration? configuration = null, CancellationToken cancellationToken = default)
+    public static async ValueTask<IServiceProvider> CreateServiceProviderAsync(
+        this ConventionContextBuilder builder,
+        IConfiguration? configuration = null,
+        CancellationToken cancellationToken = default
+    )
     {
         return await CreateServiceProviderAsync(await ConventionContext.FromAsync(builder, cancellationToken), configuration, cancellationToken);
     }

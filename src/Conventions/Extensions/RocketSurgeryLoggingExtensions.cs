@@ -57,7 +57,11 @@ public static class RocketSurgeryLoggingExtensions
     /// <param name="conventionContext"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask<ILoggingBuilder> ApplyConventionsAsync(this ILoggingBuilder loggingBuilder, IConventionContext conventionContext, CancellationToken cancellationToken = default)
+    public static async ValueTask<ILoggingBuilder> ApplyConventionsAsync(
+        this ILoggingBuilder loggingBuilder,
+        IConventionContext conventionContext,
+        CancellationToken cancellationToken = default
+    )
     {
         var configuration = conventionContext.Get<IConfiguration>();
         if (configuration is null)

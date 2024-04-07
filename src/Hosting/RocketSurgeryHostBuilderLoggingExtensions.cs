@@ -40,7 +40,11 @@ public static class RocketSurgeryHostBuilderLoggingExtensions
     /// <param name="conventionContext"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask ApplyConventionsAsync(this IHostBuilder hostBuilder, IConventionContext conventionContext, CancellationToken cancellationToken = default)
+    public static async ValueTask ApplyConventionsAsync(
+        this IHostBuilder hostBuilder,
+        IConventionContext conventionContext,
+        CancellationToken cancellationToken = default
+    )
     {
         foreach (var item in conventionContext.Conventions.Get<
                      IHostingConvention,
@@ -79,9 +83,11 @@ public static class RocketSurgeryHostBuilderLoggingExtensions
         this IHostApplicationBuilder hostBuilder,
         IConventionContext conventionContext,
         CancellationToken cancellationToken = default
-        )
+    )
     {
-        foreach (var item in conventionContext.Conventions.Get<IHostApplicationConvention, HostApplicationAsyncConvention, IHostApplicationConvention, HostApplicationAsyncConvention>())
+        foreach (var item in conventionContext.Conventions
+                                              .Get<IHostApplicationConvention, HostApplicationAsyncConvention, IHostApplicationConvention,
+                                                   HostApplicationAsyncConvention>())
         {
             switch (item)
             {

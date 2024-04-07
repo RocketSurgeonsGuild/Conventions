@@ -84,7 +84,10 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>ConventionContextBuilder.</returns>
-    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, Func<WebAssemblyHostBuilder, CancellationToken, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureHosting(
+        this ConventionContextBuilder container,
+        Func<WebAssemblyHostBuilder, CancellationToken, ValueTask> @delegate
+    )
     {
         if (container == null)
         {

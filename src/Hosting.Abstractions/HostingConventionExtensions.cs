@@ -26,6 +26,7 @@ public static class HostingConventionExtensions
         container.AppendDelegate(@delegate);
         return container;
     }
+
     /// <summary>
     ///     Configure the hosting delegate to the convention scanner
     /// </summary>
@@ -169,7 +170,10 @@ public static class HostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, Func<IHostApplicationBuilder, CancellationToken, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureApplication(
+        this ConventionContextBuilder container,
+        Func<IHostApplicationBuilder, CancellationToken, ValueTask> @delegate
+    )
     {
         if (container == null)
         {

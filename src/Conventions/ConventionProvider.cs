@@ -10,8 +10,6 @@ namespace Rocket.Surgery.Conventions;
 [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
 internal class ConventionProvider : IConventionProvider
 {
-    private readonly HostType _hostType;
-
     private static IEnumerable<T> TopographicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies)
     {
         var sorted = new List<T>();
@@ -47,6 +45,28 @@ internal class ConventionProvider : IConventionProvider
         }
     }
 
+    private static ConventionOrDelegate FromConvention(IConvention convention)
+    {
+        var type = convention.GetType();
+        var dependencies =
+            type.GetCustomAttributes().OfType<IConventionDependency>().ToArray();
+        var hostType = convention.GetType().GetCustomAttributes().OfType<IHostBasedConvention>().FirstOrDefault()?.HostType ?? HostType.Undefined;
+        return new(convention, hostType, dependencies);
+    }
+
+
+    private static ConventionOrDelegate FromConvention(IConventionWithDependencies convention)
+    {
+        return new(convention);
+    }
+
+    private static object? ToObject(ConventionOrDelegate delegateOrConvention)
+    {
+        return (object?)delegateOrConvention.Delegate ?? delegateOrConvention.Convention;
+    }
+
+    private readonly HostType _hostType;
+
     private readonly Lazy<ConventionOrDelegate[]> _conventions;
 
 
@@ -62,9 +82,7 @@ internal class ConventionProvider : IConventionProvider
         IEnumerable<IConvention> contributions,
         IEnumerable<object> prependedContributionsOrDelegates,
         IEnumerable<object> appendedContributionsOrDelegates
-    ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates)
-    {
-    }
+    ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates) { }
 
 
     /// <summary>
@@ -79,9 +97,7 @@ internal class ConventionProvider : IConventionProvider
         IEnumerable<IConventionWithDependencies> contributions,
         IEnumerable<object> prependedContributionsOrDelegates,
         IEnumerable<object> appendedContributionsOrDelegates
-    ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates)
-    {
-    }
+    ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
@@ -98,11 +114,11 @@ internal class ConventionProvider : IConventionProvider
         IEnumerable<object> prependedContributionsOrDelegates,
         IEnumerable<object> appendedContributionsOrDelegates
     ) : this(
-        hostType, contributions.Select(FromConvention).Concat(additionalContributions.Select(FromConvention)), prependedContributionsOrDelegates,
+        hostType,
+        contributions.Select(FromConvention).Concat(additionalContributions.Select(FromConvention)),
+        prependedContributionsOrDelegates,
         appendedContributionsOrDelegates
-    )
-    {
-    }
+    ) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
@@ -119,7 +135,7 @@ internal class ConventionProvider : IConventionProvider
     )
     {
         _hostType = hostType;
-        _conventions = new Lazy<ConventionOrDelegate[]>(
+        _conventions = new(
             () =>
             {
                 var prepended = toConventionOrDelegate(prependedContributionsOrDelegates);
@@ -144,11 +160,13 @@ internal class ConventionProvider : IConventionProvider
                                                   convention,
                                                   // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                                                   type: convention.Convention!.GetType(),
-                                                  dependsOn: convention.Dependencies.Where(x => x.Direction == DependencyDirection.DependsOn)
-                                                                       .Select(z => z.Type),
-                                                  dependentFor: convention.Dependencies
-                                                                          .Where(x => x.Direction == DependencyDirection.DependentOf)
-                                                                          .Select(z => z.Type)
+                                                  dependsOn: convention
+                                                            .Dependencies.Where(x => x.Direction == DependencyDirection.DependsOn)
+                                                            .Select(z => z.Type),
+                                                  dependentFor: convention
+                                                               .Dependencies
+                                                               .Where(x => x.Direction == DependencyDirection.DependentOf)
+                                                               .Select(z => z.Type)
                                               );
                                           }
                                       )
@@ -157,17 +175,19 @@ internal class ConventionProvider : IConventionProvider
                     var lookup = conventions.ToLookup(z => z.type, z => z.convention);
                     var dependentFor = conventions
                                       .SelectMany(
-                                           data => data.dependentFor
-                                                       .SelectMany(z => lookup[z])
-                                                       .Select(innerDependentFor => ( dependentFor: innerDependentFor, data.convention ))
+                                           data => data
+                                                  .dependentFor
+                                                  .SelectMany(z => lookup[z])
+                                                  .Select(innerDependentFor => ( dependentFor: innerDependentFor, data.convention ))
                                        )
                                       .ToLookup(z => z.dependentFor, z => z.convention);
 
                     var dependsOn = conventions
                                    .SelectMany(
-                                        data => data.dependsOn
-                                                    .SelectMany(z => lookup[z])
-                                                    .Select(innerDependsOn => ( data.convention, dependsOn: innerDependsOn ))
+                                        data => data
+                                               .dependsOn
+                                               .SelectMany(z => lookup[z])
+                                               .Select(innerDependsOn => ( data.convention, dependsOn: innerDependsOn ))
                                     )
                                    .Concat(
                                         conventions
@@ -189,33 +209,13 @@ internal class ConventionProvider : IConventionProvider
         static ConventionOrDelegate selector(object value)
         {
             return value switch
-            {
-                IConventionWithDependencies cwd => new ConventionOrDelegate(cwd),
-                IConvention convention          => FromConvention(convention),
-                Delegate d                      => new ConventionOrDelegate(d),
-                var _                           => ConventionOrDelegate.None
-            };
+                   {
+                       IConventionWithDependencies cwd => new(cwd),
+                       IConvention convention          => FromConvention(convention),
+                       Delegate d                      => new(d),
+                       var _                           => ConventionOrDelegate.None,
+                   };
         }
-    }
-
-    private static ConventionOrDelegate FromConvention(IConvention convention)
-    {
-        var type = convention.GetType();
-        var dependencies =
-            type.GetCustomAttributes().OfType<IConventionDependency>().ToArray();
-        var hostType = convention.GetType().GetCustomAttributes().OfType<IHostBasedConvention>().FirstOrDefault()?.HostType ?? HostType.Undefined;
-        return new ConventionOrDelegate(convention, hostType, dependencies);
-    }
-
-
-    private static ConventionOrDelegate FromConvention(IConventionWithDependencies convention)
-    {
-        return new ConventionOrDelegate(convention);
-    }
-
-    private static object? ToObject(ConventionOrDelegate delegateOrConvention)
-    {
-        return (object?)delegateOrConvention.Delegate ?? delegateOrConvention.Convention;
     }
 
     /// <summary>
@@ -256,18 +256,19 @@ internal class ConventionProvider : IConventionProvider
     /// <param name="hostType">The host type.</param>
     public IEnumerable<object> GetAll(HostType hostType = HostType.Undefined)
     {
-        return _conventions.Value
-                           .Where(
-                                cod => cod.HostType == HostType.Undefined
-                                    || ( hostType != HostType.Undefined && cod.HostType == hostType )
-                                    || cod.HostType == _hostType
-                            )
-                           .Select(ToObject)
-                           .Where(
-                                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                x => x != null!
-                                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                            )!;
+        return _conventions
+              .Value
+              .Where(
+                   cod => cod.HostType == HostType.Undefined
+                    || ( hostType != HostType.Undefined && cod.HostType == hostType )
+                    || cod.HostType == _hostType
+               )
+              .Select(ToObject)
+              .Where(
+                   // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                   x => x != null!
+                   // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+               )!;
     }
 }
 
@@ -298,7 +299,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
         Delegate = default;
         HostType = hostType;
         Dependencies = dependencies
-                      .Select(z => z is ConventionDependency cd ? cd : new ConventionDependency(z.Direction, z.Type))
+                      .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
                       .ToArray();
     }
 
@@ -311,9 +312,10 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
         Convention = convention.Convention;
         Delegate = default;
         HostType = convention.HostType;
-        Dependencies = convention.Dependencies
-                                 .Select(z => z is ConventionDependency cd ? cd : new ConventionDependency(z.Direction, z.Type))
-                                 .ToArray();
+        Dependencies = convention
+                      .Dependencies
+                      .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
+                      .ToArray();
     }
 
     /// <summary>
@@ -393,10 +395,10 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     /// </returns>
     public bool Equals(ConventionOrDelegate other)
     {
-#pragma warning disable CS8604 // Possible null reference argument.
+        #pragma warning disable CS8604 // Possible null reference argument.
         return EqualityComparer<IConvention>.Default.Equals(Convention, other.Convention)
-            && EqualityComparer<Delegate>.Default.Equals(Delegate, other.Delegate);
-#pragma warning restore CS8604 // Possible null reference argument.
+         && EqualityComparer<Delegate>.Default.Equals(Delegate, other.Delegate);
+        #pragma warning restore CS8604 // Possible null reference argument.
     }
 
 
@@ -408,9 +410,9 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     {
         var hashCode = 190459212;
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        hashCode = ( hashCode * -1521134295 ) + ( Convention is not null ? EqualityComparer<IConvention>.Default.GetHashCode(Convention) : 0 );
+        hashCode = ( hashCode * -1521134295 ) + ( Convention is { } ? EqualityComparer<IConvention>.Default.GetHashCode(Convention) : 0 );
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        hashCode = ( hashCode * -1521134295 ) + ( Delegate is not null ? EqualityComparer<Delegate>.Default.GetHashCode(Delegate) : 0 );
+        hashCode = ( hashCode * -1521134295 ) + ( Delegate is { } ? EqualityComparer<Delegate>.Default.GetHashCode(Delegate) : 0 );
         return hashCode;
     }
 

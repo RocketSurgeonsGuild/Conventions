@@ -54,7 +54,8 @@ public static class RocketSurgeryServiceCollectionExtensions
     public static async ValueTask<IServiceCollection> ApplyConventionsAsync(
         this IServiceCollection services,
         IConventionContext conventionContext,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         var configuration = conventionContext.Get<IConfiguration>();
         if (configuration is null)

@@ -6,10 +6,6 @@ namespace Rocket.Surgery.Conventions;
 
 internal class ConventionServiceProviderFactory : IServiceFactoryAdapter, IServiceProviderFactory<object>
 {
-    private readonly IConventionContext _conventionContext;
-    private readonly IServiceFactoryAdapter? _innerServiceProviderFactory;
-    private readonly bool _applyDefaultConventions;
-
     public static IServiceFactoryAdapter From(IConventionContext conventionContext, bool applyDefaultConventions = true)
     {
         var factoryDelegate = conventionContext.Get<Func<IConventionContext, IServiceFactoryAdapter>>();
@@ -22,8 +18,14 @@ internal class ConventionServiceProviderFactory : IServiceFactoryAdapter, IServi
         return new ConventionServiceProviderFactory(conventionContext, factoryDelegate?.Invoke(conventionContext), applyDefaultConventions);
     }
 
+    private readonly IConventionContext _conventionContext;
+    private readonly IServiceFactoryAdapter? _innerServiceProviderFactory;
+    private readonly bool _applyDefaultConventions;
+
     private ConventionServiceProviderFactory(
-        IConventionContext conventionContext, IServiceFactoryAdapter? innerServiceProviderFactory, bool applyDefaultConventions
+        IConventionContext conventionContext,
+        IServiceFactoryAdapter? innerServiceProviderFactory,
+        bool applyDefaultConventions
     )
     {
         _conventionContext = conventionContext;

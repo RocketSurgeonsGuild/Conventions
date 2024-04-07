@@ -25,6 +25,6 @@ public static class AssemblyCandidateFinderExtensions
             throw new ArgumentNullException(nameof(finder));
         }
 
-        return finder.GetCandidateAssemblies(new[] { candidate }.Concat(candidates).ToArray());
+        return finder.GetCandidateAssemblies(new[] { candidate, }.Concat(candidates).ToArray());
     }
 }

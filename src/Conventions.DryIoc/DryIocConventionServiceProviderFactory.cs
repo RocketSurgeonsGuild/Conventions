@@ -8,9 +8,9 @@ internal class DryIocConventionServiceProviderFactory(IConventionContext convent
 {
     public IContainer CreateBuilder(IServiceCollection services)
     {
-#pragma warning disable CA2000
+        #pragma warning disable CA2000
         var container1 = container ?? new Container().WithDependencyInjectionAdapter();
-#pragma warning restore CA2000
+        #pragma warning restore CA2000
         container1 = container1.ApplyConventions(conventionContext, services);
         container1.Populate(services);
         return container1;

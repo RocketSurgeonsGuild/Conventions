@@ -150,14 +150,19 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IConfiguration, IServiceCollection, CancellationToken, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureServices(
+        this ConventionContextBuilder container,
+        Func<IConfiguration, IServiceCollection, CancellationToken, ValueTask> @delegate
+    )
     {
         if (container == null)
         {
             throw new ArgumentNullException(nameof(container));
         }
 
-        container.AppendDelegate(new ServiceAsyncConvention((_, configuration, services, cancellationToken) => @delegate(configuration, services, cancellationToken)));
+        container.AppendDelegate(
+            new ServiceAsyncConvention((_, configuration, services, cancellationToken) => @delegate(configuration, services, cancellationToken))
+        );
         return container;
     }
 
@@ -167,7 +172,10 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IConfiguration, IServiceCollection, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureServices(
+        this ConventionContextBuilder container,
+        Func<IConfiguration, IServiceCollection, ValueTask> @delegate
+    )
     {
         if (container == null)
         {
@@ -218,7 +226,10 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IServiceCollection, CancellationToken, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureServices(
+        this ConventionContextBuilder container,
+        Func<IServiceCollection, CancellationToken, ValueTask> @delegate
+    )
     {
         if (container == null)
         {
@@ -286,14 +297,19 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<IConfiguration, ILoggingBuilder, CancellationToken, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureLogging(
+        this ConventionContextBuilder container,
+        Func<IConfiguration, ILoggingBuilder, CancellationToken, ValueTask> @delegate
+    )
     {
         if (container == null)
         {
             throw new ArgumentNullException(nameof(container));
         }
 
-        container.AppendDelegate(new LoggingAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken)));
+        container.AppendDelegate(
+            new LoggingAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken))
+        );
         return container;
     }
 
@@ -337,7 +353,10 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<ILoggingBuilder, CancellationToken, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureLogging(
+        this ConventionContextBuilder container,
+        Func<ILoggingBuilder, CancellationToken, ValueTask> @delegate
+    )
     {
         if (container == null)
         {
@@ -406,7 +425,8 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(
-        this ConventionContextBuilder container, Action<IConfiguration, IConfigurationBuilder> @delegate
+        this ConventionContextBuilder container,
+        Action<IConfiguration, IConfigurationBuilder> @delegate
     )
     {
         if (container == null)
@@ -425,7 +445,8 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(
-        this ConventionContextBuilder container, Func<IConfiguration, IConfigurationBuilder, CancellationToken, ValueTask> @delegate
+        this ConventionContextBuilder container,
+        Func<IConfiguration, IConfigurationBuilder, CancellationToken, ValueTask> @delegate
     )
     {
         if (container == null)
@@ -433,7 +454,9 @@ public static class ConventionHostBuilderExtensions
             throw new ArgumentNullException(nameof(container));
         }
 
-        container.AppendDelegate(new ConfigurationAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken)));
+        container.AppendDelegate(
+            new ConfigurationAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken))
+        );
         return container;
     }
 
@@ -444,7 +467,8 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(
-        this ConventionContextBuilder container, Func<IConfiguration, IConfigurationBuilder, ValueTask> @delegate
+        this ConventionContextBuilder container,
+        Func<IConfiguration, IConfigurationBuilder, ValueTask> @delegate
     )
     {
         if (container == null)
@@ -479,7 +503,10 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Func<IConfigurationBuilder, CancellationToken, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureConfiguration(
+        this ConventionContextBuilder container,
+        Func<IConfigurationBuilder, CancellationToken, ValueTask> @delegate
+    )
     {
         if (container == null)
         {
