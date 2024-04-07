@@ -159,7 +159,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="builderAction"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         Action<ConventionContextBuilder> builderAction
     )
@@ -184,7 +184,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="getConventions"></param>
     /// <param name="action"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         AppDomain appDomain,
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,
@@ -216,7 +216,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="getConventions"></param>
     /// <param name="action"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,
         Action<ConventionContextBuilder>? action = null
@@ -233,7 +233,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="getConventions"></param>
     /// <param name="action"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         IEnumerable<Assembly> assemblies,
         Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,

@@ -3,6 +3,7 @@ namespace Rocket.Surgery.Conventions.DryIoc;
 /// <summary>
 ///     Options for building the DryIoc Container
 /// </summary>
+[PublicAPI]
 public class DryIocOptions
 {
     /// <summary>

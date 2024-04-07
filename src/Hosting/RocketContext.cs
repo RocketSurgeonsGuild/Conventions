@@ -61,6 +61,7 @@ internal class RocketContext
         }
 
         Context.Properties.AddIfMissing(context.HostingEnvironment);
+        Context.Properties.AddIfMissing(context.HostingEnvironment.GetType().FullName!, context.HostingEnvironment);
         RocketInternalsShared.SharedHostConfiguration(Context, configurationBuilder, context.Configuration, context.HostingEnvironment);
     }
 

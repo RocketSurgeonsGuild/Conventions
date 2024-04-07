@@ -1,4 +1,4 @@
-﻿#if NET8_0_OR_GREATER
+﻿#if NET6_0_OR_GREATER
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -43,6 +43,7 @@ internal sealed class RocketApplicationBuilderContext
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing<IConfiguration>(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment);
+        _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment.GetType().FullName!, _hostApplicationBuilder.Environment);
         await RocketInternalsShared.SharedHostConfigurationAsync(
             _context,
             _hostApplicationBuilder.Configuration,

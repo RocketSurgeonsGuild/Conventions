@@ -1,3 +1,4 @@
+#if NET8_0_OR_GREATER
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -12,24 +13,24 @@ namespace Rocket.Surgery.Hosting.Tests;
 public class RocketHostTests
 {
     [Fact]
-    public void Creates_RocketHost_ForAppDomain()
+    public async Task Creates_RocketHost_ForAppDomain()
     {
-        var host = Host.CreateDefaultBuilder().LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
+        var host = await Host.CreateApplicationBuilder().LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
         host.Should().BeAssignableTo<IHostBuilder>();
     }
 
     [Fact]
-    public void Creates_RocketHost_ForAssemblies()
+    public async Task Creates_RocketHost_ForAssemblies()
     {
-        var host = Host.CreateDefaultBuilder()
+        var host = await Host.CreateApplicationBuilder()
                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
         host.Should().BeAssignableTo<IHostBuilder>();
     }
 
     [Fact]
-    public void Creates_RocketHost_WithConfiguration()
+    public async Task Creates_RocketHost_WithConfiguration()
     {
-        var host = Host.CreateDefaultBuilder()
+        var host = await Host.CreateApplicationBuilder()
                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }));
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
@@ -38,9 +39,9 @@ public class RocketHostTests
     }
 
     [Fact]
-    public void Creates_RocketHost_WithModifiedConfiguration_Json()
+    public async Task Creates_RocketHost_WithModifiedConfiguration_Json()
     {
-        var host = Host.CreateDefaultBuilder()
+        var host = await Host.CreateApplicationBuilder()
                        .LaunchWith(
                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }),
                             z => z.ExceptConvention(typeof(YamlConvention))
@@ -53,9 +54,9 @@ public class RocketHostTests
     }
 
     [Fact]
-    public void Creates_RocketHost_WithModifiedConfiguration_Yaml()
+    public async Task Creates_RocketHost_WithModifiedConfiguration_Yaml()
     {
-        var host = Host.CreateDefaultBuilder()
+        var host = await Host.CreateApplicationBuilder()
                        .LaunchWith(
                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly }),
                             z => z.ExceptConvention(typeof(JsonConvention))
@@ -67,3 +68,4 @@ public class RocketHostTests
         configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
     }
 }
+#endif

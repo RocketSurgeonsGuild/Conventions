@@ -7,6 +7,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 /// <summary>
 ///     Class RocketBooster.
 /// </summary>
+[PublicAPI]
 public static class RocketBooster
 {
     /// <summary>

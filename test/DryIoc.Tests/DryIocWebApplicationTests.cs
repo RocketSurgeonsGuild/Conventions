@@ -16,9 +16,9 @@ namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 public class DryIocWebApplicationTests : AutoFakeTest
 {
     [Fact]
-    public void ConstructTheContainerAndRegisterWithCore()
+    public async Task ConstructTheContainerAndRegisterWithCore()
     {
-        var builder = WebApplication.CreateBuilder()
+        var builder = await WebApplication.CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb.UseDryIoc()
                                                  .DisableConventionAttributes()
@@ -40,9 +40,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithApplication()
+    public async Task ConstructTheContainerAndRegisterWithApplication()
     {
-        var builder = WebApplication.CreateBuilder()
+        var builder = await WebApplication.CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                               .UseDryIoc()
@@ -66,9 +66,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithSystem()
+    public async Task ConstructTheContainerAndRegisterWithSystem()
     {
-        var builder = WebApplication.CreateBuilder()
+        var builder = await WebApplication.CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                               .UseDryIoc()
@@ -91,9 +91,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithCore_ServiceProvider()
+    public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
-        var builder = WebApplication.CreateBuilder()
+        var builder = await WebApplication.CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                               .UseDryIoc()
@@ -118,9 +118,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
+    public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
-        var builder = WebApplication.CreateBuilder()
+        var builder = await WebApplication.CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                               .UseDryIoc()
@@ -145,9 +145,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
+    public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
-        var builder = WebApplication.CreateBuilder()
+        var builder = await WebApplication.CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                               .UseDryIoc()
@@ -171,9 +171,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention()
+    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
-        var builder = WebApplication.CreateBuilder()
+        var builder = await WebApplication.CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                               .UseDryIoc()
@@ -190,9 +190,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
+    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
     {
-        var builder = WebApplication.CreateBuilder()
+        var builder = await WebApplication.CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                               .UseDryIoc()

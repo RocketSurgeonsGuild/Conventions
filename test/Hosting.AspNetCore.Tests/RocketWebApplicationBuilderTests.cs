@@ -9,26 +9,24 @@ using Xunit.Abstractions;
 // ReSharper disable once CheckNamespace
 namespace AspNetCore.Tests;
 
-public class RocketWebApplicationBuilderTests : AutoFakeTest
+public class RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
 {
     [Fact]
-    public void Should_Build_The_Host_Correctly()
+    public async Task Should_Build_The_Host_Correctly()
     {
-        var builder = WebApplication
+        var builder = await WebApplication
                      .CreateBuilder()
                      .ConfigureRocketSurgery(
                           x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly, })
                       );
         builder.WebHost.UseTestServer();
 
-        using var host = builder.Build();
+        await using var host = builder.Build();
         new TestStartup(builder.Environment, builder.Configuration).Configure(host);
-        host.StartAsync();
+        await host.StartAsync();
         var server = host.GetTestServer();
         server.CreateClient();
-        host.StopAsync();
+        await host.StopAsync();
     }
-
-    public RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 }
 #endif

@@ -35,6 +35,7 @@ internal static class RocketInternalsShared
         }
     }
 
+    [Obsolete("Use ApplyConventionsAsync instead, this method does not support async conventions")]
     internal static void SharedHostConfiguration(
         IConventionContext context,
         IConfigurationBuilder configurationBuilder,

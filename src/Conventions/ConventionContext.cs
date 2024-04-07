@@ -20,6 +20,7 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
+    [Obsolete("Use FromAsync instead, this method does not support async conventions")]
     public static IConventionContext From(ConventionContextBuilder builder)
     {
         var context = FromInitInternal(builder);
@@ -27,20 +28,6 @@ public sealed class ConventionContext : IConventionContext
 
         context.ApplyConventions();
         context.Properties.Add(ConventionsSetup, true);
-        return context;
-    }
-
-    private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
-    {
-        builder._assemblyCandidateFinderFactory ??= ConventionContextHelpers.DefaultAssemblyCandidateFinderFactory;
-        builder._assemblyProviderFactory ??= ConventionContextHelpers.DefaultAssemblyProviderFactory;
-
-        var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
-        var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
-        var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        builder.Properties.Set(builder._serviceProviderFactory!);
-        var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
         return context;
     }
 
@@ -57,6 +44,20 @@ public sealed class ConventionContext : IConventionContext
 
         await context.ApplyConventionsAsync(cancellationToken);
         context.Properties.Add(ConventionsSetup, true);
+        return context;
+    }
+
+    private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
+    {
+        builder._assemblyCandidateFinderFactory ??= ConventionContextHelpers.DefaultAssemblyCandidateFinderFactory;
+        builder._assemblyProviderFactory ??= ConventionContextHelpers.DefaultAssemblyProviderFactory;
+
+        var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
+        var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
+        var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        builder.Properties.Set(builder._serviceProviderFactory!);
+        var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
         return context;
     }
 
