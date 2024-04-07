@@ -16,7 +16,7 @@ internal sealed class RocketApplicationBuilderContext
     private readonly IConventionContext _context;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RocketContext" /> class.
+    ///     Initializes a new instance of the <see cref="RocketApplicationBuilderContext" /> class.
     /// </summary>
     /// <param name="hostApplicationBuilder">The host builder.</param>
     /// <param name="context"></param>
@@ -30,10 +30,7 @@ internal sealed class RocketApplicationBuilderContext
     ///     Construct and compose hosting conventions
     /// </summary>
     /// <exception cref="ArgumentNullException"></exception>
-    public ValueTask ComposeHostingConvention(CancellationToken cancellationToken)
-    {
-        return _hostApplicationBuilder.ApplyConventionsAsync(_context, cancellationToken);
-    }
+    public ValueTask ComposeHostingConvention(CancellationToken cancellationToken) => _hostApplicationBuilder.ApplyConventionsAsync(_context, cancellationToken);
 
     /// <summary>
     ///     Configures the application configuration.
@@ -43,16 +40,8 @@ internal sealed class RocketApplicationBuilderContext
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing<IConfiguration>(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment);
-        _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment.GetType().FullName!, _hostApplicationBuilder.Environment);
-        await RocketInternalsShared
-             .SharedHostConfigurationAsync(
-                  _context,
-                  _hostApplicationBuilder.Configuration,
-                  _hostApplicationBuilder.Configuration,
-                  _hostApplicationBuilder.Environment,
-                  cancellationToken
-              )
-             .ConfigureAwait(false);
+        _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment.GetType(), _hostApplicationBuilder.Environment);
+        await RocketInternalsShared.SharedHostConfigurationAsync(_context, _hostApplicationBuilder, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -64,9 +53,6 @@ internal sealed class RocketApplicationBuilderContext
         await _hostApplicationBuilder.Logging.ApplyConventionsAsync(_context, cancellationToken).ConfigureAwait(false);
     }
 
-    public IServiceProviderFactory<object> UseServiceProviderFactory()
-    {
-        return ConventionServiceProviderFactory.Wrap(_context, false);
-    }
+    public IServiceProviderFactory<object> UseServiceProviderFactory() => ConventionServiceProviderFactory.Wrap(_context);
 }
 #endif

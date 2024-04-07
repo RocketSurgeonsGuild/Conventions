@@ -221,8 +221,8 @@ public class DryIocWebApplicationTests : AutoFakeTest
     [Fact]
     public async Task Should_Integrate_With_DryIoc()
     {
-        var builder = Host
-                     .CreateDefaultBuilder(Array.Empty<string>())
+        var builder = await Host
+                     .CreateApplicationBuilder(Array.Empty<string>())
                      .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         using var host = builder.Build();

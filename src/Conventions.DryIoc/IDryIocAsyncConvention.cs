@@ -20,7 +20,7 @@ public interface IDryIocAsyncConvention : IConvention
     /// <param name="services"></param>
     /// <param name="container"></param>
     /// <param name="cancellationToken"></param>
-    IContainer Register(
+    ValueTask<IContainer> Register(
         IConventionContext conventionContext,
         IConfiguration configuration,
         IServiceCollection services,

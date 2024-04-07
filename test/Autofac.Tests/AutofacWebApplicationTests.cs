@@ -34,7 +34,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                       )
                             );
 
-        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().Should().NotBeNull();
         items.ResolveOptional<IAbc2>().Should().NotBeNull();
         items.ResolveOptional<IAbc3>().Should().BeNull();
@@ -60,7 +60,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                       )
                             );
 
-        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().Should().NotBeNull();
         items.ResolveOptional<IAbc2>().Should().NotBeNull();
         items.ResolveOptional<IAbc3>().Should().BeNull();
@@ -85,7 +85,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                       )
                             );
 
-        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().Should().BeNull();
         items.ResolveOptional<IAbc2>().Should().BeNull();
         items.ResolveOptional<IAbc3>().Should().NotBeNull();
@@ -110,7 +110,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                       )
                             );
 
-        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        var items = builder.GetLifetimeScope();
 
         var sp = items.Resolve<IServiceProvider>();
         sp.GetService<IAbc>().Should().NotBeNull();
@@ -138,7 +138,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                       )
                             );
 
-        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
         sp.GetService<IAbc>().Should().NotBeNull();
         sp.GetService<IAbc2>().Should().NotBeNull();
@@ -164,7 +164,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                       )
                             );
 
-        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
         sp.GetService<IAbc>().Should().BeNull();
         sp.GetService<IAbc2>().Should().BeNull();
@@ -182,7 +182,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                    .UseAutofac()
                             );
 
-        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().Should().NotBeNull();
         items.ResolveOptional<IAbc2>().Should().NotBeNull();
         items.ResolveOptional<IAbc3>().Should().BeNull();
@@ -196,7 +196,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                            .CreateBuilder()
                            .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
-        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().Should().NotBeNull();
         items.ResolveOptional<IAbc2>().Should().NotBeNull();
         items.ResolveOptional<IAbc3>().Should().BeNull();
@@ -206,14 +206,13 @@ public class AutofacWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public void Should_Integrate_With_Autofac()
+    public async Task Should_Integrate_With_Autofac()
     {
-        var builder = Host
-                     .CreateDefaultBuilder(Array.Empty<string>())
+        var builder = await Host
+                     .CreateApplicationBuilder(Array.Empty<string>())
                      .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
-        using var host = builder.Build();
-        host.Services.GetRequiredService<ILifetimeScope>().Should().NotBeNull();
+        builder.GetLifetimeScope().Should().NotBeNull();
     }
 
     public AutofacWebApplicationTests(ITestOutputHelper outputHelper) : base(outputHelper)

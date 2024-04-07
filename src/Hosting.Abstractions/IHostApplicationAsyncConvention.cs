@@ -1,4 +1,3 @@
-#if NET6_0_OR_GREATER
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 
@@ -20,4 +19,3 @@ public interface IHostApplicationAsyncConvention : IConvention
     /// <param name="cancellationToken"></param>
     ValueTask Register(IConventionContext context, IHostApplicationBuilder builder, CancellationToken cancellationToken);
 }
-#endif

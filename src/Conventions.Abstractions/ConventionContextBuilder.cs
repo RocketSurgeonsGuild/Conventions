@@ -9,6 +9,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Adapters;
+using ServiceFactoryAdapter = System.Func<Rocket.Surgery.Conventions.IConventionContext, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter>>;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -35,7 +36,7 @@ public class ConventionContextBuilder
     internal readonly List<object> _includeConventions = new();
     internal readonly List<Assembly> _includeAssemblyConventions = new();
     internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProviderFactory;
-    internal Func<IConventionContext, IServiceFactoryAdapter>? _serviceProviderFactory;
+    internal ServiceFactoryAdapter? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
     internal object? _source;
     internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;

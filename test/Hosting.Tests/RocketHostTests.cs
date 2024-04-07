@@ -15,7 +15,7 @@ public class RocketHostTests
     public async Task Creates_RocketHost_ForAppDomain()
     {
         var host = await Host.CreateApplicationBuilder().LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
-        host.Should().BeAssignableTo<IHostBuilder>();
+        host.Should().BeAssignableTo<IHostApplicationBuilder>();
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class RocketHostTests
         var host = await Host
                         .CreateApplicationBuilder()
                         .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }));
-        host.Should().BeAssignableTo<IHostBuilder>();
+        host.Should().BeAssignableTo<IHostApplicationBuilder>();
     }
 
     [Fact]

@@ -15,37 +15,6 @@ public static class RocketSurgeryLoggingExtensions
     /// <param name="configurationBuilder"></param>
     /// <param name="conventionContext"></param>
     /// <param name="outerConfiguration"></param>
-    /// <returns></returns>
-    [Obsolete("Use ApplyConventionsAsync instead, this method does not support async conventions")]
-    public static IConfigurationBuilder ApplyConventions(
-        this IConfigurationBuilder configurationBuilder,
-        IConventionContext conventionContext,
-        IConfiguration? outerConfiguration = null
-    )
-    {
-        outerConfiguration ??= new ConfigurationBuilder().Build();
-        foreach (var item in conventionContext.Conventions.Get<IConfigurationConvention, ConfigurationConvention>())
-        {
-            switch (item)
-            {
-                case IConfigurationConvention convention:
-                    convention.Register(conventionContext, outerConfiguration, configurationBuilder);
-                    break;
-                case ConfigurationConvention @delegate:
-                    @delegate(conventionContext, outerConfiguration, configurationBuilder);
-                    break;
-            }
-        }
-
-        return configurationBuilder;
-    }
-
-    /// <summary>
-    ///     Apply configuration conventions
-    /// </summary>
-    /// <param name="configurationBuilder"></param>
-    /// <param name="conventionContext"></param>
-    /// <param name="outerConfiguration"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask<IConfigurationBuilder> ApplyConventionsAsync(

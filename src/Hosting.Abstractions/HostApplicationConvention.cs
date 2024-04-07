@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Hosting;
@@ -11,4 +10,3 @@ namespace Rocket.Surgery.Hosting;
 /// <param name="builder">The builder.</param>
 [PublicAPI]
 public delegate void HostApplicationConvention(IConventionContext context, IHostApplicationBuilder builder);
-#endif

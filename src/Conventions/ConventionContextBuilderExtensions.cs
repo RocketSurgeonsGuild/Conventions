@@ -18,19 +18,19 @@ public static class ConventionContextBuilderExtensions
     /// <param name="configuration"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static IServiceProvider CreateServiceProvider(this IConventionContext context, IConfiguration? configuration = null)
+    public static async ValueTask<IServiceProvider> CreateServiceProvider(this IConventionContext context, IConfiguration? configuration = null, CancellationToken cancellationToken = default)
     {
         var cb = new ConfigurationBuilder();
         configuration ??= context.Get<IConfiguration>();
         if (configuration is { })
             cb.AddConfiguration(configuration);
-        configuration = cb.ApplyConventions(context, configuration).Build();
+        configuration = (await cb.ApplyConventionsAsync(context, configuration, cancellationToken)).Build();
         context.Set(configuration);
         var services = new ServiceCollection();
         services.AddSingleton(configuration);
 
-        var factory = ConventionServiceProviderFactory.From(context);
-        return factory.CreateServiceProvider(factory.CreateBuilder(services));
+        var factory = await ConventionServiceProviderFactory.FromAsync(context, cancellationToken);
+        return await factory.CreateServiceProvider(factory.CreateBuilder(services));
     }
 
     /// <summary>
@@ -39,9 +39,9 @@ public static class ConventionContextBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IServiceProvider CreateServiceProvider(this ConventionContextBuilder builder, IConfiguration? configuration = null)
+    public static async ValueTask<IServiceProvider> CreateServiceProvider(this ConventionContextBuilder builder, IConfiguration? configuration = null)
     {
-        return CreateServiceProvider(ConventionContext.From(builder), configuration);
+        return await CreateServiceProvider(await ConventionContext.FromAsync(builder), configuration);
     }
 
     /// <summary>
@@ -66,8 +66,8 @@ public static class ConventionContextBuilderExtensions
         var services = new ServiceCollection();
         services.AddSingleton(configuration);
 
-        var factory = ConventionServiceProviderFactory.From(context);
-        return factory.CreateServiceProvider(factory.CreateBuilder(services));
+        var factory = await ConventionServiceProviderFactory.FromAsync(context, cancellationToken);
+        return await factory.CreateServiceProvider(factory.CreateBuilder(services));
     }
 
     /// <summary>

@@ -13,7 +13,7 @@ namespace Rocket.Surgery.Conventions.DryIoc;
 /// <param name="container"></param>
 /// <param name="cancellationToken"></param>
 [PublicAPI]
-public delegate IContainer DryIocAsyncConvention(
+public delegate ValueTask<IContainer> DryIocAsyncConvention(
     IConventionContext conventionContext,
     IConfiguration configuration,
     IServiceCollection services,

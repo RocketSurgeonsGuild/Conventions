@@ -54,43 +54,68 @@ public static class ConventionHostBuilderExtensions
     /// <summary>
     ///     Set the service provider factory to be used for hosting or other systems.
     /// </summary>
-    /// <param name="container"></param>
+    /// <param name="builder"></param>
     /// <param name="serviceProviderFactory"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     public static ConventionContextBuilder UseServiceProviderFactory<TContainerBuilder>(
-        this ConventionContextBuilder container,
+        this ConventionContextBuilder builder,
         IServiceProviderFactory<TContainerBuilder> serviceProviderFactory
     ) where TContainerBuilder : notnull
     {
-        if (container == null)
+        if (builder == null)
         {
-            throw new ArgumentNullException(nameof(container));
+            throw new ArgumentNullException(nameof(builder));
         }
 
-        container._serviceProviderFactory = _ => new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory);
-        return container;
+        #if NET6_0_OR_GREATER
+        builder._serviceProviderFactory = (_, _) => ValueTask.FromResult<IServiceFactoryAdapter>(new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory));
+        #else
+        builder._serviceProviderFactory = async (_, _) => new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory);
+        #endif
+        return builder;
     }
 
     /// <summary>
     ///     Set the service provider factory to be used for hosting or other systems.
     /// </summary>
-    /// <param name="container"></param>
+    /// <param name="builder"></param>
     /// <param name="serviceProviderFactory"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     public static ConventionContextBuilder UseServiceProviderFactory<TContainerBuilder>(
-        this ConventionContextBuilder container,
-        Func<IConventionContext, IServiceProviderFactory<TContainerBuilder>> serviceProviderFactory
+        this ConventionContextBuilder builder,
+        Func<IConventionContext, CancellationToken, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
     ) where TContainerBuilder : notnull
     {
-        if (container == null)
+        if (builder == null)
         {
-            throw new ArgumentNullException(nameof(container));
+            throw new ArgumentNullException(nameof(builder));
         }
 
-        container._serviceProviderFactory = x => new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory(x));
-        return container;
+        builder._serviceProviderFactory = async (x, ct) => new ServiceFactoryAdapter<TContainerBuilder>(await serviceProviderFactory(x, ct));
+        return builder;
+    }
+
+    /// <summary>
+    ///     Set the service provider factory to be used for hosting or other systems.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="serviceProviderFactory"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static ConventionContextBuilder UseServiceProviderFactory<TContainerBuilder>(
+        this ConventionContextBuilder builder,
+        Func<IConventionContext, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
+    ) where TContainerBuilder : notnull
+    {
+        if (builder == null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        builder._serviceProviderFactory = async (x, _) => new ServiceFactoryAdapter<TContainerBuilder>(await serviceProviderFactory(x));
+        return builder;
     }
 
     /// <summary>

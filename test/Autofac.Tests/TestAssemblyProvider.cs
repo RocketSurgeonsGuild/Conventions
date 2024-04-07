@@ -12,10 +12,7 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
         return new[]
         {
             typeof(AutofacConventionServiceProviderFactory).GetTypeInfo().Assembly,
-            typeof(RocketHostExtensions).GetTypeInfo().Assembly,
-            #if NET8_0_OR_GREATER
             typeof(RocketHostApplicationExtensions).GetTypeInfo().Assembly,
-            #endif
             typeof(TestAssemblyProvider).GetTypeInfo().Assembly
         };
     }

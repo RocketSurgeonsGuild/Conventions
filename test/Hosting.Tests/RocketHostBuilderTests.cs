@@ -130,17 +130,17 @@ public partial class RocketHostBuilderTests : AutoFakeTest
     [Fact]
     public async Task Should_ConfigureHosting()
     {
-        var convention = A.Fake<HostingConvention>();
+        var convention = A.Fake<HostApplicationConvention>();
         var builder = await Host
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
-                                     .UseDependencyContext(DependencyContext.Default!)
-                                     .ConfigureHosting(convention)
+                                       .UseDependencyContext(DependencyContext.Default!)
+                                       .ConfigureApplication(convention)
                             );
 
         builder.Build();
-        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostBuilder>._)).MustHaveHappened();
+        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
     }
 
     [Fact]

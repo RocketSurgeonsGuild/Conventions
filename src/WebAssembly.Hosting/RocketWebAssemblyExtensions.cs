@@ -239,7 +239,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="func">The function.</param>
     /// <param name="action">The action.</param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async Task<WebAssemblyHostBuilder> UseRocketBooster(
+    public static async ValueTask<WebAssemblyHostBuilder> UseRocketBooster(
         this WebAssemblyHostBuilder builder,
         Func<WebAssemblyHostBuilder, ConventionContextBuilder> func,
         Action<ConventionContextBuilder>? action = null
@@ -268,7 +268,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="func">The function.</param>
     /// <param name="action">The action.</param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async Task<WebAssemblyHostBuilder> LaunchWith(
+    public static async ValueTask<WebAssemblyHostBuilder> LaunchWith(
         this WebAssemblyHostBuilder builder,
         Func<WebAssemblyHostBuilder, ConventionContextBuilder> func,
         Action<ConventionContextBuilder>? action = null
@@ -295,13 +295,13 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="contextBuilder"></param>
-    internal static async Task ApplyConventions(
+    internal static async ValueTask<WebAssemblyHostBuilder> ApplyConventions(
         WebAssemblyHostBuilder builder,
         ConventionContextBuilder contextBuilder
     )
     {
-        var context = ConventionContext.From(contextBuilder);
-        await builder.ConfigureRocketSurgery(context);
+        var context = await ConventionContext.FromAsync(contextBuilder);
+        return await builder.ConfigureRocketSurgery(context);
     }
 
     /// <summary>
@@ -309,11 +309,6 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="context"></param>
-    internal static async Task ApplyConventions(
-        WebAssemblyHostBuilder builder,
-        IConventionContext context
-    )
-    {
-        await builder.ConfigureRocketSurgery(context);
-    }
+    internal static ValueTask<WebAssemblyHostBuilder> ApplyConventions(WebAssemblyHostBuilder builder, IConventionContext context) =>
+        builder.ConfigureRocketSurgery(context);
 }

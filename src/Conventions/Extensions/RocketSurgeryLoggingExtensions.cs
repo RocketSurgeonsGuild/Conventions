@@ -16,45 +16,6 @@ public static class RocketSurgeryLoggingExtensions
     /// </summary>
     /// <param name="loggingBuilder"></param>
     /// <param name="conventionContext"></param>
-    /// <returns></returns>
-    [Obsolete("Use ApplyConventionsAsync instead, this method does not support async conventions")]
-    public static ILoggingBuilder ApplyConventions(this ILoggingBuilder loggingBuilder, IConventionContext conventionContext)
-    {
-        var configuration = conventionContext.Get<IConfiguration>();
-        if (configuration is null)
-        {
-            configuration = new ConfigurationBuilder().Build();
-            conventionContext.Logger.LogWarning("Configuration was not found in context");
-        }
-
-        loggingBuilder.AddConfiguration(configuration.GetSection("Logging"));
-        var logLevel = conventionContext.GetOrAdd(() => new RocketLoggingOptions()).GetLogLevel(configuration);
-        if (logLevel.HasValue)
-        {
-            loggingBuilder.SetMinimumLevel(logLevel.Value);
-        }
-
-        foreach (var item in conventionContext.Conventions.Get<ILoggingConvention, LoggingConvention>())
-        {
-            switch (item)
-            {
-                case ILoggingConvention convention:
-                    convention.Register(conventionContext, configuration, loggingBuilder);
-                    break;
-                case LoggingConvention @delegate:
-                    @delegate(conventionContext, configuration, loggingBuilder);
-                    break;
-            }
-        }
-
-        return loggingBuilder;
-    }
-
-    /// <summary>
-    ///     Apply logging conventions
-    /// </summary>
-    /// <param name="loggingBuilder"></param>
-    /// <param name="conventionContext"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask<ILoggingBuilder> ApplyConventionsAsync(
