@@ -15,18 +15,26 @@ public static class RocketSurgeryWebApplicationBuilderLoggingExtensions
     /// </summary>
     /// <param name="webApplicationBuilder"></param>
     /// <param name="conventionContext"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static WebApplicationBuilder ApplyConventions(this WebApplicationBuilder webApplicationBuilder, IConventionContext conventionContext)
+    public static async ValueTask<WebApplicationBuilder> ApplyConventionsAsync(this WebApplicationBuilder webApplicationBuilder, IConventionContext conventionContext, CancellationToken cancellationToken = default)
     {
-        foreach (var item in conventionContext.Conventions.Get<IHostingConvention, HostingConvention>())
+        foreach (var item in conventionContext.Conventions.Get<IHostingConvention, HostingConvention, IHostingAsyncConvention, HostingAsyncConvention>())
         {
-            if (item is IHostingConvention convention)
+            switch (item)
             {
-                convention.Register(conventionContext, webApplicationBuilder.Host);
-            }
-            else if (item is HostingConvention @delegate)
-            {
-                @delegate(conventionContext, webApplicationBuilder.Host);
+                case IHostingConvention convention:
+                    convention.Register(conventionContext, webApplicationBuilder.Host);
+                    break;
+                case HostingConvention @delegate:
+                    @delegate(conventionContext, webApplicationBuilder.Host);
+                    break;
+                case IHostingAsyncConvention convention:
+                    await convention.Register(conventionContext, webApplicationBuilder.Host, cancellationToken).ConfigureAwait(false);
+                    break;
+                case HostingAsyncConvention @delegate:
+                    await @delegate(conventionContext, webApplicationBuilder.Host, cancellationToken).ConfigureAwait(false);
+                    break;
             }
         }
 

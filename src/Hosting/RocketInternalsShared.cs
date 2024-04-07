@@ -10,7 +10,56 @@ namespace Rocket.Surgery.Hosting;
 
 internal static class RocketInternalsShared
 {
+    internal static async ValueTask SharedHostConfigurationAsync(
+        IConventionContext context,
+        IConfigurationBuilder configurationBuilder,
+        IConfiguration configuration,
+        IHostEnvironment environment,
+        CancellationToken cancellationToken
+    )
+    {
+        var index = SharedHostConfigurationInternal(context, configurationBuilder, configuration, environment);
+        // Insert after all the normal configuration but before the environment specific configuration
+
+        var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, configuration, cancellationToken).ConfigureAwait(false);
+        if (cb.Sources is { Count: > 0, })
+        {
+            configurationBuilder.Sources.Insert(
+                index + 1,
+                new ChainedConfigurationSource
+                {
+                    Configuration = cb.Build(),
+                    ShouldDisposeConfiguration = true,
+                }
+            );
+        }
+    }
+
     internal static void SharedHostConfiguration(
+        IConventionContext context,
+        IConfigurationBuilder configurationBuilder,
+        IConfiguration configuration,
+        IHostEnvironment environment
+    )
+    {
+        var index = SharedHostConfigurationInternal(context, configurationBuilder, configuration, environment);
+        // Insert after all the normal configuration but before the environment specific configuration
+
+        var cb =  new ConfigurationBuilder().ApplyConventions(context, configuration);
+        if (cb.Sources is { Count: > 0, })
+        {
+            configurationBuilder.Sources.Insert(
+                index + 1,
+                new ChainedConfigurationSource
+                {
+                    Configuration = cb.Build(),
+                    ShouldDisposeConfiguration = true,
+                }
+            );
+        }
+    }
+
+    private static int SharedHostConfigurationInternal(
         IConventionContext context,
         IConfigurationBuilder configurationBuilder,
         IConfiguration configuration,
@@ -81,8 +130,6 @@ internal static class RocketInternalsShared
                .Select(z => z.Factory(null))
         );
 
-        // Insert after all the normal configuration but before the environment specific configuration
-
         IConfigurationSource? source = null;
         foreach (var item in configurationBuilder.Sources.Reverse())
         {
@@ -102,17 +149,6 @@ internal static class RocketInternalsShared
             ? configurationBuilder.Sources.Count - 1
             : configurationBuilder.Sources.IndexOf(source);
 
-        var cb = new ConfigurationBuilder().ApplyConventions(context, configuration);
-        if (cb.Sources is { Count: > 0, })
-        {
-            configurationBuilder.Sources.Insert(
-                index + 1,
-                new ChainedConfigurationSource
-                {
-                    Configuration = cb.Build(),
-                    ShouldDisposeConfiguration = true,
-                }
-            );
-        }
+        return index;
     }
 }

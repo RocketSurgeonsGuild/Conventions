@@ -22,6 +22,16 @@ public sealed class ConventionContext : IConventionContext
     /// <returns></returns>
     public static IConventionContext From(ConventionContextBuilder builder)
     {
+        var context = FromInitInternal(builder);
+        if (context.Properties.ContainsKey(ConventionsSetup)) return context;
+
+        context.ApplyConventions();
+        context.Properties.Add(ConventionsSetup, true);
+        return context;
+    }
+
+    private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
+    {
         builder._assemblyCandidateFinderFactory ??= ConventionContextHelpers.DefaultAssemblyCandidateFinderFactory;
         builder._assemblyProviderFactory ??= ConventionContextHelpers.DefaultAssemblyProviderFactory;
 
@@ -31,10 +41,21 @@ public sealed class ConventionContext : IConventionContext
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         builder.Properties.Set(builder._serviceProviderFactory!);
         var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
+        return context;
+    }
 
+    /// <summary>
+    ///     Create a context from a given builder
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async ValueTask<IConventionContext> FromAsync(ConventionContextBuilder builder, CancellationToken cancellationToken = default)
+    {
+        var context = FromInitInternal(builder);
         if (context.Properties.ContainsKey(ConventionsSetup)) return context;
 
-        context.ApplyConventions();
+        await context.ApplyConventionsAsync(cancellationToken);
         context.Properties.Add(ConventionsSetup, true);
         return context;
     }

@@ -12,6 +12,7 @@ namespace Rocket.Surgery.Hosting;
 /// <summary>
 ///     Class RocketHostExtensions.
 /// </summary>
+[PublicAPI]
 public static class RocketHostExtensions
 {
     /// <summary>
@@ -227,8 +228,9 @@ public static class RocketHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="contextBuilder"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns>RocketHostBuilder.</returns>
-    internal static ConventionContextBuilder Configure(IHostApplicationBuilder builder, ConventionContextBuilder contextBuilder)
+    internal static async ValueTask<ConventionContextBuilder> Configure(IHostApplicationBuilder builder, ConventionContextBuilder contextBuilder, CancellationToken cancellationToken)
     {
         contextBuilder
            .Properties
@@ -239,29 +241,24 @@ public static class RocketHostExtensions
         builder.Properties[typeof(IHostApplicationBuilder)] = builder;
 
         if (contextBuilder.Properties.ContainsKey(typeof(RocketHostExtensions))) return contextBuilder;
+
+        var host = new RocketApplicationBuilderContext(builder, ConventionContext.From(contextBuilder));
+        await host.ComposeHostingConvention(cancellationToken);
+        await host.ConfigureAppConfiguration(cancellationToken);
+        await host.ConfigureServices(cancellationToken);
+
         contextBuilder.Properties.Add(typeof(RocketHostExtensions), true);
-        builder.ConfigureContainer(
-            LazyConventionServiceProviderFactory.Create(
-                () =>
-                {
-                    var host = new RocketApplicationBuilderContext(builder, ConventionContext.From(contextBuilder));
-                    host.ComposeHostingConvention();
-                    host.ConfigureAppConfiguration();
-                    host.ConfigureServices();
-                    return host.UseServiceProviderFactory();
-                }
-            )
-        );
+        builder.ConfigureContainer(  host.UseServiceProviderFactory());
         return contextBuilder;
     }
-    #endif
-    #if NET8_0_OR_GREATER
+
     /// <summary>
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>IHostApplicationBuilder.</returns>
-    public static IHostApplicationBuilder ConfigureRocketSurgery(this IHostApplicationBuilder builder)
+    public static ValueTask<IHostApplicationBuilder> ConfigureRocketSurgery(this IHostApplicationBuilder builder, CancellationToken cancellationToken = default)
     {
         if (builder == null)
         {
@@ -276,8 +273,9 @@ public static class RocketHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>IHostApplicationBuilder.</returns>
-    public static IHostApplicationBuilder ConfigureRocketSurgery(this IHostApplicationBuilder builder, Action<ConventionContextBuilder> action)
+    public static async ValueTask<IHostApplicationBuilder> ConfigureRocketSurgery(this IHostApplicationBuilder builder, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
     {
         if (builder == null)
         {
@@ -300,7 +298,7 @@ public static class RocketHostExtensions
                    .UseDependencyContext(DependencyContext.Default!)
         );
         action(contextBuilder);
-        Configure(builder, contextBuilder);
+        await Configure(builder, contextBuilder, cancellationToken);
         return builder;
     }
 
@@ -309,10 +307,12 @@ public static class RocketHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="getConventions">The method to get the conventions.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>IHostBuilder.</returns>
-    public static IHostApplicationBuilder ConfigureRocketSurgery(
+    public static async ValueTask<IHostApplicationBuilder> ConfigureRocketSurgery(
         this IHostApplicationBuilder builder,
-        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions,
+        CancellationToken cancellationToken = default
     )
     {
         if (builder == null)
@@ -335,7 +335,7 @@ public static class RocketHostExtensions
                    .UseDependencyContext(DependencyContext.Default!)
                    .WithConventionsFrom(getConventions)
         );
-        Configure(builder, contextBuilder);
+        await Configure(builder, contextBuilder, cancellationToken);
         return builder;
     }
 
@@ -344,8 +344,12 @@ public static class RocketHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="conventionContextBuilder">The convention context builder.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>IHostApplicationBuilder.</returns>
-    public static IHostApplicationBuilder ConfigureRocketSurgery(this IHostApplicationBuilder builder, ConventionContextBuilder conventionContextBuilder)
+    public static async ValueTask<IHostApplicationBuilder> ConfigureRocketSurgery(
+        this IHostApplicationBuilder builder,
+        ConventionContextBuilder conventionContextBuilder,
+        CancellationToken cancellationToken = default)
     {
         if (builder == null)
         {
@@ -357,7 +361,7 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(conventionContextBuilder));
         }
 
-        Configure(builder, conventionContextBuilder);
+        await Configure(builder, conventionContextBuilder, cancellationToken);
         return builder;
     }
 
@@ -367,11 +371,13 @@ public static class RocketHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="func">The function.</param>
     /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>IHostApplicationBuilder.</returns>
-    public static IHostApplicationBuilder UseRocketBooster(
+    public static async ValueTask<IHostApplicationBuilder> UseRocketBooster(
         this IHostApplicationBuilder builder,
         Func<IHostApplicationBuilder, ConventionContextBuilder> func,
-        Action<ConventionContextBuilder>? action = null
+        Action<ConventionContextBuilder>? action = null,
+        CancellationToken cancellationToken = default
     )
     {
         if (builder == null)
@@ -386,7 +392,7 @@ public static class RocketHostExtensions
 
         var b = GetOrCreate(builder, () => func(builder));
         action?.Invoke(b);
-        Configure(builder, b);
+        await Configure(builder, b, cancellationToken);
         return builder;
     }
 
@@ -396,11 +402,13 @@ public static class RocketHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="func">The function.</param>
     /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>IHostApplicationBuilder.</returns>
-    public static IHostApplicationBuilder LaunchWith(
+    public static async ValueTask<IHostApplicationBuilder> LaunchWith(
         this IHostApplicationBuilder builder,
         Func<IHostApplicationBuilder, ConventionContextBuilder> func,
-        Action<ConventionContextBuilder>? action = null
+        Action<ConventionContextBuilder>? action = null,
+        CancellationToken cancellationToken = default
     )
     {
         if (builder == null)
@@ -415,7 +423,7 @@ public static class RocketHostExtensions
 
         var b = GetOrCreate(builder, () => func(builder));
         action?.Invoke(b);
-        Configure(builder, b);
+        await Configure(builder, b, cancellationToken);
         return builder;
     }
     #endif

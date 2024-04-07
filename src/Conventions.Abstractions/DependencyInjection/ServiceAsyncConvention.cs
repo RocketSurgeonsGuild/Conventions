@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Rocket.Surgery.Conventions.DependencyInjection;
@@ -9,5 +9,6 @@ namespace Rocket.Surgery.Conventions.DependencyInjection;
 /// <param name="context">The context.</param>
 /// <param name="configuration"></param>
 /// <param name="services"></param>
+/// <param name="cancellationToken"></param>
 [PublicAPI]
-public delegate void ServiceConvention(IConventionContext context, IConfiguration configuration, IServiceCollection services);
+public delegate ValueTask ServiceAsyncConvention(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken);

@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace Rocket.Surgery.Conventions.Configuration;
 
 /// <summary>
-///     IConfigurationConvention
+///     IConfigurationAsyncConvention
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
 [PublicAPI]
-public interface IConfigurationConvention : IConvention
+public interface IConfigurationAsyncConvention : IConvention
 {
     /// <summary>
     ///     Register additional configuration providers with the configuration builder
@@ -16,5 +16,6 @@ public interface IConfigurationConvention : IConvention
     /// <param name="context">The context.</param>
     /// <param name="configuration"></param>
     /// <param name="builder"></param>
-    void Register(IConventionContext context, IConfiguration configuration, IConfigurationBuilder builder);
+    /// <param name="cancellationToken"></param>
+    ValueTask Register(IConventionContext context, IConfiguration configuration, IConfigurationBuilder builder, CancellationToken cancellationToken);
 }

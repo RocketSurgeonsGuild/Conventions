@@ -19,6 +19,7 @@ namespace Rocket.Surgery.Conventions;
 ///     Implements the <see cref="IServiceProviderDictionary" />
 /// </summary>
 /// <seealso cref="IServiceProviderDictionary" />
+[PublicAPI]
 public class ReadOnlyServiceProviderDictionary : IReadOnlyServiceProviderDictionary
 {
     private readonly ReadOnlyPropertiesType _values;

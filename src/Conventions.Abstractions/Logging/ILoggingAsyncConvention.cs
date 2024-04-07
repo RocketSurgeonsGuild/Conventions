@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions.Logging;
 
 /// <summary>
-///     ILoggingConvention
+///     ILoggingAsyncConvention
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
 [PublicAPI]
-public interface ILoggingConvention : IConvention
+public interface ILoggingAsyncConvention : IConvention
 {
     /// <summary>
     ///     Register additional logging providers with the logging builder
@@ -17,5 +17,6 @@ public interface ILoggingConvention : IConvention
     /// <param name="context">The context.</param>
     /// <param name="configuration"></param>
     /// <param name="builder"></param>
-    void Register(IConventionContext context, IConfiguration configuration, ILoggingBuilder builder);
+    /// <param name="cancellationToken"></param>
+    ValueTask Register(IConventionContext context, IConfiguration configuration, ILoggingBuilder builder, CancellationToken cancellationToken);
 }

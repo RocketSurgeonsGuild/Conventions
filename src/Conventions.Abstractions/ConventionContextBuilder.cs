@@ -15,6 +15,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Builder that can be used to create a context.
 /// </summary>
+[PublicAPI]
 public class ConventionContextBuilder
 {
     /// <summary>

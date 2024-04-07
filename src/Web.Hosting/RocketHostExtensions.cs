@@ -16,15 +16,18 @@ public static class RocketWebHostExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static WebApplicationBuilder ConfigureRocketSurgery(this WebApplicationBuilder builder)
+    public static ValueTask<WebApplicationBuilder> ConfigureRocketSurgery(
+        this WebApplicationBuilder builder,
+        CancellationToken cancellationToken = default)
     {
         if (builder == null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
 
-        return ConfigureRocketSurgery(builder, _ => { });
+        return ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
     }
 
     /// <summary>
@@ -32,8 +35,12 @@ public static class RocketWebHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static WebApplicationBuilder ConfigureRocketSurgery(this WebApplicationBuilder builder, Action<ConventionContextBuilder> action)
+    public static async ValueTask<WebApplicationBuilder> ConfigureRocketSurgery(
+        this WebApplicationBuilder builder,
+        Action<ConventionContextBuilder> action,
+        CancellationToken cancellationToken = default)
     {
         if (builder == null)
         {
@@ -55,7 +62,7 @@ public static class RocketWebHostExtensions
                    .UseDependencyContext(DependencyContext.Default!)
         );
         action(contextBuilder);
-        Configure(builder, contextBuilder);
+        await Configure(builder, contextBuilder, cancellationToken);
         return builder;
     }
 
@@ -64,9 +71,12 @@ public static class RocketWebHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="getConventions">The method to get the conventions.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>IHostBuilder.</returns>
-    public static WebApplicationBuilder ConfigureRocketSurgery(
-        this WebApplicationBuilder builder, Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    public static async ValueTask<WebApplicationBuilder> ConfigureRocketSurgery(
+        this WebApplicationBuilder builder,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions,
+        CancellationToken cancellationToken = default
     )
     {
         if (builder == null)
@@ -88,7 +98,7 @@ public static class RocketWebHostExtensions
                    .UseDependencyContext(DependencyContext.Default!)
                    .WithConventionsFrom(getConventions)
         );
-        Configure(builder, contextBuilder);
+        await Configure(builder, contextBuilder, cancellationToken);
         return builder;
     }
 
@@ -97,8 +107,13 @@ public static class RocketWebHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="conventionContextBuilder">The convention context builder.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static WebApplicationBuilder ConfigureRocketSurgery(this WebApplicationBuilder builder, ConventionContextBuilder conventionContextBuilder)
+    public static async ValueTask<WebApplicationBuilder> ConfigureRocketSurgery(
+        this WebApplicationBuilder builder,
+        ConventionContextBuilder conventionContextBuilder,
+        CancellationToken cancellationToken = default)
+
     {
         if (builder == null)
         {
@@ -110,7 +125,7 @@ public static class RocketWebHostExtensions
             throw new ArgumentNullException(nameof(conventionContextBuilder));
         }
 
-        Configure(builder, conventionContextBuilder);
+        await Configure(builder, conventionContextBuilder, cancellationToken);
         return builder;
     }
 
@@ -120,11 +135,13 @@ public static class RocketWebHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="func">The function.</param>
     /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static WebApplicationBuilder UseRocketBooster(
+    public static async ValueTask<WebApplicationBuilder> UseRocketBooster(
         this WebApplicationBuilder builder,
         Func<WebApplicationBuilder, ConventionContextBuilder> func,
-        Action<ConventionContextBuilder>? action = null
+        Action<ConventionContextBuilder>? action = null,
+        CancellationToken cancellationToken = default
     )
     {
         if (builder == null)
@@ -139,7 +156,7 @@ public static class RocketWebHostExtensions
 
         var b = GetOrCreate(builder, () => func(builder));
         action?.Invoke(b);
-        Configure(builder, b);
+        await Configure(builder, b, cancellationToken);
         return builder;
     }
 
@@ -149,11 +166,13 @@ public static class RocketWebHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="func">The function.</param>
     /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static WebApplicationBuilder LaunchWith(
+    public static async Task<WebApplicationBuilder> LaunchWith(
         this WebApplicationBuilder builder,
         Func<WebApplicationBuilder, ConventionContextBuilder> func,
-        Action<ConventionContextBuilder>? action = null
+        Action<ConventionContextBuilder>? action = null,
+        CancellationToken cancellationToken = default
     )
     {
         if (builder == null)
@@ -168,7 +187,7 @@ public static class RocketWebHostExtensions
 
         var b = GetOrCreate(builder, () => func(builder));
         action?.Invoke(b);
-        Configure(builder, b);
+        await Configure(builder, b, cancellationToken);
         return builder;
     }
 
@@ -188,8 +207,9 @@ public static class RocketWebHostExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="contextBuilder"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns>RocketHostBuilder.</returns>
-    internal static ConventionContextBuilder Configure(WebApplicationBuilder builder, ConventionContextBuilder contextBuilder)
+    internal static async ValueTask<ConventionContextBuilder> Configure(WebApplicationBuilder builder, ConventionContextBuilder contextBuilder, CancellationToken cancellationToken)
     {
         contextBuilder.Properties
                       .AddIfMissing(builder)
@@ -199,19 +219,13 @@ public static class RocketWebHostExtensions
         builder.Host.Properties[typeof(WebApplicationBuilder)] = builder;
 
         if (contextBuilder.Properties.ContainsKey(typeof(RocketWebHostExtensions))) return contextBuilder;
+        var host = new RocketContext(builder, ConventionContext.From(contextBuilder));
+        await host.ComposeHostingConvention(cancellationToken);
+        await host.ConfigureAppConfiguration(cancellationToken);
+        await host.ConfigureServices(cancellationToken);
+
         contextBuilder.Properties.Add(typeof(RocketWebHostExtensions), true);
-        builder.Host.UseServiceProviderFactory(
-            _ => LazyConventionServiceProviderFactory.Create(
-                () =>
-                {
-                    var host = new RocketContext(builder, ConventionContext.From(contextBuilder));
-                    host.ComposeHostingConvention();
-                    host.ConfigureAppConfiguration();
-                    host.ConfigureServices();
-                    return host.UseServiceProviderFactory();
-                }
-            )
-        );
+        builder.Host.UseServiceProviderFactory(host.UseServiceProviderFactory());
         return contextBuilder;
     }
 }

@@ -4,14 +4,15 @@ using Rocket.Surgery.Conventions;
 namespace Rocket.Surgery.Hosting;
 
 /// <summary>
-///     ILoggingConvention
+///     IHostingConvention
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
+[PublicAPI]
 public interface IHostingConvention : IConvention
 {
     /// <summary>
-    ///     Register additional logging providers with the logging builder
+    ///     Register additional details to the host builder
     /// </summary>
     /// <param name="context">The context.</param>
     /// <param name="builder"></param>

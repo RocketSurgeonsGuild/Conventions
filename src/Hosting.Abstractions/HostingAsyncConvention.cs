@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Hosting;
@@ -8,5 +8,6 @@ namespace Rocket.Surgery.Hosting;
 /// </summary>
 /// <param name="context">The context.</param>
 /// <param name="builder">The builder.</param>
+/// <param name="cancellationToken">The cancellation token.</param>
 [PublicAPI]
-public delegate void HostingConvention(IConventionContext context, IHostBuilder builder);
+public delegate ValueTask HostingAsyncConvention(IConventionContext context, IHostBuilder builder, CancellationToken cancellationToken);

@@ -14,6 +14,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Base convention extensions
 /// </summary>
+[PublicAPI]
 public static class ConventionHostBuilderExtensions
 {
     /// <summary>
@@ -23,6 +24,23 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder SetupConvention(this ConventionContextBuilder container, SetupConvention @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Setup a convention to run as soon as the context is created
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder SetupConvention(this ConventionContextBuilder container, SetupAsyncConvention @delegate)
     {
         if (container == null)
         {
@@ -98,6 +116,23 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, ServiceAsyncConvention @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the services delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Action<IConfiguration, IServiceCollection> @delegate)
     {
         if (container == null)
@@ -106,6 +141,40 @@ public static class ConventionHostBuilderExtensions
         }
 
         container.AppendDelegate(new ServiceConvention((_, configuration, services) => @delegate(configuration, services)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the services delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IConfiguration, IServiceCollection, CancellationToken, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new ServiceAsyncConvention((_, configuration, services, cancellationToken) => @delegate(configuration, services, cancellationToken)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the services delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IConfiguration, IServiceCollection, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new ServiceAsyncConvention((_, configuration, services, _) => @delegate(configuration, services)));
         return container;
     }
 
@@ -127,12 +196,63 @@ public static class ConventionHostBuilderExtensions
     }
 
     /// <summary>
+    ///     Configure the services delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IServiceCollection, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new ServiceAsyncConvention((_, _, services, _) => @delegate(services)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the services delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IServiceCollection, CancellationToken, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new ServiceAsyncConvention((_, _, services, cancellationToken) => @delegate(services, cancellationToken)));
+        return container;
+    }
+
+    /// <summary>
     ///     Configure the logging delegate to the convention scanner
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, LoggingConvention @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the logging delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, LoggingAsyncConvention @delegate)
     {
         if (container == null)
         {
@@ -166,6 +286,40 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<IConfiguration, ILoggingBuilder, CancellationToken, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new LoggingAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the logging delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<IConfiguration, ILoggingBuilder, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new LoggingAsyncConvention((_, configuration, builder, _) => @delegate(configuration, builder)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the logging delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Action<ILoggingBuilder> @delegate)
     {
         if (container == null)
@@ -178,12 +332,63 @@ public static class ConventionHostBuilderExtensions
     }
 
     /// <summary>
+    ///     Configure the logging delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<ILoggingBuilder, CancellationToken, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new LoggingAsyncConvention((_, _, builder, cancellationToken) => @delegate(builder, cancellationToken)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the logging delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<ILoggingBuilder, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new LoggingAsyncConvention((_, _, builder, _) => @delegate(builder)));
+        return container;
+    }
+
+    /// <summary>
     ///     Configure the configuration delegate to the convention scanner
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, ConfigurationConvention @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, ConfigurationAsyncConvention @delegate)
     {
         if (container == null)
         {
@@ -219,6 +424,44 @@ public static class ConventionHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureConfiguration(
+        this ConventionContextBuilder container, Func<IConfiguration, IConfigurationBuilder, CancellationToken, ValueTask> @delegate
+    )
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new ConfigurationAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureConfiguration(
+        this ConventionContextBuilder container, Func<IConfiguration, IConfigurationBuilder, ValueTask> @delegate
+    )
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new ConfigurationAsyncConvention((_, configuration, builder, _) => @delegate(configuration, builder)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Action<IConfigurationBuilder> @delegate)
     {
         if (container == null)
@@ -227,6 +470,40 @@ public static class ConventionHostBuilderExtensions
         }
 
         container.AppendDelegate(new ConfigurationConvention((_, _, builder) => @delegate(builder)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Func<IConfigurationBuilder, CancellationToken, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, cancellationToken) => @delegate(builder, cancellationToken)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Func<IConfigurationBuilder, ValueTask> @delegate)
+    {
+        if (container == null)
+        {
+            throw new ArgumentNullException(nameof(container));
+        }
+
+        container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, _) => @delegate(builder)));
         return container;
     }
 

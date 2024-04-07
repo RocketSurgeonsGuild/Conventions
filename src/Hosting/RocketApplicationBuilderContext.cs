@@ -30,34 +30,35 @@ internal sealed class RocketApplicationBuilderContext
     ///     Construct and compose hosting conventions
     /// </summary>
     /// <exception cref="ArgumentNullException"></exception>
-    public void ComposeHostingConvention()
+    public ValueTask ComposeHostingConvention(CancellationToken cancellationToken)
     {
-        _hostApplicationBuilder.ApplyConventions(_context);
+        return _hostApplicationBuilder.ApplyConventionsAsync(_context, cancellationToken);
     }
 
     /// <summary>
     ///     Configures the application configuration.
     /// </summary>
-    public void ConfigureAppConfiguration()
+    public async ValueTask ConfigureAppConfiguration(CancellationToken cancellationToken)
     {
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing<IConfiguration>(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment);
-        RocketInternalsShared.SharedHostConfiguration(
+        await RocketInternalsShared.SharedHostConfigurationAsync(
             _context,
             _hostApplicationBuilder.Configuration,
             _hostApplicationBuilder.Configuration,
-            _hostApplicationBuilder.Environment
-        );
+            _hostApplicationBuilder.Environment,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
     /// <summary>
     ///     Configures the services.
     /// </summary>
-    public void ConfigureServices()
+    public async ValueTask ConfigureServices(CancellationToken cancellationToken)
     {
-        _hostApplicationBuilder.Services.ApplyConventions(_context);
-        _hostApplicationBuilder.Logging.ApplyConventions(_context);
+        await _hostApplicationBuilder.Services.ApplyConventionsAsync(_context, cancellationToken).ConfigureAwait(false);
+        await _hostApplicationBuilder.Logging.ApplyConventionsAsync(_context, cancellationToken).ConfigureAwait(false);
     }
 
     public IServiceProviderFactory<object> UseServiceProviderFactory()

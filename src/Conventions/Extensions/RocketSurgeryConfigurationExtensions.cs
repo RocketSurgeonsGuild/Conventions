@@ -16,6 +16,7 @@ public static class RocketSurgeryLoggingExtensions
     /// <param name="conventionContext"></param>
     /// <param name="outerConfiguration"></param>
     /// <returns></returns>
+    [Obsolete("Use ApplyConventionsAsync instead, this method does not support async conventions")]
     public static IConfigurationBuilder ApplyConventions(
         this IConfigurationBuilder configurationBuilder,
         IConventionContext conventionContext,
@@ -25,13 +26,57 @@ public static class RocketSurgeryLoggingExtensions
         outerConfiguration ??= new ConfigurationBuilder().Build();
         foreach (var item in conventionContext.Conventions.Get<IConfigurationConvention, ConfigurationConvention>())
         {
-            if (item is IConfigurationConvention convention)
+            switch (item)
             {
-                convention.Register(conventionContext, outerConfiguration, configurationBuilder);
+                case IConfigurationConvention convention:
+                    convention.Register(conventionContext, outerConfiguration, configurationBuilder);
+                    break;
+                case ConfigurationConvention @delegate:
+                    @delegate(conventionContext, outerConfiguration, configurationBuilder);
+                    break;
             }
-            else if (item is ConfigurationConvention @delegate)
+        }
+
+        return configurationBuilder;
+    }
+
+    /// <summary>
+    ///     Apply configuration conventions
+    /// </summary>
+    /// <param name="configurationBuilder"></param>
+    /// <param name="conventionContext"></param>
+    /// <param name="outerConfiguration"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async ValueTask<IConfigurationBuilder> ApplyConventionsAsync(
+        this IConfigurationBuilder configurationBuilder,
+        IConventionContext conventionContext,
+        IConfiguration? outerConfiguration = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        outerConfiguration ??= new ConfigurationBuilder().Build();
+        foreach (var item in conventionContext.Conventions.Get<
+                     IConfigurationConvention,
+                     ConfigurationConvention,
+                     IConfigurationAsyncConvention,
+                     ConfigurationAsyncConvention
+                 >())
+        {
+            switch (item)
             {
-                @delegate(conventionContext, outerConfiguration, configurationBuilder);
+                case IConfigurationConvention convention:
+                    convention.Register(conventionContext, outerConfiguration, configurationBuilder);
+                    break;
+                case ConfigurationConvention @delegate:
+                    @delegate(conventionContext, outerConfiguration, configurationBuilder);
+                    break;
+                case IConfigurationAsyncConvention convention:
+                    await convention.Register(conventionContext, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
+                    break;
+                case ConfigurationAsyncConvention @delegate:
+                    await @delegate(conventionContext, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
+                    break;
             }
         }
 

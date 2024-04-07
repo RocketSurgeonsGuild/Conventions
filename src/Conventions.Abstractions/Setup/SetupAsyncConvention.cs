@@ -1,4 +1,4 @@
-﻿namespace Rocket.Surgery.Conventions.Setup;
+namespace Rocket.Surgery.Conventions.Setup;
 
 /// <summary>
 ///     Initialize or configure a convention before any other convention has run against the context.
@@ -7,5 +7,6 @@
 ///     This runs immediately after creating a convention context
 /// </remarks>
 /// <param name="context">The context.</param>
+/// <param name="cancellationToken">The cancellation token.</param>
 [PublicAPI]
-public delegate void SetupConvention(IConventionContext context);
+public delegate ValueTask SetupAsyncConvention(IConventionContext context, CancellationToken cancellationToken);

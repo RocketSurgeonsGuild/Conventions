@@ -11,6 +11,7 @@ namespace Rocket.Surgery.Hosting;
 /// <summary>
 ///     Class RocketBooster.
 /// </summary>
+[PublicAPI]
 public static class RocketBooster
 {
     /// <summary>

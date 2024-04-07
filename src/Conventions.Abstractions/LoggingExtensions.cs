@@ -2,40 +2,17 @@
 
 namespace Rocket.Surgery.Conventions;
 
-internal static class LoggingExtensions
+internal static partial class LoggingExtensions
 {
-    private static readonly Action<ILogger, string, string, string[], Exception?> _logFoundCandidateAssembly = LoggerMessage.Define<string, string, string[]>(
-        LogLevel.Debug, new EventId(1337), "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}"
-    );
+    [LoggerMessage(1337, LogLevel.Debug, "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}")]
+    public static partial void FoundCandidateAssembly(this ILogger logger, string provider, string assemblyName, string[] candidates);
 
-    public static void FoundCandidateAssembly(this ILogger logger, string provider, string assemblyName, string[] candidates)
-    {
-        _logFoundCandidateAssembly(logger, provider, assemblyName, candidates, null);
-    }
+    [LoggerMessage(1337, LogLevel.Debug, "[{AssemblyProvider}] Found assembly {AssemblyName}")]
+    public static partial void FoundAssembly(this ILogger logger, string provider, string assemblyName);
 
-    private static readonly Action<ILogger, string, string, Exception?> _logFoundAssembly = LoggerMessage.Define<string, string>(
-        LogLevel.Debug, new EventId(1337), "[{AssemblyProvider}] Found assembly {AssemblyName}"
-    );
+    [LoggerMessage(1337, LogLevel.Debug, "Trying to load assembly {Assembly}")]
+    public static partial void TryingToLoadAssembly(this ILogger logger, string assemblyName);
 
-    public static void FoundAssembly(this ILogger logger, string provider, string assemblyName)
-    {
-        _logFoundAssembly(logger, provider, assemblyName, null);
-    }
-
-    private static readonly Action<ILogger, string, Exception?> _logTryingToLoadAssembly = LoggerMessage.Define<string>(
-        LogLevel.Debug, new EventId(1337), "Trying to load assembly {Assembly}"
-    );
-
-    public static void TryingToLoadAssembly(this ILogger logger, string assemblyName)
-    {
-        _logTryingToLoadAssembly(logger, assemblyName, null);
-    }
-
-    private static readonly Action<ILogger, string, Exception?> _logWarnFailedToLoadAssembly =
-        LoggerMessage.Define<string>(LogLevel.Warning, new EventId(1337), "Failed to load assembly {Assembly}");
-
-    public static void FailedToLoadAssembly(this ILogger logger, string assemblyName, Exception exception)
-    {
-        _logWarnFailedToLoadAssembly(logger, assemblyName, exception);
-    }
+    [LoggerMessage(1337, LogLevel.Warning, "Failed to load assembly {Assembly}")]
+    public static partial void FailedToLoadAssembly(this ILogger logger, string assemblyName, Exception exception);
 }

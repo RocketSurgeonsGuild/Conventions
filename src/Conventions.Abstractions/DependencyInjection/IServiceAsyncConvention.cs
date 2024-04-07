@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Rocket.Surgery.Conventions.DependencyInjection;
 
 /// <summary>
-///     IServiceConvention
+///     IServiceAsyncConvention
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
 [PublicAPI]
-public interface IServiceConvention : IConvention
+public interface IServiceAsyncConvention : IConvention
 {
     /// <summary>
     ///     Register additional services with the service collection
@@ -17,5 +17,6 @@ public interface IServiceConvention : IConvention
     /// <param name="context">The context.</param>
     /// <param name="configuration"></param>
     /// <param name="services"></param>
-    void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services);
+    /// <param name="cancellationToken"></param>
+    ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken);
 }

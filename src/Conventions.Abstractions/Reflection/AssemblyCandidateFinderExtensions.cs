@@ -5,7 +5,7 @@ namespace Rocket.Surgery.Conventions.Reflection;
 /// <summary>
 ///     Extension methods for <see cref="IAssemblyCandidateFinder" />
 /// </summary>
-public static class AssemblyCandidateFinderExtenisons
+public static class AssemblyCandidateFinderExtensions
 {
     /// <summary>
     ///     Get the candidates for a given set

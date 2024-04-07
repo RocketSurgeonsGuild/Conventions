@@ -8,5 +8,6 @@ namespace Rocket.Surgery.Conventions.Configuration;
 /// <param name="context">The context.</param>
 /// <param name="configuration"></param>
 /// <param name="builder"></param>
+/// <param name="cancellationToken"></param>
 [PublicAPI]
-public delegate void ConfigurationConvention(IConventionContext context, IConfiguration configuration, IConfigurationBuilder builder);
+public delegate ValueTask ConfigurationAsyncConvention(IConventionContext context, IConfiguration configuration, IConfigurationBuilder builder, CancellationToken cancellationToken);

@@ -5,6 +5,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Base convention extensions
 /// </summary>
+[PublicAPI]
 public static class ConventionContextExtensions
 {
     /// <summary>

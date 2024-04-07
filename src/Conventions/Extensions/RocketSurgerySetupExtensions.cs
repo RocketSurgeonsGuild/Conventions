@@ -12,17 +12,54 @@ internal static class RocketSurgerySetupExtensions
     /// </summary>
     /// <param name="conventionContext"></param>
     /// <returns></returns>
+    [Obsolete("Use ApplyConventionsAsync instead, this method does not support async conventions")]
     public static IConventionContext ApplyConventions(this IConventionContext conventionContext)
     {
         foreach (var item in conventionContext.Conventions.Get<ISetupConvention, SetupConvention>())
         {
-            if (item is ISetupConvention convention)
+            switch (item)
             {
-                convention.Register(conventionContext);
+                case ISetupConvention convention:
+                    convention.Register(conventionContext);
+                    break;
+                case SetupConvention @delegate:
+                    @delegate(conventionContext);
+                    break;
             }
-            else if (item is SetupConvention @delegate)
+        }
+
+        return conventionContext;
+    }
+
+    /// <summary>
+    ///     Apply configuration conventions
+    /// </summary>
+    /// <param name="conventionContext"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async ValueTask<IConventionContext> ApplyConventionsAsync(this IConventionContext conventionContext, CancellationToken cancellationToken = default)
+    {
+        foreach (var item in conventionContext.Conventions.Get<
+                     ISetupConvention,
+                     SetupConvention,
+                     ISetupAsyncConvention,
+                     SetupAsyncConvention
+                 >())
+        {
+            switch (item)
             {
-                @delegate(conventionContext);
+                case ISetupConvention convention:
+                    convention.Register(conventionContext);
+                    break;
+                case SetupConvention @delegate:
+                    @delegate(conventionContext);
+                    break;
+                case ISetupAsyncConvention convention:
+                    await convention.Register(conventionContext, cancellationToken).ConfigureAwait(false);
+                    break;
+                case SetupAsyncConvention @delegate:
+                    await @delegate(conventionContext, cancellationToken).ConfigureAwait(false);
+                    break;
             }
         }
 

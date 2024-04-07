@@ -11,6 +11,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 /// <summary>
 ///     Class RocketWebAssemblyExtensions.
 /// </summary>
+[PublicAPI]
 public static class RocketWebAssemblyExtensions
 {
     /// <summary>
@@ -18,7 +19,7 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionContext"></param>
-    public static async Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         IConventionContext conventionContext
     )
@@ -26,7 +27,7 @@ public static class RocketWebAssemblyExtensions
         conventionContext.Properties.AddIfMissing<IConfiguration>(builder.Configuration);
         conventionContext.Properties.AddIfMissing(builder.HostEnvironment);
         conventionContext.Properties.Add("BlazorWasm", true);
-        foreach (var item in conventionContext.Conventions.Get<IWebAssemblyHostingConvention, WebAssemblyHostingConvention>())
+        foreach (var item in conventionContext.Conventions.Get<IWebAssemblyHostingConvention, WebAssemblyHostingConvention, IWebAssemblyHostingAsyncConvention, WebAssemblyHostingAsyncConvention>())
         {
             if (item is IWebAssemblyHostingConvention convention)
             {
@@ -54,7 +55,7 @@ public static class RocketWebAssemblyExtensions
         {
             BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
         };
-        
+
         // notes to the next person that sees this.
         // if blazor does not find it's own configuration files (appsettings, appsettings.{environment}) they never get added to the configuration collection
         // in that case they never exist.  So unlike the other defaults where we have to replace the items.
@@ -93,7 +94,7 @@ public static class RocketWebAssemblyExtensions
             configurationBuilder.Add(task);
         }
 
-        var cb = new ConfigurationBuilder().ApplyConventions(conventionContext, builder.Configuration);
+        var cb = await new ConfigurationBuilder().ApplyConventionsAsync(conventionContext, builder.Configuration).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0 })
         {
             configurationBuilder.Add(
