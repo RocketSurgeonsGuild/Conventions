@@ -74,13 +74,10 @@ public static class RocketHostExtensions
             throw new ArgumentNullException(nameof(getConventions));
         }
 
-        var contextBuilder = GetOrCreate(
-            builder,
-            () => new ConventionContextBuilder(builder.Properties)
-                  // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                 .UseDependencyContext(DependencyContext.Default!)
-                 .WithConventionsFrom(getConventions)
-        );
+        var contextBuilder = new ConventionContextBuilder(builder.Properties)
+                             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                            .UseDependencyContext(DependencyContext.Default!)
+                            .WithConventionsFrom(getConventions);
         Configure(builder, contextBuilder);
         return builder;
     }
@@ -129,14 +126,14 @@ public static class RocketHostExtensions
         contextBuilder
            .Properties
            .AddIfMissing(builder)
-           .AddIfMissing(builder.GetType().FullName!, builder)
+           .AddIfMissing(builder.GetType(), builder)
            .AddIfMissing(contextBuilder)
            .AddIfMissing(HostType.Live);
         builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
         builder.Properties[typeof(IHostBuilder)] = builder;
 
-        if (contextBuilder.Properties.ContainsKey(typeof(RocketHostExtensions))) return contextBuilder;
-        contextBuilder.Properties.Add(typeof(RocketHostExtensions), true);
+        if (contextBuilder.Properties.ContainsKey("__configured__"))  throw new NotSupportedException("Cannot configure conventions on the same builder twice");
+        contextBuilder.Properties["__configured__"] = true;
         var host = new RocketContext(builder);
         builder
            .ConfigureHostConfiguration(host.ComposeHostingConvention)

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿#if NET8_0_OR_GREATER
+using System.Diagnostics;
 using Autofac;
 using FakeItEasy;
 using FluentAssertions;
@@ -8,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
-using Rocket.Surgery.Web.Hosting;
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
@@ -221,3 +221,4 @@ public class AutofacWebApplicationTests : AutoFakeTest
         AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
     }
 }
+#endif

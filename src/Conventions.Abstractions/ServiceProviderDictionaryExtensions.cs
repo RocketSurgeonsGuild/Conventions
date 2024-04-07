@@ -194,6 +194,24 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <param name="key">The key where the value is saved</param>
     /// <param name="value">The value to save</param>
+    public static IServiceProviderDictionary Set(this IServiceProviderDictionary serviceProviderDictionary, Type key, object value)
+    {
+        if (serviceProviderDictionary == null)
+        {
+            throw new ArgumentNullException(nameof(serviceProviderDictionary));
+        }
+
+        serviceProviderDictionary[key] = value;
+        return serviceProviderDictionary;
+    }
+
+    /// <summary>
+    ///     Set key to the value
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="serviceProviderDictionary">The properties</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
     public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value) where T : notnull
     {
         if (serviceProviderDictionary == null)
@@ -222,6 +240,26 @@ public static class ServiceProviderDictionaryExtensions
             return serviceProviderDictionary;
 
         serviceProviderDictionary[typeof(T)] = value;
+        return serviceProviderDictionary;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the key is missing
+    /// </summary>
+    /// <param name="serviceProviderDictionary">The properties</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IServiceProviderDictionary AddIfMissing(this IServiceProviderDictionary serviceProviderDictionary, Type key, object value)
+    {
+        if (serviceProviderDictionary == null)
+        {
+            throw new ArgumentNullException(nameof(serviceProviderDictionary));
+        }
+
+        if (serviceProviderDictionary.TryGetValue(key, out _))
+            return serviceProviderDictionary;
+
+        serviceProviderDictionary[key] = value;
         return serviceProviderDictionary;
     }
 

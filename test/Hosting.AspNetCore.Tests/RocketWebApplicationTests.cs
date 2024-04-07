@@ -1,4 +1,4 @@
-﻿#if NET6_0_OR_GREATER
+﻿#if NET8_0_OR_GREATER
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
@@ -8,8 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
+using Rocket.Surgery.Hosting;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
-using Rocket.Surgery.Web.Hosting;
 using Xunit.Abstractions;
 
 // ReSharper disable once CheckNamespace

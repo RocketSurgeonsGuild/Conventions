@@ -9,15 +9,10 @@ internal interface IServiceFactoryAdapter
     IServiceProvider CreateServiceProvider(object containerBuilder);
 }
 
-internal class ServiceFactoryAdapter<TContainerBuilder> : IServiceFactoryAdapter
+internal class ServiceFactoryAdapter<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> serviceProviderFactory) : IServiceFactoryAdapter
     where TContainerBuilder : notnull
 {
-    private readonly IServiceProviderFactory<TContainerBuilder> _serviceProviderFactory;
-
-    public ServiceFactoryAdapter(IServiceProviderFactory<TContainerBuilder> serviceProviderFactory)
-    {
-        _serviceProviderFactory = serviceProviderFactory ?? throw new ArgumentNullException(nameof(serviceProviderFactory));
-    }
+    private readonly IServiceProviderFactory<TContainerBuilder> _serviceProviderFactory = serviceProviderFactory ?? throw new ArgumentNullException(nameof(serviceProviderFactory));
 
     public object CreateBuilder(IServiceCollection services)
     {

@@ -2,7 +2,6 @@
 using Rocket.Surgery.Conventions.DryIoc;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Hosting;
-using Rocket.Surgery.Web.Hosting;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
@@ -14,7 +13,9 @@ internal sealed  class TestAssemblyProvider : IAssemblyProvider
         {
             typeof(DryIocConventionServiceProviderFactory).GetTypeInfo().Assembly,
             typeof(RocketHostExtensions).GetTypeInfo().Assembly,
-            typeof(RocketWebHostExtensions).GetTypeInfo().Assembly,
+            #if NET8_0_OR_GREATER
+            typeof(RocketHostApplicationExtensions).GetTypeInfo().Assembly,
+            #endif
             typeof(TestAssemblyProvider).GetTypeInfo().Assembly
         };
     }

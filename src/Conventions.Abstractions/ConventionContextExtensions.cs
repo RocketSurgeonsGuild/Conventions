@@ -120,6 +120,23 @@ public static class ConventionContextExtensions
     /// <summary>
     ///     Get a value by type from the context
     /// </summary>
+    /// <param name="context">The context</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext Set(this IConventionContext context, Type key, object value)
+    {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
+        context[key] = value;
+        return context;
+    }
+
+    /// <summary>
+    ///     Get a value by type from the context
+    /// </summary>
     /// <typeparam name="T">The type of the value</typeparam>
     /// <param name="context">The context</param>
     /// <param name="key">The key where the value is saved</param>
@@ -132,6 +149,47 @@ public static class ConventionContextExtensions
         }
 
         context[key] = value;
+        return context;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the type is missing
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing<T>(this IConventionContext context, T value) where T : notnull
+    {
+        if (context == null) throw new ArgumentNullException(nameof(context));
+        context.Properties.AddIfMissing<T>(value);
+        return context;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the key is missing
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The properties</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing(this IConventionContext context, Type key, object value)
+    {
+        if (context == null) throw new ArgumentNullException(nameof(context));
+        context.Properties.AddIfMissing(key, value);
+        return context;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the key is missing
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The properties</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing<T>(this IConventionContext context, string key, T value) where T : notnull
+    {
+        if (context == null) throw new ArgumentNullException(nameof(context));
+        context.Properties.AddIfMissing(key, value);
         return context;
     }
 

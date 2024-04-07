@@ -1,4 +1,5 @@
-﻿using DryIoc;
+﻿#if NET8_0_OR_GREATER
+using DryIoc;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
-using Rocket.Surgery.Web.Hosting;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
@@ -237,3 +237,4 @@ public class DryIocWebApplicationTests : AutoFakeTest
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
     }
 }
+#endif
