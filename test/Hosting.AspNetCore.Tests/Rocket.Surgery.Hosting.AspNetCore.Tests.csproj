@@ -4,7 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
-    <ProjectReference Include="..\..\src\Web.Hosting\Rocket.Surgery.Web.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Conventions.Configuration.Json\Rocket.Surgery.Conventions.Configuration.Json.csproj" />
     <ProjectReference Include="..\..\src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

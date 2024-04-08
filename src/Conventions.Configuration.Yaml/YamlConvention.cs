@@ -1,5 +1,4 @@
 #if !BROWSER
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions.Setup;
 

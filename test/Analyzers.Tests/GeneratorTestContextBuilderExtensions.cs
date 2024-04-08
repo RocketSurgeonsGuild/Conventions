@@ -23,7 +23,6 @@ internal static class GeneratorTestContextBuilderExtensions
     {
         return builder.AddReferences(
             typeof(ActivatorUtilities).Assembly,
-            typeof(ConventionAttribute).Assembly,
             typeof(ConventionContext).Assembly,
             typeof(IConventionContext).Assembly,
             typeof(IServiceProvider).Assembly,

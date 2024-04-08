@@ -12,7 +12,7 @@
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
-        <ProjectReference Include="..\Hosting.Abstractions\Rocket.Surgery.Hosting.Abstractions.csproj" />
+         <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting" />
