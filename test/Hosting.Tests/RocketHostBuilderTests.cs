@@ -135,8 +135,8 @@ public partial class RocketHostBuilderTests : AutoFakeTest
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
-                                       .UseDependencyContext(DependencyContext.Default!)
-                                       .ConfigureApplication(convention)
+                                     .UseDependencyContext(DependencyContext.Default!)
+                                     .ConfigureApplication(convention)
                             );
 
         builder.Build();

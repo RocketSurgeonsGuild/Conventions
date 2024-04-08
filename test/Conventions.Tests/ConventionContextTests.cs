@@ -7,7 +7,6 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Setup;
 using Rocket.Surgery.Extensions.Testing;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -18,7 +17,7 @@ public class ConventionContextTests : AutoFakeTest
     public async Task Constructs()
     {
         var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary { [typeof(IConvention)] = new AbcConvention() });
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary { [typeof(IConvention)] = new AbcConvention(), });
         var servicesBuilder = AutoFake.Resolve<ConventionContext>();
 
         servicesBuilder.AssemblyProvider.Should().BeSameAs(assemblyProvider);
@@ -125,9 +124,9 @@ public class ConventionContextTests : AutoFakeTest
         var context = await ConventionContext.FromAsync(contextBuilder);
 
         var servicesCollection = await new ServiceCollection()
-                                .AddSingleton(A.Fake<IAbc>())
-                                .AddSingleton(A.Fake<IAbc2>())
-                                .ApplyConventionsAsync(context);
+                                      .AddSingleton(A.Fake<IAbc>())
+                                      .AddSingleton(A.Fake<IAbc2>())
+                                      .ApplyConventionsAsync(context);
 
         var sp = servicesCollection.BuildServiceProvider();
         sp.GetService<IAbc>().Should().NotBeNull();
@@ -180,8 +179,10 @@ public class ConventionContextTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var builder = AutoFake.Resolve<ConventionContextBuilder>().UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                              .AppendConvention(new AbcConvention());
+        var builder = AutoFake
+                     .Resolve<ConventionContextBuilder>()
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .AppendConvention(new AbcConvention());
         builder.Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(builder);
         var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
@@ -198,11 +199,12 @@ public class ConventionContextTests : AutoFakeTest
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
-        var builder = AutoFake.Resolve<ConventionContextBuilder>()
-                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                              .AppendConvention<InjectableConvention>()
-                              .Set(data)
-                              .Set<IConfiguration>(new ConfigurationBuilder().Build());
+        var builder = AutoFake
+                     .Resolve<ConventionContextBuilder>()
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .AppendConvention<InjectableConvention>()
+                     .Set(data)
+                     .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(builder);
         var collection = await new ServiceCollection().ApplyConventionsAsync(context);
         collection.Should().Contain(z => z.ServiceType == typeof(IInjectData));
@@ -213,12 +215,13 @@ public class ConventionContextTests : AutoFakeTest
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
-        var builder = AutoFake.Resolve<ConventionContextBuilder>()
-                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                              .AppendConvention<OptionalInjectableConvention>()
-                              .Set(data)
-                              .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = (await ConventionContext.FromAsync(builder)).Set(data);
+        var builder = AutoFake
+                     .Resolve<ConventionContextBuilder>()
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .AppendConvention<OptionalInjectableConvention>()
+                     .Set(data)
+                     .Set<IConfiguration>(new ConfigurationBuilder().Build());
+        var context = ( await ConventionContext.FromAsync(builder) ).Set(data);
         var collection = await new ServiceCollection().ApplyConventionsAsync(context);
         collection.Should().Contain(z => z.ServiceType == typeof(IInjectData));
     }
@@ -227,11 +230,12 @@ public class ConventionContextTests : AutoFakeTest
     public async Task ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var builder = AutoFake.Resolve<ConventionContextBuilder>()
-                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                              .AppendConvention<InjectableConvention>()
-                              .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        Func<Task<IConventionContext>> a = () => ConventionContext.FromAsync(builder).AsTask();
+        var builder = AutoFake
+                     .Resolve<ConventionContextBuilder>()
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .AppendConvention<InjectableConvention>()
+                     .Set<IConfiguration>(new ConfigurationBuilder().Build());
+        var a = () => ConventionContext.FromAsync(builder).AsTask();
         await a.Should().ThrowAsync<InvalidOperationException>();
     }
 
@@ -239,18 +243,17 @@ public class ConventionContextTests : AutoFakeTest
     public async Task ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var builder = AutoFake.Resolve<ConventionContextBuilder>()
-                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                              .AppendConvention<OptionalInjectableConvention>()
-                              .Set<IConfiguration>(new ConfigurationBuilder().Build());
+        var builder = AutoFake
+                     .Resolve<ConventionContextBuilder>()
+                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                     .AppendConvention<OptionalInjectableConvention>()
+                     .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(builder);
-        Func<Task<IServiceCollection>> a = () => new ServiceCollection().ApplyConventionsAsync(context).AsTask();
+        var a = () => new ServiceCollection().ApplyConventionsAsync(context).AsTask();
         await a.Should().NotThrowAsync<InvalidOperationException>();
     }
 
-    public ConventionContextTests(ITestOutputHelper outputHelper) : base(outputHelper)
-    {
-    }
+    public ConventionContextTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 
     public interface IAbc;
 

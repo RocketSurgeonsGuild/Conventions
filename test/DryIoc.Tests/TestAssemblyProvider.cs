@@ -5,7 +5,7 @@ using Rocket.Surgery.Hosting;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-internal sealed  class TestAssemblyProvider : IAssemblyProvider
+internal sealed class TestAssemblyProvider : IAssemblyProvider
 {
     public IEnumerable<Assembly> GetAssemblies()
     {
@@ -13,7 +13,7 @@ internal sealed  class TestAssemblyProvider : IAssemblyProvider
         {
             typeof(DryIocConventionServiceProviderFactory).GetTypeInfo().Assembly,
             typeof(RocketHostApplicationExtensions).GetTypeInfo().Assembly,
-            typeof(TestAssemblyProvider).GetTypeInfo().Assembly
+            typeof(TestAssemblyProvider).GetTypeInfo().Assembly,
         };
     }
 }

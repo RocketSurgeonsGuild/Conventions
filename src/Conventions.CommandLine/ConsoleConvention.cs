@@ -1,8 +1,6 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Hosting;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -10,7 +8,7 @@ using Spectre.Console.Cli;
 namespace Rocket.Surgery.Conventions.CommandLine;
 
 /// <summary>
-/// Convention for console applications
+///     Convention for console applications
 /// </summary>
 [ExportConvention]
 public class ConsoleConvention : IHostApplicationConvention

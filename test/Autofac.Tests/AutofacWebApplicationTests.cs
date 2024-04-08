@@ -208,8 +208,8 @@ public class AutofacWebApplicationTests : AutoFakeTest
     public async Task Should_Integrate_With_Autofac()
     {
         var builder = await Host
-                     .CreateApplicationBuilder(Array.Empty<string>())
-                     .ConfigureRocketSurgery(rb => rb.UseAutofac());
+                           .CreateApplicationBuilder(Array.Empty<string>())
+                           .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
         builder.GetLifetimeScope().Should().NotBeNull();
     }

@@ -13,7 +13,7 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
         {
             typeof(AutofacConventionServiceProviderFactory).GetTypeInfo().Assembly,
             typeof(RocketHostApplicationExtensions).GetTypeInfo().Assembly,
-            typeof(TestAssemblyProvider).GetTypeInfo().Assembly
+            typeof(TestAssemblyProvider).GetTypeInfo().Assembly,
         };
     }
 }

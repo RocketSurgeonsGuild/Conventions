@@ -10,7 +10,11 @@ namespace Rocket.Surgery.Hosting;
 
 internal static class RocketInternalsShared
 {
-    internal static async ValueTask SharedHostConfigurationAsync(IConventionContext context, IHostApplicationBuilder hostApplicationBuilder, CancellationToken cancellationToken)
+    internal static async ValueTask SharedHostConfigurationAsync(
+        IConventionContext context,
+        IHostApplicationBuilder hostApplicationBuilder,
+        CancellationToken cancellationToken
+    )
     {
         // This code is duplicated per host (web host, generic host, and wasm host)
         hostApplicationBuilder.Configuration.InsertConfigurationSourceAfter(

@@ -15,7 +15,7 @@ public class SampleTests
     {
         var context = await ConventionContext.FromAsync(_builder);
 
-        var services = (await new ServiceCollection().ApplyConventionsAsync(context)).BuildServiceProvider();
+        var services = ( await new ServiceCollection().ApplyConventionsAsync(context) ).BuildServiceProvider();
         Assert.Equal("TestService", services.GetRequiredService<IService>().GetString());
     }
 

@@ -22,20 +22,24 @@ public static partial class RocketBooster
     /// <param name="dependencyContext">The dependency context.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForDependencyContext(DependencyContext dependencyContext, ConventionProviderFactory getConventions) =>
-        (builder, _) => ValueTask.FromResult(
-            new ConventionContextBuilder(builder.Properties)
-               .UseDependencyContext(dependencyContext)
-               .WithConventionsFrom(getConventions)
-        );
+    public static AppDelegate ForDependencyContext(DependencyContext dependencyContext, ConventionProviderFactory getConventions)
+    {
+        return (builder, _) => ValueTask.FromResult(
+                   new ConventionContextBuilder(builder.Properties)
+                      .UseDependencyContext(dependencyContext)
+                      .WithConventionsFrom(getConventions)
+               );
+    }
 
     /// <summary>
     ///     ForTesting the specified conventions
     /// </summary>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForConventions(ConventionProviderFactory getConventions) =>
-        (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties).WithConventionsFrom(getConventions));
+    public static AppDelegate ForConventions(ConventionProviderFactory getConventions)
+    {
+        return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties).WithConventionsFrom(getConventions));
+    }
 
 
     /// <summary>
@@ -44,12 +48,14 @@ public static partial class RocketBooster
     /// <param name="appDomain">The application domain.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAppDomain(AppDomain appDomain, ConventionProviderFactory getConventions) =>
-        (builder, _) => ValueTask.FromResult(
-            new ConventionContextBuilder(builder.Properties)
-               .UseAppDomain(appDomain)
-               .WithConventionsFrom(getConventions)
-        );
+    public static AppDelegate ForAppDomain(AppDomain appDomain, ConventionProviderFactory getConventions)
+    {
+        return (builder, _) => ValueTask.FromResult(
+                   new ConventionContextBuilder(builder.Properties)
+                      .UseAppDomain(appDomain)
+                      .WithConventionsFrom(getConventions)
+               );
+    }
 
     /// <summary>
     ///     Fors the assemblies.
@@ -57,26 +63,34 @@ public static partial class RocketBooster
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies, ConventionProviderFactory getConventions) =>
-        (builder, _) => ValueTask.FromResult(
-            new ConventionContextBuilder(builder.Properties)
-               .UseAssemblies(assemblies)
-               .WithConventionsFrom(getConventions)
-        );
+    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies, ConventionProviderFactory getConventions)
+    {
+        return (builder, _) => ValueTask.FromResult(
+                   new ConventionContextBuilder(builder.Properties)
+                      .UseAssemblies(assemblies)
+                      .WithConventionsFrom(getConventions)
+               );
+    }
 
     /// <summary>
     ///     Fors the dependency context.
     /// </summary>
     /// <param name="dependencyContext">The dependency context.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForDependencyContext(DependencyContext dependencyContext) => ForDependencyContext(dependencyContext, empty);
+    public static AppDelegate ForDependencyContext(DependencyContext dependencyContext)
+    {
+        return ForDependencyContext(dependencyContext, empty);
+    }
 
     /// <summary>
     ///     Fors the specified dependency context.
     /// </summary>
     /// <param name="dependencyContext">The dependency context.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(DependencyContext dependencyContext) => ForDependencyContext(dependencyContext);
+    public static AppDelegate For(DependencyContext dependencyContext)
+    {
+        return ForDependencyContext(dependencyContext);
+    }
 
     /// <summary>
     ///     Fors the specified dependency context.
@@ -84,29 +98,40 @@ public static partial class RocketBooster
     /// <param name="dependencyContext">The dependency context.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(DependencyContext dependencyContext, ConventionProviderFactory getConventions) =>
-        ForDependencyContext(dependencyContext, getConventions);
+    public static AppDelegate For(DependencyContext dependencyContext, ConventionProviderFactory getConventions)
+    {
+        return ForDependencyContext(dependencyContext, getConventions);
+    }
 
     /// <summary>
     ///     ForTesting the specified conventions
     /// </summary>
     /// <param name="conventionProvider">The conventions provider.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(ConventionProviderFactory conventionProvider) => ForConventions(conventionProvider);
+    public static AppDelegate For(ConventionProviderFactory conventionProvider)
+    {
+        return ForConventions(conventionProvider);
+    }
 
     /// <summary>
     ///     Fors the application domain.
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAppDomain(AppDomain appDomain) => ForAppDomain(appDomain, empty);
+    public static AppDelegate ForAppDomain(AppDomain appDomain)
+    {
+        return ForAppDomain(appDomain, empty);
+    }
 
     /// <summary>
     ///     Fors the specified application domain.
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(AppDomain appDomain) => ForAppDomain(appDomain);
+    public static AppDelegate For(AppDomain appDomain)
+    {
+        return ForAppDomain(appDomain);
+    }
 
     /// <summary>
     ///     Fors the specified application domain.
@@ -114,14 +139,20 @@ public static partial class RocketBooster
     /// <param name="appDomain">The application domain.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(AppDomain appDomain, ConventionProviderFactory getConventions) => ForAppDomain(appDomain, getConventions);
+    public static AppDelegate For(AppDomain appDomain, ConventionProviderFactory getConventions)
+    {
+        return ForAppDomain(appDomain, getConventions);
+    }
 
     /// <summary>
     ///     Fors the assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies) => ForAssemblies(assemblies, empty);
+    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies)
+    {
+        return ForAssemblies(assemblies, empty);
+    }
 
     /// <summary>
     ///     Fors the specified assemblies.
@@ -129,14 +160,20 @@ public static partial class RocketBooster
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IEnumerable<Assembly> assemblies, ConventionProviderFactory getConventions) => ForAssemblies(assemblies, getConventions);
+    public static AppDelegate For(IEnumerable<Assembly> assemblies, ConventionProviderFactory getConventions)
+    {
+        return ForAssemblies(assemblies, getConventions);
+    }
 
     /// <summary>
     ///     Fors the specified assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IEnumerable<Assembly> assemblies) => ForAssemblies(assemblies, empty);
+    public static AppDelegate For(IEnumerable<Assembly> assemblies)
+    {
+        return ForAssemblies(assemblies, empty);
+    }
 
     private static ConventionProviderFactory empty = _ => Enumerable.Empty<IConventionWithDependencies>();
 }

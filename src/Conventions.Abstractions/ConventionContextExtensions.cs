@@ -161,7 +161,7 @@ public static class ConventionContextExtensions
     public static IConventionContext AddIfMissing<T>(this IConventionContext context, T value) where T : notnull
     {
         if (context == null) throw new ArgumentNullException(nameof(context));
-        context.Properties.AddIfMissing<T>(value);
+        context.Properties.AddIfMissing(value);
         return context;
     }
 

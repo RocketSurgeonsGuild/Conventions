@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,12 +8,12 @@ using Microsoft.Extensions.Hosting;
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests.DevServer;
 
 /// <summary>
-/// Intended for framework test use only.
+///     Intended for framework test use only.
 /// </summary>
 public class DevHostServerProgram
 {
     /// <summary>
-    /// Intended for framework test use only.
+    ///     Intended for framework test use only.
     /// </summary>
     public static IHost BuildWebHost(string[] args)
     {
@@ -32,11 +31,11 @@ public class DevHostServerProgram
                 ["Logging:LogLevel:Microsoft"] = "Warning",
                 ["Logging:LogLevel:Microsoft.Hosting.Lifetime"] = "Information",
                 [WebHostDefaults.StaticWebAssetsKey] = name,
-                ["ApplyCopHeaders"] = args.Contains("--apply-cop-headers").ToString()
+                ["ApplyCopHeaders"] = args.Contains("--apply-cop-headers").ToString(),
             };
 
             builder.Configuration.AddInMemoryCollection(inMemoryConfiguration);
-            builder.Configuration.AddJsonFile(Path.Combine(applicationDirectory, "blazor-devserversettings.json"), optional: true, reloadOnChange: true);
+            builder.Configuration.AddJsonFile(Path.Combine(applicationDirectory, "blazor-devserversettings.json"), true, true);
         }
         builder.Services.AddRouting();
 
@@ -49,46 +48,55 @@ public class DevHostServerProgram
 
         app.UseWebAssemblyDebugging();
 
-        bool applyCopHeaders = builder.Configuration.GetValue<bool>("ApplyCopHeaders");
+        var applyCopHeaders = builder.Configuration.GetValue<bool>("ApplyCopHeaders");
 
         if (applyCopHeaders)
         {
-            app.Use(async (ctx, next) =>
+            app.Use(
+                async (ctx, next) =>
+                {
+                    if (ctx.Request.Path.StartsWithSegments("/_framework")
+                     && !ctx.Request.Path.StartsWithSegments("/_framework/blazor.server.js")
+                     && !ctx.Request.Path.StartsWithSegments("/_framework/blazor.web.js"))
                     {
-                        if (ctx.Request.Path.StartsWithSegments("/_framework") && !ctx.Request.Path.StartsWithSegments("/_framework/blazor.server.js") && !ctx.Request.Path.StartsWithSegments("/_framework/blazor.web.js"))
+                        var fileExtension = Path.GetExtension(ctx.Request.Path);
+                        if (string.Equals(fileExtension, ".js"))
                         {
-                            string fileExtension = Path.GetExtension(ctx.Request.Path);
-                            if (string.Equals(fileExtension, ".js"))
-                            {
-                                // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
-                                ApplyCrossOriginPolicyHeaders(ctx);
-                            }
+                            // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
+                            ApplyCrossOriginPolicyHeaders(ctx);
                         }
+                    }
 
-                        await next(ctx);
-                    });
+                    await next(ctx);
+                }
+            );
         }
 
         app.UseBlazorFrameworkFiles();
-        app.UseStaticFiles(new StaticFileOptions
-        {
-            // In development, serve everything, as there's no other way to configure it.
-            // In production, developers are responsible for configuring their own production server
-            ServeUnknownFileTypes = true,
-        });
+        app.UseStaticFiles(
+            new StaticFileOptions
+            {
+                // In development, serve everything, as there's no other way to configure it.
+                // In production, developers are responsible for configuring their own production server
+                ServeUnknownFileTypes = true,
+            }
+        );
 
         app.UseRouting();
-        app.MapFallbackToFile("index.html", new StaticFileOptions
-        {
-            OnPrepareResponse = fileContext =>
-                                {
-                                    if (applyCopHeaders)
+        app.MapFallbackToFile(
+            "index.html",
+            new StaticFileOptions
+            {
+                OnPrepareResponse = fileContext =>
                                     {
-                                        // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
-                                        ApplyCrossOriginPolicyHeaders(fileContext.Context);
-                                    }
-                                }
-        });
+                                        if (applyCopHeaders)
+                                        {
+                                            // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
+                                            ApplyCrossOriginPolicyHeaders(fileContext.Context);
+                                        }
+                                    },
+            }
+        );
 
         return app;
     }
@@ -102,19 +110,18 @@ public class DevHostServerProgram
 
             // To ensure consistency with a production environment, only handle requests
             // that match the specified pathbase.
-            app.Use((context, next) =>
+            app.Use(
+                (context, next) =>
+                {
+                    if (context.Request.PathBase == pathBase)
                     {
-                        if (context.Request.PathBase == pathBase)
-                        {
-                            return next(context);
-                        }
-                        else
-                        {
-                            context.Response.StatusCode = 404;
-                            return context.Response.WriteAsync($"The server is configured only to " +
-                                $"handle request URIs within the PathBase '{pathBase}'.");
-                        }
-                    });
+                        return next(context);
+                    }
+
+                    context.Response.StatusCode = 404;
+                    return context.Response.WriteAsync($"The server is configured only to " + $"handle request URIs within the PathBase '{pathBase}'.");
+                }
+            );
         }
     }
 

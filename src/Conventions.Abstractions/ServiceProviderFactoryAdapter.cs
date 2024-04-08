@@ -9,6 +9,6 @@ internal delegate ValueTask<IServiceProviderFactory<object>> ServiceProviderFact
 );
 
 /// <summary>
-/// A factory that provides a list of conventions
+///     A factory that provides a list of conventions
 /// </summary>
 public delegate IEnumerable<IConventionWithDependencies> ConventionProviderFactory(IServiceProviderDictionary context);

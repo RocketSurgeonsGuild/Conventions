@@ -41,7 +41,7 @@ public static class DryIocExtensions
                                 cancellationToken
                             ),
                             DryIocAsyncConvention @delegate => await @delegate(conventionContext, configuration, services, container, cancellationToken),
-                            _                               => container
+                            _                               => container,
                         };
         }
 

@@ -12,4 +12,3 @@ public interface IReadOnlyServiceProviderDictionary : IReadOnlyDictionary<object
 #else
 public interface IReadOnlyServiceProviderDictionary : IReadOnlyDictionary<object, object?>, IServiceProvider;
 #endif
-

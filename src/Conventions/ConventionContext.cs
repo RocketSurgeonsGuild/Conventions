@@ -12,9 +12,6 @@ namespace Rocket.Surgery.Conventions;
 /// <seealso cref="IConventionContext" />
 public sealed class ConventionContext : IConventionContext
 {
-    private readonly ConventionContextBuilder _builder;
-    private const string ConventionsSetup = "__ConventionsSetup__" + nameof(ConventionContext);
-
     /// <summary>
     ///     Create a context from a given builder
     /// </summary>
@@ -31,6 +28,8 @@ public sealed class ConventionContext : IConventionContext
         return context;
     }
 
+    private const string ConventionsSetup = "__ConventionsSetup__" + nameof(ConventionContext);
+
     private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
     {
         builder._assemblyCandidateFinderFactory ??= ConventionContextHelpers.DefaultAssemblyCandidateFinderFactory;
@@ -44,6 +43,8 @@ public sealed class ConventionContext : IConventionContext
         var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
         return context;
     }
+
+    private readonly ConventionContextBuilder _builder;
 
     /// <summary>
     ///     Creates a base context
@@ -76,9 +77,9 @@ public sealed class ConventionContext : IConventionContext
     public object this[object item]
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-#pragma warning disable CS8603 // Possible null reference return.
+        #pragma warning disable CS8603 // Possible null reference return.
         get => Properties.TryGetValue(item, out var value) ? value : null!;
-#pragma warning restore CS8603 // Possible null reference return.
+        #pragma warning restore CS8603 // Possible null reference return.
         set => Properties[item] = value;
     }
 

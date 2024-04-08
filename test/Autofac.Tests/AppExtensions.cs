@@ -12,6 +12,7 @@ internal static class AppExtensions
         var host = builder.Build();
         return host.Services.GetRequiredService<ILifetimeScope>();
     }
+
     public static ILifetimeScope GetLifetimeScope(this WebApplicationBuilder builder)
     {
         var host = builder.Build();
