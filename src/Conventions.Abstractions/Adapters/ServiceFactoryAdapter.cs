@@ -30,6 +30,7 @@ internal class ServiceFactoryAdapter<TContainerBuilder>
     public async ValueTask<IServiceProvider> CreateServiceProvider(object containerBuilder, CancellationToken cancellationToken)
     {
         if (_serviceProviderFactory is null) throw new InvalidOperationException("CreateBuilder must be called before CreateServiceProvider");
+        await Task.Yield();
         return _serviceProviderFactory.CreateServiceProvider((TContainerBuilder)containerBuilder);
     }
     #endif

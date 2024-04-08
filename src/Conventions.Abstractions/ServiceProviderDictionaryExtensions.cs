@@ -190,7 +190,6 @@ public static class ServiceProviderDictionaryExtensions
     /// <summary>
     ///     Set key to the value
     /// </summary>
-    /// <typeparam name="T">The type of the value</typeparam>
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <param name="key">The key where the value is saved</param>
     /// <param name="value">The value to save</param>

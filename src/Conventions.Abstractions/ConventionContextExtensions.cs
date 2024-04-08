@@ -168,7 +168,6 @@ public static class ConventionContextExtensions
     /// <summary>
     ///     Set key to the value if the key is missing
     /// </summary>
-    /// <typeparam name="T">The type of the value</typeparam>
     /// <param name="context">The properties</param>
     /// <param name="key">The key where the value is saved</param>
     /// <param name="value">The value to save</param>

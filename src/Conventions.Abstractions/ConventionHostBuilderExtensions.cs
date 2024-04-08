@@ -58,7 +58,15 @@ public static class ConventionHostBuilderExtensions
     {
         if (builder == null) throw new ArgumentNullException(nameof(builder));
 
-        builder._serviceProviderFactory = async (_, _, _) => new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory);
+        #if NET6_0_OR_GREATER
+        builder._serviceProviderFactory =  (_, _, _) => ValueTask.FromResult<IServiceProviderFactory<object>>(new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory));
+        #else
+        builder._serviceProviderFactory = async (_, _, _) =>
+                                          {
+                                              await Task.Yield();
+                                              return new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory);
+                                          };
+        #endif
         return builder;
     }
 
@@ -605,7 +613,6 @@ public static class ConventionHostBuilderExtensions
     /// <summary>
     ///     Set key to the value if the key is missing
     /// </summary>
-    /// <typeparam name="T">The type of the value</typeparam>
     /// <param name="builder">The builder</param>
     /// <param name="key">The key where the value is saved</param>
     /// <param name="value">The value to save</param>
