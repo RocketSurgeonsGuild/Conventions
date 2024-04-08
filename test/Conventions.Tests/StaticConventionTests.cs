@@ -11,7 +11,7 @@ public partial class StaticConventionTests
     public void Should_Have_Exports_Method_Defined()
     {
         var list = Exports
-                  .GetConventions(new ServiceCollection().BuildServiceProvider())
+                  .GetConventions(new ServiceProviderDictionary())
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -22,7 +22,7 @@ public partial class StaticConventionTests
     public void Should_Have_Imports_Method_Defined_On_Assembly()
     {
         var list = Imports
-                  .GetConventions(new ServiceCollection().BuildServiceProvider())
+                  .GetConventions(new ServiceProviderDictionary())
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -33,7 +33,7 @@ public partial class StaticConventionTests
     public void Should_Have_Imports_Method_Defined_On_Assembly_Into_Provider()
     {
         var list = Exports
-                  .GetConventions(new ServiceCollection().BuildServiceProvider())
+                  .GetConventions(new ServiceProviderDictionary())
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -52,7 +52,7 @@ public partial class StaticConventionTests
     [Fact]
     public void Should_Have_Imports_Method_Defined_On_Class()
     {
-        var list = GetConventions(new ServiceCollection().BuildServiceProvider())
+        var list = GetConventions(new ServiceProviderDictionary())
                   .Should()
                   .NotBeNull()
                   .And.Subject;

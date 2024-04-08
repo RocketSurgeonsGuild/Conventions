@@ -1,5 +1,4 @@
-﻿#if NET8_0_OR_GREATER
-using DryIoc;
+﻿using DryIoc;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
@@ -237,4 +236,3 @@ public class DryIocWebApplicationTests : AutoFakeTest
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
     }
 }
-#endif

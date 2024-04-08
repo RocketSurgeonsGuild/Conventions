@@ -17,7 +17,7 @@ namespace Test.My.Namespace
         /// <summary>
         /// The conventions imported into this assembly
         /// </summary>
-        public static IEnumerable<IConventionWithDependencies> ImportConventions(IServiceProvider serviceProvider)
+        public static IEnumerable<IConventionWithDependencies> ImportConventions(IServiceProviderDictionary serviceProvider)
         {
             foreach (var convention in Dep1.Dep1Exports.GetConventions(serviceProvider))
                 yield return convention;

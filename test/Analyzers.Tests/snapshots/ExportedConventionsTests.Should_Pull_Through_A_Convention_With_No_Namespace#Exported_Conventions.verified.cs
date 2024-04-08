@@ -17,7 +17,7 @@ public static partial class Exports
     /// <summary>
     /// The conventions exports from this assembly
     /// </summary>
-    public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+    public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProviderDictionary serviceProvider)
     {
         yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined);
     }

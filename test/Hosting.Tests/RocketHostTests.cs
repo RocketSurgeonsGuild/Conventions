@@ -1,4 +1,3 @@
-#if NET8_0_OR_GREATER
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -32,7 +31,7 @@ public class RocketHostTests
     {
         var host = await Host
                         .CreateApplicationBuilder()
-                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }));
+                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }, Imports.GetConventions));
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -45,7 +44,7 @@ public class RocketHostTests
         var host = await Host
                         .CreateApplicationBuilder()
                         .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }),
+                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }, Imports.GetConventions),
                              z => z.ExceptConvention(typeof(YamlConvention))
                          );
 
@@ -61,7 +60,7 @@ public class RocketHostTests
         var host = await Host
                         .CreateApplicationBuilder()
                         .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }),
+                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }, Imports.GetConventions),
                              z => z.ExceptConvention(typeof(JsonConvention))
                          );
 
@@ -71,4 +70,3 @@ public class RocketHostTests
         configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
     }
 }
-#endif

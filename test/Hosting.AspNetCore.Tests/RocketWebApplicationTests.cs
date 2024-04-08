@@ -1,5 +1,4 @@
-﻿#if NET8_0_OR_GREATER
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +8,7 @@ using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+using Rocket.Surgery.Hosting.AspNetCore.Tests;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Xunit.Abstractions;
 
@@ -63,9 +63,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     {
         var host = await WebApplication
                         .CreateBuilder()
-                        .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, })
-                         );
+                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }, Imports.GetConventions));
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -78,7 +76,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         var host = await WebApplication
                         .CreateBuilder()
                         .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }),
+                             RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }, Imports.GetConventions),
                              z => z.ExceptConvention(typeof(YamlConvention))
                          );
 
@@ -94,7 +92,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         var host = await WebApplication
                         .CreateBuilder()
                         .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }),
+                             RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }, Imports.GetConventions),
                              z => z.ExceptConvention(typeof(JsonConvention))
                          );
 
@@ -104,4 +102,3 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
     }
 }
-#endif

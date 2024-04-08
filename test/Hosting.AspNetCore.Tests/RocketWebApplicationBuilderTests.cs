@@ -1,5 +1,4 @@
-﻿#if NET8_0_OR_GREATER
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
@@ -29,4 +28,3 @@ public class RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : 
         await host.StopAsync();
     }
 }
-#endif

@@ -269,7 +269,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                        .WithParameterList(
                                             ParameterList(
                                                 SingletonSeparatedList(
-                                                    Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
+                                                    Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProviderDictionary"))
                                                 )
                                             )
                                         )
@@ -352,7 +352,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                .WithParameterList(
                                     ParameterList(
                                         SingletonSeparatedList(
-                                            Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
+                                            Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProviderDictionary"))
                                         )
                                     )
                                 )
@@ -611,7 +611,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                            .WithParameterList(
                                 ParameterList(
                                     SingletonSeparatedList(
-                                        Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProvider"))
+                                        Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProviderDictionary"))
                                     )
                                 )
                             )

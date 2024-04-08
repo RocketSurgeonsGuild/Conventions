@@ -1,12 +1,12 @@
-#if NET8_0_OR_GREATER
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using AppDelegate =
     System.Func<Microsoft.Extensions.Hosting.IHostApplicationBuilder, System.Threading.CancellationToken,
         System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.ConventionContextBuilder>>;
-using ConventionsDelegate =
-    System.Func<System.IServiceProvider, System.Collections.Generic.IEnumerable<Rocket.Surgery.Conventions.IConventionWithDependencies>>;
 
 #pragma warning disable CA1031
 #pragma warning disable CA2000
@@ -268,7 +268,7 @@ public static class RocketHostApplicationExtensions
     /// <returns>IHostBuilder.</returns>
     public static async ValueTask<T> ConfigureRocketSurgery<T>(
         this T builder,
-        ConventionsDelegate getConventions,
+        ConventionProviderFactory getConventions,
         CancellationToken cancellationToken = default
     ) where T : IHostApplicationBuilder
     {
@@ -315,31 +315,29 @@ public static class RocketHostApplicationExtensions
         CancellationToken cancellationToken
     )
     {
-        contextBuilder
-           .Properties
-           .AddIfMissing(builder)
-           .AddIfMissing(contextBuilder)
-           .AddIfMissing(HostType.Live);
-        builder.Properties[typeof(ConventionContextBuilder)] = contextBuilder;
-        builder.Properties[typeof(IHostApplicationBuilder)] = builder;
-        contextBuilder.Properties[builder.GetType()] = builder;
-        builder.Properties[builder.GetType()] = builder;
-
         if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
         contextBuilder.Properties["__configured__"] = true;
 
-        var host = new RocketApplicationBuilderContext(builder, await ConventionContext.FromAsync(contextBuilder, cancellationToken));
-        await host.ComposeHostingConvention(cancellationToken);
-        await host.ConfigureAppConfiguration(cancellationToken);
-        await host.ConfigureServices(cancellationToken);
+        contextBuilder
+           .AddIfMissing(builder)
+           .AddIfMissing(builder.GetType(), builder)
+           .AddIfMissing(builder.Configuration)
+           .AddIfMissing<IConfiguration>(builder.Configuration)
+           .AddIfMissing(builder.Configuration.GetType(), builder.Configuration)
+           .AddIfMissing(builder.Environment)
+           .AddIfMissing(builder.Environment.GetType(), builder.Environment);
 
-        contextBuilder.Properties.Add(typeof(RocketHostApplicationExtensions), true);
-        if (await host.UseServiceProviderFactory(builder.Services, cancellationToken) is { } factory)
+        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
+        await builder.ApplyConventionsAsync(context, cancellationToken);
+        await RocketInternalsShared.SharedHostConfigurationAsync(context, builder, cancellationToken).ConfigureAwait(false);
+        await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.Logging.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+
+        if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
         {
-            builder.ConfigureContainer(factory);
+            builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken));
         }
 
         return contextBuilder;
     }
 }
-#endif

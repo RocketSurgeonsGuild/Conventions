@@ -8,9 +8,6 @@ using PropertiesDictionary = System.Collections.Generic.Dictionary<object, objec
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ServiceFactoryAdapter =
-    System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -36,8 +33,8 @@ public class ConventionContextBuilder
     internal readonly List<Assembly> _exceptAssemblyConventions = new();
     internal readonly List<object> _includeConventions = new();
     internal readonly List<Assembly> _includeAssemblyConventions = new();
-    internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProviderFactory;
-    internal ServiceFactoryAdapter? _serviceProviderFactory;
+    internal ConventionProviderFactory? _conventionProviderFactory;
+    internal ServiceProviderFactoryAdapter? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
     internal object? _source;
     internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;
@@ -98,7 +95,7 @@ public class ConventionContextBuilder
     /// </summary>
     /// <param name="conventionProvider"></param>
     /// <returns></returns>
-    public ConventionContextBuilder WithConventionsFrom(Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> conventionProvider)
+    public ConventionContextBuilder WithConventionsFrom(ConventionProviderFactory conventionProvider)
     {
         _conventionProviderFactory = conventionProvider;
         return this;
@@ -424,7 +421,7 @@ public static class ConventionContextBuilderExtensions
     /// <returns></returns>
     public static Func<TBuilder, CancellationToken, ValueTask<ConventionContextBuilder>> WithConventionsFrom<TBuilder>(
         this Func<TBuilder, CancellationToken, ValueTask<ConventionContextBuilder>> action,
-        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> conventionProvider
+        ConventionProviderFactory conventionProvider
     )
     {
         return async (builder, token) => ( await action(builder, token) ).WithConventionsFrom(conventionProvider);
@@ -438,7 +435,7 @@ public static class ConventionContextBuilderExtensions
     /// <returns></returns>
     public static Func<TBuilder, ConventionContextBuilder> WithConventionsFrom<TBuilder>(
         this Func<TBuilder, ConventionContextBuilder> action,
-        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> conventionProvider
+        ConventionProviderFactory conventionProvider
     )
     {
         return builder => action(builder).WithConventionsFrom(conventionProvider);

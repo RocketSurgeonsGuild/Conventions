@@ -19,7 +19,7 @@ namespace TestProject.Conventions
         /// <summary>
         /// The conventions exports from this assembly
         /// </summary>
-        public static IEnumerable<IConventionWithDependencies> SourceMethod(IServiceProvider serviceProvider)
+        public static IEnumerable<IConventionWithDependencies> SourceMethod(IServiceProviderDictionary serviceProvider)
         {
             yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined);
         }

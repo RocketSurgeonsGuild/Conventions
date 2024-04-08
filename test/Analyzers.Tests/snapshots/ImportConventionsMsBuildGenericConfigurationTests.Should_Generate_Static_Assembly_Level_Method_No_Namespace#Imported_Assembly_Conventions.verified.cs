@@ -15,7 +15,7 @@ internal static partial class MyImports
     /// <summary>
     /// The conventions imported into this assembly
     /// </summary>
-    public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+    public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProviderDictionary serviceProvider)
     {
         foreach (var convention in Dep1.Dep1Exports.GetConventions(serviceProvider))
             yield return convention;

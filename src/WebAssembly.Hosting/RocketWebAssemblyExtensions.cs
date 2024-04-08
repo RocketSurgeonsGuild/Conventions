@@ -183,7 +183,7 @@ public static class RocketWebAssemblyExtensions
     public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         AppDomain appDomain,
-        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,
+        ConventionProviderFactory? getConventions = null,
         Action<ConventionContextBuilder>? action = null
     )
     {
@@ -215,7 +215,7 @@ public static class RocketWebAssemblyExtensions
     /// <returns>WebAssemblyHostBuilder.</returns>
     public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
-        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,
+        ConventionProviderFactory? getConventions = null,
         Action<ConventionContextBuilder>? action = null
     )
     {
@@ -233,7 +233,7 @@ public static class RocketWebAssemblyExtensions
     public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         IEnumerable<Assembly> assemblies,
-        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,
+        ConventionProviderFactory? getConventions = null,
         Action<ConventionContextBuilder>? action = null
     )
     {

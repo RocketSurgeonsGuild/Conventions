@@ -1,5 +1,4 @@
-﻿#if NET8_0_OR_GREATER
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Autofac;
 using FakeItEasy;
 using FluentAssertions;
@@ -220,4 +219,3 @@ public class AutofacWebApplicationTests : AutoFakeTest
         AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
     }
 }
-#endif
