@@ -24,10 +24,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder SetupConvention(this ConventionContextBuilder container, SetupConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(@delegate);
         return container;
@@ -41,10 +38,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder SetupConvention(this ConventionContextBuilder container, SetupAsyncConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(@delegate);
         return container;
@@ -62,10 +56,7 @@ public static class ConventionHostBuilderExtensions
         IServiceProviderFactory<TContainerBuilder> serviceProviderFactory
     ) where TContainerBuilder : notnull
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
 
         builder._serviceProviderFactory = async (_, _, _) => new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory);
         return builder;
@@ -83,10 +74,7 @@ public static class ConventionHostBuilderExtensions
         Func<IConventionContext, IServiceCollection, CancellationToken, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
     ) where TContainerBuilder : notnull
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
 
         builder._serviceProviderFactory = async (context, collection, cancellationToken) =>
                                               new ServiceProviderWrapper<TContainerBuilder>(
@@ -107,10 +95,7 @@ public static class ConventionHostBuilderExtensions
         Func<IConventionContext, IServiceCollection, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
     ) where TContainerBuilder : notnull
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
 
         builder._serviceProviderFactory = async (context, collection, _) =>
                                               new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection));
@@ -125,10 +110,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, ServiceConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(@delegate);
         return container;
@@ -142,10 +124,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, ServiceAsyncConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(@delegate);
         return container;
@@ -159,10 +138,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Action<IConfiguration, IServiceCollection> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ServiceConvention((_, configuration, services) => @delegate(configuration, services)));
         return container;
@@ -179,10 +155,7 @@ public static class ConventionHostBuilderExtensions
         Func<IConfiguration, IServiceCollection, CancellationToken, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(
             new ServiceAsyncConvention((_, configuration, services, cancellationToken) => @delegate(configuration, services, cancellationToken))
@@ -201,10 +174,7 @@ public static class ConventionHostBuilderExtensions
         Func<IConfiguration, IServiceCollection, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ServiceAsyncConvention((_, configuration, services, _) => @delegate(configuration, services)));
         return container;
@@ -218,10 +188,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Action<IServiceCollection> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ServiceConvention((_, _, services) => @delegate(services)));
         return container;
@@ -235,10 +202,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IServiceCollection, ValueTask> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ServiceAsyncConvention((_, _, services, _) => @delegate(services)));
         return container;
@@ -255,10 +219,7 @@ public static class ConventionHostBuilderExtensions
         Func<IServiceCollection, CancellationToken, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ServiceAsyncConvention((_, _, services, cancellationToken) => @delegate(services, cancellationToken)));
         return container;
@@ -272,10 +233,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, LoggingConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(@delegate);
         return container;
@@ -289,10 +247,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, LoggingAsyncConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(@delegate);
         return container;
@@ -306,10 +261,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Action<IConfiguration, ILoggingBuilder> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new LoggingConvention((_, configuration, builder) => @delegate(configuration, builder)));
         return container;
@@ -326,10 +278,7 @@ public static class ConventionHostBuilderExtensions
         Func<IConfiguration, ILoggingBuilder, CancellationToken, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(
             new LoggingAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken))
@@ -345,10 +294,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<IConfiguration, ILoggingBuilder, ValueTask> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new LoggingAsyncConvention((_, configuration, builder, _) => @delegate(configuration, builder)));
         return container;
@@ -362,10 +308,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Action<ILoggingBuilder> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new LoggingConvention((_, _, builder) => @delegate(builder)));
         return container;
@@ -382,10 +325,7 @@ public static class ConventionHostBuilderExtensions
         Func<ILoggingBuilder, CancellationToken, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new LoggingAsyncConvention((_, _, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
@@ -399,10 +339,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<ILoggingBuilder, ValueTask> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new LoggingAsyncConvention((_, _, builder, _) => @delegate(builder)));
         return container;
@@ -416,10 +353,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, ConfigurationConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(@delegate);
         return container;
@@ -433,10 +367,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, ConfigurationAsyncConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(@delegate);
         return container;
@@ -453,10 +384,7 @@ public static class ConventionHostBuilderExtensions
         Action<IConfiguration, IConfigurationBuilder> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ConfigurationConvention((_, configuration, builder) => @delegate(configuration, builder)));
         return container;
@@ -473,10 +401,7 @@ public static class ConventionHostBuilderExtensions
         Func<IConfiguration, IConfigurationBuilder, CancellationToken, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(
             new ConfigurationAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken))
@@ -495,10 +420,7 @@ public static class ConventionHostBuilderExtensions
         Func<IConfiguration, IConfigurationBuilder, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ConfigurationAsyncConvention((_, configuration, builder, _) => @delegate(configuration, builder)));
         return container;
@@ -512,10 +434,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Action<IConfigurationBuilder> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ConfigurationConvention((_, _, builder) => @delegate(builder)));
         return container;
@@ -532,10 +451,7 @@ public static class ConventionHostBuilderExtensions
         Func<IConfigurationBuilder, CancellationToken, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
@@ -549,10 +465,7 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Func<IConfigurationBuilder, ValueTask> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        if (container == null) throw new ArgumentNullException(nameof(container));
 
         container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, _) => @delegate(builder)));
         return container;
@@ -567,10 +480,7 @@ public static class ConventionHostBuilderExtensions
     public static T? Get<T>(this ConventionContextBuilder context)
         where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        if (context == null) throw new ArgumentNullException(nameof(context));
 
         return (T?)context.Properties[typeof(T)];
     }
@@ -585,10 +495,7 @@ public static class ConventionHostBuilderExtensions
     public static T? Get<T>(this ConventionContextBuilder context, string key)
         where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        if (context == null) throw new ArgumentNullException(nameof(context));
 
         return (T?)context.Properties[key];
     }
@@ -603,20 +510,11 @@ public static class ConventionHostBuilderExtensions
     public static T GetOrAdd<T>(this ConventionContextBuilder builder, Func<T> factory)
         where T : class
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
 
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
+        if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-        if (builder.Properties[typeof(T)] is T value)
-        {
-            return value;
-        }
+        if (builder.Properties[typeof(T)] is T value) return value;
 
         value = factory();
         builder.Set(value);
@@ -635,15 +533,9 @@ public static class ConventionHostBuilderExtensions
     public static T GetOrAdd<T>(this ConventionContextBuilder builder, string key, Func<T> factory)
         where T : class
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
 
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
+        if (factory == null) throw new ArgumentNullException(nameof(factory));
 
         if (!( builder.Properties[key] is T value ))
         {
@@ -662,10 +554,7 @@ public static class ConventionHostBuilderExtensions
     /// <param name="value">The value to save</param>
     public static ConventionContextBuilder Set<T>(this ConventionContextBuilder context, T value)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        if (context == null) throw new ArgumentNullException(nameof(context));
 
         context.Properties[typeof(T)] = value;
         return context;
@@ -679,10 +568,7 @@ public static class ConventionHostBuilderExtensions
     /// <param name="value">The value to save</param>
     public static ConventionContextBuilder Set(this ConventionContextBuilder context, Type key, object value)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        if (context == null) throw new ArgumentNullException(nameof(context));
 
         context.Properties[key] = value;
         return context;
@@ -697,10 +583,7 @@ public static class ConventionHostBuilderExtensions
     /// <param name="value">The value to save</param>
     public static ConventionContextBuilder Set<T>(this ConventionContextBuilder context, string key, T value)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        if (context == null) throw new ArgumentNullException(nameof(context));
 
         context.Properties[key] = value;
         return context;
@@ -753,10 +636,7 @@ public static class ConventionHostBuilderExtensions
     /// <param name="context">The context</param>
     public static bool IsUnitTestHost(this ConventionContextBuilder context)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        if (context == null) throw new ArgumentNullException(nameof(context));
 
         return context.GetHostType() == HostType.UnitTest;
     }

@@ -1,4 +1,4 @@
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using ReadOnlyPropertiesType = System.Collections.Generic.IReadOnlyDictionary<object, object>;
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.ObjectModel.ReadOnlyDictionary<object, object>;
@@ -63,7 +63,7 @@ public class ReadOnlyServiceProviderDictionary : IReadOnlyServiceProviderDiction
     }
 
     /// <inheritdoc />
-    #if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public bool TryGetValue(object key, out object value)
         #else
     public bool TryGetValue(object key, out object? value)
@@ -74,7 +74,7 @@ public class ReadOnlyServiceProviderDictionary : IReadOnlyServiceProviderDiction
     }
 
     /// <inheritdoc />
-    #if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public object this[object key] => _values[key];
     #else
     public object? this[object key] => _values[key];
@@ -85,7 +85,7 @@ public class ReadOnlyServiceProviderDictionary : IReadOnlyServiceProviderDiction
 
     /// <inheritdoc />
 
-    #if NET7_0_OR_GREATER
+    #if NET8_0_OR_GREATER
     public IEnumerable<object> Values => _values.Values;
     #else
     public IEnumerable<object?> Values => _values.Values;
