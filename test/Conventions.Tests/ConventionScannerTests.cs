@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionScannerTests : AutoFakeTest
+public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
 {
     [Fact]
     public void ShouldConstruct()
@@ -24,9 +24,7 @@ public class ConventionScannerTests : AutoFakeTest
     [Fact]
     public void ShouldBuildAProvider()
     {
-        var scanner = ConventionContextHelpers.CreateProvider(
-            new ConventionContextBuilder(new Dictionary<object, object?>()), new TestAssemblyProvider(), Logger
-        );
+        var scanner = ConventionContextHelpers.CreateProvider(new(new Dictionary<object, object?>()), new TestAssemblyProvider(), Logger);
 
         scanner.Get<IServiceConvention, ServiceConvention>()
                .Should()
@@ -37,10 +35,12 @@ public class ConventionScannerTests : AutoFakeTest
     public void ShouldScanAddedContributions()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
-        A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+        // ReSharper disable ExplicitCallerInfoArgument
+        A.CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
          .Returns(Array.Empty<Assembly>());
+        // ReSharper restore ExplicitCallerInfoArgument
 
         var contribution = A.Fake<IServiceConvention>();
         var contribution2 = A.Fake<IServiceConvention>();
@@ -59,10 +59,12 @@ public class ConventionScannerTests : AutoFakeTest
     public void ShouldIncludeAddedDelegates()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
-        A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+        // ReSharper disable ExplicitCallerInfoArgument
+        A.CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
          .Returns(Array.Empty<Assembly>());
+        // ReSharper restore ExplicitCallerInfoArgument
 
         var @delegate = new ServiceConvention((_, _, _) => { });
         var delegate2 = new ServiceConvention((_, _, _) => { });
@@ -81,9 +83,10 @@ public class ConventionScannerTests : AutoFakeTest
     public void ShouldScanExcludeContributionTypes()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
-        A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+        // ReSharper disable ExplicitCallerInfoArgument
+        A.CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
          .Returns(
               new[]
               {
@@ -91,6 +94,7 @@ public class ConventionScannerTests : AutoFakeTest
                   typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly
               }
           );
+        // ReSharper restore ExplicitCallerInfoArgument
 
         var contribution = A.Fake<IServiceConvention>();
         var contribution2 = A.Fake<IServiceConvention>();
@@ -113,9 +117,10 @@ public class ConventionScannerTests : AutoFakeTest
     public void ShouldScanExcludeContributionAssemblies()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
-        A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+        // ReSharper disable ExplicitCallerInfoArgument
+        A.CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
          .Returns(
               new[]
               {
@@ -123,6 +128,7 @@ public class ConventionScannerTests : AutoFakeTest
                   typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly
               }
           );
+        // ReSharper restore ExplicitCallerInfoArgument
 
         var contribution = A.Fake<IServiceConvention>();
 
@@ -141,9 +147,10 @@ public class ConventionScannerTests : AutoFakeTest
     public void ShouldScanIncludeContributionTypes()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
-        A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+        // ReSharper disable ExplicitCallerInfoArgument
+        A.CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
          .Returns(
               new[]
               {
@@ -151,6 +158,7 @@ public class ConventionScannerTests : AutoFakeTest
                   typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly
               }
           );
+        // ReSharper restore ExplicitCallerInfoArgument
 
         var contribution = A.Fake<IServiceConvention>();
         var contribution2 = A.Fake<IServiceConvention>();
@@ -173,9 +181,10 @@ public class ConventionScannerTests : AutoFakeTest
     public void ShouldScanIncludeContributionAssemblies()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
-        A.CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+        // ReSharper disable ExplicitCallerInfoArgument
+        A.CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
          .Returns(
               new[]
               {
@@ -183,6 +192,7 @@ public class ConventionScannerTests : AutoFakeTest
                   typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly
               }
           );
+        // ReSharper restore ExplicitCallerInfoArgument
 
         var contribution = A.Fake<IServiceConvention>();
 
@@ -194,9 +204,5 @@ public class ConventionScannerTests : AutoFakeTest
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
                 .Contain(x => x is Contrib);
-    }
-
-    public ConventionScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
-    {
     }
 }

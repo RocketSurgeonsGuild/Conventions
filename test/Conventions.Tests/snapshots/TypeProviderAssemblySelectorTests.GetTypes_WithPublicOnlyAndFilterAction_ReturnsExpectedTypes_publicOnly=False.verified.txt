@@ -1,0 +1,20 @@
+﻿[
+  AppDomainAssemblyCandidateFinderTests,
+  AssemblyProviderAssemblySelectorTests,
+  ConventionContextExtensionsTests,
+  ConventionContextTests,
+  ConventionProviderTests,
+  ConventionScannerTests,
+  ConventionStaticScannerTests,
+  ConventionTests,
+  DefaultAssemblyCandidateFinderTests,
+  DependencyContextAssemblyCandidateFinderTests,
+  DiagnosticLoggerTests,
+  GenericTypedConventionProviderTests,
+  GenericTypedConventionScannerTests,
+  ServiceProviderDictionaryExtensionsTests,
+  StaticConventionTests,
+  TestContextTests,
+  TypeFilterFunctionalityTests,
+  TypeProviderAssemblySelectorTests
+]

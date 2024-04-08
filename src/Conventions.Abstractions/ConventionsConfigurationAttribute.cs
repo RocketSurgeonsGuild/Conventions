@@ -3,6 +3,7 @@
 /// <summary>
 ///     Base class to be used for both imports and exports for configuration
 /// </summary>
+[PublicAPI]
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class)]
 public abstract class ConventionsConfigurationAttribute : Attribute
 {

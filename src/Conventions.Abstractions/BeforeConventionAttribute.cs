@@ -4,6 +4,7 @@ namespace Rocket.Surgery.Conventions;
 ///     An attribute that ensures the convention runs before the given <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="Attribute" />
+[PublicAPI]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class BeforeConventionAttribute : Attribute, IConventionDependency
 {
@@ -30,6 +31,7 @@ public sealed class BeforeConventionAttribute : Attribute, IConventionDependency
 ///     An attribute that ensures the convention runs before the given <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="Attribute" />
+[PublicAPI]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class BeforeConventionAttribute<
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)]

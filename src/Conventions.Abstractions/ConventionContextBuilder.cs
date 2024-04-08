@@ -37,7 +37,6 @@ public class ConventionContextBuilder
     internal ServiceProviderFactoryAdapter? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
     internal object? _source;
-    internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;
     internal AssemblyProviderFactory? _assemblyProviderFactory;
 
     /// <summary>

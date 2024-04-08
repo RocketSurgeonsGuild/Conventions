@@ -43,7 +43,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution);
         scanner.AppendConvention(contribution2);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
@@ -61,7 +61,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependDelegate(delegate2);
         scanner.AppendDelegate(@delegate);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
@@ -80,7 +80,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
@@ -100,7 +100,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution);
         scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
@@ -120,7 +120,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution2);
         scanner.IncludeConvention(typeof(Contrib));
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()
@@ -139,7 +139,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution);
         scanner.IncludeConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 
         provider.Get<IServiceConvention, ServiceConvention>()
                 .Should()

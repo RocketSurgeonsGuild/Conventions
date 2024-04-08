@@ -32,15 +32,13 @@ public sealed class ConventionContext : IConventionContext
 
     private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
     {
-        builder._assemblyCandidateFinderFactory ??= ConventionContextHelpers.DefaultAssemblyCandidateFinderFactory;
         builder._assemblyProviderFactory ??= ConventionContextHelpers.DefaultAssemblyProviderFactory;
 
         var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
-        var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
-        var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
+        var provider = ConventionContextHelpers.CreateProvider(builder, assemblyProvider, builder.Get<ILogger>());
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         builder.Properties.Set(builder._serviceProviderFactory!);
-        var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
+        var context = new ConventionContext(builder, provider, assemblyProvider, builder.Properties);
         return context;
     }
 
@@ -51,21 +49,18 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionProvider"></param>
-    /// <param name="assemblyCandidateFinder"></param>
     /// <param name="properties"></param>
     /// <param name="assemblyProvider"></param>
     private ConventionContext(
         ConventionContextBuilder builder,
         IConventionProvider conventionProvider,
         IAssemblyProvider assemblyProvider,
-        IAssemblyCandidateFinder assemblyCandidateFinder,
         IServiceProviderDictionary properties
     )
     {
         _builder = builder;
         Conventions = conventionProvider;
         AssemblyProvider = assemblyProvider;
-        AssemblyCandidateFinder = assemblyCandidateFinder;
         Properties = properties;
     }
 
@@ -105,12 +100,6 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <value>The assembly provider.</value>
     public IAssemblyProvider AssemblyProvider { get; }
-
-    /// <summary>
-    ///     Gets the assembly candidate finder.
-    /// </summary>
-    /// <value>The assembly candidate finder.</value>
-    public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
 
     /// <summary>
     ///     Return the source builder for this context (to create new contexts if required).

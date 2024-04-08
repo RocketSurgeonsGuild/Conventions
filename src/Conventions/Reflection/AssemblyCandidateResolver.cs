@@ -35,9 +35,7 @@ internal class AssemblyCandidateResolver
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="referenceAssemblies">The reference assemblies.</param>
     /// <param name="logger">The logger.</param>
-    #if NET6_0_OR_GREATER
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-    #endif
     public AssemblyCandidateResolver(
         IReadOnlyList<Assembly> assemblies,
         ISet<string?> referenceAssemblies,
@@ -60,9 +58,7 @@ internal class AssemblyCandidateResolver
         _dependencies = dependenciesWithNoDuplicates;
     }
 
-#if NET6_0_OR_GREATER
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetReferencedAssemblies()")]
-#endif
     private void RecursiveAddDependencies(
         Assembly assembly,
         ISet<string?> referenceAssemblies,
@@ -70,12 +66,11 @@ internal class AssemblyCandidateResolver
         ISet<Assembly> processedAssemblies
     )
     {
-        if (processedAssemblies.Contains(assembly))
+        if (!processedAssemblies.Add(assembly))
         {
             return;
         }
 
-        processedAssemblies.Add(assembly);
         var key = assembly.GetName().Name;
         if (!string.IsNullOrWhiteSpace(key) && !dependenciesWithNoDuplicates.ContainsKey(key))
         {
@@ -116,9 +111,7 @@ internal class AssemblyCandidateResolver
         }
     }
 
-#if NET6_0_OR_GREATER
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-#endif
     private DependencyClassification ComputeClassification(string dependency, ISet<string?>? processedAssemblies = null)
     {
         processedAssemblies ??= new HashSet<string?>();
@@ -175,7 +168,7 @@ internal class AssemblyCandidateResolver
     {
         foreach (var dependency in _dependencies)
         {
-            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate or DependencyClassification.NotCandidate && dependency.Value.Assembly is not null)
+            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate or DependencyClassification.NotCandidate && dependency.Value.Assembly is { })
             {
                 yield return dependency.Value.Assembly;
             }
@@ -190,7 +183,7 @@ internal class AssemblyCandidateResolver
     {
         foreach (var dependency in _dependencies)
         {
-            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate && dependency.Value.Assembly is not null)
+            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate && dependency.Value.Assembly is { })
             {
                 yield return dependency.Value;
             }

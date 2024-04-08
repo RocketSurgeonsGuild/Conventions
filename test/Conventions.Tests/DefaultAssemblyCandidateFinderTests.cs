@@ -9,12 +9,12 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
+public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper, LogLevel.Trace)
 {
     [Fact]
     public void FindsAssembliesInCandidates_Params()
     {
-        var resolver = new DefaultAssemblyCandidateFinder(
+        var resolver = new DefaultAssemblyProvider(
             new[]
             {
                 typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly,
@@ -22,13 +22,10 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
             },
             Logger
         );
-        var items = resolver.GetCandidateAssemblies(
-                                 "Rocket.Surgery.Conventions",
-                                 "Rocket.Surgery.Conventions.Abstractions",
-                                 "Rocket.Surgery.Conventions.Attributes"
-                             )
-                            .Select(x => x.GetName().Name)
-                            .ToArray();
+        var items = resolver
+                   .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConventionContext>().FromAssemblyDependenciesOf<ConventionContext>())
+                   .Select(x => x.GetName().Name)
+                   .ToArray();
 
         foreach (var item in items)
         {
@@ -55,7 +52,7 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
     [Fact]
     public void FindsAssembliesInCandidates_Params_Multiples()
     {
-        var resolver = new DefaultAssemblyCandidateFinder(
+        var resolver = new DefaultAssemblyProvider(
             new[]
             {
                 typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly,
@@ -63,22 +60,14 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
             },
             Logger
         );
-        var items = resolver.GetCandidateAssemblies(
-                                 new[]
-                                 {
-                                     "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions",
-                                     "Rocket.Surgery.Conventions.Attributes"
-                                 }
-                             )
-                            .Select(x => x.GetName().Name)
-                            .ToArray();
-        var items2 = resolver.GetCandidateAssemblies(
-                                  "Rocket.Surgery.Conventions",
-                                  "Rocket.Surgery.Conventions.Abstractions",
-                                  "Rocket.Surgery.Conventions.Attributes"
-                              )
-                             .Select(x => x.GetName().Name)
-                             .ToArray();
+        var items = resolver
+                   .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConventionContext>().FromAssemblyDependenciesOf<ConventionContext>())
+                   .Select(x => x.GetName().Name)
+                   .ToArray();
+        var items2 = resolver
+                    .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConventionContext>().FromAssemblyDependenciesOf<ConventionContext>())
+                    .Select(x => x.GetName().Name)
+                    .ToArray();
 
         foreach (var item in items)
         {
@@ -111,13 +100,11 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
     [Fact]
     public void FindsAssembliesInCandidates_Empty()
     {
-        var resolver = new DefaultAssemblyCandidateFinder(
-            new[] { typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly },
-            Logger
-        );
-        var items = resolver.GetCandidateAssemblies(Array.Empty<string>().AsEnumerable())
-                            .Select(x => x.GetName().Name)
-                            .ToArray();
+        var resolver = new DefaultAssemblyProvider(new[] { typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly }, Logger);
+        var items = resolver
+                   .GetAssemblies(z => { })
+                   .Select(x => x.GetName().Name)
+                   .ToArray();
 
         foreach (var item in items)
         {
@@ -125,10 +112,5 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
         }
 
         items.Should().BeEmpty();
-    }
-
-    public DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) :
-        base(outputHelper, LogLevel.Trace)
-    {
     }
 }

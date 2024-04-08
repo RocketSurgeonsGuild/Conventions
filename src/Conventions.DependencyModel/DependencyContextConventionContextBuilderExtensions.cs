@@ -10,17 +10,6 @@ namespace Rocket.Surgery.Conventions;
 /// </summary>
 public static class DependencyContextConventionContextBuilderExtensions
 {
-    internal static IAssemblyCandidateFinder dependencyContextAssemblyCandidateFinderFactory(object? source, ILogger? logger)
-    {
-        return source switch
-        {
-            DependencyContext dependencyContext => new DependencyContextAssemblyCandidateFinder(dependencyContext, logger),
-            AppDomain appDomain                 => new AppDomainAssemblyCandidateFinder(appDomain, logger),
-            IEnumerable<Assembly> assemblies    => new DefaultAssemblyCandidateFinder(assemblies, logger),
-            _                                   => throw new NotSupportedException("Unknown source when trying to create IAssemblyCandidateFinder")
-        };
-    }
-
     internal static IAssemblyProvider dependencyContextAssemblyProviderFactory(object? source, ILogger? logger)
     {
         return source switch
@@ -42,7 +31,6 @@ public static class DependencyContextConventionContextBuilderExtensions
     {
         builder._source = dependencyContext;
         builder._assemblyProviderFactory = dependencyContextAssemblyProviderFactory;
-        builder._assemblyCandidateFinderFactory = dependencyContextAssemblyCandidateFinderFactory;
         builder._conventionProviderFactory = null;
         return builder;
     }

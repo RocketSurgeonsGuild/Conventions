@@ -2,24 +2,6 @@ namespace Rocket.Surgery.Conventions.Reflection;
 
 /// <summary>
 ///     LoggingEnumerator.
-/// </summary>
-internal static class LoggingEnumerator
-{
-    /// <summary>
-    ///     Creates the specified enumerator.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="enumerator">The enumerator.</param>
-    /// <param name="logAction">The log action.</param>
-    /// <returns>IEnumerator{T}.</returns>
-    public static IEnumerator<T> Create<T>(IEnumerator<T> enumerator, Action<T> logAction)
-    {
-        return new LoggingEnumerator<T>(enumerator, logAction);
-    }
-}
-
-/// <summary>
-///     LoggingEnumerator.
 ///     Implements the <see cref="IEnumerator{T}" />
 /// </summary>
 /// <typeparam name="T"></typeparam>

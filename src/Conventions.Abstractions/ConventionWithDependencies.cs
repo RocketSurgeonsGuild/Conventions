@@ -3,6 +3,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Container for conventions
 /// </summary>
+[PublicAPI]
 public sealed class ConventionWithDependencies : IConventionWithDependencies
 {
     private readonly List<ConventionDependency> _dependencies;

@@ -4,6 +4,7 @@
 ///     An attribute that has a list of exported conventions in an assembly (those that were contained in a [Convention] attribute)
 /// </summary>
 /// <seealso cref="Attribute" />
+[PublicAPI]
 [AttributeUsage(AttributeTargets.Assembly)]
 public sealed class ExportedConventionsAttribute : Attribute
 {

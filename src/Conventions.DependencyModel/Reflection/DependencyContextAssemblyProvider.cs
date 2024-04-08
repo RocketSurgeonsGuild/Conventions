@@ -1,4 +1,6 @@
+using System.Collections.Immutable;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -10,10 +12,12 @@ namespace Rocket.Surgery.Conventions.Reflection;
 ///     Implements the <see cref="IAssemblyProvider" />
 /// </summary>
 /// <seealso cref="IAssemblyProvider" />
+[RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
 internal class DependencyContextAssemblyProvider : IAssemblyProvider
 {
+    private readonly DependencyContext _dependencyContext;
     private readonly ILogger _logger;
-    private readonly Lazy<IEnumerable<Assembly>> _assembles;
+    private readonly Lazy<ImmutableArray<Assembly>> _assembles;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DependencyContextAssemblyProvider" /> class.
@@ -22,14 +26,8 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     /// <param name="logger">The logger to log out diagnostic information.</param>
     public DependencyContextAssemblyProvider(DependencyContext context, ILogger? logger = null)
     {
-        _assembles = new Lazy<IEnumerable<Assembly>>(
-            () =>
-                context.GetDefaultAssemblyNames()
-                       .Select(TryLoad)
-                        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                       .Where(x => x != null!)
-                       .ToArray()
-        );
+        _dependencyContext = context;
+        _assembles = new(() => context.GetDefaultAssemblyNames().Select(TryLoad).Where(x => x != null).ToImmutableArray());
         _logger = logger ?? NullLogger.Instance;
     }
 
@@ -42,20 +40,20 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     private Assembly TryLoad(AssemblyName assemblyName)
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        _logger.TryingToLoadAssembly(assemblyName.Name!);
+        _logger.TryingToLoadAssembly(assemblyName.Name);
 
         try
         {
             return Assembly.Load(assemblyName);
         }
-#pragma warning disable CA1031
+        #pragma warning disable CA1031
         catch (Exception e)
         {
-                                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            _logger.FailedToLoadAssembly(assemblyName.Name!, e);
+            _logger.FailedToLoadAssembly(assemblyName.Name, e);
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             return default!;
         }
-#pragma warning restore CA1031
+        #pragma warning restore CA1031
     }
 
     /// <summary>
@@ -65,5 +63,69 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     public IEnumerable<Assembly> GetAssemblies()
     {
         return LoggingEnumerable.Create(_assembles.Value, LogValue);
+    }
+
+    /// <summary>
+    ///     Gets the assemblies based on the given selector.
+    /// </summary>
+    /// <remarks>This method is normally used by the generated code however, for legacy support it is supported at runtime as well</remarks>
+    /// <returns>IEnumerable{Assembly}.</returns>
+    public IEnumerable<Assembly> GetAssemblies(
+        Action<IAssemblyProviderAssemblySelector> action,
+        [CallerFilePath]
+        string filePath = "",
+        [CallerMemberName]
+        string memberName = "",
+        [CallerLineNumber]
+        int lineNumber = 0
+    )
+    {
+        var selector = new AssemblyProviderAssemblySelector();
+        action(selector);
+        if (selector.AllAssemblies) return GetAssemblies();
+
+        return LoggingEnumerable.Create(
+            selector.AssemblyDependencies.Any()
+                ? GetCandidateLibraries(selector.AssemblyDependencies)
+                : selector.Assemblies,
+            LogValue
+        );
+    }
+
+    /// <summary>
+    ///   Get the full list of types using the given selector
+    /// </summary>
+    /// <param name="selector"></param>
+    /// <param name="filePath"></param>
+    /// <param name="memberName"></param>
+    /// <param name="lineNumber"></param>
+    /// <returns></returns>
+    public IEnumerable<Type> GetTypes(
+        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
+        [CallerFilePath]
+        string filePath = "",
+        [CallerMemberName]
+        string memberName = "",
+        [CallerLineNumber]
+        int lineNumber = 0
+    ) => selector(new TypeProviderAssemblySelector());
+
+    private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
+    {
+        if (candidates.Count == 0)
+        {
+            return Enumerable.Empty<Assembly>();
+        }
+
+        var candidatesResolver = new RuntimeLibraryCandidateResolver(
+            _dependencyContext.RuntimeLibraries,
+            new HashSet<string>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase)
+        );
+        return candidatesResolver
+              .GetCandidates()
+              .SelectMany(library => library.GetDefaultAssemblyNames(_dependencyContext))
+              .Select(TryLoad)
+              .Where(x => x != null)
+              .Reverse();
     }
 }

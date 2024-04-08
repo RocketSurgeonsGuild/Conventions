@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -75,7 +76,7 @@ internal static partial class ConventionContextHelpers
     /// <returns></returns>
     internal static IConventionProvider CreateProvider(
         ConventionContextBuilder builder,
-        IAssemblyCandidateFinder assemblyCandidateFinder,
+        IAssemblyProvider assemblyProvider,
         ILogger? logger
     )
     {
@@ -123,22 +124,12 @@ internal static partial class ConventionContextHelpers
             builder.GetHostType(),
             (
                 builder._useAttributeConventions
-                    ? GetAssemblyConventions(builder, assemblyCandidateFinder, logger)
+                    ? GetAssemblyConventions(builder, assemblyProvider, logger)
                     : Enumerable.Empty<IConvention>() )
            .Concat(includedConventions),
             builder._prependedConventions,
             builder._appendedConventions
         );
-    }
-
-    internal static IAssemblyCandidateFinder DefaultAssemblyCandidateFinderFactory(object? source, ILogger? logger)
-    {
-        return source switch
-               {
-                   AppDomain appDomain              => new AppDomainAssemblyCandidateFinder(appDomain, logger),
-                   IEnumerable<Assembly> assemblies => new DefaultAssemblyCandidateFinder(assemblies, logger),
-                   _                                => throw new NotSupportedException("Unknown source when trying to create IAssemblyCandidateFinder"),
-               };
     }
 
     internal static IAssemblyProvider DefaultAssemblyProviderFactory(object? source, ILogger? logger)
@@ -182,39 +173,20 @@ internal static partial class ConventionContextHelpers
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         var conventions = builder._conventionProviderFactory!(builder.Properties);
 
-        var prependedConventionTypes = new Lazy<HashSet<Type>>(
-            () => new(
-                builder._prependedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()
-            )
-        );
-        var appendedConventionTypes = new Lazy<HashSet<Type>>(
-            () => new(
-                builder._appendedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()
-            )
-        );
+        var prependedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._prependedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
+        var appendedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._appendedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
 
         if (builder._exceptAssemblyConventions.Count > 0)
         {
-            SkippingConventionsInAssemblies(
-                logger,
-                builder._exceptAssemblyConventions.Select(x => x.GetName().Name!)
-            );
+            SkippingConventionsInAssemblies(logger, builder._exceptAssemblyConventions.Select(x => x.GetName().Name));
         }
 
         if (builder._exceptConventions.Count > 0)
         {
-            SkippingExplicitConventionTypes(
-                logger,
-                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                builder._exceptConventions.Select(x => x.FullName!)
-            );
+            SkippingExplicitConventionTypes(logger, builder._exceptConventions.Select(x => x.FullName));
         }
 
-        SkippingExistingConventionTypes(
-            logger,
-            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName!)
-        );
+        SkippingExistingConventionTypes(logger, prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName));
 
         return conventions
               .Where(z => builder._exceptConventions.All(x => x != z.Convention.GetType()))
@@ -223,54 +195,34 @@ internal static partial class ConventionContextHelpers
 
     private static IEnumerable<IConvention> GetAssemblyConventions(
         ConventionContextBuilder builder,
-        IAssemblyCandidateFinder assemblyCandidateFinder,
+        IAssemblyProvider assemblyProvider,
         ILogger? logger
     )
     {
         logger ??= NullLogger.Instance;
-        var assemblies = assemblyCandidateFinder
-                        .GetCandidateAssemblies(
-                             "Rocket.Surgery.Conventions.Abstractions",
-                             "Rocket.Surgery.Conventions.Attributes",
-                             "Rocket.Surgery.Conventions"
-                         )
-                        .ToArray();
-
-        var prependedConventionTypes = new Lazy<HashSet<Type>>(
-            () => new(
-                builder._prependedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()
+        var assemblies = assemblyProvider
+           .GetAssemblies(
+                z => z
+                    .FromAssemblyDependenciesOf<IConventionContext>()
+                    .FromAssemblyDependenciesOf<IConvention>()
             )
-        );
-        var appendedConventionTypes = new Lazy<HashSet<Type>>(
-            () => new(
-                builder._appendedConventions.Select(x => x is Type t ? t : x.GetType()).Distinct()
-            )
-        );
+           .ToImmutableArray();
 
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        ScanningForConventionsInAssemblies(logger, assemblies.Select(x => x.GetName().Name!));
+        var prependedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._prependedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
+        var appendedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._appendedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
+
+        ScanningForConventionsInAssemblies(logger, assemblies.Select(x => x.GetName().Name));
         if (builder._exceptAssemblyConventions.Count > 0)
         {
-            SkippingConventionsInAssemblies(
-                logger,
-                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                builder._exceptAssemblyConventions.Select(x => x.GetName().Name!)
-            );
+            SkippingConventionsInAssemblies(logger, builder._exceptAssemblyConventions.Select(x => x.GetName().Name));
         }
 
         if (builder._exceptConventions.Count > 0)
         {
-            SkippingExplicitConventionTypes(
-                logger,
-                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                builder._exceptConventions.Select(x => x.FullName!)
-            );
+            SkippingExplicitConventionTypes(logger, builder._exceptConventions.Select(x => x.FullName));
         }
 
-        SkippingExistingConventionTypes(
-            logger,
-            prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName!)
-        );
+        SkippingExistingConventionTypes(logger, prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName));
 
         return assemblies
               .Except(builder._exceptAssemblyConventions)

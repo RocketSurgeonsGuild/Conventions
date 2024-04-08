@@ -7,6 +7,7 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Setup;
 using Rocket.Surgery.Extensions.Testing;
+using Serilog;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -21,7 +22,6 @@ public class ConventionContextTests : AutoFakeTest
         var servicesBuilder = AutoFake.Resolve<ConventionContext>();
 
         servicesBuilder.AssemblyProvider.Should().BeSameAs(assemblyProvider);
-        servicesBuilder.AssemblyCandidateFinder.Should().NotBeNull();
         servicesBuilder.Properties.Should().ContainKey(typeof(IConvention));
         return Task.CompletedTask;
     }

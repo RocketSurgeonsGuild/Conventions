@@ -9,7 +9,7 @@ namespace Rocket.Surgery.Conventions;
 ///     Only works with source generators enabled.
 /// </remarks>
 /// <seealso cref="Attribute" />
+[PublicAPI]
 [AttributeUsage(AttributeTargets.Class)]
 [Conditional("CodeGeneration")]
-[PublicAPI]
 public sealed class ExportConventionAttribute : Attribute;

@@ -1,0 +1,6 @@
+﻿{
+  Assemblies: [
+    Rocket.Surgery.Conventions
+  ],
+  AllAssemblies: false
+}

@@ -6,6 +6,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     The base context marker interface to define this as a context
 /// </summary>
+[PublicAPI]
 public interface IConventionContext
 {
     /// <summary>
@@ -32,12 +33,6 @@ public interface IConventionContext
     /// </summary>
     /// <value>The assembly provider.</value>
     IAssemblyProvider AssemblyProvider { get; }
-
-    /// <summary>
-    ///     Gets the assembly candidate finder.
-    /// </summary>
-    /// <value>The assembly candidate finder.</value>
-    IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
 
     /// <summary>
     ///     Get the conventions from the context
