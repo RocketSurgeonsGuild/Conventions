@@ -1,9 +1,11 @@
-﻿#if NET8_0_OR_GREATER
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
+using ServiceFactoryAdapter =
+    System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
+        System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
 
 namespace Rocket.Surgery.Hosting;
 
@@ -30,7 +32,10 @@ internal sealed class RocketApplicationBuilderContext
     ///     Construct and compose hosting conventions
     /// </summary>
     /// <exception cref="ArgumentNullException"></exception>
-    public ValueTask ComposeHostingConvention(CancellationToken cancellationToken) => _hostApplicationBuilder.ApplyConventionsAsync(_context, cancellationToken);
+    public ValueTask ComposeHostingConvention(CancellationToken cancellationToken)
+    {
+        return _hostApplicationBuilder.ApplyConventionsAsync(_context, cancellationToken);
+    }
 
     /// <summary>
     ///     Configures the application configuration.
@@ -53,6 +58,13 @@ internal sealed class RocketApplicationBuilderContext
         await _hostApplicationBuilder.Logging.ApplyConventionsAsync(_context, cancellationToken).ConfigureAwait(false);
     }
 
-    public IServiceProviderFactory<object> UseServiceProviderFactory() => ConventionServiceProviderFactory.Wrap(_context);
+    public async ValueTask<IServiceProviderFactory<object>?> UseServiceProviderFactory(IServiceCollection services, CancellationToken cancellationToken)
+    {
+        if (_context.Get<ServiceFactoryAdapter>() is not { } factory)
+        {
+            return null;
+        }
+
+        return await factory(_context, services, cancellationToken);
+    }
 }
-#endif

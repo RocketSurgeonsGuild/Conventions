@@ -9,4 +9,4 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 /// <param name="context">The context.</param>
 /// <param name="builder">The builder.</param>
 /// <param name="builder">The cancellation token.</param>
-public delegate void WebAssemblyHostingAsyncConvention(IConventionContext context, WebAssemblyHostBuilder builder, CancellationToken cancellationToken);
+public delegate ValueTask WebAssemblyHostingAsyncConvention(IConventionContext context, WebAssemblyHostBuilder builder, CancellationToken cancellationToken);

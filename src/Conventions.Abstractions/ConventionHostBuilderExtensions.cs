@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Adapters;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
@@ -68,11 +67,7 @@ public static class ConventionHostBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        #if NET6_0_OR_GREATER
-        builder._serviceProviderFactory = (_, _) => ValueTask.FromResult<IServiceFactoryAdapter>(new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory));
-        #else
-        builder._serviceProviderFactory = async (_, _) => new ServiceFactoryAdapter<TContainerBuilder>(serviceProviderFactory);
-        #endif
+        builder._serviceProviderFactory = async (_, _, _) => new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory);
         return builder;
     }
 
@@ -85,7 +80,7 @@ public static class ConventionHostBuilderExtensions
     /// <exception cref="ArgumentNullException"></exception>
     public static ConventionContextBuilder UseServiceProviderFactory<TContainerBuilder>(
         this ConventionContextBuilder builder,
-        Func<IConventionContext, CancellationToken, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
+        Func<IConventionContext, IServiceCollection, CancellationToken, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
     ) where TContainerBuilder : notnull
     {
         if (builder == null)
@@ -93,7 +88,10 @@ public static class ConventionHostBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        builder._serviceProviderFactory = async (x, ct) => new ServiceFactoryAdapter<TContainerBuilder>(await serviceProviderFactory(x, ct));
+        builder._serviceProviderFactory = async (context, collection, cancellationToken) =>
+                                              new ServiceProviderWrapper<TContainerBuilder>(
+                                                  await serviceProviderFactory(context, collection, cancellationToken)
+                                              );
         return builder;
     }
 
@@ -106,7 +104,7 @@ public static class ConventionHostBuilderExtensions
     /// <exception cref="ArgumentNullException"></exception>
     public static ConventionContextBuilder UseServiceProviderFactory<TContainerBuilder>(
         this ConventionContextBuilder builder,
-        Func<IConventionContext, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
+        Func<IConventionContext, IServiceCollection, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
     ) where TContainerBuilder : notnull
     {
         if (builder == null)
@@ -114,7 +112,8 @@ public static class ConventionHostBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        builder._serviceProviderFactory = async (x, _) => new ServiceFactoryAdapter<TContainerBuilder>(await serviceProviderFactory(x));
+        builder._serviceProviderFactory = async (context, collection, _) =>
+                                              new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection));
         return builder;
     }
 
@@ -772,5 +771,20 @@ public static class ConventionHostBuilderExtensions
             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             ? (HostType)hostType!
             : HostType.Undefined;
+    }
+
+    private class ServiceProviderWrapper<TContainerBuilder>
+        (IServiceProviderFactory<TContainerBuilder> serviceProviderFactoryImplementation) : IServiceProviderFactory<object>
+        where TContainerBuilder : notnull
+    {
+        public object CreateBuilder(IServiceCollection services)
+        {
+            return serviceProviderFactoryImplementation.CreateBuilder(services);
+        }
+
+        public IServiceProvider CreateServiceProvider(object containerBuilder)
+        {
+            return serviceProviderFactoryImplementation.CreateServiceProvider((TContainerBuilder)containerBuilder);
+        }
     }
 }

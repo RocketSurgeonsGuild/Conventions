@@ -8,8 +8,9 @@ using PropertiesDictionary = System.Collections.Generic.Dictionary<object, objec
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Adapters;
-using ServiceFactoryAdapter = System.Func<Rocket.Surgery.Conventions.IConventionContext, System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter>>;
+using ServiceFactoryAdapter =
+    System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
+        System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
 
 namespace Rocket.Surgery.Conventions;
 

@@ -5,15 +5,17 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Rocket.Surgery.Conventions.Autofac;
 
 /// <summary>
-///     Delegate AutofacConvention
+///     Delegate AutofacAsyncConvention
 /// </summary>
 /// <param name="conventionContext"></param>
 /// <param name="configuration"></param>
 /// <param name="services"></param>
 /// <param name="container"></param>
-public delegate void AutofacConvention(
+/// <param name="cancellationToken"></param>
+public delegate ValueTask AutofacAsyncConvention(
     IConventionContext conventionContext,
     IConfiguration configuration,
     IServiceCollection services,
-    ContainerBuilder container
+    ContainerBuilder container,
+    CancellationToken cancellationToken
 );

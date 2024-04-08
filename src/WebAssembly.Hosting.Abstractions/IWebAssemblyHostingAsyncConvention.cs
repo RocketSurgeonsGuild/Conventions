@@ -16,5 +16,5 @@ public interface IWebAssemblyHostingAsyncConvention : IConvention
     /// <param name="context">The context.</param>
     /// <param name="builder"></param>
     /// <param name="cancellationToken"></param>
-    void Register(IConventionContext context, WebAssemblyHostBuilder builder, CancellationToken cancellationToken);
+    ValueTask Register(IConventionContext context, WebAssemblyHostBuilder builder, CancellationToken cancellationToken);
 }

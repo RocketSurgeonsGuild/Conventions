@@ -15,20 +15,33 @@ public static class AutofacExtensions
     /// <param name="containerBuilder"></param>
     /// <param name="conventionContext"></param>
     /// <param name="services"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public static ContainerBuilder ApplyConventions(this ContainerBuilder containerBuilder, IConventionContext conventionContext, IServiceCollection services)
+    public static async ValueTask<ContainerBuilder> ApplyConventionsAsync(
+        this ContainerBuilder containerBuilder,
+        IConventionContext conventionContext,
+        IServiceCollection services,
+        CancellationToken cancellationToken = default
+    )
     {
         var configuration = conventionContext.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
         foreach (var item in conventionContext.Conventions.Get<IAutofacConvention, AutofacConvention>())
         {
-            if (item is IAutofacConvention convention)
+            switch (item)
             {
-                convention.Register(conventionContext, configuration, services, containerBuilder);
-            }
-            else if (item is AutofacConvention @delegate)
-            {
-                @delegate(conventionContext, configuration, services, containerBuilder);
+                case IAutofacConvention convention:
+                    convention.Register(conventionContext, configuration, services, containerBuilder);
+                    break;
+                case AutofacConvention @delegate:
+                    @delegate(conventionContext, configuration, services, containerBuilder);
+                    break;
+                case IAutofacAsyncConvention convention:
+                    await convention.Register(conventionContext, configuration, services, containerBuilder, cancellationToken);
+                    break;
+                case AutofacAsyncConvention @delegate:
+                    await @delegate(conventionContext, configuration, services, containerBuilder, cancellationToken);
+                    break;
             }
         }
 
