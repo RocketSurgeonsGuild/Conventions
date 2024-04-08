@@ -27,5 +27,5 @@ public enum HostType
     ///     Careful consideration is needed to make sure that your system doesn't behave extremely differently in a live scenario
     ///     vs a testing scenario
     /// </summary>
-    UnitTest
+    UnitTest,
 }

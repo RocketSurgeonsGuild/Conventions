@@ -59,7 +59,8 @@ public static class ConventionHostBuilderExtensions
         if (builder == null) throw new ArgumentNullException(nameof(builder));
 
         #if NET6_0_OR_GREATER
-        builder._serviceProviderFactory =  (_, _, _) => ValueTask.FromResult<IServiceProviderFactory<object>>(new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory));
+        builder._serviceProviderFactory =
+            (_, _, _) => ValueTask.FromResult<IServiceProviderFactory<object>>(new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory));
         #else
         builder._serviceProviderFactory = async (_, _, _) =>
                                           {
