@@ -5,11 +5,22 @@ using Rocket.Surgery.Conventions.Setup;
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 
 /// <summary>
-/// Default yaml convention
+///     Default yaml convention
 /// </summary>
 [ExportConvention]
 public class YamlConvention : ISetupConvention
 {
+    private static Func<Stream?, IConfigurationSource> LoadYamlFile(IConfigurationBuilder configurationBuilder, string path)
+    {
+        return _ => new YamlConfigurationSource
+        {
+            Path = path,
+            FileProvider = configurationBuilder.GetFileProvider(),
+            ReloadOnChange = true,
+            Optional = true,
+        };
+    }
+
     /// <inheritdoc />
     public void Register(IConventionContext context)
     {
@@ -18,8 +29,8 @@ public class YamlConvention : ISetupConvention
             {
                 return new ConfigurationBuilderDelegateResult[]
                 {
-                    new ("appsettings.yaml", LoadYamlFile(configurationBuilder, "appsettings.yaml")),
-                    new ("appsettings.yml", LoadYamlFile(configurationBuilder, "appsettings.yml"))
+                    new("appsettings.yaml", LoadYamlFile(configurationBuilder, "appsettings.yaml")),
+                    new("appsettings.yml", LoadYamlFile(configurationBuilder, "appsettings.yml")),
                 };
             }
         );
@@ -28,22 +39,11 @@ public class YamlConvention : ISetupConvention
             {
                 return new ConfigurationBuilderDelegateResult[]
                 {
-                    new ($"appsettings.{environment}.yaml",LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yaml")),
-                    new ($"appsettings.{environment}.yml",LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yml"))
+                    new($"appsettings.{environment}.yaml", LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yaml")),
+                    new($"appsettings.{environment}.yml", LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yml")),
                 };
             }
         );
-    }
-
-    private static Func<Stream?, IConfigurationSource> LoadYamlFile(IConfigurationBuilder configurationBuilder, string path)
-    {
-        return _ => new YamlConfigurationSource
-        {
-            Path = path,
-            FileProvider = configurationBuilder.GetFileProvider(),
-            ReloadOnChange = true,
-            Optional = true
-        };
     }
 }
 #endif

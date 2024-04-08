@@ -13,5 +13,5 @@ public enum DependencyDirection
     /// <summary>
     ///     Order the convention to be run after this one.
     /// </summary>
-    DependentOf
+    DependentOf,
 }
