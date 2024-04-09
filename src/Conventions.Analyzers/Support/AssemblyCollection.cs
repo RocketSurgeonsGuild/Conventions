@@ -45,9 +45,9 @@ internal static class AssemblyCollection
     private static BlockSyntax GenerateDescriptors(Compilation compilation, ImmutableHashSet<IAssemblySymbol> assemblies)
     {
         var block = Block();
-        foreach (var type in assemblies.OrderBy(z => z.ToDisplayString()))
+        foreach (var assembly in assemblies.OrderBy(z => z.ToDisplayString()))
         {
-            if (StatementGeneration.GetAssemblyExpression(compilation, type) is not { } assemblyExpression) continue;
+            if (StatementGeneration.GetAssemblyExpression(compilation, assembly) is not { } assemblyExpression) continue;
             block = block.AddStatements(YieldStatement(SyntaxKind.YieldReturnStatement, assemblyExpression));
         }
 

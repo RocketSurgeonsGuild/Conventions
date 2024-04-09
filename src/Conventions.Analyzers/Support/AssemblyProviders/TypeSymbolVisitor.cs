@@ -23,8 +23,7 @@ internal class TypeSymbolVisitor(Compilation compilation, ICompiledTypeFilter<IN
     public static ImmutableArray<INamedTypeSymbol> GetTypes(Compilation compilation, ICompiledTypeFilter<INamedTypeSymbol> filter, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter)
     {
         var visitor = new TypeSymbolVisitor(compilation, filter);
-        visitor.VisitNamespace(compilation.GlobalNamespace);
-        foreach (var symbol in compilation.References.Select(compilation.GetAssemblyOrModuleSymbol))
+        foreach (var symbol in compilation.References.Select(compilation.GetAssemblyOrModuleSymbol).Concat([compilation.Assembly]))
         {
             switch (symbol)
             {

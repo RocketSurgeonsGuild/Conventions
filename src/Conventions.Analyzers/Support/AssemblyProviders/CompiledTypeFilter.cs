@@ -25,9 +25,8 @@ class CompiledAssemblyFilter
                 filter => filter switch
                           {
                               AssemblyDescriptor { Assembly: var assembly } => SymbolEqualityComparer.Default.Equals(assembly, targetAssembly),
-
                               CompiledAssemblyDescriptor { Assembly: var assembly } => SymbolEqualityComparer.Default.Equals(assembly, targetAssembly),
-                              CompiledAssemblyDependenciesDescriptor { Assembly: var assembly } => targetAssembly.ContainingModule.ReferencedAssemblySymbols.Any(
+                              CompiledAssemblyDependenciesDescriptor { Assembly: var assembly } => targetAssembly.Modules.SelectMany(z => z.ReferencedAssemblySymbols).Any(
                                   reference => SymbolEqualityComparer.Default.Equals(assembly, reference)
                                   ),
                               _ => false

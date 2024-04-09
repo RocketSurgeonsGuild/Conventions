@@ -118,44 +118,20 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         var getAssembliesSyntaxProvider = context
                                          .SyntaxProvider.CreateSyntaxProvider(
                                               (node, _) => AssemblyCollection.GetAssembliesMethod(node) is { method: { }, selector: { } },
-                                              (syntaxContext, _) => (
-                                                  node: syntaxContext.Node,
-                                                  symbol: syntaxContext.SemanticModel.GetSymbolInfo(syntaxContext.Node).Symbol!,
-                                                  semanticModel: syntaxContext.SemanticModel
-                                              )
-                                          )
-                                         .Where(z => z is { symbol: { } })
-                                         .Select(
-                                              (z, _) =>
-                                              {
-                                                  var (expression, selector) = AssemblyCollection.GetAssembliesMethod(z.node);
-                                                  return ( expression, selector, z.symbol, z.semanticModel );
-                                              }
+                                              (syntaxContext, _) => AssemblyCollection.GetAssembliesMethod(syntaxContext.Node)
                                           )
                                          .Combine(hasAssemblyLoadContext)
                                          .Where(z => z.Right)
-                                         .Select((tuple, _) => ( tuple.Left.expression, tuple.Left.selector, tuple.Left.semanticModel, tuple.Left.symbol ))
+                                         .Select((z, _) => z.Left)
                                          .Collect();
         var getTypesSyntaxProvider = context
                                     .SyntaxProvider.CreateSyntaxProvider(
                                          (node, _) => TypeCollection.GetTypesMethod(node) is { method: { }, selector: { } },
-                                         (syntaxContext, _) => (
-                                             node: syntaxContext.Node,
-                                             symbol: syntaxContext.SemanticModel.GetSymbolInfo(syntaxContext.Node).Symbol!,
-                                             semanticModel: syntaxContext.SemanticModel
-                                         )
-                                     )
-                                    .Where(z => z is { symbol: { } })
-                                    .Select(
-                                         (z, _) =>
-                                         {
-                                             var (expression, selector) = TypeCollection.GetTypesMethod(z.node);
-                                             return ( expression, selector, z.symbol, z.semanticModel );
-                                         }
+                                         (syntaxContext, _) => TypeCollection.GetTypesMethod(syntaxContext.Node)
                                      )
                                     .Combine(hasAssemblyLoadContext)
                                     .Where(z => z.Right)
-                                    .Select((tuple, _) => ( tuple.Left.expression, tuple.Left.selector, tuple.Left.semanticModel, tuple.Left.symbol ))
+                                    .Select((tuple, _) => tuple.Left)
                                     .Collect();
         context.RegisterImplementationSourceOutput(
             getAssembliesSyntaxProvider
@@ -219,13 +195,13 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     private static MemberDeclarationSyntax GetAssemblyDetails(
         SourceProductionContext context,
         Compilation compilation,
-        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector, SemanticModel semanticModel, ISymbol symbol)> results
+        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
     )
     {
         var items = new List<AssemblyCollection.Item>();
         foreach (var tuple in results)
         {
-            var (methodCallSyntax, selector, semanticModel, symbol) = tuple;
+            var (methodCallSyntax, selector) = tuple;
 
             var assemblies = new List<IAssemblyDescriptor>();
             var typeFilters = new List<ITypeFilterDescriptor>();
@@ -266,13 +242,13 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     private static MemberDeclarationSyntax GetTypeDetails(
         SourceProductionContext context,
         Compilation compilation,
-        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector, SemanticModel semanticModel, ISymbol symbol)> results
+        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
     )
     {
         var items = new List<TypeCollection.Item>();
         foreach (var tuple in results)
         {
-            var (methodCallSyntax, selector, semanticModel, symbol) = tuple;
+            var (methodCallSyntax, selector) = tuple;
 
             var assemblies = new List<IAssemblyDescriptor>();
             var typeFilters = new List<ITypeFilterDescriptor>();

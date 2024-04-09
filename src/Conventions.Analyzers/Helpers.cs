@@ -215,6 +215,7 @@ internal static class Helpers
             workingSymbol = workingSymbol.ContainingSymbol;
         }
 
+        sb.Insert(0, "global::");
         return sb.ToString();
 
         static bool IsRootNamespace(ISymbol symbol)
