@@ -20,13 +20,11 @@ class CompiledAssemblyFilter
     {
         if (assemblyDescriptors.OfType<AllAssemblyDescriptor>().Any()) return true;
 
-        foreach (var descriptor in assemblyDescriptors) { }
-
         return assemblyDescriptors
            .Any(
                 filter => filter switch
                           {
-                              AssemblyDescriptor { AssemblySymbol: var assembly } => SymbolEqualityComparer.Default.Equals(assembly, targetAssembly),
+                              AssemblyDescriptor { Assembly: var assembly } => SymbolEqualityComparer.Default.Equals(assembly, targetAssembly),
 
                               CompiledAssemblyDescriptor { Assembly: var assembly } => SymbolEqualityComparer.Default.Equals(assembly, targetAssembly),
                               CompiledAssemblyDependenciesDescriptor { Assembly: var assembly } => targetAssembly.ContainingModule.ReferencedAssemblySymbols.Any(
@@ -47,6 +45,8 @@ class CompiledTypeFilter
     {
         if (Aborted || ( classFilter == ClassFilter.PublicOnly && targetAssembly.DeclaredAccessibility != Accessibility.Public ))
             return false;
+
+        if (typeFilterDescriptors.Length == 0) return true;
 
         return typeFilterDescriptors
            .Any(

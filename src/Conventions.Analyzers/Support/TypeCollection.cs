@@ -18,8 +18,8 @@ internal static class TypeCollection
 
     public static MethodDeclarationSyntax Execute(Request request)
     {
+        if (!request.Items.Any()) return TypesMethod;
         var compilation = request.Compilation;
-        if (request.Items.Any()) return TypesMethod;
 
         var privateAssemblies = new HashSet<IAssemblySymbol>(SymbolEqualityComparer.Default);
         var results = new List<(SourceLocation location, BlockSyntax block)>();
@@ -38,7 +38,7 @@ internal static class TypeCollection
         var block = Block();
         foreach (var type in types.OrderBy(z => z.ToDisplayString()))
         {
-            block = block.AddStatements(ExpressionStatement(StatementGeneration.GetTypeOfExpression(compilation, type)));
+            block = block.AddStatements(YieldStatement(SyntaxKind.YieldReturnStatement, StatementGeneration.GetTypeOfExpression(compilation, type)));
             if (compilation.IsSymbolAccessibleWithin(type, compilation.Assembly)) continue;
             privateAssemblies.Add(type.ContainingAssembly);
         }

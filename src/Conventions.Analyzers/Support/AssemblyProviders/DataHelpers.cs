@@ -11,7 +11,6 @@ internal static class DataHelpers
     public static void HandleInvocationExpressionSyntax(
         SourceProductionContext context,
         SemanticModel semanticModel,
-        ExpressionSyntax methodCallExpression,
         ExpressionSyntax selectorExpression,
         List<IAssemblyDescriptor> assemblies,
         List<ITypeFilterDescriptor> typeFilters,
@@ -20,14 +19,14 @@ internal static class DataHelpers
         CancellationToken cancellationToken
     )
     {
-        if (methodCallExpression is not InvocationExpressionSyntax expression)
+        if (selectorExpression is not InvocationExpressionSyntax expression)
         {
-            if (methodCallExpression is not SimpleLambdaExpressionSyntax simpleLambdaExpressionSyntax
+            if (selectorExpression is not SimpleLambdaExpressionSyntax simpleLambdaExpressionSyntax
              || simpleLambdaExpressionSyntax is { ExpressionBody: null }
              || simpleLambdaExpressionSyntax.ExpressionBody is not
                     InvocationExpressionSyntax body)
             {
-                context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAnExpression, methodCallExpression.GetLocation()));
+                context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAnExpression, selectorExpression.GetLocation()));
                 return;
             }
 
@@ -47,7 +46,6 @@ internal static class DataHelpers
                 context,
                 semanticModel,
                 childExpression,
-                selectorExpression,
                 assemblies,
                 typeFilters,
                 objectType,
@@ -60,27 +58,17 @@ internal static class DataHelpers
         if (type.Type is { })
         {
             var typeName = type.Type.ToDisplayString();
-            if (typeName == "Rocket.Surgery.DependencyInjection.Compiled.ICompiledAssemblySelector")
-            {
-                var selector = HandleCompiledAssemblySelector(
-                    semanticModel,
-                    expression,
-                    memberAccessExpressionSyntax.Name
-                );
-                if (selector is { })
-                {
-                    assemblies.Add(selector);
-                }
-            }
-
-            if (typeName == "Rocket.Surgery.DependencyInjection.Compiled.ICompiledImplementationTypeSelector")
+            if (typeName is "Rocket.Surgery.Conventions.Reflection.IAssemblyProviderAssemblySelector" or "Rocket.Surgery.Conventions.Reflection.ITypeProviderAssemblySelector")
             {
                 if (cancellationToken.IsCancellationRequested) return;
-                var selector = HandleCompiledAssemblySelector(
-                    semanticModel,
-                    expression,
-                    memberAccessExpressionSyntax.Name
-                );
+                var selector = HandleCompiledAssemblySelector(semanticModel, expression, memberAccessExpressionSyntax.Name);
+                if (selector is { }) assemblies.Add(selector);
+            }
+
+            if (typeName == "Rocket.Surgery.Conventions.Reflection.ITypeSelector")
+            {
+                if (cancellationToken.IsCancellationRequested) return;
+                var selector = HandleCompiledAssemblySelector(semanticModel, expression, memberAccessExpressionSyntax.Name);
                 if (selector is { })
                 {
                     assemblies.Add(selector);
@@ -91,17 +79,12 @@ internal static class DataHelpers
                 }
             }
 
-            if (typeName == "Rocket.Surgery.DependencyInjection.Compiled.ICompiledImplementationTypeFilter")
+            if (typeName == "Rocket.Surgery.Conventions.Reflection.ITypeFilter")
             {
                 if (cancellationToken.IsCancellationRequested) return;
                 typeFilters.AddRange(
                     HandleCompiledImplementationTypeFilter(context, semanticModel, expression, memberAccessExpressionSyntax.Name, objectType)
                 );
-            }
-
-            if (typeName == "Rocket.Surgery.DependencyInjection.Compiled.ICompiledServiceTypeSelector")
-            {
-                if (cancellationToken.IsCancellationRequested) return;
             }
         }
 
@@ -111,7 +94,6 @@ internal static class DataHelpers
             HandleInvocationExpressionSyntax(
                 context,
                 semanticModel,
-                argument.Expression,
                 selectorExpression,
                 assemblies,
                 typeFilters,

@@ -17,13 +17,13 @@ internal static class AssemblyCollection
 
     public static MethodDeclarationSyntax Execute(Request request)
     {
+        if (!request.Items.Any()) return AssembliesMethod;
         var compilation = request.Compilation;
         var results = new List<(SourceLocation location, BlockSyntax block)>();
-        if (request.Items.Any()) return AssembliesMethod;
         foreach (var item in request.Items)
         {
             var allAssemblies = new List<IAssemblySymbol>();
-            foreach (var symbol in compilation.References.Select(compilation.GetAssemblyOrModuleSymbol))
+            foreach (var symbol in compilation.References.Select(compilation.GetAssemblyOrModuleSymbol).Concat([compilation.Assembly]))
             {
                 switch (symbol)
                 {
@@ -47,9 +47,8 @@ internal static class AssemblyCollection
         var block = Block();
         foreach (var type in assemblies.OrderBy(z => z.ToDisplayString()))
         {
-            if (compilation.IsSymbolAccessibleWithin(type, compilation.Assembly)) continue;
             if (StatementGeneration.GetAssemblyExpression(compilation, type) is not { } assemblyExpression) continue;
-            block = block.AddStatements(ExpressionStatement(assemblyExpression));
+            block = block.AddStatements(YieldStatement(SyntaxKind.YieldReturnStatement, assemblyExpression));
         }
 
         return block;

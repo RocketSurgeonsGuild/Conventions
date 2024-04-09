@@ -169,7 +169,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 var compilation = results.Right;
 
                 var getAssembliesMethod = GetAssemblyDetails(context, compilation, getAssemblies);
-                var getTypesMethod = GetTypeDetails(context, compilation, getAssemblies);
+                var getTypesMethod = GetTypeDetails(context, compilation, getTypes);
                 var assemblyProvider = ClassDeclaration("AssemblyProvider")
                                       .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
                                       .WithBaseList(BaseList(SingletonSeparatedList<BaseTypeSyntax>(SimpleBaseType(IdentifierName("IAssemblyProvider")))))
@@ -234,7 +234,6 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             DataHelpers.HandleInvocationExpressionSyntax(
                 context,
                 compilation.GetSemanticModel(tuple.expression.SyntaxTree),
-                methodCallSyntax,
                 selector,
                 assemblies,
                 typeFilters,
@@ -282,7 +281,6 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             DataHelpers.HandleInvocationExpressionSyntax(
                 context,
                 compilation.GetSemanticModel(tuple.expression.SyntaxTree),
-                methodCallSyntax,
                 selector,
                 assemblies,
                 typeFilters,

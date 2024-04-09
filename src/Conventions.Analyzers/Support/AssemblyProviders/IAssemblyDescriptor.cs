@@ -7,11 +7,11 @@ namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 internal interface IAssemblyDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct AssemblyDescriptor(IAssemblySymbol AssemblySymbol) : IAssemblyDescriptor
+internal readonly record struct AssemblyDescriptor(IAssemblySymbol Assembly) : IAssemblyDescriptor
 {
     public override string ToString()
     {
-        return "Assembly: " + Helpers.GetFullMetadataName(AssemblySymbol);
+        return "Assembly: " + Assembly.Name;
     }
 }
 
@@ -29,7 +29,7 @@ internal readonly record struct CompiledAssemblyDescriptor(IAssemblySymbol Assem
 {
     public override string ToString()
     {
-        return "CompiledAssembly of " + Helpers.GetFullMetadataName(Assembly);
+        return "CompiledAssembly of " + Assembly.Name;
     }
 }
 
@@ -38,6 +38,6 @@ internal readonly record struct CompiledAssemblyDependenciesDescriptor(IAssembly
 {
     public override string ToString()
     {
-        return "CompiledAssemblyDependencies of " + Helpers.GetFullMetadataName(Assembly);
+        return "CompiledAssemblyDependencies of " + Assembly.Name;
     }
 }
