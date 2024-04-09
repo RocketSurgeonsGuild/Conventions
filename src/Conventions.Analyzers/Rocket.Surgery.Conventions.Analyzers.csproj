@@ -13,12 +13,6 @@
             IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
             PrivateAssets="All"
         />
-        
-        <ProjectReference
-            Include="../Conventions.Analyzers.roslyn4.0/Rocket.Surgery.Conventions.Analyzers.roslyn4.0.csproj"
-            PrivateAssets="all"
-            ReferenceOutputAssembly="false"
-        />
         <ProjectReference
             Include="../Conventions.Analyzers.roslyn4.4/Rocket.Surgery.Conventions.Analyzers.roslyn4.4.csproj"
             PrivateAssets="all"
@@ -26,12 +20,6 @@
         />
     </ItemGroup>
     <ItemGroup>
-        <None
-            Include="$(MSBuildThisFileDirectory)\..\Conventions.Analyzers.roslyn4.0\bin\$(Configuration)\netstandard2.0\$(AssemblyName).dll"
-            Pack="true"
-            PackagePath="analyzers/dotnet/roslyn4.0/cs"
-            Visible="false"
-        />
         <None
             Include="$(MSBuildThisFileDirectory)\..\Conventions.Analyzers.roslyn4.4\bin\$(Configuration)\netstandard2.0\$(AssemblyName).dll"
             Pack="true"

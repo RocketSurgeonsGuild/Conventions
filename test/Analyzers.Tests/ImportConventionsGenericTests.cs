@@ -1,4 +1,3 @@
-#if !ROSLYN4_0
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -238,4 +237,3 @@ namespace TestProject
         await Verify(result);
     }
 }
-#endif

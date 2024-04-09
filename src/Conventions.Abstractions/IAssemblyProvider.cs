@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
+using Rocket.Surgery.Conventions.Reflection;
 
-namespace Rocket.Surgery.Conventions.Reflection;
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     A provider that gets a list of assemblies for a given context
@@ -9,12 +10,6 @@ namespace Rocket.Surgery.Conventions.Reflection;
 [PublicAPI]
 public interface IAssemblyProvider
 {
-    /// <summary>
-    ///     Get the full list of assemblies
-    /// </summary>
-    /// <returns>IEnumerable{Assembly}.</returns>
-    IEnumerable<Assembly> GetAssemblies();
-
     /// <summary>
     ///     Get the full list of assemblies
     /// </summary>

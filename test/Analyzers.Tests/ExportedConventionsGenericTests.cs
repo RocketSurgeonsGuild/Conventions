@@ -1,4 +1,3 @@
-#if !ROSLYN4_0
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
@@ -385,4 +384,3 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result).UseTextForParameters(attributeName);
     }
 }
-#endif

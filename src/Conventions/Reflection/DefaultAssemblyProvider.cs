@@ -40,15 +40,6 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
         );
 
     /// <summary>
-    ///     Gets the assemblies.
-    /// </summary>
-    /// <returns>IEnumerable{Assembly}.</returns>
-    public IEnumerable<Assembly> GetAssemblies()
-    {
-        return LoggingEnumerable.Create(_assembles, LogValue);
-    }
-
-    /// <summary>
     ///     Gets the assemblies based on the given selector.
     /// </summary>
     /// <remarks>This method is normally used by the generated code however, for legacy support it is supported at runtime as well</remarks>
@@ -69,12 +60,12 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
     {
         var selector = new AssemblyProviderAssemblySelector();
         action(selector);
-        if (selector.AllAssemblies) return GetAssemblies();
-
         return LoggingEnumerable.Create(
-            selector.AssemblyDependencies.Any()
-                ? GetCandidateLibraries(selector.AssemblyDependencies)
-                : selector.Assemblies,
+            selector.AllAssemblies
+                ? _assembles
+                : selector.AssemblyDependencies.Any()
+                    ? GetCandidateLibraries(selector.AssemblyDependencies)
+                    : selector.Assemblies,
             LogValue
         );
     }

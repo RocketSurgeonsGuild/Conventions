@@ -57,15 +57,6 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     }
 
     /// <summary>
-    ///     Gets the assemblies.
-    /// </summary>
-    /// <returns>IEnumerable{Assembly}.</returns>
-    public IEnumerable<Assembly> GetAssemblies()
-    {
-        return LoggingEnumerable.Create(_assembles.Value, LogValue);
-    }
-
-    /// <summary>
     ///     Gets the assemblies based on the given selector.
     /// </summary>
     /// <remarks>This method is normally used by the generated code however, for legacy support it is supported at runtime as well</remarks>
@@ -82,12 +73,12 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     {
         var selector = new AssemblyProviderAssemblySelector();
         action(selector);
-        if (selector.AllAssemblies) return GetAssemblies();
-
         return LoggingEnumerable.Create(
-            selector.AssemblyDependencies.Any()
-                ? GetCandidateLibraries(selector.AssemblyDependencies)
-                : selector.Assemblies,
+            selector.AllAssemblies
+                ? _assembles.Value
+                : selector.AssemblyDependencies.Any()
+                    ? GetCandidateLibraries(selector.AssemblyDependencies)
+                    : selector.Assemblies,
             LogValue
         );
     }
