@@ -60,33 +60,40 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
     {
         var selector = new AssemblyProviderAssemblySelector();
         action(selector);
-        return LoggingEnumerable.Create(
-            selector.AllAssemblies
-                ? _assembles
-                : selector.AssemblyDependencies.Any()
-                    ? GetCandidateLibraries(selector.AssemblyDependencies)
-                    : selector.Assemblies,
-            LogValue
-        );
+        return selector.AllAssemblies
+            ? _assembles
+            : selector.AssemblyDependencies.Any()
+                ? GetCandidateLibraries(selector.AssemblyDependencies)
+                : selector.Assemblies;
     }
 
     /// <summary>
     ///   Get the full list of types using the given selector
     /// </summary>
-    /// <param name="selector"></param>
+    /// <param name="action"></param>
     /// <param name="filePath"></param>
     /// <param name="memberName"></param>
     /// <param name="lineNumber"></param>
     /// <returns></returns>
     public IEnumerable<Type> GetTypes(
-        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
+        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> action,
         [CallerFilePath]
         string filePath = "",
         [CallerMemberName]
         string memberName = "",
         [CallerLineNumber]
         int lineNumber = 0
-    ) => selector(new TypeProviderAssemblySelector());
+    )
+    {
+        var assemblySelector = new AssemblyProviderAssemblySelector();
+        action(assemblySelector);
+        var assemblies = assemblySelector.AllAssemblies
+            ? _assembles
+            : assemblySelector.AssemblyDependencies.Any()
+                ? GetCandidateLibraries(assemblySelector.AssemblyDependencies)
+                : assemblySelector.Assemblies;
+        return action(new TypeProviderAssemblySelector() { Assemblies = assemblies });
+    }
 
     private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
     {

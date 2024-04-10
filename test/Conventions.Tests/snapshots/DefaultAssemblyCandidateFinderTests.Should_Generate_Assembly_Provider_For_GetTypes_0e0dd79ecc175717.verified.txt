@@ -1,0 +1,18 @@
+﻿[
+  ConfigurationDebugViewContext,
+  ConfigurationExtensions,
+  ConfigurationKeyNameAttribute,
+  ConfigurationPath,
+  ConfigurationRootExtensions,
+  IConfiguration,
+  IConfigurationBuilder,
+  IConfigurationManager,
+  IConfigurationProvider,
+  IConfigurationRoot,
+  IConfigurationSection,
+  IConfigurationSource,
+  IEnumerable<KeyValuePair<string, string>>,
+  ConfigurationRootExtensions.<>c__DisplayClass1_0,
+  RocketSurgeryLoggingExtensions,
+  RocketSurgeryLoggingExtensions.<ApplyConventionsAsync>d__0
+]

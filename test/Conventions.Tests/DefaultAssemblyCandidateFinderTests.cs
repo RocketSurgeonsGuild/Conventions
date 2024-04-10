@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
+using System.Runtime.Loader;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Analyzers.Tests;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Sample.DependencyThree;
@@ -112,5 +114,13 @@ public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper)
         }
 
         items.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MemberData(nameof(GetTypesTestsData.GetTypesData), MemberType = typeof(GetTypesTestsData))]
+    public async Task Should_Generate_Assembly_Provider_For_GetTypes(GetTypesTestsData.GetTypesItem getTypesItem)
+    {
+        var finder = new DefaultAssemblyProvider(AssemblyLoadContext.Default.Assemblies);
+        await Verify(finder.GetTypes(getTypesItem.Selector)).UseHashedParameters(getTypesItem.Name);
     }
 }

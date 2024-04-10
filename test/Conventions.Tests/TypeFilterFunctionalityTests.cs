@@ -1,4 +1,6 @@
-﻿using Rocket.Surgery.Conventions.Reflection;
+﻿using System.Runtime.Loader;
+using Rocket.Surgery.Conventions.Analyzers.Tests;
+using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
@@ -35,51 +37,11 @@ public class TypeFilterFunctionalityTests
     }
 
     [Fact]
-    public async Task Suffix_FiltersCorrectly()
-    {
-        var typeFilter = new TypeFilter();
-        typeFilter.Suffix("Class");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurInterface) };
-        var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
-        await Verify(filteredTypes);
-    }
-
-    [Fact]
-    public async Task Postfix_FiltersCorrectly()
-    {
-        var typeFilter = new TypeFilter();
-        typeFilter.Postfix("Class");
-        var types = new Type[] { typeof(ClassMy), typeof(ClassYour), typeof(InterfaceOur) };
-        var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
-        await Verify(filteredTypes);
-    }
-
-    [Fact]
     public async Task EndsWith_FiltersCorrectly()
     {
         var typeFilter = new TypeFilter();
         typeFilter.EndsWith("Class");
         var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurInterface) };
-        var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
-        await Verify(filteredTypes);
-    }
-
-    [Fact]
-    public async Task Prefix_FiltersCorrectly()
-    {
-        var typeFilter = new TypeFilter();
-        typeFilter.Prefix("My");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(MyInterface) };
-        var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
-        await Verify(filteredTypes);
-    }
-
-    [Fact]
-    public async Task Affix_FiltersCorrectly()
-    {
-        var typeFilter = new TypeFilter();
-        typeFilter.Affix("Class");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(ClassInterface) };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -99,16 +61,6 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.Contains("Class");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(ClassInterface) };
-        var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
-        await Verify(filteredTypes);
-    }
-
-    [Fact]
-    public async Task Includes_FiltersCorrectly()
-    {
-        var typeFilter = new TypeFilter();
-        typeFilter.Includes("Class");
         var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(ClassInterface) };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);

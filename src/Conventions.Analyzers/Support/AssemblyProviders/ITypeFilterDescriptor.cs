@@ -13,16 +13,25 @@ internal readonly record struct NamespaceFilterDescriptor(NamespaceFilter Filter
 internal readonly record struct NameFilterDescriptor(TextDirectionFilter Filter, ImmutableHashSet<string> Names) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct CompiledWithAttributeFilterDescriptor(INamedTypeSymbol Attribute) : ITypeFilterDescriptor;
+internal readonly record struct TypeKindFilterDescriptor(bool Include, ImmutableHashSet<TypeKind> TypeKinds) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct CompiledWithoutAttributeFilterDescriptor(INamedTypeSymbol Attribute) : ITypeFilterDescriptor;
+internal readonly record struct WithAttributeFilterDescriptor(INamedTypeSymbol Attribute) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct CompiledAssignableToTypeFilterDescriptor(INamedTypeSymbol Type) : ITypeFilterDescriptor;
+internal readonly record struct WithoutAttributeFilterDescriptor(INamedTypeSymbol Attribute) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct CompiledAssignableToAnyTypeFilterDescriptor(INamedTypeSymbol Type) : ITypeFilterDescriptor;
+internal readonly record struct AssignableToTypeFilterDescriptor(INamedTypeSymbol Type) : ITypeFilterDescriptor;
+
+[DebuggerDisplay("{ToString()}")]
+internal readonly record struct NotAssignableToTypeFilterDescriptor(INamedTypeSymbol Type) : ITypeFilterDescriptor;
+
+[DebuggerDisplay("{ToString()}")]
+internal readonly record struct AssignableToAnyTypeFilterDescriptor(ImmutableHashSet<INamedTypeSymbol> Types) : ITypeFilterDescriptor;
+
+[DebuggerDisplay("{ToString()}")]
+internal readonly record struct NotAssignableToAnyTypeFilterDescriptor(ImmutableHashSet<INamedTypeSymbol> Types) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
 internal readonly record struct CompiledAbortTypeFilterDescriptor(INamedTypeSymbol Type) : ITypeFilterDescriptor;

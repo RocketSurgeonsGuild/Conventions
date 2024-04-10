@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Reflection;
 
 namespace Rocket.Surgery.Conventions.Reflection;
@@ -9,7 +10,7 @@ record TypeFilter : ITypeFilter
 
     public ITypeFilter AssignableTo<T>()
     {
-        Filters.Add(typeof(T).IsAssignableFrom);
+        Filters.Add(x => typeof(T).IsAssignableFrom(x));
         return this;
     }
 
@@ -22,39 +23,30 @@ record TypeFilter : ITypeFilter
     public ITypeFilter AssignableToAny(Type type, params Type[] types)
     {
         types = [type, ..types];
-        Filters.Add(x => types.Any(y => y.IsAssignableFrom(x)));
+        Filters.Add(x => types.Any(t => t.IsAssignableFrom(x)));
         return this;
     }
 
-    public ITypeFilter Suffix(string value, params string[] values)
+    public ITypeFilter NotAssignableTo<T>()
     {
-        values = [value, ..values];
-        Filters.Add(x => values.Any(y => x.Name.EndsWith(y)));
+        Filters.Add(x => !typeof(T).IsAssignableFrom(x));
         return this;
     }
 
-    public ITypeFilter Postfix(string value, params string[] values)
+    public ITypeFilter NotAssignableTo(Type type)
     {
-        values = [value, ..values];
-        Filters.Add(x => values.Any(y => x.Name.EndsWith(y)));
+        Filters.Add(t => !type.IsAssignableFrom(t));
+        return this;
+    }
+
+    public ITypeFilter NotAssignableToAny(Type type, params Type[] types)
+    {
+        types = [type, ..types];
+        Filters.Add(x => types.All(t => !t.IsAssignableFrom(x)));
         return this;
     }
 
     public ITypeFilter EndsWith(string value, params string[] values)
-    {
-        values = [value, ..values];
-        Filters.Add(x => values.Any(y => x.Name.EndsWith(y)));
-        return this;
-    }
-
-    public ITypeFilter Prefix(string value, params string[] values)
-    {
-        values = [value, ..values];
-        Filters.Add(x => values.Any(y => x.Name.StartsWith(y)));
-        return this;
-    }
-
-    public ITypeFilter Affix(string value, params string[] values)
     {
         values = [value, ..values];
         Filters.Add(x => values.Any(y => x.Name.EndsWith(y)));
@@ -69,13 +61,6 @@ record TypeFilter : ITypeFilter
     }
 
     public ITypeFilter Contains(string value, params string[] values)
-    {
-        values = [value, ..values];
-        Filters.Add(x => values.Any(y => x.Name.Contains(y)));
-        return this;
-    }
-
-    public ITypeFilter Includes(string value, params string[] values)
     {
         values = [value, ..values];
         Filters.Add(x => values.Any(y => x.Name.Contains(y)));
@@ -165,6 +150,45 @@ record TypeFilter : ITypeFilter
     public ITypeFilter WithoutAttribute(Type attributeType)
     {
         Filters.Add(x => x.GetCustomAttribute(attributeType) is null);
+        return this;
+    }
+
+    public ITypeFilter KindOf(TypeKindFilter typeFilter, params TypeKindFilter[] typeFilters)
+    {
+        var filters = ImmutableArray.Create([typeFilter, ..typeFilters]);
+        Filters.Add(
+            x => filters.Any(
+                f => f switch
+                     {
+                         TypeKindFilter.Array     => x.IsArray,
+                         TypeKindFilter.Class     => x.IsClass,
+                         TypeKindFilter.Delegate  => typeof(Delegate).IsAssignableFrom(x),
+                         TypeKindFilter.Enum      => x.IsEnum,
+                         TypeKindFilter.Interface => x.IsInterface,
+                         TypeKindFilter.Struct    => x.IsValueType,
+                         _                        => throw new ArgumentOutOfRangeException(nameof(typeFilter), typeFilter, null)
+                     }
+            ));
+        return this;
+    }
+
+    public ITypeFilter NotKindOf(TypeKindFilter typeFilter, params TypeKindFilter[] typeFilters)
+    {
+        var filters = ImmutableArray.Create([typeFilter, ..typeFilters]);
+        Filters.Add(
+            x => !filters.Any(
+                f => f switch
+                     {
+                         TypeKindFilter.Array     => x.IsArray,
+                         TypeKindFilter.Class     => x.IsClass,
+                         TypeKindFilter.Delegate  => typeof(Delegate).IsAssignableFrom(x),
+                         TypeKindFilter.Enum      => x.IsEnum,
+                         TypeKindFilter.Interface => x.IsInterface,
+                         TypeKindFilter.Struct    => x.IsValueType,
+                         _                        => throw new ArgumentOutOfRangeException(nameof(typeFilter), typeFilter, "Invalid type filter")
+                     }
+            )
+        );
         return this;
     }
 }

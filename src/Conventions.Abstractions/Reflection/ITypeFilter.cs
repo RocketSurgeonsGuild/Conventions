@@ -26,20 +26,23 @@ public interface ITypeFilter
     ITypeFilter AssignableToAny(Type type, params Type[] types);
 
     /// <summary>
-    ///     Will match all types with the given suffixes
+    ///     Will not match all types that are assignable to <typeparamref name="T" />.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    ITypeFilter Suffix(string value, params string[] values);
+    /// <typeparam name="T">The type that should be assignable from the matching types.</typeparam>
+    ITypeFilter NotAssignableTo<T>();
 
     /// <summary>
-    ///     Will match all types with the given postfixes
+    ///     Will not match all types that are assignable to the specified <paramref name="type" />.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    ITypeFilter Postfix(string value, params string[] values);
+    /// <param name="type">The type that should be assignable from the matching types.</param>
+    ITypeFilter NotAssignableTo(Type type);
+
+    /// <summary>
+    ///     Will not match all types that are assignable to any of the specified <paramref name="types" />.
+    /// </summary>
+    /// <param name="type">The first type that should be assignable from the matching types.</param>
+    /// <param name="types">The types that should be assignable from the matching types.</param>
+    ITypeFilter NotAssignableToAny(Type type, params Type[] types);
 
     /// <summary>
     ///     Will match all types that end with
@@ -48,22 +51,6 @@ public interface ITypeFilter
     /// <param name="values"></param>
     /// <returns></returns>
     ITypeFilter EndsWith(string value, params string[] values);
-
-    /// <summary>
-    ///     Will match all types with the given prefixes
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    ITypeFilter Prefix(string value, params string[] values);
-
-    /// <summary>
-    ///     Will match all types with the given affixes
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    ITypeFilter Affix(string value, params string[] values);
 
     /// <summary>
     ///     Will match all types that end with
@@ -80,14 +67,6 @@ public interface ITypeFilter
     /// <param name="values"></param>
     /// <returns></returns>
     ITypeFilter Contains(string value, params string[] values);
-
-    /// <summary>
-    ///     Will match all types that contain the given values
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    ITypeFilter Includes(string value, params string[] values);
 
     /// <summary>
     ///     Will match all types in the exact same namespace as the type <typeparamref name="T" />
@@ -171,4 +150,19 @@ public interface ITypeFilter
     /// </summary>
     /// <param name="attributeType">Type of the attribute.</param>
     ITypeFilter WithoutAttribute(Type attributeType);
+
+     /// <summary>
+     ///  Will match all types that are of the specified <paramref name="typeFilter" />.
+     /// </summary>
+     /// <param name="typeFilter"></param>
+     /// <param name="typeFilters"></param>
+     /// <returns></returns>
+    ITypeFilter KindOf(TypeKindFilter typeFilter, params TypeKindFilter[] typeFilters);
+    /// <summary>
+    ///   Will match all types that are not of the specified <paramref name="typeFilter" />.
+    /// </summary>
+    /// <param name="typeFilter"></param>
+    /// <param name="typeFilters"></param>
+    /// <returns></returns>
+    ITypeFilter NotKindOf(TypeKindFilter typeFilter, params TypeKindFilter[] typeFilters);
 }

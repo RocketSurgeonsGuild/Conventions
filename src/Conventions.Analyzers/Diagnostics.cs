@@ -49,19 +49,10 @@ internal static class Diagnostics
         true
     );
 
-    public static DiagnosticDescriptor NamespaceMustBeAString { get; } = new DiagnosticDescriptor(
+    public static DiagnosticDescriptor MustBeAString { get; } = new DiagnosticDescriptor(
         "RSG0006",
-        "Namespace must be a string",
-        "The given namespace must be a constant string",
-        "RocketSurgeonsGuild",
-        DiagnosticSeverity.Warning,
-        true
-    );
-
-    public static DiagnosticDescriptor DuplicateServiceDescriptorAttribute { get; } = new DiagnosticDescriptor(
-        "RSG0007",
-        "Duplicate service descriptor attribute",
-        "Cannot have more than one service descriptor attribute for a given type",
+        "Value must be a string",
+        "The given value must be a constant string",
         "RocketSurgeonsGuild",
         DiagnosticSeverity.Warning,
         true

@@ -25,7 +25,7 @@ internal readonly record struct AllAssemblyDescriptor : IAssemblyDescriptor
 }
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct CompiledAssemblyDescriptor(IAssemblySymbol Assembly) : IAssemblyDescriptor
+internal readonly record struct NotAssemblyDescriptor(IAssemblySymbol Assembly) : IAssemblyDescriptor
 {
     public override string ToString()
     {
@@ -34,7 +34,7 @@ internal readonly record struct CompiledAssemblyDescriptor(IAssemblySymbol Assem
 }
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct CompiledAssemblyDependenciesDescriptor(IAssemblySymbol Assembly) : IAssemblyDescriptor
+internal readonly record struct AssemblyDependenciesDescriptor(IAssemblySymbol Assembly) : IAssemblyDescriptor
 {
     public override string ToString()
     {

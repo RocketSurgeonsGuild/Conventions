@@ -1,3 +1,4 @@
+using System.Runtime.Loader;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -109,6 +110,32 @@ public class TestConvention2 : IServiceAsyncConvention {
                           .GenerateAsync();
 
         await Verify(result);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetTypesTestsData.GetTypesData), MemberType = typeof(GetTypesTestsData))]
+    public async Task Should_Generate_Assembly_Provider_For_GetTypes(GetTypesTestsData.GetTypesItem getTypesItem)
+    {
+        var result = await WithSharedDeps()
+                          .AddSources(
+                               $$$""""
+using Rocket.Surgery.Conventions;
+using System;
+
+public class TestConvention : IServiceAsyncConvention
+{
+    public ValueTask Register(IConventionContext context, IServiceCollection services, CancellationToken cancellationToken)
+    {
+        var assemblies = context.AssemblyProvider.GetTypes({{{ getTypesItem.Expression }}});
+        return Task.CompletedTask;
+    }
+}
+""""
+                           )
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseHashedParameters(getTypesItem.Name);
     }
 
     public override async Task InitializeAsync()

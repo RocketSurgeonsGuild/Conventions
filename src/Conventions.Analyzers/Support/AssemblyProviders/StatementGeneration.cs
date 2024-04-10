@@ -10,37 +10,6 @@ namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 
 internal static class StatementGeneration
 {
-    public static IEnumerable<MemberDeclarationSyntax> AssemblyDeclaration(IAssemblySymbol symbol)
-    {
-        var name = AssemblyVariableName(symbol);
-        var assemblyName = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(symbol.Identity.GetDisplayName(true)));
-
-        yield return FieldDeclaration(
-                VariableDeclaration(IdentifierName("AssemblyName"))
-                   .WithVariables(
-                        SingletonSeparatedList(
-                            VariableDeclarator(Identifier($"_{name}"))
-                        )
-                    )
-            )
-           .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)));
-        yield return PropertyDeclaration(IdentifierName("AssemblyName"), Identifier(name))
-                    .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)))
-                    .WithExpressionBody(
-                         ArrowExpressionClause(
-                             AssignmentExpression(
-                                 SyntaxKind.CoalesceAssignmentExpression,
-                                 IdentifierName(Identifier($"_{name}")),
-                                 ObjectCreationExpression(IdentifierName("AssemblyName"))
-                                    .WithArgumentList(
-                                         ArgumentList(SingletonSeparatedList(Argument(assemblyName)))
-                                     )
-                             )
-                         )
-                     )
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-    }
-
     public static ExpressionSyntax? GetAssemblyExpression(Compilation compilation, IAssemblySymbol assembly)
     {
         var types = TypeSymbolVisitor.GetTypes(
@@ -48,7 +17,7 @@ internal static class StatementGeneration
             new CompiledTypeFilter(ClassFilter.PublicOnly, ImmutableArray<ITypeFilterDescriptor>.Empty),
             new CompiledAssemblyFilter(ImmutableArray.Create<IAssemblyDescriptor>(new AssemblyDescriptor(assembly)))
         );
-        var keyholdType = types.FirstOrDefault(z => !z.IsUnboundGenericType);
+        var keyholdType = types.OrderByDescending(z => z.ToDisplayString()).FirstOrDefault(z => !z.IsUnboundGenericType && z.CanBeReferencedByName);
         if (keyholdType == null)
         {
             return null;

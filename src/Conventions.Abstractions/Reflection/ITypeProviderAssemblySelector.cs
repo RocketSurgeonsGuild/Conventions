@@ -36,4 +36,15 @@ public interface ITypeProviderAssemblySelector
     ///     Will scan for types from the assembly of type.
     /// </summary>
     ITypeSelector FromAssemblyOf(Type type);
+
+    /// <summary>
+    ///     Will not scan for types from the assembly of type <typeparamref name="T" />.
+    /// </summary>
+    /// <typeparam name="T">The type in which assembly that should be scanned.</typeparam>
+    ITypeSelector NotFromAssemblyOf<T>();
+
+    /// <summary>
+    ///     Will not scan for types from the assembly of type.
+    /// </summary>
+    ITypeSelector NotFromAssemblyOf(Type type);
 }

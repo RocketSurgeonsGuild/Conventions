@@ -236,26 +236,27 @@ internal static class Helpers
     public static bool HasImplicitGenericConversion(
         Compilation compilation,
         INamedTypeSymbol assignableToType,
-        INamedTypeSymbol type
+        INamedTypeSymbol assignableFromType
     )
     {
-        if (SymbolEqualityComparer.Default.Equals(assignableToType, type))
+        if (SymbolEqualityComparer.Default.Equals(compilation.ObjectType, assignableToType)) return false;
+        if (SymbolEqualityComparer.Default.Equals(compilation.ObjectType, assignableFromType)) return false;
+        if (SymbolEqualityComparer.Default.Equals(assignableToType, assignableFromType))
             return true;
-        if (compilation.HasImplicitConversion(type, assignableToType)) return true;
-        if (assignableToType is not { Arity: > 0, IsUnboundGenericType: true }) return false;
+        if (compilation.HasImplicitConversion(assignableFromType, assignableToType)) return true;
+        if (assignableFromType is not { Arity: > 0, IsUnboundGenericType: true }) return false;
 
-        var matchingBaseTypes = Helpers
-                               .GetBaseTypes(compilation, type)
-                               .Select(Helpers.GetUnboundGenericType)
+        var matchingBaseTypes = GetBaseTypes(compilation, assignableFromType)
+                               .Select(GetUnboundGenericType)
                                .Where(symbol => symbol is { } && compilation.HasImplicitConversion(symbol, assignableToType));
         if (matchingBaseTypes.Any())
         {
             return true;
         }
 
-        var matchingInterfaces = type
+        var matchingInterfaces = assignableFromType
                                 .AllInterfaces
-                                .Select(Helpers.GetUnboundGenericType)
+                                .Select(GetUnboundGenericType)
                                 .Where(symbol => symbol is { } && compilation.HasImplicitConversion(symbol, assignableToType));
         return matchingInterfaces.Any();
     }

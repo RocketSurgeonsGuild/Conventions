@@ -37,4 +37,15 @@ public interface IAssemblyProviderAssemblySelector
     ///     Will add the assembly of the given type.
     /// </summary>
     IAssemblyProviderAssemblySelector FromAssemblyOf(Type type);
+
+    /// <summary>
+    ///     Will not scan for types from the assembly of type <typeparamref name="T" />.
+    /// </summary>
+    /// <typeparam name="T">The type in which assembly that should be scanned.</typeparam>
+    IAssemblyProviderAssemblySelector NotFromAssemblyOf<T>();
+
+    /// <summary>
+    ///     Will not scan for types from the assembly of type.
+    /// </summary>
+    IAssemblyProviderAssemblySelector NotFromAssemblyOf(Type type);
 }

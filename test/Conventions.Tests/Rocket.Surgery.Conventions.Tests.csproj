@@ -11,4 +11,7 @@
         <ProjectReference Include="..\..\src\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
+    <ItemGroup>
+        <Compile Include="../Analyzers.Tests/GetTypesTestsData.cs" />
+    </ItemGroup>
 </Project>

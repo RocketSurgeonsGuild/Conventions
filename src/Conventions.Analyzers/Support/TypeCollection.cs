@@ -80,6 +80,7 @@ internal static class TypeCollection
             Expression: MemberAccessExpressionSyntax
             {
                 Name.Identifier.Text: "GetTypes",
+                Expression: MemberAccessExpressionSyntax { Name.Identifier.Text: "AssemblyProvider" }
             },
             ArgumentList.Arguments: [.., { Expression: { } expression }]
         } invocationExpressionSyntax

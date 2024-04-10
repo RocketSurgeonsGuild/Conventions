@@ -5,48 +5,18 @@ namespace Rocket.Surgery.Conventions.Reflection;
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
 record TypeProviderAssemblySelector : ITypeSelector
 {
-    public HashSet<Assembly> Assemblies { get; } = new();
-    public HashSet<Assembly> AssemblyDependencies { get; } = new();
-    public bool AllAssemblies { get; private set; }
     public bool PublicTypes { get; internal set; }
     public Action<ITypeFilter>? Filter { get; internal set; }
+    public IEnumerable<Assembly> Assemblies { get; init; } = Enumerable.Empty<Assembly>();
 
-
-    public ITypeSelector FromAssembly()
-    {
-        Assemblies.Add(Assembly.GetCallingAssembly());
-        return this;
-    }
-
-    public ITypeSelector FromAssemblies()
-    {
-        AllAssemblies = true;
-        return this;
-    }
-
-    public ITypeSelector FromAssemblyOf<T>()
-    {
-        Assemblies.Add(typeof(T).Assembly);
-        return this;
-    }
-
-    public ITypeSelector FromAssemblyOf(Type type)
-    {
-        Assemblies.Add(type.Assembly);
-        return this;
-    }
-
-    public ITypeSelector FromAssemblyDependenciesOf<T>()
-    {
-        AssemblyDependencies.Add(typeof(T).Assembly);
-        return this;
-    }
-
-    public ITypeSelector FromAssemblyDependenciesOf(Type type)
-    {
-        AssemblyDependencies.Add(type.Assembly);
-        return this;
-    }
+    public ITypeSelector FromAssembly() => this;
+    public ITypeSelector FromAssemblies() => this;
+    public ITypeSelector FromAssemblyOf<T>() => this;
+    public ITypeSelector FromAssemblyOf(Type type) => this;
+    public ITypeSelector NotFromAssemblyOf<T>() => this;
+    public ITypeSelector NotFromAssemblyOf(Type type) => this;
+    public ITypeSelector FromAssemblyDependenciesOf<T>() => this;
+    public ITypeSelector FromAssemblyDependenciesOf(Type type) => this;
 
     public IEnumerable<Type> GetTypes() => GetTypesInternal();
 
@@ -69,7 +39,7 @@ record TypeProviderAssemblySelector : ITypeSelector
         return GetTypesInternal();
     }
 
-    private IEnumerable<Type> GetTypesInternal()
+    internal IEnumerable<Type> GetTypesInternal()
     {
         var types = Assemblies
            .SelectMany(
