@@ -16,23 +16,23 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 7:
+                    case 6:
                         switch (filePath)
                         {
                             case "Input1.cs":
-                                yield return typeof(global::TestConvention2).Assembly;
+                                yield return typeof(global::TestConvention).Assembly;
                                 break;
                             case "Input2.cs":
-                                yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationRootExtensions).Assembly;
-                                yield return typeof(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions).Assembly;
-                                yield return typeof(global::Rocket.Surgery.Conventions.Testing.TestConventionContextBuilderExtensions).Assembly;
-                                yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupConvention).Assembly;
-                                yield return typeof(global::Sample.DependencyOne.Class1).Assembly;
-                                yield return typeof(global::SampleDependencyThree.Conventions.Exports).Assembly;
-                                yield return typeof(global::Sample.DependencyTwo.Class2).Assembly;
-                                yield return typeof(global::System.ComponentModel.CancelEventArgs).Assembly;
-                                yield return typeof(global::System.Void).Assembly;
-                                yield return typeof(global::TestConvention2).Assembly;
+                                yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationDebugViewContext).Assembly;
+                                yield return typeof(global::Microsoft.Extensions.DependencyInjection.ActivatorUtilities).Assembly;
+                                yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;
+                                yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute).Assembly;
+                                yield return typeof(global::Dep1.Dep1Exports).Assembly;
+                                yield return typeof(global::Sample.DependencyThree.Class3).Assembly;
+                                yield return typeof(global::Dep2Exports).Assembly;
+                                yield return typeof(global::System.IServiceProvider).Assembly;
+                                yield return typeof(global::Internal.Console).Assembly;
+                                yield return typeof(global::TestConvention).Assembly;
                                 break;
                         }
 

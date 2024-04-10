@@ -21,7 +21,10 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 7:
+                    case 9:
+                        yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("EnumPolyfill");
+                        yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Polyfill");
+                        yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("RegexPolyfill");
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute);
@@ -51,10 +54,6 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionsConfigurationAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionWithDependencies);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyDirection);
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceAsyncConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependentOfConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependentOfConventionAttribute<>);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependsOnConventionAttribute);
@@ -94,6 +93,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupConvention);
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.ThrowHelper");
                         yield return typeof(global::Rocket.Surgery.Conventions.UnitTestConventionAttribute);
+                        yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("StringPolyfill");
                         break;
                 }
             }

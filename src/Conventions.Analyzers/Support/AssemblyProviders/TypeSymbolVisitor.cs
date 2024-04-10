@@ -1,26 +1,94 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 
-internal class TypeSymbolVisitor(Compilation compilation, ICompiledTypeFilter<INamedTypeSymbol> filter) : SymbolVisitor
+internal abstract class TypeSymbolVisitorBase
+    (Compilation compilation, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter, ICompiledTypeFilter<INamedTypeSymbol> typeFilter) : SymbolVisitor
+{
+    private bool _abort;
+
+    private void Accept<T>(IEnumerable<T> members)
+        where T : ISymbol?
+    {
+        foreach (var member in members)
+        {
+            if (_abort) return;
+            member?.Accept(this);
+        }
+    }
+
+    public override void VisitNamespace(INamespaceSymbol symbol)
+    {
+        if (_abort) return;
+        Accept(symbol.GetMembers());
+    }
+
+    public override void VisitAssembly(IAssemblySymbol symbol)
+    {
+        if (_abort) return;
+        if (!assemblyFilter.IsMatch(compilation, symbol)) return;
+        symbol.GlobalNamespace.Accept(this);
+    }
+
+    public override void VisitNamedType(INamedTypeSymbol symbol)
+    {
+        if (_abort) return;
+        if (!symbol.CanBeReferencedByName) return;
+        if (!typeFilter.IsMatch(compilation, symbol)) return;
+        _abort = FoundNamedType(symbol);
+
+        if (_abort) return;
+        Accept(symbol.GetMembers());
+    }
+
+    protected abstract bool FoundNamedType(INamedTypeSymbol symbol);
+}
+
+internal class FindTypeVisitor(Compilation compilation, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter) : TypeSymbolVisitorBase(
+    compilation,
+    assemblyFilter,
+    new CompiledTypeFilter(ClassFilter.PublicOnly, ImmutableArray<ITypeFilterDescriptor>.Empty)
+)
+{
+    private INamedTypeSymbol? _type;
+
+    public static INamedTypeSymbol? FindType(Compilation compilation, IAssemblySymbol assemblySymbol)
+    {
+        var visitor = new FindTypeVisitor(
+            compilation,
+            new CompiledAssemblyFilter(ImmutableArray.Create<IAssemblyDescriptor>(new AssemblyDescriptor(assemblySymbol)))
+        );
+        visitor.Visit(assemblySymbol);
+        return visitor._type;
+    }
+
+    protected override bool FoundNamedType(INamedTypeSymbol symbol)
+    {
+        _type = symbol;
+        return true;
+    }
+}
+
+internal class TypeSymbolVisitor
+    (Compilation compilation, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter, ICompiledTypeFilter<INamedTypeSymbol> typeFilter)
+    : TypeSymbolVisitorBase(compilation, assemblyFilter, typeFilter)
 {
     public static ImmutableArray<INamedTypeSymbol> GetTypes(
         Compilation compilation,
-        ICompiledTypeFilter<INamedTypeSymbol> filter,
-        ICompiledTypeFilter<IAssemblySymbol> assemblyFilter
+        ICompiledTypeFilter<IAssemblySymbol> assemblyFilter,
+        ICompiledTypeFilter<INamedTypeSymbol> typeFilter
     )
     {
-        var visitor = new TypeSymbolVisitor(compilation, filter);
+        var visitor = new TypeSymbolVisitor(compilation, assemblyFilter, typeFilter);
         foreach (var symbol in compilation.References.Select(compilation.GetAssemblyOrModuleSymbol).Concat([compilation.Assembly]))
         {
             switch (symbol)
             {
-                case IAssemblySymbol assemblySymbol when assemblyFilter.IsMatch(compilation, assemblySymbol):
+                case IAssemblySymbol:
                     symbol.Accept(visitor);
                     break;
-                case IModuleSymbol moduleSymbol when assemblyFilter.IsMatch(compilation, moduleSymbol.ContainingAssembly):
+                case IModuleSymbol:
                     symbol.Accept(visitor);
                     break;
             }
@@ -31,35 +99,10 @@ internal class TypeSymbolVisitor(Compilation compilation, ICompiledTypeFilter<IN
 
     private readonly HashSet<INamedTypeSymbol> _types = new(SymbolEqualityComparer.Default);
 
-    private void Accept<T>(IEnumerable<T> members)
-        where T : ISymbol?
+    protected override bool FoundNamedType(INamedTypeSymbol symbol)
     {
-        foreach (var member in members)
-        {
-            member?.Accept(this);
-        }
-    }
-
-    public override void VisitNamespace(INamespaceSymbol symbol)
-    {
-        Accept(symbol.GetMembers());
-    }
-
-    public override void VisitAssembly(IAssemblySymbol symbol)
-    {
-        symbol.GlobalNamespace.Accept(this);
-    }
-
-    public override void VisitNamedType(INamedTypeSymbol symbol)
-    {
-        if (!symbol.CanBeReferencedByName) return;
-        if (filter.IsMatch(compilation, symbol))
-        {
-            // symbol.IsAbstract ||
-            _types.Add(symbol);
-        }
-
-        Accept(symbol.GetMembers());
+        _types.Add(symbol);
+        return false;
     }
 
     public ImmutableArray<INamedTypeSymbol> GetTypes() => _types.ToImmutableArray();

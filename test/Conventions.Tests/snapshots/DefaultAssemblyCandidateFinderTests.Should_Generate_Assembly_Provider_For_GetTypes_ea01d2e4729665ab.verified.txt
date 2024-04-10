@@ -1,3 +1,0 @@
-﻿[
-  ConventionProviderTests.Cyclic2
-]

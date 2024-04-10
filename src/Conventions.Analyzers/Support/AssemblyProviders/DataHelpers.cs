@@ -120,7 +120,7 @@ internal static class DataHelpers
             return null;
 
         var typeInfo = ModelExtensions.GetTypeInfo(semanticModel, typeSyntax).Type;
-        if (typeInfo == null)
+        if (typeInfo is null)
             return null;
         return typeInfo switch
                {
@@ -168,14 +168,16 @@ internal static class DataHelpers
                        CreateAssignableToTypeFilterDescriptor(name, namedType),
                    ({ Identifier.Text: "WithAttribute" or "WithoutAttribute" }, { } namedType) =>
                        CreateWithAttributeFilterDescriptor(name, namedType),
+                   ({ Identifier.Text: "WithAttribute" or "WithoutAttribute" }, _) =>
+                       CreateWithAttributeStringFilterDescriptor(context, name, expression, semanticModel),
                    ({ Identifier.Text: "InExactNamespaceOf" or "InNamespaceOf" or "NotInNamespaceOf" }, _) =>
                        CreateNamespaceTypeFilterDescriptor(context, name, expression, semanticModel),
                    ({ Identifier.Text: "InExactNamespaces" or "InNamespaces" or "NotInNamespaces" }, _) =>
                        CreateNamespaceStringFilterDescriptor(context, name, expression, semanticModel),
                    ({ Identifier.Text: "EndsWith" or "StartsWith" or "Contains" }, _) =>
-                       CreateNameFilterDescriptor(context, name, expression, semanticModel),
+                       CreateNameFilterDescriptor(context, name, expression),
                    ({ Identifier.Text: "KindOf" or "NotKindOf" }, _) =>
-                       CreateTypeKindFilterDescriptor(context, name, expression, semanticModel),
+                       CreateTypeKindFilterDescriptor(context, name, expression),
                    _ => throw new NotSupportedException($"Not supported type filter. Method: {name.ToFullString()}  {expression.ToFullString()} method.")
                };
 
@@ -194,7 +196,7 @@ internal static class DataHelpers
             var arguments = expression
                            .ArgumentList.Arguments.Select(z => GetSyntaxTypeInfo(semanticModel, z.Expression, name))
                            .OfType<INamedTypeSymbol>()
-                           .ToImmutableHashSet();
+                           .ToImmutableHashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
             return name.Identifier.Text.StartsWith("Not")
                 ? new NotAssignableToAnyTypeFilterDescriptor(arguments)
@@ -204,8 +206,7 @@ internal static class DataHelpers
         static NameFilterDescriptor CreateNameFilterDescriptor(
             SourceProductionContext context,
             SimpleNameSyntax name,
-            InvocationExpressionSyntax expression,
-            SemanticModel semanticModel
+            InvocationExpressionSyntax expression
         )
         {
             var filter = name.Identifier.Text switch
@@ -217,7 +218,7 @@ internal static class DataHelpers
             var stringValues = ImmutableHashSet.CreateBuilder<string>();
             foreach (var argument in expression.ArgumentList.Arguments)
             {
-                if (GetStringValue(semanticModel, argument) is not { Length: > 0 } item)
+                if (GetStringValue(argument) is not { Length: > 0 } item)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAString, argument.GetLocation()));
                     continue;
@@ -245,7 +246,7 @@ internal static class DataHelpers
             foreach (var argument in expression.ArgumentList.Arguments)
             {
                 if (argument.Expression is not TypeOfExpressionSyntax typeOfExpressionSyntax
-                 || ModelExtensions.GetTypeInfo(semanticModel, typeOfExpressionSyntax.Type).Type is not { } type)
+                 || ModelExtensions.GetTypeInfo(semanticModel, typeOfExpressionSyntax.Type).Type is not {  } type)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAnExpression, argument.GetLocation()));
                     continue;
@@ -272,23 +273,58 @@ internal static class DataHelpers
             var namespaces = ImmutableHashSet.CreateBuilder<string>();
             foreach (var argument in expression.ArgumentList.Arguments)
             {
-                if (GetStringValue(semanticModel, argument) is not { Length: > 0 } item)
+                if (argument.Expression is MemberAccessExpressionSyntax
+                    {
+                        Name.Identifier.Text: "Namespace", Expression: TypeOfExpressionSyntax typeOfExpressionSyntax
+                    }
+                 && GetSyntaxTypeInfo(semanticModel, typeOfExpressionSyntax, name) is { } type)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAString, argument.GetLocation()));
+                    namespaces.Add(type.ContainingNamespace.ToDisplayString());
                     continue;
                 }
 
-                namespaces.Add(item);
+                if (GetStringValue(argument) is { Length: > 0 } item)
+                {
+                    namespaces.Add(item);
+                    continue;
+                }
+
+                context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAString, argument.GetLocation()));
             }
 
             return new(filter, namespaces.ToImmutable());
         }
 
-        static TypeKindFilterDescriptor CreateTypeKindFilterDescriptor(
+        static ITypeFilterDescriptor? CreateWithAttributeStringFilterDescriptor(
             SourceProductionContext context,
             SimpleNameSyntax name,
             InvocationExpressionSyntax expression,
             SemanticModel semanticModel
+        )
+        {
+            if (expression is not { ArgumentList.Arguments: [var argument] }) return null;
+            if (argument.Expression is MemberAccessExpressionSyntax
+                {
+                    Name.Identifier.Text: "FullName", Expression: TypeOfExpressionSyntax typeOfExpressionSyntax
+                }
+             && GetSyntaxTypeInfo(semanticModel, typeOfExpressionSyntax, name) is { } type)
+                return name.Identifier.Text.StartsWith("Without")
+                    ? new WithoutAttributeStringFilterDescriptor(Helpers.GetFullMetadataName(type))
+                    : new WithAttributeStringFilterDescriptor(Helpers.GetFullMetadataName(type));
+
+            if (GetStringValue(argument) is { Length: > 0 } item)
+                return name.Identifier.Text.StartsWith("Without")
+                    ? new WithoutAttributeStringFilterDescriptor(item)
+                    : new WithAttributeStringFilterDescriptor(item);
+
+            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAString, argument.GetLocation()));
+            return null;
+        }
+
+        static TypeKindFilterDescriptor CreateTypeKindFilterDescriptor(
+            SourceProductionContext context,
+            SimpleNameSyntax name,
+            InvocationExpressionSyntax expression
         )
         {
             var include = name.Identifier.Text switch { "KindOf" => true, "NotKindOf" => false };
@@ -296,7 +332,7 @@ internal static class DataHelpers
             var namespaces = ImmutableHashSet.CreateBuilder<TypeKind>();
             foreach (var argument in expression.ArgumentList.Arguments)
             {
-                if (GetStringValue(semanticModel, argument) is not { Length: > 0 } item)
+                if (GetStringValue(argument) is not { Length: > 0 } item)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAString, argument.GetLocation()));
                     continue;
@@ -308,7 +344,7 @@ internal static class DataHelpers
             return new(include, namespaces.ToImmutable());
         }
 
-        static string? GetStringValue(SemanticModel semanticModel, ArgumentSyntax argument)
+        static string? GetStringValue(ArgumentSyntax argument)
         {
             return argument.Expression switch
                    {
@@ -318,7 +354,8 @@ internal static class DataHelpers
                        {
                            Expression: IdentifierNameSyntax { Identifier: { Text: "nameof" } },
                            ArgumentList.Arguments: [{ Expression: IdentifierNameSyntax { Identifier.Text: { Length: > 0 } text } }]
-                       } => text
+                       } => text,
+                       _ => null,
                    };
         }
     }
@@ -327,7 +364,8 @@ internal static class DataHelpers
         SemanticModel semanticModel,
         ExpressionSyntax expression,
         NameSyntax name
-    ) => ExtractSyntaxFromMethod(expression, name) is not { } type || ModelExtensions.GetTypeInfo(semanticModel, type).Type is not INamedTypeSymbol nts
+    ) => ExtractSyntaxFromMethod(expression, name) is not { } type
+     || ModelExtensions.GetTypeInfo(semanticModel, type).Type is not INamedTypeSymbol { Kind: not SymbolKind.ErrorType } nts
         ? null
         : nts;
 

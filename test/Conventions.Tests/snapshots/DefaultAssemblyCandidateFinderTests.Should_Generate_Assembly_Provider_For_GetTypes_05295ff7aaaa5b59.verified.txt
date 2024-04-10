@@ -1,12 +1,6 @@
 ﻿[
-  Contrib,
-  ConventionContextTests.AbcConvention,
-  ConventionContextTests.InjectableConvention,
-  ConventionContextTests.OptionalInjectableConvention,
-  ConventionProviderTests.C,
-  GenericTypedConventionProviderTests.C,
-  IServiceAsyncConvention,
-  IServiceConvention,
   IConfigurationAsyncConvention,
-  IConfigurationConvention
+  IConfigurationConvention,
+  IServiceAsyncConvention,
+  IServiceConvention
 ]

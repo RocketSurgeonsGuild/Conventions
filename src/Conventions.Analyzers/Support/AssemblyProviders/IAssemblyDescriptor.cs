@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
-using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 

@@ -1,7 +1,3 @@
 ﻿{
-  Assemblies: [
-    Rocket.Surgery.Conventions.Tests
-  ],
-  AllAssemblies: false,
   PublicTypes: false
 }

@@ -1,11 +1,11 @@
 ﻿[
+  ConfigurationAsyncConvention,
+  ConfigurationConvention,
   ConventionProviderFactory,
-  SetupAsyncConvention,
-  SetupConvention,
-  LoggingAsyncConvention,
-  LoggingConvention,
   ServiceAsyncConvention,
   ServiceConvention,
-  ConfigurationAsyncConvention,
-  ConfigurationConvention
+  LoggingAsyncConvention,
+  LoggingConvention,
+  SetupAsyncConvention,
+  SetupConvention
 ]

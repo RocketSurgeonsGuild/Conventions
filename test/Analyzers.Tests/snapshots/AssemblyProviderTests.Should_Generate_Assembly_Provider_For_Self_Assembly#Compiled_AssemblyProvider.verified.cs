@@ -16,7 +16,7 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 7:
+                    case 6:
                         yield return typeof(global::TestConvention).Assembly;
                         break;
                 }

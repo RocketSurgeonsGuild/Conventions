@@ -140,6 +140,12 @@ public interface ITypeFilter
     ITypeFilter WithAttribute(Type attributeType);
 
     /// <summary>
+    ///     Will match all types that has an attribute of <paramref name="attributeFullName" /> defined.
+    /// </summary>
+    /// <param name="attributeFullName">The full name of the attribute.</param>
+    ITypeFilter WithAttribute(string? attributeFullName);
+
+    /// <summary>
     ///     Will match all types that doesn't have an attribute of type <typeparamref name="T" /> defined.
     /// </summary>
     /// <typeparam name="T">The type of attribute that needs to be defined.</typeparam>
@@ -150,6 +156,12 @@ public interface ITypeFilter
     /// </summary>
     /// <param name="attributeType">Type of the attribute.</param>
     ITypeFilter WithoutAttribute(Type attributeType);
+
+    /// <summary>
+    ///     Will match all types that doesn't have an attribute of <paramref name="attributeFullName" /> defined.
+    /// </summary>
+    /// <param name="attributeFullName">The full name of the attribute.</param>
+    ITypeFilter WithoutAttribute(string? attributeFullName);
 
      /// <summary>
      ///  Will match all types that are of the specified <paramref name="typeFilter" />.

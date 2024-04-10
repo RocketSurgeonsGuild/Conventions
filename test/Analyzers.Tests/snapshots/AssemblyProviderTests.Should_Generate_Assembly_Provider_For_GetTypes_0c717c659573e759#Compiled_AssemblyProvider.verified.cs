@@ -21,7 +21,7 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 7:
+                    case 9:
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceAsyncConvention);

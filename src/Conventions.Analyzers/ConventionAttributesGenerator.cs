@@ -141,6 +141,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             static (context, results) =>
             {
                 var (getAssemblies, getTypes) = results.Left.Left;
+                if (getAssemblies.Length == 0 && getTypes.Length == 0) return;
                 var configurationData = results.Left.Right;
                 var compilation = results.Right;
 
@@ -161,19 +162,19 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                         )
                        .AddMembers(assemblyProvider);
                 var cu = CompilationUnit()
-                        .WithUsings(
-                             List(
-                                 new[]
-                                 {
-                                     UsingDirective(ParseName("System")),
-                                     UsingDirective(ParseName("System.Reflection")),
-                                     UsingDirective(ParseName("System.Collections.Generic")),
-                                     UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
-                                     UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                                     UsingDirective(ParseName("Rocket.Surgery.Conventions.Reflection")),
-                                 }
-                             )
-                         );
+                   .WithUsings(
+                        List(
+                            new[]
+                            {
+                                UsingDirective(ParseName("System")),
+                                UsingDirective(ParseName("System.Reflection")),
+                                UsingDirective(ParseName("System.Collections.Generic")),
+                                UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
+                                UsingDirective(ParseName("Rocket.Surgery.Conventions")),
+                                UsingDirective(ParseName("Rocket.Surgery.Conventions.Reflection")),
+                            }
+                        )
+                    );
                 if (configurationData is { Assembly: true, })
                 {
                     cu = cu

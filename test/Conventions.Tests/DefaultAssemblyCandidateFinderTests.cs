@@ -120,7 +120,8 @@ public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper)
     [MemberData(nameof(GetTypesTestsData.GetTypesData), MemberType = typeof(GetTypesTestsData))]
     public async Task Should_Generate_Assembly_Provider_For_GetTypes(GetTypesTestsData.GetTypesItem getTypesItem)
     {
-        var finder = new DefaultAssemblyProvider(AssemblyLoadContext.Default.Assemblies);
-        await Verify(finder.GetTypes(getTypesItem.Selector)).UseHashedParameters(getTypesItem.Name);
+        var finder = new DefaultAssemblyProvider(AssemblyLoadContext.Default.Assemblies.Except([GetType().Assembly]));
+        await Verify(finder.GetTypes(getTypesItem.Selector).Where(z => !z.Name.StartsWith("ObjectProxy")).OrderBy(z => z.FullName))
+           .UseHashedParameters(getTypesItem.Name);
     }
 }

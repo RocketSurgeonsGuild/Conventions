@@ -24,6 +24,8 @@ public static class ModuleInitializer
                 return new(path, typeName, method.Name);
             }
         );
+        VerifierSettings.ScrubLines(z => z.Contains("ObjectProxy", StringComparison.OrdinalIgnoreCase));
+        VerifierSettings.SortPropertiesAlphabetically();
         VerifierSettings.AddExtraSettings(settings =>
                                           {
                                               settings.Converters.Add(new AssemblyConverter());
@@ -42,6 +44,12 @@ public static class ModuleInitializer
     {
         public override void Write(VerifyJsonWriter writer, Type value)
         {
+
+            if (value.FullName?.Contains("ObjectProxy") == true || value.FullName?.Contains("Castle.Proxies") == true || value.FullName?.Contains("DynamicProxyGenAssembly2") == true)
+            {
+                writer.WriteNull();
+                return;
+            }
             writer.WriteValue(value.FullName);
         }
     }

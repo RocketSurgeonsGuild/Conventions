@@ -25,9 +25,14 @@ class CompiledAssemblyFilter
                 filter => filter switch
                           {
                               AssemblyDescriptor { Assembly: var assembly } => SymbolEqualityComparer.Default.Equals(assembly, targetType),
-                              AssemblyDependenciesDescriptor { Assembly: var assembly } => targetType.Modules.SelectMany(z => z.ReferencedAssemblySymbols).Any(
-                                  reference => SymbolEqualityComparer.Default.Equals(assembly, reference)
-                                  ),
+                              AssemblyDependenciesDescriptor { Assembly: var assembly } => targetType
+                                                                                          .Modules.SelectMany(z => z.ReferencedAssemblySymbols)
+                                                                                          .Any(
+                                                                                               reference => SymbolEqualityComparer.Default.Equals(
+                                                                                                   assembly,
+                                                                                                   reference
+                                                                                               )
+                                                                                           ),
                               _ => false
                           }
             );
@@ -46,7 +51,7 @@ class CompiledTypeFilter
 
         if (typeFilterDescriptors.Length == 0) return true;
 
-        return typeFilterDescriptors.All(filter => GetFilterDescriptor(filter));
+        return typeFilterDescriptors.All(GetFilterDescriptor);
 
         bool GetFilterDescriptor(ITypeFilterDescriptor filterDescriptor) =>
             filterDescriptor switch
@@ -58,11 +63,15 @@ class CompiledTypeFilter
                 AssignableToAnyTypeFilterDescriptor { Types: var assignableToAnyTypes } =>
                     assignableToAnyTypes.Any(z => Helpers.HasImplicitGenericConversion(compilation, z, targetType)),
                 NotAssignableToAnyTypeFilterDescriptor { Types: var notAssignableToAnyTypes } =>
-                    !notAssignableToAnyTypes.Any(z => Helpers.HasImplicitGenericConversion(compilation, z, targetType)),
+                    notAssignableToAnyTypes.All(z => !Helpers.HasImplicitGenericConversion(compilation, z, targetType)),
                 WithAttributeFilterDescriptor { Attribute: var attribute } =>
                     targetType.GetAttributes().Any(z => SymbolEqualityComparer.Default.Equals(z.AttributeClass, attribute)),
                 WithoutAttributeFilterDescriptor { Attribute: var attribute } =>
-                    !targetType.GetAttributes().Any(z => SymbolEqualityComparer.Default.Equals(z.AttributeClass, attribute)),
+                    targetType.GetAttributes().All(z => !SymbolEqualityComparer.Default.Equals(z.AttributeClass, attribute)),
+                WithAttributeStringFilterDescriptor { AttributeClassName: var attribute } =>
+                    targetType.GetAttributes().Any(z => Helpers.GetFullMetadataName(z.AttributeClass) == attribute),
+                WithoutAttributeStringFilterDescriptor { AttributeClassName: var attribute } =>
+                    targetType.GetAttributes().All(z => Helpers.GetFullMetadataName(z.AttributeClass) != attribute),
                 NamespaceFilterDescriptor { Filter: var filterName, Namespaces: var filterNamespaces } =>
                     handleNamespaceFilter(filterName, filterNamespaces, targetType),
                 NameFilterDescriptor { Filter: var filterName, Names: var filterNames } =>
@@ -96,8 +105,7 @@ class CompiledTypeFilter
         static bool handleKindFilter(bool include, ImmutableHashSet<TypeKind> typeKinds, INamedTypeSymbol namedTypeSymbol2) =>
             include switch
             {
-                true  => typeKinds.Any(kind => namedTypeSymbol2.TypeKind == kind),
-                false => typeKinds.All(kind => namedTypeSymbol2.TypeKind != kind),
+                true => typeKinds.Any(kind => namedTypeSymbol2.TypeKind == kind), false => typeKinds.All(kind => namedTypeSymbol2.TypeKind != kind),
             };
     }
 }

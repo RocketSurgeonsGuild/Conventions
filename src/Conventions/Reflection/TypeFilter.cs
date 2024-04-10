@@ -141,6 +141,12 @@ record TypeFilter : ITypeFilter
         return this;
     }
 
+    public ITypeFilter WithAttribute(string? attributeFullName)
+    {
+        Filters.Add(x => x.GetCustomAttributes().Any(z => z.GetType().FullName == attributeFullName));
+        return this;
+    }
+
     public ITypeFilter WithoutAttribute<T>() where T : Attribute
     {
         Filters.Add(x => x.GetCustomAttribute<T>() is null);
@@ -150,6 +156,12 @@ record TypeFilter : ITypeFilter
     public ITypeFilter WithoutAttribute(Type attributeType)
     {
         Filters.Add(x => x.GetCustomAttribute(attributeType) is null);
+        return this;
+    }
+
+    public ITypeFilter WithoutAttribute(string? attributeFullName)
+    {
+        Filters.Add(x => x.GetCustomAttributes().All(z => z.GetType().FullName != attributeFullName));
         return this;
     }
 

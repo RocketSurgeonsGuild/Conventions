@@ -1,6 +1,6 @@
 ﻿[
-  SetupAsyncConvention,
-  SetupConvention,
   ServiceAsyncConvention,
-  ServiceConvention
+  ServiceConvention,
+  SetupAsyncConvention,
+  SetupConvention
 ]

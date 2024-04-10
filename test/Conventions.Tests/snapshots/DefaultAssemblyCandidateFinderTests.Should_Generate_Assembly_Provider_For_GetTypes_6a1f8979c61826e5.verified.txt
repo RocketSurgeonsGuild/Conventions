@@ -1,0 +1,6 @@
+﻿[
+  AppDomainAssemblyProvider,
+  DefaultAssemblyProvider,
+  TypeFilter,
+  TypeProviderAssemblySelector
+]

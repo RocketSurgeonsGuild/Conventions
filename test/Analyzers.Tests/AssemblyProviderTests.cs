@@ -120,6 +120,8 @@ public class TestConvention2 : IServiceAsyncConvention {
                           .AddSources(
                                $$$""""
 using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.DependencyInjection;
 using System;
 
 public class TestConvention : IServiceAsyncConvention

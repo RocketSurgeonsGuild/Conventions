@@ -1,6 +1,4 @@
 using System.Collections.Immutable;
-using System.Reflection;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -19,30 +17,34 @@ internal static class AssemblyCollection
     {
         if (!request.Items.Any()) return AssembliesMethod;
         var compilation = request.Compilation;
+
+        var assemblySymbols = compilation
+           .References.Select(compilation.GetAssemblyOrModuleSymbol)
+           .Concat([compilation.Assembly])
+           .Select(
+                symbol =>
+                {
+                    if (symbol is IAssemblySymbol assemblySymbol)
+                        return assemblySymbol;
+                    if (symbol is IModuleSymbol moduleSymbol) return moduleSymbol.ContainingAssembly;
+                    return null!;
+                }
+            )
+           .Where(z => z is {})
+           .ToImmutableHashSet<IAssemblySymbol>(SymbolEqualityComparer.Default);
+
         var results = new List<(SourceLocation location, BlockSyntax block)>();
         foreach (var item in request.Items)
         {
-            var allAssemblies = new List<IAssemblySymbol>();
-            foreach (var symbol in compilation.References.Select(compilation.GetAssemblyOrModuleSymbol).Concat([compilation.Assembly]))
-            {
-                switch (symbol)
-                {
-                    case IAssemblySymbol assemblySymbol when item.AssemblyFilter.IsMatch(compilation, assemblySymbol):
-                        allAssemblies.Add(assemblySymbol);
-                        break;
-                    case IModuleSymbol moduleSymbol when item.AssemblyFilter.IsMatch(compilation, moduleSymbol.ContainingAssembly):
-                        allAssemblies.Add(moduleSymbol.ContainingAssembly);
-                        break;
-                }
-            }
-
-            results.Add(( item.Location, GenerateDescriptors(compilation, allAssemblies.ToImmutableHashSet<IAssemblySymbol>(SymbolEqualityComparer.Default)) ));
+            var filterAssemblies = assemblySymbols
+               .Where(z => item.AssemblyFilter.IsMatch(compilation, z));
+            results.Add(( item.Location, GenerateDescriptors(compilation, filterAssemblies) ));
         }
 
         return AssembliesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
-    private static BlockSyntax GenerateDescriptors(Compilation compilation, ImmutableHashSet<IAssemblySymbol> assemblies)
+    private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies)
     {
         var block = Block();
         foreach (var assembly in assemblies.OrderBy(z => z.ToDisplayString()))

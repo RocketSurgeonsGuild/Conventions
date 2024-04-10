@@ -7,11 +7,12 @@
   ConventionAttribute<T>,
   ConventionContextBuilder,
   ConventionContextBuilderExtensions,
+  ConventionContextBuilderExtensions.<>c__DisplayClass0_0<TBuilder>.<<WithConventionsFrom>b__0>d,
   ConventionContextExtensions,
   ConventionDependency,
   ConventionHostBuilderExtensions,
-  ConventionProvider,
   ConventionOrDelegate,
+  ConventionProvider,
   ConventionsConfigurationAttribute,
   ConventionWithDependencies,
   DependentOfConventionAttribute,
@@ -23,6 +24,5 @@
   ExportedConventionsAttribute,
   ImportConventionsAttribute,
   LiveConventionAttribute,
-  UnitTestConventionAttribute,
-  ConventionContextBuilderExtensions.<>c__DisplayClass0_0<TBuilder>.<<WithConventionsFrom>b__0>d
+  UnitTestConventionAttribute
 ]

@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 
@@ -12,22 +11,13 @@ internal static class StatementGeneration
 {
     public static ExpressionSyntax? GetAssemblyExpression(Compilation compilation, IAssemblySymbol assembly)
     {
-        var types = TypeSymbolVisitor.GetTypes(
-            compilation,
-            new CompiledTypeFilter(ClassFilter.PublicOnly, ImmutableArray<ITypeFilterDescriptor>.Empty),
-            new CompiledAssemblyFilter(ImmutableArray.Create<IAssemblyDescriptor>(new AssemblyDescriptor(assembly)))
-        );
-        var keyholdType = types.OrderByDescending(z => z.ToDisplayString()).FirstOrDefault(z => !z.IsUnboundGenericType && z.CanBeReferencedByName);
-        if (keyholdType == null)
-        {
-            return null;
-        }
-
-        return MemberAccessExpression(
-            SyntaxKind.SimpleMemberAccessExpression,
-            GetTypeOfExpression(compilation, keyholdType),
-            IdentifierName("Assembly")
-        );
+        return FindTypeVisitor.FindType(compilation, assembly) is { } keyholdType
+            ? MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                GetTypeOfExpression(compilation, keyholdType),
+                IdentifierName("Assembly")
+            )
+            : null;
     }
 
     public static ExpressionSyntax GetTypeOfExpression(Compilation compilation, INamedTypeSymbol type)
@@ -89,7 +79,9 @@ internal static class StatementGeneration
             }
             else
             {
-                var baseType = Helpers.GetBaseTypes(compilation, type).FirstOrDefault(z => z.IsGenericType && compilation.HasImplicitConversion(z, relatedType));
+                var baseType = Helpers
+                              .GetBaseTypes(compilation, type)
+                              .FirstOrDefault(z => z.IsGenericType && compilation.HasImplicitConversion(z, relatedType));
                 if (baseType == null)
                 {
                     // ReSharper disable once AccessToModifiedClosure

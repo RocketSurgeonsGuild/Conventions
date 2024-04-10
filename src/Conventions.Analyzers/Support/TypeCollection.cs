@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,15 +24,15 @@ internal static class TypeCollection
         var results = new List<(SourceLocation location, BlockSyntax block)>();
         foreach (var item in request.Items)
         {
-            var types = TypeSymbolVisitor.GetTypes(compilation, item.TypeFilter, item.AssemblyFilter);
-            var localBlock = GenerateDescriptors(compilation, types, privateAssemblies);
+            var reducedTypes = TypeSymbolVisitor.GetTypes(compilation, item.AssemblyFilter, item.TypeFilter);
+            var localBlock = GenerateDescriptors(compilation, reducedTypes, privateAssemblies);
             results.Add(( item.Location, localBlock ));
         }
 
         return TypesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
-    private static BlockSyntax GenerateDescriptors(Compilation compilation, ImmutableArray<INamedTypeSymbol> types, HashSet<IAssemblySymbol> privateAssemblies)
+    private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<INamedTypeSymbol> types, HashSet<IAssemblySymbol> privateAssemblies)
     {
         var block = Block();
         foreach (var type in types.OrderBy(z => z.ToDisplayString()))
