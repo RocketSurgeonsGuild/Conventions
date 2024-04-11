@@ -16,16 +16,7 @@ namespace TestProject.Conventions
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
-                switch (lineNumber)
-                {
-                    case 202:
-                        yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;
-                        yield return typeof(global::Dep1.Dep1Exports).Assembly;
-                        yield return typeof(global::Sample.DependencyThree.Class3).Assembly;
-                        yield return typeof(global::Dep2Exports).Assembly;
-                        yield return typeof(global::TestConvention).Assembly;
-                        break;
-                }
+                yield break;
             }
 
             IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)

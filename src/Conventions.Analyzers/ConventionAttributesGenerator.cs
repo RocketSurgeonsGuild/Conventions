@@ -178,6 +178,12 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     assemblyProvider = assemblyProvider.AddMembers(privateAssemblyNodes);
                 }
 
+                var attributes = AssemblyProviderConfiguration.FromAssemblyAttributes(assemblyRequests, typeRequests).ToArray();
+                if (attributes.Length == 0 && configurationData is not { Assembly: true, })
+                {
+                    return;
+                }
+
                 var members =
                     ClassDeclaration(configurationData.ClassName)
                        .WithModifiers(
@@ -189,20 +195,20 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                         )
                        .AddMembers(assemblyProvider);
                 var cu = CompilationUnit()
-                   .WithUsings(
-                        List(
-                            [
-                                UsingDirective(ParseName("System")),
-                                UsingDirective(ParseName("System.Collections.Generic")),
-                                UsingDirective(ParseName("System.Reflection")),
-                                UsingDirective(ParseName("System.Runtime.Loader")),
-                                UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
-                                UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                                UsingDirective(ParseName("Rocket.Surgery.Conventions.Reflection")),
-                            ]
-                        )
-                    )
-                   .AddAttributeLists(AssemblyProviderConfiguration.FromAssemblyAttributes(assemblyRequests, typeRequests).ToArray());
+                        .WithUsings(
+                             List(
+                                 [
+                                     UsingDirective(ParseName("System")),
+                                     UsingDirective(ParseName("System.Collections.Generic")),
+                                     UsingDirective(ParseName("System.Reflection")),
+                                     UsingDirective(ParseName("System.Runtime.Loader")),
+                                     UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
+                                     UsingDirective(ParseName("Rocket.Surgery.Conventions")),
+                                     UsingDirective(ParseName("Rocket.Surgery.Conventions.Reflection")),
+                                 ]
+                             )
+                         )
+                        .AddAttributeLists(attributes);
 
                 //return (Items: itemsValue, Method: TypeCollection.Execute(new(compilation, itemsValue, assemblySymbols)));
 
@@ -256,17 +262,21 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
             var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
 
-            var i = new AssemblyCollection.Item(
-                new(
-                    methodCallSyntax
-                       .SyntaxTree.GetText(context.CancellationToken)
-                       .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
-                       .LineNumber,
-                    methodCallSyntax.SyntaxTree.FilePath,
-                    containingMethod.Identifier.Text
-                ),
-                assemblyFilter
+            var source = new SourceLocation(
+                methodCallSyntax
+                   .SyntaxTree.GetText(context.CancellationToken)
+                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
+                   .LineNumber,
+                methodCallSyntax.SyntaxTree.FilePath,
+                containingMethod.Identifier.Text
             );
+            // disallow list?
+            if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs"))
+            {
+                continue;
+            }
+
+            var i = new AssemblyCollection.Item(source, assemblyFilter);
             items.Add(i);
         }
 
@@ -304,18 +314,16 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             var typeFilter = new CompiledTypeFilter(classFilter, typeFilters.ToImmutableArray());
             var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
 
-            var i = new TypeCollection.Item(
-                new(
-                    methodCallSyntax
-                       .SyntaxTree.GetText(context.CancellationToken)
-                       .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
-                       .LineNumber,
-                    methodCallSyntax.SyntaxTree.FilePath,
-                    containingMethod.Identifier.Text
-                ),
-                assemblyFilter,
-                typeFilter
+            var source = new SourceLocation(
+                methodCallSyntax
+                   .SyntaxTree.GetText(context.CancellationToken)
+                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
+                   .LineNumber,
+                methodCallSyntax.SyntaxTree.FilePath,
+                containingMethod.Identifier.Text
             );
+
+            var i = new TypeCollection.Item(source, assemblyFilter, typeFilter);
             items.Add(i);
         }
 

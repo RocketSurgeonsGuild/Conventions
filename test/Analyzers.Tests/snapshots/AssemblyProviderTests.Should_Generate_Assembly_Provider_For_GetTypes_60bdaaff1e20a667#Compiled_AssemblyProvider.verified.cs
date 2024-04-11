@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucywgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiXSwibmEiOltdLCJkIjpbXX0sInQiOnsiZiI6MSwibnNmIjpbeyJmIjozLCJuIjpbIkpldEJyYWlucy5Bbm5vdGF0aW9ucyJdfV0sIm5mIjpbXSwiayI6W10sInciOltdLCJzIjpbXSwiYXQiOltdLCJ0YSI6W3siaSI6ZmFsc2UsInQiOlt7ImEiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMsIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsIiwidCI6IlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkNvbmZpZ3VyYXRpb24uSUNvbmZpZ3VyYXRpb25Bc3luY0NvbnZlbnRpb24ifSx7ImEiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMsIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsIiwidCI6IlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkNvbmZpZ3VyYXRpb24uSUNvbmZpZ3VyYXRpb25Db252ZW50aW9uIn0seyJhIjoiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsInQiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5EZXBlbmRlbmN5SW5qZWN0aW9uLklTZXJ2aWNlQXN5bmNDb252ZW50aW9uIn0seyJhIjoiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsInQiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5EZXBlbmRlbmN5SW5qZWN0aW9uLklTZXJ2aWNlQ29udmVudGlvbiJ9LHsiYSI6IlN5c3RlbS5Qcml2YXRlLkNvcmVMaWIsIFZlcnNpb249OC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj03Y2VjODVkN2JlYTc3OThlIiwidCI6IlN5c3RlbS5BdHRyaWJ1dGUifV19XSwiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucywgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiXSwibmEiOltdLCJkIjpbXX19")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zIiwiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zIl0sIm5hIjpbXSwiZCI6W119LCJ0Ijp7ImYiOjEsIm5zZiI6W3siZiI6MywibiI6WyJKZXRCcmFpbnMuQW5ub3RhdGlvbnMiXX1dLCJuZiI6W10sImsiOltdLCJ3IjpbXSwicyI6W10sImF0IjpbXSwidGEiOlt7ImkiOmZhbHNlLCJ0IjpbeyJhIjoiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zIiwidCI6IlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkNvbmZpZ3VyYXRpb24uSUNvbmZpZ3VyYXRpb25Bc3luY0NvbnZlbnRpb24ifSx7ImEiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMiLCJ0IjoiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQ29uZmlndXJhdGlvbi5JQ29uZmlndXJhdGlvbkNvbnZlbnRpb24ifSx7ImEiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMiLCJ0IjoiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuRGVwZW5kZW5jeUluamVjdGlvbi5JU2VydmljZUFzeW5jQ29udmVudGlvbiJ9LHsiYSI6IlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyIsInQiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5EZXBlbmRlbmN5SW5qZWN0aW9uLklTZXJ2aWNlQ29udmVudGlvbiJ9LHsiYSI6IlN5c3RlbS5Qcml2YXRlLkNvcmVMaWIiLCJ0IjoiU3lzdGVtLkF0dHJpYnV0ZSJ9XX1dLCJhIjpmYWxzZSwiaSI6ZmFsc2UsIm0iOlsiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMiLCJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMiXSwibmEiOltdLCJkIjpbXX19")]
 namespace TestProject.Conventions
 {
     internal static partial class Imports
@@ -16,16 +16,7 @@ namespace TestProject.Conventions
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
-                switch (lineNumber)
-                {
-                    case 202:
-                        yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;
-                        yield return typeof(global::Dep1.Dep1Exports).Assembly;
-                        yield return typeof(global::Sample.DependencyThree.Class3).Assembly;
-                        yield return typeof(global::Dep2Exports).Assembly;
-                        yield return typeof(global::TestConvention).Assembly;
-                        break;
-                }
+                yield break;
             }
 
             IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)

@@ -33,7 +33,7 @@ static partial class AssemblyProviderConfiguration
                                   }
                               )
                              .Where(z => z is { })
-                             .ToImmutableDictionary(z => z.ToDisplayString());
+                             .ToImmutableDictionary(z => z.MetadataName);
 
         var assemblyRequests = ImmutableList.CreateBuilder<AssemblyCollection.Item>();
         var typeRequests = ImmutableList.CreateBuilder<TypeCollection.Item>();
@@ -144,9 +144,134 @@ static partial class AssemblyProviderConfiguration
         return new(
             filter.AssemblyDescriptors.OfType<AllAssemblyDescriptor>().Any(),
             filter.AssemblyDescriptors.OfType<IncludeSystemAssembliesDescriptor>().Any(),
-            filter.AssemblyDescriptors.OfType<AssemblyDescriptor>().Select(z => z.Assembly.ToDisplayString()).OrderBy(z => z).ToImmutableArray(),
-            filter.AssemblyDescriptors.OfType<NotAssemblyDescriptor>().Select(z => z.Assembly.ToDisplayString()).OrderBy(z => z).ToImmutableArray(),
-            filter.AssemblyDescriptors.OfType<AssemblyDependenciesDescriptor>().Select(z => z.Assembly.ToDisplayString()).OrderBy(z => z).ToImmutableArray()
+            filter.AssemblyDescriptors.OfType<AssemblyDescriptor>().Select(z => z.Assembly.MetadataName).OrderBy(z => z).ToImmutableArray(),
+            filter.AssemblyDescriptors.OfType<NotAssemblyDescriptor>().Select(z => z.Assembly.MetadataName).OrderBy(z => z).ToImmutableArray(),
+            filter.AssemblyDescriptors.OfType<AssemblyDependenciesDescriptor>().Select(z => z.Assembly.MetadataName).OrderBy(z => z).ToImmutableArray()
+        );
+    }
+
+    static GetTypesFilterData LoadTypeFilterData(CompiledAssemblyFilter assemblyFilter, CompiledTypeFilter typeFilter)
+    {
+        var assemblyData = LoadAssemblyFilterData(assemblyFilter);
+        return new(
+            assemblyData.AllAssembly,
+            assemblyData.IncludeSystem,
+            assemblyData.Assembly,
+            assemblyData.NotAssembly,
+            assemblyData.AssemblyDependencies,
+            typeFilter.ClassFilter,
+            typeFilter
+               .TypeFilterDescriptors.OfType<NamespaceFilterDescriptor>()
+               .OrderBy(z => string.Join(",", z.Namespaces.OrderBy(z => z)))
+               .ThenBy(z => z.Filter)
+               .ToImmutableArray(),
+            typeFilter
+               .TypeFilterDescriptors.OfType<NameFilterDescriptor>()
+               .OrderBy(z => string.Join(",", z.Names.OrderBy(z => z)))
+               .ThenBy(z => z.Filter)
+               .ToImmutableArray(),
+            typeFilter
+               .TypeFilterDescriptors.OfType<TypeKindFilterDescriptor>()
+               .OrderBy(z => string.Join(",", z.TypeKinds.OrderBy(z => z)))
+               .ThenBy(z => z.Include)
+               .ToImmutableArray(),
+            typeFilter
+               .TypeFilterDescriptors
+               .Select(
+                    f => f switch
+                         {
+                             WithAttributeFilterDescriptor descriptor => new WithAttributeData(
+                                 true,
+                                 descriptor.Attribute.ContainingAssembly.MetadataName,
+                                 Helpers.GetFullMetadataName(descriptor.Attribute)
+                             ),
+                             WithoutAttributeFilterDescriptor descriptor => new WithAttributeData(
+                                 false,
+                                 descriptor.Attribute.ContainingAssembly.MetadataName,
+                                 Helpers.GetFullMetadataName(descriptor.Attribute)
+                             ),
+                             _ => null!
+                         }
+                )
+               .Where(z => z is { })
+               .OrderBy(z => z.Assembly)
+               .ThenBy(z => z.Attribute)
+               .ThenBy(z => z.Include)
+               .ToImmutableArray(),
+            typeFilter
+               .TypeFilterDescriptors
+               .Select(
+                    f => f switch
+                         {
+                             WithAttributeStringFilterDescriptor descriptor    => new WithAttributeStringData(true, descriptor.AttributeClassName),
+                             WithoutAttributeStringFilterDescriptor descriptor => new WithAttributeStringData(false, descriptor.AttributeClassName),
+                             _                                                 => null!
+                         }
+                )
+               .Where(z => z is { })
+               .OrderBy(z => z.Attribute)
+               .ThenBy(z => z.Include)
+               .ToImmutableArray(),
+            typeFilter
+               .TypeFilterDescriptors
+               .Select(
+                    f => f switch
+                         {
+                             AssignableToTypeFilterDescriptor descriptor => new AssignableToTypeData(
+                                 true,
+                                 descriptor.Type.ContainingAssembly.MetadataName,
+                                 Helpers.GetFullMetadataName(descriptor.Type)
+                             ),
+                             NotAssignableToTypeFilterDescriptor descriptor => new AssignableToTypeData(
+                                 false,
+                                 descriptor.Type.ContainingAssembly.MetadataName,
+                                 Helpers.GetFullMetadataName(descriptor.Type)
+                             ),
+                             _ => null!
+                         }
+                )
+               .Where(z => z is { })
+               .OrderBy(z => z.Assembly)
+               .ThenBy(z => z.Type)
+               .ThenBy(z => z.Include)
+               .ToImmutableArray(),
+            typeFilter
+               .TypeFilterDescriptors
+               .Select(
+                    f => f switch
+                         {
+                             AssignableToAnyTypeFilterDescriptor descriptor => new AssignableToAnyTypeData(
+                                 true,
+                                 descriptor
+                                    .Types.Select(z => new AnyTypeData(z.ContainingAssembly.MetadataName, Helpers.GetFullMetadataName(z)))
+                                    .OrderBy(z => z.Assembly)
+                                    .ThenBy(z => z.Type)
+                                    .ToImmutableArray()
+                             ),
+                             NotAssignableToAnyTypeFilterDescriptor descriptor => new AssignableToAnyTypeData(
+                                 false,
+                                 descriptor
+                                    .Types
+                                    .Select(z => new AnyTypeData(z.ContainingAssembly.MetadataName, Helpers.GetFullMetadataName(z)))
+                                    .OrderBy(z => z.Assembly)
+                                    .ThenBy(z => z.Type)
+                                    .ToImmutableArray()
+                             ),
+                             _ => null!
+                         }
+                )
+               .Where(z => z is { })
+               .OrderBy(
+                    z => string.Join(
+                        ",",
+                        z
+                           .Types
+                           .OrderBy(x => x.Assembly)
+                           .ThenBy(x => x.Type)
+                    )
+                )
+               .ThenBy(z => z.Include)
+               .ToImmutableArray()
         );
     }
 
@@ -181,113 +306,7 @@ static partial class AssemblyProviderConfiguration
         return new(descriptors.ToImmutable());
     }
 
-    static GetTypesFilterData LoadTypeFilterData(CompiledAssemblyFilter assemblyFilter, CompiledTypeFilter typeFilter)
-    {
-        var assemblyData = LoadAssemblyFilterData(assemblyFilter);
-        return new(
-            assemblyData.AllAssembly,
-            assemblyData.IncludeSystem,
-            assemblyData.Assembly,
-            assemblyData.NotAssembly,
-            assemblyData.AssemblyDependencies,
-            typeFilter.ClassFilter,
-            typeFilter.TypeFilterDescriptors.OfType<NamespaceFilterDescriptor>()
-                      .OrderBy(z => string.Join(",", z.Namespaces.OrderBy(z => z)))
-                      .ThenBy(z => z.Filter)
-                      .ToImmutableArray(),
-            typeFilter.TypeFilterDescriptors.OfType<NameFilterDescriptor>()
-                      .OrderBy(z => string.Join(",", z.Names.OrderBy(z => z)))
-                      .ThenBy(z => z.Filter)
-                      .ToImmutableArray(),
-            typeFilter.TypeFilterDescriptors.OfType<TypeKindFilterDescriptor>()
-                      .OrderBy(z => string.Join(",", z.TypeKinds.OrderBy(z => z)))
-                      .ToImmutableArray(),
-            typeFilter
-               .TypeFilterDescriptors
-               .Select(
-                    f => f switch
-                         {
-                             WithAttributeFilterDescriptor descriptor => new WithAttributeData(
-                                 true,
-                                 descriptor.Attribute.ContainingAssembly.Name,
-                                 Helpers.GetFullMetadataName(descriptor.Attribute)
-                             ),
-                             WithoutAttributeFilterDescriptor descriptor => new WithAttributeData(
-                                 false,
-                                 descriptor.Attribute.ContainingAssembly.Name,
-                                 Helpers.GetFullMetadataName(descriptor.Attribute)
-                             ),
-                             _ => null!
-                         }
-                )
-               .Where(z => z is { })
-               .OrderBy(z => z.Assembly).ThenBy(z => z.Attribute).ThenBy(z => z.Include)
-               .ToImmutableArray(),
-            typeFilter
-               .TypeFilterDescriptors
-               .Select(
-                    f => f switch
-                         {
-                             WithAttributeStringFilterDescriptor descriptor    => new WithAttributeStringData(true, descriptor.AttributeClassName),
-                             WithoutAttributeStringFilterDescriptor descriptor => new WithAttributeStringData(false, descriptor.AttributeClassName),
-                             _                                                 => null!
-                         }
-                )
-               .Where(z => z is { })
-               .OrderBy(z => z.Attribute).ThenBy(z => z.Include)
-               .ToImmutableArray(),
-            typeFilter
-               .TypeFilterDescriptors
-               .Select(
-                    f => f switch
-                         {
-                             AssignableToTypeFilterDescriptor descriptor => new AssignableToTypeData(
-                                 true,
-                                 descriptor.Type.ContainingAssembly.Name,
-                                 Helpers.GetFullMetadataName(descriptor.Type)
-                             ),
-                             NotAssignableToTypeFilterDescriptor descriptor => new AssignableToTypeData(
-                                 false,
-                                 descriptor.Type.ContainingAssembly.Name,
-                                 Helpers.GetFullMetadataName(descriptor.Type)
-                             ),
-                             _ => null!
-                         }
-                )
-               .Where(z => z is { })
-               .OrderBy(z => z.Assembly).ThenBy(z => z.Type).ThenBy(z => z.Include)
-               .ToImmutableArray(),
-            typeFilter
-               .TypeFilterDescriptors
-               .Select(
-                    f => f switch
-                         {
-                             AssignableToAnyTypeFilterDescriptor descriptor => new AssignableToAnyTypeData(
-                                 true,
-                                 descriptor.Types.Select(z => new AnyTypeData(z.ContainingAssembly.ToDisplayString(), Helpers.GetFullMetadataName(z)))
-                                           .OrderBy(z => z.Assembly).ThenBy(z => z.Type)
-                                           .ToImmutableArray()
-                             ),
-                             NotAssignableToAnyTypeFilterDescriptor descriptor => new AssignableToAnyTypeData(
-                                 false,
-                                 descriptor.Types
-                                           .Select(z => new AnyTypeData(z.ContainingAssembly.ToDisplayString(), Helpers.GetFullMetadataName(z)))
-                                           .OrderBy(z => z.Assembly).ThenBy(z => z.Type)
-                                           .ToImmutableArray()
-                             ),
-                             _ => null!
-                         }
-                )
-               .Where(z => z is { })
-               .OrderBy(z => string.Join(",", z.Types
-                                               .OrderBy(x => x.Assembly)
-                                               .ThenBy(x => x.Type)))
-               .ThenBy(z => z.Include)
-               .ToImmutableArray()
-        );
-    }
-
-    static CompiledTypeFilter LoadTypeFilter(Compilation compilation, GetTypesFilterData data, ImmutableDictionary<string, IAssemblySymbol> typeSymbols)
+    static CompiledTypeFilter LoadTypeFilter(Compilation compilation, GetTypesFilterData data, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols)
     {
         var descriptors = ImmutableArray.CreateBuilder<ITypeFilterDescriptor>();
         foreach (var item in data.NamespaceFilters) descriptors.Add(item);
@@ -296,7 +315,7 @@ static partial class AssemblyProviderConfiguration
 
         foreach (var item in data.WithAttributeFilters)
         {
-            if (!typeSymbols.TryGetValue(item.Assembly, out var assemblySymbol)) continue;
+            if (!assemblySymbols.TryGetValue(item.Assembly, out var assemblySymbol)) continue;
             if (FindTypeVisitor.FindType(compilation, assemblySymbol, item.Attribute) is not { } type) continue;
             descriptors.Add(item.Include ? new WithAttributeFilterDescriptor(type) : new WithoutAttributeFilterDescriptor(type));
         }
@@ -310,7 +329,7 @@ static partial class AssemblyProviderConfiguration
 
         foreach (var item in data.AssignableToTypeFilters)
         {
-            if (!typeSymbols.TryGetValue(item.Assembly, out var assemblySymbol)) continue;
+            if (!assemblySymbols.TryGetValue(item.Assembly, out var assemblySymbol)) continue;
             if (FindTypeVisitor.FindType(compilation, assemblySymbol, item.Type) is not { } type) continue;
             descriptors.Add(item.Include ? new AssignableToTypeFilterDescriptor(type) : new NotAssignableToTypeFilterDescriptor(type));
         }
@@ -320,7 +339,7 @@ static partial class AssemblyProviderConfiguration
             var filters = ImmutableHashSet.CreateBuilder<INamedTypeSymbol>(SymbolEqualityComparer.Default);
             foreach (var type in item.Types)
             {
-                if (!typeSymbols.TryGetValue(type.Assembly, out var assemblySymbol)) continue;
+                if (!assemblySymbols.TryGetValue(type.Assembly, out var assemblySymbol)) continue;
                 if (FindTypeVisitor.FindType(compilation, assemblySymbol, type.Type) is not { } t) continue;
                 filters.Add(t);
             }

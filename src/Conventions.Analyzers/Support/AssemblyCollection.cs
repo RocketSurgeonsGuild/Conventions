@@ -37,11 +37,13 @@ internal static class AssemblyCollection
         foreach (var item in request.Items)
         {
             var filterAssemblies = assemblySymbols
-               .Where(z => item.AssemblyFilter.IsMatch(compilation, z));
+               .Where(z => item.AssemblyFilter.IsMatch(compilation, z))
+                    .ToArray();
+
+            if (filterAssemblies.Length == 0) continue;
             results.Add(( item.Location, GenerateDescriptors(compilation, filterAssemblies, request.PrivateAssemblies) ));
         }
-
-        return AssembliesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
+        return results.Count == 0 ? AssembliesMethod : AssembliesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
     private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies, HashSet<IAssemblySymbol> privateAssemblies)

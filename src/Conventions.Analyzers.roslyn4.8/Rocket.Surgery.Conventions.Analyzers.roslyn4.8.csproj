@@ -20,5 +20,14 @@
     </ItemGroup>
     <ItemGroup>        
         <Compile Include="..\Conventions.Analyzers\**\*.cs" Exclude="..\Conventions.Analyzers\obj\**\*.cs" />
+        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\TypeSymbolVisitorBase.cs">
+          <Link>Support\AssemblyProviders\TypeSymbolVisitorBase.cs</Link>
+        </Compile>        
+        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\FindTypeInAssembly.cs">
+          <Link>Support\AssemblyProviders\FindTypeInAssembly.cs</Link>
+        </Compile>        
+        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\FindTypeVisitor.cs">
+          <Link>Support\AssemblyProviders\FindTypeVisitor.cs</Link>
+        </Compile>
     </ItemGroup>
 </Project>

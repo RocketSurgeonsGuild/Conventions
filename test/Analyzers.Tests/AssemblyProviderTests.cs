@@ -140,6 +140,8 @@ public class TestConvention2 : IServiceAsyncConvention {
                                }
                                """"
                            )
+                          .IgnoreOutputFile("Imported_Assembly_Conventions.cs")
+                          .IgnoreOutputFile("Exported_Conventions.cs")
                           .Build()
                           .GenerateAsync();
 
@@ -188,7 +190,10 @@ public class TestConvention2 : IServiceAsyncConvention {
         var result = await Builder
                           .AddCompilationReferences(other)
                           .AddReferences(other.FinalCompilation.References.ToArray())
+                          .IgnoreOutputFile("Imported_Assembly_Conventions.cs")
+                          .IgnoreOutputFile("Exported_Conventions.cs")
                           .Build()
+
                           .GenerateAsync();
 
         await Verify(result).UseHashedParameters(getTypesItem.Name);

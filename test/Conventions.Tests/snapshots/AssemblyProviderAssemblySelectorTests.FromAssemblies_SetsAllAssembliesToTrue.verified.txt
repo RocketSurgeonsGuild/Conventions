@@ -1,3 +1,4 @@
 ﻿{
-  AllAssemblies: true
+  AllAssemblies: true,
+  SystemAssemblies: false
 }

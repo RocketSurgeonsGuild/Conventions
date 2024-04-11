@@ -32,11 +32,12 @@ internal static class TypeCollection
         foreach (var item in request.Items)
         {
             var reducedTypes = TypeSymbolVisitor.GetTypes(compilation, item.AssemblyFilter, item.TypeFilter);
+            if (reducedTypes.Length == 0) continue;
             var localBlock = GenerateDescriptors(compilation, reducedTypes, request.PrivateAssemblies);
             results.Add(( item.Location, localBlock ));
         }
 
-        return TypesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
+        return results.Count == 0 ? TypesMethod : TypesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
     private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<INamedTypeSymbol> types, HashSet<IAssemblySymbol> privateAssemblies)

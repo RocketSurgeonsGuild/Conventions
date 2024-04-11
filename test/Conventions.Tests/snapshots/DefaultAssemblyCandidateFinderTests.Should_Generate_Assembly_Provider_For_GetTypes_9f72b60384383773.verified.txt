@@ -1,4 +1,6 @@
 ﻿[
+  AbstractConventionContextBuilderExtensions,
+  AbstractConventionContextBuilderExtensions.<>c__DisplayClass0_0<TBuilder>.<<WithConventionsFrom>b__0>d,
   AfterConventionAttribute,
   AfterConventionAttribute<T>,
   BeforeConventionAttribute,
@@ -10,8 +12,6 @@
   ConventionAttribute,
   ConventionAttribute<T>,
   ConventionContextBuilder,
-  ConventionContextBuilderExtensions,
-  ConventionContextBuilderExtensions.<>c__DisplayClass0_0<TBuilder>.<<WithConventionsFrom>b__0>d,
   ConventionContextExtensions,
   ConventionDependency,
   ConventionHostBuilderExtensions,

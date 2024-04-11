@@ -13,8 +13,10 @@ public class GetTypesTestsData
     {
         // ReSharper disable RedundantNameQualifier
 
+
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.StartsWith("IService")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.StartsWith("S").EndsWith("Convention")));
+        yield return TestMethod(z => z.FromAssemblyDependenciesOf<IConvention>().GetTypes(x => x.StartsWith("T").EndsWith("Convention")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.EndsWith("Convention")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.Contains("Convention")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.Contains("Convention").KindOf(TypeKindFilter.Class)));
@@ -37,8 +39,7 @@ public class GetTypesTestsData
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().FromAssemblyOf<ConventionContext>().GetTypes(x => x.WithAttribute(typeof(System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute).FullName)));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().FromAssemblyOf<ConventionContext>().GetTypes(x => x.WithoutAttribute(typeof(System.ComponentModel.EditorBrowsableAttribute)).NotAssignableTo(typeof(Attribute)).NotInNamespaces("JetBrains.Annotations")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().FromAssemblyOf<ConventionContext>().GetTypes(x => x.WithoutAttribute<System.ComponentModel.EditorBrowsableAttribute>().NotAssignableTo<Attribute>().NotInNamespaces("JetBrains.Annotations")));
-//        yield return TestMethod(z => z.FromAssemblyOf<IConvention>().FromAssemblyOf<ConventionContext>().GetTypes(x => x.WithoutAttribute("JetBrains.Annotations.PublicAPIAttribute").NotAssignableTo(typeof(Attribute)).NotInNamespaces("JetBrains.Annotations")));
-        yield return TestMethod(z => z.FromAssemblyOf<IConvention>().FromAssemblyOf<ConventionContext>().GetTypes(x => x.WithoutAttribute(typeof(JetBrains.Annotations.PublicAPIAttribute).FullName).NotAssignableTo<Attribute>().NotInNamespaces("JetBrains.Annotations")));
+//        yield return TestMethod(z => z.FromAssemblyOf<IConvention>().FromAssemblyOf<ConventionContext>().GetTypes(x => x.WithoutAttribute(typeof(JetBrains.Annotations.PublicAPIAttribute).FullName).NotAssignableTo<Attribute>().NotInNamespaces("JetBrains.Annotations")));
         yield return TestMethod(z => z.FromAssemblies().GetTypes(x => x.InNamespaceOf(typeof(global::Microsoft.Extensions.Configuration.ConfigurationExtensions))));
         yield return TestMethod(z => z.FromAssemblies().GetTypes(x => x.InNamespaceOf<global::Microsoft.Extensions.Configuration.IConfiguration>()));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.NotInNamespaceOf(typeof(IServiceConvention)).NotInNamespaces("JetBrains.Annotations")));
