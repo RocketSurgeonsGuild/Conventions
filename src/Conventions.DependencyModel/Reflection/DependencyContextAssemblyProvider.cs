@@ -19,6 +19,15 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     private readonly ILogger _logger;
     private readonly Lazy<ImmutableArray<Assembly>> _assembles;
 
+    private readonly HashSet<string> _coreAssemblies =
+    [
+        "mscorlib",
+        "netstandard",
+        "System",
+        "System.Core",
+        "System.Runtime"
+    ];
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="DependencyContextAssemblyProvider" /> class.
     /// </summary>
@@ -73,11 +82,17 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     {
         var selector = new AssemblyProviderAssemblySelector();
         action(selector);
-        return selector.AllAssemblies
+        var assemblies = selector.AllAssemblies
             ? _assembles.Value
             : selector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(selector.AssemblyDependencies)
                 : selector.Assemblies;
+        if (!selector.SystemAssemblies)
+        {
+            assemblies = assemblies.Where(z => !_coreAssemblies.Contains(z.GetName().Name ?? ""));
+        }
+
+        return assemblies;
     }
 
     /// <summary>

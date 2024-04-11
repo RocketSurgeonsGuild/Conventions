@@ -1,7 +1,8 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Compiled_AssemblyProvider.cs
 using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
@@ -10,7 +11,7 @@ namespace TestProject.Conventions
 {
     internal static partial class Imports
     {
-        private class AssemblyProvider : IAssemblyProvider
+        private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
@@ -21,7 +22,7 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 9:
+                    case 14:
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute<>);
                         yield return typeof(global::Rocket.Surgery.Conventions.BeforeConventionAttribute);
@@ -64,6 +65,9 @@ namespace TestProject.Conventions
                         break;
                 }
             }
+
+            private static AssemblyName _RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull;
+            private static AssemblyName RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull => _RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull ??= new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null");
         }
     }
 }

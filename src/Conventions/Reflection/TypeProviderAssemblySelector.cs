@@ -11,6 +11,7 @@ record TypeProviderAssemblySelector : ITypeSelector
 
     public ITypeSelector FromAssembly() => this;
     public ITypeSelector FromAssemblies() => this;
+    public ITypeSelector IncludeSystemAssemblies() => this;
     public ITypeSelector FromAssemblyOf<T>() => this;
     public ITypeSelector FromAssemblyOf(Type type) => this;
     public ITypeSelector NotFromAssemblyOf<T>() => this;

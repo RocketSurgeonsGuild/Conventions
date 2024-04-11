@@ -16,6 +16,15 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
     private readonly ILogger _logger;
     private readonly Lazy<ImmutableArray<Assembly>> _assembles;
 
+    private readonly HashSet<string> _coreAssemblies =
+    [
+        "mscorlib",
+        "netstandard",
+        "System",
+        "System.Core",
+        "System.Runtime"
+    ];
+
     private readonly Action<ILogger, string, string, Exception?> _logFoundAssembly = LoggerMessage.Define<string, string>(
         LogLevel.Debug,
         new EventId(1337),
@@ -54,11 +63,17 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
     {
         var selector = new AssemblyProviderAssemblySelector();
         action(selector);
-        return selector.AllAssemblies
+        var assemblies = selector.AllAssemblies
             ? _assembles.Value
             : selector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(selector.AssemblyDependencies)
                 : selector.Assemblies;
+        if (!selector.SystemAssemblies)
+        {
+            assemblies = assemblies.Where(z => !_coreAssemblies.Contains(z.GetName().Name ?? ""));
+        }
+
+        return assemblies;
     }
 
     /// <summary>

@@ -40,3 +40,12 @@ internal readonly record struct AssemblyDependenciesDescriptor(IAssemblySymbol A
         return "CompiledAssemblyDependencies of " + Assembly.Name;
     }
 }
+
+[DebuggerDisplay("{ToString()}")]
+internal readonly record struct IncludeSystemAssembliesDescriptor : IAssemblyDescriptor
+{
+    public override string ToString()
+    {
+        return "IncludeSystemAssemblies";
+    }
+}

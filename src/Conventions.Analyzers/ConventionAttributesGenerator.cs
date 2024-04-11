@@ -144,13 +144,31 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 if (getAssemblies.Length == 0 && getTypes.Length == 0) return;
                 var configurationData = results.Left.Right;
                 var compilation = results.Right;
+                var privateAssemblies = new HashSet<IAssemblySymbol>(SymbolEqualityComparer.Default);
 
-                var getAssembliesMethod = GetAssemblyDetails(context, compilation, getAssemblies);
-                var getTypesMethod = GetTypeDetails(context, compilation, getTypes);
+                var getAssembliesMethod = GetAssemblyDetails(context, compilation, privateAssemblies, getAssemblies);
+                var getTypesMethod = GetTypeDetails(context, compilation, privateAssemblies, getTypes);
+
                 var assemblyProvider = ClassDeclaration("AssemblyProvider")
                                       .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
+                                      .WithParameterList(
+                                           ParameterList(
+                                               SingletonSeparatedList(Parameter(Identifier("context")).WithType(IdentifierName("AssemblyLoadContext")))
+                                           )
+                                       )
                                       .WithBaseList(BaseList(SingletonSeparatedList<BaseTypeSyntax>(SimpleBaseType(IdentifierName("IAssemblyProvider")))))
                                       .AddMembers(getAssembliesMethod, getTypesMethod);
+
+                if (privateAssemblies.Any())
+                {
+                    var privateAssemblyNodes = privateAssemblies
+                                              .OrderBy(z => z.ToDisplayString())
+                                              .SelectMany(StatementGeneration.AssemblyDeclaration)
+                                              .ToArray();
+
+                    assemblyProvider = assemblyProvider.AddMembers(privateAssemblyNodes);
+                }
+
                 var members =
                     ClassDeclaration(configurationData.ClassName)
                        .WithModifiers(
@@ -164,15 +182,15 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 var cu = CompilationUnit()
                    .WithUsings(
                         List(
-                            new[]
-                            {
+                            [
                                 UsingDirective(ParseName("System")),
-                                UsingDirective(ParseName("System.Reflection")),
                                 UsingDirective(ParseName("System.Collections.Generic")),
+                                UsingDirective(ParseName("System.Reflection")),
+                                UsingDirective(ParseName("System.Runtime.Loader")),
                                 UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
                                 UsingDirective(ParseName("Rocket.Surgery.Conventions")),
                                 UsingDirective(ParseName("Rocket.Surgery.Conventions.Reflection")),
-                            }
+                            ]
                         )
                     );
                 if (configurationData is { Assembly: true, })
@@ -196,6 +214,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     private static MemberDeclarationSyntax GetAssemblyDetails(
         SourceProductionContext context,
         Compilation compilation,
+        HashSet<IAssemblySymbol> assemblySymbols,
         ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
     )
     {
@@ -237,12 +256,13 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             items.Add(i);
         }
 
-        return AssemblyCollection.Execute(new(compilation, items.ToImmutableArray()));
+        return AssemblyCollection.Execute(new(compilation, items.ToImmutableArray(), assemblySymbols));
     }
 
     private static MemberDeclarationSyntax GetTypeDetails(
         SourceProductionContext context,
         Compilation compilation,
+        HashSet<IAssemblySymbol> assemblySymbols,
         ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
     )
     {
@@ -285,7 +305,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             items.Add(i);
         }
 
-        return TypeCollection.Execute(new(compilation, items.ToImmutableArray()));
+        return TypeCollection.Execute(new(compilation, items.ToImmutableArray(), assemblySymbols));
     }
 
     private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorAttributeSyntaxContext context)

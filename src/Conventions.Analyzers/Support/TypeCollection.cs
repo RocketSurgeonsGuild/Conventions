@@ -11,7 +11,7 @@ internal record SourceLocation(int LineNumber, string FilePath, string MemberNam
 
 internal static class TypeCollection
 {
-    public record Request(Compilation Compilation, ImmutableArray<Item> Items);
+    public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);
 
     public record Item(SourceLocation Location, CompiledAssemblyFilter AssemblyFilter, CompiledTypeFilter TypeFilter);
 
@@ -20,12 +20,11 @@ internal static class TypeCollection
         if (!request.Items.Any()) return TypesMethod;
         var compilation = request.Compilation;
 
-        var privateAssemblies = new HashSet<IAssemblySymbol>(SymbolEqualityComparer.Default);
         var results = new List<(SourceLocation location, BlockSyntax block)>();
         foreach (var item in request.Items)
         {
             var reducedTypes = TypeSymbolVisitor.GetTypes(compilation, item.AssemblyFilter, item.TypeFilter);
-            var localBlock = GenerateDescriptors(compilation, reducedTypes, privateAssemblies);
+            var localBlock = GenerateDescriptors(compilation, reducedTypes, request.PrivateAssemblies);
             results.Add(( item.Location, localBlock ));
         }
 

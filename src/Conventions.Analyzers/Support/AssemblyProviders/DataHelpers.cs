@@ -114,6 +114,8 @@ internal static class DataHelpers
             return new AssemblyDescriptor(semanticModel.Compilation.Assembly);
         if (name.ToFullString() == "FromAssemblies")
             return new AllAssemblyDescriptor();
+        if (name.ToFullString() == "IncludeSystemAssemblies")
+            return new IncludeSystemAssembliesDescriptor();
 
         var typeSyntax = ExtractSyntaxFromMethod(expression, name);
         if (typeSyntax == null)
@@ -130,7 +132,7 @@ internal static class DataHelpers
                        name.Identifier.Text.StartsWith("Not")
                            ? new NotAssemblyDescriptor(namedType.ContainingAssembly)
                            : new AssemblyDescriptor(namedType.ContainingAssembly),
-                   _ => null
+                   _ => null,
                };
     }
 
@@ -246,7 +248,7 @@ internal static class DataHelpers
             foreach (var argument in expression.ArgumentList.Arguments)
             {
                 if (argument.Expression is not TypeOfExpressionSyntax typeOfExpressionSyntax
-                 || ModelExtensions.GetTypeInfo(semanticModel, typeOfExpressionSyntax.Type).Type is not {  } type)
+                 || ModelExtensions.GetTypeInfo(semanticModel, typeOfExpressionSyntax.Type).Type is not { } type)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAnExpression, argument.GetLocation()));
                     continue;
@@ -366,8 +368,8 @@ internal static class DataHelpers
         NameSyntax name
     ) => ExtractSyntaxFromMethod(expression, name) is not { } type
      || ModelExtensions.GetTypeInfo(semanticModel, type).Type is not INamedTypeSymbol { Kind: not SymbolKind.ErrorType } nts
-        ? null
-        : nts;
+            ? null
+            : nts;
 
     public static TypeSyntax? ExtractSyntaxFromMethod(
         ExpressionSyntax expression,

@@ -9,7 +9,7 @@ namespace Rocket.Surgery.Conventions.Support;
 
 internal static class AssemblyCollection
 {
-    public record Request(Compilation Compilation, ImmutableArray<Item> Items);
+    public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);
 
     public record Item(SourceLocation Location, CompiledAssemblyFilter AssemblyFilter);
 
@@ -38,18 +38,24 @@ internal static class AssemblyCollection
         {
             var filterAssemblies = assemblySymbols
                .Where(z => item.AssemblyFilter.IsMatch(compilation, z));
-            results.Add(( item.Location, GenerateDescriptors(compilation, filterAssemblies) ));
+            results.Add(( item.Location, GenerateDescriptors(compilation, filterAssemblies, request.PrivateAssemblies) ));
         }
 
         return AssembliesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
-    private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies)
+    private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies, HashSet<IAssemblySymbol> privateAssemblies)
     {
         var block = Block();
         foreach (var assembly in assemblies.OrderBy(z => z.ToDisplayString()))
         {
-            if (StatementGeneration.GetAssemblyExpression(compilation, assembly) is not { } assemblyExpression) continue;
+            // TODO: Make this always use the load context?
+            if (StatementGeneration.GetAssemblyExpression(compilation, assembly) is not { } assemblyExpression)
+            {
+                privateAssemblies.Add(assembly);
+                block = block.AddStatements(YieldStatement(SyntaxKind.YieldReturnStatement, StatementGeneration.GetPrivateAssembly(assembly)));
+                continue;
+            }
             block = block.AddStatements(YieldStatement(SyntaxKind.YieldReturnStatement, assemblyExpression));
         }
 

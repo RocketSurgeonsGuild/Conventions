@@ -9,6 +9,35 @@ namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 
 internal static class StatementGeneration
 {
+    public static IEnumerable<MemberDeclarationSyntax> AssemblyDeclaration(IAssemblySymbol symbol)
+    {
+        var name = AssemblyVariableName(symbol);
+        var assemblyName = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(symbol.Identity.GetDisplayName(true)));
+
+        yield return FieldDeclaration(
+                VariableDeclaration(IdentifierName("AssemblyName"))
+                   .WithVariables(
+                        SingletonSeparatedList(
+                            VariableDeclarator(Identifier($"_{name}"))
+                        )
+                    )
+            )
+           .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)));
+        yield return PropertyDeclaration(IdentifierName("AssemblyName"), Identifier(name))
+                    .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)))
+                    .WithExpressionBody(
+                         ArrowExpressionClause(
+                             AssignmentExpression(
+                                 SyntaxKind.CoalesceAssignmentExpression,
+                                 IdentifierName(Identifier($"_{name}")),
+                                 ObjectCreationExpression(IdentifierName("AssemblyName"))
+                                    .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(assemblyName))))
+                             )
+                         )
+                     )
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+    }
+
     public static ExpressionSyntax? GetAssemblyExpression(Compilation compilation, IAssemblySymbol assembly)
     {
         return FindTypeVisitor.FindType(compilation, assembly) is { } keyholdType
@@ -98,56 +127,29 @@ internal static class StatementGeneration
         return GetTypeOfExpression(compilation, type);
     }
 
+    public static InvocationExpressionSyntax GetPrivateAssembly(IAssemblySymbol type)
+    {
+        return InvocationExpression(
+                MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("context"), IdentifierName("LoadFromAssemblyName"))
+            )
+           .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName(AssemblyVariableName(type))))));
+    }
+
     private static InvocationExpressionSyntax GetPrivateType(Compilation compilation, INamedTypeSymbol type)
     {
         var expression = InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    InvocationExpression(
-                            MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName("context"),
-                                IdentifierName("LoadFromAssemblyName")
-                            )
-                        )
-                       .WithArgumentList(
-                            ArgumentList(
-                                SingletonSeparatedList(
-                                    Argument(IdentifierName(AssemblyVariableName(type.ContainingAssembly)))
-                                )
-                            )
-                        ),
-                    IdentifierName("GetType")
-                )
+                MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, GetPrivateAssembly(type.ContainingAssembly), IdentifierName("GetType"))
             )
            .WithArgumentList(
                 ArgumentList(
-                    SingletonSeparatedList(
-                        Argument(
-                            LiteralExpression(
-                                SyntaxKind.StringLiteralExpression,
-                                Literal(Helpers.GetFullMetadataName(type))
-                            )
-                        )
-                    )
+                    SingletonSeparatedList(Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(Helpers.GetFullMetadataName(type)))))
                 )
             );
         if (type.IsGenericType && !type.IsOpenGenericType())
         {
-            return InvocationExpression(
-                    MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        expression,
-                        IdentifierName("MakeGenericType")
-                    )
-                )
+            return InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expression, IdentifierName("MakeGenericType")))
                .WithArgumentList(
-                    ArgumentList(
-                        SeparatedList(
-                            type.TypeArguments
-                                .Select(t => Argument(GetTypeOfExpression(compilation, ( t as INamedTypeSymbol )!, null)))
-                        )
-                    )
+                    ArgumentList(SeparatedList(type.TypeArguments.Select(t => Argument(GetTypeOfExpression(compilation, ( t as INamedTypeSymbol )!, null)))))
                 );
         }
 

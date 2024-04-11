@@ -17,6 +17,15 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
     private readonly ILogger _logger;
     private readonly ImmutableArray<Assembly> _assembles;
 
+    private readonly HashSet<string> _coreAssemblies =
+    [
+        "mscorlib",
+        "netstandard",
+        "System",
+        "System.Core",
+        "System.Runtime"
+    ];
+
     [LoggerMessage("[{AssemblyProvider}] Found assembly {AssemblyName}", EventId = 1337, Level = LogLevel.Debug)]
     private static partial void LogFoundAssembly(ILogger logger, string assemblyProvider, string? assemblyName);
 
@@ -60,11 +69,17 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
     {
         var selector = new AssemblyProviderAssemblySelector();
         action(selector);
-        return selector.AllAssemblies
+        var assemblies = selector.AllAssemblies
             ? _assembles
             : selector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(selector.AssemblyDependencies)
                 : selector.Assemblies;
+        if (!selector.SystemAssemblies)
+        {
+            assemblies = assemblies.Where(z => !_coreAssemblies.Contains(z.GetName().Name ?? ""));
+        }
+
+        return assemblies;
     }
 
     /// <summary>

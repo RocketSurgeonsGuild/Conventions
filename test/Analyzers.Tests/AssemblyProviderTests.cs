@@ -1,4 +1,5 @@
 using System.Runtime.Loader;
+using Microsoft.CodeAnalysis;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -119,21 +120,65 @@ public class TestConvention2 : IServiceAsyncConvention {
         var result = await WithSharedDeps()
                           .AddSources(
                                $$$""""
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Configuration;
-using Rocket.Surgery.Conventions.DependencyInjection;
-using System;
+                               using Rocket.Surgery.Conventions;
+                               using Rocket.Surgery.Conventions.Configuration;
+                               using Rocket.Surgery.Conventions.DependencyInjection;
+                               using Rocket.Surgery.Conventions.Reflection;
+                               using Microsoft.Extensions.Configuration;
+                               using Microsoft.Extensions.DependencyInjection;
+                               using System.Threading;
+                               using System.Threading.Tasks;
+                               using System;
 
-public class TestConvention : IServiceAsyncConvention
-{
-    public ValueTask Register(IConventionContext context, IServiceCollection services, CancellationToken cancellationToken)
-    {
-        var assemblies = context.AssemblyProvider.GetTypes({{{ getTypesItem.Expression }}});
-        return Task.CompletedTask;
-    }
-}
-""""
+                               public class TestConvention : IServiceAsyncConvention
+                               {
+                                   public ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
+                                   {
+                                       var assemblies = context.AssemblyProvider.GetTypes({{{getTypesItem.Expression}}});
+                                       return ValueTask.CompletedTask;
+                                   }
+                               }
+                               """"
                            )
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseHashedParameters(getTypesItem.Name);
+    }
+
+
+    [Theory]
+    [MemberData(nameof(GetTypesTestsData.GetTypesData), MemberType = typeof(GetTypesTestsData))]
+    public async Task Should_Generate_Assembly_Provider_For_GetTypes_From_Another_Assembly(GetTypesTestsData.GetTypesItem getTypesItem)
+    {
+        var other = await WithSharedDeps()
+                         .AddSources(
+                              $$$""""
+                              using Rocket.Surgery.Conventions;
+                              using Rocket.Surgery.Conventions.Configuration;
+                              using Rocket.Surgery.Conventions.DependencyInjection;
+                              using Rocket.Surgery.Conventions.Reflection;
+                              using Microsoft.Extensions.Configuration;
+                              using Microsoft.Extensions.DependencyInjection;
+                              using System.Threading;
+                              using System.Threading.Tasks;
+                              using System;
+
+                              public class TestConvention : IServiceAsyncConvention
+                              {
+                                  public ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
+                                  {
+                                      var assemblies = context.AssemblyProvider.GetTypes({{{getTypesItem.Expression}}});
+                                      return ValueTask.CompletedTask;
+                                  }
+                              }
+                              """"
+                          )
+                         .Build()
+                         .GenerateAsync();
+
+        var result = await Builder
+                          .AddCompilationReferences(other)
                           .Build()
                           .GenerateAsync();
 
@@ -145,13 +190,13 @@ public class TestConvention : IServiceAsyncConvention
         await base.InitializeAsync();
         Configure(
             z => z
-                .AddSources(
-                     @"
+               .AddSources(
+                    @"
 using Rocket.Surgery.Conventions;
 
 [assembly: ImportConventions]
 "
-                 )
+                )
         );
     }
 }

@@ -47,4 +47,10 @@ public interface ITypeProviderAssemblySelector
     ///     Will not scan for types from the assembly of type.
     /// </summary>
     ITypeSelector NotFromAssemblyOf(Type type);
+
+    /// <summary>
+    /// Include system assemblies
+    /// </summary>
+    /// <returns></returns>
+    ITypeSelector IncludeSystemAssemblies();
 }

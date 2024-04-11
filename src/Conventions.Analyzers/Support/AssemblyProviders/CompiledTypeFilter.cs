@@ -16,9 +16,19 @@ class AlwaysMatchTypeFilter<TSymbol> : ICompiledTypeFilter<TSymbol>
 class CompiledAssemblyFilter
     (ImmutableArray<IAssemblyDescriptor> assemblyDescriptors) : ICompiledTypeFilter<IAssemblySymbol>
 {
+    private static readonly HashSet<string> _coreAssemblies =
+    [
+        "mscorlib",
+        "netstandard",
+        "System",
+        "System.Core",
+        "System.Runtime"
+    ];
+
     public bool IsMatch(Compilation compilation, IAssemblySymbol targetType)
     {
         if (assemblyDescriptors.OfType<AllAssemblyDescriptor>().Any()) return true;
+        if (_coreAssemblies.Contains(targetType.Name) && !assemblyDescriptors.OfType<IncludeSystemAssembliesDescriptor>().Any()) return false;
 
         return assemblyDescriptors
            .Any(
