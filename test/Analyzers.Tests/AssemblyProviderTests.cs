@@ -177,6 +177,13 @@ public class TestConvention2 : IServiceAsyncConvention {
                          .Build()
                          .GenerateAsync();
 
+        var diags = other.FinalDiagnostics.Where(x => x.Severity >= DiagnosticSeverity.Error).ToArray();
+        if (diags.Length > 0)
+        {
+            await Verify(diags).UseHashedParameters(getTypesItem.Name);
+        }
+        other.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
+
         var result = await Builder
                           .AddCompilationReferences(other)
                           .Build()

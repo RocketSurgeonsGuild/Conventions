@@ -40,7 +40,7 @@ internal static class StatementGeneration
 
     public static ExpressionSyntax? GetAssemblyExpression(Compilation compilation, IAssemblySymbol assembly)
     {
-        return FindTypeVisitor.FindType(compilation, assembly) is { } keyholdType
+        return FindTypeInAssembly.FindType(compilation, assembly) is { } keyholdType
             ? MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 GetTypeOfExpression(compilation, keyholdType),

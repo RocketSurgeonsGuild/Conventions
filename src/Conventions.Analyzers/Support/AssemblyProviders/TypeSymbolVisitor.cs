@@ -45,7 +45,7 @@ internal abstract class TypeSymbolVisitorBase
     protected abstract bool FoundNamedType(INamedTypeSymbol symbol);
 }
 
-internal class FindTypeVisitor(Compilation compilation, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter) : TypeSymbolVisitorBase(
+internal class FindTypeInAssembly(Compilation compilation, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter) : TypeSymbolVisitorBase(
     compilation,
     assemblyFilter,
     new CompiledTypeFilter(ClassFilter.PublicOnly, ImmutableArray<ITypeFilterDescriptor>.Empty)
@@ -55,7 +55,7 @@ internal class FindTypeVisitor(Compilation compilation, ICompiledTypeFilter<IAss
 
     public static INamedTypeSymbol? FindType(Compilation compilation, IAssemblySymbol assemblySymbol)
     {
-        var visitor = new FindTypeVisitor(
+        var visitor = new FindTypeInAssembly(
             compilation,
             new CompiledAssemblyFilter(ImmutableArray.Create<IAssemblyDescriptor>(new AssemblyDescriptor(assemblySymbol)))
         );
@@ -67,6 +67,33 @@ internal class FindTypeVisitor(Compilation compilation, ICompiledTypeFilter<IAss
     {
         _type = symbol;
         return true;
+    }
+}
+
+internal class FindTypeVisitor(Compilation compilation, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter, string typeName) : TypeSymbolVisitorBase(
+    compilation,
+    assemblyFilter,
+    new CompiledTypeFilter(ClassFilter.PublicOnly, ImmutableArray<ITypeFilterDescriptor>.Empty)
+)
+{
+    private INamedTypeSymbol? _type;
+
+    public static INamedTypeSymbol? FindType(Compilation compilation, IAssemblySymbol assemblySymbol, string typeName)
+    {
+        var visitor = new FindTypeVisitor(
+            compilation,
+            new CompiledAssemblyFilter(ImmutableArray.Create<IAssemblyDescriptor>(new AssemblyDescriptor(assemblySymbol))),
+            typeName
+        );
+        visitor.Visit(assemblySymbol);
+        return visitor._type;
+    }
+
+    protected override bool FoundNamedType(INamedTypeSymbol symbol)
+    {
+        if (typeName != symbol.ToDisplayString()) return true;
+        _type = symbol;
+        return false;
     }
 }
 

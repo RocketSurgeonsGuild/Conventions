@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,7 +8,14 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Rocket.Surgery.Conventions.Support;
 
-internal record SourceLocation(int LineNumber, string FilePath, string MemberName);
+internal record SourceLocation
+(
+    [property: JsonPropertyName("l")]
+    int LineNumber,
+    [property: JsonPropertyName("f")]
+    string FilePath,
+    [property: JsonPropertyName("m")]
+    string MemberName);
 
 internal static class TypeCollection
 {

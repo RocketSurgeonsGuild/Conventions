@@ -13,8 +13,8 @@ class AlwaysMatchTypeFilter<TSymbol> : ICompiledTypeFilter<TSymbol>
     public bool IsMatch(Compilation compilation, TSymbol targetType) => true;
 }
 
-class CompiledAssemblyFilter
-    (ImmutableArray<IAssemblyDescriptor> assemblyDescriptors) : ICompiledTypeFilter<IAssemblySymbol>
+record CompiledAssemblyFilter
+    (ImmutableArray<IAssemblyDescriptor> AssemblyDescriptors) : ICompiledTypeFilter<IAssemblySymbol>
 {
     private static readonly HashSet<string> _coreAssemblies =
     [
@@ -27,10 +27,10 @@ class CompiledAssemblyFilter
 
     public bool IsMatch(Compilation compilation, IAssemblySymbol targetType)
     {
-        if (assemblyDescriptors.OfType<AllAssemblyDescriptor>().Any()) return true;
-        if (_coreAssemblies.Contains(targetType.Name) && !assemblyDescriptors.OfType<IncludeSystemAssembliesDescriptor>().Any()) return false;
+        if (AssemblyDescriptors.OfType<AllAssemblyDescriptor>().Any()) return true;
+        if (_coreAssemblies.Contains(targetType.Name) && !AssemblyDescriptors.OfType<IncludeSystemAssembliesDescriptor>().Any()) return false;
 
-        return assemblyDescriptors
+        return AssemblyDescriptors
            .Any(
                 filter => filter switch
                           {
@@ -49,19 +49,19 @@ class CompiledAssemblyFilter
     }
 }
 
-class CompiledTypeFilter
-    (ClassFilter classFilter, ImmutableArray<ITypeFilterDescriptor> typeFilterDescriptors) : ICompiledTypeFilter<INamedTypeSymbol>
+record CompiledTypeFilter
+    (ClassFilter ClassFilter, ImmutableArray<ITypeFilterDescriptor> TypeFilterDescriptors) : ICompiledTypeFilter<INamedTypeSymbol>
 {
-    public bool Aborted { get; } = typeFilterDescriptors.OfType<CompiledAbortTypeFilterDescriptor>().Any();
+    public bool Aborted { get; } = TypeFilterDescriptors.OfType<CompiledAbortTypeFilterDescriptor>().Any();
 
     public bool IsMatch(Compilation compilation, INamedTypeSymbol targetType)
     {
-        if (Aborted || ( classFilter == ClassFilter.PublicOnly && targetType.DeclaredAccessibility != Accessibility.Public ))
+        if (Aborted || ( ClassFilter == ClassFilter.PublicOnly && targetType.DeclaredAccessibility != Accessibility.Public ))
             return false;
 
-        if (typeFilterDescriptors.Length == 0) return true;
+        if (TypeFilterDescriptors.Length == 0) return true;
 
-        return typeFilterDescriptors.All(GetFilterDescriptor);
+        return TypeFilterDescriptors.All(GetFilterDescriptor);
 
         bool GetFilterDescriptor(ITypeFilterDescriptor filterDescriptor) =>
             filterDescriptor switch
