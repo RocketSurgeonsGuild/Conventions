@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucywgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiXSwibmEiOltdLCJkIjpbXX0sInQiOnsiZiI6MSwibnNmIjpbeyJmIjozLCJuIjpbIkpldEJyYWlucy5Bbm5vdGF0aW9ucyJdfV0sIm5mIjpbXSwiayI6W10sInciOlt7ImkiOmZhbHNlLCJhIjoiU3lzdGVtLlByaXZhdGUuQ29yZUxpYiIsImIiOiJTeXN0ZW0uQ29tcG9uZW50TW9kZWwuRWRpdG9yQnJvd3NhYmxlQXR0cmlidXRlIn1dLCJzIjpbXSwiYXQiOlt7ImkiOmZhbHNlLCJhIjoiU3lzdGVtLlByaXZhdGUuQ29yZUxpYiIsInQiOiJTeXN0ZW0uQXR0cmlidXRlIn1dLCJ0YSI6W10sImEiOmZhbHNlLCJpIjpmYWxzZSwibSI6WyJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucywgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiLCJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMsIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsIl0sIm5hIjpbXSwiZCI6W119fQ==")]
 namespace TestProject.Conventions
 {
     internal static partial class Imports
@@ -15,7 +16,16 @@ namespace TestProject.Conventions
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
-                yield break;
+                switch (lineNumber)
+                {
+                    case 202:
+                        yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;
+                        yield return typeof(global::Dep1.Dep1Exports).Assembly;
+                        yield return typeof(global::Sample.DependencyThree.Class3).Assembly;
+                        yield return typeof(global::Dep2Exports).Assembly;
+                        yield return typeof(global::TestConvention).Assembly;
+                        break;
+                }
             }
 
             IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
@@ -29,6 +39,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Microsoft.Extensions.DependencyInjection.RocketSurgeryServiceCollectionExtensions);
                         yield return typeof(global::Microsoft.Extensions.Logging.RocketSurgeryLoggingExtensions);
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("RegexPolyfill");
+                        yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions);
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.AssemblyProviderFactory");
@@ -42,7 +53,6 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContext);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilder);
-                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilderExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilderExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextExtensions);
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.ConventionContextHelpers");

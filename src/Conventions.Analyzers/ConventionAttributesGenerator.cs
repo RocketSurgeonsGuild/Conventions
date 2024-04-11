@@ -141,14 +141,19 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             static (context, results) =>
             {
                 var (getAssemblies, getTypes) = results.Left.Left;
-                if (getAssemblies.Length == 0 && getTypes.Length == 0) return;
-                var configurationData = results.Left.Right;
                 var compilation = results.Right;
+                var (discoveredAssemblyRequests, discoveredTypeRequests) = AssemblyProviderConfiguration.FromAssemblyAttributes(compilation);
+
+                if (getAssemblies.Length == 0
+                 && getTypes.Length == 0
+                 && discoveredAssemblyRequests.Count == 0
+                 && discoveredTypeRequests.Count == 0) return;
+
+                var configurationData = results.Left.Right;
                 var privateAssemblies = new HashSet<IAssemblySymbol>(SymbolEqualityComparer.Default);
 
                 var assemblyRequests = GetAssemblyDetails(context, compilation, privateAssemblies, getAssemblies);
                 var typeRequests = GetTypeDetails(context, compilation, privateAssemblies, getTypes);
-                var (discoveredAssemblyRequests, discoveredTypeRequests) = AssemblyProviderConfiguration.FromAssemblyAttributes(compilation);
                 var getAssembliesMethod =
                     AssemblyCollection.Execute(new(compilation, assemblyRequests.AddRange(discoveredAssemblyRequests), privateAssemblies));
                 var getTypesMethod = TypeCollection.Execute(new(compilation, typeRequests.AddRange(discoveredTypeRequests), privateAssemblies));

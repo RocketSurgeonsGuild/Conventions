@@ -152,6 +152,7 @@ public class TestConvention2 : IServiceAsyncConvention {
     public async Task Should_Generate_Assembly_Provider_For_GetTypes_From_Another_Assembly(GetTypesTestsData.GetTypesItem getTypesItem)
     {
         var other = await WithSharedDeps()
+                         .WithProjectName("OtherProject")
                          .AddSources(
                               $$$""""
                               using Rocket.Surgery.Conventions;
@@ -186,6 +187,7 @@ public class TestConvention2 : IServiceAsyncConvention {
 
         var result = await Builder
                           .AddCompilationReferences(other)
+                          .AddReferences(other.FinalCompilation.References.ToArray())
                           .Build()
                           .GenerateAsync();
 

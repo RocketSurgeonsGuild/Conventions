@@ -91,7 +91,7 @@ internal class FindTypeVisitor(Compilation compilation, ICompiledTypeFilter<IAss
 
     protected override bool FoundNamedType(INamedTypeSymbol symbol)
     {
-        if (typeName != symbol.ToDisplayString()) return true;
+        if (typeName != Helpers.GetFullMetadataName(symbol)) return true;
         _type = symbol;
         return false;
     }

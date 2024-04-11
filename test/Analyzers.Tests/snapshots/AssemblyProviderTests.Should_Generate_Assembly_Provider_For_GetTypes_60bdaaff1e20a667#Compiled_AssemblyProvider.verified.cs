@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucywgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiXSwibmEiOltdLCJkIjpbXX0sInQiOnsiZiI6MSwibnNmIjpbeyJmIjozLCJuIjpbIkpldEJyYWlucy5Bbm5vdGF0aW9ucyJdfV0sIm5mIjpbXSwiayI6W10sInciOltdLCJzIjpbXSwiYXQiOltdLCJ0YSI6W3siaSI6ZmFsc2UsInQiOlt7ImEiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMsIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsIiwidCI6IlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkNvbmZpZ3VyYXRpb24uSUNvbmZpZ3VyYXRpb25Bc3luY0NvbnZlbnRpb24ifSx7ImEiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMsIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsIiwidCI6IlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkNvbmZpZ3VyYXRpb24uSUNvbmZpZ3VyYXRpb25Db252ZW50aW9uIn0seyJhIjoiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsInQiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5EZXBlbmRlbmN5SW5qZWN0aW9uLklTZXJ2aWNlQXN5bmNDb252ZW50aW9uIn0seyJhIjoiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsInQiOiJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5EZXBlbmRlbmN5SW5qZWN0aW9uLklTZXJ2aWNlQ29udmVudGlvbiJ9LHsiYSI6IlN5c3RlbS5Qcml2YXRlLkNvcmVMaWIsIFZlcnNpb249OC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj03Y2VjODVkN2JlYTc3OThlIiwidCI6IlN5c3RlbS5BdHRyaWJ1dGUifV19XSwiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIsIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucywgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiXSwibmEiOltdLCJkIjpbXX19")]
 namespace TestProject.Conventions
 {
     internal static partial class Imports
@@ -15,7 +16,16 @@ namespace TestProject.Conventions
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
-                yield break;
+                switch (lineNumber)
+                {
+                    case 202:
+                        yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;
+                        yield return typeof(global::Dep1.Dep1Exports).Assembly;
+                        yield return typeof(global::Sample.DependencyThree.Class3).Assembly;
+                        yield return typeof(global::Dep2Exports).Assembly;
+                        yield return typeof(global::TestConvention).Assembly;
+                        break;
+                }
             }
 
             IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
@@ -30,6 +40,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Microsoft.Extensions.Logging.RocketSurgeryLoggingExtensions);
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Polyfill");
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("RegexPolyfill");
+                        yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions);
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.AssemblyProviderFactory");
@@ -41,7 +52,6 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationOptionsExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContext);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilder);
-                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilderExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilderExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextExtensions);
                         yield return context.LoadFromAssemblyName(RocketSurgeryConventionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.ConventionContextHelpers");
