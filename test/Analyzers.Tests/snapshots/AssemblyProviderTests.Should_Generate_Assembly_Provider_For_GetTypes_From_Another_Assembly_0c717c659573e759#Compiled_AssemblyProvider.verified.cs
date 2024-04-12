@@ -32,7 +32,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionDependency);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionProvider);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionWithDependencies);
-                        yield return context.LoadFromAssemblyName(RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull).GetType("Rocket.Surgery.Conventions.IHostBasedConvention");
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.IHostBasedConvention");
                         yield return typeof(global::Rocket.Surgery.Conventions.Logging.ILoggingAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Logging.ILoggingConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Setup.ISetupAsyncConvention);
@@ -41,8 +41,8 @@ namespace TestProject.Conventions
                 }
             }
 
-            private static AssemblyName _RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull;
-            private static AssemblyName RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull => _RocketSurgeryConventionsAbstractionsVersion1000CultureneutralPublicKeyTokennull ??= new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null");
+            private Assembly _RocketSurgeryConventionsAbstractions;
+            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null"));
         }
     }
 }

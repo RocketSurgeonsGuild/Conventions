@@ -161,18 +161,23 @@ static partial class AssemblyProviderConfiguration
             assemblyData.AssemblyDependencies,
             typeFilter.ClassFilter,
             typeFilter
-               .TypeFilterDescriptors.OfType<NamespaceFilterDescriptor>()
-               .OrderBy(z => string.Join(",", z.Namespaces.OrderBy(z => z)))
+               .TypeFilterDescriptors
+               .OfType<NamespaceFilterDescriptor>()
+               .Select(z => new NamespaceFilterData(z.Filter, z.Namespaces.OrderBy(z => z).ToImmutableArray()))
+               .OrderBy(z => string.Join(",", z.Namespaces.OrderBy(static z => z)))
                .ThenBy(z => z.Filter)
+               .Select(z => z with { Namespaces = z.Namespaces.OrderBy(z => z).ToImmutableArray() })
                .ToImmutableArray(),
             typeFilter
                .TypeFilterDescriptors.OfType<NameFilterDescriptor>()
-               .OrderBy(z => string.Join(",", z.Names.OrderBy(z => z)))
+               .Select(z => new NameFilterData(z.Filter, z.Names.OrderBy(z => z).ToImmutableArray()))
+               .OrderBy(z => string.Join(",", z.Names.OrderBy(static z => z)))
                .ThenBy(z => z.Filter)
                .ToImmutableArray(),
             typeFilter
                .TypeFilterDescriptors.OfType<TypeKindFilterDescriptor>()
-               .OrderBy(z => string.Join(",", z.TypeKinds.OrderBy(z => z)))
+               .Select(z => new TypeKindFilterData(z.Include, z.TypeKinds.OrderBy(z => z).ToImmutableArray()))
+               .OrderBy(z => string.Join(",", z.TypeKinds.OrderBy(static z => z)))
                .ThenBy(z => z.Include)
                .ToImmutableArray(),
             typeFilter
@@ -261,15 +266,7 @@ static partial class AssemblyProviderConfiguration
                          }
                 )
                .Where(z => z is { })
-               .OrderBy(
-                    z => string.Join(
-                        ",",
-                        z
-                           .Types
-                           .OrderBy(x => x.Assembly)
-                           .ThenBy(x => x.Type)
-                    )
-                )
+               .OrderBy(z => string.Join(",", z.Types))
                .ThenBy(z => z.Include)
                .ToImmutableArray()
         );
@@ -309,9 +306,9 @@ static partial class AssemblyProviderConfiguration
     static CompiledTypeFilter LoadTypeFilter(Compilation compilation, GetTypesFilterData data, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols)
     {
         var descriptors = ImmutableArray.CreateBuilder<ITypeFilterDescriptor>();
-        foreach (var item in data.NamespaceFilters) descriptors.Add(item);
-        foreach (var item in data.NameFilters) descriptors.Add(item);
-        foreach (var item in data.TypeKindFilters) descriptors.Add(item);
+        foreach (var item in data.NamespaceFilters) descriptors.Add(new NamespaceFilterDescriptor(item.Filter, item.Namespaces.ToImmutableHashSet()));
+        foreach (var item in data.NameFilters) descriptors.Add(new NameFilterDescriptor(item.Filter, item.Names.ToImmutableHashSet()));
+        foreach (var item in data.TypeKindFilters) descriptors.Add(new TypeKindFilterDescriptor(item.Include, item.TypeKinds.ToImmutableHashSet()));
 
         foreach (var item in data.WithAttributeFilters)
         {
@@ -359,9 +356,9 @@ static partial class AssemblyProviderConfiguration
     [JsonSerializable(typeof(TypeCollectionData))]
     [JsonSerializable(typeof(GetAssembliesFilterData))]
     [JsonSerializable(typeof(GetTypesFilterData))]
-    [JsonSerializable(typeof(NamespaceFilterDescriptor))]
-    [JsonSerializable(typeof(NameFilterDescriptor))]
-    [JsonSerializable(typeof(TypeKindFilterDescriptor))]
+    [JsonSerializable(typeof(NamespaceFilterData))]
+    [JsonSerializable(typeof(NameFilterData))]
+    [JsonSerializable(typeof(TypeKindFilterData))]
     [JsonSerializable(typeof(WithAttributeData))]
     [JsonSerializable(typeof(WithAttributeStringData))]
     [JsonSerializable(typeof(AssignableToTypeData))]
@@ -410,11 +407,11 @@ static partial class AssemblyProviderConfiguration
         [property: JsonPropertyName("f")]
         ClassFilter Filter,
         [property: JsonPropertyName("nsf")]
-        ImmutableArray<NamespaceFilterDescriptor> NamespaceFilters,
+        ImmutableArray<NamespaceFilterData> NamespaceFilters,
         [property: JsonPropertyName("nf")]
-        ImmutableArray<NameFilterDescriptor> NameFilters,
+        ImmutableArray<NameFilterData> NameFilters,
         [property: JsonPropertyName("k")]
-        ImmutableArray<TypeKindFilterDescriptor> TypeKindFilters,
+        ImmutableArray<TypeKindFilterData> TypeKindFilters,
         [property: JsonPropertyName("w")]
         ImmutableArray<WithAttributeData> WithAttributeFilters,
         [property: JsonPropertyName("s")]
@@ -463,4 +460,26 @@ static partial class AssemblyProviderConfiguration
         string Assembly,
         [property: JsonPropertyName("t")]
         string Type);
+
+
+    internal record NamespaceFilterData
+    (
+        [property: JsonPropertyName("f")]
+        NamespaceFilter Filter,
+        [property: JsonPropertyName("n")]
+        ImmutableArray<string> Namespaces);
+
+    internal record NameFilterData
+    (
+        [property: JsonPropertyName("f")]
+        TextDirectionFilter Filter,
+        [property: JsonPropertyName("n")]
+        ImmutableArray<string> Names);
+
+    internal record TypeKindFilterData
+    (
+        [property: JsonPropertyName("f")]
+        bool Include,
+        [property: JsonPropertyName("t")]
+        ImmutableArray<TypeKind> TypeKinds);
 }

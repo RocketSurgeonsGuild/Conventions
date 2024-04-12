@@ -3,10 +3,15 @@ using Microsoft.CodeAnalysis;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 
+class W : SyntaxWalker
+{
+
+}
 internal class TypeSymbolVisitor
     (Compilation compilation, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter, ICompiledTypeFilter<INamedTypeSymbol> typeFilter)
     : TypeSymbolVisitorBase(compilation, assemblyFilter, typeFilter)
 {
+
     public static ImmutableArray<INamedTypeSymbol> GetTypes(
         Compilation compilation,
         ICompiledTypeFilter<IAssemblySymbol> assemblyFilter,

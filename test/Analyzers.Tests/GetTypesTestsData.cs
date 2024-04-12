@@ -45,7 +45,7 @@ public class GetTypesTestsData
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.NotInNamespaceOf(typeof(IServiceConvention)).NotInNamespaces("JetBrains.Annotations")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.NotInNamespaceOf<IServiceConvention>().NotInNamespaces("JetBrains.Annotations")));
         yield return TestMethod(z => z.FromAssemblies().GetTypes(x => x.InNamespaces("Microsoft.Extensions.Configuration", "Microsoft.Extensions.DependencyInjection")));
-        yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.NotInNamespaces("Rocket.Surgery.Conventions.DependencyInjection", "Rocket.Surgery.Conventions.Reflection", "JetBrains.Annotations")));
+        yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(true, x => x.NotInNamespaces("Rocket.Surgery.Conventions.DependencyInjection", "Rocket.Surgery.Conventions.Reflection", "JetBrains.Annotations")));
         static object[] TestMethod(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> func, [CallerArgumentExpression(nameof(func))] string argument = null!) => [new GetTypesItem(argument[(argument.LastIndexOf("=> x")+5)..^1], argument, func)];
     }
 

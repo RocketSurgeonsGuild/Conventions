@@ -88,7 +88,7 @@ record CompiledTypeFilter
                     handleNameFilter(filterName, filterNames, targetType),
                 TypeKindFilterDescriptor { Include: var include, TypeKinds: var typeKinds } =>
                     handleKindFilter(include, typeKinds, targetType),
-                _ => throw new NotSupportedException()
+                _ => throw new NotSupportedException(filterDescriptor.GetType().FullName)
             };
 
         static bool handleNamespaceFilter(NamespaceFilter filterName, ImmutableHashSet<string> filterNamespaces, INamedTypeSymbol namedTypeSymbol1)

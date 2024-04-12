@@ -15,28 +15,44 @@ internal static class StatementGeneration
         var assemblyName = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(symbol.Identity.GetDisplayName(true)));
 
         yield return FieldDeclaration(
-                VariableDeclaration(IdentifierName("AssemblyName"))
+                VariableDeclaration(IdentifierName("Assembly"))
                    .WithVariables(
                         SingletonSeparatedList(
                             VariableDeclarator(Identifier($"_{name}"))
                         )
                     )
             )
-           .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)));
-        yield return PropertyDeclaration(IdentifierName("AssemblyName"), Identifier(name))
-                    .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)))
+           .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)));
+        yield return PropertyDeclaration(IdentifierName("Assembly"), Identifier(name))
+                    .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
                     .WithExpressionBody(
                          ArrowExpressionClause(
                              AssignmentExpression(
                                  SyntaxKind.CoalesceAssignmentExpression,
                                  IdentifierName(Identifier($"_{name}")),
-                                 ObjectCreationExpression(IdentifierName("AssemblyName"))
-                                    .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(assemblyName))))
+                                 InvocationExpression(
+                                         MemberAccessExpression(
+                                             SyntaxKind.SimpleMemberAccessExpression,
+                                             IdentifierName("context"),
+                                             IdentifierName("LoadFromAssemblyName")
+                                         )
+                                     )
+                                    .WithArgumentList(
+                                         ArgumentList(
+                                             SingletonSeparatedList(
+                                                 Argument(
+                                                     ObjectCreationExpression(IdentifierName("AssemblyName"))
+                                                        .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(assemblyName))))
+                                                 )
+                                             )
+                                         )
+                                     )
                              )
                          )
                      )
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
     }
+
 
     public static ExpressionSyntax? GetAssemblyExpression(Compilation compilation, IAssemblySymbol assembly)
     {
@@ -127,12 +143,9 @@ internal static class StatementGeneration
         return GetTypeOfExpression(compilation, type);
     }
 
-    public static InvocationExpressionSyntax GetPrivateAssembly(IAssemblySymbol type)
+    public static NameSyntax GetPrivateAssembly(IAssemblySymbol type)
     {
-        return InvocationExpression(
-                MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("context"), IdentifierName("LoadFromAssemblyName"))
-            )
-           .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName(AssemblyVariableName(type))))));
+        return IdentifierName(AssemblyVariableName(type));
     }
 
     private static InvocationExpressionSyntax GetPrivateType(Compilation compilation, INamedTypeSymbol type)
@@ -160,7 +173,7 @@ internal static class StatementGeneration
 
     public static string AssemblyVariableName(IAssemblySymbol symbol)
     {
-        return SpecialCharacterRemover.Replace(symbol.Identity.GetDisplayName(true), "");
+        return SpecialCharacterRemover.Replace(symbol.MetadataName, "");
     }
 
     public static bool IsOpenGenericType(this INamedTypeSymbol type)
