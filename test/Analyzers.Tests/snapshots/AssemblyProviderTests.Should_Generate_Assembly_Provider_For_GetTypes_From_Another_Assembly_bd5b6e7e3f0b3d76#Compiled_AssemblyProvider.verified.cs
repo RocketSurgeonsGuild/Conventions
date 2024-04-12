@@ -88,6 +88,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeFilter);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeProviderAssemblySelector);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeSelector);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeInfoFilter);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeKindFilter);
                         yield return typeof(global::Rocket.Surgery.Conventions.ServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.ServiceProviderDictionaryExtensions);

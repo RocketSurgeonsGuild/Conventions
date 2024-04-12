@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zIiwiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zIl0sIm5hIjpbXSwiZCI6W119LCJ0Ijp7ImYiOjEsIm5zZiI6W3siZiI6MywibiI6WyJKZXRCcmFpbnMuQW5ub3RhdGlvbnMiXX1dLCJuZiI6W10sImsiOltdLCJ3IjpbeyJpIjpmYWxzZSwiYSI6IlN5c3RlbS5Qcml2YXRlLkNvcmVMaWIiLCJiIjoiU3lzdGVtLkNvbXBvbmVudE1vZGVsLkVkaXRvckJyb3dzYWJsZUF0dHJpYnV0ZSJ9XSwicyI6W10sImF0IjpbeyJpIjpmYWxzZSwiYSI6IlN5c3RlbS5Qcml2YXRlLkNvcmVMaWIiLCJ0IjoiU3lzdGVtLkF0dHJpYnV0ZSJ9XSwidGEiOltdLCJhIjpmYWxzZSwiaSI6ZmFsc2UsIm0iOlsiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMiLCJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMiXSwibmEiOltdLCJkIjpbXX19")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zIiwiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zIl0sIm5hIjpbXSwiZCI6W119LCJ0Ijp7ImYiOjEsIm5zZiI6W3siZiI6MywibiI6WyJKZXRCcmFpbnMuQW5ub3RhdGlvbnMiXX1dLCJuZiI6W10sInRrIjpbXSwidGkiOltdLCJ3IjpbeyJpIjpmYWxzZSwiYSI6IlN5c3RlbS5Qcml2YXRlLkNvcmVMaWIiLCJiIjoiU3lzdGVtLkNvbXBvbmVudE1vZGVsLkVkaXRvckJyb3dzYWJsZUF0dHJpYnV0ZSJ9XSwicyI6W10sImF0IjpbeyJpIjpmYWxzZSwiYSI6IlN5c3RlbS5Qcml2YXRlLkNvcmVMaWIiLCJ0IjoiU3lzdGVtLkF0dHJpYnV0ZSJ9XSwidGEiOltdLCJhIjpmYWxzZSwiaSI6ZmFsc2UsIm0iOlsiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMiLCJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucy5BYnN0cmFjdGlvbnMiXSwibmEiOltdLCJkIjpbXX19")]
 namespace TestProject.Conventions
 {
     internal static partial class Imports
@@ -88,6 +88,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeProviderAssemblySelector);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeSelector);
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.TypeFilter");
+                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeInfoFilter);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeKindFilter);
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.TypeProviderAssemblySelector");
                         yield return typeof(global::Rocket.Surgery.Conventions.ServiceProviderDictionary);

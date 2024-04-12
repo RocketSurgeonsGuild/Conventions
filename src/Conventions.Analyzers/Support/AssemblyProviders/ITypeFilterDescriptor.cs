@@ -17,6 +17,9 @@ internal readonly record struct NameFilterDescriptor(TextDirectionFilter Filter,
 internal readonly record struct TypeKindFilterDescriptor(bool Include, ImmutableHashSet<TypeKind> TypeKinds) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
+internal readonly record struct TypeInfoFilterDescriptor(bool Include, ImmutableHashSet<TypeInfoFilter> TypeInfos) : ITypeFilterDescriptor;
+
+[DebuggerDisplay("{ToString()}")]
 internal readonly record struct WithAttributeFilterDescriptor(INamedTypeSymbol Attribute) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]

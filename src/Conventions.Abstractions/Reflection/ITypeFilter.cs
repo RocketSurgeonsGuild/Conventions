@@ -164,17 +164,36 @@ public interface ITypeFilter
     ITypeFilter WithoutAttribute(string? attributeFullName);
 
      /// <summary>
-     ///  Will match all types that are of the specified <paramref name="typeFilter" />.
+     ///  Will match all types that are of the specified <paramref name="typeKindFilter" />.
      /// </summary>
-     /// <param name="typeFilter"></param>
-     /// <param name="typeFilters"></param>
+     /// <param name="typeKindFilter"></param>
+     /// <param name="typeKindFilters"></param>
      /// <returns></returns>
-    ITypeFilter KindOf(TypeKindFilter typeFilter, params TypeKindFilter[] typeFilters);
+    ITypeFilter KindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters);
+
     /// <summary>
-    ///   Will match all types that are not of the specified <paramref name="typeFilter" />.
+    ///   Will match all types that are not of the specified <paramref name="typeKindFilter" />.
     /// </summary>
-    /// <param name="typeFilter"></param>
-    /// <param name="typeFilters"></param>
+    /// <param name="typeKindFilter"></param>
+    /// <param name="typeKindFilters"></param>
     /// <returns></returns>
-    ITypeFilter NotKindOf(TypeKindFilter typeFilter, params TypeKindFilter[] typeFilters);
+    ITypeFilter NotKindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters);
+
+    /// <summary>
+    ///  Will match all types that are of the specified <paramref name="typeInfoFilter" />.
+    /// </summary>
+    /// <param name="typeInfoFilter"></param>
+    /// <param name="typeInfoFilters"></param>
+    /// <returns></returns>
+    ITypeFilter InfoOf(TypeInfoFilter typeInfoFilter, params TypeInfoFilter[] typeInfoFilters);
+
+    /// <summary>
+    ///  Will match all types that are not of the specified <paramref name="typeInfoFilter" />.
+    /// </summary>
+    /// <param name="typeInfoFilter"></param>
+    /// <param name="typeInfoFilters"></param>
+    /// <returns></returns>
+    ITypeFilter NotInfoOf(TypeInfoFilter typeInfoFilter, params TypeInfoFilter[] typeInfoFilters);
 }
+
+

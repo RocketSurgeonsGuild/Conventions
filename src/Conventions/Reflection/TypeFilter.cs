@@ -1,12 +1,13 @@
 using System.Collections.Immutable;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
 record TypeFilter : ITypeFilter
 {
-    public List<Func<Type, bool>> Filters { get; } = new();
+    public List<Func<Type, bool>> Filters { get; } = [type => !type.Name.StartsWith("<")];
 
     public ITypeFilter AssignableTo<T>()
     {
@@ -165,42 +166,56 @@ record TypeFilter : ITypeFilter
         return this;
     }
 
-    public ITypeFilter KindOf(TypeKindFilter typeFilter, params TypeKindFilter[] typeFilters)
+    public ITypeFilter KindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters)
     {
-        var filters = ImmutableArray.Create([typeFilter, ..typeFilters]);
-        Filters.Add(
-            x => filters.Any(
-                f => f switch
-                     {
-                         TypeKindFilter.Array     => x.IsArray,
-                         TypeKindFilter.Class     => x.IsClass,
-                         TypeKindFilter.Delegate  => typeof(Delegate).IsAssignableFrom(x),
-                         TypeKindFilter.Enum      => x.IsEnum,
-                         TypeKindFilter.Interface => x.IsInterface,
-                         TypeKindFilter.Struct    => x.IsValueType,
-                         _                        => throw new ArgumentOutOfRangeException(nameof(typeFilter), typeFilter, null)
-                     }
-            ));
+        var filters = ImmutableArray.Create([typeKindFilter, ..typeKindFilters]);
+        Filters.Add(x => filters.Any(f => TypeKindFilterFunc(typeKindFilter, f, x)));
         return this;
     }
 
-    public ITypeFilter NotKindOf(TypeKindFilter typeFilter, params TypeKindFilter[] typeFilters)
+    public ITypeFilter NotKindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters)
     {
-        var filters = ImmutableArray.Create([typeFilter, ..typeFilters]);
-        Filters.Add(
-            x => !filters.Any(
-                f => f switch
-                     {
-                         TypeKindFilter.Array     => x.IsArray,
-                         TypeKindFilter.Class     => x.IsClass,
-                         TypeKindFilter.Delegate  => typeof(Delegate).IsAssignableFrom(x),
-                         TypeKindFilter.Enum      => x.IsEnum,
-                         TypeKindFilter.Interface => x.IsInterface,
-                         TypeKindFilter.Struct    => x.IsValueType,
-                         _                        => throw new ArgumentOutOfRangeException(nameof(typeFilter), typeFilter, "Invalid type filter")
-                     }
-            )
-        );
+        var filters = ImmutableArray.Create([typeKindFilter, ..typeKindFilters]);
+        Filters.Add(type => !filters.Any(filter => TypeKindFilterFunc(typeKindFilter, filter, type)));
         return this;
     }
+
+    private static bool TypeKindFilterFunc(TypeKindFilter typeFilter, TypeKindFilter filter, Type type) =>
+        filter switch
+        {
+            TypeKindFilter.Array     => type.IsArray,
+            TypeKindFilter.Class     => type.IsClass,
+            TypeKindFilter.Delegate  => typeof(Delegate).IsAssignableFrom(type),
+            TypeKindFilter.Enum      => type.IsEnum,
+            TypeKindFilter.Interface => type.IsInterface,
+            TypeKindFilter.Struct    => type.IsValueType,
+            _                        => throw new ArgumentOutOfRangeException(nameof(typeFilter), typeFilter, null)
+        };
+
+    public ITypeFilter InfoOf(TypeInfoFilter typeInfoFilter, params TypeInfoFilter[] typeInfoFilters)
+    {
+        var filters = ImmutableArray.Create([typeInfoFilter, ..typeInfoFilters]);
+        Filters.Add(type => filters.Any(filter => TypeInfoFilterFunc(filter, type)));
+        return this;
+    }
+
+    public ITypeFilter NotInfoOf(TypeInfoFilter typeFilter, params TypeInfoFilter[] typeFilters)
+    {
+        var filters = ImmutableArray.Create([typeFilter, ..typeFilters]);
+        Filters.Add(type => !filters.Any(filter => TypeInfoFilterFunc(filter, type)));
+        return this;
+    }
+
+    private static bool TypeInfoFilterFunc(TypeInfoFilter filter, Type type) =>
+        filter switch
+        {
+            TypeInfoFilter.Abstract              => type.IsAbstract,
+            TypeInfoFilter.Visible               => type.IsVisible,
+            TypeInfoFilter.ValueType             => type.IsValueType,
+//            TypeInfoFilter.Nested                => type.IsNested,
+            TypeInfoFilter.Sealed                => type.IsSealed,
+            TypeInfoFilter.GenericType           => type is { IsGenericType: true },
+//            TypeInfoFilter.GenericTypeDefinition => type.IsGenericTypeDefinition,
+            _                                    => throw new ArgumentOutOfRangeException(nameof(filter), filter, null)
+        };
 }

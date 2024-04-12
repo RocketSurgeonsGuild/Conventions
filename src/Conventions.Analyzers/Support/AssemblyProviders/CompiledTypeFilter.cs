@@ -88,12 +88,14 @@ record CompiledTypeFilter
                     handleNameFilter(filterName, filterNames, targetType),
                 TypeKindFilterDescriptor { Include: var include, TypeKinds: var typeKinds } =>
                     handleKindFilter(include, typeKinds, targetType),
+                TypeInfoFilterDescriptor { Include: var include, TypeInfos: var typeInfos } =>
+                    handleInfoFilter(include, typeInfos, targetType),
                 _ => throw new NotSupportedException(filterDescriptor.GetType().FullName)
             };
 
-        static bool handleNamespaceFilter(NamespaceFilter filterName, ImmutableHashSet<string> filterNamespaces, INamedTypeSymbol namedTypeSymbol1)
+        static bool handleNamespaceFilter(NamespaceFilter filterName, ImmutableHashSet<string> filterNamespaces, INamedTypeSymbol type)
         {
-            var ns = namedTypeSymbol1.ContainingNamespace.ToDisplayString();
+            var ns = type.ContainingNamespace.ToDisplayString();
             return filterName switch
                    {
                        NamespaceFilter.Exact => filterNamespaces.Contains(ns),
@@ -103,19 +105,37 @@ record CompiledTypeFilter
                    };
         }
 
-        static bool handleNameFilter(TextDirectionFilter filterName, ImmutableHashSet<string> filterNames, INamedTypeSymbol namedTypeSymbol2) =>
+        static bool handleNameFilter(TextDirectionFilter filterName, ImmutableHashSet<string> filterNames, INamedTypeSymbol type) =>
             filterName switch
             {
-                TextDirectionFilter.Contains   => filterNames.Any(name => namedTypeSymbol2.Name.Contains(name)),
-                TextDirectionFilter.StartsWith => filterNames.Any(name => namedTypeSymbol2.Name.StartsWith(name)),
-                TextDirectionFilter.EndsWith   => filterNames.Any(name => namedTypeSymbol2.Name.EndsWith(name)),
+                TextDirectionFilter.Contains   => filterNames.Any(name => type.Name.Contains(name)),
+                TextDirectionFilter.StartsWith => filterNames.Any(name => type.Name.StartsWith(name)),
+                TextDirectionFilter.EndsWith   => filterNames.Any(name => type.Name.EndsWith(name)),
                 _                              => throw new NotImplementedException(),
             };
 
-        static bool handleKindFilter(bool include, ImmutableHashSet<TypeKind> typeKinds, INamedTypeSymbol namedTypeSymbol2) =>
+        static bool handleKindFilter(bool include, ImmutableHashSet<TypeKind> typeKinds, INamedTypeSymbol type) =>
+            include switch { true => typeKinds.Any(kind => type.TypeKind == kind), false => typeKinds.All(kind => type.TypeKind != kind), };
+
+        static bool handleInfoFilter(bool include, ImmutableHashSet<TypeInfoFilter> typeKinds, INamedTypeSymbol type) =>
             include switch
             {
-                true => typeKinds.Any(kind => namedTypeSymbol2.TypeKind == kind), false => typeKinds.All(kind => namedTypeSymbol2.TypeKind != kind),
+                true  => typeKinds.Any(infoFilter => TypeInfoFilterFunc(infoFilter, type)),
+                false => typeKinds.All(infoFilter => !TypeInfoFilterFunc(infoFilter, type)),
+            };
+
+        static bool TypeInfoFilterFunc(TypeInfoFilter typeFilter, INamedTypeSymbol type) =>
+            typeFilter switch
+            {
+                TypeInfoFilter.Abstract              => type.IsAbstract,
+                TypeInfoFilter.GenericType           => type.IsGenericType,
+//                TypeInfoFilter.GenericTypeDefinition => type is { IsGenericType: true, IsUnboundGenericType: true },
+                TypeInfoFilter.Sealed                => type.IsSealed,
+                TypeInfoFilter.Visible               => type.DeclaredAccessibility == Accessibility.Public,
+                TypeInfoFilter.ValueType             => type.IsValueType,
+//                TypeInfoFilter.Nested                => type.ContainingType is {},
+                TypeInfoFilter.Unknown               => throw new NotSupportedException(typeFilter.ToString()),
+                _                                    => throw new NotSupportedException(typeFilter.ToString())
             };
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfSwidCI6eyJmIjoxLCJuc2YiOlt7ImYiOjMsIm4iOltdfSx7ImYiOjMsIm4iOlsiSmV0QnJhaW5zLkFubm90YXRpb25zIl19XSwibmYiOltdLCJrIjpbXSwidyI6W10sInMiOltdLCJhdCI6W10sInRhIjpbXSwiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfX0=")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfSwidCI6eyJmIjoxLCJuc2YiOlt7ImYiOjMsIm4iOltdfSx7ImYiOjMsIm4iOlsiSmV0QnJhaW5zLkFubm90YXRpb25zIl19XSwibmYiOltdLCJ0ayI6W10sInRpIjpbXSwidyI6W10sInMiOltdLCJhdCI6W10sInRhIjpbXSwiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfX0=")]
 namespace TestProject.Conventions
 {
     internal static partial class Imports
@@ -89,6 +89,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeFilter);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeProviderAssemblySelector);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeSelector);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeInfoFilter);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeKindFilter);
                         yield return typeof(global::Rocket.Surgery.Conventions.ServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.ServiceProviderDictionaryExtensions);

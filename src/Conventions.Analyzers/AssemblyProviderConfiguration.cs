@@ -181,6 +181,12 @@ static partial class AssemblyProviderConfiguration
                .ThenBy(z => z.Include)
                .ToImmutableArray(),
             typeFilter
+               .TypeFilterDescriptors.OfType<TypeInfoFilterDescriptor>()
+               .Select(z => new TypeInfoFilterData(z.Include, z.TypeInfos.OrderBy(z => z).ToImmutableArray()))
+               .OrderBy(z => string.Join(",", z.TypeInfos.OrderBy(static z => z)))
+               .ThenBy(z => z.Include)
+               .ToImmutableArray(),
+            typeFilter
                .TypeFilterDescriptors
                .Select(
                     f => f switch
@@ -309,6 +315,7 @@ static partial class AssemblyProviderConfiguration
         foreach (var item in data.NamespaceFilters) descriptors.Add(new NamespaceFilterDescriptor(item.Filter, item.Namespaces.ToImmutableHashSet()));
         foreach (var item in data.NameFilters) descriptors.Add(new NameFilterDescriptor(item.Filter, item.Names.ToImmutableHashSet()));
         foreach (var item in data.TypeKindFilters) descriptors.Add(new TypeKindFilterDescriptor(item.Include, item.TypeKinds.ToImmutableHashSet()));
+        foreach (var item in data.TypeInfoFilters) descriptors.Add(new TypeInfoFilterDescriptor(item.Include, item.TypeInfos.ToImmutableHashSet()));
 
         foreach (var item in data.WithAttributeFilters)
         {
@@ -359,6 +366,7 @@ static partial class AssemblyProviderConfiguration
     [JsonSerializable(typeof(NamespaceFilterData))]
     [JsonSerializable(typeof(NameFilterData))]
     [JsonSerializable(typeof(TypeKindFilterData))]
+    [JsonSerializable(typeof(TypeInfoFilterData))]
     [JsonSerializable(typeof(WithAttributeData))]
     [JsonSerializable(typeof(WithAttributeStringData))]
     [JsonSerializable(typeof(AssignableToTypeData))]
@@ -410,8 +418,10 @@ static partial class AssemblyProviderConfiguration
         ImmutableArray<NamespaceFilterData> NamespaceFilters,
         [property: JsonPropertyName("nf")]
         ImmutableArray<NameFilterData> NameFilters,
-        [property: JsonPropertyName("k")]
+        [property: JsonPropertyName("tk")]
         ImmutableArray<TypeKindFilterData> TypeKindFilters,
+        [property: JsonPropertyName("ti")]
+        ImmutableArray<TypeInfoFilterData> TypeInfoFilters,
         [property: JsonPropertyName("w")]
         ImmutableArray<WithAttributeData> WithAttributeFilters,
         [property: JsonPropertyName("s")]
@@ -482,4 +492,11 @@ static partial class AssemblyProviderConfiguration
         bool Include,
         [property: JsonPropertyName("t")]
         ImmutableArray<TypeKind> TypeKinds);
+
+    internal record TypeInfoFilterData
+    (
+        [property: JsonPropertyName("f")]
+        bool Include,
+        [property: JsonPropertyName("t")]
+        ImmutableArray<TypeInfoFilter> TypeInfos);
 }

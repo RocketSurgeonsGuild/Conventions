@@ -165,31 +165,33 @@ internal static class DataHelpers
         return ( name, GetSyntaxTypeInfo(semanticModel, expression, name) ) switch
                {
                    ({ Identifier.Text: "AssignableToAny" or "NotAssignableToAny" }, _) =>
-                       CreateAssignableToAnyTypeFilterDescriptor(name, expression, semanticModel),
+                       createAssignableToAnyTypeFilterDescriptor(name, expression, semanticModel),
                    ({ Identifier.Text: "AssignableTo" or "NotAssignableTo" }, { } namedType) =>
-                       CreateAssignableToTypeFilterDescriptor(name, namedType),
+                       createAssignableToTypeFilterDescriptor(name, namedType),
                    ({ Identifier.Text: "WithAttribute" or "WithoutAttribute" }, { } namedType) =>
-                       CreateWithAttributeFilterDescriptor(name, namedType),
+                       createWithAttributeFilterDescriptor(name, namedType),
                    ({ Identifier.Text: "WithAttribute" or "WithoutAttribute" }, _) =>
-                       CreateWithAttributeStringFilterDescriptor(context, name, expression, semanticModel),
+                       createWithAttributeStringFilterDescriptor(context, name, expression, semanticModel),
                    ({ Identifier.Text: "InExactNamespaceOf" or "InNamespaceOf" or "NotInNamespaceOf" }, _) =>
-                       CreateNamespaceTypeFilterDescriptor(context, name, expression, semanticModel),
+                       createNamespaceTypeFilterDescriptor(context, name, expression, semanticModel),
                    ({ Identifier.Text: "InExactNamespaces" or "InNamespaces" or "NotInNamespaces" }, _) =>
-                       CreateNamespaceStringFilterDescriptor(context, name, expression, semanticModel),
+                       createNamespaceStringFilterDescriptor(context, name, expression, semanticModel),
                    ({ Identifier.Text: "EndsWith" or "StartsWith" or "Contains" }, _) =>
-                       CreateNameFilterDescriptor(context, name, expression),
+                       createNameFilterDescriptor(context, name, expression),
                    ({ Identifier.Text: "KindOf" or "NotKindOf" }, _) =>
-                       CreateTypeKindFilterDescriptor(context, name, expression),
+                       createTypeKindFilterDescriptor(context, name, expression),
+                   ({ Identifier.Text: "InfoOf" or "NotInfoOf" }, _) =>
+                       createTypeInfoFilterDescriptor(context, name, expression),
                    _ => throw new NotSupportedException($"Not supported type filter. Method: {name.ToFullString()}  {expression.ToFullString()} method.")
                };
 
-        static ITypeFilterDescriptor CreateAssignableToTypeFilterDescriptor(SimpleNameSyntax name, INamedTypeSymbol namedType) =>
+        static ITypeFilterDescriptor createAssignableToTypeFilterDescriptor(SimpleNameSyntax name, INamedTypeSymbol namedType) =>
             name.Identifier.Text.StartsWith("Not") ? new NotAssignableToTypeFilterDescriptor(namedType) : new AssignableToTypeFilterDescriptor(namedType);
 
-        static ITypeFilterDescriptor CreateWithAttributeFilterDescriptor(SimpleNameSyntax name, INamedTypeSymbol namedType) =>
+        static ITypeFilterDescriptor createWithAttributeFilterDescriptor(SimpleNameSyntax name, INamedTypeSymbol namedType) =>
             name.Identifier.Text.StartsWith("Without") ? new WithoutAttributeFilterDescriptor(namedType) : new WithAttributeFilterDescriptor(namedType);
 
-        static ITypeFilterDescriptor CreateAssignableToAnyTypeFilterDescriptor(
+        static ITypeFilterDescriptor createAssignableToAnyTypeFilterDescriptor(
             SimpleNameSyntax name,
             InvocationExpressionSyntax expression,
             SemanticModel semanticModel
@@ -205,7 +207,7 @@ internal static class DataHelpers
                 : new AssignableToAnyTypeFilterDescriptor(arguments);
         }
 
-        static NameFilterDescriptor CreateNameFilterDescriptor(
+        static NameFilterDescriptor createNameFilterDescriptor(
             SourceProductionContext context,
             SimpleNameSyntax name,
             InvocationExpressionSyntax expression
@@ -220,7 +222,7 @@ internal static class DataHelpers
             var stringValues = ImmutableHashSet.CreateBuilder<string>();
             foreach (var argument in expression.ArgumentList.Arguments)
             {
-                if (GetStringValue(argument) is not { Length: > 0 } item)
+                if (getStringValue(argument) is not { Length: > 0 } item)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAString, argument.GetLocation()));
                     continue;
@@ -232,7 +234,7 @@ internal static class DataHelpers
             return new(filter, stringValues.ToImmutable());
         }
 
-        static NamespaceFilterDescriptor CreateNamespaceTypeFilterDescriptor(
+        static NamespaceFilterDescriptor createNamespaceTypeFilterDescriptor(
             SourceProductionContext context,
             SimpleNameSyntax name,
             InvocationExpressionSyntax expression,
@@ -260,7 +262,7 @@ internal static class DataHelpers
             return new(filter, namespaces.ToImmutable());
         }
 
-        static NamespaceFilterDescriptor CreateNamespaceStringFilterDescriptor(
+        static NamespaceFilterDescriptor createNamespaceStringFilterDescriptor(
             SourceProductionContext context,
             SimpleNameSyntax name,
             InvocationExpressionSyntax expression,
@@ -285,7 +287,7 @@ internal static class DataHelpers
                     continue;
                 }
 
-                if (GetStringValue(argument) is { Length: > 0 } item)
+                if (getStringValue(argument) is { Length: > 0 } item)
                 {
                     namespaces.Add(item);
                     continue;
@@ -297,7 +299,7 @@ internal static class DataHelpers
             return new(filter, namespaces.ToImmutable());
         }
 
-        static ITypeFilterDescriptor? CreateWithAttributeStringFilterDescriptor(
+        static ITypeFilterDescriptor? createWithAttributeStringFilterDescriptor(
             SourceProductionContext context,
             SimpleNameSyntax name,
             InvocationExpressionSyntax expression,
@@ -314,7 +316,7 @@ internal static class DataHelpers
                     ? new WithoutAttributeStringFilterDescriptor(Helpers.GetFullMetadataName(type))
                     : new WithAttributeStringFilterDescriptor(Helpers.GetFullMetadataName(type));
 
-            if (GetStringValue(argument) is { Length: > 0 } item)
+            if (getStringValue(argument) is { Length: > 0 } item)
                 return name.Identifier.Text.StartsWith("Without")
                     ? new WithoutAttributeStringFilterDescriptor(item)
                     : new WithAttributeStringFilterDescriptor(item);
@@ -323,18 +325,18 @@ internal static class DataHelpers
             return null;
         }
 
-        static TypeKindFilterDescriptor CreateTypeKindFilterDescriptor(
+        static TypeKindFilterDescriptor createTypeKindFilterDescriptor(
             SourceProductionContext context,
             SimpleNameSyntax name,
             InvocationExpressionSyntax expression
         )
         {
-            var include = name.Identifier.Text switch { "KindOf" => true, "NotKindOf" => false };
+            var include = name.Identifier.Text switch { "KindOf" => true, _ => false };
 
             var namespaces = ImmutableHashSet.CreateBuilder<TypeKind>();
             foreach (var argument in expression.ArgumentList.Arguments)
             {
-                if (GetStringValue(argument) is not { Length: > 0 } item)
+                if (getStringValue(argument) is not { Length: > 0 } item)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAString, argument.GetLocation()));
                     continue;
@@ -346,7 +348,30 @@ internal static class DataHelpers
             return new(include, namespaces.ToImmutable());
         }
 
-        static string? GetStringValue(ArgumentSyntax argument)
+        static TypeInfoFilterDescriptor createTypeInfoFilterDescriptor(
+            SourceProductionContext context,
+            SimpleNameSyntax name,
+            InvocationExpressionSyntax expression
+        )
+        {
+            var include = name.Identifier.Text switch { "InfoOf" => true, _ => false };
+
+            var namespaces = ImmutableHashSet.CreateBuilder<TypeInfoFilter>();
+            foreach (var argument in expression.ArgumentList.Arguments)
+            {
+                if (getStringValue(argument) is not { Length: > 0 } item)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAString, argument.GetLocation()));
+                    continue;
+                }
+
+                namespaces.Add(Enum.TryParse<TypeInfoFilter>(item, out var result) ? result : TypeInfoFilter.Unknown);
+            }
+
+            return new(include, namespaces.ToImmutable());
+        }
+
+        static string? getStringValue(ArgumentSyntax argument)
         {
             return argument.Expression switch
                    {
