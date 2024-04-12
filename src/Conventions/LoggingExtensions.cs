@@ -6,7 +6,12 @@ namespace Rocket.Surgery.Conventions;
 internal static partial class LoggingExtensions
 {
     [LoggerMessage(1337, LogLevel.Debug, "[{AssemblyCandidateFinder}] Found candidate assembly {AssemblyName} for candidates {@Candidates}")]
-    public static partial void FoundCandidateAssembly(this ILogger logger, string assemblyCandidateFinder, string assemblyName, ImmutableArray<string> candidates);
+    public static partial void FoundCandidateAssembly(
+        this ILogger logger,
+        string assemblyCandidateFinder,
+        string assemblyName,
+        ImmutableArray<string> candidates
+    );
 
     [LoggerMessage(1337, LogLevel.Debug, "[{AssemblyProvider}] Found assembly {AssemblyName}")]
     public static partial void FoundAssembly(this ILogger logger, string assemblyProvider, string assemblyName);

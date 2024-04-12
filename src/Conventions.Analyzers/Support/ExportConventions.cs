@@ -10,11 +10,9 @@ namespace Rocket.Surgery.Conventions.Support;
 
 internal static class ExportConventions
 {
-    public record Request(ConventionAttributeData Data, ImmutableArray<INamedTypeSymbol> Conventions, ImmutableArray<INamedTypeSymbol> ExportedConventions);
-
     public static void HandleConventionExports(SourceProductionContext context, Request request)
     {
-        var (data, conventions, exportedConventions) = request;
+        ( var data, var conventions, var exportedConventions ) = request;
         if (!conventions.Any()) return;
 
         var helperClassBody = Block();
@@ -90,37 +88,37 @@ internal static class ExportConventions
             }
 
             ExpressionSyntax withDependencies = ObjectCreationExpression(IdentifierName("ConventionWithDependencies"))
-                                                             .WithArgumentList(
-                                                                  ArgumentList(
-                                                                      SeparatedList(
-                                                                          new[]
-                                                                          {
-                                                                              Argument(createConvention), Argument(hostType),
-                                                                          }
-                                                                      )
-                                                                  )
-                                                              );
+               .WithArgumentList(
+                    ArgumentList(
+                        SeparatedList(
+                            new[]
+                            {
+                                Argument(createConvention), Argument(hostType),
+                            }
+                        )
+                    )
+                );
 
             foreach (( var direction, var type ) in dependencies)
             {
                 withDependencies = InvocationExpression(
-                                                     MemberAccessExpression(
-                                                         SyntaxKind.SimpleMemberAccessExpression,
-                                                         withDependencies,
-                                                         IdentifierName("WithDependency")
-                                                     )
-                                                 )
-                                                .WithArgumentList(
-                                                     ArgumentList(
-                                                         SeparatedList(
-                                                             new[]
-                                                             {
-                                                                 Argument(direction),
-                                                                 Argument(TypeOfExpression(type)),
-                                                             }
-                                                         )
-                                                     )
-                                                 );
+                        MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            withDependencies,
+                            IdentifierName("WithDependency")
+                        )
+                    )
+                   .WithArgumentList(
+                        ArgumentList(
+                            SeparatedList(
+                                new[]
+                                {
+                                    Argument(direction),
+                                    Argument(TypeOfExpression(type)),
+                                }
+                            )
+                        )
+                    );
             }
 
 
@@ -134,64 +132,64 @@ internal static class ExportConventions
 
         var helperClass =
             ClassDeclaration(data.Configuration.ClassName)
-                         .WithAttributeLists(
-                              SingletonList(
-                                  CompilerGeneratedAttributes
-                                         .WithLeadingTrivia(GetXmlSummary("The class defined for exporting conventions from this assembly"))
-                              )
-                          )
-                         .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
-                         .WithMembers(
-                              SingletonList<MemberDeclarationSyntax>(
-                                  MethodDeclaration(
-                                                    GenericName(Identifier("IEnumerable"))
-                                                                 .WithTypeArgumentList(
-                                                                      TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies")))
-                                                                  ),
-                                                    data.Configuration.MethodName
-                                                )
-                                               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
-                                               .WithParameterList(
-                                                    ParameterList(
-                                                        SingletonSeparatedList(
-                                                            Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProviderDictionary"))
-                                                        )
-                                                    )
-                                                )
-                                               .WithBody(helperClassBody)
-                                               .WithLeadingTrivia(GetXmlSummary("The conventions exports from this assembly"))
-                              )
-                          );
+               .WithAttributeLists(
+                    SingletonList(
+                        CompilerGeneratedAttributes
+                           .WithLeadingTrivia(GetXmlSummary("The class defined for exporting conventions from this assembly"))
+                    )
+                )
+               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
+               .WithMembers(
+                    SingletonList<MemberDeclarationSyntax>(
+                        MethodDeclaration(
+                                GenericName(Identifier("IEnumerable"))
+                                   .WithTypeArgumentList(
+                                        TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies")))
+                                    ),
+                                data.Configuration.MethodName
+                            )
+                           .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
+                           .WithParameterList(
+                                ParameterList(
+                                    SingletonSeparatedList(
+                                        Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProviderDictionary"))
+                                    )
+                                )
+                            )
+                           .WithBody(helperClassBody)
+                           .WithLeadingTrivia(GetXmlSummary("The conventions exports from this assembly"))
+                    )
+                );
 
         var cu = CompilationUnit()
-                              .WithUsings(
-                                   List(
-                                       new[]
-                                       {
-                                           UsingDirective(ParseName("System")),
-                                           UsingDirective(ParseName("System.Collections.Generic")),
-                                           UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
-                                           UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                                       }
-                                   )
-                               )
-                              .WithAttributeLists(data.Configuration.ToAttributes("Exports"))
-                              .AddAttributeLists(
-                                   AttributeList(
-                                                     SingletonSeparatedList(
-                                                         Attribute(IdentifierName("ExportedConventions"))
-                                                                      .WithArgumentList(
-                                                                           AttributeArgumentList(
-                                                                               SeparatedList(
-                                                                                   conventions
-                                                                                      .Select(symbol => AttributeArgument(TypeOfExpression(ParseName(symbol.ToDisplayString()))))
-                                                                               )
-                                                                           )
-                                                                       )
-                                                     )
-                                                 )
-                                                .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
-                               );
+                .WithUsings(
+                     List(
+                         new[]
+                         {
+                             UsingDirective(ParseName("System")),
+                             UsingDirective(ParseName("System.Collections.Generic")),
+                             UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
+                             UsingDirective(ParseName("Rocket.Surgery.Conventions")),
+                         }
+                     )
+                 )
+                .WithAttributeLists(data.Configuration.ToAttributes("Exports"))
+                .AddAttributeLists(
+                     AttributeList(
+                             SingletonSeparatedList(
+                                 Attribute(IdentifierName("ExportedConventions"))
+                                    .WithArgumentList(
+                                         AttributeArgumentList(
+                                             SeparatedList(
+                                                 conventions
+                                                    .Select(symbol => AttributeArgument(TypeOfExpression(ParseName(symbol.ToDisplayString()))))
+                                             )
+                                         )
+                                     )
+                             )
+                         )
+                        .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
+                 );
 
         if (data.Configuration.Assembly)
         {
@@ -206,26 +204,26 @@ internal static class ExportConventions
                 exportedConventions
                    .Select(
                         candidate => AttributeList(
-                                                       SingletonSeparatedList(
-                                                           Attribute(IdentifierName("Convention"))
-                                                                        .WithArgumentList(
-                                                                             AttributeArgumentList(
-                                                                                 SingletonSeparatedList(
-                                                                                     AttributeArgument(
-                                                                                         TypeOfExpression(
-                                                                                             ParseName(candidate.ToDisplayString())
-                                                                                         )
-                                                                                     )
-                                                                                 )
-                                                                             )
-                                                                         )
-                                                       )
-                                                   )
-                                                  .WithTarget(
-                                                       AttributeTargetSpecifier(
-                                                           Token(SyntaxKind.AssemblyKeyword)
-                                                       )
-                                                   )
+                                SingletonSeparatedList(
+                                    Attribute(IdentifierName("Convention"))
+                                       .WithArgumentList(
+                                            AttributeArgumentList(
+                                                SingletonSeparatedList(
+                                                    AttributeArgument(
+                                                        TypeOfExpression(
+                                                            ParseName(candidate.ToDisplayString())
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                )
+                            )
+                           .WithTarget(
+                                AttributeTargetSpecifier(
+                                    Token(SyntaxKind.AssemblyKeyword)
+                                )
+                            )
                     )
                    .ToArray()
             );
@@ -257,13 +255,13 @@ internal static class ExportConventions
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 IdentifierName("serviceProvider"),
                                 GenericName("GetService")
-                                             .WithTypeArgumentList(
-                                                  TypeArgumentList(
-                                                      SingletonSeparatedList<TypeSyntax>(
-                                                          ParseName(parameter.Type.WithNullableAnnotation(NullableAnnotation.None).ToDisplayString())
-                                                      )
-                                                  )
-                                              )
+                                   .WithTypeArgumentList(
+                                        TypeArgumentList(
+                                            SingletonSeparatedList<TypeSyntax>(
+                                                ParseName(parameter.Type.WithNullableAnnotation(NullableAnnotation.None).ToDisplayString())
+                                            )
+                                        )
+                                    )
                             )
                         )
                     )
@@ -274,23 +272,24 @@ internal static class ExportConventions
         }
 
         return InvocationExpression(
-                                 MemberAccessExpression(
-                                     SyntaxKind.SimpleMemberAccessExpression,
-                                     IdentifierName("ActivatorUtilities"),
-                                     GenericName(Identifier("CreateInstance"))
-                                                  .WithTypeArgumentList(
-                                                       TypeArgumentList(SingletonSeparatedList<TypeSyntax>(ParseName(convention.ToDisplayString())))
-                                                   )
-                                 )
-                             )
-                            .WithArgumentList(
-                                 ArgumentList(
-                                     SingletonSeparatedList(
-                                         Argument(IdentifierName("serviceProvider"))
-                                     )
-                                 )
-                             );
+                MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    IdentifierName("ActivatorUtilities"),
+                    GenericName(Identifier("CreateInstance"))
+                       .WithTypeArgumentList(
+                            TypeArgumentList(SingletonSeparatedList<TypeSyntax>(ParseName(convention.ToDisplayString())))
+                        )
+                )
+            )
+           .WithArgumentList(
+                ArgumentList(
+                    SingletonSeparatedList(
+                        Argument(IdentifierName("serviceProvider"))
+                    )
+                )
+            );
     }
+
     private static readonly MemberAccessExpressionSyntax _hostTypeUndefined = MemberAccessExpression(
         SyntaxKind.SimpleMemberAccessExpression,
         IdentifierName("HostType"),
@@ -321,5 +320,5 @@ internal static class ExportConventions
         IdentifierName("DependentOf")
     );
 
-
+    public record Request(ConventionAttributeData Data, ImmutableArray<INamedTypeSymbol> Conventions, ImmutableArray<INamedTypeSymbol> ExportedConventions);
 }

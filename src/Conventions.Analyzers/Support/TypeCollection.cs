@@ -19,10 +19,6 @@ internal record SourceLocation
 
 internal static class TypeCollection
 {
-    public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);
-
-    public record Item(SourceLocation Location, CompiledAssemblyFilter AssemblyFilter, CompiledTypeFilter TypeFilter);
-
     public static MethodDeclarationSyntax Execute(Request request)
     {
         if (!request.Items.Any()) return TypesMethod;
@@ -40,6 +36,21 @@ internal static class TypeCollection
         return results.Count == 0 ? TypesMethod : TypesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
+    public static (InvocationExpressionSyntax method, ExpressionSyntax selector ) GetTypesMethod(SyntaxNode node)
+    {
+        return node is InvocationExpressionSyntax
+        {
+            Expression: MemberAccessExpressionSyntax
+            {
+                Name.Identifier.Text: "GetTypes",
+                Expression: MemberAccessExpressionSyntax { Name.Identifier.Text: "AssemblyProvider", },
+            },
+            ArgumentList.Arguments: [.., { Expression: { } expression, },],
+        } invocationExpressionSyntax
+            ? ( invocationExpressionSyntax, expression )
+            : default;
+    }
+
     private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<INamedTypeSymbol> types, HashSet<IAssemblySymbol> privateAssemblies)
     {
         var block = Block();
@@ -53,44 +64,41 @@ internal static class TypeCollection
         return block;
     }
 
-    private static MethodDeclarationSyntax TypesMethod = MethodDeclaration(
-                                                             GenericName(Identifier("IEnumerable"))
-                                                                .WithTypeArgumentList(
-                                                                     TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("Type")))
-                                                                 ),
-                                                             Identifier("GetTypes")
-                                                         )
-                                                        .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(IdentifierName("IAssemblyProvider")))
-                                                        .AddParameterListParameters(
-                                                             Parameter(Identifier("selector"))
-                                                                .WithType(
-                                                                     GenericName(Identifier("Func"))
-                                                                        .AddTypeArgumentListArguments(
-                                                                             IdentifierName("ITypeProviderAssemblySelector"),
-                                                                             GenericName(Identifier("IEnumerable"))
-                                                                                .WithTypeArgumentList(
-                                                                                     TypeArgumentList(
-                                                                                         SingletonSeparatedList<TypeSyntax>(IdentifierName("Type"))
-                                                                                     )
-                                                                                 )
-                                                                         )
-                                                                 ),
-                                                             Parameter(Identifier("filePath")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
-                                                             Parameter(Identifier("memberName")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
-                                                             Parameter(Identifier("lineNumber")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword)))
-                                                         )
-                                                        .WithBody(Block(SingletonList<StatementSyntax>(YieldStatement(SyntaxKind.YieldBreakStatement))));
+    private static readonly MethodDeclarationSyntax TypesMethod = MethodDeclaration(
+                                                                      GenericName(Identifier("IEnumerable"))
+                                                                         .WithTypeArgumentList(
+                                                                              TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("Type")))
+                                                                          ),
+                                                                      Identifier("GetTypes")
+                                                                  )
+                                                                 .WithExplicitInterfaceSpecifier(
+                                                                      ExplicitInterfaceSpecifier(IdentifierName("IAssemblyProvider"))
+                                                                  )
+                                                                 .AddParameterListParameters(
+                                                                      Parameter(Identifier("selector"))
+                                                                         .WithType(
+                                                                              GenericName(Identifier("Func"))
+                                                                                 .AddTypeArgumentListArguments(
+                                                                                      IdentifierName("ITypeProviderAssemblySelector"),
+                                                                                      GenericName(Identifier("IEnumerable"))
+                                                                                         .WithTypeArgumentList(
+                                                                                              TypeArgumentList(
+                                                                                                  SingletonSeparatedList<TypeSyntax>(IdentifierName("Type"))
+                                                                                              )
+                                                                                          )
+                                                                                  )
+                                                                          ),
+                                                                      Parameter(Identifier("filePath"))
+                                                                         .WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
+                                                                      Parameter(Identifier("memberName"))
+                                                                         .WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
+                                                                      Parameter(Identifier("lineNumber")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword)))
+                                                                  )
+                                                                 .WithBody(
+                                                                      Block(SingletonList<StatementSyntax>(YieldStatement(SyntaxKind.YieldBreakStatement)))
+                                                                  );
 
-    public static (InvocationExpressionSyntax method, ExpressionSyntax selector ) GetTypesMethod(SyntaxNode node) =>
-        node is InvocationExpressionSyntax
-        {
-            Expression: MemberAccessExpressionSyntax
-            {
-                Name.Identifier.Text: "GetTypes",
-                Expression: MemberAccessExpressionSyntax { Name.Identifier.Text: "AssemblyProvider" }
-            },
-            ArgumentList.Arguments: [.., { Expression: { } expression }]
-        } invocationExpressionSyntax
-            ? ( invocationExpressionSyntax, expression )
-            : default;
+    public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);
+
+    public record Item(SourceLocation Location, CompiledAssemblyFilter AssemblyFilter, CompiledTypeFilter TypeFilter);
 }

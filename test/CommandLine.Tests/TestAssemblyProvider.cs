@@ -12,7 +12,7 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
         return new[]
         {
             typeof(CommandLineConvention).GetTypeInfo().Assembly,
-            typeof(TestAssemblyProvider).GetTypeInfo().Assembly
+            typeof(TestAssemblyProvider).GetTypeInfo().Assembly,
         };
     }
 

@@ -3,15 +3,12 @@ using Microsoft.CodeAnalysis;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 
-class W : SyntaxWalker
-{
+internal class W : SyntaxWalker { }
 
-}
 internal class TypeSymbolVisitor
     (Compilation compilation, ICompiledTypeFilter<IAssemblySymbol> assemblyFilter, ICompiledTypeFilter<INamedTypeSymbol> typeFilter)
     : TypeSymbolVisitorBase(compilation, assemblyFilter, typeFilter)
 {
-
     public static ImmutableArray<INamedTypeSymbol> GetTypes(
         Compilation compilation,
         ICompiledTypeFilter<IAssemblySymbol> assemblyFilter,
@@ -19,7 +16,7 @@ internal class TypeSymbolVisitor
     )
     {
         var visitor = new TypeSymbolVisitor(compilation, assemblyFilter, typeFilter);
-        foreach (var symbol in compilation.References.Select(compilation.GetAssemblyOrModuleSymbol).Concat([compilation.Assembly]))
+        foreach (var symbol in compilation.References.Select(compilation.GetAssemblyOrModuleSymbol).Concat([compilation.Assembly,]))
         {
             switch (symbol)
             {
@@ -43,5 +40,8 @@ internal class TypeSymbolVisitor
         return false;
     }
 
-    public ImmutableArray<INamedTypeSymbol> GetTypes() => _types.ToImmutableArray();
+    public ImmutableArray<INamedTypeSymbol> GetTypes()
+    {
+        return _types.ToImmutableArray();
+    }
 }

@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -40,7 +39,7 @@ public interface IConventionContext
     IConventionProvider Conventions { get; }
 
     /// <summary>
-    /// Returns the source builder for this context
+    ///     Returns the source builder for this context
     /// </summary>
     /// <returns></returns>
     ConventionContextBuilder ToBuilder();

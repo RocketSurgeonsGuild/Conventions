@@ -9,8 +9,6 @@ internal class FindTypeInAssembly(Compilation compilation, ICompiledTypeFilter<I
     new CompiledTypeFilter(ClassFilter.PublicOnly, ImmutableArray<ITypeFilterDescriptor>.Empty)
 )
 {
-    private INamedTypeSymbol? _type;
-
     public static INamedTypeSymbol? FindType(Compilation compilation, IAssemblySymbol assemblySymbol)
     {
         var visitor = new FindTypeInAssembly(
@@ -20,6 +18,8 @@ internal class FindTypeInAssembly(Compilation compilation, ICompiledTypeFilter<I
         visitor.Visit(assemblySymbol);
         return visitor._type;
     }
+
+    private INamedTypeSymbol? _type;
 
     protected override bool FoundNamedType(INamedTypeSymbol symbol)
     {

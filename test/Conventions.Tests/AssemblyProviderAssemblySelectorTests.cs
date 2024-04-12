@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Rocket.Surgery.Conventions.Reflection;
+﻿using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit.Abstractions;
 
@@ -7,7 +6,6 @@ namespace Rocket.Surgery.Conventions.Tests;
 
 public class AssemblyProviderAssemblySelectorTests(ITestOutputHelper outputHelper) : LoggerTest(outputHelper)
 {
-
     [Fact]
     public async Task FromAssembly_AddsCallingAssembly()
     {

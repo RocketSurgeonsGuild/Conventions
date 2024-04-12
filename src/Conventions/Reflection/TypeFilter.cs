@@ -1,13 +1,41 @@
 using System.Collections.Immutable;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
-record TypeFilter : ITypeFilter
+internal record TypeFilter : ITypeFilter
 {
-    public List<Func<Type, bool>> Filters { get; } = [type => !type.Name.StartsWith("<")];
+    private static bool TypeKindFilterFunc(TypeKindFilter typeFilter, TypeKindFilter filter, Type type)
+    {
+        return filter switch
+               {
+                   TypeKindFilter.Array     => type.IsArray,
+                   TypeKindFilter.Class     => type.IsClass,
+                   TypeKindFilter.Delegate  => typeof(Delegate).IsAssignableFrom(type),
+                   TypeKindFilter.Enum      => type.IsEnum,
+                   TypeKindFilter.Interface => type.IsInterface,
+                   TypeKindFilter.Struct    => type.IsValueType,
+                   _                        => throw new ArgumentOutOfRangeException(nameof(typeFilter), typeFilter, null),
+               };
+    }
+
+    private static bool TypeInfoFilterFunc(TypeInfoFilter filter, Type type)
+    {
+        return filter switch
+               {
+                   TypeInfoFilter.Abstract  => type.IsAbstract,
+                   TypeInfoFilter.Visible   => type.IsVisible,
+                   TypeInfoFilter.ValueType => type.IsValueType,
+//            TypeInfoFilter.Nested                => type.IsNested,
+                   TypeInfoFilter.Sealed      => type.IsSealed,
+                   TypeInfoFilter.GenericType => type is { IsGenericType: true, },
+//            TypeInfoFilter.GenericTypeDefinition => type.IsGenericTypeDefinition,
+                   _ => throw new ArgumentOutOfRangeException(nameof(filter), filter, null),
+               };
+    }
+
+    public List<Func<Type, bool>> Filters { get; } = [type => !type.Name.StartsWith("<"),];
 
     public ITypeFilter AssignableTo<T>()
     {
@@ -23,7 +51,7 @@ record TypeFilter : ITypeFilter
 
     public ITypeFilter AssignableToAny(Type type, params Type[] types)
     {
-        types = [type, ..types];
+        types = [type, ..types,];
         Filters.Add(x => types.Any(t => t.IsAssignableFrom(x)));
         return this;
     }
@@ -42,28 +70,28 @@ record TypeFilter : ITypeFilter
 
     public ITypeFilter NotAssignableToAny(Type type, params Type[] types)
     {
-        types = [type, ..types];
+        types = [type, ..types,];
         Filters.Add(x => types.All(t => !t.IsAssignableFrom(x)));
         return this;
     }
 
     public ITypeFilter EndsWith(string value, params string[] values)
     {
-        values = [value, ..values];
+        values = [value, ..values,];
         Filters.Add(x => values.Any(y => x.Name.EndsWith(y)));
         return this;
     }
 
     public ITypeFilter StartsWith(string value, params string[] values)
     {
-        values = [value, ..values];
+        values = [value, ..values,];
         Filters.Add(x => values.Any(y => x.Name.StartsWith(y)));
         return this;
     }
 
     public ITypeFilter Contains(string value, params string[] values)
     {
-        values = [value, ..values];
+        values = [value, ..values,];
         Filters.Add(x => values.Any(y => x.Name.Contains(y)));
         return this;
     }
@@ -76,57 +104,57 @@ record TypeFilter : ITypeFilter
 
     public ITypeFilter InExactNamespaceOf(Type type, params Type[] types)
     {
-        types = [type, ..types];
+        types = [type, ..types,];
         Filters.Add(x => types.Any(y => x.Namespace == y.Namespace));
         return this;
     }
 
     public ITypeFilter InExactNamespaces(string first, params string[] namespaces)
     {
-        namespaces = [first, ..namespaces];
+        namespaces = [first, ..namespaces,];
         Filters.Add(x => namespaces.Any(y => x.Namespace == y));
         return this;
     }
 
     public ITypeFilter InNamespaceOf<T>()
     {
-        if (typeof(T) is { Namespace: { } @namespace })
+        if (typeof(T) is { Namespace: { } @namespace, })
             Filters.Add(x => x.Namespace?.StartsWith(@namespace) == true);
         return this;
     }
 
     public ITypeFilter InNamespaceOf(Type type, params Type[] types)
     {
-        types = [type, ..types];
-        Filters.Add(x => types.Any(y => y.Namespace is { Length: > 0 } && x.Namespace?.StartsWith(y.Namespace) == true));
+        types = [type, ..types,];
+        Filters.Add(x => types.Any(y => y.Namespace is { Length: > 0, } && x.Namespace?.StartsWith(y.Namespace) == true));
         return this;
     }
 
     public ITypeFilter InNamespaces(string first, params string[] namespaces)
     {
-        namespaces = [first, ..namespaces];
-        Filters.Add(x => namespaces.Any(y => y is { Length: > 0 } && x.Namespace?.StartsWith(y) == true));
+        namespaces = [first, ..namespaces,];
+        Filters.Add(x => namespaces.Any(y => y is { Length: > 0, } && x.Namespace?.StartsWith(y) == true));
         return this;
     }
 
     public ITypeFilter NotInNamespaceOf<T>()
     {
-        if (typeof(T) is { Namespace: { } @namespace })
+        if (typeof(T) is { Namespace: { } @namespace, })
             Filters.Add(x => !x.Namespace?.StartsWith(@namespace) == true);
         return this;
     }
 
     public ITypeFilter NotInNamespaceOf(Type type, params Type[] types)
     {
-        types = [type, ..types];
-        Filters.Add(x => !types.Any(y => y.Namespace is { Length: > 0 } && x.Namespace?.StartsWith(y.Namespace) == true));
+        types = [type, ..types,];
+        Filters.Add(x => !types.Any(y => y.Namespace is { Length: > 0, } && x.Namespace?.StartsWith(y.Namespace) == true));
         return this;
     }
 
     public ITypeFilter NotInNamespaces(string first, params string[] namespaces)
     {
-        namespaces = [first, ..namespaces];
-        Filters.Add(x => !namespaces.Any(y => y is { Length: > 0 } && x.Namespace?.StartsWith(y) == true));
+        namespaces = [first, ..namespaces,];
+        Filters.Add(x => !namespaces.Any(y => y is { Length: > 0, } && x.Namespace?.StartsWith(y) == true));
         return this;
     }
 
@@ -168,54 +196,29 @@ record TypeFilter : ITypeFilter
 
     public ITypeFilter KindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters)
     {
-        var filters = ImmutableArray.Create([typeKindFilter, ..typeKindFilters]);
+        var filters = ImmutableArray.Create([typeKindFilter, ..typeKindFilters,]);
         Filters.Add(x => filters.Any(f => TypeKindFilterFunc(typeKindFilter, f, x)));
         return this;
     }
 
     public ITypeFilter NotKindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters)
     {
-        var filters = ImmutableArray.Create([typeKindFilter, ..typeKindFilters]);
+        var filters = ImmutableArray.Create([typeKindFilter, ..typeKindFilters,]);
         Filters.Add(type => !filters.Any(filter => TypeKindFilterFunc(typeKindFilter, filter, type)));
         return this;
     }
 
-    private static bool TypeKindFilterFunc(TypeKindFilter typeFilter, TypeKindFilter filter, Type type) =>
-        filter switch
-        {
-            TypeKindFilter.Array     => type.IsArray,
-            TypeKindFilter.Class     => type.IsClass,
-            TypeKindFilter.Delegate  => typeof(Delegate).IsAssignableFrom(type),
-            TypeKindFilter.Enum      => type.IsEnum,
-            TypeKindFilter.Interface => type.IsInterface,
-            TypeKindFilter.Struct    => type.IsValueType,
-            _                        => throw new ArgumentOutOfRangeException(nameof(typeFilter), typeFilter, null)
-        };
-
     public ITypeFilter InfoOf(TypeInfoFilter typeInfoFilter, params TypeInfoFilter[] typeInfoFilters)
     {
-        var filters = ImmutableArray.Create([typeInfoFilter, ..typeInfoFilters]);
+        var filters = ImmutableArray.Create([typeInfoFilter, ..typeInfoFilters,]);
         Filters.Add(type => filters.Any(filter => TypeInfoFilterFunc(filter, type)));
         return this;
     }
 
     public ITypeFilter NotInfoOf(TypeInfoFilter typeFilter, params TypeInfoFilter[] typeFilters)
     {
-        var filters = ImmutableArray.Create([typeFilter, ..typeFilters]);
+        var filters = ImmutableArray.Create([typeFilter, ..typeFilters,]);
         Filters.Add(type => !filters.Any(filter => TypeInfoFilterFunc(filter, type)));
         return this;
     }
-
-    private static bool TypeInfoFilterFunc(TypeInfoFilter filter, Type type) =>
-        filter switch
-        {
-            TypeInfoFilter.Abstract              => type.IsAbstract,
-            TypeInfoFilter.Visible               => type.IsVisible,
-            TypeInfoFilter.ValueType             => type.IsValueType,
-//            TypeInfoFilter.Nested                => type.IsNested,
-            TypeInfoFilter.Sealed                => type.IsSealed,
-            TypeInfoFilter.GenericType           => type is { IsGenericType: true },
-//            TypeInfoFilter.GenericTypeDefinition => type.IsGenericTypeDefinition,
-            _                                    => throw new ArgumentOutOfRangeException(nameof(filter), filter, null)
-        };
 }

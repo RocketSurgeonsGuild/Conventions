@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -110,6 +109,21 @@ internal static class StatementGeneration
         return GetPrivateType(compilation, type);
     }
 
+    public static NameSyntax GetPrivateAssembly(IAssemblySymbol type)
+    {
+        return IdentifierName(AssemblyVariableName(type));
+    }
+
+    public static string AssemblyVariableName(IAssemblySymbol symbol)
+    {
+        return SpecialCharacterRemover.Replace(symbol.MetadataName, "");
+    }
+
+    public static bool IsOpenGenericType(this INamedTypeSymbol type)
+    {
+        return type.IsGenericType && ( type.IsUnboundGenericType || type.TypeArguments.All(z => z.TypeKind == TypeKind.TypeParameter) );
+    }
+
     private static ExpressionSyntax GetTypeOfExpression(
         Compilation compilation,
         INamedTypeSymbol type,
@@ -143,11 +157,6 @@ internal static class StatementGeneration
         return GetTypeOfExpression(compilation, type);
     }
 
-    public static NameSyntax GetPrivateAssembly(IAssemblySymbol type)
-    {
-        return IdentifierName(AssemblyVariableName(type));
-    }
-
     private static InvocationExpressionSyntax GetPrivateType(Compilation compilation, INamedTypeSymbol type)
     {
         var expression = InvocationExpression(
@@ -169,15 +178,5 @@ internal static class StatementGeneration
         return expression;
     }
 
-    private static readonly Regex SpecialCharacterRemover = new Regex("[^\\w\\d]", RegexOptions.Compiled);
-
-    public static string AssemblyVariableName(IAssemblySymbol symbol)
-    {
-        return SpecialCharacterRemover.Replace(symbol.MetadataName, "");
-    }
-
-    public static bool IsOpenGenericType(this INamedTypeSymbol type)
-    {
-        return type.IsGenericType && ( type.IsUnboundGenericType || type.TypeArguments.All(z => z.TypeKind == TypeKind.TypeParameter) );
-    }
+    private static readonly Regex SpecialCharacterRemover = new("[^\\w\\d]", RegexOptions.Compiled);
 }

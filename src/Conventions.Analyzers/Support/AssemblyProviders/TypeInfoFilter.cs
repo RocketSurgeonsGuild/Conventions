@@ -1,27 +1,27 @@
 ﻿namespace Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 
 /// <summary>
-///  Enumeration for possible type information filters.
+///     Enumeration for possible type information filters.
 /// </summary>
 internal enum TypeInfoFilter
 {
     /// <summary>
-    ///  The type is unknown.
+    ///     The type is unknown.
     /// </summary>
     Unknown = 0,
 
     /// <summary>
-    ///   The type is abstract.
+    ///     The type is abstract.
     /// </summary>
     Abstract = 1,
 
     /// <summary>
-    ///   The type is visible.
+    ///     The type is visible.
     /// </summary>
     Visible = 2,
 
     /// <summary>
-    ///   The type is a value type.
+    ///     The type is a value type.
     /// </summary>
     ValueType = 3,
 
@@ -31,12 +31,12 @@ internal enum TypeInfoFilter
 //    Nested = 4,
 
     /// <summary>
-    ///   The type is sealed.
+    ///     The type is sealed.
     /// </summary>
     Sealed = 5,
 
     /// <summary>
-    ///   The type is a generic type.
+    ///     The type is a generic type.
     /// </summary>
     GenericType = 6,
 

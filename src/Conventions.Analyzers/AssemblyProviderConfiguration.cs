@@ -1,28 +1,22 @@
 ﻿using System.Collections.Immutable;
-using System.IO.Compression;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 using Rocket.Surgery.Conventions.Support;
 
 namespace Rocket.Surgery.Conventions;
 
-static partial class AssemblyProviderConfiguration
+internal static partial class AssemblyProviderConfiguration
 {
-    const string getAssembliesKey = $"Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies";
-    const string getTypesKey = $"Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes";
-
     public static (ImmutableList<AssemblyCollection.Item> AssemblyRequests, ImmutableList<TypeCollection.Item> TypeRequests) FromAssemblyAttributes(
         Compilation compilation
     )
     {
         var assemblySymbols = compilation
                              .References.Select(compilation.GetAssemblyOrModuleSymbol)
-                             .Concat([compilation.Assembly])
+                             .Concat([compilation.Assembly,])
                              .Select(
                                   symbol =>
                                   {
@@ -48,10 +42,10 @@ static partial class AssemblyProviderConfiguration
                 {
                     switch (attribute)
                     {
-                        case { ConstructorArguments: [{ Value: getAssembliesKey }, { Value: string getAssembliesData },], }:
+                        case { ConstructorArguments: [{ Value: getAssembliesKey, }, { Value: string getAssembliesData, },], }:
                             assemblyRequests.Add(GetAssembliesFromString(assemblySymbols, getAssembliesData));
                             break;
-                        case { ConstructorArguments: [{ Value: getTypesKey }, { Value: string getTypesData },], }:
+                        case { ConstructorArguments: [{ Value: getTypesKey, }, { Value: string getTypesData, },], }:
                             typeRequests.Add(GetTypesFromString(compilation, assemblySymbols, getTypesData));
                             break;
                     }
@@ -86,7 +80,10 @@ static partial class AssemblyProviderConfiguration
         }
     }
 
-    static AssemblyCollection.Item GetAssembliesFromString(ImmutableDictionary<string, IAssemblySymbol> assemblySymbols, string value)
+    private const string getAssembliesKey = "Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies";
+    private const string getTypesKey = "Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes";
+
+    private static AssemblyCollection.Item GetAssembliesFromString(ImmutableDictionary<string, IAssemblySymbol> assemblySymbols, string value)
     {
         var result = DecompressString(value);
         var data = JsonSerializer.Deserialize(result, SourceGenerationContext.Default.AssemblyCollectionData);
@@ -94,14 +91,14 @@ static partial class AssemblyProviderConfiguration
         return new(data.Location, assemblyFilter);
     }
 
-    static string GetAssembliesToString(AssemblyCollection.Item item)
+    private static string GetAssembliesToString(AssemblyCollection.Item item)
     {
         var data = new AssemblyCollectionData(item.Location, LoadAssemblyFilterData(item.AssemblyFilter));
         var result = JsonSerializer.SerializeToUtf8Bytes(data, SourceGenerationContext.Default.AssemblyCollectionData);
         return CompressString(result);
     }
 
-    static TypeCollection.Item GetTypesFromString(Compilation compilation, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols, string value)
+    private static TypeCollection.Item GetTypesFromString(Compilation compilation, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols, string value)
     {
         var result = DecompressString(value);
         var data = JsonSerializer.Deserialize(result, SourceGenerationContext.Default.TypeCollectionData);
@@ -110,14 +107,14 @@ static partial class AssemblyProviderConfiguration
         return new(data.Location, assemblyFilter, typeFilter);
     }
 
-    static string GetTypesToString(TypeCollection.Item item)
+    private static string GetTypesToString(TypeCollection.Item item)
     {
         var data = new TypeCollectionData(item.Location, LoadAssemblyFilterData(item.AssemblyFilter), LoadTypeFilterData(item.AssemblyFilter, item.TypeFilter));
         var result = JsonSerializer.SerializeToUtf8Bytes(data, SourceGenerationContext.Default.TypeCollectionData);
         return CompressString(result);
     }
 
-    static byte[] DecompressString(string base64String)
+    private static byte[] DecompressString(string base64String)
     {
         return Convert.FromBase64String(base64String);
 //        using var memoryStream = new MemoryStream(compressedBytes);
@@ -129,7 +126,7 @@ static partial class AssemblyProviderConfiguration
 //        return decompressedBytes;
     }
 
-    static string CompressString(byte[] bytes)
+    private static string CompressString(byte[] bytes)
     {
         return Convert.ToBase64String(bytes);
 //        using var memory = new MemoryStream();
@@ -139,7 +136,7 @@ static partial class AssemblyProviderConfiguration
 //        return Convert.ToBase64String(compressedBytes);
     }
 
-    static GetAssembliesFilterData LoadAssemblyFilterData(CompiledAssemblyFilter filter)
+    private static GetAssembliesFilterData LoadAssemblyFilterData(CompiledAssemblyFilter filter)
     {
         return new(
             filter.AssemblyDescriptors.OfType<AllAssemblyDescriptor>().Any(),
@@ -150,7 +147,7 @@ static partial class AssemblyProviderConfiguration
         );
     }
 
-    static GetTypesFilterData LoadTypeFilterData(CompiledAssemblyFilter assemblyFilter, CompiledTypeFilter typeFilter)
+    private static GetTypesFilterData LoadTypeFilterData(CompiledAssemblyFilter assemblyFilter, CompiledTypeFilter typeFilter)
     {
         var assemblyData = LoadAssemblyFilterData(assemblyFilter);
         return new(
@@ -166,7 +163,7 @@ static partial class AssemblyProviderConfiguration
                .Select(z => new NamespaceFilterData(z.Filter, z.Namespaces.OrderBy(z => z).ToImmutableArray()))
                .OrderBy(z => string.Join(",", z.Namespaces.OrderBy(static z => z)))
                .ThenBy(z => z.Filter)
-               .Select(z => z with { Namespaces = z.Namespaces.OrderBy(z => z).ToImmutableArray() })
+               .Select(z => z with { Namespaces = z.Namespaces.OrderBy(z => z).ToImmutableArray(), })
                .ToImmutableArray(),
             typeFilter
                .TypeFilterDescriptors.OfType<NameFilterDescriptor>()
@@ -191,7 +188,7 @@ static partial class AssemblyProviderConfiguration
                .Select(
                     f => f switch
                          {
-                             WithAttributeFilterDescriptor descriptor => new WithAttributeData(
+                             WithAttributeFilterDescriptor descriptor => new(
                                  true,
                                  descriptor.Attribute.ContainingAssembly.MetadataName,
                                  Helpers.GetFullMetadataName(descriptor.Attribute)
@@ -201,7 +198,7 @@ static partial class AssemblyProviderConfiguration
                                  descriptor.Attribute.ContainingAssembly.MetadataName,
                                  Helpers.GetFullMetadataName(descriptor.Attribute)
                              ),
-                             _ => null!
+                             _ => null!,
                          }
                 )
                .Where(z => z is { })
@@ -214,9 +211,9 @@ static partial class AssemblyProviderConfiguration
                .Select(
                     f => f switch
                          {
-                             WithAttributeStringFilterDescriptor descriptor    => new WithAttributeStringData(true, descriptor.AttributeClassName),
+                             WithAttributeStringFilterDescriptor descriptor    => new(true, descriptor.AttributeClassName),
                              WithoutAttributeStringFilterDescriptor descriptor => new WithAttributeStringData(false, descriptor.AttributeClassName),
-                             _                                                 => null!
+                             _                                                 => null!,
                          }
                 )
                .Where(z => z is { })
@@ -228,7 +225,7 @@ static partial class AssemblyProviderConfiguration
                .Select(
                     f => f switch
                          {
-                             AssignableToTypeFilterDescriptor descriptor => new AssignableToTypeData(
+                             AssignableToTypeFilterDescriptor descriptor => new(
                                  true,
                                  descriptor.Type.ContainingAssembly.MetadataName,
                                  Helpers.GetFullMetadataName(descriptor.Type)
@@ -238,7 +235,7 @@ static partial class AssemblyProviderConfiguration
                                  descriptor.Type.ContainingAssembly.MetadataName,
                                  Helpers.GetFullMetadataName(descriptor.Type)
                              ),
-                             _ => null!
+                             _ => null!,
                          }
                 )
                .Where(z => z is { })
@@ -251,7 +248,7 @@ static partial class AssemblyProviderConfiguration
                .Select(
                     f => f switch
                          {
-                             AssignableToAnyTypeFilterDescriptor descriptor => new AssignableToAnyTypeData(
+                             AssignableToAnyTypeFilterDescriptor descriptor => new(
                                  true,
                                  descriptor
                                     .Types.Select(z => new AnyTypeData(z.ContainingAssembly.MetadataName, Helpers.GetFullMetadataName(z)))
@@ -268,7 +265,7 @@ static partial class AssemblyProviderConfiguration
                                     .ThenBy(z => z.Type)
                                     .ToImmutableArray()
                              ),
-                             _ => null!
+                             _ => null!,
                          }
                 )
                .Where(z => z is { })
@@ -278,7 +275,7 @@ static partial class AssemblyProviderConfiguration
         );
     }
 
-    static CompiledAssemblyFilter LoadAssemblyFilter(GetAssembliesFilterData data, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols)
+    private static CompiledAssemblyFilter LoadAssemblyFilter(GetAssembliesFilterData data, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols)
     {
         var descriptors = ImmutableArray.CreateBuilder<IAssemblyDescriptor>();
         if (data.AllAssembly)
@@ -309,7 +306,11 @@ static partial class AssemblyProviderConfiguration
         return new(descriptors.ToImmutable());
     }
 
-    static CompiledTypeFilter LoadTypeFilter(Compilation compilation, GetTypesFilterData data, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols)
+    private static CompiledTypeFilter LoadTypeFilter(
+        Compilation compilation,
+        GetTypesFilterData data,
+        ImmutableDictionary<string, IAssemblySymbol> assemblySymbols
+    )
     {
         var descriptors = ImmutableArray.CreateBuilder<ITypeFilterDescriptor>();
         foreach (var item in data.NamespaceFilters) descriptors.Add(new NamespaceFilterDescriptor(item.Filter, item.Namespaces.ToImmutableHashSet()));
@@ -371,9 +372,9 @@ static partial class AssemblyProviderConfiguration
     [JsonSerializable(typeof(WithAttributeStringData))]
     [JsonSerializable(typeof(AssignableToTypeData))]
     [JsonSerializable(typeof(AssignableToAnyTypeData))]
-    partial class SourceGenerationContext : JsonSerializerContext;
+    private partial class SourceGenerationContext : JsonSerializerContext;
 
-    record AssemblyCollectionData
+    private record AssemblyCollectionData
     (
         [property: JsonPropertyName("l")]
         SourceLocation Location,
@@ -381,7 +382,7 @@ static partial class AssemblyProviderConfiguration
         GetAssembliesFilterData Assembly
     );
 
-    record TypeCollectionData
+    private record TypeCollectionData
     (
         [property: JsonPropertyName("l")]
         SourceLocation Location,
@@ -391,7 +392,7 @@ static partial class AssemblyProviderConfiguration
         GetTypesFilterData Type
     );
 
-    record GetAssembliesFilterData
+    private record GetAssembliesFilterData
     (
         [property: JsonPropertyName("a")]
         bool AllAssembly,
@@ -405,7 +406,7 @@ static partial class AssemblyProviderConfiguration
         ImmutableArray<string> AssemblyDependencies
     );
 
-    record GetTypesFilterData
+    private record GetTypesFilterData
     (
         bool AllAssembly,
         bool IncludeSystem,

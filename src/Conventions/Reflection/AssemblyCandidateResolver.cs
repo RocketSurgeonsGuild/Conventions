@@ -9,6 +9,12 @@ namespace Rocket.Surgery.Conventions.Reflection;
 /// </summary>
 internal class AssemblyCandidateResolver
 {
+    public static IEnumerable<Assembly> GetReferencedAssemblies(Assembly assembly)
+    {
+        var resolver = new AssemblyCandidateResolver(new[] { assembly, }, new HashSet<string?>(StringComparer.OrdinalIgnoreCase), NullLogger.Instance);
+        return resolver.GetAssemblies();
+    }
+
     private static Dependency CreateDependency(Assembly library, ISet<string?> referenceAssemblies)
     {
         var classification = DependencyClassification.Unknown;
@@ -17,17 +23,11 @@ internal class AssemblyCandidateResolver
             classification = DependencyClassification.Reference;
         }
 
-        return new Dependency(library, classification);
+        return new(library, classification);
     }
 
     private readonly ILogger _logger;
     private readonly IDictionary<string, Dependency> _dependencies;
-
-    public static IEnumerable<Assembly> GetReferencedAssemblies(Assembly assembly)
-    {
-        var resolver = new AssemblyCandidateResolver(new[] { assembly }, new HashSet<string?>(StringComparer.OrdinalIgnoreCase), NullLogger.Instance);
-        return resolver.GetAssemblies();
-    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AssemblyCandidateResolver" /> class.
@@ -35,7 +35,11 @@ internal class AssemblyCandidateResolver
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="referenceAssemblies">The reference assemblies.</param>
     /// <param name="logger">The logger.</param>
-    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "<Pending>"
+    )]
     public AssemblyCandidateResolver(
         IReadOnlyList<Assembly> assemblies,
         ISet<string?> referenceAssemblies,
@@ -79,10 +83,10 @@ internal class AssemblyCandidateResolver
 
         foreach (var dependency in assembly.GetReferencedAssemblies())
         {
-            if (dependency.Name?.StartsWith("System.", StringComparison.OrdinalIgnoreCase) == true ||
-                dependency.Name?.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) == true ||
-                dependency.Name?.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase) == true ||
-                dependency.Name?.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) == true)
+            if (dependency.Name?.StartsWith("System.", StringComparison.OrdinalIgnoreCase) == true
+             || dependency.Name?.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) == true
+             || dependency.Name?.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase) == true
+             || dependency.Name?.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) == true)
             {
                 continue;
             }
@@ -92,7 +96,7 @@ internal class AssemblyCandidateResolver
             {
                 dependentAssembly = Assembly.Load(dependency);
             }
-#pragma warning disable CA1031
+            #pragma warning disable CA1031
             catch (Exception e)
             {
                 // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
@@ -100,7 +104,7 @@ internal class AssemblyCandidateResolver
 
                 continue;
             }
-#pragma warning restore CA1031
+            #pragma warning restore CA1031
 
             RecursiveAddDependencies(
                 dependentAssembly,
@@ -111,17 +115,21 @@ internal class AssemblyCandidateResolver
         }
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "<Pending>"
+    )]
     private DependencyClassification ComputeClassification(string dependency, ISet<string?>? processedAssemblies = null)
     {
         processedAssemblies ??= new HashSet<string?>();
         processedAssemblies.Add(dependency);
         // Prevents issues with looking at system assemblies
-        if (dependency.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
-            dependency.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase) ||
-            dependency.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) ||
-            dependency.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) ||
-            dependency.StartsWith("DynamicProxyGenAssembly", StringComparison.OrdinalIgnoreCase))
+        if (dependency.StartsWith("System.", StringComparison.OrdinalIgnoreCase)
+         || dependency.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase)
+         || dependency.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase)
+         || dependency.StartsWith("Windows", StringComparison.OrdinalIgnoreCase)
+         || dependency.StartsWith("DynamicProxyGenAssembly", StringComparison.OrdinalIgnoreCase))
         {
             return DependencyClassification.NotCandidate;
         }
@@ -140,15 +148,13 @@ internal class AssemblyCandidateResolver
 
         foreach (var candidateDependency in candidateEntry.Assembly.GetReferencedAssemblies())
         {
-            if (string.IsNullOrWhiteSpace(candidateDependency.Name) ||
-                processedAssemblies.Contains(candidateDependency.Name))
+            if (string.IsNullOrWhiteSpace(candidateDependency.Name) || processedAssemblies.Contains(candidateDependency.Name))
             {
                 continue;
             }
 
             var dependencyClassification = ComputeClassification(candidateDependency.Name, processedAssemblies);
-            if (dependencyClassification == DependencyClassification.Candidate ||
-                dependencyClassification == DependencyClassification.Reference)
+            if (dependencyClassification == DependencyClassification.Candidate || dependencyClassification == DependencyClassification.Reference)
             {
                 classification = DependencyClassification.Candidate;
                 break;
@@ -161,14 +167,15 @@ internal class AssemblyCandidateResolver
     }
 
     /// <summary>
-    /// Gets all the related assemblies
+    ///     Gets all the related assemblies
     /// </summary>
     /// <returns></returns>
     public IEnumerable<Assembly> GetAssemblies()
     {
         foreach (var dependency in _dependencies)
         {
-            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate or DependencyClassification.NotCandidate && dependency.Value.Assembly is { })
+            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate or DependencyClassification.NotCandidate
+             && dependency.Value.Assembly is { })
             {
                 yield return dependency.Value.Assembly;
             }

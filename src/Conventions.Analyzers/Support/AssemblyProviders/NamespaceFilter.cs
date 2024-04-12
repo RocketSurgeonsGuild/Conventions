@@ -4,5 +4,5 @@ internal enum NamespaceFilter
 {
     Exact = 1,
     In = 2,
-    NotIn = 3
+    NotIn = 3,
 }

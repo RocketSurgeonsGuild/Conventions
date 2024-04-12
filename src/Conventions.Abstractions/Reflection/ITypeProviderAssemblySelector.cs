@@ -49,7 +49,7 @@ public interface ITypeProviderAssemblySelector
     ITypeSelector NotFromAssemblyOf(Type type);
 
     /// <summary>
-    /// Include system assemblies
+    ///     Include system assemblies
     /// </summary>
     /// <returns></returns>
     ITypeSelector IncludeSystemAssemblies();

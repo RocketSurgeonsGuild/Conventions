@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -36,7 +35,7 @@ public class DependencyContextAssemblyCandidateFinderTests(ITestOutputHelper out
                     "Sample.DependencyOne",
                     "Sample.DependencyTwo",
                     "Sample.DependencyThree",
-                    "Rocket.Surgery.Conventions.Tests"
+                    "Rocket.Surgery.Conventions.Tests",
                 }
             );
         items
@@ -70,7 +69,7 @@ public class DependencyContextAssemblyCandidateFinderTests(ITestOutputHelper out
                     "Sample.DependencyOne",
                     "Sample.DependencyTwo",
                     "Sample.DependencyThree",
-                    "Rocket.Surgery.Conventions.Tests"
+                    "Rocket.Surgery.Conventions.Tests",
                 }
             );
         items
@@ -113,7 +112,7 @@ public class DependencyContextAssemblyCandidateFinderTests(ITestOutputHelper out
                     "Sample.DependencyOne",
                     "Sample.DependencyTwo",
                     "Sample.DependencyThree",
-                    "Rocket.Surgery.Conventions.Tests"
+                    "Rocket.Surgery.Conventions.Tests",
                 }
             );
         items

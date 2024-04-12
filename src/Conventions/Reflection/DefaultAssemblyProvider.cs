@@ -14,6 +14,9 @@ namespace Rocket.Surgery.Conventions.Reflection;
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
 internal partial class DefaultAssemblyProvider : IAssemblyProvider
 {
+    [LoggerMessage("[{AssemblyProvider}] Found assembly {AssemblyName}", EventId = 1337, Level = LogLevel.Debug)]
+    private static partial void LogFoundAssembly(ILogger logger, string assemblyProvider, string? assemblyName);
+
     private readonly ILogger _logger;
     private readonly ImmutableArray<Assembly> _assembles;
 
@@ -23,11 +26,8 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
         "netstandard",
         "System",
         "System.Core",
-        "System.Runtime"
+        "System.Runtime",
     ];
-
-    [LoggerMessage("[{AssemblyProvider}] Found assembly {AssemblyName}", EventId = 1337, Level = LogLevel.Debug)]
-    private static partial void LogFoundAssembly(ILogger logger, string assemblyProvider, string? assemblyName);
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AppDomainAssemblyProvider" /> class.
@@ -41,12 +41,35 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
         _logger = logger ?? NullLogger.Instance;
     }
 
-    private void LogValue(Assembly value) =>
+    private void LogValue(Assembly value)
+    {
         LogFoundAssembly(
             _logger,
             nameof(DefaultAssemblyProvider),
             value.GetName().Name
         );
+    }
+
+    private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
+    {
+        if (!candidates.Any())
+        {
+            return Enumerable.Empty<Assembly>();
+        }
+
+        // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
+        var candidatesResolver = new AssemblyCandidateResolver(
+            _assembles,
+            new HashSet<string?>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase),
+            _logger
+        );
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        return candidatesResolver
+              .GetCandidates()
+              .Where(x => x.Assembly is { })
+              .Select(x => x.Assembly!)
+              .Reverse();
+    }
 
     /// <summary>
     ///     Gets the assemblies based on the given selector.
@@ -83,7 +106,7 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
     }
 
     /// <summary>
-    ///   Get the full list of types using the given selector
+    ///     Get the full list of types using the given selector
     /// </summary>
     /// <param name="action"></param>
     /// <param name="filePath"></param>
@@ -107,27 +130,6 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
             : assemblySelector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(assemblySelector.AssemblyDependencies)
                 : assemblySelector.Assemblies;
-        return action(new TypeProviderAssemblySelector() { Assemblies = assemblies });
-    }
-
-    private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
-    {
-        if (!candidates.Any())
-        {
-            return Enumerable.Empty<Assembly>();
-        }
-
-        // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
-        var candidatesResolver = new AssemblyCandidateResolver(
-            _assembles,
-            new HashSet<string?>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase),
-            _logger
-        );
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        return candidatesResolver
-              .GetCandidates()
-              .Where(x => x.Assembly is { })
-              .Select(x => x.Assembly!)
-              .Reverse();
+        return action(new TypeProviderAssemblySelector { Assemblies = assemblies, });
     }
 }

@@ -11,7 +11,7 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
         {
             typeof(ConventionContextBuilder).GetTypeInfo().Assembly,
             typeof(IConventionContext).GetTypeInfo().Assembly,
-            typeof(TestAssemblyProvider).GetTypeInfo().Assembly
+            typeof(TestAssemblyProvider).GetTypeInfo().Assembly,
         };
     }
 

@@ -9,8 +9,6 @@ internal class FindTypeVisitor(Compilation compilation, ICompiledTypeFilter<IAss
     new CompiledTypeFilter(ClassFilter.PublicOnly, ImmutableArray<ITypeFilterDescriptor>.Empty)
 )
 {
-    private INamedTypeSymbol? _type;
-
     public static INamedTypeSymbol? FindType(Compilation compilation, IAssemblySymbol assemblySymbol, string typeName)
     {
         var visitor = new FindTypeVisitor(
@@ -21,6 +19,8 @@ internal class FindTypeVisitor(Compilation compilation, ICompiledTypeFilter<IAss
         visitor.Visit(assemblySymbol);
         return visitor._type;
     }
+
+    private INamedTypeSymbol? _type;
 
     protected override bool FoundNamedType(INamedTypeSymbol symbol)
     {

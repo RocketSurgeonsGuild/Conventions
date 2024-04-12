@@ -26,10 +26,16 @@ internal readonly record struct WithAttributeFilterDescriptor(INamedTypeSymbol A
 internal readonly record struct WithoutAttributeFilterDescriptor(INamedTypeSymbol Attribute) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct WithAttributeStringFilterDescriptor([property: JsonPropertyName("a")] string AttributeClassName) : ITypeFilterDescriptor;
+internal readonly record struct WithAttributeStringFilterDescriptor
+(
+    [property: JsonPropertyName("a")]
+    string AttributeClassName) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
-internal readonly record struct WithoutAttributeStringFilterDescriptor([property: JsonPropertyName("a")] string AttributeClassName) : ITypeFilterDescriptor;
+internal readonly record struct WithoutAttributeStringFilterDescriptor
+(
+    [property: JsonPropertyName("a")]
+    string AttributeClassName) : ITypeFilterDescriptor;
 
 [DebuggerDisplay("{ToString()}")]
 internal readonly record struct AssignableToTypeFilterDescriptor(INamedTypeSymbol Type) : ITypeFilterDescriptor;

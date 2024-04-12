@@ -1,12 +1,9 @@
-﻿using FakeItEasy;
-using Rocket.Surgery.Conventions.Reflection;
+﻿using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
 public class TypeProviderAssemblySelectorTests
 {
-    private readonly TypeProviderAssemblySelector _typeSelector = new();
-
     [Fact]
     public async Task FromAssembly_ReturnsSameInstance()
     {
@@ -49,15 +46,6 @@ public class TypeProviderAssemblySelectorTests
         await Verify(_typeSelector);
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public async Task GetTypes_WithPublicOnly_ReturnsExpectedTypes(bool publicOnly)
-    {
-        _typeSelector.FromAssembly();
-        await Verify(_typeSelector.GetTypes(publicOnly)).UseParameters(publicOnly);
-    }
-
     [Fact]
     public async Task GetTypes_WithFilterAction_ReturnsExpectedTypes()
     {
@@ -66,6 +54,17 @@ public class TypeProviderAssemblySelectorTests
 
         var result = _typeSelector.GetTypes(action);
         await Verify(_typeSelector.GetTypes(action));
+    }
+
+    private readonly TypeProviderAssemblySelector _typeSelector = new();
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task GetTypes_WithPublicOnly_ReturnsExpectedTypes(bool publicOnly)
+    {
+        _typeSelector.FromAssembly();
+        await Verify(_typeSelector.GetTypes(publicOnly)).UseParameters(publicOnly);
     }
 
     [Theory]

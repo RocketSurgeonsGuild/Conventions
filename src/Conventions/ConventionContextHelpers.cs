@@ -201,12 +201,12 @@ internal static partial class ConventionContextHelpers
     {
         logger ??= NullLogger.Instance;
         var assemblies = assemblyProvider
-           .GetAssemblies(
-                z => z
-                    .FromAssemblyDependenciesOf<IConventionContext>()
-                    .FromAssemblyDependenciesOf<IConvention>()
-            )
-           .ToImmutableArray();
+                        .GetAssemblies(
+                             z => z
+                                 .FromAssemblyDependenciesOf<IConventionContext>()
+                                 .FromAssemblyDependenciesOf<IConvention>()
+                         )
+                        .ToImmutableArray();
 
         var prependedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._prependedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
         var appendedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._appendedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);

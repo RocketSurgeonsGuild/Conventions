@@ -1,4 +1,3 @@
-using System.Runtime.Loader;
 using Microsoft.CodeAnalysis;
 using Xunit.Abstractions;
 
@@ -185,6 +184,7 @@ public class TestConvention2 : IServiceAsyncConvention {
         {
             await Verify(diags).UseHashedParameters(getTypesItem.Name);
         }
+
         other.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
 
         var result = await Builder
@@ -193,7 +193,6 @@ public class TestConvention2 : IServiceAsyncConvention {
                           .IgnoreOutputFile("Imported_Assembly_Conventions.cs")
                           .IgnoreOutputFile("Exported_Conventions.cs")
                           .Build()
-
                           .GenerateAsync();
 
         await Verify(result).UseHashedParameters(getTypesItem.Name);

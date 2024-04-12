@@ -1,6 +1,4 @@
-﻿using System.Runtime.Loader;
-using Rocket.Surgery.Conventions.Analyzers.Tests;
-using Rocket.Surgery.Conventions.Reflection;
+﻿using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
@@ -11,7 +9,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.AssignableTo(typeof(string));
-        var types = new Type[] { typeof(string), typeof(int) };
+        var types = new[] { typeof(string), typeof(int), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -21,7 +19,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.AssignableTo<string>();
-        var types = new Type[] { typeof(string), typeof(int) };
+        var types = new[] { typeof(string), typeof(int), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -31,7 +29,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.AssignableToAny(typeof(string), typeof(int));
-        var types = new Type[] { typeof(string), typeof(int), typeof(double) };
+        var types = new[] { typeof(string), typeof(int), typeof(double), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -41,7 +39,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.EndsWith("Class");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurInterface) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurInterface), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -51,7 +49,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.StartsWith("My");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(MyInterface) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(MyInterface), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -61,7 +59,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.Contains("Class");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(ClassInterface) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(ClassInterface), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -71,7 +69,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.InExactNamespaceOf(typeof(MyClass));
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -81,7 +79,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.InExactNamespaceOf<MyClass>();
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -91,7 +89,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.InExactNamespaces("MyNamespace", "YourNamespace");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -101,7 +99,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.InNamespaceOf(typeof(MyClass));
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -111,7 +109,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.InNamespaceOf<MyClass>();
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -121,7 +119,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.InNamespaces("MyNamespace", "YourNamespace");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -131,7 +129,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.NotInNamespaceOf(typeof(MyClass));
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -141,7 +139,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.NotInNamespaceOf<MyClass>();
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -151,7 +149,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.NotInNamespaces("MyNamespace", "YourNamespace");
-        var types = new Type[] { typeof(MyClass), typeof(YourClass), typeof(OurClass) };
+        var types = new[] { typeof(MyClass), typeof(YourClass), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -161,7 +159,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.WithAttribute(typeof(ObsoleteAttribute));
-        var types = new Type[] { typeof(MyClassWithAttribute), typeof(YourClassWithAttribute), typeof(OurClass) };
+        var types = new[] { typeof(MyClassWithAttribute), typeof(YourClassWithAttribute), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -171,7 +169,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.WithAttribute<ObsoleteAttribute>();
-        var types = new Type[] { typeof(MyClassWithAttribute), typeof(YourClassWithAttribute), typeof(OurClass) };
+        var types = new[] { typeof(MyClassWithAttribute), typeof(YourClassWithAttribute), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -181,7 +179,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.WithoutAttribute(typeof(ObsoleteAttribute));
-        var types = new Type[] { typeof(MyClass), typeof(YourClassWithAttribute), typeof(OurClassWithoutAttribute) };
+        var types = new[] { typeof(MyClass), typeof(YourClassWithAttribute), typeof(OurClassWithoutAttribute), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }
@@ -191,7 +189,7 @@ public class TypeFilterFunctionalityTests
     {
         var typeFilter = new TypeFilter();
         typeFilter.WithoutAttribute<ObsoleteAttribute>();
-        var types = new Type[] { typeof(MyClass), typeof(YourClassWithAttribute), typeof(OurClassWithoutAttribute) };
+        var types = new[] { typeof(MyClass), typeof(YourClassWithAttribute), typeof(OurClassWithoutAttribute), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
     }

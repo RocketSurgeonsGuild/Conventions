@@ -163,16 +163,16 @@ public interface ITypeFilter
     /// <param name="attributeFullName">The full name of the attribute.</param>
     ITypeFilter WithoutAttribute(string? attributeFullName);
 
-     /// <summary>
-     ///  Will match all types that are of the specified <paramref name="typeKindFilter" />.
-     /// </summary>
-     /// <param name="typeKindFilter"></param>
-     /// <param name="typeKindFilters"></param>
-     /// <returns></returns>
+    /// <summary>
+    ///     Will match all types that are of the specified <paramref name="typeKindFilter" />.
+    /// </summary>
+    /// <param name="typeKindFilter"></param>
+    /// <param name="typeKindFilters"></param>
+    /// <returns></returns>
     ITypeFilter KindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters);
 
     /// <summary>
-    ///   Will match all types that are not of the specified <paramref name="typeKindFilter" />.
+    ///     Will match all types that are not of the specified <paramref name="typeKindFilter" />.
     /// </summary>
     /// <param name="typeKindFilter"></param>
     /// <param name="typeKindFilters"></param>
@@ -180,7 +180,7 @@ public interface ITypeFilter
     ITypeFilter NotKindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters);
 
     /// <summary>
-    ///  Will match all types that are of the specified <paramref name="typeInfoFilter" />.
+    ///     Will match all types that are of the specified <paramref name="typeInfoFilter" />.
     /// </summary>
     /// <param name="typeInfoFilter"></param>
     /// <param name="typeInfoFilters"></param>
@@ -188,12 +188,10 @@ public interface ITypeFilter
     ITypeFilter InfoOf(TypeInfoFilter typeInfoFilter, params TypeInfoFilter[] typeInfoFilters);
 
     /// <summary>
-    ///  Will match all types that are not of the specified <paramref name="typeInfoFilter" />.
+    ///     Will match all types that are not of the specified <paramref name="typeInfoFilter" />.
     /// </summary>
     /// <param name="typeInfoFilter"></param>
     /// <param name="typeInfoFilters"></param>
     /// <returns></returns>
     ITypeFilter NotInfoOf(TypeInfoFilter typeInfoFilter, params TypeInfoFilter[] typeInfoFilters);
 }
-
-

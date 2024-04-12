@@ -4,5 +4,5 @@ internal enum TextDirectionFilter
 {
     StartsWith,
     EndsWith,
-    Contains
+    Contains,
 }

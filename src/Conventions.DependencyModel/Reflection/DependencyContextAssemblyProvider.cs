@@ -25,7 +25,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
         "netstandard",
         "System",
         "System.Core",
-        "System.Runtime"
+        "System.Runtime",
     ];
 
     /// <summary>
@@ -65,6 +65,25 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
         #pragma warning restore CA1031
     }
 
+    private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
+    {
+        if (candidates.Count == 0)
+        {
+            return Enumerable.Empty<Assembly>();
+        }
+
+        var candidatesResolver = new RuntimeLibraryCandidateResolver(
+            _dependencyContext.RuntimeLibraries,
+            new HashSet<string>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase)
+        );
+        return candidatesResolver
+              .GetCandidates()
+              .SelectMany(library => library.GetDefaultAssemblyNames(_dependencyContext))
+              .Select(TryLoad)
+              .Where(x => x != null)
+              .Reverse();
+    }
+
     /// <summary>
     ///     Gets the assemblies based on the given selector.
     /// </summary>
@@ -96,7 +115,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     }
 
     /// <summary>
-    ///   Get the full list of types using the given selector
+    ///     Get the full list of types using the given selector
     /// </summary>
     /// <param name="action"></param>
     /// <param name="filePath"></param>
@@ -120,25 +139,6 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
             : assemblySelector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(assemblySelector.AssemblyDependencies)
                 : assemblySelector.Assemblies;
-        return action(new TypeProviderAssemblySelector() { Assemblies = assemblies });
-    }
-
-    private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
-    {
-        if (candidates.Count == 0)
-        {
-            return Enumerable.Empty<Assembly>();
-        }
-
-        var candidatesResolver = new RuntimeLibraryCandidateResolver(
-            _dependencyContext.RuntimeLibraries,
-            new HashSet<string>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase)
-        );
-        return candidatesResolver
-              .GetCandidates()
-              .SelectMany(library => library.GetDefaultAssemblyNames(_dependencyContext))
-              .Select(TryLoad)
-              .Where(x => x != null)
-              .Reverse();
+        return action(new TypeProviderAssemblySelector { Assemblies = assemblies, });
     }
 }

@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 using Rocket.Surgery.Conventions.Support;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Rocket.Surgery.Conventions.Helpers;
 
 // ReSharper disable UnusedVariable
 namespace Rocket.Surgery.Conventions;
@@ -19,6 +18,116 @@ namespace Rocket.Surgery.Conventions;
 [Generator]
 public class ConventionAttributesGenerator : IIncrementalGenerator
 {
+    private static ImmutableArray<AssemblyCollection.Item> GetAssemblyDetails(
+        SourceProductionContext context,
+        Compilation compilation,
+        HashSet<IAssemblySymbol> assemblySymbols,
+        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
+    )
+    {
+        var items = ImmutableArray.CreateBuilder<AssemblyCollection.Item>();
+        foreach (var tuple in results)
+        {
+            ( var methodCallSyntax, var selector ) = tuple;
+
+            var assemblies = new List<IAssemblyDescriptor>();
+            var typeFilters = new List<ITypeFilterDescriptor>();
+            var classFilter = ClassFilter.All;
+
+            DataHelpers.HandleInvocationExpressionSyntax(
+                context,
+                compilation.GetSemanticModel(tuple.expression.SyntaxTree),
+                selector,
+                assemblies,
+                typeFilters,
+                compilation.ObjectType,
+                ref classFilter,
+                context.CancellationToken
+            );
+
+            var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
+
+            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
+
+            var source = new SourceLocation(
+                methodCallSyntax
+                   .SyntaxTree.GetText(context.CancellationToken)
+                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
+                   .LineNumber,
+                methodCallSyntax.SyntaxTree.FilePath,
+                containingMethod.Identifier.Text
+            );
+            // disallow list?
+            if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs"))
+            {
+                continue;
+            }
+
+            var i = new AssemblyCollection.Item(source, assemblyFilter);
+            items.Add(i);
+        }
+
+        return items.ToImmutable();
+    }
+
+    private static ImmutableArray<TypeCollection.Item> GetTypeDetails(
+        SourceProductionContext context,
+        Compilation compilation,
+        HashSet<IAssemblySymbol> assemblySymbols,
+        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
+    )
+    {
+        var items = ImmutableArray.CreateBuilder<TypeCollection.Item>();
+        foreach (var tuple in results)
+        {
+            ( var methodCallSyntax, var selector ) = tuple;
+
+            var assemblies = new List<IAssemblyDescriptor>();
+            var typeFilters = new List<ITypeFilterDescriptor>();
+            var classFilter = ClassFilter.All;
+
+            DataHelpers.HandleInvocationExpressionSyntax(
+                context,
+                compilation.GetSemanticModel(tuple.expression.SyntaxTree),
+                selector,
+                assemblies,
+                typeFilters,
+                compilation.ObjectType,
+                ref classFilter,
+                context.CancellationToken
+            );
+
+            var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
+            var typeFilter = new CompiledTypeFilter(classFilter, typeFilters.ToImmutableArray());
+            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
+
+            var source = new SourceLocation(
+                methodCallSyntax
+                   .SyntaxTree.GetText(context.CancellationToken)
+                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
+                   .LineNumber,
+                methodCallSyntax.SyntaxTree.FilePath,
+                containingMethod.Identifier.Text
+            );
+
+            var i = new TypeCollection.Item(source, assemblyFilter, typeFilter);
+            items.Add(i);
+        }
+
+        return items.ToImmutable();
+    }
+
+    private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorAttributeSyntaxContext context)
+    {
+        foreach (var attribute in context.Attributes)
+        {
+            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta,], })
+                yield return ta;
+            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv, },], })
+                yield return sv;
+        }
+    }
+
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -117,7 +226,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
         var getAssembliesSyntaxProvider = context
                                          .SyntaxProvider.CreateSyntaxProvider(
-                                              (node, _) => AssemblyCollection.GetAssembliesMethod(node) is { method: { }, selector: { } },
+                                              (node, _) => AssemblyCollection.GetAssembliesMethod(node) is { method: { }, selector: { }, },
                                               (syntaxContext, _) => AssemblyCollection.GetAssembliesMethod(syntaxContext.Node)
                                           )
                                          .Combine(hasAssemblyLoadContext)
@@ -126,7 +235,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                          .Collect();
         var getTypesSyntaxProvider = context
                                     .SyntaxProvider.CreateSyntaxProvider(
-                                         (node, _) => TypeCollection.GetTypesMethod(node) is { method: { }, selector: { } },
+                                         (node, _) => TypeCollection.GetTypesMethod(node) is { method: { }, selector: { }, },
                                          (syntaxContext, _) => TypeCollection.GetTypesMethod(syntaxContext.Node)
                                      )
                                     .Combine(hasAssemblyLoadContext)
@@ -140,9 +249,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                .Combine(context.CompilationProvider),
             static (context, results) =>
             {
-                var (getAssemblies, getTypes) = results.Left.Left;
+                ( var getAssemblies, var getTypes ) = results.Left.Left;
                 var compilation = results.Right;
-                var (discoveredAssemblyRequests, discoveredTypeRequests) = AssemblyProviderConfiguration.FromAssemblyAttributes(compilation);
+                ( var discoveredAssemblyRequests, var discoveredTypeRequests ) = AssemblyProviderConfiguration.FromAssemblyAttributes(compilation);
 
                 if (getAssemblies.Length == 0
                  && getTypes.Length == 0
@@ -229,115 +338,5 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 );
             }
         );
-    }
-
-    private static ImmutableArray<AssemblyCollection.Item> GetAssemblyDetails(
-        SourceProductionContext context,
-        Compilation compilation,
-        HashSet<IAssemblySymbol> assemblySymbols,
-        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
-    )
-    {
-        var items = ImmutableArray.CreateBuilder<AssemblyCollection.Item>();
-        foreach (var tuple in results)
-        {
-            var (methodCallSyntax, selector) = tuple;
-
-            var assemblies = new List<IAssemblyDescriptor>();
-            var typeFilters = new List<ITypeFilterDescriptor>();
-            var classFilter = ClassFilter.All;
-
-            DataHelpers.HandleInvocationExpressionSyntax(
-                context,
-                compilation.GetSemanticModel(tuple.expression.SyntaxTree),
-                selector,
-                assemblies,
-                typeFilters,
-                compilation.ObjectType,
-                ref classFilter,
-                context.CancellationToken
-            );
-
-            var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
-
-            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-
-            var source = new SourceLocation(
-                methodCallSyntax
-                   .SyntaxTree.GetText(context.CancellationToken)
-                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
-                   .LineNumber,
-                methodCallSyntax.SyntaxTree.FilePath,
-                containingMethod.Identifier.Text
-            );
-            // disallow list?
-            if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs"))
-            {
-                continue;
-            }
-
-            var i = new AssemblyCollection.Item(source, assemblyFilter);
-            items.Add(i);
-        }
-
-        return items.ToImmutable();
-    }
-
-    private static ImmutableArray<TypeCollection.Item> GetTypeDetails(
-        SourceProductionContext context,
-        Compilation compilation,
-        HashSet<IAssemblySymbol> assemblySymbols,
-        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
-    )
-    {
-        var items = ImmutableArray.CreateBuilder<TypeCollection.Item>();
-        foreach (var tuple in results)
-        {
-            var (methodCallSyntax, selector) = tuple;
-
-            var assemblies = new List<IAssemblyDescriptor>();
-            var typeFilters = new List<ITypeFilterDescriptor>();
-            var classFilter = ClassFilter.All;
-
-            DataHelpers.HandleInvocationExpressionSyntax(
-                context,
-                compilation.GetSemanticModel(tuple.expression.SyntaxTree),
-                selector,
-                assemblies,
-                typeFilters,
-                compilation.ObjectType,
-                ref classFilter,
-                context.CancellationToken
-            );
-
-            var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
-            var typeFilter = new CompiledTypeFilter(classFilter, typeFilters.ToImmutableArray());
-            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-
-            var source = new SourceLocation(
-                methodCallSyntax
-                   .SyntaxTree.GetText(context.CancellationToken)
-                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
-                   .LineNumber,
-                methodCallSyntax.SyntaxTree.FilePath,
-                containingMethod.Identifier.Text
-            );
-
-            var i = new TypeCollection.Item(source, assemblyFilter, typeFilter);
-            items.Add(i);
-        }
-
-        return items.ToImmutable();
-    }
-
-    private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorAttributeSyntaxContext context)
-    {
-        foreach (var attribute in context.Attributes)
-        {
-            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta,], })
-                yield return ta;
-            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv, },], })
-                yield return sv;
-        }
     }
 }

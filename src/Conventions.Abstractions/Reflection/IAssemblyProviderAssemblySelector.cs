@@ -50,7 +50,7 @@ public interface IAssemblyProviderAssemblySelector
     IAssemblyProviderAssemblySelector NotFromAssemblyOf(Type type);
 
     /// <summary>
-    /// Include system assemblies
+    ///     Include system assemblies
     /// </summary>
     /// <returns></returns>
     IAssemblyProviderAssemblySelector IncludeSystemAssemblies();

@@ -22,12 +22,12 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
         "netstandard",
         "System",
         "System.Core",
-        "System.Runtime"
+        "System.Runtime",
     ];
 
     private readonly Action<ILogger, string, string, Exception?> _logFoundAssembly = LoggerMessage.Define<string, string>(
         LogLevel.Debug,
-        new EventId(1337),
+        new(1337),
         "[{AssemblyProvider}] Found assembly {AssemblyName}"
     );
 
@@ -44,6 +44,27 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
                 ( appDomain ?? AppDomain.CurrentDomain ).GetAssemblies().Where(x => x != null!).ToImmutableArray()
         );
         _logger = logger ?? NullLogger.Instance;
+    }
+
+    private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
+    {
+        if (!candidates.Any())
+        {
+            return Enumerable.Empty<Assembly>();
+        }
+
+        // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
+        var candidatesResolver = new AssemblyCandidateResolver(
+            _assembles.Value,
+            new HashSet<string?>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase),
+            _logger
+        );
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        return candidatesResolver
+              .GetCandidates()
+              .Where(x => x.Assembly is { })
+              .Select(x => x.Assembly!)
+              .Reverse();
     }
 
     /// <summary>
@@ -77,7 +98,7 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
     }
 
     /// <summary>
-    ///   Get the full list of types using the given selector
+    ///     Get the full list of types using the given selector
     /// </summary>
     /// <param name="action"></param>
     /// <param name="filePath"></param>
@@ -101,27 +122,6 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
             : assemblySelector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(assemblySelector.AssemblyDependencies)
                 : assemblySelector.Assemblies;
-        return action(new TypeProviderAssemblySelector() { Assemblies = assemblies });
-    }
-
-    private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
-    {
-        if (!candidates.Any())
-        {
-            return Enumerable.Empty<Assembly>();
-        }
-
-        // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
-        var candidatesResolver = new AssemblyCandidateResolver(
-            _assembles.Value,
-            new HashSet<string?>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase),
-            _logger
-        );
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        return candidatesResolver
-              .GetCandidates()
-              .Where(x => x.Assembly is { })
-              .Select(x => x.Assembly!)
-              .Reverse();
+        return action(new TypeProviderAssemblySelector { Assemblies = assemblies, });
     }
 }

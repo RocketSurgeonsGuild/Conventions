@@ -26,30 +26,35 @@ public static class ModuleInitializer
         );
         VerifierSettings.ScrubLines(z => z.Contains("ObjectProxy", StringComparison.OrdinalIgnoreCase));
         VerifierSettings.SortPropertiesAlphabetically();
-        VerifierSettings.AddExtraSettings(settings =>
-                                          {
-                                              settings.Converters.Add(new AssemblyConverter());
-                                              settings.Converters.Add(new TypeConverter());
-                                          });
+        VerifierSettings.AddExtraSettings(
+            settings =>
+            {
+                settings.Converters.Add(new AssemblyConverter());
+                settings.Converters.Add(new TypeConverter());
+            }
+        );
     }
 
-    class AssemblyConverter : WriteOnlyJsonConverter<Assembly>
+    private class AssemblyConverter : WriteOnlyJsonConverter<Assembly>
     {
         public override void Write(VerifyJsonWriter writer, Assembly value)
         {
             writer.WriteValue(value.GetName().Name);
         }
     }
-    class TypeConverter : WriteOnlyJsonConverter<Type>
+
+    private class TypeConverter : WriteOnlyJsonConverter<Type>
     {
         public override void Write(VerifyJsonWriter writer, Type value)
         {
-
-            if (value.FullName?.Contains("ObjectProxy") == true || value.FullName?.Contains("Castle.Proxies") == true || value.FullName?.Contains("DynamicProxyGenAssembly2") == true)
+            if (value.FullName?.Contains("ObjectProxy") == true
+             || value.FullName?.Contains("Castle.Proxies") == true
+             || value.FullName?.Contains("DynamicProxyGenAssembly2") == true)
             {
                 writer.WriteNull();
                 return;
             }
+
             writer.WriteValue(value.FullName);
         }
     }

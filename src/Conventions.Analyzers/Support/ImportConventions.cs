@@ -10,19 +10,12 @@ namespace Rocket.Surgery.Conventions.Support;
 
 internal static class ImportConventions
 {
-    public record Request(
-        Compilation Compilation,
-        ImmutableArray<SyntaxNode> ImportCandidates,
-        bool HasExports,
-        ConventionConfigurationData ImportConfiguration,
-        ConventionConfigurationData ExportConfiguration
-        );
     public static void HandleConventionImports(
         SourceProductionContext context,
         Request request
     )
     {
-        var (compilation, importCandidates, hasExports, importConfiguration, exportConfiguration) = request;
+        ( var compilation, var importCandidates, var hasExports, var importConfiguration, var exportConfiguration ) = request;
         var references = getReferences(compilation, hasExports && exportConfiguration.Assembly, exportConfiguration);
 
         var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
@@ -261,4 +254,13 @@ internal static class ImportConventions
             return block;
         }
     }
+
+    public record Request
+    (
+        Compilation Compilation,
+        ImmutableArray<SyntaxNode> ImportCandidates,
+        bool HasExports,
+        ConventionConfigurationData ImportConfiguration,
+        ConventionConfigurationData ExportConfiguration
+    );
 }

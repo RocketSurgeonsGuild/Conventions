@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Rocket.Surgery.Conventions.Helpers;
 
 namespace Rocket.Surgery.Conventions.Support;
 
@@ -28,7 +27,7 @@ internal static class SwitchGenerator
         return switchStatement;
     }
 
-    static SwitchSectionSyntax createNestedSwitchSections<T>(
+    private static SwitchSectionSyntax createNestedSwitchSections<T>(
         IReadOnlyList<(SourceLocation location, BlockSyntax block)> blocks,
         NameSyntax identifier,
         Func<(SourceLocation location, BlockSyntax block), T> regroup,
@@ -36,11 +35,11 @@ internal static class SwitchGenerator
         Func<T, LiteralExpressionSyntax> literalFactory
     )
     {
-        if (blocks is [var localBlock])
+        if (blocks is [var localBlock,])
         {
             return SwitchSection()
-                                .AddStatements(localBlock.block.Statements.ToArray())
-                                .AddStatements(BreakStatement());
+                  .AddStatements(localBlock.block.Statements.ToArray())
+                  .AddStatements(BreakStatement());
         }
 
         var section = SwitchStatement(identifier);
@@ -52,7 +51,7 @@ internal static class SwitchGenerator
         return SwitchSection().AddStatements(section, BreakStatement());
     }
 
-    static SwitchSectionSyntax generateFilePathSwitchStatement(IGrouping<string, (SourceLocation location, BlockSyntax block)> innerGroup)
+    private static SwitchSectionSyntax generateFilePathSwitchStatement(IGrouping<string, (SourceLocation location, BlockSyntax block)> innerGroup)
     {
         return createNestedSwitchSections(
             innerGroup.ToArray(),
@@ -67,18 +66,18 @@ internal static class SwitchGenerator
         );
     }
 
-    static SwitchSectionSyntax generateMemberNameSwitchStatement(IGrouping<string, (SourceLocation location, BlockSyntax block)> innerGroup)
+    private static SwitchSectionSyntax generateMemberNameSwitchStatement(IGrouping<string, (SourceLocation location, BlockSyntax block)> innerGroup)
     {
         return SwitchSection()
-                            .AddLabels(
-                                 CaseSwitchLabel(
-                                     LiteralExpression(
-                                         SyntaxKind.StringLiteralExpression,
-                                         Literal(innerGroup.Key)
-                                     )
-                                 )
-                             )
-                            .AddStatements(innerGroup.FirstOrDefault().block?.Statements.ToArray() ?? Array.Empty<StatementSyntax>())
-                            .AddStatements(BreakStatement());
+              .AddLabels(
+                   CaseSwitchLabel(
+                       LiteralExpression(
+                           SyntaxKind.StringLiteralExpression,
+                           Literal(innerGroup.Key)
+                       )
+                   )
+               )
+              .AddStatements(innerGroup.FirstOrDefault().block?.Statements.ToArray() ?? Array.Empty<StatementSyntax>())
+              .AddStatements(BreakStatement());
     }
 }
