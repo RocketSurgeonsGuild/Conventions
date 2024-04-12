@@ -31,7 +31,7 @@
             "commands": ["docfx"]
         },
         "dotnet-outdated-tool": {
-            "version": "4.6.0",
+            "version": "4.6.1",
             "commands": ["dotnet-outdated"]
         },
         "verify.tool": {
