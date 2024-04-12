@@ -83,9 +83,9 @@
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="8.0.18" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="8.0.18" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" Version="8.0.18" />
-        <PackageVersion Include="xunit" Version="2.7.0" />
-        <PackageVersion Include="xunit.analyzers" Version="1.11.0" />
-        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
+        <PackageVersion Include="xunit" Version="2.7.1" />
+        <PackageVersion Include="xunit.analyzers" Version="1.12.0" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.8" />
         <PackageVersion Include="Verify.AngleSharp" Version="4.3.1" />
         <PackageVersion Include="Verify.ImageMagick" Version="3.3.0" />
         <PackageVersion Include="Verify.Xunit" Version="23.7.2" />
