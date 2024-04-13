@@ -1,60 +1,42 @@
 {
-  "version": 1,
-  "isRoot": true,
-  "tools": {
-    "gitversion.tool": {
-      "version": "6.0.0-beta.7",
-      "commands": [
-        "dotnet-gitversion"
-      ]
-    },
-    "dotnet-reportgenerator-globaltool": {
-      "version": "5.2.4",
-      "commands": [
-        "reportgenerator"
-      ]
-    },
-    "nuke.globaltool": {
-      "version": "8.0.0",
-      "commands": [
-        "nuke"
-      ]
-    },
-    "codecov.tool": {
-      "version": "1.13.0",
-      "commands": [
-        "codecov"
-      ]
-    },
-    "jetbrains.resharper.globaltools": {
-      "version": "2023.3.4",
-      "commands": [
-        "jb"
-      ]
-    },
-    "nukeeper": {
-      "version": "0.35.0",
-      "commands": [
-        "nukeeper"
-      ]
-    },
-    "docfx": {
-      "version": "2.76.0",
-      "commands": [
-        "docfx"
-      ]
-    },
-    "dotnet-outdated-tool": {
-      "version": "4.6.0",
-      "commands": [
-        "dotnet-outdated"
-      ]
-    },
-    "verify.tool": {
-      "version": "0.6.0",
-      "commands": [
-        "dotnet-verify"
-      ]
+    "version": 1,
+    "isRoot": true,
+    "tools": {
+        "gitversion.tool": {
+            "version": "6.0.0-beta.7",
+            "commands": ["dotnet-gitversion"]
+        },
+        "dotnet-reportgenerator-globaltool": {
+            "version": "5.2.4",
+            "commands": ["reportgenerator"]
+        },
+        "nuke.globaltool": {
+            "version": "8.0.0",
+            "commands": ["nuke"]
+        },
+        "codecov.tool": {
+            "version": "1.13.0",
+            "commands": ["codecov"]
+        },
+        "jetbrains.resharper.globaltools": {
+            "version": "2023.3.4",
+            "commands": ["jb"]
+        },
+        "nukeeper": {
+            "version": "0.35.0",
+            "commands": ["nukeeper"]
+        },
+        "docfx": {
+            "version": "2.76.0",
+            "commands": ["docfx"]
+        },
+        "dotnet-outdated-tool": {
+            "version": "4.6.0",
+            "commands": ["dotnet-outdated"]
+        },
+        "verify.tool": {
+            "version": "0.6.0",
+            "commands": ["dotnet-verify"]
+        }
     }
-  }
 }
