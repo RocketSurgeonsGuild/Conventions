@@ -1,0 +1,18 @@
+﻿[
+  {
+    Id: CS0161,
+    Title: ,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Compiled_AssemblyProvider.cs: (29,48)-(29,56),
+    HelpLink: https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0161),
+    MessageFormat: '{0}': not all code paths return a value,
+    Message: 'Imports.AssemblyProvider.IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>>, string, string, int)': not all code paths return a value,
+    Category: Compiler,
+    CustomTags: [
+      Compiler,
+      Telemetry,
+      NotConfigurable
+    ]
+  }
+]
