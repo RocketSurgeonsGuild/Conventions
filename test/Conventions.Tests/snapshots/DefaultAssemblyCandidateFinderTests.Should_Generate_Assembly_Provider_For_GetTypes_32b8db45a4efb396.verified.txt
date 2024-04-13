@@ -1,4 +1,6 @@
 ﻿[
+  Rocket.Surgery.Conventions_51d4416f-d152-4d03-8a27-32d367cd3ab1,
+  Rocket.Surgery.Conventions.Abstractions_51d4416f-d152-4d03-8a27-32d367cd3ab1,
   EnumPolyfill,
   RocketSurgeryLoggingExtensions,
   LoggingBuilder,

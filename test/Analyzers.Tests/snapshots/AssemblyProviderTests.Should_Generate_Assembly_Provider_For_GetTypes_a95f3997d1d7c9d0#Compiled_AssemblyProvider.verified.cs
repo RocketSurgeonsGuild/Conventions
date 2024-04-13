@@ -86,7 +86,7 @@ namespace TestProject.Conventions
             }
 
             private Assembly _RocketSurgeryConventionsAbstractions;
-            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null"));
+            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=12.0.0.0, Culture=neutral, PublicKeyToken=null"));
         }
     }
 }

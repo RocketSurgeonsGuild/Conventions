@@ -26,6 +26,7 @@ public static class ModuleInitializer
         );
         VerifierSettings.ScrubLines(z => z.Contains("ObjectProxy", StringComparison.OrdinalIgnoreCase));
         VerifierSettings.SortPropertiesAlphabetically();
+        VerifierSettings.ScrubInlineGuids();
         VerifierSettings.AddExtraSettings(
             settings =>
             {
