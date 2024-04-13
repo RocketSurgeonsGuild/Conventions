@@ -2,23 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies", "eyJsIjp7ImwiOjYsImYiOiJJbnB1dDEuY3MiLCJtIjoiUmVnaXN0ZXIifSwiYSI6eyJhIjpmYWxzZSwiaSI6ZmFsc2UsIm0iOlsiVGVzdFByb2plY3QiXSwibmEiOltdLCJkIjpbXX19")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies", "eyJsIjp7ImwiOjcsImYiOiJJbnB1dDEuY3MiLCJtIjoiUmVnaXN0ZXIifSwiYSI6eyJhIjpmYWxzZSwiaSI6ZmFsc2UsIm0iOlsiVGVzdFByb2plY3QiXSwibmEiOltdLCJkIjpbXX19")]
 namespace TestProject.Conventions
 {
-    internal static partial class Imports
+    internal partial class Imports
     {
-        private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
+        private class AssemblyProvider() : IAssemblyProvider
         {
+            public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 switch (lineNumber)
                 {
-                    case 6:
+                    // FilePath: Input1.cs Member: Register
+                    case 7:
                         yield return typeof(global::TestConvention).Assembly;
                         break;
                 }

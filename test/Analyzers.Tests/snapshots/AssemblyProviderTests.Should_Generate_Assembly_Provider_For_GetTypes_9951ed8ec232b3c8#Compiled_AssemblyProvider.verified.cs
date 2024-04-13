@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
+using System.Runtime.Loader;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfSwidCI6eyJmIjoxLCJuc2YiOlt7ImYiOjMsIm4iOlsiSmV0QnJhaW5zLkFubm90YXRpb25zIl19XSwibmYiOltdLCJ0ayI6W10sInRpIjpbeyJmIjp0cnVlLCJ0IjpbNV19XSwidyI6W10sInMiOltdLCJhdCI6W3siaSI6ZmFsc2UsImEiOiJTeXN0ZW0uUHJpdmF0ZS5Db3JlTGliIiwidCI6IlN5c3RlbS5BdHRyaWJ1dGUifV0sInRhIjpbXSwiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfX0=")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE2LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfSwidCI6eyJmIjoxLCJuc2YiOlt7ImYiOjMsIm4iOlsiSmV0QnJhaW5zLkFubm90YXRpb25zIl19XSwibmYiOltdLCJ0ayI6W10sInRpIjpbeyJmIjp0cnVlLCJ0IjpbNV19XSwidyI6W10sInMiOltdLCJhdCI6W3siaSI6ZmFsc2UsImEiOiJTeXN0ZW0uUHJpdmF0ZS5Db3JlTGliIiwidCI6IlN5c3RlbS5BdHRyaWJ1dGUifV0sInRhIjpbXSwiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfX0=")]
 namespace TestProject.Conventions
 {
-    internal static partial class Imports
+    internal partial class Imports
     {
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
+            public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 yield break;
@@ -23,7 +24,8 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 14:
+                    // FilePath: Input1.cs Member: Register
+                    case 16:
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.AssemblyProviderFactory");
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderApplicationDelegate);
@@ -31,7 +33,6 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationConvention);
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionDependency");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionOrDelegate");
-                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionProviderFactory);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionWithDependencies);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyDirection);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention);

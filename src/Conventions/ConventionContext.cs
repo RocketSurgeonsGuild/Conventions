@@ -31,14 +31,12 @@ public sealed class ConventionContext : IConventionContext
 
     private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
     {
-        builder._assemblyProviderFactory ??= ConventionContextHelpers.DefaultAssemblyProviderFactory;
-
-        var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        var assemblyProvider = builder._conventionProviderFactory!.CreateAssemblyProvider(builder);
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyProvider, builder.Get<ILogger>());
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        // ReSharper disable once NullableWarningSuppressionIsUsed
         builder.Properties.Set(builder._serviceProviderFactory!);
-        var context = new ConventionContext(builder, provider, assemblyProvider, builder.Properties);
-        return context;
+        return new (builder, provider, assemblyProvider, builder.Properties);
     }
 
     private readonly ConventionContextBuilder _builder;

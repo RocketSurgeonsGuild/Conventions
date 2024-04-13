@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
+using System.Runtime.Loader;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6dHJ1ZSwiaSI6ZmFsc2UsIm0iOltdLCJuYSI6W10sImQiOltdfSwidCI6eyJmIjoxLCJuc2YiOlt7ImYiOjIsIm4iOlsiTWljcm9zb2Z0LkV4dGVuc2lvbnMuQ29uZmlndXJhdGlvbiIsIk1pY3Jvc29mdC5FeHRlbnNpb25zLkRlcGVuZGVuY3lJbmplY3Rpb24iXX1dLCJuZiI6W10sInRrIjpbXSwidGkiOltdLCJ3IjpbXSwicyI6W10sImF0IjpbXSwidGEiOltdLCJhIjp0cnVlLCJpIjpmYWxzZSwibSI6W10sIm5hIjpbXSwiZCI6W119fQ==")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE2LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6dHJ1ZSwiaSI6ZmFsc2UsIm0iOltdLCJuYSI6W10sImQiOltdfSwidCI6eyJmIjoxLCJuc2YiOlt7ImYiOjIsIm4iOlsiTWljcm9zb2Z0LkV4dGVuc2lvbnMuQ29uZmlndXJhdGlvbiIsIk1pY3Jvc29mdC5FeHRlbnNpb25zLkRlcGVuZGVuY3lJbmplY3Rpb24iXX1dLCJuZiI6W10sInRrIjpbXSwidGkiOltdLCJ3IjpbXSwicyI6W10sImF0IjpbXSwidGEiOltdLCJhIjp0cnVlLCJpIjpmYWxzZSwibSI6W10sIm5hIjpbXSwiZCI6W119fQ==")]
 namespace TestProject.Conventions
 {
-    internal static partial class Imports
+    internal partial class Imports
     {
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
+            public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 yield break;
@@ -23,7 +24,8 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 14:
+                    // FilePath: Input1.cs Member: Register
+                    case 16:
                         yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationDebugViewContext);
                         yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationExtensions);
                         yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationKeyNameAttribute);

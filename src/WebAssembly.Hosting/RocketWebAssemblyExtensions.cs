@@ -183,7 +183,6 @@ public static class RocketWebAssemblyExtensions
     public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         AppDomain appDomain,
-        ConventionProviderFactory? getConventions = null,
         Action<ConventionContextBuilder>? action = null
     )
     {
@@ -198,10 +197,6 @@ public static class RocketWebAssemblyExtensions
             {
                 a.UseAppDomain(appDomain);
                 action?.Invoke(a);
-                if (getConventions != null)
-                {
-                    a.WithConventionsFrom(getConventions);
-                }
             }
         );
     }
@@ -215,11 +210,23 @@ public static class RocketWebAssemblyExtensions
     /// <returns>WebAssemblyHostBuilder.</returns>
     public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
-        ConventionProviderFactory? getConventions = null,
+        IConventionFactory getConventions,
         Action<ConventionContextBuilder>? action = null
     )
     {
-        return ConfigureRocketSurgery(builder, AppDomain.CurrentDomain, getConventions, action);
+        if (builder == null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return ConfigureRocketSurgery(
+            builder,
+            a =>
+            {
+                a.WithConventionsFrom(getConventions);
+                action?.Invoke(a);
+            }
+        );
     }
 
     /// <summary>
@@ -233,7 +240,6 @@ public static class RocketWebAssemblyExtensions
     public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         IEnumerable<Assembly> assemblies,
-        ConventionProviderFactory? getConventions = null,
         Action<ConventionContextBuilder>? action = null
     )
     {
@@ -248,10 +254,6 @@ public static class RocketWebAssemblyExtensions
             {
                 a.UseAssemblies(assemblies);
                 action?.Invoke(a);
-                if (getConventions != null)
-                {
-                    a.WithConventionsFrom(getConventions);
-                }
             }
         );
     }

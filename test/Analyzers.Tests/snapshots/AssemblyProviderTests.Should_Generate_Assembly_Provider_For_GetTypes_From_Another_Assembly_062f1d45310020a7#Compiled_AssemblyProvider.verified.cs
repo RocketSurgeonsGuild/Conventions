@@ -2,17 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace TestProject.Conventions
 {
-    internal static partial class Imports
+    internal partial class Imports
     {
-        private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
+        private class AssemblyProvider() : IAssemblyProvider
         {
+            public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 yield break;
@@ -22,10 +22,10 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 14:
+                    // FilePath: Input1.cs Member: Register
+                    case 16:
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionProviderFactory);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingAsyncConvention);

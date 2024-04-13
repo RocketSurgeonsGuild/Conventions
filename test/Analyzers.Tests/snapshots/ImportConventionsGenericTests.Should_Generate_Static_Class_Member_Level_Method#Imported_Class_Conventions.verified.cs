@@ -5,18 +5,18 @@ using Rocket.Surgery.Conventions;
 
 namespace TestProject
 {
-    public partial class Program
+    public partial class Program :
     {
         /// <summary>
         /// The conventions imported into this assembly
         /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProviderDictionary serviceProvider)
+        public static IEnumerable<IConventionWithDependencies> LoadConventions(ConventionContextBuilder builder)
         {
-            foreach (var convention in Dep1.Dep1Exports.GetConventions(serviceProvider))
+            foreach (var convention in Dep1.Dep1Exports.GetConventions(builder))
                 yield return convention;
-            foreach (var convention in Dep2Exports.GetConventions(serviceProvider))
+            foreach (var convention in Dep2Exports.GetConventions(builder))
                 yield return convention;
-            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(serviceProvider))
+            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(builder))
                 yield return convention;
         }
     }

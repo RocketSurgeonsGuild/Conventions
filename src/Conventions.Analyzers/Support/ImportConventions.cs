@@ -22,94 +22,6 @@ internal static class ImportConventions
 
         addAssemblySource(context, functionBody, importConfiguration);
 
-        if (importCandidates.OfType<ClassDeclarationSyntax>().Any())
-        {
-            var cu = CompilationUnit()
-               .WithUsings(
-                    List(
-                        new[]
-                        {
-                            UsingDirective(ParseName("System")),
-                            UsingDirective(ParseName("System.Collections.Generic")),
-                            UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                        }
-                    )
-                );
-            if (importConfiguration is { Assembly: true, Namespace: { Length: > 0, } importNamespace, })
-            {
-                cu = cu.AddUsings(UsingDirective(ParseName(importNamespace)));
-            }
-
-            foreach (var declaration in importCandidates.OfType<ClassDeclarationSyntax>())
-            {
-                var model = compilation.GetSemanticModel(declaration.SyntaxTree);
-                var symbol = ModelExtensions.GetDeclaredSymbol(model, declaration);
-                if (symbol == null)
-                    continue; // TODO: Diagnostic
-                var @namespace = symbol.ContainingNamespace;
-
-                var methodDeclaration = MethodDeclaration(
-                                            GenericName(Identifier("IEnumerable"))
-                                               .WithTypeArgumentList(
-                                                    TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies")))
-                                                ),
-                                            Identifier(importConfiguration.MethodName)
-                                        )
-                                       .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
-                                       .WithParameterList(
-                                            ParameterList(
-                                                SingletonSeparatedList(
-                                                    Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProviderDictionary"))
-                                                )
-                                            )
-                                        )
-                                       .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"));
-                if (importConfiguration.Assembly)
-                {
-                    methodDeclaration = methodDeclaration
-                                       .WithExpressionBody(
-                                            ArrowExpressionClause(
-                                                InvocationExpression(
-                                                        MemberAccessExpression(
-                                                            SyntaxKind.SimpleMemberAccessExpression,
-                                                            IdentifierName(importConfiguration.ClassName),
-                                                            IdentifierName(importConfiguration.MethodName)
-                                                        )
-                                                    )
-                                                   .WithArgumentList(
-                                                        ArgumentList(SingletonSeparatedList(Argument(IdentifierName("serviceProvider"))))
-                                                    )
-                                            )
-                                        )
-                                       .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-                }
-                else
-                {
-                    methodDeclaration = methodDeclaration
-                       .WithBody(functionBody);
-                }
-
-                var derivedClass = ClassDeclaration(declaration.Identifier)
-                                  .WithModifiers(TokenList(declaration.Modifiers.Select(z => z.WithoutTrivia())))
-                                  .WithConstraintClauses(declaration.ConstraintClauses)
-                                  .WithTypeParameterList(declaration.TypeParameterList)
-                                  .WithMembers(SingletonList<MemberDeclarationSyntax>(methodDeclaration))
-                                  .NormalizeWhitespace();
-                cu = cu
-                   .WithMembers(
-                        SingletonList<MemberDeclarationSyntax>(
-                            NamespaceDeclaration(ParseName(@namespace.ToDisplayString()))
-                               .WithMembers(SingletonList<MemberDeclarationSyntax>(derivedClass))
-                        )
-                    );
-            }
-
-            context.AddSource(
-                "Imported_Class_Conventions.cs",
-                cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
-            );
-        }
-
         static void addAssemblySource(SourceProductionContext context, BlockSyntax syntax, ConventionConfigurationData configurationData)
         {
             var members =
@@ -123,32 +35,38 @@ internal static class ImportConventions
                    .WithModifiers(
                         TokenList(
                             Token(SyntaxKind.InternalKeyword),
-                            Token(SyntaxKind.StaticKeyword),
                             Token(SyntaxKind.PartialKeyword)
                         )
                     )
-                   .WithMembers(
-                        SingletonList<MemberDeclarationSyntax>(
-                            MethodDeclaration(
-                                    GenericName(Identifier("IEnumerable"))
-                                       .WithTypeArgumentList(
-                                            TypeArgumentList(
-                                                SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies"))
-                                            )
-                                        ),
-                                    Identifier(configurationData.MethodName)
-                                )
-                               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
-                               .WithParameterList(
-                                    ParameterList(
-                                        SingletonSeparatedList(
-                                            Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProviderDictionary"))
+                   .AddMembers(
+                        MethodDeclaration(
+                                IdentifierName(configurationData.ClassName),
+                                Identifier(configurationData.MethodName)
+                            )
+                           .WithModifiers(TokenList([Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword),]))
+                           .WithExpressionBody(
+                                ArrowExpressionClause(ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList()))
+                            )
+                           .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+                        MethodDeclaration(
+                                GenericName(Identifier("IEnumerable"))
+                                   .WithTypeArgumentList(
+                                        TypeArgumentList(
+                                            SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies"))
                                         )
+                                    ),
+                                Identifier("LoadConventions")
+                            )
+                           .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                           .WithParameterList(
+                                ParameterList(
+                                    SingletonSeparatedList(
+                                        Parameter(Identifier("builder")).WithType(IdentifierName("ConventionContextBuilder"))
                                     )
                                 )
-                               .WithBody(syntax)
-                               .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"))
-                        )
+                            )
+                           .WithBody(syntax)
+                           .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"))
                     );
             var cu = CompilationUnit()
                     .WithAttributeLists(configurationData.ToAttributes("Imports"))
@@ -158,6 +76,8 @@ internal static class ImportConventions
                              {
                                  UsingDirective(ParseName("System")),
                                  UsingDirective(ParseName("System.Collections.Generic")),
+                                 UsingDirective(ParseName("System.Runtime.Loader")),
+                                 UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
                                  UsingDirective(ParseName("Rocket.Surgery.Conventions")),
                              }
                          )
@@ -201,8 +121,7 @@ internal static class ImportConventions
                                }
 
                                var legacyMetadata = symbol.GetTypeByMetadataName($"{symbol.Name}.Conventions.Exports")
-                                ?? symbol.GetTypeByMetadataName($"{symbol.Name}.Exports")
-                                ?? symbol.GetTypeByMetadataName($"{symbol.Name}.__conventions__.__exports__");
+                                ?? symbol.GetTypeByMetadataName($"{symbol.Name}.Exports");
                                if (legacyMetadata is { })
                                {
                                    return legacyMetadata.ToDisplayString() + ".GetConventions";
@@ -244,7 +163,7 @@ internal static class ImportConventions
                             IdentifierName("var"),
                             Identifier("convention"),
                             InvocationExpression(ParseExpression(reference))
-                               .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("serviceProvider"))))),
+                               .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("builder"))))),
                             YieldStatement(SyntaxKind.YieldReturnStatement, IdentifierName("convention"))
                         )
                        .NormalizeWhitespace()

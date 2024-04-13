@@ -2,17 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
+using System.Runtime.Loader;
 
 namespace TestProject.Conventions
 {
-    internal static partial class Imports
+    internal partial class Imports
     {
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
+            public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 yield break;
@@ -22,7 +23,8 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 14:
+                    // FilePath: Input1.cs Member: Register
+                    case 16:
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.AssemblyProviderFactory");
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderApplicationDelegate);
@@ -30,7 +32,6 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationConvention);
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionDependency");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionOrDelegate");
-                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionProviderFactory);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionWithDependencies);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyDirection);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention);

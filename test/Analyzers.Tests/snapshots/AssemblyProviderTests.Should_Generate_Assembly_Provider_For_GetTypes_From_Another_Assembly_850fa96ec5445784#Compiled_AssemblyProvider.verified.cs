@@ -1,18 +1,19 @@
-﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Compiled_AssemblyProvider.cs
+//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Compiled_AssemblyProvider.cs
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
+using System.Runtime.Loader;
 
 namespace TestProject.Conventions
 {
-    internal static partial class Imports
+    internal partial class Imports
     {
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
+            public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 yield break;
@@ -22,10 +23,13 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 14:
+                    // FilePath: Input1.cs Member: Register
+                    case 16:
                         yield return RocketSurgeryConventionsAbstractions.GetType("EnumPolyfill");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Polyfill");
                         yield return RocketSurgeryConventionsAbstractions.GetType("RegexPolyfill");
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports");
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports+AssemblyProvider");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.AssemblyProviderFactory");

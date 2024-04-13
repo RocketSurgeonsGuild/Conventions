@@ -33,11 +33,9 @@ public class ConventionContextBuilder
     internal readonly List<Assembly> _exceptAssemblyConventions = new();
     internal readonly List<object> _includeConventions = new();
     internal readonly List<Assembly> _includeAssemblyConventions = new();
-    internal ConventionProviderFactory? _conventionProviderFactory;
+    internal IConventionFactory? _conventionProviderFactory;
     internal ServiceProviderFactoryAdapter? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
-    internal object? _source;
-    internal AssemblyProviderFactory? _assemblyProviderFactory;
 
     /// <summary>
     ///     Create a context builder with a set of properties
@@ -55,30 +53,6 @@ public class ConventionContextBuilder
     public IServiceProviderDictionary Properties { get; }
 
     /// <summary>
-    ///     Use the given app domain for resolving assemblies
-    /// </summary>
-    /// <param name="appDomain"></param>
-    /// <returns></returns>
-    public ConventionContextBuilder UseAppDomain(AppDomain appDomain)
-    {
-        _source = appDomain;
-        _conventionProviderFactory = null;
-        return this;
-    }
-
-    /// <summary>
-    ///     Use the given set of assemblies
-    /// </summary>
-    /// <param name="assemblies"></param>
-    /// <returns></returns>
-    public ConventionContextBuilder UseAssemblies(IEnumerable<Assembly> assemblies)
-    {
-        _source = assemblies;
-        _conventionProviderFactory = null;
-        return this;
-    }
-
-    /// <summary>
     ///     Enables convention attributes
     /// </summary>
     /// <returns></returns>
@@ -92,11 +66,11 @@ public class ConventionContextBuilder
     /// <summary>
     ///     Defines a callback that provides
     /// </summary>
-    /// <param name="conventionProvider"></param>
+    /// <param name="conventionFactory"></param>
     /// <returns></returns>
-    public ConventionContextBuilder WithConventionsFrom(ConventionProviderFactory conventionProvider)
+    public ConventionContextBuilder WithConventionsFrom(IConventionFactory conventionFactory)
     {
-        _conventionProviderFactory = conventionProvider;
+        _conventionProviderFactory = conventionFactory;
         return this;
     }
 

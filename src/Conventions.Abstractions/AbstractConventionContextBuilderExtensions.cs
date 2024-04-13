@@ -13,7 +13,7 @@ public static class AbstractConventionContextBuilderExtensions
     /// <returns></returns>
     public static Func<TBuilder, CancellationToken, ValueTask<ConventionContextBuilder>> WithConventionsFrom<TBuilder>(
         this Func<TBuilder, CancellationToken, ValueTask<ConventionContextBuilder>> action,
-        ConventionProviderFactory conventionProvider
+        IConventionFactory conventionProvider
     )
     {
         return async (builder, token) => ( await action(builder, token) ).WithConventionsFrom(conventionProvider);
@@ -27,7 +27,7 @@ public static class AbstractConventionContextBuilderExtensions
     /// <returns></returns>
     public static Func<TBuilder, ConventionContextBuilder> WithConventionsFrom<TBuilder>(
         this Func<TBuilder, ConventionContextBuilder> action,
-        ConventionProviderFactory conventionProvider
+        IConventionFactory conventionProvider
     )
     {
         return builder => action(builder).WithConventionsFrom(conventionProvider);

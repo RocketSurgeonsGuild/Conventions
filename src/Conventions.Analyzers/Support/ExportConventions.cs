@@ -152,7 +152,7 @@ internal static class ExportConventions
                            .WithParameterList(
                                 ParameterList(
                                     SingletonSeparatedList(
-                                        Parameter(Identifier("serviceProvider")).WithType(IdentifierName("IServiceProviderDictionary"))
+                                        Parameter(Identifier("builder")).WithType(IdentifierName("ConventionContextBuilder"))
                                     )
                                 )
                             )
@@ -253,8 +253,8 @@ internal static class ExportConventions
                         InvocationExpression(
                             MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName("serviceProvider"),
-                                GenericName("GetService")
+                                IdentifierName("builder"),
+                                GenericName(Identifier("GetService"))
                                    .WithTypeArgumentList(
                                         TypeArgumentList(
                                             SingletonSeparatedList<TypeSyntax>(
@@ -276,18 +276,10 @@ internal static class ExportConventions
                     SyntaxKind.SimpleMemberAccessExpression,
                     IdentifierName("ActivatorUtilities"),
                     GenericName(Identifier("CreateInstance"))
-                       .WithTypeArgumentList(
-                            TypeArgumentList(SingletonSeparatedList<TypeSyntax>(ParseName(convention.ToDisplayString())))
-                        )
+                       .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList<TypeSyntax>(ParseName(convention.ToDisplayString()))))
                 )
             )
-           .WithArgumentList(
-                ArgumentList(
-                    SingletonSeparatedList(
-                        Argument(IdentifierName("serviceProvider"))
-                    )
-                )
-            );
+           .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("builder")))));
     }
 
     private static readonly MemberAccessExpressionSyntax _hostTypeUndefined = MemberAccessExpression(

@@ -2,18 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE0LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zIiwiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zIl0sIm5hIjpbXSwiZCI6W119LCJ0Ijp7ImYiOjEsIm5zZiI6W10sIm5mIjpbXSwidGsiOltdLCJ0aSI6W10sInciOltdLCJzIjpbeyJpIjp0cnVlLCJiIjoiSmV0QnJhaW5zLkFubm90YXRpb25zLlB1YmxpY0FQSUF0dHJpYnV0ZSJ9XSwiYXQiOltdLCJ0YSI6W10sImEiOmZhbHNlLCJpIjpmYWxzZSwibSI6WyJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucyIsIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfX0=")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes", "eyJsIjp7ImwiOjE2LCJmIjoiSW5wdXQxLmNzIiwibSI6IlJlZ2lzdGVyIn0sImEiOnsiYSI6ZmFsc2UsImkiOmZhbHNlLCJtIjpbIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zIiwiUm9ja2V0LlN1cmdlcnkuQ29udmVudGlvbnMuQWJzdHJhY3Rpb25zIl0sIm5hIjpbXSwiZCI6W119LCJ0Ijp7ImYiOjEsIm5zZiI6W10sIm5mIjpbXSwidGsiOltdLCJ0aSI6W10sInciOltdLCJzIjpbeyJpIjp0cnVlLCJiIjoiSmV0QnJhaW5zLkFubm90YXRpb25zLlB1YmxpY0FQSUF0dHJpYnV0ZSJ9XSwiYXQiOltdLCJ0YSI6W10sImEiOmZhbHNlLCJpIjpmYWxzZSwibSI6WyJSb2NrZXQuU3VyZ2VyeS5Db252ZW50aW9ucyIsIlJvY2tldC5TdXJnZXJ5LkNvbnZlbnRpb25zLkFic3RyYWN0aW9ucyJdLCJuYSI6W10sImQiOltdfX0=")]
 namespace TestProject.Conventions
 {
-    internal static partial class Imports
+    internal partial class Imports
     {
-        private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
+        private class AssemblyProvider() : IAssemblyProvider
         {
+            public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 yield break;
@@ -23,7 +23,8 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    case 14:
+                    // FilePath: Input1.cs Member: Register
+                    case 16:
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute<>);
                         yield return typeof(global::Rocket.Surgery.Conventions.BeforeConventionAttribute);

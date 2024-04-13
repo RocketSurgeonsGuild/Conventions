@@ -18,105 +18,6 @@ namespace Rocket.Surgery.Conventions;
 [Generator]
 public class ConventionAttributesGenerator : IIncrementalGenerator
 {
-    private static ImmutableArray<AssemblyCollection.Item> GetAssemblyDetails(
-        SourceProductionContext context,
-        Compilation compilation,
-        HashSet<IAssemblySymbol> assemblySymbols,
-        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
-    )
-    {
-        var items = ImmutableArray.CreateBuilder<AssemblyCollection.Item>();
-        foreach (var tuple in results)
-        {
-            ( var methodCallSyntax, var selector ) = tuple;
-
-            var assemblies = new List<IAssemblyDescriptor>();
-            var typeFilters = new List<ITypeFilterDescriptor>();
-            var classFilter = ClassFilter.All;
-
-            DataHelpers.HandleInvocationExpressionSyntax(
-                context,
-                compilation.GetSemanticModel(tuple.expression.SyntaxTree),
-                selector,
-                assemblies,
-                typeFilters,
-                compilation.ObjectType,
-                ref classFilter,
-                context.CancellationToken
-            );
-
-            var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
-
-            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-
-            var source = new SourceLocation(
-                methodCallSyntax
-                   .SyntaxTree.GetText(context.CancellationToken)
-                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
-                   .LineNumber,
-                methodCallSyntax.SyntaxTree.FilePath,
-                containingMethod.Identifier.Text
-            );
-            // disallow list?
-            if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs"))
-            {
-                continue;
-            }
-
-            var i = new AssemblyCollection.Item(source, assemblyFilter);
-            items.Add(i);
-        }
-
-        return items.ToImmutable();
-    }
-
-    private static ImmutableArray<TypeCollection.Item> GetTypeDetails(
-        SourceProductionContext context,
-        Compilation compilation,
-        HashSet<IAssemblySymbol> assemblySymbols,
-        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
-    )
-    {
-        var items = ImmutableArray.CreateBuilder<TypeCollection.Item>();
-        foreach (var tuple in results)
-        {
-            ( var methodCallSyntax, var selector ) = tuple;
-
-            var assemblies = new List<IAssemblyDescriptor>();
-            var typeFilters = new List<ITypeFilterDescriptor>();
-            var classFilter = ClassFilter.All;
-
-            DataHelpers.HandleInvocationExpressionSyntax(
-                context,
-                compilation.GetSemanticModel(tuple.expression.SyntaxTree),
-                selector,
-                assemblies,
-                typeFilters,
-                compilation.ObjectType,
-                ref classFilter,
-                context.CancellationToken
-            );
-
-            var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
-            var typeFilter = new CompiledTypeFilter(classFilter, typeFilters.ToImmutableArray());
-            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-
-            var source = new SourceLocation(
-                methodCallSyntax
-                   .SyntaxTree.GetText(context.CancellationToken)
-                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
-                   .LineNumber,
-                methodCallSyntax.SyntaxTree.FilePath,
-                containingMethod.Identifier.Text
-            );
-
-            var i = new TypeCollection.Item(source, assemblyFilter, typeFilter);
-            items.Add(i);
-        }
-
-        return items.ToImmutable();
-    }
-
     private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorAttributeSyntaxContext context)
     {
         foreach (var attribute in context.Attributes)
@@ -199,6 +100,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                    (syntaxContext, _) => syntaxContext.TargetNode
                                );
 
+        var hasAssemblyLoadContext = context.CompilationProvider
+                                            .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
+
         context.RegisterSourceOutput(
             context
                .CompilationProvider
@@ -206,24 +110,29 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                .Combine(combinedExports.Collect())
                .Combine(importConfigurationCandidate)
                .Combine(exportConfigurationCandidate)
+               .Combine(hasAssemblyLoadContext)
                .Select(
-                    (z, _) => ( compilation: z.Left.Left.Left.Left, hasExports: z.Left.Left.Right.Any(), exportedCandidates: z.Left.Left.Left.Right,
-                                importConfiguration: z.Left.Right, exportConfiguration: z.Right )
+                    (z, _) => ( compilation: z.Left.Left.Left.Left.Left, hasExports: z.Left.Left.Left.Right.Any(),
+                                exportedCandidates: z.Left.Left.Left.Left.Right,
+                                importConfiguration: z.Left.Left.Right, exportConfiguration: z.Left.Right, hasAssemblyLoadContext: z.Right
+                        )
                 ),
-            static (productionContext, tuple) => ImportConventions.HandleConventionImports(
-                productionContext,
-                new(
-                    tuple.compilation,
-                    tuple.exportedCandidates,
-                    tuple.hasExports,
-                    tuple.importConfiguration,
-                    tuple.exportConfiguration
-                )
-            )
+            static (productionContext, tuple) =>
+            {
+                if (!tuple.hasAssemblyLoadContext) return;
+                ImportConventions.HandleConventionImports(
+                    productionContext,
+                    new(
+                        tuple.compilation,
+                        tuple.exportedCandidates,
+                        tuple.hasExports,
+                        tuple.importConfiguration,
+                        tuple.exportConfiguration
+                    )
+                );
+            }
         );
 
-        var hasAssemblyLoadContext = context.CompilationProvider
-                                            .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
         var getAssembliesSyntaxProvider = context
                                          .SyntaxProvider.CreateSyntaxProvider(
                                               (node, _) => AssemblyCollection.GetAssembliesMethod(node) is { method: { }, selector: { }, },
@@ -249,92 +158,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                .Combine(context.CompilationProvider),
             static (context, results) =>
             {
-                ( var getAssemblies, var getTypes ) = results.Left.Left;
-                var compilation = results.Right;
-                ( var discoveredAssemblyRequests, var discoveredTypeRequests ) = AssemblyProviderConfiguration.FromAssemblyAttributes(compilation);
-
-                if (getAssemblies.Length == 0
-                 && getTypes.Length == 0
-                 && discoveredAssemblyRequests.Count == 0
-                 && discoveredTypeRequests.Count == 0) return;
-
-                var configurationData = results.Left.Right;
-                var privateAssemblies = new HashSet<IAssemblySymbol>(SymbolEqualityComparer.Default);
-
-                var assemblyRequests = GetAssemblyDetails(context, compilation, privateAssemblies, getAssemblies);
-                var typeRequests = GetTypeDetails(context, compilation, privateAssemblies, getTypes);
-                var getAssembliesMethod =
-                    AssemblyCollection.Execute(new(compilation, assemblyRequests.AddRange(discoveredAssemblyRequests), privateAssemblies));
-                var getTypesMethod = TypeCollection.Execute(new(compilation, typeRequests.AddRange(discoveredTypeRequests), privateAssemblies));
-
-                var assemblyProvider = ClassDeclaration("AssemblyProvider")
-                                      .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
-                                      .WithParameterList(
-                                           ParameterList(
-                                               SingletonSeparatedList(Parameter(Identifier("context")).WithType(IdentifierName("AssemblyLoadContext")))
-                                           )
-                                       )
-                                      .WithBaseList(BaseList(SingletonSeparatedList<BaseTypeSyntax>(SimpleBaseType(IdentifierName("IAssemblyProvider")))))
-                                      .AddMembers(getAssembliesMethod, getTypesMethod);
-
-                if (privateAssemblies.Any())
-                {
-                    var privateAssemblyNodes = privateAssemblies
-                                              .OrderBy(z => z.ToDisplayString())
-                                              .SelectMany(StatementGeneration.AssemblyDeclaration)
-                                              .ToArray();
-
-                    assemblyProvider = assemblyProvider.AddMembers(privateAssemblyNodes);
-                }
-
-                var attributes = AssemblyProviderConfiguration.FromAssemblyAttributes(assemblyRequests, typeRequests).ToArray();
-                if (attributes.Length == 0 && configurationData is not { Assembly: true, })
-                {
-                    return;
-                }
-
-                var members =
-                    ClassDeclaration(configurationData.ClassName)
-                       .WithModifiers(
-                            TokenList(
-                                Token(SyntaxKind.InternalKeyword),
-                                Token(SyntaxKind.StaticKeyword),
-                                Token(SyntaxKind.PartialKeyword)
-                            )
-                        )
-                       .AddMembers(assemblyProvider);
-                var cu = CompilationUnit()
-                        .WithUsings(
-                             List(
-                                 [
-                                     UsingDirective(ParseName("System")),
-                                     UsingDirective(ParseName("System.Collections.Generic")),
-                                     UsingDirective(ParseName("System.Reflection")),
-                                     UsingDirective(ParseName("System.Runtime.Loader")),
-                                     UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
-                                     UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                                     UsingDirective(ParseName("Rocket.Surgery.Conventions.Reflection")),
-                                 ]
-                             )
-                         )
-                        .AddAttributeLists(attributes);
-
-                //return (Items: itemsValue, Method: TypeCollection.Execute(new(compilation, itemsValue, assemblySymbols)));
-
-
-                if (configurationData is { Assembly: true, })
-                {
-                    cu = cu
-                       .AddMembers(
-                            configurationData is { Namespace: { Length: > 0, } relativeNamespace, }
-                                ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
-                                : members
-                        );
-                }
-
-                context.AddSource(
-                    "Compiled_AssemblyProvider.cs",
-                    cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
+                AssemblyCollection.Collect(
+                    context,
+                    new(
+                        results.Right,
+                        results.Left.Right,
+                        results.Left.Left.Left,
+                        results.Left.Left.Right
+                    )
                 );
             }
         );

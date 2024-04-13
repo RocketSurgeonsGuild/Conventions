@@ -268,7 +268,7 @@ public static class RocketHostApplicationExtensions
     /// <returns>IHostBuilder.</returns>
     public static async ValueTask<T> ConfigureRocketSurgery<T>(
         this T builder,
-        ConventionProviderFactory getConventions,
+        IConventionFactory getConventions,
         CancellationToken cancellationToken = default
     ) where T : IHostApplicationBuilder
     {

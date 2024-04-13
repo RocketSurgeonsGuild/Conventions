@@ -71,6 +71,11 @@ internal static partial class AssemblyProviderConfiguration
     {
         foreach (var request in assemblyRequests.OrderBy(z => z.Location.FilePath).ThenBy(z => z.Location.LineNumber).ThenBy(z => z.Location.MemberName))
         {
+            // disallow list?
+            if (request.Location.MemberName == "GetAssemblyConventions" && request.Location.FilePath.EndsWith("ConventionFactoryBase.cs"))
+            {
+                continue;
+            }
             yield return Helpers.AddAssemblyAttribute(getAssembliesKey, GetAssembliesToString(request));
         }
 

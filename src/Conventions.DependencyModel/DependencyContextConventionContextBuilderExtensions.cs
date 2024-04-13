@@ -1,7 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -16,22 +15,5 @@ public static class DependencyContextConventionContextBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="dependencyContext"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder UseDependencyContext(this ConventionContextBuilder builder, DependencyContext dependencyContext)
-    {
-        builder._source = dependencyContext;
-        builder._assemblyProviderFactory = dependencyContextAssemblyProviderFactory;
-        builder._conventionProviderFactory = null;
-        return builder;
-    }
-
-    internal static IAssemblyProvider dependencyContextAssemblyProviderFactory(object? source, ILogger? logger)
-    {
-        return source switch
-               {
-                   DependencyContext dependencyContext => new DependencyContextAssemblyProvider(dependencyContext, logger),
-                   AppDomain appDomain                 => new AppDomainAssemblyProvider(appDomain, logger),
-                   IEnumerable<Assembly> assemblies    => new DefaultAssemblyProvider(assemblies, logger),
-                   _                                   => throw new NotSupportedException("Unknown source when trying to create IAssemblyCandidateFinder"),
-               };
-    }
+    public static ConventionContextBuilder UseDependencyContext(this ConventionContextBuilder builder, DependencyContext dependencyContext) => builder.WithConventionsFrom(new DependencyContextConventionFactory(dependencyContext));
 }

@@ -19,9 +19,9 @@ namespace TestProject.Conventions
         /// <summary>
         /// The conventions exports from this assembly
         /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProviderDictionary serviceProvider)
+        public static IEnumerable<IConventionWithDependencies> GetConventions(ConventionContextBuilder builder)
         {
-            yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib(serviceProvider.GetService<Rocket.Surgery.Conventions.Tests.IService>(), serviceProvider.GetService<Rocket.Surgery.Conventions.Tests.IServiceB>(), serviceProvider.GetService<Rocket.Surgery.Conventions.Tests.IServiceC>()), HostType.Undefined);
+            yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib(builder.GetService<Rocket.Surgery.Conventions.Tests.IService>(), builder.GetService<Rocket.Surgery.Conventions.Tests.IServiceB>(), builder.GetService<Rocket.Surgery.Conventions.Tests.IServiceC>()), HostType.Undefined);
         }
     }
 }

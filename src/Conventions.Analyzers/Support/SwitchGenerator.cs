@@ -12,6 +12,8 @@ internal static class SwitchGenerator
         var switchStatement = SwitchStatement(lineNumberIdentifier);
         foreach (var lineGrouping in items.GroupBy(x => x.location.LineNumber))
         {
+            // disallow list?
+            var location = lineGrouping.First().location;
             var lineSwitchSection = createNestedSwitchSections(
                     lineGrouping.ToArray(),
                     IdentifierName("filePath"),
@@ -19,7 +21,16 @@ internal static class SwitchGenerator
                     generateFilePathSwitchStatement,
                     value => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(value))
                 )
-               .AddLabels(CaseSwitchLabel(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(lineGrouping.Key))));
+               .AddLabels(
+                    CaseSwitchLabel(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(lineGrouping.Key)))
+                       .WithKeyword(
+                            Token(
+                                TriviaList(Comment($"// FilePath: {location.FilePath} Member: {location.MemberName}")),
+                                SyntaxKind.CaseKeyword,
+                                TriviaList()
+                            )
+                        )
+                );
 
             switchStatement = switchStatement.AddSections(lineSwitchSection);
         }
@@ -45,7 +56,20 @@ internal static class SwitchGenerator
         var section = SwitchStatement(identifier);
         foreach (var item in blocks.GroupBy(regroup))
         {
-            section = section.AddSections(next(item).AddLabels(CaseSwitchLabel(literalFactory(item.Key))));
+            var location = item.First().location;
+            section = section.AddSections(
+                next(item)
+                   .AddLabels(
+                        CaseSwitchLabel(literalFactory(item.Key))
+                           .WithKeyword(
+                                Token(
+                                    TriviaList(Comment($"// FilePath: {location.FilePath} Member: {location.MemberName}")),
+                                    SyntaxKind.CaseKeyword,
+                                    TriviaList()
+                                )
+                            )
+                    )
+            );
         }
 
         return SwitchSection().AddStatements(section, BreakStatement());
@@ -68,14 +92,22 @@ internal static class SwitchGenerator
 
     private static SwitchSectionSyntax generateMemberNameSwitchStatement(IGrouping<string, (SourceLocation location, BlockSyntax block)> innerGroup)
     {
+        var location = innerGroup.First().location;
         return SwitchSection()
               .AddLabels(
                    CaseSwitchLabel(
-                       LiteralExpression(
-                           SyntaxKind.StringLiteralExpression,
-                           Literal(innerGroup.Key)
+                           LiteralExpression(
+                               SyntaxKind.StringLiteralExpression,
+                               Literal(innerGroup.Key)
+                           )
                        )
-                   )
+                      .WithKeyword(
+                           Token(
+                               TriviaList(Comment($"// FilePath: {location.FilePath} Member: {location.MemberName}")),
+                               SyntaxKind.CaseKeyword,
+                               TriviaList()
+                           )
+                       )
                )
               .AddStatements(innerGroup.FirstOrDefault().block?.Statements.ToArray() ?? Array.Empty<StatementSyntax>())
               .AddStatements(BreakStatement());
