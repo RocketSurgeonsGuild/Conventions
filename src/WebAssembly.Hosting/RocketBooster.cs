@@ -33,7 +33,6 @@ public static partial class RocketBooster
     ///     Fors the assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
-    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies) => (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>()).UseAssemblies(assemblies));
 

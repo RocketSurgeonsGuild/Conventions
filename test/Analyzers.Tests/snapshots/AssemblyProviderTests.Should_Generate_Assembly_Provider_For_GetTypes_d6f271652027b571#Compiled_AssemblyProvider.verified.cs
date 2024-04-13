@@ -9,9 +9,11 @@ using System.Runtime.Loader;
 
 namespace TestProject.Conventions
 {
-    internal partial class Imports
+    internal sealed partial class Imports
     {
+#pragma warning disable CA1822
         public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
+        [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
@@ -112,10 +114,10 @@ namespace TestProject.Conventions
             }
 
             private Assembly _RocketSurgeryConventions;
-            private Assembly RocketSurgeryConventions => _RocketSurgeryConventions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions, Version=12.0.0.0, Culture=neutral, PublicKeyToken=null"));
+            private Assembly RocketSurgeryConventions => _RocketSurgeryConventions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions, Version=version, Culture=neutral, PublicKeyToken=null"));
 
             private Assembly _RocketSurgeryConventionsAbstractions;
-            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=12.0.0.0, Culture=neutral, PublicKeyToken=null"));
+            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null"));
         }
     }
 }

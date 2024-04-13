@@ -9,4 +9,4 @@ var builder = await Host
                            .ConfigureCommandLine(configurator => configurator.AddCommand<Dump>("dump"))
                     );
 builder.Services.Configure<ConsoleLifetimeOptions>(z => z.SuppressStatusMessages = true);
-builder.RunAsync();
+await builder.RunAsync();

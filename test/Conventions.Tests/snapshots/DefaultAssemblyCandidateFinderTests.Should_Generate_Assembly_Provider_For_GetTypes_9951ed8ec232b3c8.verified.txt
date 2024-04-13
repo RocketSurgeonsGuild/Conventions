@@ -3,6 +3,7 @@
   Polyfill,
   RegexPolyfill,
   AbstractConventionContextBuilderExtensions,
+  Imports,
   AssemblyProviderFactory,
   ConfigurationAsyncConvention,
   ConfigurationBuilderApplicationDelegate,

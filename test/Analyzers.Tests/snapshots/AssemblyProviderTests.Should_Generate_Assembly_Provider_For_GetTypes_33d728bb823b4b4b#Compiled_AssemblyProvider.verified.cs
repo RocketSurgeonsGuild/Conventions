@@ -9,9 +9,11 @@ using System.Runtime.Loader;
 
 namespace TestProject.Conventions
 {
-    internal partial class Imports
+    internal sealed partial class Imports
     {
+#pragma warning disable CA1822
         public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
+        [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
@@ -29,8 +31,6 @@ namespace TestProject.Conventions
                         yield return RocketSurgeryConventionsAbstractions.GetType("Polyfill");
                         yield return RocketSurgeryConventionsAbstractions.GetType("RegexPolyfill");
                         yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions);
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports+AssemblyProvider");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderDelegateResult);
@@ -73,7 +73,7 @@ namespace TestProject.Conventions
             }
 
             private Assembly _RocketSurgeryConventionsAbstractions;
-            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=12.0.0.0, Culture=neutral, PublicKeyToken=null"));
+            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null"));
         }
     }
 }

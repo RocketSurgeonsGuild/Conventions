@@ -9,9 +9,11 @@ using System.Runtime.Loader;
 
 namespace TestProject.Conventions
 {
-    internal partial class Imports
+    internal sealed partial class Imports
     {
+#pragma warning disable CA1822
         public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
+        [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)

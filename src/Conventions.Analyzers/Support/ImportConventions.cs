@@ -36,6 +36,7 @@ internal static class ImportConventions
                    .WithModifiers(
                         TokenList(
                             Token(SyntaxKind.InternalKeyword),
+                            Token(SyntaxKind.SealedKeyword),
                             Token(SyntaxKind.PartialKeyword)
                         )
                     )

@@ -177,7 +177,6 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="appDomain"></param>
-    /// <param name="getConventions"></param>
     /// <param name="action"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
     public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
@@ -234,7 +233,6 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="assemblies"></param>
-    /// <param name="getConventions"></param>
     /// <param name="action"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
     public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(

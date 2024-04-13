@@ -9,9 +9,11 @@ using System.Runtime.Loader;
 
 namespace TestProject.Conventions
 {
-    internal partial class Imports
+    internal sealed partial class Imports
     {
+#pragma warning disable CA1822
         public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
+        [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
@@ -26,6 +28,8 @@ namespace TestProject.Conventions
                     // FilePath: Input1.cs Member: Register
                     case 16:
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.AppDomainAssemblyProvider");
+                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.AppDomainConventionFactory);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.AssemblyConventionFactory);
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.AssemblyProviderAssemblySelector");
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.DefaultAssemblyProvider");
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.TypeFilter");
@@ -35,7 +39,7 @@ namespace TestProject.Conventions
             }
 
             private Assembly _RocketSurgeryConventions;
-            private Assembly RocketSurgeryConventions => _RocketSurgeryConventions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions, Version=12.0.0.0, Culture=neutral, PublicKeyToken=null"));
+            private Assembly RocketSurgeryConventions => _RocketSurgeryConventions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions, Version=version, Culture=neutral, PublicKeyToken=null"));
         }
     }
 }

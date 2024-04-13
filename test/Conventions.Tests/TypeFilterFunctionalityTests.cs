@@ -1,4 +1,5 @@
-﻿using Rocket.Surgery.Conventions.Reflection;
+﻿using System.ComponentModel;
+using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
@@ -158,7 +159,7 @@ public class TypeFilterFunctionalityTests
     public async Task WithAttribute_Type_FiltersCorrectly()
     {
         var typeFilter = new TypeFilter();
-        typeFilter.WithAttribute(typeof(ObsoleteAttribute));
+        typeFilter.WithAttribute(typeof(EditorBrowsableAttribute));
         var types = new[] { typeof(MyClassWithAttribute), typeof(YourClassWithAttribute), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
@@ -168,7 +169,7 @@ public class TypeFilterFunctionalityTests
     public async Task WithAttribute_Generic_FiltersCorrectly()
     {
         var typeFilter = new TypeFilter();
-        typeFilter.WithAttribute<ObsoleteAttribute>();
+        typeFilter.WithAttribute<EditorBrowsableAttribute>();
         var types = new[] { typeof(MyClassWithAttribute), typeof(YourClassWithAttribute), typeof(OurClass), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
@@ -178,7 +179,7 @@ public class TypeFilterFunctionalityTests
     public async Task WithoutAttribute_Type_FiltersCorrectly()
     {
         var typeFilter = new TypeFilter();
-        typeFilter.WithoutAttribute(typeof(ObsoleteAttribute));
+        typeFilter.WithoutAttribute(typeof(EditorBrowsableAttribute));
         var types = new[] { typeof(MyClass), typeof(YourClassWithAttribute), typeof(OurClassWithoutAttribute), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
@@ -188,7 +189,7 @@ public class TypeFilterFunctionalityTests
     public async Task WithoutAttribute_Generic_FiltersCorrectly()
     {
         var typeFilter = new TypeFilter();
-        typeFilter.WithoutAttribute<ObsoleteAttribute>();
+        typeFilter.WithoutAttribute<EditorBrowsableAttribute>();
         var types = new[] { typeof(MyClass), typeof(YourClassWithAttribute), typeof(OurClassWithoutAttribute), };
         var filteredTypes = types.Where(t => typeFilter.Filters.All(f => f(t))).ToArray();
         await Verify(filteredTypes);
@@ -212,10 +213,10 @@ public class TypeFilterFunctionalityTests
 
     private class ClassInterface { }
 
-    [Obsolete]
+    [EditorBrowsable]
     private class MyClassWithAttribute { }
 
-    [Obsolete]
+    [EditorBrowsable]
     private class YourClassWithAttribute { }
 
     private class OurClassWithoutAttribute { }

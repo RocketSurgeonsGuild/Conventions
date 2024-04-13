@@ -74,6 +74,7 @@ internal static class AssemblyCollection
                .WithModifiers(
                     TokenList(
                         Token(SyntaxKind.InternalKeyword),
+                        Token(SyntaxKind.SealedKeyword),
                         Token(SyntaxKind.PartialKeyword)
                     )
                 )
@@ -306,6 +307,7 @@ internal static class AssemblyCollection
         }
 
         return ClassDeclaration("AssemblyProvider")
+              .AddAttributeLists(Helpers.CompilerGeneratedAttributes)
               .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
               .WithParameterList(parameters)
               .WithBaseList(BaseList(SingletonSeparatedList<BaseTypeSyntax>(SimpleBaseType(IdentifierName("IAssemblyProvider")))))
@@ -338,6 +340,14 @@ internal static class AssemblyCollection
 
         return MethodDeclaration(IdentifierName("IAssemblyProvider"), Identifier("CreateAssemblyProvider"))
               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+              .WithLeadingTrivia(TriviaList(
+                   Trivia(
+                       PragmaWarningDirectiveTrivia(
+                               Token(SyntaxKind.DisableKeyword),
+                               true)
+                          .WithErrorCodes(
+                               SingletonSeparatedList<ExpressionSyntax>(
+                                   IdentifierName("CA1822"))))))
               .WithParameterList(ParameterList(SingletonSeparatedList(Parameter(Identifier("builder")).WithType(IdentifierName("ConventionContextBuilder")))))
               .WithExpressionBody(ArrowExpressionClause(ObjectCreationExpression(IdentifierName("AssemblyProvider")).AddArgumentListArguments(args)))
               .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));

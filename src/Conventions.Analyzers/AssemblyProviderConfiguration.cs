@@ -23,6 +23,7 @@ internal static partial class AssemblyProviderConfiguration
                                       if (symbol is IAssemblySymbol assemblySymbol)
                                           return assemblySymbol;
                                       if (symbol is IModuleSymbol moduleSymbol) return moduleSymbol.ContainingAssembly;
+                                      // ReSharper disable once NullableWarningSuppressionIsUsed
                                       return null!;
                                   }
                               )
@@ -91,7 +92,8 @@ internal static partial class AssemblyProviderConfiguration
     private static AssemblyCollection.Item GetAssembliesFromString(ImmutableDictionary<string, IAssemblySymbol> assemblySymbols, string value)
     {
         var result = DecompressString(value);
-        var data = JsonSerializer.Deserialize(result, SourceGenerationContext.Default.AssemblyCollectionData);
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        var data = JsonSerializer.Deserialize(result, SourceGenerationContext.Default.AssemblyCollectionData)!;
         var assemblyFilter = LoadAssemblyFilter(data.Assembly, assemblySymbols);
         return new(data.Location, assemblyFilter);
     }
@@ -106,7 +108,8 @@ internal static partial class AssemblyProviderConfiguration
     private static TypeCollection.Item GetTypesFromString(Compilation compilation, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols, string value)
     {
         var result = DecompressString(value);
-        var data = JsonSerializer.Deserialize(result, SourceGenerationContext.Default.TypeCollectionData);
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        var data = JsonSerializer.Deserialize(result, SourceGenerationContext.Default.TypeCollectionData)!;
         var assemblyFilter = LoadAssemblyFilter(data.Assembly, assemblySymbols);
         var typeFilter = LoadTypeFilter(compilation, data.Type, assemblySymbols);
         return new(data.Location, assemblyFilter, typeFilter);

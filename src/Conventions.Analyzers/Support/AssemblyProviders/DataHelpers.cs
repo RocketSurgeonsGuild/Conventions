@@ -249,6 +249,7 @@ internal static class DataHelpers
                              "EndsWith"   => TextDirectionFilter.EndsWith,
                              "StartsWith" => TextDirectionFilter.StartsWith,
                              "Contains"   => TextDirectionFilter.Contains,
+                             _ => throw new NotSupportedException($"Not supported name filter. Method: {name.ToFullString()}  {expression.ToFullString()} method."),
                          };
             var stringValues = ImmutableHashSet.CreateBuilder<string>();
             foreach (var argument in expression.ArgumentList.Arguments)
@@ -274,7 +275,10 @@ internal static class DataHelpers
         {
             var filter = name.Identifier.Text switch
                          {
-                             "InExactNamespaceOf" => NamespaceFilter.Exact, "InNamespaceOf" => NamespaceFilter.In, "NotInNamespaceOf" => NamespaceFilter.NotIn,
+                             "InExactNamespaceOf" => NamespaceFilter.Exact,
+                             "InNamespaceOf" => NamespaceFilter.In,
+                             "NotInNamespaceOf" => NamespaceFilter.NotIn,
+                             _ => throw new NotSupportedException($"Not supported namespace filter. Method: {name.ToFullString()}  {expression.ToFullString()} method."),
                          };
 
             var namespaces = ImmutableHashSet.CreateBuilder<string>();
@@ -302,7 +306,10 @@ internal static class DataHelpers
         {
             var filter = name.Identifier.Text switch
                          {
-                             "InExactNamespaces" => NamespaceFilter.Exact, "InNamespaces" => NamespaceFilter.In, "NotInNamespaces" => NamespaceFilter.NotIn,
+                             "InExactNamespaces" => NamespaceFilter.Exact,
+                             "InNamespaces" => NamespaceFilter.In,
+                             "NotInNamespaces" => NamespaceFilter.NotIn,
+                                _ => throw new NotSupportedException($"Not supported namespace filter. Method: {name.ToFullString()}  {expression.ToFullString()} method."),
                          };
 
             var namespaces = ImmutableHashSet.CreateBuilder<string>();

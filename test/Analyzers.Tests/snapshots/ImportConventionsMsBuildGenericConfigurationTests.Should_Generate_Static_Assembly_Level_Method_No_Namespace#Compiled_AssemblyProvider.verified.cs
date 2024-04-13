@@ -6,9 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
-internal partial class MyImports
+internal sealed partial class MyImports
 {
+#pragma warning disable CA1822
     public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
+    [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     private class AssemblyProvider() : IAssemblyProvider
     {
         IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
