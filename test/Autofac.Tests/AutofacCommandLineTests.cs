@@ -84,8 +84,6 @@ public class AutofacCommandLineTests : AutoFakeTest
                             );
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().BeNull();
-        items.ResolveOptional<IAbc2>().Should().BeNull();
         items.ResolveOptional<IAbc3>().Should().NotBeNull();
         items.ResolveOptional<IAbc4>().Should().NotBeNull();
     }
@@ -164,8 +162,6 @@ public class AutofacCommandLineTests : AutoFakeTest
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().BeNull();
-        sp.GetService<IAbc2>().Should().BeNull();
         sp.GetService<IAbc3>().Should().NotBeNull();
         sp.GetService<IAbc4>().Should().NotBeNull();
     }

@@ -14,7 +14,6 @@
   ConventionHostBuilderExtensions,
   ConventionOrDelegate,
   ConventionProvider,
-  ConventionProviderFactory,
   ConventionsConfigurationAttribute,
   ConventionWithDependencies,
   ServiceAsyncConvention,

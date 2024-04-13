@@ -1,7 +1,6 @@
 ﻿[
   ConfigurationAsyncConvention,
   ConfigurationConvention,
-  ConventionProviderFactory,
   ServiceAsyncConvention,
   ServiceConvention,
   LoggingAsyncConvention,

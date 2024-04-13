@@ -8,6 +8,7 @@
   IConvention,
   IConventionContext,
   IConventionDependency,
+  IConventionFactory,
   IConventionProvider,
   IConventionWithDependencies,
   IHostBasedConvention,

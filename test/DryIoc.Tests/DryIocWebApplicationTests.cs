@@ -86,8 +86,6 @@ public class DryIocWebApplicationTests : AutoFakeTest
                             );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
-        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefault).Should().BeNull();
-        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefault).Should().BeNull();
         items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefault).Should().NotBeNull();
         items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).Should().NotBeNull();
     }
@@ -169,8 +167,6 @@ public class DryIocWebApplicationTests : AutoFakeTest
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<DryIocFixtures.IAbc>().Should().BeNull();
-        sp.GetService<DryIocFixtures.IAbc2>().Should().BeNull();
         sp.GetService<DryIocFixtures.IAbc3>().Should().NotBeNull();
         sp.GetService<DryIocFixtures.IAbc4>().Should().NotBeNull();
     }

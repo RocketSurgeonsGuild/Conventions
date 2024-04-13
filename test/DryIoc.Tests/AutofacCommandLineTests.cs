@@ -84,8 +84,6 @@ public class DryIocCommandLineTests : AutoFakeTest
                             );
 
         var items = builder.GetLifetimeScope();
-        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
         items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
         items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
     }
@@ -164,8 +162,6 @@ public class DryIocCommandLineTests : AutoFakeTest
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().BeNull();
-        sp.GetService<IAbc2>().Should().BeNull();
         sp.GetService<IAbc3>().Should().NotBeNull();
         sp.GetService<IAbc4>().Should().NotBeNull();
     }

@@ -13,7 +13,6 @@
   ConventionDependency,
   ConventionHostBuilderExtensions,
   ConventionOrDelegate,
-  ConventionProviderFactory,
   ConventionWithDependencies,
   DependencyDirection,
   ServiceAsyncConvention,

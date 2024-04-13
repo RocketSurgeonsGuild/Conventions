@@ -2,6 +2,8 @@
   EnumPolyfill,
   Polyfill,
   RegexPolyfill,
+  Imports,
+  Imports.AssemblyProvider,
   IServiceFactoryAdapter,
   ServiceFactoryAdapter<TContainerBuilder>,
   AssemblyProviderFactory,

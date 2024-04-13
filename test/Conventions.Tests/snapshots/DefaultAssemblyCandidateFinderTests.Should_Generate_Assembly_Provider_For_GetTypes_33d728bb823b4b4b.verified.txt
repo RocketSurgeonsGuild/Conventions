@@ -1,4 +1,6 @@
 ﻿[
+  Imports,
+  Imports.AssemblyProvider,
   IServiceFactoryAdapter,
   ServiceFactoryAdapter<TContainerBuilder>,
   ConfigurationBuilderDelegateResult,
@@ -13,6 +15,7 @@
   IConvention,
   IConventionContext,
   IConventionDependency,
+  IConventionFactory,
   IConventionProvider,
   IConventionWithDependencies,
   IHostBasedConvention,

@@ -12,7 +12,6 @@
   ConventionContextExtensions,
   ConventionHostBuilderExtensions,
   ConventionProvider,
-  ConventionProviderFactory,
   ConventionsConfigurationAttribute,
   ConventionWithDependencies,
   ServiceAsyncConvention,

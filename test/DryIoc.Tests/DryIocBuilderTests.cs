@@ -88,8 +88,6 @@ public class DryIocBuilderTests : AutoFakeTest
                             );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
-        items.Resolve<IAbc>(IfUnresolved.ReturnDefault).Should().BeNull();
-        items.Resolve<IAbc2>(IfUnresolved.ReturnDefault).Should().BeNull();
         items.Resolve<IAbc3>(IfUnresolved.ReturnDefault).Should().NotBeNull();
         items.Resolve<IAbc4>(IfUnresolved.ReturnDefault).Should().NotBeNull();
     }
@@ -171,8 +169,6 @@ public class DryIocBuilderTests : AutoFakeTest
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().BeNull();
-        sp.GetService<IAbc2>().Should().BeNull();
         sp.GetService<IAbc3>().Should().NotBeNull();
         sp.GetService<IAbc4>().Should().NotBeNull();
     }

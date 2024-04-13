@@ -60,7 +60,7 @@ public class RocketHostTests
         var host = await Host
                         .CreateApplicationBuilder()
                         .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }, Imports.GetConventions),
+                             RocketBooster.For(Imports.GetConventions),
                              z => z.ExceptConvention(typeof(JsonConvention))
                          );
 

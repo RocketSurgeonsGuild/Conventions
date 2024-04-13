@@ -1,5 +1,7 @@
 ﻿[
   AbstractConventionContextBuilderExtensions,
+  Imports,
+  Imports.AssemblyProvider,
   IServiceFactoryAdapter,
   ServiceFactoryAdapter<TContainerBuilder>,
   AfterConventionAttribute,
@@ -24,7 +26,6 @@
   ConventionHostBuilderExtensions.ServiceProviderWrapper<TContainerBuilder>,
   ConventionOrDelegate,
   ConventionProvider,
-  ConventionProviderFactory,
   ConventionsConfigurationAttribute,
   ConventionWithDependencies,
   DependencyDirection,
@@ -40,6 +41,7 @@
   IConvention,
   IConventionContext,
   IConventionDependency,
+  IConventionFactory,
   IConventionProvider,
   IConventionWithDependencies,
   IHostBasedConvention,

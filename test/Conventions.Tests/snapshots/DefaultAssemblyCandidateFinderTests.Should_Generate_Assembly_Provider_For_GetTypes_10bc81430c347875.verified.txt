@@ -1,4 +1,6 @@
 ﻿[
+  Imports,
+  Imports.AssemblyProvider,
   ServiceFactoryAdapter<TContainerBuilder>,
   AssemblyProviderFactory,
   ConfigurationAsyncConvention,
@@ -11,7 +13,6 @@
   ConventionHostBuilderExtensions.ServiceProviderWrapper<TContainerBuilder>,
   ConventionOrDelegate,
   ConventionProvider,
-  ConventionProviderFactory,
   ConventionWithDependencies,
   DependencyDirection,
   ServiceAsyncConvention,
