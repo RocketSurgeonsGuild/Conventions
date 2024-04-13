@@ -28,6 +28,7 @@ public static class ModuleInitializer
             }
         );
 
+        VerifierSettings.ScrubLines(z => z.Contains("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.", StringComparison.OrdinalIgnoreCase));
         VerifierSettings.AddScrubber(
             (builder, counter) =>
             {

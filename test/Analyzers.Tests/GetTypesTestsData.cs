@@ -202,7 +202,7 @@ public class GetTypesTestsData
             string argument = null!
         )
         {
-            return [new GetTypesItem(argument[( argument.LastIndexOf("=> x") + 5 )..^1], argument, func),];
+            return [new GetTypesItem(argument[( argument.LastIndexOf("=> x") + 5 )..^1].Replace("\r", "").Replace( "\n", "").Trim(), argument, func),];
         }
     }
 
