@@ -19,7 +19,6 @@ A context can be created from a <xref:Rocket.Surgery.Conventions.ConventionConte
 Once the context is created you can use the context to find out all sorts of information.
 
 Useful properties:
-* [`AssemblyCandidateFinder`](xref:Rocket.Surgery.Conventions.IConventionContext#Rocket_Surgery_Conventions_ConventionContext_AssemblyCandidateFinder) - The assembly candidate finder can be used to intelligently find candidate assemblies based on those provided to the builder.
 * [`AssemblyProvider`](xref:Rocket.Surgery.Conventions.IConventionContext#Rocket_Surgery_Conventions_ConventionContext_AssemblyProvider) - The assembly provider can be used to get a list of assemblies
 * [`Logger`](xref:Rocket.Surgery.Conventions.IConventionContext#Rocket_Surgery_Conventions_ConventionContext_Logger) - This is a diagnostic logger that can be used for logging details.  If a logger is provided to the builder it will be used here.
 * [`Properties`](xref:Rocket.Surgery.Conventions.IConventionContext#Rocket_Surgery_Conventions_ConventionContext_Properties) - Contains all the properties provided to the builder.  This implements `IServiceProvider` and can be used with `ActivatorExtensions
