@@ -63,7 +63,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     {
         var host = await WebApplication
                         .CreateBuilder()
-                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }, Imports.GetConventions));
+                        .LaunchWith(RocketBooster.For(Imports.GetConventions));
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -76,7 +76,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         var host = await WebApplication
                         .CreateBuilder()
                         .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }, Imports.GetConventions),
+                             RocketBooster.For(Imports.GetConventions),
                              z => z.ExceptConvention(typeof(YamlConvention))
                          );
 
@@ -92,7 +92,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         var host = await WebApplication
                         .CreateBuilder()
                         .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }, Imports.GetConventions),
+                             RocketBooster.For(Imports.GetConventions),
                              z => z.ExceptConvention(typeof(JsonConvention))
                          );
 

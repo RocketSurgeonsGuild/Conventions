@@ -8,9 +8,9 @@ using Rocket.Surgery.Conventions.Reflection;
 
 internal partial class MyImports
 {
+    public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
     private class AssemblyProvider() : IAssemblyProvider
     {
-        public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
         IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
         {
             yield break;

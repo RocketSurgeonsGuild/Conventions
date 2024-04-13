@@ -14,9 +14,10 @@ namespace TestProject.Conventions
     /// The class defined for importing conventions into this assembly
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    internal partial class Imports
+    internal partial class Imports : IConventionFactory
     {
-        public static Imports GetConventions() => new Imports();
+        public static Imports GetConventions { get; } = new Imports();
+
         /// <summary>
         /// The conventions imported into this assembly
         /// </summary>

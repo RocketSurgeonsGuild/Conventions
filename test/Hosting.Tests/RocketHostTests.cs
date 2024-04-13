@@ -31,7 +31,7 @@ public class RocketHostTests
     {
         var host = await Host
                         .CreateApplicationBuilder()
-                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }, Imports.GetConventions));
+                        .LaunchWith(RocketBooster.For(Imports.GetConventions));
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -44,7 +44,7 @@ public class RocketHostTests
         var host = await Host
                         .CreateApplicationBuilder()
                         .LaunchWith(
-                             RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }, Imports.GetConventions),
+                             RocketBooster.For(Imports.GetConventions),
                              z => z.ExceptConvention(typeof(YamlConvention))
                          );
 

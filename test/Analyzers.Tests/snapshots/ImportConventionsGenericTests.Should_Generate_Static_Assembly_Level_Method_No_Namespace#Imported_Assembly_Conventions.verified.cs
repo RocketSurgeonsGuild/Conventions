@@ -12,9 +12,10 @@ using Rocket.Surgery.Conventions;
 /// The class defined for importing conventions into this assembly
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-internal partial class MyImports
+internal partial class MyImports : IConventionFactory
 {
-    public static MyImports GetConventions() => new MyImports();
+    public static MyImports GetConventions { get; } = new MyImports();
+
     /// <summary>
     /// The conventions imported into this assembly
     /// </summary>

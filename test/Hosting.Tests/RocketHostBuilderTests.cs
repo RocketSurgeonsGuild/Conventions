@@ -14,7 +14,6 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.Tests;
 
-[ImportConventions]
 public partial class RocketHostBuilderTests : AutoFakeTest
 {
     [Fact]
@@ -61,7 +60,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
     {
         var builder = await Host
                            .CreateApplicationBuilder()
-                           .UseRocketBooster(RocketBooster.For(AppDomain.CurrentDomain, GetConventions));
+                           .UseRocketBooster(RocketBooster.For(Imports.GetConventions));
 
         var host = builder.Build();
         host.Services.Should().NotBeNull();

@@ -52,28 +52,26 @@ public static partial class RocketBooster
     /// </summary>
     /// <param name="dependencyContext">The dependency context.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(DependencyContext dependencyContext)
-    {
-        return ForDependencyContext(dependencyContext);
-    }
+    public static AppDelegate For(DependencyContext dependencyContext) => ForDependencyContext(dependencyContext);
 
     /// <summary>
     ///     Fors the specified application domain.
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(AppDomain appDomain)
-    {
-        return ForAppDomain(appDomain);
-    }
+    public static AppDelegate For(AppDomain appDomain) => ForAppDomain(appDomain);
 
     /// <summary>
     ///     Fors the specified assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IEnumerable<Assembly> assemblies)
-    {
-        return ForAssemblies(assemblies);
-    }
+    public static AppDelegate For(IEnumerable<Assembly> assemblies) => ForAssemblies(assemblies);
+
+    /// <summary>
+    ///     Fors the specified factory.
+    /// </summary>
+    /// <param name="factory">The factory.</param>
+    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
+    public static AppDelegate For(IConventionFactory factory) => ForConventions(factory);
 }

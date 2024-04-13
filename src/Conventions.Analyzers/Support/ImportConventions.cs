@@ -32,6 +32,7 @@ internal static class ImportConventions
                                .WithLeadingTrivia(GetXmlSummary("The class defined for importing conventions into this assembly"))
                         )
                     )
+                   .AddBaseListTypes(SimpleBaseType(IdentifierName("IConventionFactory")))
                    .WithModifiers(
                         TokenList(
                             Token(SyntaxKind.InternalKeyword),
@@ -39,13 +40,24 @@ internal static class ImportConventions
                         )
                     )
                    .AddMembers(
-                        MethodDeclaration(
+                        PropertyDeclaration(
                                 IdentifierName(configurationData.ClassName),
-                                Identifier(configurationData.MethodName)
-                            )
-                           .WithModifiers(TokenList([Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword),]))
-                           .WithExpressionBody(
-                                ArrowExpressionClause(ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList()))
+                                Identifier(configurationData.MethodName))
+                           .WithModifiers(
+                                TokenList(
+                                    new []{
+                                        Token(SyntaxKind.PublicKeyword),
+                                        Token(SyntaxKind.StaticKeyword)}))
+                           .WithAccessorList(
+                                AccessorList(
+                                    SingletonList<AccessorDeclarationSyntax>(
+                                        AccessorDeclaration(
+                                                SyntaxKind.GetAccessorDeclaration)
+                                           .WithSemicolonToken(
+                                                Token(SyntaxKind.SemicolonToken)))))
+                           .WithInitializer(
+                                EqualsValueClause(
+                                    ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList()))
                             )
                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                         MethodDeclaration(

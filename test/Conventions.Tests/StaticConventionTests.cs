@@ -3,7 +3,6 @@ using Rocket.Surgery.Conventions.Tests.Conventions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-[ImportConventions]
 public partial class StaticConventionTests
 {
     [Fact]
@@ -51,7 +50,8 @@ public partial class StaticConventionTests
     [Fact]
     public void Should_Have_Imports_Method_Defined_On_Class()
     {
-        var list = GetConventions(new ServiceProviderDictionary())
+        var list = Imports.GetConventions
+                          .LoadConventions(new(new Dictionary<object, object>()))
                   .Should()
                   .NotBeNull()
                   .And.Subject;

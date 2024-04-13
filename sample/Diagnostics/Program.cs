@@ -12,7 +12,6 @@ using Spectre.Console.Cli;
 
 namespace Diagnostics;
 
-[ImportConventions]
 public static partial class Program
 {
     public static async Task<int> Main(string[] args)
@@ -24,7 +23,7 @@ public static partial class Program
     {
         return await ( await Host
                             .CreateApplicationBuilder(args)
-                            .LaunchWith(RocketBooster.For(GetConventions)) )
+                            .LaunchWith(RocketBooster.For(Imports.GetConventions)) )
            .ConfigureRocketSurgery(
                 builder => builder
                    .ConfigureServices(_ => { })

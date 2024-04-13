@@ -59,6 +59,7 @@ internal static class AssemblyCollection
                 typeRequests.AddRange(discoveredTypeRequests),
                 privateAssemblies
             );
+
             var attributes = AssemblyProviderConfiguration.FromAssemblyAttributes(assemblyRequests, typeRequests).ToArray();
             cu = cu.AddAttributeLists(attributes);
         }
@@ -76,7 +77,7 @@ internal static class AssemblyCollection
                         Token(SyntaxKind.PartialKeyword)
                     )
                 )
-               .AddMembers(assemblyProvider);
+               .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any()), assemblyProvider);
 
         cu = cu
            .AddMembers(
@@ -304,13 +305,11 @@ internal static class AssemblyCollection
             parameters = ParameterList();
         }
 
-        var getAssembliesProviderMethod = GetAssembliesProviderMethod(privateAssemblies.Any());
-
         return ClassDeclaration("AssemblyProvider")
               .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
               .WithParameterList(parameters)
               .WithBaseList(BaseList(SingletonSeparatedList<BaseTypeSyntax>(SimpleBaseType(IdentifierName("IAssemblyProvider")))))
-              .AddMembers(getAssembliesProviderMethod, getAssembliesMethod, getTypesMethod)
+              .AddMembers(getAssembliesMethod, getTypesMethod)
               .AddMembers(
                    privateAssemblies
                       .OrderBy(z => z.ToDisplayString())
