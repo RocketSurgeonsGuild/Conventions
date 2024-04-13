@@ -5,5 +5,8 @@
 public class AppDomainConventionFactory(AppDomain appDomain) : ConventionFactoryBase
 {
     /// <inheritdoc />
-    public override IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AppDomainAssemblyProvider(appDomain);
+    public override IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder)
+    {
+        return new AppDomainAssemblyProvider(appDomain);
+    }
 }

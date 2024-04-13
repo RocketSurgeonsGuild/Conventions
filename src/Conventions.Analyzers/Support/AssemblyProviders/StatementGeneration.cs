@@ -172,7 +172,7 @@ internal static class StatementGeneration
             return InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expression, IdentifierName("MakeGenericType")))
                .WithArgumentList(
                     // ReSharper disable once NullableWarningSuppressionIsUsed
-                    ArgumentList(SeparatedList(type.TypeArguments.Select(t => Argument(GetTypeOfExpression(compilation, ( (t as INamedTypeSymbol)! ))))))
+                    ArgumentList(SeparatedList(type.TypeArguments.Select(t => Argument(GetTypeOfExpression(compilation, ( t as INamedTypeSymbol )!)))))
                 );
         }
 

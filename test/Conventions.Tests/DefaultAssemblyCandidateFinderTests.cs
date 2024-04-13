@@ -120,10 +120,13 @@ public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper)
     public async Task Should_Generate_Assembly_Provider_For_GetTypes(GetTypesTestsData.GetTypesItem getTypesItem)
     {
         var finder = new DefaultAssemblyProvider(AssemblyLoadContext.Default.Assemblies.Except([GetType().Assembly,]));
-        await Verify(finder.GetTypes(getTypesItem.Selector)
-                           .Where(z => !z.Name.StartsWith("ObjectProxy"))
-                           .Where(z => !z.Name.StartsWith("Rocket.Surgery.Conventions"))
-                           .OrderBy(z => z.FullName))
+        await Verify(
+                finder
+                   .GetTypes(getTypesItem.Selector)
+                   .Where(z => !z.Name.StartsWith("ObjectProxy"))
+                   .Where(z => !z.Name.StartsWith("Rocket.Surgery.Conventions"))
+                   .OrderBy(z => z.FullName)
+            )
            .UseHashedParameters(getTypesItem.Name);
     }
 }

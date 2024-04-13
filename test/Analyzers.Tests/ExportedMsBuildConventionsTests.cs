@@ -81,9 +81,10 @@ namespace Rocket.Surgery.Conventions.Tests
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
-        Configure(b => b
-                     .IgnoreOutputFile("Imported_Assembly_Conventions.cs")
-                     .IgnoreOutputFile("Compiled_AssemblyProvider.cs")
-                  );
+        Configure(
+            b => b
+                .IgnoreOutputFile("Imported_Assembly_Conventions.cs")
+                .IgnoreOutputFile("Compiled_AssemblyProvider.cs")
+        );
     }
 }

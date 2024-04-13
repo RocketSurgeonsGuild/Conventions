@@ -10,14 +10,6 @@ namespace Rocket.Surgery.Conventions.Support;
 
 internal static class AssemblyCollection
 {
-    public record CollectRequest
-    (
-        Compilation Compilation,
-        ConventionConfigurationData ImportConfiguration,
-        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector)> GetAssemblies,
-        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector)> GetTypes
-    );
-
     public static void Collect(
         SourceProductionContext context,
         CollectRequest request
@@ -108,7 +100,7 @@ internal static class AssemblyCollection
                                             {
                                                 IAssemblySymbol assemblySymbol => assemblySymbol,
                                                 IModuleSymbol moduleSymbol     => moduleSymbol.ContainingAssembly,
-                                                _                              => null!
+                                                _                              => null!,
                                             }
                               )
                              .Where(z => z is { })
@@ -129,8 +121,9 @@ internal static class AssemblyCollection
         return results.Count == 0 ? AssembliesMethod : AssembliesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
-    public static (InvocationExpressionSyntax method, ExpressionSyntax selector ) GetAssembliesMethod(SyntaxNode node) =>
-        node is InvocationExpressionSyntax
+    public static (InvocationExpressionSyntax method, ExpressionSyntax selector ) GetAssembliesMethod(SyntaxNode node)
+    {
+        return node is InvocationExpressionSyntax
         {
             Expression: MemberAccessExpressionSyntax
             {
@@ -140,6 +133,7 @@ internal static class AssemblyCollection
         } invocationExpressionSyntax
             ? ( invocationExpressionSyntax, expression )
             : default;
+    }
 
     private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies, HashSet<IAssemblySymbol> privateAssemblies)
     {
@@ -184,10 +178,6 @@ internal static class AssemblyCollection
                 Parameter(Identifier("lineNumber")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword)))
             )
            .WithBody(Block(SingletonList<StatementSyntax>(YieldStatement(SyntaxKind.YieldBreakStatement))));
-
-    public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);
-
-    public record Item(SourceLocation Location, CompiledAssemblyFilter AssemblyFilter);
 
     private static ImmutableArray<Item> GetAssemblyDetails(
         SourceProductionContext context,
@@ -334,22 +324,41 @@ internal static class AssemblyCollection
                                .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("AssemblyLoadContext"))))
                         )
                     )
-                )
+                ),
             ]
             : [];
 
         return MethodDeclaration(IdentifierName("IAssemblyProvider"), Identifier("CreateAssemblyProvider"))
               .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-              .WithLeadingTrivia(TriviaList(
-                   Trivia(
-                       PragmaWarningDirectiveTrivia(
-                               Token(SyntaxKind.DisableKeyword),
-                               true)
-                          .WithErrorCodes(
-                               SingletonSeparatedList<ExpressionSyntax>(
-                                   IdentifierName("CA1822"))))))
+              .WithLeadingTrivia(
+                   TriviaList(
+                       Trivia(
+                           PragmaWarningDirectiveTrivia(
+                                   Token(SyntaxKind.DisableKeyword),
+                                   true
+                               )
+                              .WithErrorCodes(
+                                   SingletonSeparatedList<ExpressionSyntax>(
+                                       IdentifierName("CA1822")
+                                   )
+                               )
+                       )
+                   )
+               )
               .WithParameterList(ParameterList(SingletonSeparatedList(Parameter(Identifier("builder")).WithType(IdentifierName("ConventionContextBuilder")))))
               .WithExpressionBody(ArrowExpressionClause(ObjectCreationExpression(IdentifierName("AssemblyProvider")).AddArgumentListArguments(args)))
               .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
     }
+
+    public record CollectRequest
+    (
+        Compilation Compilation,
+        ConventionConfigurationData ImportConfiguration,
+        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector)> GetAssemblies,
+        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector)> GetTypes
+    );
+
+    public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);
+
+    public record Item(SourceLocation Location, CompiledAssemblyFilter AssemblyFilter);
 }

@@ -43,22 +43,30 @@ internal static class ImportConventions
                    .AddMembers(
                         PropertyDeclaration(
                                 IdentifierName(configurationData.ClassName),
-                                Identifier(configurationData.MethodName))
+                                Identifier(configurationData.MethodName)
+                            )
                            .WithModifiers(
                                 TokenList(
-                                    new []{
-                                        Token(SyntaxKind.PublicKeyword),
-                                        Token(SyntaxKind.StaticKeyword)}))
+                                    Token(SyntaxKind.PublicKeyword),
+                                    Token(SyntaxKind.StaticKeyword)
+                                )
+                            )
                            .WithAccessorList(
                                 AccessorList(
-                                    SingletonList<AccessorDeclarationSyntax>(
+                                    SingletonList(
                                         AccessorDeclaration(
-                                                SyntaxKind.GetAccessorDeclaration)
+                                                SyntaxKind.GetAccessorDeclaration
+                                            )
                                            .WithSemicolonToken(
-                                                Token(SyntaxKind.SemicolonToken)))))
+                                                Token(SyntaxKind.SemicolonToken)
+                                            )
+                                    )
+                                )
+                            )
                            .WithInitializer(
                                 EqualsValueClause(
-                                    ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList()))
+                                    ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList())
+                                )
                             )
                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                         MethodDeclaration(

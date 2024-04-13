@@ -154,7 +154,8 @@ internal static partial class ConventionContextHelpers
         var prependedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._prependedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
         var appendedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._appendedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
 
-        if (builder._exceptAssemblyConventions.Count > 0) SkippingConventionsInAssemblies(logger, builder._exceptAssemblyConventions.Select(x => x.GetName().Name));
+        if (builder._exceptAssemblyConventions.Count > 0)
+            SkippingConventionsInAssemblies(logger, builder._exceptAssemblyConventions.Select(x => x.GetName().Name));
 
         if (builder._exceptConventions.Count > 0) SkippingExplicitConventionTypes(logger, builder._exceptConventions.Select(x => x.FullName));
 
@@ -180,7 +181,8 @@ internal static partial class ConventionContextHelpers
         var appendedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._appendedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
 
         ScanningForConventionsInAssemblies(logger, assemblies.Select(x => x.GetName().Name));
-        if (builder._exceptAssemblyConventions.Count > 0) SkippingConventionsInAssemblies(logger, builder._exceptAssemblyConventions.Select(x => x.GetName().Name));
+        if (builder._exceptAssemblyConventions.Count > 0)
+            SkippingConventionsInAssemblies(logger, builder._exceptAssemblyConventions.Select(x => x.GetName().Name));
 
         if (builder._exceptConventions.Count > 0) SkippingExplicitConventionTypes(logger, builder._exceptConventions.Select(x => x.FullName));
 

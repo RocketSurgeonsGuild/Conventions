@@ -77,6 +77,7 @@ internal static partial class AssemblyProviderConfiguration
             {
                 continue;
             }
+
             yield return Helpers.AddAssemblyAttribute(getAssembliesKey, GetAssembliesToString(request));
         }
 

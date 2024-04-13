@@ -1,6 +1,4 @@
-using System.Reflection;
 using Microsoft.Extensions.DependencyModel;
-using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -15,5 +13,8 @@ public static class DependencyContextConventionContextBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="dependencyContext"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder UseDependencyContext(this ConventionContextBuilder builder, DependencyContext dependencyContext) => builder.WithConventionsFrom(new DependencyContextConventionFactory(dependencyContext));
+    public static ConventionContextBuilder UseDependencyContext(this ConventionContextBuilder builder, DependencyContext dependencyContext)
+    {
+        return builder.WithConventionsFrom(new DependencyContextConventionFactory(dependencyContext));
+    }
 }

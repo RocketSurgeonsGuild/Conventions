@@ -21,7 +21,10 @@ public static partial class RocketBooster
     /// </summary>
     /// <param name="dependencyContext">The dependency context.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForDependencyContext(DependencyContext dependencyContext) => (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties).UseDependencyContext(dependencyContext));
+    public static AppDelegate ForDependencyContext(DependencyContext dependencyContext)
+    {
+        return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties).UseDependencyContext(dependencyContext));
+    }
 
     /// <summary>
     ///     ForTesting the specified conventions
@@ -38,40 +41,58 @@ public static partial class RocketBooster
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAppDomain(AppDomain appDomain) => (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties).UseAppDomain(appDomain));
+    public static AppDelegate ForAppDomain(AppDomain appDomain)
+    {
+        return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties).UseAppDomain(appDomain));
+    }
 
     /// <summary>
     ///     Fors the assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies) => (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties).UseAssemblies(assemblies));
+    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies)
+    {
+        return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties).UseAssemblies(assemblies));
+    }
 
     /// <summary>
     ///     Fors the specified dependency context.
     /// </summary>
     /// <param name="dependencyContext">The dependency context.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(DependencyContext dependencyContext) => ForDependencyContext(dependencyContext);
+    public static AppDelegate For(DependencyContext dependencyContext)
+    {
+        return ForDependencyContext(dependencyContext);
+    }
 
     /// <summary>
     ///     Fors the specified application domain.
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(AppDomain appDomain) => ForAppDomain(appDomain);
+    public static AppDelegate For(AppDomain appDomain)
+    {
+        return ForAppDomain(appDomain);
+    }
 
     /// <summary>
     ///     Fors the specified assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IEnumerable<Assembly> assemblies) => ForAssemblies(assemblies);
+    public static AppDelegate For(IEnumerable<Assembly> assemblies)
+    {
+        return ForAssemblies(assemblies);
+    }
 
     /// <summary>
     ///     Fors the specified factory.
     /// </summary>
     /// <param name="factory">The factory.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IConventionFactory factory) => ForConventions(factory);
+    public static AppDelegate For(IConventionFactory factory)
+    {
+        return ForConventions(factory);
+    }
 }

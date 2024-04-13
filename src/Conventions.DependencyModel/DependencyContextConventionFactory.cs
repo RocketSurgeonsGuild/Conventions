@@ -7,5 +7,8 @@ namespace Rocket.Surgery.Conventions;
 public class DependencyContextConventionFactory(DependencyContext dependencyContext) : ConventionFactoryBase
 {
     /// <inheritdoc />
-    public override IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new DependencyContextAssemblyProvider(dependencyContext);
+    public override IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder)
+    {
+        return new DependencyContextAssemblyProvider(dependencyContext);
+    }
 }
