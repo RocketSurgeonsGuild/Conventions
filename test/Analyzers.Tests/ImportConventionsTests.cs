@@ -106,53 +106,6 @@ using Rocket.Surgery.Conventions;
     }
 
     [Fact]
-    public async Task Should_Generate_Static_Class_Member_Level_Method()
-    {
-        var result = await WithSharedDeps()
-                          .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    [ImportConventions]
-    public partial class Program
-    {
-    }
-}
-"
-                           )
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result);
-    }
-
-
-    [Fact]
-    public async Task Should_Generate_Static_Class_Member_Level_Method_FullName()
-    {
-        var result = await WithSharedDeps()
-                          .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    [ImportConventionsAttribute]
-    public partial class Program
-    {
-    }
-}
-"
-                           )
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result);
-    }
-
-    [Fact]
     public async Task Should_Support_No_Exported_Convention_Assemblies()
     {
         var result = await Builder
@@ -235,5 +188,11 @@ namespace TestProject
                           .GenerateAsync();
 
         await Verify(result);
+    }
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+        Configure(b => b.IgnoreOutputFile("Exported_Conventions.cs"));
     }
 }

@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.Hosting;
 /// <summary>
 ///     Extension method to apply logging conventions
 /// </summary>
+[PublicAPI]
 public static class RocketSurgeryHostBuilderLoggingExtensions
 {
     /// <summary>
@@ -14,46 +15,37 @@ public static class RocketSurgeryHostBuilderLoggingExtensions
     /// </summary>
     /// <param name="hostBuilder"></param>
     /// <param name="conventionContext"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static IHostBuilder ApplyConventions(this IHostBuilder hostBuilder, IConventionContext conventionContext)
+    public static async ValueTask ApplyConventionsAsync(
+        this IHostApplicationBuilder hostBuilder,
+        IConventionContext conventionContext,
+        CancellationToken cancellationToken = default
+    )
     {
-        foreach (var item in conventionContext.Conventions.Get<IHostingConvention, HostingConvention>())
+        foreach (var item in conventionContext.Conventions
+                                              .Get<
+                                                   IHostApplicationConvention,
+                                                   HostApplicationConvention,
+                                                   IHostApplicationAsyncConvention,
+                                                   HostApplicationAsyncConvention
+                                               >())
         {
-            if (item is IHostingConvention convention)
+            switch (item)
             {
-                convention.Register(conventionContext, hostBuilder);
-            }
-            else if (item is HostingConvention @delegate)
-            {
-                @delegate(conventionContext, hostBuilder);
+                case IHostApplicationConvention convention:
+                    convention.Register(conventionContext, hostBuilder);
+                    break;
+                case HostApplicationConvention @delegate:
+                    @delegate(conventionContext, hostBuilder);
+                    break;
+                case IHostApplicationAsyncConvention convention:
+                    await convention.Register(conventionContext, hostBuilder, cancellationToken).ConfigureAwait(false);
+                    break;
+                case HostApplicationAsyncConvention @delegate:
+                    await @delegate(conventionContext, hostBuilder, cancellationToken).ConfigureAwait(false);
+                    break;
             }
         }
-
-        return hostBuilder;
     }
-
-    #if NET8_0_OR_GREATER
-    /// <summary>
-    ///     Apply logging conventions
-    /// </summary>
-    /// <param name="hostBuilder"></param>
-    /// <param name="conventionContext"></param>
-    /// <returns></returns>
-    public static IHostApplicationBuilder ApplyConventions(this IHostApplicationBuilder hostBuilder, IConventionContext conventionContext)
-    {
-        foreach (var item in conventionContext.Conventions.Get<IHostApplicationConvention, HostApplicationConvention>())
-        {
-            if (item is IHostApplicationConvention convention)
-            {
-                convention.Register(conventionContext, hostBuilder);
-            }
-            else if (item is HostApplicationConvention @delegate)
-            {
-                @delegate(conventionContext, hostBuilder);
-            }
-        }
-
-        return hostBuilder;
-    }
-    #endif
 }

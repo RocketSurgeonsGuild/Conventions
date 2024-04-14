@@ -1,8 +1,6 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Hosting;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -10,36 +8,19 @@ using Spectre.Console.Cli;
 namespace Rocket.Surgery.Conventions.CommandLine;
 
 /// <summary>
-/// Convention for console applications
+///     Convention for console applications
 /// </summary>
 [ExportConvention]
-public class ConsoleConvention : IServiceConvention, IHostingConvention
+public class ConsoleConvention : IHostApplicationConvention
 {
-    private bool _isHostBuilder;
-
     /// <inheritdoc />
-    public void Register(IConventionContext context, IHostBuilder builder)
+    public void Register(IConventionContext context, IHostApplicationBuilder builder)
     {
-        _isHostBuilder = true;
-        builder.ConfigureAppConfiguration(
-            (_, configurationBuilder) =>
-            {
-                var sourcesToRemove = configurationBuilder.Sources.OfType<CommandLineConfigurationSource>().ToList();
-                var appSettings = new AppSettingsConfigurationSource(sourcesToRemove.FirstOrDefault()?.Args ?? Array.Empty<string>());
-                configurationBuilder.Add(appSettings);
-                context.Set(appSettings);
-            }
-        );
-    }
+        var sourcesToRemove = builder.Configuration.Sources.OfType<CommandLineConfigurationSource>().ToList();
+        var appSettings = new AppSettingsConfigurationSource(sourcesToRemove.FirstOrDefault()?.Args ?? Array.Empty<string>());
+        builder.Configuration.Add(appSettings);
+        context.Set(appSettings);
 
-    /// <inheritdoc />
-    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-    {
-        // We just bail out, the environment is not correct!
-        if (!_isHostBuilder)
-        {
-            return;
-        }
 
         var registry = new ConventionTypeRegistrar();
         var command = new CommandApp(registry);
@@ -62,13 +43,14 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
                         context.Properties.Add(typeof(ConsoleConvention), true);
                     }
 
-                    if (item is ICommandLineConvention convention)
+                    switch (item)
                     {
-                        convention.Register(context, configurator);
-                    }
-                    else if (item is CommandLineConvention @delegate)
-                    {
-                        @delegate(context, configurator);
+                        case ICommandLineConvention convention:
+                            convention.Register(context, configurator);
+                            break;
+                        case CommandLineConvention @delegate:
+                            @delegate(context, configurator);
+                            break;
                     }
                 }
 
@@ -87,14 +69,14 @@ public class ConsoleConvention : IServiceConvention, IHostingConvention
         }
 
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        services.AddSingleton<IAnsiConsole>(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);
+        builder.Services.AddSingleton<IAnsiConsole>(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        services.AddSingleton<IRemainingArguments>(_ => (IRemainingArguments)registry.GetService(typeof(IRemainingArguments))!);
-        services.AddSingleton(consoleResult);
-        services.AddHostedService<ConsoleWorker>();
+        builder.Services.AddSingleton<IRemainingArguments>(_ => (IRemainingArguments)registry.GetService(typeof(IRemainingArguments))!);
+        builder.Services.AddSingleton(consoleResult);
+        builder.Services.AddHostedService<ConsoleWorker>();
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        services.AddSingleton(context.Get<AppSettingsConfigurationSource>()!);
-        services.AddSingleton<ICommandApp>(
+        builder.Services.AddSingleton(context.Get<AppSettingsConfigurationSource>()!);
+        builder.Services.AddSingleton<ICommandApp>(
             provider =>
             {
                 registry.SetServiceProvider(provider);

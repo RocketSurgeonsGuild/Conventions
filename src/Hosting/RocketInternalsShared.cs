@@ -10,21 +10,20 @@ namespace Rocket.Surgery.Hosting;
 
 internal static class RocketInternalsShared
 {
-    internal static void SharedHostConfiguration(
+    internal static async ValueTask SharedHostConfigurationAsync(
         IConventionContext context,
-        IConfigurationBuilder configurationBuilder,
-        IConfiguration configuration,
-        IHostEnvironment environment
+        IHostApplicationBuilder hostApplicationBuilder,
+        CancellationToken cancellationToken
     )
     {
         // This code is duplicated per host (web host, generic host, and wasm host)
-        configurationBuilder.InsertConfigurationSourceAfter(
+        hostApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
             sources => sources
                       .OfType<FileConfigurationSource>()
                       .FirstOrDefault(
                            x => string.Equals(
                                x.Path,
-                               $"appsettings.{environment.EnvironmentName}.json",
+                               $"appsettings.{hostApplicationBuilder.Environment.EnvironmentName}.json",
                                StringComparison.OrdinalIgnoreCase
                            )
                        ),
@@ -32,7 +31,7 @@ internal static class RocketInternalsShared
             {
                 new JsonConfigurationSource
                 {
-                    FileProvider = configurationBuilder.GetFileProvider(),
+                    FileProvider = hostApplicationBuilder.Configuration.GetFileProvider(),
                     Path = "appsettings.local.json",
                     Optional = true,
                     ReloadOnChange = true,
@@ -40,7 +39,7 @@ internal static class RocketInternalsShared
             }
         );
 
-        configurationBuilder.ReplaceConfigurationSourceAt(
+        hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
             sources => sources
                       .OfType<FileConfigurationSource>()
                       .FirstOrDefault(
@@ -48,43 +47,41 @@ internal static class RocketInternalsShared
                        ),
             context
                .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
-               .SelectMany(z => z.Invoke(configurationBuilder))
+               .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration))
                .Select(z => z.Factory(null))
         );
 
-        if (!string.IsNullOrEmpty(environment.EnvironmentName))
+        if (!string.IsNullOrEmpty(hostApplicationBuilder.Environment.EnvironmentName))
         {
-            configurationBuilder.ReplaceConfigurationSourceAt(
+            hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
                 sources => sources
                           .OfType<FileConfigurationSource>()
                           .FirstOrDefault(
                                x => string.Equals(
                                    x.Path,
-                                   $"appsettings.{environment.EnvironmentName}.json",
+                                   $"appsettings.{hostApplicationBuilder.Environment.EnvironmentName}.json",
                                    StringComparison.OrdinalIgnoreCase
                                )
                            ),
                 context
                    .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
-                   .SelectMany(z => z.Invoke(configurationBuilder, environment.EnvironmentName))
+                   .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, hostApplicationBuilder.Environment.EnvironmentName))
                    .Select(z => z.Factory(null))
             );
         }
 
-        configurationBuilder.ReplaceConfigurationSourceAt(
+        hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
             sources => sources
                       .OfType<FileConfigurationSource>()
                       .FirstOrDefault(x => string.Equals(x.Path, "appsettings.local.json", StringComparison.OrdinalIgnoreCase)),
             context
                .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
-               .SelectMany(z => z.Invoke(configurationBuilder, "local"))
+               .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, "local"))
                .Select(z => z.Factory(null))
         );
 
-        // Insert after all the normal configuration but before the environment specific configuration
-
         IConfigurationSource? source = null;
-        foreach (var item in configurationBuilder.Sources.Reverse())
+        foreach (var item in hostApplicationBuilder.Configuration.Sources.Reverse())
         {
             if (item is CommandLineConfigurationSource
              || ( item is EnvironmentVariablesConfigurationSource env
@@ -99,13 +96,14 @@ internal static class RocketInternalsShared
         }
 
         var index = source == null
-            ? configurationBuilder.Sources.Count - 1
-            : configurationBuilder.Sources.IndexOf(source);
+            ? hostApplicationBuilder.Configuration.Sources.Count - 1
+            : hostApplicationBuilder.Configuration.Sources.IndexOf(source);
+        // Insert after all the normal configuration but before the environment specific configuration
 
-        var cb = new ConfigurationBuilder().ApplyConventions(context, configuration);
+        var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, hostApplicationBuilder.Configuration, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0, })
         {
-            configurationBuilder.Sources.Insert(
+            hostApplicationBuilder.Configuration.Sources.Insert(
                 index + 1,
                 new ChainedConfigurationSource
                 {

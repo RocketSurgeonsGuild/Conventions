@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using DiffEngine;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
@@ -28,11 +29,21 @@ public static class ModuleInitializer
             }
         );
 
+        VerifierSettings.SortJsonObjects();
+        VerifierSettings.ScrubInlineGuids();
+        VerifierSettings.ScrubLines(z => z.Contains("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.", StringComparison.OrdinalIgnoreCase));
         VerifierSettings.AddScrubber(
             (builder, counter) =>
             {
                 if (typeof(ConventionAttributesGenerator).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>() is { Version: { Length: > 0, } version, })
                     builder.Replace(version, "version");
+                if (typeof(ConventionAttributesGenerator).Assembly.GetCustomAttribute<AssemblyVersionAttribute>() is { Version: { Length: > 0, } version2, })
+                    builder.Replace(version2, "version");
+                // regex to replace the version number in this string Version=12.0.0.0,
+                var regex = new Regex("Version=(.*?),", RegexOptions.Compiled);
+                var result = regex.Replace(builder.ToString(), "Version=version,");
+                builder.Clear();
+                builder.Append(result);
             }
         );
     }

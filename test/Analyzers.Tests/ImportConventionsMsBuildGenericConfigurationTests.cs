@@ -1,5 +1,4 @@
-﻿#if !ROSLYN4_0
-using Xunit.Abstractions;
+﻿using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
@@ -104,5 +103,10 @@ public class ImportConventionsMsBuildGenericConfigurationTests(ITestOutputHelper
 
         await Verify(result);
     }
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+        Configure(b => b.IgnoreOutputFile("Exported_Conventions.cs"));
+    }
 }
-#endif

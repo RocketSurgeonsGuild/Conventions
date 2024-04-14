@@ -1,4 +1,5 @@
 using DryIoc;
+using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions.DryIoc;
@@ -20,7 +21,13 @@ public static class DryIocConventionRocketHostExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder UseDryIoc(this ConventionContextBuilder builder, IContainer? container = null)
     {
-        return builder.UseServiceProviderFactory(context => new DryIocConventionServiceProviderFactory(context, container));
+        return builder.UseServiceProviderFactory<IContainer>(
+            async (context, services, ct) =>
+            {
+                var c = container ?? new Container().WithDependencyInjectionAdapter();
+                return new DryIocConventionServiceProviderFactory(context, await c.ApplyConventionsAsync(context, services, ct));
+            }
+        );
     }
 
     /// <summary>
@@ -92,7 +99,8 @@ public static class DryIocConventionRocketHostExtensions
     /// <param name="delegate">The container.</param>
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureDryIoc(
-        this ConventionContextBuilder builder, Action<IConfiguration, IServiceCollection, IContainer> @delegate
+        this ConventionContextBuilder builder,
+        Action<IConfiguration, IServiceCollection, IContainer> @delegate
     )
     {
         if (builder == null)
