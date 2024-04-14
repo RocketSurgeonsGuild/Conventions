@@ -8,7 +8,7 @@
         <PackageVersion Include="Rocket.Surgery.MSBuild.GitVersion" Version="1.2.1" />
         <PackageVersion Include="Rocket.Surgery.MSBuild.JetBrains.Annotations" Version="1.2.1" Condition="'$(MSBuildProjectName)'!='.build'" />
         <PackageVersion Include="Rocket.Surgery.MSBuild.SourceLink" Version="1.2.1" />
-        <PackageVersion Include="Polyfill" Version="4.4.1" />
+        <PackageVersion Include="Polyfill" Version="4.5.0" />
         <PackageVersion Include="Roslynator.Analyzers" Version="4.12.0" />
         <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.12.0" />
         <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.12.0" />
@@ -74,21 +74,21 @@
     <ItemGroup>
         <PackageVersion Include="Bogus" Version="35.5.0" />
         <PackageVersion Include="coverlet.collector" Version="6.0.2" />
-        <PackageVersion Include="FakeItEasy" Version="8.1.0" />
+        <PackageVersion Include="FakeItEasy" Version="8.2.0" />
         <PackageVersion Include="FakeItEasy.Analyzer.CSharp" Version="6.1.1" />
         <PackageVersion Include="FluentAssertions" Version="6.12.0" />
         <PackageVersion Include="FluentAssertions.Analyzers" Version="0.31.0" />
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-        <PackageVersion Include="Microsoft.Playwright" Version="1.42.0" />
+        <PackageVersion Include="Microsoft.Playwright" Version="1.43.0" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="8.0.18" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="8.0.18" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" Version="8.0.18" />
-        <PackageVersion Include="xunit" Version="2.7.0" />
-        <PackageVersion Include="xunit.analyzers" Version="1.11.0" />
-        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
+        <PackageVersion Include="xunit" Version="2.7.1" />
+        <PackageVersion Include="xunit.analyzers" Version="1.12.0" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.8" />
         <PackageVersion Include="Verify.AngleSharp" Version="4.3.1" />
         <PackageVersion Include="Verify.ImageMagick" Version="3.3.0" />
-        <PackageVersion Include="Verify.Xunit" Version="23.7.1" />
+        <PackageVersion Include="Verify.Xunit" Version="24.1.0" />
         <PackageVersion Include="Verify.Playwright" Version="2.3.0" />
         <PackageVersion Include="Verify.SourceGenerators" Version="2.2.0" />
     </ItemGroup>

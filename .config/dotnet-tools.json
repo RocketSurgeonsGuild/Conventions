@@ -19,7 +19,7 @@
             "commands": ["codecov"]
         },
         "jetbrains.resharper.globaltools": {
-            "version": "2023.3.4",
+            "version": "2024.1.0",
             "commands": ["jb"]
         },
         "nukeeper": {
@@ -31,7 +31,7 @@
             "commands": ["docfx"]
         },
         "dotnet-outdated-tool": {
-            "version": "4.6.0",
+            "version": "4.6.1",
             "commands": ["dotnet-outdated"]
         },
         "verify.tool": {
