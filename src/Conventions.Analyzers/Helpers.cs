@@ -120,6 +120,69 @@ internal static class Helpers
         }
     }
 
+    public static string GetTypeOfName(ISymbol? symbol)
+    {
+        if (symbol == null || IsRootNamespace(symbol))
+        {
+            return string.Empty;
+        }
+
+        var sb = new StringBuilder(symbol.MetadataName);
+        if (symbol is INamedTypeSymbol namedTypeSymbol && ( namedTypeSymbol.IsOpenGenericType() || namedTypeSymbol.IsGenericType ))
+        {
+            sb = new(symbol.Name);
+            if (namedTypeSymbol.IsOpenGenericType())
+            {
+                sb.Append('<');
+                for (var i = 1; i < namedTypeSymbol.Arity - 1; i++)
+                    sb.Append(',');
+                sb.Append('>');
+            }
+            else
+            {
+                sb.Append('<');
+                for (var index = 0; index < namedTypeSymbol.TypeArguments.Length; index++)
+                {
+                    var argument = namedTypeSymbol.TypeArguments[index];
+                    sb.Append(GetGenericDisplayName(argument));
+                    if (index < namedTypeSymbol.TypeArguments.Length - 1)
+                        sb.Append(',');
+                }
+
+                sb.Append('>');
+            }
+        }
+
+        var last = symbol;
+
+        var workingSymbol = symbol.ContainingSymbol;
+
+        while (!IsRootNamespace(workingSymbol))
+        {
+            if (workingSymbol is ITypeSymbol && last is ITypeSymbol)
+            {
+                sb.Insert(0, '.');
+            }
+            else
+            {
+                sb.Insert(0, '.');
+            }
+
+            sb.Insert(0, workingSymbol.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat).Trim());
+            //sb.Insert(0, symbol.MetadataName);
+            workingSymbol = workingSymbol.ContainingSymbol;
+        }
+
+        sb.Insert(0, "global::");
+        return sb.ToString();
+
+        static bool IsRootNamespace(ISymbol symbol)
+        {
+            INamespaceSymbol? s;
+            return ( s = symbol as INamespaceSymbol ) != null && s.IsGlobalNamespace;
+        }
+    }
+
     public static INamedTypeSymbol? GetUnboundGenericType(INamedTypeSymbol symbol)
     {
         return symbol switch

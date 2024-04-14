@@ -28,10 +28,12 @@ internal record CompiledAssemblyFilter
         "System.Runtime",
     ];
 
+    private readonly bool _includeSystemAssemblies = AssemblyDescriptors.OfType<IncludeSystemAssembliesDescriptor>().Any();
+
     public bool IsMatch(Compilation compilation, IAssemblySymbol targetType)
     {
+        if (!_includeSystemAssemblies && _coreAssemblies.Contains(targetType.Name)) return false;
         if (AssemblyDescriptors.OfType<AllAssemblyDescriptor>().Any()) return true;
-        if (_coreAssemblies.Contains(targetType.Name) && !AssemblyDescriptors.OfType<IncludeSystemAssembliesDescriptor>().Any()) return false;
 
         return AssemblyDescriptors
            .Any(

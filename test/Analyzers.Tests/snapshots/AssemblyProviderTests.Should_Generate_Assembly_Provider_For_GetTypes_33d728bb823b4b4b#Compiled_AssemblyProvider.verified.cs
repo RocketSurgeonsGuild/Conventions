@@ -31,6 +31,7 @@ namespace TestProject.Conventions
                         yield return RocketSurgeryConventionsAbstractions.GetType("Polyfill");
                         yield return RocketSurgeryConventionsAbstractions.GetType("RegexPolyfill");
                         yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions);
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports+AssemblyProvider");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderDelegateResult);

@@ -28,6 +28,7 @@ namespace TestProject.Conventions
                     // FilePath: Input1.cs Member: Register
                     case 16:
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionHostBuilderExtensions+ServiceProviderWrapper`1");
                         break;
                 }
             }
