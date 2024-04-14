@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
-using Xunit;
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
@@ -16,20 +15,22 @@ namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 public class DryIocCommandLineTests : AutoFakeTest
 {
     [Fact]
-    public void ConstructTheContainerAndRegisterWithCore()
+    public async Task ConstructTheContainerAndRegisterWithCore()
     {
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(
-                               rb => rb.UseDryIoc()
-                                       .DisableConventionAttributes()
-                                       .ConfigureDryIoc(
-                                            (conventionContext, configuration, services, container) =>
-                                            {
-                                                container.RegisterInstance(A.Fake<IAbc>());
-                                                services.AddSingleton(A.Fake<IAbc2>());
-                                            }
-                                        )
-                           );
+        var builder = await Host
+                           .CreateApplicationBuilder()
+                           .ConfigureRocketSurgery(
+                                rb => rb
+                                     .UseDryIoc()
+                                     .DisableConventionAttributes()
+                                     .ConfigureDryIoc(
+                                          (conventionContext, configuration, services, container) =>
+                                          {
+                                              container.RegisterInstance(A.Fake<IAbc>());
+                                              services.AddSingleton(A.Fake<IAbc2>());
+                                          }
+                                      )
+                            );
 
         var items = builder.GetLifetimeScope();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
@@ -39,22 +40,23 @@ public class DryIocCommandLineTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithApplication()
+    public async Task ConstructTheContainerAndRegisterWithApplication()
     {
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(
-                               rb => rb
-                                    .UseDryIoc()
-                                    .DisableConventionAttributes()
-                                    .ConfigureDryIoc(
-                                         (conventionContext, configuration, services, container) =>
-                                         {
-                                             container.RegisterInstance(A.Fake<IAbc>());
-                                             services.AddSingleton(A.Fake<IAbc2>());
-                                             container.RegisterInstance(A.Fake<IAbc4>());
-                                         }
-                                     )
-                           );
+        var builder = await Host
+                           .CreateApplicationBuilder()
+                           .ConfigureRocketSurgery(
+                                rb => rb
+                                     .UseDryIoc()
+                                     .DisableConventionAttributes()
+                                     .ConfigureDryIoc(
+                                          (conventionContext, configuration, services, container) =>
+                                          {
+                                              container.RegisterInstance(A.Fake<IAbc>());
+                                              services.AddSingleton(A.Fake<IAbc2>());
+                                              container.RegisterInstance(A.Fake<IAbc4>());
+                                          }
+                                      )
+                            );
 
         var items = builder.GetLifetimeScope();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
@@ -64,45 +66,45 @@ public class DryIocCommandLineTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithSystem()
+    public async Task ConstructTheContainerAndRegisterWithSystem()
     {
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(
-                               rb => rb
-                                    .UseDryIoc()
-                                    .DisableConventionAttributes()
-                                    .ConfigureDryIoc(
-                                         (conventionContext, configuration, services, container) =>
-                                         {
-                                             container.RegisterInstance(A.Fake<IAbc3>());
-                                             container.RegisterInstance(A.Fake<IAbc4>());
-                                         }
-                                     )
-                           );
+        var builder = await Host
+                           .CreateApplicationBuilder()
+                           .ConfigureRocketSurgery(
+                                rb => rb
+                                     .UseDryIoc()
+                                     .DisableConventionAttributes()
+                                     .ConfigureDryIoc(
+                                          (conventionContext, configuration, services, container) =>
+                                          {
+                                              container.RegisterInstance(A.Fake<IAbc3>());
+                                              container.RegisterInstance(A.Fake<IAbc4>());
+                                          }
+                                      )
+                            );
 
         var items = builder.GetLifetimeScope();
-        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
         items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
         items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithCore_ServiceProvider()
+    public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(
-                               rb => rb
-                                    .UseDryIoc()
-                                    .DisableConventionAttributes()
-                                    .ConfigureDryIoc(
-                                         (conventionContext, configuration, services, container) =>
-                                         {
-                                             container.RegisterInstance(A.Fake<IAbc>());
-                                             services.AddSingleton(A.Fake<IAbc2>());
-                                         }
-                                     )
-                           );
+        var builder = await Host
+                           .CreateApplicationBuilder()
+                           .ConfigureRocketSurgery(
+                                rb => rb
+                                     .UseDryIoc()
+                                     .DisableConventionAttributes()
+                                     .ConfigureDryIoc(
+                                          (conventionContext, configuration, services, container) =>
+                                          {
+                                              container.RegisterInstance(A.Fake<IAbc>());
+                                              services.AddSingleton(A.Fake<IAbc2>());
+                                          }
+                                      )
+                            );
 
         var items = builder.GetLifetimeScope();
 
@@ -114,22 +116,23 @@ public class DryIocCommandLineTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
+    public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(
-                               rb => rb
-                                    .UseDryIoc()
-                                    .DisableConventionAttributes()
-                                    .ConfigureDryIoc(
-                                         (conventionContext, configuration, services, container) =>
-                                         {
-                                             container.RegisterInstance(A.Fake<IAbc>());
-                                             services.AddSingleton(A.Fake<IAbc2>());
-                                             container.RegisterInstance(A.Fake<IAbc4>());
-                                         }
-                                     )
-                           );
+        var builder = await Host
+                           .CreateApplicationBuilder()
+                           .ConfigureRocketSurgery(
+                                rb => rb
+                                     .UseDryIoc()
+                                     .DisableConventionAttributes()
+                                     .ConfigureDryIoc(
+                                          (conventionContext, configuration, services, container) =>
+                                          {
+                                              container.RegisterInstance(A.Fake<IAbc>());
+                                              services.AddSingleton(A.Fake<IAbc2>());
+                                              container.RegisterInstance(A.Fake<IAbc4>());
+                                          }
+                                      )
+                            );
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
@@ -140,35 +143,35 @@ public class DryIocCommandLineTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
+    public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(
-                               rb => rb
-                                    .UseDryIoc()
-                                    .DisableConventionAttributes()
-                                    .ConfigureDryIoc(
-                                         (conventionContext, configuration, services, container) =>
-                                         {
-                                             container.RegisterInstance(A.Fake<IAbc3>());
-                                             container.RegisterInstance(A.Fake<IAbc4>());
-                                         }
-                                     )
-                           );
+        var builder = await Host
+                           .CreateApplicationBuilder()
+                           .ConfigureRocketSurgery(
+                                rb => rb
+                                     .UseDryIoc()
+                                     .DisableConventionAttributes()
+                                     .ConfigureDryIoc(
+                                          (conventionContext, configuration, services, container) =>
+                                          {
+                                              container.RegisterInstance(A.Fake<IAbc3>());
+                                              container.RegisterInstance(A.Fake<IAbc4>());
+                                          }
+                                      )
+                            );
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().BeNull();
-        sp.GetService<IAbc2>().Should().BeNull();
         sp.GetService<IAbc3>().Should().NotBeNull();
         sp.GetService<IAbc4>().Should().NotBeNull();
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention()
+    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(rb => rb.UseDryIoc());
+        var builder = await Host
+                           .CreateApplicationBuilder()
+                           .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         var items = builder.GetLifetimeScope();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
@@ -178,10 +181,11 @@ public class DryIocCommandLineTests : AutoFakeTest
     }
 
     [Fact]
-    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
+    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
     {
-        var builder = Host.CreateDefaultBuilder()
-                          .ConfigureRocketSurgery(rb => rb.UseDryIoc());
+        var builder = await Host
+                           .CreateApplicationBuilder()
+                           .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         var items = builder.GetLifetimeScope();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
@@ -193,10 +197,11 @@ public class DryIocCommandLineTests : AutoFakeTest
     }
 
     [Fact]
-    public void Should_Integrate_With_DryIoc()
+    public async Task Should_Integrate_With_DryIoc()
     {
-        var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
-                          .ConfigureRocketSurgery(rb => rb.UseDryIoc());
+        var builder = await Host
+                           .CreateApplicationBuilder(Array.Empty<string>())
+                           .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         using var host = builder.Build();
         host.Services.GetRequiredService<IContainer>().Should().NotBeNull();

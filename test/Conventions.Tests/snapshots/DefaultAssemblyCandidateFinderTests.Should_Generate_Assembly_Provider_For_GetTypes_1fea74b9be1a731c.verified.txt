@@ -1,0 +1,6 @@
+﻿[
+  ServiceAsyncConvention,
+  ServiceConvention,
+  SetupAsyncConvention,
+  SetupConvention
+]

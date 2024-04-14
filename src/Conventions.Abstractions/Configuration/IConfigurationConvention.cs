@@ -7,6 +7,7 @@ namespace Rocket.Surgery.Conventions.Configuration;
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
+[PublicAPI]
 public interface IConfigurationConvention : IConvention
 {
     /// <summary>

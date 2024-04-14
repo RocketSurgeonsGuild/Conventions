@@ -18,6 +18,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
         <PackageReference Include="Microsoft.Extensions.Configuration" />
+        <PackageReference Include="System.Collections.Immutable" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.CommandLine" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
@@ -27,5 +28,8 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Web.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Abstractions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Extensions.Autofac.Tests" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Extensions.CommandLine.Tests" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Extensions.DryIoc.Tests" />
     </ItemGroup>
 </Project>

@@ -39,10 +39,12 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldScanAddedContributions()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
         A
-           .CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+            // ReSharper disable ExplicitCallerInfoArgument
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+            // ReSharper restore ExplicitCallerInfoArgument
            .Returns(Array.Empty<Assembly>());
 
         var contribution = A.Fake<IServiceConvention>();
@@ -63,10 +65,12 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldIncludeAddedDelegates()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
+        // ReSharper disable ExplicitCallerInfoArgument
         A
-           .CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+            // ReSharper restore ExplicitCallerInfoArgument
            .Returns(Array.Empty<Assembly>());
 
         var @delegate = new ServiceConvention((_, _, _) => { });
@@ -87,10 +91,12 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldScanExcludeContributionTypes()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
         A
-           .CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+            // ReSharper disable ExplicitCallerInfoArgument
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+            // ReSharper restore ExplicitCallerInfoArgument
            .Returns(
                 new[]
                 {
@@ -122,10 +128,12 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldScanExcludeContributionAssemblies()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
         A
-           .CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+            // ReSharper disable ExplicitCallerInfoArgument
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+            // ReSharper restore ExplicitCallerInfoArgument
            .Returns(
                 new[]
                 {
@@ -152,10 +160,12 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldScanIncludeContributionTypes()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
         A
-           .CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+            // ReSharper disable ExplicitCallerInfoArgument
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+            // ReSharper restore ExplicitCallerInfoArgument
            .Returns(
                 new[]
                 {
@@ -187,10 +197,12 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldScanIncludeContributionAssemblies()
     {
         var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<IAssemblyCandidateFinder>();
+        var finder = AutoFake.Resolve<IAssemblyProvider>();
 
         A
-           .CallTo(() => finder.GetCandidateAssemblies(A<IEnumerable<string>>._))
+            // ReSharper disable ExplicitCallerInfoArgument
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+            // ReSharper restore ExplicitCallerInfoArgument
            .Returns(
                 new[]
                 {

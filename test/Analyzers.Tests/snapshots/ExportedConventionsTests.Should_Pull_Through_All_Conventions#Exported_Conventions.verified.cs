@@ -20,7 +20,7 @@ namespace Source.Space
         /// <summary>
         /// The conventions exports from this assembly
         /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        public static IEnumerable<IConventionWithDependencies> GetConventions(ConventionContextBuilder builder)
         {
             yield return new ConventionWithDependencies(new Contrib1(), HostType.Undefined);
             yield return new ConventionWithDependencies(new Contrib2(), HostType.Undefined);

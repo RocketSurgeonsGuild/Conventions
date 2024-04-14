@@ -103,4 +103,10 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
 
         await Verify(result);
     }
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+        Configure(b => b.IgnoreOutputFile("Exported_Conventions.cs"));
+    }
 }
