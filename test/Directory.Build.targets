@@ -14,6 +14,6 @@
         <PackageReference Include="xunit.runner.visualstudio" />
         <PackageReference Include="Verify.Xunit" />
     </ItemGroup>
-    <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Abstractions/build/Rocket.Surgery.Conventions.Abstractions.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Attributes/build/Rocket.Surgery.Conventions.Attributes.targets" />
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 </Project>

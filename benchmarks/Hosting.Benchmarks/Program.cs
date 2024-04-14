@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Hosting;
 
 #pragma warning disable CA1822
@@ -38,7 +37,7 @@ internal static class Program
 /// </summary>
 public class Benchmarks
 {
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public async Task Default_Hosting()
     {
         using var host = Host
@@ -49,24 +48,14 @@ public class Benchmarks
         await host.StopAsync().ConfigureAwait(false);
     }
 
-    [Benchmark(Baseline = true)]
-    public async Task Default_Hosting_Application()
-    {
-        var builder = Host.CreateApplicationBuilder(Array.Empty<string>());
-        builder.Logging.ClearProviders();
-        var host = builder.Build();
-        await host.StartAsync().ConfigureAwait(false);
-        await host.StopAsync().ConfigureAwait(false);
-    }
-
     [Benchmark]
-    public async Task Rocket_Surgery_Hosting_Application()
+    public async Task Rocket_Surgery_Hosting()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(z => z.UseDependencyContext(DependencyContext.Default!));
-        builder.Logging.ClearProviders();
-        var host = builder.Build();
+        using var host = Host
+                        .CreateDefaultBuilder(Array.Empty<string>())
+                        .LaunchWith(RocketBooster.For(DependencyContext.Default!))
+                        .ConfigureLogging(x => x.ClearProviders())
+                        .Build();
         await host.StartAsync().ConfigureAwait(false);
         await host.StopAsync().ConfigureAwait(false);
     }
@@ -84,15 +73,14 @@ public class Benchmarks
     }
 
     [Benchmark]
-    public async Task Rocket_Surgery_Hosting_Application_With_Service()
+    public async Task Rocket_Surgery_Hosting_With_Service()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(z => z.UseDependencyContext(DependencyContext.Default!));
-        builder.Logging.ClearProviders();
-        builder.Services.AddHostedService<HostedService>();
-        var host = builder.Build();
-
+        using var host = Host
+                        .CreateDefaultBuilder(Array.Empty<string>())
+                        .LaunchWith(RocketBooster.For(DependencyContext.Default!))
+                        .ConfigureLogging(x => x.ClearProviders())
+                        .ConfigureServices(x => x.AddHostedService<HostedService>())
+                        .Build();
         await host.StartAsync().ConfigureAwait(false);
         await host.StopAsync().ConfigureAwait(false);
     }
@@ -101,7 +89,7 @@ public class Benchmarks
     {
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            return Task.Delay(TimeSpan.FromTicks(1), cancellationToken);
+            return Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

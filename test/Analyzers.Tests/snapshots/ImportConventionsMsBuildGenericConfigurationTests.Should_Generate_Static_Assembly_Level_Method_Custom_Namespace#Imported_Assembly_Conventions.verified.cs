@@ -1,8 +1,6 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Imported_Assembly_Conventions.cs
 using System;
 using System.Collections.Generic;
-using System.Runtime.Loader;
-using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.Namespace", "Test.My.Namespace")]
@@ -14,20 +12,18 @@ namespace Test.My.Namespace
     /// The class defined for importing conventions into this assembly
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    internal sealed partial class MyImports : IConventionFactory
+    internal static partial class MyImports
     {
-        public static MyImports GetConventions { get; } = new MyImports();
-
         /// <summary>
         /// The conventions imported into this assembly
         /// </summary>
-        public IEnumerable<IConventionWithDependencies> LoadConventions(ConventionContextBuilder builder)
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
-            foreach (var convention in Dep1.Dep1Exports.GetConventions(builder))
+            foreach (var convention in Dep1.Dep1Exports.GetConventions(serviceProvider))
                 yield return convention;
-            foreach (var convention in Dep2Exports.GetConventions(builder))
+            foreach (var convention in Dep2Exports.GetConventions(serviceProvider))
                 yield return convention;
-            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(builder))
+            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(serviceProvider))
                 yield return convention;
         }
     }

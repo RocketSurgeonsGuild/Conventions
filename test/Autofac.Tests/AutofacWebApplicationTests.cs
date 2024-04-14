@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+using Rocket.Surgery.Web.Hosting;
+using Xunit;
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
@@ -16,24 +18,23 @@ namespace Rocket.Surgery.Extensions.Autofac.Tests;
 public class AutofacWebApplicationTests : AutoFakeTest
 {
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithCore()
+    public void ConstructTheContainerAndRegisterWithCore()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseAutofac()
-                                     .DisableConventionAttributes()
-                                     .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                          }
-                                      )
-                            );
+        var builder = WebApplication.CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseAutofac()
+                                              .DisableConventionAttributes()
+                                              .ConfigureAutofac(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<IAbc>());
+                                                       services.AddSingleton(A.Fake<IAbc2>());
+                                                   }
+                                               )
+                                     );
 
-        var items = builder.GetLifetimeScope();
+        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
         items.ResolveOptional<IAbc>().Should().NotBeNull();
         items.ResolveOptional<IAbc2>().Should().NotBeNull();
         items.ResolveOptional<IAbc3>().Should().BeNull();
@@ -41,25 +42,24 @@ public class AutofacWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithApplication()
+    public void ConstructTheContainerAndRegisterWithApplication()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseAutofac()
-                                     .DisableConventionAttributes()
-                                     .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                              container.RegisterInstance(A.Fake<IAbc4>());
-                                          }
-                                      )
-                            );
+        var builder = WebApplication.CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseAutofac()
+                                              .DisableConventionAttributes()
+                                              .ConfigureAutofac(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<IAbc>());
+                                                       services.AddSingleton(A.Fake<IAbc2>());
+                                                       container.RegisterInstance(A.Fake<IAbc4>());
+                                                   }
+                                               )
+                                     );
 
-        var items = builder.GetLifetimeScope();
+        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
         items.ResolveOptional<IAbc>().Should().NotBeNull();
         items.ResolveOptional<IAbc2>().Should().NotBeNull();
         items.ResolveOptional<IAbc3>().Should().BeNull();
@@ -67,47 +67,47 @@ public class AutofacWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem()
+    public void ConstructTheContainerAndRegisterWithSystem()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseAutofac()
-                                     .DisableConventionAttributes()
-                                     .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc3>());
-                                              container.RegisterInstance(A.Fake<IAbc4>());
-                                          }
-                                      )
-                            );
+        var builder = WebApplication.CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseAutofac()
+                                              .DisableConventionAttributes()
+                                              .ConfigureAutofac(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<IAbc3>());
+                                                       container.RegisterInstance(A.Fake<IAbc4>());
+                                                   }
+                                               )
+                                     );
 
-        var items = builder.GetLifetimeScope();
+        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
+        items.ResolveOptional<IAbc>().Should().BeNull();
+        items.ResolveOptional<IAbc2>().Should().BeNull();
         items.ResolveOptional<IAbc3>().Should().NotBeNull();
         items.ResolveOptional<IAbc4>().Should().NotBeNull();
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseAutofac()
-                                     .DisableConventionAttributes()
-                                     .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                          }
-                                      )
-                            );
+        var builder = WebApplication.CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseAutofac()
+                                              .DisableConventionAttributes()
+                                              .ConfigureAutofac(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<IAbc>());
+                                                       services.AddSingleton(A.Fake<IAbc2>());
+                                                   }
+                                               )
+                                     );
 
-        var items = builder.GetLifetimeScope();
+        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
 
         var sp = items.Resolve<IServiceProvider>();
         sp.GetService<IAbc>().Should().NotBeNull();
@@ -117,25 +117,24 @@ public class AutofacWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseAutofac()
-                                     .DisableConventionAttributes()
-                                     .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                              container.RegisterInstance(A.Fake<IAbc4>());
-                                          }
-                                      )
-                            );
+        var builder = WebApplication.CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseAutofac()
+                                              .DisableConventionAttributes()
+                                              .ConfigureAutofac(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<IAbc>());
+                                                       services.AddSingleton(A.Fake<IAbc2>());
+                                                       container.RegisterInstance(A.Fake<IAbc4>());
+                                                   }
+                                               )
+                                     );
 
-        var items = builder.GetLifetimeScope();
+        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
         var sp = items.Resolve<IServiceProvider>();
         sp.GetService<IAbc>().Should().NotBeNull();
         sp.GetService<IAbc2>().Should().NotBeNull();
@@ -144,40 +143,40 @@ public class AutofacWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseAutofac()
-                                     .DisableConventionAttributes()
-                                     .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc3>());
-                                              container.RegisterInstance(A.Fake<IAbc4>());
-                                          }
-                                      )
-                            );
+        var builder = WebApplication.CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseAutofac()
+                                              .DisableConventionAttributes()
+                                              .ConfigureAutofac(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<IAbc3>());
+                                                       container.RegisterInstance(A.Fake<IAbc4>());
+                                                   }
+                                               )
+                                     );
 
-        var items = builder.GetLifetimeScope();
+        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
         var sp = items.Resolve<IServiceProvider>();
+        sp.GetService<IAbc>().Should().BeNull();
+        sp.GetService<IAbc2>().Should().BeNull();
         sp.GetService<IAbc3>().Should().NotBeNull();
         sp.GetService<IAbc4>().Should().NotBeNull();
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
+    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                   .UseAutofac()
-                            );
+        var builder = WebApplication.CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                            .UseAutofac()
+                                     );
 
-        var items = builder.GetLifetimeScope();
+        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
         items.ResolveOptional<IAbc>().Should().NotBeNull();
         items.ResolveOptional<IAbc2>().Should().NotBeNull();
         items.ResolveOptional<IAbc3>().Should().BeNull();
@@ -185,13 +184,12 @@ public class AutofacWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
+    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(rb => rb.UseAutofac());
+        var builder = WebApplication.CreateBuilder()
+                                    .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
-        var items = builder.GetLifetimeScope();
+        var items = builder.Build().Services.GetRequiredService<ILifetimeScope>();
         items.ResolveOptional<IAbc>().Should().NotBeNull();
         items.ResolveOptional<IAbc2>().Should().NotBeNull();
         items.ResolveOptional<IAbc3>().Should().BeNull();
@@ -201,13 +199,13 @@ public class AutofacWebApplicationTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task Should_Integrate_With_Autofac()
+    public void Should_Integrate_With_Autofac()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(rb => rb.UseAutofac());
+        var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
+                          .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
-        builder.GetLifetimeScope().Should().NotBeNull();
+        using var host = builder.Build();
+        host.Services.GetRequiredService<ILifetimeScope>().Should().NotBeNull();
     }
 
     public AutofacWebApplicationTests(ITestOutputHelper outputHelper) : base(outputHelper)

@@ -9,5 +9,4 @@ namespace Rocket.Surgery.Conventions.Logging;
 /// <param name="context">The context.</param>
 /// <param name="configuration"></param>
 /// <param name="builder"></param>
-[PublicAPI]
 public delegate void LoggingConvention(IConventionContext context, IConfiguration configuration, ILoggingBuilder builder);

@@ -12,22 +12,24 @@ using Spectre.Console.Cli;
 
 namespace Diagnostics;
 
+[ImportConventions]
 public static partial class Program
 {
-    public static async Task<int> Main(string[] args)
+    public static Task<int> Main(string[] args)
     {
-        return await ( await CreateHostBuilder(args) ).RunAsync();
+        return CreateHostBuilder(args)
+           .RunAsync();
     }
 
-    public static async Task<HostApplicationBuilder> CreateHostBuilder(string[] args)
+    public static IHostBuilder CreateHostBuilder(string[] args)
     {
-        return await ( await Host
-                            .CreateApplicationBuilder(args)
-                            .LaunchWith(RocketBooster.For(Imports.GetConventions)) )
-           .ConfigureRocketSurgery(
-                builder => builder
-                   .ConfigureServices(_ => { })
-            );
+        return Host
+              .CreateDefaultBuilder(args)
+              .LaunchWith(RocketBooster.For(GetConventions))
+              .ConfigureRocketSurgery(
+                   builder => builder
+                      .ConfigureServices(_ => { })
+               );
     }
 }
 

@@ -12,6 +12,7 @@
     mscorlib.dll,
     netstandard.dll,
     Rocket.Surgery.Conventions.Abstractions.dll,
+    Rocket.Surgery.Conventions.Attributes.dll,
     Rocket.Surgery.Conventions.dll,
     System.ComponentModel.dll,
     System.Core.dll,

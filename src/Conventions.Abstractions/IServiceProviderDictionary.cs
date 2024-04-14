@@ -7,8 +7,7 @@ namespace Rocket.Surgery.Conventions;
 /// </summary>
 /// <seealso cref="IDictionary{Object, Object}" />
 /// <seealso cref="IServiceProvider" />
-[PublicAPI]
-#if NET8_0_OR_GREATER
+#if NET7_0_OR_GREATER
 public interface IServiceProviderDictionary : IDictionary<object, object>, IServiceProvider;
 #else
 public interface IServiceProviderDictionary : IDictionary<object, object?>, IServiceProvider;

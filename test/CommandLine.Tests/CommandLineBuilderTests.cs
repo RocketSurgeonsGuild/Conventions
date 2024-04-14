@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
@@ -56,16 +57,15 @@ public class CommandLineBuilderTests : AutoFakeTest
                      .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
-        var response = await Host
-                            .CreateApplicationBuilder(new[] { "remote", "add", "-v", })
-                            .ConfigureRocketSurgery(builder);
-        var host = response.Build();
-        await host.StartAsync();
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "remote", "add", "-v", })
+                      .ConfigureRocketSurgery(builder);
+        var host = await response.StartAsync();
         host.Services.GetService<ConsoleResult>().Should().BeNull();
     }
 
     [Fact]
-    public async Task ShouldEnableVersionOnAllCommands()
+    public void ShouldEnableVersionOnAllCommands()
     {
         var builder = ConventionContextBuilder
                      .Create()
@@ -78,14 +78,14 @@ public class CommandLineBuilderTests : AutoFakeTest
                               lineContext.AddBranch("fetch", configurator => configurator.AddCommand<Origin>("origin"));
                           }
                       );
-        var response = await Host
-                            .CreateApplicationBuilder(new[] { "remote", "add", "-v", })
-                            .ConfigureRocketSurgery(builder);
-        ( await response.RunAsync() ).Should().Be(0);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "remote", "add", "-v", })
+                      .ConfigureRocketSurgery(builder);
+        response.Run().Should().Be(0);
     }
 
     [Fact]
-    public async Task ExecuteWorks()
+    public void ExecuteWorks()
     {
         var builder = ConventionContextBuilder
                      .Create()
@@ -95,15 +95,15 @@ public class CommandLineBuilderTests : AutoFakeTest
             (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
 
-        var response = await Host
-                            .CreateApplicationBuilder(new[] { "test", })
-                            .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "test", })
+                      .ConfigureRocketSurgery(builder);
 
-        ( await response.RunAsync() ).Should().Be((int)LogLevel.Information);
+        response.Run().Should().Be((int)LogLevel.Information);
     }
 
     [Fact]
-    public async Task SupportsApplicationStateWithCustomDependencyInjection()
+    public void SupportsAppllicationStateWithCustomDependencyInjection()
     {
         var builder = ConventionContextBuilder
                      .Create()
@@ -130,17 +130,17 @@ public class CommandLineBuilderTests : AutoFakeTest
                 );
             }
         );
-        var response = await Host
-                            .CreateApplicationBuilder(new[] { "test", "--log", "error", })
-                            .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "test", "--log", "error", })
+                      .ConfigureRocketSurgery(builder);
 
-        var result = await response.RunAsync();
+        var result = response.Run();
 
         result.Should().Be(1000);
     }
 
     [Fact]
-    public async Task SupportsInjection_Creating_On_Construction()
+    public void SupportsInjection_Creating_On_Construction()
     {
         var service = AutoFake.Resolve<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -154,15 +154,15 @@ public class CommandLineBuilderTests : AutoFakeTest
 
         builder.ConfigureCommandLine((context, builder) => { builder.AddCommand<InjectionConstructor>("constructor"); });
 
-        var response = await Host.CreateApplicationBuilder(new[] { "constructor", }).ConfigureRocketSurgery(builder);
+        var response = Host.CreateDefaultBuilder(new[] { "constructor", }).ConfigureRocketSurgery(builder);
 
-        var result = await response.RunAsync();
+        var result = response.Run();
         result.Should().Be(1000);
         A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
     }
 
     [Fact]
-    public async Task Sets_Values_In_Commands()
+    public void Sets_Values_In_Commands()
     {
         var builder = ConventionContextBuilder
                      .Create()
@@ -170,28 +170,28 @@ public class CommandLineBuilderTests : AutoFakeTest
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
         builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
-        var response = await Host
-                            .CreateApplicationBuilder(
-                                 new[]
-                                 {
-                                     "cwv",
-                                     "--api-domain",
-                                     "mydomain.com",
-                                     "--origin",
-                                     "origin1",
-                                     "--origin",
-                                     "origin2",
-                                     "--client-name",
-                                     "client1",
-                                 }
-                             )
-                            .ConfigureRocketSurgery(builder);
-        await response.RunAsync(
+        var response = Host
+                      .CreateDefaultBuilder(
+                           new[]
+                           {
+                               "cwv",
+                               "--api-domain",
+                               "mydomain.com",
+                               "--origin",
+                               "origin1",
+                               "--origin",
+                               "origin2",
+                               "--client-name",
+                               "client1",
+                           }
+                       )
+                      .ConfigureRocketSurgery(builder);
+        response.Run(
         );
     }
 
     [Fact]
-    public async Task Can_Add_A_Command_With_A_Name_Using_Context()
+    public void Can_Add_A_Command_With_A_Name_Using_Context()
     {
         var builder = ConventionContextBuilder
                      .Create()
@@ -204,24 +204,24 @@ public class CommandLineBuilderTests : AutoFakeTest
                           )
                       );
 
-        var response = await Host.CreateApplicationBuilder(new[] { "test", }).ConfigureRocketSurgery(builder);
+        var response = Host.CreateDefaultBuilder(new[] { "test", }).ConfigureRocketSurgery(builder);
 
-        ( await response.RunAsync() ).Should().Be((int)LogLevel.Information);
+        response.Run().Should().Be((int)LogLevel.Information);
     }
 
     [Fact]
-    public async Task Should_Configure_Logging_Correctly()
+    public void Should_Configure_Logging_Correctly()
     {
         var builder = ConventionContextBuilder
                      .Create()
                      .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
                      .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"));
 
-        var response = await Host
-                            .CreateApplicationBuilder(new[] { "logger", })
-                            .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "logger", })
+                      .ConfigureRocketSurgery(builder);
 
-        var result = await response.RunAsync();
+        var result = response.Run();
         result.Should().Be(0);
     }
 
@@ -247,7 +247,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     [Theory]
     [InlineData("--verbose", LogLevel.Debug)]
     [InlineData("--trace", LogLevel.Trace)]
-    public async Task ShouldAllVerbosity(string command, LogLevel level)
+    public void ShouldAllVerbosity(string command, LogLevel level)
     {
         var builder = ConventionContextBuilder
                      .Create()
@@ -256,11 +256,11 @@ public class CommandLineBuilderTests : AutoFakeTest
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
-        var response = await Host
-                            .CreateApplicationBuilder(new[] { "test", command, })
-                            .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "test", command, })
+                      .ConfigureRocketSurgery(builder);
 
-        var result = (LogLevel)await response.RunAsync();
+        var result = (LogLevel)response.Run();
         result.Should().Be(level);
     }
 
@@ -271,7 +271,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     [InlineData("-l Error", LogLevel.Error)]
     [InlineData("-l WARNING", LogLevel.Warning)]
     [InlineData("-l critical", LogLevel.Critical)]
-    public async Task ShouldAllowLogLevelIn(string command, LogLevel level)
+    public void ShouldAllowLogLevelIn(string command, LogLevel level)
     {
         var builder = ConventionContextBuilder
                      .Create()
@@ -281,11 +281,11 @@ public class CommandLineBuilderTests : AutoFakeTest
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
 
-        var response = await Host
-                            .CreateApplicationBuilder(new[] { "test", }.Concat(command.Split(' ')).ToArray())
-                            .ConfigureRocketSurgery(builder);
+        var response = Host
+                      .CreateDefaultBuilder(new[] { "test", }.Concat(command.Split(' ')).ToArray())
+                      .ConfigureRocketSurgery(builder);
 
-        var result = (LogLevel)await response.RunAsync();
+        var result = (LogLevel)response.Run();
         result.Should().Be(level);
     }
 
@@ -311,7 +311,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     [InlineData("cmd4 a --help")]
     [InlineData("cmd5 --help")]
     [InlineData("cmd5 a --help")]
-    public async Task StopsForHelp(string command)
+    public void StopsForHelp(string command)
     {
         var builder = ConventionContextBuilder
                      .Create()
@@ -328,10 +328,10 @@ public class CommandLineBuilderTests : AutoFakeTest
             }
         );
 
-        var response = await Host
-                            .CreateApplicationBuilder(command.Split(' ').ToArray())
-                            .ConfigureRocketSurgery(builder);
-        var result = await response.RunAsync();
+        var response = Host
+                      .CreateDefaultBuilder(command.Split(' ').ToArray())
+                      .ConfigureRocketSurgery(builder);
+        var result = response.Run();
         result.Should().BeGreaterOrEqualTo(0);
     }
 

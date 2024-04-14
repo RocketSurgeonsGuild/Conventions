@@ -8,5 +8,4 @@ namespace Rocket.Surgery.Conventions.Configuration;
 /// <param name="context">The context.</param>
 /// <param name="configuration"></param>
 /// <param name="builder"></param>
-[PublicAPI]
 public delegate void ConfigurationConvention(IConventionContext context, IConfiguration configuration, IConfigurationBuilder builder);
