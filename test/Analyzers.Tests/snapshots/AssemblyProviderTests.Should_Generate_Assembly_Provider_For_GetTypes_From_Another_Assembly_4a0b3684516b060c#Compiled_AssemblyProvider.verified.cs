@@ -37,7 +37,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Setup.ISetupConvention);
                         yield return typeof(global::Sample.DependencyOne.Class1);
                         yield return typeof(global::Sample.DependencyThree.Class3);
-                        yield return typeof(global::Sample.DependencyTwo.Class2);
+                        yield return typeof(global::Sample.DependencyTwo.Nested.Class2);
                         yield return typeof(global::TestConvention);
                         break;
                 }

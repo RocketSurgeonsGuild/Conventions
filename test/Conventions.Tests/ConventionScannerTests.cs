@@ -96,7 +96,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
                 new[]
                 {
                     typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
+                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
                 }
             );
         // ReSharper restore ExplicitCallerInfoArgument
@@ -133,7 +133,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
                 new[]
                 {
                     typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
+                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
                 }
             );
         // ReSharper restore ExplicitCallerInfoArgument
@@ -165,7 +165,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
                 new[]
                 {
                     typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
+                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
                 }
             );
         // ReSharper restore ExplicitCallerInfoArgument
@@ -202,7 +202,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
                 new[]
                 {
                     typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
+                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
                 }
             );
         // ReSharper restore ExplicitCallerInfoArgument

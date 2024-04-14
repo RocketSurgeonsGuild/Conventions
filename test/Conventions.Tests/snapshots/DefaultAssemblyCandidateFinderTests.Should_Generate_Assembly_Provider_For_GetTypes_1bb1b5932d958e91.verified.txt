@@ -1,8 +1,0 @@
-﻿[
-  ConventionDependency,
-  ConventionOrDelegate,
-  DependencyDirection,
-  HostType,
-  TypeInfoFilter,
-  TypeKindFilter
-]

@@ -13,7 +13,6 @@ public class GetTypesTestsData
     {
         // ReSharper disable RedundantNameQualifier
 
-
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.StartsWith("IService")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.StartsWith("S").EndsWith("Convention")));
         yield return TestMethod(z => z.FromAssemblyDependenciesOf<IConvention>().GetTypes(x => x.StartsWith("T").EndsWith("Convention")));
@@ -202,7 +201,14 @@ public class GetTypesTestsData
             string argument = null!
         )
         {
-            return [new GetTypesItem(argument[( argument.LastIndexOf("=> x") + 5 )..^1].Replace("\r", "").Replace("\n", "").Trim(), argument, func),];
+            // TODO: REmove this once tests pass
+            // .Replace("\r", "").Replace("\n", "")
+            var typeName = argument[( argument.LastIndexOf("=> x") + 5 )..^1]
+                          .Split(new[] { '\r', '\n', }, StringSplitOptions.RemoveEmptyEntries)
+                          .Select(z => z.Trim())
+                          .Aggregate("", (x, y) => x + y)
+                          .Trim();
+            return [new GetTypesItem(typeName, argument, func),];
         }
     }
 
