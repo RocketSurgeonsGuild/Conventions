@@ -1,0 +1,4 @@
+﻿[
+  ServiceFactoryAdapter<TContainerBuilder>,
+  ConventionHostBuilderExtensions.ServiceProviderWrapper<TContainerBuilder>
+]

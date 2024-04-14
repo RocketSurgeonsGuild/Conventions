@@ -1,0 +1,7 @@
+﻿{
+  AllAssemblies: false,
+  AssemblyDependencies: [
+    Rocket.Surgery.Conventions
+  ],
+  SystemAssemblies: false
+}

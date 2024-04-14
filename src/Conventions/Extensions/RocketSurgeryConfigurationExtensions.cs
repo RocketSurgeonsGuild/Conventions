@@ -15,23 +15,37 @@ public static class RocketSurgeryLoggingExtensions
     /// <param name="configurationBuilder"></param>
     /// <param name="conventionContext"></param>
     /// <param name="outerConfiguration"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static IConfigurationBuilder ApplyConventions(
+    public static async ValueTask<IConfigurationBuilder> ApplyConventionsAsync(
         this IConfigurationBuilder configurationBuilder,
         IConventionContext conventionContext,
-        IConfiguration? outerConfiguration = null
+        IConfiguration? outerConfiguration = null,
+        CancellationToken cancellationToken = default
     )
     {
         outerConfiguration ??= new ConfigurationBuilder().Build();
-        foreach (var item in conventionContext.Conventions.Get<IConfigurationConvention, ConfigurationConvention>())
+        foreach (var item in conventionContext.Conventions.Get<
+                     IConfigurationConvention,
+                     ConfigurationConvention,
+                     IConfigurationAsyncConvention,
+                     ConfigurationAsyncConvention
+                 >())
         {
-            if (item is IConfigurationConvention convention)
+            switch (item)
             {
-                convention.Register(conventionContext, outerConfiguration, configurationBuilder);
-            }
-            else if (item is ConfigurationConvention @delegate)
-            {
-                @delegate(conventionContext, outerConfiguration, configurationBuilder);
+                case IConfigurationConvention convention:
+                    convention.Register(conventionContext, outerConfiguration, configurationBuilder);
+                    break;
+                case ConfigurationConvention @delegate:
+                    @delegate(conventionContext, outerConfiguration, configurationBuilder);
+                    break;
+                case IConfigurationAsyncConvention convention:
+                    await convention.Register(conventionContext, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
+                    break;
+                case ConfigurationAsyncConvention @delegate:
+                    await @delegate(conventionContext, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
+                    break;
             }
         }
 

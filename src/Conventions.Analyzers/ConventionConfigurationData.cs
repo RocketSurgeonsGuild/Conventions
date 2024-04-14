@@ -6,6 +6,9 @@ namespace Rocket.Surgery.Conventions;
 
 internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, string? Namespace, string ClassName, string MethodName)
 {
+    public static ConventionConfigurationData ExportsDefaults { get; } = new(false, true, "", "Exports", "GetConventions") { Postfix = true, };
+    public static ConventionConfigurationData ImportsDefaults { get; } = new(false, true, "", "Imports", "GetConventions") { Postfix = true, };
+
     public static IncrementalValueProvider<ConventionConfigurationData> Create(
         IncrementalGeneratorInitializationContext context,
         string attributeName,

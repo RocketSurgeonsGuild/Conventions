@@ -116,6 +116,16 @@ public static partial class CommandAppHostBuilderExtensions
     ///     Run the host as a commandline application and return the result
     /// </summary>
     /// <param name="builder"></param>
+    /// <returns></returns>
+    public static int Run(this HostApplicationBuilder builder)
+    {
+        return RunAsync(builder).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    ///     Run the host as a commandline application and return the result
+    /// </summary>
+    /// <param name="builder"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async Task<int> RunAsync(this IHostBuilder builder, CancellationToken cancellationToken = default)
@@ -132,7 +142,30 @@ public static partial class CommandAppHostBuilderExtensions
         return result?.ExitCode ?? 0;
     }
 
-    [LoggerMessage(Message = "No commands have been configured, are you trying to run a console app? Try adding some commands for it to work correctly.", Level = LogLevel.Warning)]
+    /// <summary>
+    ///     Run the host as a commandline application and return the result
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async Task<int> RunAsync(this HostApplicationBuilder builder, CancellationToken cancellationToken = default)
+    {
+        using var host = builder.Build();
+        var result = host.Services.GetService<ConsoleResult>();
+        if (result == null)
+        {
+            LogWarning(host.Services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(CommandAppHostBuilderExtensions)));
+        }
+
+        await host.StartAsync(cancellationToken);
+        await host.WaitForShutdownAsync(cancellationToken);
+        return result?.ExitCode ?? Environment.ExitCode;
+    }
+
+    [LoggerMessage(
+        Message = "No commands have been configured, are you trying to run a console app? Try adding some commands for it to work correctly.",
+        Level = LogLevel.Warning
+    )]
     static partial void LogWarning(ILogger logger);
 
     private static void EnsureShouldRun(ConventionContextBuilder container)

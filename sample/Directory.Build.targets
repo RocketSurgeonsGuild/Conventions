@@ -1,4 +1,4 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Attributes/build/Rocket.Surgery.Conventions.Attributes.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Abstractions/build/Rocket.Surgery.Conventions.Abstractions.targets" />
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 </Project>

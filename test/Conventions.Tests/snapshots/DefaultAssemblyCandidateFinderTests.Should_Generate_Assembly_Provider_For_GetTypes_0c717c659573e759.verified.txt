@@ -1,0 +1,17 @@
+﻿[
+  IConfigurationAsyncConvention,
+  IConfigurationConvention,
+  IServiceAsyncConvention,
+  IServiceConvention,
+  IConvention,
+  IConventionContext,
+  IConventionDependency,
+  IConventionFactory,
+  IConventionProvider,
+  IConventionWithDependencies,
+  IHostBasedConvention,
+  ILoggingAsyncConvention,
+  ILoggingConvention,
+  ISetupAsyncConvention,
+  ISetupConvention
+]

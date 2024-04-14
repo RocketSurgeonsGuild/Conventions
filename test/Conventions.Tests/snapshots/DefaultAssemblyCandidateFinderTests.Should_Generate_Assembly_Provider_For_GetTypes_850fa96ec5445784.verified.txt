@@ -1,0 +1,18 @@
+﻿[
+  EnumPolyfill,
+  Polyfill,
+  RegexPolyfill,
+  Imports,
+  Imports.AssemblyProvider,
+  IServiceFactoryAdapter,
+  ServiceFactoryAdapter<TContainerBuilder>,
+  AssemblyProviderFactory,
+  ConventionDependency,
+  ConventionHostBuilderExtensions.ServiceProviderWrapper<TContainerBuilder>,
+  ConventionOrDelegate,
+  ConventionProvider,
+  IHostBasedConvention,
+  ServiceProviderFactoryAdapter,
+  ThrowHelper,
+  StringPolyfill
+]

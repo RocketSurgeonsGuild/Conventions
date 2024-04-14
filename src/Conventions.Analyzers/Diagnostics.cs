@@ -21,4 +21,40 @@ internal static class Diagnostics
         DiagnosticSeverity.Error,
         true
     );
+
+    public static DiagnosticDescriptor MustBeAnExpression { get; } = new(
+        "RSG0003",
+        "Must be a expression",
+        "Methods that will be analyzed statically must be an expression, blocks and variables are not allowed",
+        "RocketSurgeonsGuild",
+        DiagnosticSeverity.Error,
+        true
+    );
+
+    public static DiagnosticDescriptor MustBeTypeOf { get; } = new(
+        "RSG0004",
+        "Must use typeof",
+        "Method must be called with typeof, variables are not allowed",
+        "RocketSurgeonsGuild",
+        DiagnosticSeverity.Error,
+        true
+    );
+
+    public static DiagnosticDescriptor UnhandledSymbol { get; } = new(
+        "RSG0005",
+        "Symbol could not be handled",
+        "The indicated symbol could not be handled correctly",
+        "RocketSurgeonsGuild",
+        DiagnosticSeverity.Warning,
+        true
+    );
+
+    public static DiagnosticDescriptor MustBeAString { get; } = new(
+        "RSG0006",
+        "Value must be a string",
+        "The given value must be a constant string",
+        "RocketSurgeonsGuild",
+        DiagnosticSeverity.Warning,
+        true
+    );
 }
