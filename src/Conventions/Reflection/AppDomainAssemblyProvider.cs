@@ -23,6 +23,7 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
         "System",
         "System.Core",
         "System.Runtime",
+        "System.Private.CoreLib",
     ];
 
     private readonly Action<ILogger, string, string, Exception?> _logFoundAssembly = LoggerMessage.Define<string, string>(

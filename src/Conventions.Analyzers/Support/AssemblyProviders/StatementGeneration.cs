@@ -103,7 +103,7 @@ internal static class StatementGeneration
 
         if (compilation.IsSymbolAccessibleWithin(type, compilation.Assembly))
         {
-            return TypeOfExpression(ParseTypeName(Helpers.GetGenericDisplayName(type)));
+            return TypeOfExpression(ParseTypeName(Helpers.GetTypeOfName(type)));
         }
 
         return GetPrivateType(compilation, type);

@@ -51,6 +51,53 @@ internal static class TypeCollection
             : default;
     }
 
+    internal static ImmutableArray<Item> GetTypeDetails(
+        SourceProductionContext context,
+        Compilation compilation,
+        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
+    )
+    {
+        var items = ImmutableArray.CreateBuilder<Item>();
+        foreach (var tuple in results)
+        {
+            ( var methodCallSyntax, var selector ) = tuple;
+
+            var assemblies = new List<IAssemblyDescriptor>();
+            var typeFilters = new List<ITypeFilterDescriptor>();
+            var classFilter = ClassFilter.All;
+
+            DataHelpers.HandleInvocationExpressionSyntax(
+                context,
+                compilation.GetSemanticModel(tuple.expression.SyntaxTree),
+                selector,
+                assemblies,
+                typeFilters,
+                compilation.ObjectType,
+                ref classFilter,
+                context.CancellationToken
+            );
+
+            var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
+            var typeFilter = new CompiledTypeFilter(classFilter, typeFilters.ToImmutableArray());
+            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
+
+            var source = new SourceLocation(
+                methodCallSyntax
+                   .SyntaxTree.GetText(context.CancellationToken)
+                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
+                   .LineNumber
+              + 1,
+                methodCallSyntax.SyntaxTree.FilePath,
+                containingMethod.Identifier.Text
+            );
+
+            var i = new Item(source, assemblyFilter, typeFilter);
+            items.Add(i);
+        }
+
+        return items.ToImmutable();
+    }
+
     private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<INamedTypeSymbol> types, HashSet<IAssemblySymbol> privateAssemblies)
     {
         var block = Block();
@@ -63,6 +110,7 @@ internal static class TypeCollection
 
         return block;
     }
+
 
     private static readonly MethodDeclarationSyntax TypesMethod = MethodDeclaration(
                                                                       GenericName(Identifier("IEnumerable"))

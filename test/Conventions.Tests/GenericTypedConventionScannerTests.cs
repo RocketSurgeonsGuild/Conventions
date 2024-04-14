@@ -101,7 +101,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
                 new[]
                 {
                     typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
+                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
                 }
             );
 
@@ -138,7 +138,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
                 new[]
                 {
                     typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
+                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
                 }
             );
 
@@ -170,7 +170,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
                 new[]
                 {
                     typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
+                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
                 }
             );
 
@@ -207,7 +207,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
                 new[]
                 {
                     typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
+                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
                 }
             );
 
