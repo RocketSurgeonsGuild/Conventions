@@ -9,5 +9,4 @@ namespace Rocket.Surgery.Conventions.DependencyInjection;
 /// <param name="context">The context.</param>
 /// <param name="configuration"></param>
 /// <param name="services"></param>
-[PublicAPI]
 public delegate void ServiceConvention(IConventionContext context, IConfiguration configuration, IServiceCollection services);

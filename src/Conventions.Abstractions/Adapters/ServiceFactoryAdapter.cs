@@ -4,34 +4,28 @@ namespace Rocket.Surgery.Conventions.Adapters;
 
 internal interface IServiceFactoryAdapter
 {
-    ValueTask<object> CreateBuilder(IServiceCollection services, CancellationToken cancellationToken);
-    ValueTask<IServiceProvider> CreateServiceProvider(object containerBuilder, CancellationToken cancellationToken);
+    object CreateBuilder(IServiceCollection services);
+
+    IServiceProvider CreateServiceProvider(object containerBuilder);
 }
 
-internal class ServiceFactoryAdapter<TContainerBuilder>
-    (Func<IServiceCollection, CancellationToken, ValueTask<IServiceProviderFactory<TContainerBuilder>>> factory) : IServiceFactoryAdapter
+internal class ServiceFactoryAdapter<TContainerBuilder> : IServiceFactoryAdapter
     where TContainerBuilder : notnull
 {
-    private IServiceProviderFactory<TContainerBuilder>? _serviceProviderFactory;
+    private readonly IServiceProviderFactory<TContainerBuilder> _serviceProviderFactory;
 
-    public async ValueTask<object> CreateBuilder(IServiceCollection services, CancellationToken cancellationToken)
+    public ServiceFactoryAdapter(IServiceProviderFactory<TContainerBuilder> serviceProviderFactory)
     {
-        _serviceProviderFactory = await factory(services, cancellationToken);
+        _serviceProviderFactory = serviceProviderFactory ?? throw new ArgumentNullException(nameof(serviceProviderFactory));
+    }
+
+    public object CreateBuilder(IServiceCollection services)
+    {
         return _serviceProviderFactory.CreateBuilder(services);
     }
 
-    #if NET6_0_OR_GREATER
-    public ValueTask<IServiceProvider> CreateServiceProvider(object containerBuilder, CancellationToken cancellationToken)
+    public IServiceProvider CreateServiceProvider(object containerBuilder)
     {
-        if (_serviceProviderFactory is null) throw new InvalidOperationException("CreateBuilder must be called before CreateServiceProvider");
-        return ValueTask.FromResult(_serviceProviderFactory.CreateServiceProvider((TContainerBuilder)containerBuilder));
-    }
-    #else
-    public async ValueTask<IServiceProvider> CreateServiceProvider(object containerBuilder, CancellationToken cancellationToken)
-    {
-        if (_serviceProviderFactory is null) throw new InvalidOperationException("CreateBuilder must be called before CreateServiceProvider");
-        await Task.Yield();
         return _serviceProviderFactory.CreateServiceProvider((TContainerBuilder)containerBuilder);
     }
-    #endif
 }

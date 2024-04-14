@@ -2,7 +2,9 @@ using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
 using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -25,10 +27,9 @@ public class ConventionStaticScannerTests : AutoFakeTest
             Logger
         );
 
-        scanner
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .Contain(x => x is Contrib);
+        scanner.Get<IServiceConvention, ServiceConvention>()
+               .Should()
+               .Contain(x => x is Contrib);
     }
 
     [Fact]
@@ -42,12 +43,11 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution);
         scanner.AppendConvention(contribution2);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
 
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(contribution, contribution2);
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .ContainInOrder(contribution, contribution2);
     }
 
     [Fact]
@@ -61,12 +61,11 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependDelegate(delegate2);
         scanner.AppendDelegate(@delegate);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
 
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(delegate2, @delegate);
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .ContainInOrder(delegate2, @delegate);
     }
 
     [Fact]
@@ -81,16 +80,14 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
 
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .NotContain(x => x is Contrib);
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(contribution2, contribution);
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .NotContain(x => x is Contrib);
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .ContainInOrder(contribution2, contribution);
     }
 
     [Fact]
@@ -103,12 +100,11 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution);
         scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
 
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .NotContain(x => x is Contrib);
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .NotContain(x => x is Contrib);
     }
 
 
@@ -124,16 +120,14 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution2);
         scanner.IncludeConvention(typeof(Contrib));
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
 
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .Contain(x => x is Contrib);
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(contribution2, contribution);
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .Contain(x => x is Contrib);
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .ContainInOrder(contribution2, contribution);
     }
 
     [Fact]
@@ -145,13 +139,14 @@ public class ConventionStaticScannerTests : AutoFakeTest
         scanner.PrependConvention(contribution);
         scanner.IncludeConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyCandidateFinder>(), Logger);
 
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .Contain(x => x is Contrib);
+        provider.Get<IServiceConvention, ServiceConvention>()
+                .Should()
+                .Contain(x => x is Contrib);
     }
 
-    public ConventionStaticScannerTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
+    public ConventionStaticScannerTests(ITestOutputHelper outputHelper) : base(outputHelper)
+    {
+    }
 }

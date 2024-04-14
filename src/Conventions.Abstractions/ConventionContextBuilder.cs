@@ -8,13 +8,13 @@ using PropertiesDictionary = System.Collections.Generic.Dictionary<object, objec
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Adapters;
 
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     Builder that can be used to create a context.
 /// </summary>
-[PublicAPI]
 public class ConventionContextBuilder
 {
     /// <summary>
@@ -33,9 +33,12 @@ public class ConventionContextBuilder
     internal readonly List<Assembly> _exceptAssemblyConventions = new();
     internal readonly List<object> _includeConventions = new();
     internal readonly List<Assembly> _includeAssemblyConventions = new();
-    internal IConventionFactory? _conventionProviderFactory;
-    internal ServiceProviderFactoryAdapter? _serviceProviderFactory;
+    internal Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? _conventionProviderFactory;
+    internal Func<IConventionContext, IServiceFactoryAdapter>? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
+    internal object? _source;
+    internal AssemblyCandidateFinderFactory? _assemblyCandidateFinderFactory;
+    internal AssemblyProviderFactory? _assemblyProviderFactory;
 
     /// <summary>
     ///     Create a context builder with a set of properties
@@ -53,6 +56,30 @@ public class ConventionContextBuilder
     public IServiceProviderDictionary Properties { get; }
 
     /// <summary>
+    ///     Use the given app domain for resolving assemblies
+    /// </summary>
+    /// <param name="appDomain"></param>
+    /// <returns></returns>
+    public ConventionContextBuilder UseAppDomain(AppDomain appDomain)
+    {
+        _source = appDomain;
+        _conventionProviderFactory = null;
+        return this;
+    }
+
+    /// <summary>
+    ///     Use the given set of assemblies
+    /// </summary>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
+    public ConventionContextBuilder UseAssemblies(IEnumerable<Assembly> assemblies)
+    {
+        _source = assemblies;
+        _conventionProviderFactory = null;
+        return this;
+    }
+
+    /// <summary>
     ///     Enables convention attributes
     /// </summary>
     /// <returns></returns>
@@ -66,11 +93,11 @@ public class ConventionContextBuilder
     /// <summary>
     ///     Defines a callback that provides
     /// </summary>
-    /// <param name="conventionFactory"></param>
+    /// <param name="conventionProvider"></param>
     /// <returns></returns>
-    public ConventionContextBuilder WithConventionsFrom(IConventionFactory conventionFactory)
+    public ConventionContextBuilder WithConventionsFrom(Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> conventionProvider)
     {
-        _conventionProviderFactory = conventionFactory;
+        _conventionProviderFactory = conventionProvider;
         return this;
     }
 

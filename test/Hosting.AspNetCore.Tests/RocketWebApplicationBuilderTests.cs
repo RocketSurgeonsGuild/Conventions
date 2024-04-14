@@ -1,31 +1,34 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿#if NET6_0_OR_GREATER
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
+using Rocket.Surgery.Web.Hosting;
 using Xunit.Abstractions;
 
 // ReSharper disable once CheckNamespace
 namespace AspNetCore.Tests;
 
-public class RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
+public class RocketWebApplicationBuilderTests : AutoFakeTest
 {
     [Fact]
-    public async Task Should_Build_The_Host_Correctly()
+    public void Should_Build_The_Host_Correctly()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly, })
-                            );
+        var builder = WebApplication
+                     .CreateBuilder()
+                     .ConfigureRocketSurgery(
+                          x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly, })
+                      );
         builder.WebHost.UseTestServer();
 
-        await using var host = builder.Build();
+        using var host = builder.Build();
         new TestStartup(builder.Environment, builder.Configuration).Configure(host);
-        await host.StartAsync();
+        host.StartAsync();
         var server = host.GetTestServer();
         server.CreateClient();
-        await host.StopAsync();
+        host.StopAsync();
     }
+
+    public RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 }
+#endif

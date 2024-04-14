@@ -1,31 +1,26 @@
-﻿using FluentAssertions;
+﻿#if NET6_0_OR_GREATER
+using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting;
-using Rocket.Surgery.Hosting.AspNetCore.Tests;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
+using Rocket.Surgery.Web.Hosting;
 using Xunit.Abstractions;
 
 // ReSharper disable once CheckNamespace
 namespace AspNetCore.Tests;
 
-public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
+public class RocketWebApplicationTests : AutoFakeTest
 {
     [Fact]
     public async Task Should_Start_Application()
     {
-        var builder = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                x => x.UseAssemblies(new[] { typeof(RocketWebApplicationTests).Assembly, })
-                            );
+        var builder = _baseBuilder;
         builder.WebHost.UseTestServer();
 
         await using var host = builder.Build();
@@ -42,29 +37,31 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     }
 
     [Fact]
-    public async Task Creates_RocketHost_ForAppDomain()
+    public void Creates_RocketHost_ForAppDomain()
     {
-        var host = await WebApplication
-                        .CreateBuilder()
-                        .LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
+        var host = WebApplication
+                  .CreateBuilder()
+                  .LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
         host.Should().BeAssignableTo<WebApplicationBuilder>();
     }
 
     [Fact]
-    public async Task Creates_RocketHost_ForAssemblies()
+    public void Creates_RocketHost_ForAssemblies()
     {
-        var host = await WebApplication
-                        .CreateBuilder()
-                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }));
+        var host = WebApplication
+                  .CreateBuilder()
+                  .LaunchWith(RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }));
         host.Should().BeAssignableTo<WebApplicationBuilder>();
     }
 
     [Fact]
-    public async Task Creates_RocketHost_WithConfiguration()
+    public void Creates_RocketHost_WithConfiguration()
     {
-        var host = await WebApplication
-                        .CreateBuilder()
-                        .LaunchWith(RocketBooster.For(Imports.GetConventions));
+        var host = WebApplication
+                  .CreateBuilder()
+                  .LaunchWith(
+                       RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, })
+                   );
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -72,14 +69,14 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     }
 
     [Fact]
-    public async Task Creates_RocketHost_WithModifiedConfiguration_Json()
+    public void Creates_RocketHost_WithModifiedConfiguration_Json()
     {
-        var host = await WebApplication
-                        .CreateBuilder()
-                        .LaunchWith(
-                             RocketBooster.For(Imports.GetConventions),
-                             z => z.ExceptConvention(typeof(YamlConvention))
-                         );
+        var host = WebApplication
+                  .CreateBuilder()
+                  .LaunchWith(
+                       RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }),
+                       z => z.ExceptConvention(typeof(YamlConvention))
+                   );
 
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
@@ -88,18 +85,30 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     }
 
     [Fact]
-    public async Task Creates_RocketHost_WithModifiedConfiguration_Yaml()
+    public void Creates_RocketHost_WithModifiedConfiguration_Yaml()
     {
-        var host = await WebApplication
-                        .CreateBuilder()
-                        .LaunchWith(
-                             RocketBooster.For(Imports.GetConventions),
-                             z => z.ExceptConvention(typeof(JsonConvention))
-                         );
+        var host = WebApplication
+                  .CreateBuilder()
+                  .LaunchWith(
+                       RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }),
+                       z => z.ExceptConvention(typeof(JsonConvention))
+                   );
 
         var configuration = (IConfigurationRoot)host.Build().Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(0);
         configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
     }
+
+    public RocketWebApplicationTests(ITestOutputHelper outputHelper) : base(outputHelper)
+    {
+        _baseBuilder = WebApplication
+                      .CreateBuilder()
+                      .ConfigureRocketSurgery(
+                           x => x.UseAssemblies(new[] { typeof(RocketWebApplicationTests).Assembly, })
+                       );
+    }
+
+    private readonly WebApplicationBuilder _baseBuilder;
 }
+#endif

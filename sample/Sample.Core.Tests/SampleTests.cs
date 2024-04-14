@@ -11,11 +11,11 @@ namespace Sample.Core.Tests;
 public class SampleTests
 {
     [Fact]
-    public async Task Should_Register_Services()
+    public void Should_Register_Services()
     {
-        var context = await ConventionContext.FromAsync(_builder);
+        var context = ConventionContext.From(_builder);
 
-        var services = ( await new ServiceCollection().ApplyConventionsAsync(context) ).BuildServiceProvider();
+        var services = new ServiceCollection().ApplyConventions(context).BuildServiceProvider();
         Assert.Equal("TestService", services.GetRequiredService<IService>().GetString());
     }
 

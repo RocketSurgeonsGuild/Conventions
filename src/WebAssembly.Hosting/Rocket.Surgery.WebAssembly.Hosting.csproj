@@ -13,8 +13,8 @@
             ReferenceOutputAssembly="false"
         />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <ProjectReference Include="..\WebAssembly.Hosting.Abstractions\Rocket.Surgery.WebAssembly.Hosting.Abstractions.csproj" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Tests" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     </ItemGroup>
     <ItemGroup />
 </Project>

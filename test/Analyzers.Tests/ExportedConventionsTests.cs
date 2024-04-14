@@ -383,10 +383,4 @@ namespace Rocket.Surgery.Conventions.Tests
 
         await Verify(result).UseTextForParameters(attributeName);
     }
-
-    public override async Task InitializeAsync()
-    {
-        await base.InitializeAsync();
-        Configure(b => b.IgnoreOutputFile("Imported_Assembly_Conventions.cs"));
-    }
 }

@@ -1,8 +1,6 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Imported_Assembly_Conventions.cs
 using System;
 using System.Collections.Generic;
-using System.Runtime.Loader;
-using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.Namespace", "TestProject.Conventions")]
@@ -14,14 +12,12 @@ namespace TestProject.Conventions
     /// The class defined for importing conventions into this assembly
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    internal sealed partial class Imports : IConventionFactory
+    internal static partial class Imports
     {
-        public static Imports GetConventions { get; } = new Imports();
-
         /// <summary>
         /// The conventions imported into this assembly
         /// </summary>
-        public IEnumerable<IConventionWithDependencies> LoadConventions(ConventionContextBuilder builder)
+        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
         {
             yield break;
         }

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks>netstandard2.1;net6.0;net8.0</TargetFrameworks>
         <PackageDescription>Provides the ability to provide additional commands to the hosted application by convention.</PackageDescription>
         <PackageTags>$(PackageTags);command line;cli;command</PackageTags>
         <NoWarn>$(NoWarn);RCS1102;CA1812</NoWarn>
