@@ -4,8 +4,10 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Setup;
 using Rocket.Surgery.Extensions.Testing;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -13,39 +15,37 @@ namespace Rocket.Surgery.Conventions.Tests;
 public class ConventionContextTests : AutoFakeTest
 {
     [Fact]
-    public Task Constructs()
+    public void Constructs()
     {
         var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary { [typeof(IConvention)] = new AbcConvention(), });
+        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary { [typeof(IConvention)] = new AbcConvention() });
         var servicesBuilder = AutoFake.Resolve<ConventionContext>();
 
         servicesBuilder.AssemblyProvider.Should().BeSameAs(assemblyProvider);
+        servicesBuilder.AssemblyCandidateFinder.Should().NotBeNull();
         servicesBuilder.Properties.Should().ContainKey(typeof(IConvention));
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task ReturnsNullOfNoValue()
+    public void ReturnsNullOfNoValue()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var container = AutoFake.Resolve<ConventionContext>();
         container[typeof(string)].Should().BeNull();
-        return Task.CompletedTask;
     }
 
 
     [Fact]
-    public Task SetAValue()
+    public void SetAValue()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var container = AutoFake.Resolve<ConventionContext>();
         container[typeof(string)] = "abc";
         container[typeof(string)].Should().Be("abc");
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task StoresAndReturnsItems()
+    public void StoresAndReturnsItems()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var servicesBuilder = AutoFake.Resolve<ConventionContext>();
@@ -53,86 +53,81 @@ public class ConventionContextTests : AutoFakeTest
         var value = new object();
         servicesBuilder[string.Empty] = value;
         servicesBuilder[string.Empty].Should().BeSameAs(value);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task IgnoreNonExistentItems()
+    public void IgnoreNonExistentItems()
     {
         AutoFake.Provide<IDictionary<object, object>>(new Dictionary<object, object>());
         var servicesBuilder = AutoFake.Resolve<ConventionContext>();
 
         servicesBuilder[string.Empty].Should().BeNull();
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task GetAStronglyTypedValue()
+    public void GetAStronglyTypedValue()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var container = AutoFake.Resolve<ConventionContext>();
         container[typeof(string)] = "abc";
         container.Get<string>().Should().Be("abc");
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task SetAStronglyTypedValue()
+    public void SetAStronglyTypedValue()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var container = AutoFake.Resolve<ConventionContext>();
         container.Set("abc");
         container.Get<string>().Should().Be("abc");
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task AddConventions()
+    public void AddConventions()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary());
         var convention = A.Fake<IServiceConvention>();
         contextBuilder.PrependConvention(convention);
 
         ConventionContextHelpers.CreateProvider(contextBuilder, new TestAssemblyProvider(), Logger).GetAll().Should().Contain(convention);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public async Task Setups()
+    public void Setups()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
            .UseAssemblies(Array.Empty<Assembly>());
         var convention = A.Fake<ISetupConvention>();
         contextBuilder.PrependConvention(convention);
 
-        var context = await ConventionContext.FromAsync(contextBuilder);
+        var context = ConventionContext.From(contextBuilder);
         A.CallTo(() => convention.Register(context)).MustHaveHappenedOnceExactly();
     }
 
     [Fact]
-    public async Task Setups_With_Delegate()
+    public void Setups_With_Delegate()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
            .UseAssemblies(Array.Empty<Assembly>());
         var convention = A.Fake<SetupConvention>();
         contextBuilder.SetupConvention(convention);
 
-        var context = await ConventionContext.FromAsync(contextBuilder);
+        var context = ConventionContext.From(contextBuilder);
         A.CallTo(() => convention(context)).MustHaveHappenedOnceExactly();
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
                             .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = await ConventionContext.FromAsync(contextBuilder);
+        var context = ConventionContext.From(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection()
-                                      .AddSingleton(A.Fake<IAbc>())
-                                      .AddSingleton(A.Fake<IAbc2>())
-                                      .ApplyConventionsAsync(context);
+        var servicesCollection = new ServiceCollection()
+                                .AddSingleton(A.Fake<IAbc>())
+                                .AddSingleton(A.Fake<IAbc2>())
+                                .ApplyConventions(context);
 
         var sp = servicesCollection.BuildServiceProvider();
         sp.GetService<IAbc>().Should().NotBeNull();
@@ -142,14 +137,14 @@ public class ConventionContextTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
                             .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = await ConventionContext.FromAsync(contextBuilder);
+        var context = ConventionContext.From(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var servicesCollection = new ServiceCollection().ApplyConventions(context);
 
         servicesCollection.AddSingleton(A.Fake<IAbc>());
         servicesCollection.AddSingleton(A.Fake<IAbc2>());
@@ -163,14 +158,14 @@ public class ConventionContextTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary())
                             .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = await ConventionContext.FromAsync(contextBuilder);
+        var context = ConventionContext.From(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var servicesCollection = new ServiceCollection().ApplyConventions(context);
         servicesCollection.AddSingleton(A.Fake<IAbc3>());
         servicesCollection.AddSingleton(A.Fake<IAbc4>());
 
@@ -182,16 +177,14 @@ public class ConventionContextTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
+    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
-                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .AppendConvention(new AbcConvention());
+        var builder = AutoFake.Resolve<ConventionContextBuilder>().UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                              .AppendConvention(new AbcConvention());
         builder.Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = await ConventionContext.FromAsync(builder);
-        var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var context = ConventionContext.From(builder);
+        var servicesCollection = new ServiceCollection().ApplyConventions(context);
 
         var items = servicesCollection.BuildServiceProvider();
         items.GetService<IAbc>().Should().NotBeNull();
@@ -201,65 +194,63 @@ public class ConventionContextTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ShouldConstructTheConventionInjectingTheValues()
+    public void ShouldConstructTheConventionInjectingTheValues()
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
-                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .AppendConvention<InjectableConvention>()
-                     .Set(data)
-                     .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = await ConventionContext.FromAsync(builder);
-        var collection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var builder = AutoFake.Resolve<ConventionContextBuilder>()
+                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                              .AppendConvention<InjectableConvention>()
+                              .Set(data)
+                              .Set<IConfiguration>(new ConfigurationBuilder().Build());
+        var context = ConventionContext.From(builder);
+        var collection = new ServiceCollection().ApplyConventions(context);
         collection.Should().Contain(z => z.ServiceType == typeof(IInjectData));
     }
 
     [Fact]
-    public async Task ShouldConstructTheConventionInjectingTheValuesIfOptional()
+    public void ShouldConstructTheConventionInjectingTheValuesIfOptional()
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
-                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .AppendConvention<OptionalInjectableConvention>()
-                     .Set(data)
-                     .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = ( await ConventionContext.FromAsync(builder) ).Set(data);
-        var collection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var builder = AutoFake.Resolve<ConventionContextBuilder>()
+                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                              .AppendConvention<OptionalInjectableConvention>()
+                              .Set(data)
+                              .Set<IConfiguration>(new ConfigurationBuilder().Build());
+        var context = ConventionContext.From(builder).Set(data);
+        var collection = new ServiceCollection().ApplyConventions(context);
         collection.Should().Contain(z => z.ServiceType == typeof(IInjectData));
     }
 
     [Fact]
-    public async Task ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
+    public void ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
-                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .AppendConvention<InjectableConvention>()
-                     .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var a = () => ConventionContext.FromAsync(builder).AsTask();
-        await a.Should().ThrowAsync<InvalidOperationException>();
+        var builder = AutoFake.Resolve<ConventionContextBuilder>()
+                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                              .AppendConvention<InjectableConvention>()
+                              .Set<IConfiguration>(new ConfigurationBuilder().Build());
+        Action a = () => ConventionContext.From(builder);
+        a.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
-    public async Task ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
+    public void ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
     {
         AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
-                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .AppendConvention<OptionalInjectableConvention>()
-                     .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = await ConventionContext.FromAsync(builder);
-        var a = () => new ServiceCollection().ApplyConventionsAsync(context).AsTask();
-        await a.Should().NotThrowAsync<InvalidOperationException>();
+        var builder = AutoFake.Resolve<ConventionContextBuilder>()
+                              .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
+                              .AppendConvention<OptionalInjectableConvention>()
+                              .Set<IConfiguration>(new ConfigurationBuilder().Build());
+        var context = ConventionContext.From(builder);
+        Action a = () => new ServiceCollection().ApplyConventions(context);
+        a.Should().NotThrow<InvalidOperationException>();
     }
 
-    public ConventionContextTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
+    public ConventionContextTests(ITestOutputHelper outputHelper) : base(outputHelper)
+    {
+    }
 
     public interface IAbc;
 
@@ -287,8 +278,15 @@ public class ConventionContextTests : AutoFakeTest
         }
     }
 
-    public class InjectableConvention(IInjectData convention) : IServiceConvention
+    public class InjectableConvention : IServiceConvention
     {
+        private readonly IInjectData _convention;
+
+        public InjectableConvention(IInjectData convention)
+        {
+            _convention = convention;
+        }
+
         public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
         {
             if (context == null)
@@ -296,22 +294,28 @@ public class ConventionContextTests : AutoFakeTest
                 throw new ArgumentNullException(nameof(context));
             }
 
-            services.AddSingleton(convention);
+            services.AddSingleton(_convention);
         }
     }
 
-    public class OptionalInjectableConvention(IInjectData? convention = null) : IServiceAsyncConvention
+    public class OptionalInjectableConvention : IServiceConvention
     {
-        public ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
+        private readonly IInjectData? _convention;
+
+        public OptionalInjectableConvention(IInjectData? convention = null)
+        {
+            _convention = convention;
+        }
+
+        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (convention is { })
-                services.AddSingleton(convention);
-            return ValueTask.CompletedTask;
+            if (_convention is { })
+                services.AddSingleton(_convention);
         }
     }
 }

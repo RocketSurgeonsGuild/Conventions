@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions.Extensions;
+using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -11,53 +12,53 @@ namespace Rocket.Surgery.Conventions;
 /// <seealso cref="IConventionContext" />
 public sealed class ConventionContext : IConventionContext
 {
+    private readonly ConventionContextBuilder _builder;
+    private const string ConventionsSetup = "__ConventionsSetup__" + nameof(ConventionContext);
+
     /// <summary>
     ///     Create a context from a given builder
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask<IConventionContext> FromAsync(ConventionContextBuilder builder, CancellationToken cancellationToken = default)
+    public static IConventionContext From(ConventionContextBuilder builder)
     {
-        var context = FromInitInternal(builder);
+        builder._assemblyCandidateFinderFactory ??= ConventionContextHelpers.DefaultAssemblyCandidateFinderFactory;
+        builder._assemblyProviderFactory ??= ConventionContextHelpers.DefaultAssemblyProviderFactory;
+
+        var assemblyProvider = builder._assemblyProviderFactory(builder._source, builder.Get<ILogger>());
+        var assemblyCandidateFinder = builder._assemblyCandidateFinderFactory(builder._source, builder.Get<ILogger>());
+        var provider = ConventionContextHelpers.CreateProvider(builder, assemblyCandidateFinder, builder.Get<ILogger>());
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        builder.Properties.Set(builder._serviceProviderFactory!);
+        var context = new ConventionContext(builder, provider, assemblyProvider, assemblyCandidateFinder, builder.Properties);
+
         if (context.Properties.ContainsKey(ConventionsSetup)) return context;
 
-        await context.ApplyConventionsAsync(cancellationToken);
+        context.ApplyConventions();
         context.Properties.Add(ConventionsSetup, true);
         return context;
     }
-
-    private const string ConventionsSetup = "__ConventionsSetup__" + nameof(ConventionContext);
-
-    private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
-    {
-        // ReSharper disable once NullableWarningSuppressionIsUsed
-        var assemblyProvider = builder._conventionProviderFactory!.CreateAssemblyProvider(builder);
-        var provider = ConventionContextHelpers.CreateProvider(builder, assemblyProvider, builder.Get<ILogger>());
-        // ReSharper disable once NullableWarningSuppressionIsUsed
-        builder.Properties.Set(builder._serviceProviderFactory!);
-        return new(builder, provider, assemblyProvider, builder.Properties);
-    }
-
-    private readonly ConventionContextBuilder _builder;
 
     /// <summary>
     ///     Creates a base context
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionProvider"></param>
+    /// <param name="assemblyCandidateFinder"></param>
     /// <param name="properties"></param>
     /// <param name="assemblyProvider"></param>
     private ConventionContext(
         ConventionContextBuilder builder,
         IConventionProvider conventionProvider,
         IAssemblyProvider assemblyProvider,
+        IAssemblyCandidateFinder assemblyCandidateFinder,
         IServiceProviderDictionary properties
     )
     {
         _builder = builder;
         Conventions = conventionProvider;
         AssemblyProvider = assemblyProvider;
+        AssemblyCandidateFinder = assemblyCandidateFinder;
         Properties = properties;
     }
 
@@ -69,9 +70,9 @@ public sealed class ConventionContext : IConventionContext
     public object this[object item]
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        #pragma warning disable CS8603 // Possible null reference return.
+#pragma warning disable CS8603 // Possible null reference return.
         get => Properties.TryGetValue(item, out var value) ? value : null!;
-        #pragma warning restore CS8603 // Possible null reference return.
+#pragma warning restore CS8603 // Possible null reference return.
         set => Properties[item] = value;
     }
 
@@ -97,6 +98,12 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <value>The assembly provider.</value>
     public IAssemblyProvider AssemblyProvider { get; }
+
+    /// <summary>
+    ///     Gets the assembly candidate finder.
+    /// </summary>
+    /// <value>The assembly candidate finder.</value>
+    public IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
 
     /// <summary>
     ///     Return the source builder for this context (to create new contexts if required).

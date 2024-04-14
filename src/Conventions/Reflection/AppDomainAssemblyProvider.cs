@@ -1,6 +1,4 @@
-using System.Collections.Immutable;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -10,25 +8,13 @@ namespace Rocket.Surgery.Conventions.Reflection;
 ///     Assembly provider that uses <see cref="AppDomain" />
 /// </summary>
 /// <seealso cref="IAssemblyProvider" />
-[RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
 internal class AppDomainAssemblyProvider : IAssemblyProvider
 {
     private readonly ILogger _logger;
-    private readonly Lazy<ImmutableArray<Assembly>> _assembles;
-
-    private readonly HashSet<string> _coreAssemblies =
-    [
-        "mscorlib",
-        "netstandard",
-        "System",
-        "System.Core",
-        "System.Runtime",
-    ];
+    private readonly Lazy<IEnumerable<Assembly>> _assembles;
 
     private readonly Action<ILogger, string, string, Exception?> _logFoundAssembly = LoggerMessage.Define<string, string>(
-        LogLevel.Debug,
-        new(1337),
-        "[{AssemblyProvider}] Found assembly {AssemblyName}"
+        LogLevel.Debug, new EventId(1337), "[{AssemblyProvider}] Found assembly {AssemblyName}"
     );
 
     /// <summary>
@@ -38,90 +24,31 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
     /// <param name="logger">The logger to log information</param>
     public AppDomainAssemblyProvider(AppDomain? appDomain = null, ILogger? logger = null)
     {
-        _assembles = new(
+        _assembles = new Lazy<IEnumerable<Assembly>>(
             () =>
                 // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                ( appDomain ?? AppDomain.CurrentDomain ).GetAssemblies().Where(x => x != null!).ToImmutableArray()
+                ( appDomain ?? AppDomain.CurrentDomain ).GetAssemblies().Where(x => x != null!)
         );
         _logger = logger ?? NullLogger.Instance;
     }
 
-    private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
+    private void LogValue(Assembly value)
     {
-        if (!candidates.Any())
-        {
-            return Enumerable.Empty<Assembly>();
-        }
-
-        // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
-        var candidatesResolver = new AssemblyCandidateResolver(
-            _assembles.Value,
-            new HashSet<string?>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase),
-            _logger
+        _logFoundAssembly(
+            _logger,
+            nameof(AppDomainAssemblyProvider),
+            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+            value.GetName().Name!,
+            null
         );
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        return candidatesResolver
-              .GetCandidates()
-              .Where(x => x.Assembly is { })
-              .Select(x => x.Assembly!)
-              .Reverse();
     }
 
     /// <summary>
-    ///     Gets the assemblies based on the given selector.
+    ///     Gets the assemblies.
     /// </summary>
-    /// <remarks>This method is normally used by the generated code however, for legacy support it is supported at runtime as well</remarks>
     /// <returns>IEnumerable{Assembly}.</returns>
-    public IEnumerable<Assembly> GetAssemblies(
-        Action<IAssemblyProviderAssemblySelector> action,
-        [CallerFilePath]
-        string filePath = "",
-        [CallerMemberName]
-        string memberName = "",
-        [CallerLineNumber]
-        int lineNumber = 0
-    )
+    public IEnumerable<Assembly> GetAssemblies()
     {
-        var selector = new AssemblyProviderAssemblySelector();
-        action(selector);
-        var assemblies = selector.AllAssemblies
-            ? _assembles.Value
-            : selector.AssemblyDependencies.Any()
-                ? GetCandidateLibraries(selector.AssemblyDependencies)
-                : selector.Assemblies;
-        if (!selector.SystemAssemblies)
-        {
-            assemblies = assemblies.Where(z => !_coreAssemblies.Contains(z.GetName().Name ?? ""));
-        }
-
-        return assemblies;
-    }
-
-    /// <summary>
-    ///     Get the full list of types using the given selector
-    /// </summary>
-    /// <param name="action"></param>
-    /// <param name="filePath"></param>
-    /// <param name="memberName"></param>
-    /// <param name="lineNumber"></param>
-    /// <returns></returns>
-    public IEnumerable<Type> GetTypes(
-        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> action,
-        [CallerFilePath]
-        string filePath = "",
-        [CallerMemberName]
-        string memberName = "",
-        [CallerLineNumber]
-        int lineNumber = 0
-    )
-    {
-        var assemblySelector = new AssemblyProviderAssemblySelector();
-        action(assemblySelector);
-        var assemblies = assemblySelector.AllAssemblies
-            ? _assembles.Value
-            : assemblySelector.AssemblyDependencies.Any()
-                ? GetCandidateLibraries(assemblySelector.AssemblyDependencies)
-                : assemblySelector.Assemblies;
-        return action(new TypeProviderAssemblySelector { Assemblies = assemblies, });
+        return LoggingEnumerable.Create(_assembles.Value, LogValue);
     }
 }

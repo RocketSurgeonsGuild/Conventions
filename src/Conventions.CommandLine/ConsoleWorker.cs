@@ -4,58 +4,67 @@ using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
-internal class ConsoleWorker
-(
-    ILogger<ConsoleWorker> logger,
-    ICommandApp commandApp,
-    IHostApplicationLifetime hostLifetime,
-    ConsoleResult consoleResult,
-    AppSettingsConfigurationSource appSettingsConfigurationSource)
-    : IHostedLifecycleService
+internal class ConsoleWorker : IHostedService
 {
+    private readonly ICommandApp _commandApp;
+    private readonly IHostApplicationLifetime _hostLifetime;
+    private readonly ConsoleResult _consoleResult;
+    private readonly AppSettingsConfigurationSource _appSettingsConfigurationSource;
+    private readonly ILogger<ConsoleWorker> _logger;
+
+    public ConsoleWorker(
+        ILogger<ConsoleWorker> logger,
+        ICommandApp commandApp,
+        IHostApplicationLifetime hostLifetime,
+        ConsoleResult consoleResult,
+        AppSettingsConfigurationSource appSettingsConfigurationSource
+    )
+    {
+        _logger = logger;
+        _commandApp = commandApp;
+        _hostLifetime = hostLifetime;
+        _consoleResult = consoleResult;
+        _appSettingsConfigurationSource = appSettingsConfigurationSource;
+    }
+
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        if (!_consoleResult.ExitCode.HasValue)
+        {
+            _hostLifetime.ApplicationStarted.Register(OnStarted);
+        }
+
         return Task.CompletedTask;
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-
-    public Task StartingAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-
-    public async Task StartedAsync(CancellationToken cancellationToken)
+    private async void OnStarted()
     {
         try
         {
-            consoleResult.ExitCode = await commandApp.RunAsync(appSettingsConfigurationSource.Args);
+            _consoleResult.ExitCode = await _commandApp.RunAsync(_appSettingsConfigurationSource.Args);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An unexpected error occurred");
-            consoleResult.ExitCode = 1;
+            _logger.LogError(ex, "An unexpected error occurred");
+            _consoleResult.ExitCode = 1;
         }
         finally
         {
-            if (consoleResult.ExitCode != CommandLineConstants.WaitCode)
+            if (_consoleResult.ExitCode != CommandLineConstants.WaitCode)
             {
-                _ = Task.Run(hostLifetime.StopApplication, cancellationToken);
+                _hostLifetime.StopApplication();
             }
         }
     }
 
-    public Task StoppingAsync(CancellationToken cancellationToken)
+    public Task StopAsync(CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
-    }
-
-    public Task StoppedAsync(CancellationToken cancellationToken)
-    {
-        Environment.ExitCode = consoleResult switch { { ExitCode: CommandLineConstants.WaitCode, } => 0, { ExitCode: { } i, } => i, { ExitCode: null, } => 0, };
+        Environment.ExitCode = _consoleResult.ExitCode switch
+        {
+            CommandLineConstants.WaitCode => 0,
+            { } i                         => i,
+            null                          => 0,
+        };
         return Task.CompletedTask;
     }
 }

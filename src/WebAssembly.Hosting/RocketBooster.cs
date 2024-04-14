@@ -1,77 +1,131 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Rocket.Surgery.Conventions;
-using AppDelegate =
-    System.Func<Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.ConventionContextBuilder>>;
 
-#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
-
-// ReSharper disable once CheckNamespace
-namespace Rocket.Surgery.Hosting;
+namespace Rocket.Surgery.WebAssembly.Hosting;
 
 /// <summary>
 ///     Class RocketBooster.
 /// </summary>
-[PublicAPI]
-public static partial class RocketBooster
+public static class RocketBooster
 {
     /// <summary>
-    ///     ForTesting the specified conventions
+    ///     Fors the application domain.
     /// </summary>
-    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForConventions(IConventionFactory getConventions)
+    /// <param name="appDomain">The application domain.</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAppDomain(AppDomain appDomain)
     {
-        return (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>()).WithConventionsFrom(getConventions));
+        return _ => new ConventionContextBuilder(null).UseAppDomain(appDomain);
     }
 
     /// <summary>
     ///     Fors the application domain.
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAppDomain(AppDomain appDomain)
+    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAppDomain(
+        AppDomain appDomain,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
     {
-        return (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>()).UseAppDomain(appDomain));
-    }
-
-    /// <summary>
-    ///     Fors the assemblies.
-    /// </summary>
-    /// <param name="assemblies">The assemblies.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies)
-    {
-        return (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>()).UseAssemblies(assemblies));
-    }
-
-    /// <summary>
-    ///     ForTesting the specified conventions
-    /// </summary>
-    /// <param name="conventionProvider">The conventions provider.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IConventionFactory conventionProvider)
-    {
-        return ForConventions(conventionProvider);
+        return builder => ForAppDomain(appDomain)(builder).WithConventionsFrom(getConventions);
     }
 
     /// <summary>
     ///     Fors the specified application domain.
     /// </summary>
     /// <param name="appDomain">The application domain.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(AppDomain appDomain)
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(AppDomain appDomain)
     {
         return ForAppDomain(appDomain);
+    }
+
+    /// <summary>
+    ///     Fors the specified application domain.
+    /// </summary>
+    /// <param name="appDomain">The application domain.</param>
+    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(
+        AppDomain appDomain,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
+    {
+        return ForAppDomain(appDomain, getConventions);
+    }
+
+    /// <summary>
+    ///     Fors the specified application domain.
+    /// </summary>
+    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
+    {
+        return ForAppDomain(AppDomain.CurrentDomain, getConventions);
+    }
+
+    /// <summary>
+    ///     Fors the specified application domain.
+    /// </summary>
+    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForConventions(
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
+    {
+        return ForAppDomain(AppDomain.CurrentDomain, getConventions);
+    }
+
+    /// <summary>
+    ///     Fors the assemblies.
+    /// </summary>
+    /// <param name="assemblies">The assemblies.</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAssemblies(IEnumerable<Assembly> assemblies)
+    {
+        return _ => new ConventionContextBuilder(null).UseAssemblies(assemblies);
+    }
+
+    /// <summary>
+    ///     Fors the assemblies.
+    /// </summary>
+    /// <param name="assemblies">The assemblies.</param>
+    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> ForAssemblies(
+        IEnumerable<Assembly> assemblies,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
+    {
+        return builder => ForAssemblies(assemblies)(builder).WithConventionsFrom(getConventions);
     }
 
     /// <summary>
     ///     Fors the specified assemblies.
     /// </summary>
     /// <param name="assemblies">The assemblies.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IEnumerable<Assembly> assemblies)
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(IEnumerable<Assembly> assemblies)
     {
         return ForAssemblies(assemblies);
+    }
+
+    /// <summary>
+    ///     Fors the specified assemblies.
+    /// </summary>
+    /// <param name="assemblies">The assemblies.</param>
+    /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
+    /// <returns>Func&lt;IHostBuilder, ConventionContextBuilder&gt;.</returns>
+    public static Func<WebAssemblyHostBuilder, ConventionContextBuilder> For(
+        IEnumerable<Assembly> assemblies,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>> getConventions
+    )
+    {
+        return ForAssemblies(assemblies, getConventions);
     }
 }

@@ -16,13 +16,8 @@ public static class RocketSurgeryLoggingExtensions
     /// </summary>
     /// <param name="loggingBuilder"></param>
     /// <param name="conventionContext"></param>
-    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask<ILoggingBuilder> ApplyConventionsAsync(
-        this ILoggingBuilder loggingBuilder,
-        IConventionContext conventionContext,
-        CancellationToken cancellationToken = default
-    )
+    public static ILoggingBuilder ApplyConventions(this ILoggingBuilder loggingBuilder, IConventionContext conventionContext)
     {
         var configuration = conventionContext.Get<IConfiguration>();
         if (configuration is null)
@@ -38,27 +33,15 @@ public static class RocketSurgeryLoggingExtensions
             loggingBuilder.SetMinimumLevel(logLevel.Value);
         }
 
-        foreach (var item in conventionContext.Conventions.Get<
-                     ILoggingConvention,
-                     LoggingConvention,
-                     ILoggingAsyncConvention,
-                     LoggingAsyncConvention
-                 >())
+        foreach (var item in conventionContext.Conventions.Get<ILoggingConvention, LoggingConvention>())
         {
-            switch (item)
+            if (item is ILoggingConvention convention)
             {
-                case ILoggingConvention convention:
-                    convention.Register(conventionContext, configuration, loggingBuilder);
-                    break;
-                case LoggingConvention @delegate:
-                    @delegate(conventionContext, configuration, loggingBuilder);
-                    break;
-                case ILoggingAsyncConvention convention:
-                    await convention.Register(conventionContext, configuration, loggingBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-                case LoggingAsyncConvention @delegate:
-                    await @delegate(conventionContext, configuration, loggingBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
+                convention.Register(conventionContext, configuration, loggingBuilder);
+            }
+            else if (item is LoggingConvention @delegate)
+            {
+                @delegate(conventionContext, configuration, loggingBuilder);
             }
         }
 

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+using Xunit;
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
@@ -16,23 +17,22 @@ namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 public class DryIocBuilderTests : AutoFakeTest
 {
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithCore()
+    public void ConstructTheContainerAndRegisterWithCore()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                              return container;
-                                          }
-                                      )
-                            );
+        var builder = Host.CreateDefaultBuilder()
+                          .ConfigureRocketSurgery(
+                               rb => rb
+                                    .UseDryIoc()
+                                    .DisableConventionAttributes()
+                                    .ConfigureDryIoc(
+                                         (conventionContext, configuration, services, container) =>
+                                         {
+                                             container.RegisterInstance(A.Fake<IAbc>());
+                                             services.AddSingleton(A.Fake<IAbc2>());
+                                             return container;
+                                         }
+                                     )
+                           );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefault).Should().NotBeNull();
@@ -42,24 +42,23 @@ public class DryIocBuilderTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithApplication()
+    public void ConstructTheContainerAndRegisterWithApplication()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                              container.RegisterInstance(A.Fake<IAbc4>());
-                                              return container;
-                                          }
-                                      )
-                            );
+        var builder = Host.CreateDefaultBuilder()
+                          .ConfigureRocketSurgery(
+                               rb => rb
+                                    .UseDryIoc()
+                                    .DisableConventionAttributes()
+                                    .ConfigureDryIoc(
+                                         (conventionContext, configuration, services, container) =>
+                                         {
+                                             container.RegisterInstance(A.Fake<IAbc>());
+                                             services.AddSingleton(A.Fake<IAbc2>());
+                                             container.RegisterInstance(A.Fake<IAbc4>());
+                                             return container;
+                                         }
+                                     )
+                           );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefault).Should().NotBeNull();
@@ -69,47 +68,47 @@ public class DryIocBuilderTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem()
+    public void ConstructTheContainerAndRegisterWithSystem()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc3>());
-                                              container.RegisterInstance(A.Fake<IAbc4>());
-                                              return container;
-                                          }
-                                      )
-                            );
+        var builder = Host.CreateDefaultBuilder()
+                          .ConfigureRocketSurgery(
+                               rb => rb
+                                    .UseDryIoc()
+                                    .DisableConventionAttributes()
+                                    .ConfigureDryIoc(
+                                         (conventionContext, configuration, services, container) =>
+                                         {
+                                             container.RegisterInstance(A.Fake<IAbc3>());
+                                             container.RegisterInstance(A.Fake<IAbc4>());
+                                             return container;
+                                         }
+                                     )
+                           );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
+        items.Resolve<IAbc>(IfUnresolved.ReturnDefault).Should().BeNull();
+        items.Resolve<IAbc2>(IfUnresolved.ReturnDefault).Should().BeNull();
         items.Resolve<IAbc3>(IfUnresolved.ReturnDefault).Should().NotBeNull();
         items.Resolve<IAbc4>(IfUnresolved.ReturnDefault).Should().NotBeNull();
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                              return container;
-                                          }
-                                      )
-                            );
+        var builder = Host.CreateDefaultBuilder()
+                          .ConfigureRocketSurgery(
+                               rb => rb
+                                    .UseDryIoc()
+                                    .DisableConventionAttributes()
+                                    .ConfigureDryIoc(
+                                         (conventionContext, configuration, services, container) =>
+                                         {
+                                             container.RegisterInstance(A.Fake<IAbc>());
+                                             services.AddSingleton(A.Fake<IAbc2>());
+                                             return container;
+                                         }
+                                     )
+                           );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
 
@@ -121,24 +120,23 @@ public class DryIocBuilderTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.Use(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                              container.Use(A.Fake<IAbc4>());
-                                              return container;
-                                          }
-                                      )
-                            );
+        var builder = Host.CreateDefaultBuilder()
+                          .ConfigureRocketSurgery(
+                               rb => rb
+                                    .UseDryIoc()
+                                    .DisableConventionAttributes()
+                                    .ConfigureDryIoc(
+                                         (conventionContext, configuration, services, container) =>
+                                         {
+                                             container.Use(A.Fake<IAbc>());
+                                             services.AddSingleton(A.Fake<IAbc2>());
+                                             container.Use(A.Fake<IAbc4>());
+                                             return container;
+                                         }
+                                     )
+                           );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
         var sp = items.Resolve<IServiceProvider>();
@@ -149,42 +147,42 @@ public class DryIocBuilderTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
+    public void ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc3>());
-                                              container.RegisterInstance(A.Fake<IAbc4>());
-                                              return container;
-                                          }
-                                      )
-                            );
+        var builder = Host.CreateDefaultBuilder()
+                          .ConfigureRocketSurgery(
+                               rb => rb
+                                    .UseDryIoc()
+                                    .DisableConventionAttributes()
+                                    .ConfigureDryIoc(
+                                         (conventionContext, configuration, services, container) =>
+                                         {
+                                             container.RegisterInstance(A.Fake<IAbc3>());
+                                             container.RegisterInstance(A.Fake<IAbc4>());
+                                             return container;
+                                         }
+                                     )
+                           );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
         var sp = items.Resolve<IServiceProvider>();
+        sp.GetService<IAbc>().Should().BeNull();
+        sp.GetService<IAbc2>().Should().BeNull();
         sp.GetService<IAbc3>().Should().NotBeNull();
         sp.GetService<IAbc4>().Should().NotBeNull();
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
+    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) => { return container; }
-                                      )
-                            );
+        var builder = Host.CreateDefaultBuilder()
+                          .ConfigureRocketSurgery(
+                               rb => rb
+                                    .UseDryIoc()
+                                    .ConfigureDryIoc(
+                                         (conventionContext, configuration, services, container) => { return container; }
+                                     )
+                           );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
@@ -194,17 +192,16 @@ public class DryIocBuilderTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
+    public void ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) => { return container; }
-                                      )
-                            );
+        var builder = Host.CreateDefaultBuilder()
+                          .ConfigureRocketSurgery(
+                               rb => rb
+                                    .UseDryIoc()
+                                    .ConfigureDryIoc(
+                                         (conventionContext, configuration, services, container) => { return container; }
+                                     )
+                           );
 
         var items = builder.Build().Services.GetRequiredService<IResolverContext>();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
@@ -218,9 +215,8 @@ public class DryIocBuilderTests : AutoFakeTest
     [Fact]
     public async Task Should_Integrate_With_DryIoc()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(rb => rb.UseDryIoc());
+        var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
+                          .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         using var host = builder.Build();
         await host.StartAsync();

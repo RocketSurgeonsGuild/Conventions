@@ -11,34 +11,18 @@ internal static class RocketSurgerySetupExtensions
     ///     Apply configuration conventions
     /// </summary>
     /// <param name="conventionContext"></param>
-    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask<IConventionContext> ApplyConventionsAsync(
-        this IConventionContext conventionContext,
-        CancellationToken cancellationToken = default
-    )
+    public static IConventionContext ApplyConventions(this IConventionContext conventionContext)
     {
-        foreach (var item in conventionContext.Conventions.Get<
-                     ISetupConvention,
-                     SetupConvention,
-                     ISetupAsyncConvention,
-                     SetupAsyncConvention
-                 >())
+        foreach (var item in conventionContext.Conventions.Get<ISetupConvention, SetupConvention>())
         {
-            switch (item)
+            if (item is ISetupConvention convention)
             {
-                case ISetupConvention convention:
-                    convention.Register(conventionContext);
-                    break;
-                case SetupConvention @delegate:
-                    @delegate(conventionContext);
-                    break;
-                case ISetupAsyncConvention convention:
-                    await convention.Register(conventionContext, cancellationToken).ConfigureAwait(false);
-                    break;
-                case SetupAsyncConvention @delegate:
-                    await @delegate(conventionContext, cancellationToken).ConfigureAwait(false);
-                    break;
+                convention.Register(conventionContext);
+            }
+            else if (item is SetupConvention @delegate)
+            {
+                @delegate(conventionContext);
             }
         }
 

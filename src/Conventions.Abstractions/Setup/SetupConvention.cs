@@ -7,5 +7,4 @@
 ///     This runs immediately after creating a convention context
 /// </remarks>
 /// <param name="context">The context.</param>
-[PublicAPI]
 public delegate void SetupConvention(IConventionContext context);

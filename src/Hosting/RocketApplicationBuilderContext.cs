@@ -1,11 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿#if NET8_0_OR_GREATER
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using ServiceFactoryAdapter =
-    System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
 
 namespace Rocket.Surgery.Hosting;
 
@@ -18,7 +16,7 @@ internal sealed class RocketApplicationBuilderContext
     private readonly IConventionContext _context;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RocketApplicationBuilderContext" /> class.
+    ///     Initializes a new instance of the <see cref="RocketContext" /> class.
     /// </summary>
     /// <param name="hostApplicationBuilder">The host builder.</param>
     /// <param name="context"></param>
@@ -32,39 +30,39 @@ internal sealed class RocketApplicationBuilderContext
     ///     Construct and compose hosting conventions
     /// </summary>
     /// <exception cref="ArgumentNullException"></exception>
-    public ValueTask ComposeHostingConvention(CancellationToken cancellationToken)
+    public void ComposeHostingConvention()
     {
-        return _hostApplicationBuilder.ApplyConventionsAsync(_context, cancellationToken);
+        _hostApplicationBuilder.ApplyConventions(_context);
     }
 
     /// <summary>
     ///     Configures the application configuration.
     /// </summary>
-    public async ValueTask ConfigureAppConfiguration(CancellationToken cancellationToken)
+    public void ConfigureAppConfiguration()
     {
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing<IConfiguration>(_hostApplicationBuilder.Configuration);
         _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment);
-        _context.Properties.AddIfMissing(_hostApplicationBuilder.Environment.GetType(), _hostApplicationBuilder.Environment);
-        await RocketInternalsShared.SharedHostConfigurationAsync(_context, _hostApplicationBuilder, cancellationToken).ConfigureAwait(false);
+        RocketInternalsShared.SharedHostConfiguration(
+            _context,
+            _hostApplicationBuilder.Configuration,
+            _hostApplicationBuilder.Configuration,
+            _hostApplicationBuilder.Environment
+        );
     }
 
     /// <summary>
     ///     Configures the services.
     /// </summary>
-    public async ValueTask ConfigureServices(CancellationToken cancellationToken)
+    public void ConfigureServices()
     {
-        await _hostApplicationBuilder.Services.ApplyConventionsAsync(_context, cancellationToken).ConfigureAwait(false);
-        await _hostApplicationBuilder.Logging.ApplyConventionsAsync(_context, cancellationToken).ConfigureAwait(false);
+        _hostApplicationBuilder.Services.ApplyConventions(_context);
+        _hostApplicationBuilder.Logging.ApplyConventions(_context);
     }
 
-    public async ValueTask<IServiceProviderFactory<object>?> UseServiceProviderFactory(IServiceCollection services, CancellationToken cancellationToken)
+    public IServiceProviderFactory<object> UseServiceProviderFactory()
     {
-        if (_context.Get<ServiceFactoryAdapter>() is not { } factory)
-        {
-            return null;
-        }
-
-        return await factory(_context, services, cancellationToken);
+        return ConventionServiceProviderFactory.Wrap(_context, false);
     }
 }
+#endif

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+        <_Analyzer_Roslyn_Version_>$(MSBuildProjectName.Replace("Rocket.Surgery.Conventions.Analyzers.Tests.", ""))</_Analyzer_Roslyn_Version_>
+        <DefineConstants>$(DefineConstants);ROSLYN4_4</DefineConstants>
+        <RootNamespace>Rocket.Surgery.Conventions.Analyzers.Tests</RootNamespace>
+        <AssemblyName>Rocket.Surgery.Conventions.Analyzers.Tests</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Features" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
+        <PackageReference Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" />
+        <ProjectReference
+            Include="..\..\src\Conventions.Analyzers.$(_Analyzer_Roslyn_Version_)\Rocket.Surgery.Conventions.Analyzers.$(_Analyzer_Roslyn_Version_).csproj"
+        />
+        <ProjectReference Include="..\..\src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj" />
+        <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <Compile Include="..\Analyzers.Tests\**\*.cs" Exclude="..\Analyzers.Tests\obj\**\*.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Verify.SourceGenerators" />
+    </ItemGroup>
+</Project>

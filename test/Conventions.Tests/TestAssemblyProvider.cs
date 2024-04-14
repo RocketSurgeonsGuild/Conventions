@@ -3,7 +3,7 @@ using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-internal sealed class TestAssemblyProvider : IAssemblyProvider
+internal sealed class TestAssemblyProvider : IAssemblyProvider, IAssemblyCandidateFinder
 {
     public IEnumerable<Assembly> GetAssemblies()
     {
@@ -11,32 +11,12 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
         {
             typeof(ConventionContextBuilder).GetTypeInfo().Assembly,
             typeof(IConventionContext).GetTypeInfo().Assembly,
-            typeof(TestAssemblyProvider).GetTypeInfo().Assembly,
+            typeof(TestAssemblyProvider).GetTypeInfo().Assembly
         };
     }
 
-    public IEnumerable<Assembly> GetAssemblies(
-        Action<IAssemblyProviderAssemblySelector> action,
-        string filePath = "",
-        string memberName = "",
-        int lineNumber = 0
-    )
+    public IEnumerable<Assembly> GetCandidateAssemblies(IEnumerable<string> candidates)
     {
-        var selector = new AssemblyProviderAssemblySelector();
-        action(selector);
-
-        return selector.AssemblyDependencies.Any()
-            ? GetAssemblies()
-            : selector.Assemblies;
-    }
-
-    public IEnumerable<Type> GetTypes(
-        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
-        string filePath = "",
-        string memberName = "",
-        int lineNumber = 0
-    )
-    {
-        return selector(new TypeProviderAssemblySelector());
+        return GetAssemblies();
     }
 }

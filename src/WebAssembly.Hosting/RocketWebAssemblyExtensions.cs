@@ -1,18 +1,16 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.JSInterop;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
-using ServiceFactoryAdapter =
-    System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
 
 namespace Rocket.Surgery.WebAssembly.Hosting;
 
 /// <summary>
 ///     Class RocketWebAssemblyExtensions.
 /// </summary>
-[PublicAPI]
 public static class RocketWebAssemblyExtensions
 {
     /// <summary>
@@ -20,59 +18,43 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionContext"></param>
-    /// <param name="cancellationToken"></param>
-    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static async Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
-        IConventionContext conventionContext,
-        CancellationToken cancellationToken = default
+        IConventionContext conventionContext
     )
     {
         conventionContext.Properties.AddIfMissing<IConfiguration>(builder.Configuration);
         conventionContext.Properties.AddIfMissing(builder.HostEnvironment);
-        conventionContext.Properties.AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
         conventionContext.Properties.Add("BlazorWasm", true);
-        foreach (var item in conventionContext.Conventions
-                                              .Get<IWebAssemblyHostingConvention,
-                                                   WebAssemblyHostingConvention,
-                                                   IWebAssemblyHostingAsyncConvention,
-                                                   WebAssemblyHostingAsyncConvention
-                                               >())
+        foreach (var item in conventionContext.Conventions.Get<IWebAssemblyHostingConvention, WebAssemblyHostingConvention>())
         {
-            switch (item)
+            if (item is IWebAssemblyHostingConvention convention)
             {
-                case IWebAssemblyHostingConvention convention:
-                    convention.Register(conventionContext, builder);
-                    break;
-                case WebAssemblyHostingConvention @delegate:
-                    @delegate(conventionContext, builder);
-                    break;
-                case IWebAssemblyHostingAsyncConvention convention:
-                    await convention.Register(conventionContext, builder, cancellationToken);
-                    break;
-                case WebAssemblyHostingAsyncConvention @delegate:
-                    await @delegate(conventionContext, builder, cancellationToken);
-                    break;
+                convention.Register(conventionContext, builder);
+            }
+            else if (item is WebAssemblyHostingConvention @delegate)
+            {
+                @delegate(conventionContext, builder);
             }
         }
 
-        var foundConfigurationFiles = Assembly
-                                     .GetEntryAssembly()
-                                    ?.GetCustomAttributes<AssemblyMetadataAttribute>()
-                                     .Where(z => z.Key == "BlazorConfigurationFile")
-                                      // ReSharper disable once NullableWarningSuppressionIsUsed
-                                     .Select(z => z.Value!)
-                                     .SelectMany(z => z.Split(';', StringSplitOptions.RemoveEmptyEntries))
-                                     .ToHashSet(StringComparer.OrdinalIgnoreCase)
-         ?? new();
+        var foundConfigurationFiles = Assembly.GetEntryAssembly()
+                                             ?.GetCustomAttributes<AssemblyMetadataAttribute>()
+                                              .Where(z => z.Key == "BlazorConfigurationFile")
+                                               // ReSharper disable once NullableWarningSuppressionIsUsed
+                                              .Select(z => z.Value!)
+                                              .SelectMany(z => z.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                                              .ToHashSet(StringComparer.OrdinalIgnoreCase)
+                                   ?? new();
 
-        #pragma warning disable CA1859
+#pragma warning disable CA1859
         var configurationBuilder = (IConfigurationBuilder)builder.Configuration;
-        #pragma warning restore CA1859
-        using var http = new HttpClient
+#pragma warning restore CA1859
+        using var http = new HttpClient()
         {
-            BaseAddress = new(builder.HostEnvironment.BaseAddress),
+            BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
         };
-
+        
         // notes to the next person that sees this.
         // if blazor does not find it's own configuration files (appsettings, appsettings.{environment}) they never get added to the configuration collection
         // in that case they never exist.  So unlike the other defaults where we have to replace the items.
@@ -99,9 +81,9 @@ public static class RocketWebAssemblyExtensions
                    .Concat(envTasks)
                    .Concat(localTasks)
                    .Where(z => foundConfigurationFiles.Contains(z.Path))
-                   .Select(z => getConfigurationSource(http, z, cancellationToken))
+                   .Select(z => getConfigurationSource(http, z))
                     // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-                   .Where(z => z is { })
+                   .Where(z => z is not null)
                     // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                    .Select(z => z!);
 
@@ -111,42 +93,63 @@ public static class RocketWebAssemblyExtensions
             configurationBuilder.Add(task);
         }
 
-        var cb = await new ConfigurationBuilder().ApplyConventionsAsync(conventionContext, builder.Configuration, cancellationToken).ConfigureAwait(false);
-        if (cb.Sources is { Count: > 0, })
+        var cb = new ConfigurationBuilder().ApplyConventions(conventionContext, builder.Configuration);
+        if (cb.Sources is { Count: > 0 })
         {
             configurationBuilder.Add(
                 new ChainedConfigurationSource
                 {
                     Configuration = cb.Build(),
-                    ShouldDisposeConfiguration = true,
+                    ShouldDisposeConfiguration = true
                 }
             );
         }
 
-        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
-        {
-            builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
-        }
-
+        builder.ConfigureContainer(ConventionServiceProviderFactory.Wrap(conventionContext));
         return builder;
 
-        static async Task<IConfigurationSource?> getConfigurationSource(
-            HttpClient httpClient,
-            ConfigurationBuilderDelegateResult factory,
-            CancellationToken cancellationToken
-        )
+        static async Task<IConfigurationSource?> getConfigurationSource(HttpClient httpClient, ConfigurationBuilderDelegateResult factory)
         {
             IConfigurationSource? source = null;
             try
             {
-                #pragma warning disable CA2234
-                source = factory.Factory.Invoke(await httpClient.GetStreamAsync(factory.Path, cancellationToken).ConfigureAwait(false));
-                #pragma warning restore CA2234
+#pragma warning disable CA2234
+                source = factory.Factory.Invoke(await httpClient.GetStreamAsync(factory.Path).ConfigureAwait(false));
+#pragma warning restore CA2234
             }
-            catch (HttpRequestException) { }
+            catch (HttpRequestException)
+            {
+            }
 
             return source;
         }
+    }
+
+    /// <summary>
+    ///     Applys all conventions for hosting, configuration, services and logging
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="contextBuilder"></param>
+    internal static async Task ApplyConventions(
+        WebAssemblyHostBuilder builder,
+        ConventionContextBuilder contextBuilder
+    )
+    {
+        var context = ConventionContext.From(contextBuilder);
+        await builder.ConfigureRocketSurgery(context);
+    }
+
+    /// <summary>
+    ///     Applys all conventions for hosting, configuration, services and logging
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="context"></param>
+    internal static async Task ApplyConventions(
+        WebAssemblyHostBuilder builder,
+        IConventionContext context
+    )
+    {
+        await builder.ConfigureRocketSurgery(context);
     }
 
     /// <summary>
@@ -155,7 +158,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="builderAction"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static async Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         Action<ConventionContextBuilder> builderAction
     )
@@ -177,11 +180,13 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="appDomain"></param>
+    /// <param name="getConventions"></param>
     /// <param name="action"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         AppDomain appDomain,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,
         Action<ConventionContextBuilder>? action = null
     )
     {
@@ -191,11 +196,14 @@ public static class RocketWebAssemblyExtensions
         }
 
         return ConfigureRocketSurgery(
-            builder,
-            a =>
+            builder, a =>
             {
                 a.UseAppDomain(appDomain);
                 action?.Invoke(a);
+                if (getConventions != null)
+                {
+                    a.WithConventionsFrom(getConventions);
+                }
             }
         );
     }
@@ -207,25 +215,13 @@ public static class RocketWebAssemblyExtensions
     /// <param name="getConventions"></param>
     /// <param name="action"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
-        IConventionFactory getConventions,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,
         Action<ConventionContextBuilder>? action = null
     )
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return ConfigureRocketSurgery(
-            builder,
-            a =>
-            {
-                a.WithConventionsFrom(getConventions);
-                action?.Invoke(a);
-            }
-        );
+        return ConfigureRocketSurgery(builder, AppDomain.CurrentDomain, getConventions, action);
     }
 
     /// <summary>
@@ -233,11 +229,13 @@ public static class RocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="assemblies"></param>
+    /// <param name="getConventions"></param>
     /// <param name="action"></param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    public static Task<WebAssemblyHostBuilder> ConfigureRocketSurgery(
         this WebAssemblyHostBuilder builder,
         IEnumerable<Assembly> assemblies,
+        Func<IServiceProvider, IEnumerable<IConventionWithDependencies>>? getConventions = null,
         Action<ConventionContextBuilder>? action = null
     )
     {
@@ -247,11 +245,14 @@ public static class RocketWebAssemblyExtensions
         }
 
         return ConfigureRocketSurgery(
-            builder,
-            a =>
+            builder, a =>
             {
                 a.UseAssemblies(assemblies);
                 action?.Invoke(a);
+                if (getConventions != null)
+                {
+                    a.WithConventionsFrom(getConventions);
+                }
             }
         );
     }
@@ -263,7 +264,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="func">The function.</param>
     /// <param name="action">The action.</param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async ValueTask<WebAssemblyHostBuilder> UseRocketBooster(
+    public static async Task<WebAssemblyHostBuilder> UseRocketBooster(
         this WebAssemblyHostBuilder builder,
         Func<WebAssemblyHostBuilder, ConventionContextBuilder> func,
         Action<ConventionContextBuilder>? action = null
@@ -292,7 +293,7 @@ public static class RocketWebAssemblyExtensions
     /// <param name="func">The function.</param>
     /// <param name="action">The action.</param>
     /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async ValueTask<WebAssemblyHostBuilder> LaunchWith(
+    public static async Task<WebAssemblyHostBuilder> LaunchWith(
         this WebAssemblyHostBuilder builder,
         Func<WebAssemblyHostBuilder, ConventionContextBuilder> func,
         Action<ConventionContextBuilder>? action = null
@@ -312,29 +313,5 @@ public static class RocketWebAssemblyExtensions
         action?.Invoke(b);
         await ApplyConventions(builder, b);
         return builder;
-    }
-
-    /// <summary>
-    ///     Applys all conventions for hosting, configuration, services and logging
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="contextBuilder"></param>
-    internal static async ValueTask<WebAssemblyHostBuilder> ApplyConventions(
-        WebAssemblyHostBuilder builder,
-        ConventionContextBuilder contextBuilder
-    )
-    {
-        var context = await ConventionContext.FromAsync(contextBuilder);
-        return await builder.ConfigureRocketSurgery(context);
-    }
-
-    /// <summary>
-    ///     Applys all conventions for hosting, configuration, services and logging
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="context"></param>
-    internal static ValueTask<WebAssemblyHostBuilder> ApplyConventions(WebAssemblyHostBuilder builder, IConventionContext context)
-    {
-        return builder.ConfigureRocketSurgery(context);
     }
 }
