@@ -37,7 +37,6 @@ namespace TestProject.Conventions
                                 yield return typeof(global::Sample.DependencyThree.Class3).Assembly;
                                 yield return typeof(global::Dep2Exports).Assembly;
                                 yield return typeof(global::System.IServiceProvider).Assembly;
-                                yield return SystemPrivateCoreLib.GetType("Interop+NtDll+CreateDisposition").Assembly;
                                 yield return typeof(global::TestConvention).Assembly;
                                 break;
                         }

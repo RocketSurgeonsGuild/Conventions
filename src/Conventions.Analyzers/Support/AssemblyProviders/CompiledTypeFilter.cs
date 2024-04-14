@@ -26,14 +26,16 @@ internal record CompiledAssemblyFilter
         "System",
         "System.Core",
         "System.Runtime",
+        "System.Private.CoreLib",
     ];
 
     private readonly bool _includeSystemAssemblies = AssemblyDescriptors.OfType<IncludeSystemAssembliesDescriptor>().Any();
+    private readonly bool _allAssemblies = AssemblyDescriptors.OfType<AllAssemblyDescriptor>().Any();
 
     public bool IsMatch(Compilation compilation, IAssemblySymbol targetType)
     {
         if (!_includeSystemAssemblies && _coreAssemblies.Contains(targetType.Name)) return false;
-        if (AssemblyDescriptors.OfType<AllAssemblyDescriptor>().Any()) return true;
+        if (_allAssemblies) return true;
 
         return AssemblyDescriptors
            .Any(

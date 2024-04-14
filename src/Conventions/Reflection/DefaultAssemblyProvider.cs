@@ -27,6 +27,7 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
         "System",
         "System.Core",
         "System.Runtime",
+        "System.Private.CoreLib",
     ];
 
     /// <summary>
