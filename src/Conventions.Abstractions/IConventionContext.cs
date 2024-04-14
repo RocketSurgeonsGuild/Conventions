@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     The base context marker interface to define this as a context
 /// </summary>
+[PublicAPI]
 public interface IConventionContext
 {
     /// <summary>
@@ -34,18 +34,12 @@ public interface IConventionContext
     IAssemblyProvider AssemblyProvider { get; }
 
     /// <summary>
-    ///     Gets the assembly candidate finder.
-    /// </summary>
-    /// <value>The assembly candidate finder.</value>
-    IAssemblyCandidateFinder AssemblyCandidateFinder { get; }
-
-    /// <summary>
     ///     Get the conventions from the context
     /// </summary>
     IConventionProvider Conventions { get; }
 
     /// <summary>
-    /// Returns the source builder for this context
+    ///     Returns the source builder for this context
     /// </summary>
     /// <returns></returns>
     ConventionContextBuilder ToBuilder();

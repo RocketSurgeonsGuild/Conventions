@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageDescription>Adds diagnostics command line utilities for diagnosing what conventions are available to be run</PackageDescription>
     <PackageTags>$(PackageTags);reflection;diagnostics</PackageTags>
     <NoWarn>$(NoWarn);CA1812</NoWarn>

@@ -5,36 +5,9 @@ namespace Rocket.Surgery.Conventions.Configuration;
 /// <summary>
 ///     Extensions for use with configuration conventions.
 /// </summary>
+[PublicAPI]
 public static class ConfigurationOptionsExtensions
 {
-    /// <summary>
-    ///     Append an application configuration
-    /// </summary>
-    /// <param name="context"></param>
-    /// <param name="delegate"></param>
-    /// <returns></returns>
-    [Obsolete("Use AppendApplicationConfiguration instead")]
-    public static IConventionContext AddApplicationConfiguration(this IConventionContext context, ConfigurationBuilderApplicationDelegate @delegate)
-    {
-        var delegates = context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new());
-        delegates.Add(@delegate);
-        return context;
-    }
-
-    /// <summary>
-    ///     Append an environment configuration
-    /// </summary>
-    /// <param name="context"></param>
-    /// <param name="delegate"></param>
-    /// <returns></returns>
-    [Obsolete("Use AppendEnvironmentConfiguration instead")]
-    public static IConventionContext AddEnvironmentConfiguration(this IConventionContext context, ConfigurationBuilderEnvironmentDelegate @delegate)
-    {
-        var delegates = context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new());
-        delegates.Add(@delegate);
-        return context;
-    }
-
     /// <summary>
     ///     Append an application configuration
     /// </summary>

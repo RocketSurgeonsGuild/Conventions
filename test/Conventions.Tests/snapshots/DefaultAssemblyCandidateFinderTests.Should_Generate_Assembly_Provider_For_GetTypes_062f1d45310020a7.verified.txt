@@ -1,0 +1,10 @@
+﻿[
+  ConfigurationAsyncConvention,
+  ConfigurationConvention,
+  ServiceAsyncConvention,
+  ServiceConvention,
+  LoggingAsyncConvention,
+  LoggingConvention,
+  SetupAsyncConvention,
+  SetupConvention
+]

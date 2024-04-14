@@ -1,0 +1,14 @@
+﻿[
+  IConfigurationAsyncConvention,
+  IConfigurationConvention,
+  IServiceAsyncConvention,
+  IServiceConvention,
+  IConvention,
+  ILoggingAsyncConvention,
+  ILoggingConvention,
+  ISetupAsyncConvention,
+  ISetupConvention,
+  Class1,
+  Class3,
+  Class2
+]
