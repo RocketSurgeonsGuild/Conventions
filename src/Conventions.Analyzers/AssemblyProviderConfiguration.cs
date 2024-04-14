@@ -329,9 +329,10 @@ internal static partial class AssemblyProviderConfiguration
 
         foreach (var item in data.WithAttributeFilters)
         {
-            if (!assemblySymbols.TryGetValue(item.Assembly, out var assemblySymbol)) continue;
-            if (FindTypeVisitor.FindType(compilation, assemblySymbol, item.Attribute) is not { } type) continue;
-            descriptors.Add(item.Include ? new WithAttributeFilterDescriptor(type) : new WithoutAttributeFilterDescriptor(type));
+            foreach (var a in compilation.GetTypesByMetadataName(item.Attribute))
+            {
+            descriptors.Add(item.Include ? new WithAttributeFilterDescriptor(a) : new WithoutAttributeFilterDescriptor(a));
+            }
         }
 
         foreach (var item in data.WithAttributeStringFilters)
@@ -343,9 +344,10 @@ internal static partial class AssemblyProviderConfiguration
 
         foreach (var item in data.AssignableToTypeFilters)
         {
-            if (!assemblySymbols.TryGetValue(item.Assembly, out var assemblySymbol)) continue;
-            if (FindTypeVisitor.FindType(compilation, assemblySymbol, item.Type) is not { } type) continue;
-            descriptors.Add(item.Include ? new AssignableToTypeFilterDescriptor(type) : new NotAssignableToTypeFilterDescriptor(type));
+            foreach (var a in compilation.GetTypesByMetadataName(item.Type))
+            {
+                descriptors.Add(item.Include ? new AssignableToTypeFilterDescriptor(a) : new NotAssignableToTypeFilterDescriptor(a));
+            }
         }
 
         foreach (var item in data.AssignableToAnyTypeFilters)
@@ -353,9 +355,10 @@ internal static partial class AssemblyProviderConfiguration
             var filters = ImmutableHashSet.CreateBuilder<INamedTypeSymbol>(SymbolEqualityComparer.Default);
             foreach (var type in item.Types)
             {
-                if (!assemblySymbols.TryGetValue(type.Assembly, out var assemblySymbol)) continue;
-                if (FindTypeVisitor.FindType(compilation, assemblySymbol, type.Type) is not { } t) continue;
-                filters.Add(t);
+                foreach (var a in compilation.GetTypesByMetadataName(type.Type))
+                {
+                    filters.Add(a);
+                }
             }
 
             descriptors.Add(

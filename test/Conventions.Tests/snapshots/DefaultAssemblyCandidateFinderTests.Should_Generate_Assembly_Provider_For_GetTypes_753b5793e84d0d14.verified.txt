@@ -1,6 +1,0 @@
-﻿[
-  IServiceFactoryAdapter,
-  IServiceAsyncConvention,
-  IServiceConvention,
-  IServiceProviderDictionary
-]
