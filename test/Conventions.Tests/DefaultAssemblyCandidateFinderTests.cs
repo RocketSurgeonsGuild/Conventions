@@ -1,34 +1,32 @@
 ﻿using System.Reflection;
+using System.Runtime.Loader;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Analyzers.Tests;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Sample.DependencyThree;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
+public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper, LogLevel.Trace)
 {
     [Fact]
     public void FindsAssembliesInCandidates_Params()
     {
-        var resolver = new DefaultAssemblyCandidateFinder(
+        var resolver = new DefaultAssemblyProvider(
             new[]
             {
                 typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly,
-                typeof(Class3).GetTypeInfo().Assembly
+                typeof(Class3).GetTypeInfo().Assembly,
             },
             Logger
         );
-        var items = resolver.GetCandidateAssemblies(
-                                 "Rocket.Surgery.Conventions",
-                                 "Rocket.Surgery.Conventions.Abstractions",
-                                 "Rocket.Surgery.Conventions.Attributes"
-                             )
-                            .Select(x => x.GetName().Name)
-                            .ToArray();
+        var items = resolver
+                   .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConventionContext>().FromAssemblyDependenciesOf<ConventionContext>())
+                   .Select(x => x.GetName().Name)
+                   .ToArray();
 
         foreach (var item in items)
         {
@@ -43,7 +41,7 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
                     "Sample.DependencyOne",
                     "Sample.DependencyThree",
                     "Sample.DependencyTwo",
-                    "Rocket.Surgery.Conventions.Tests"
+                    "Rocket.Surgery.Conventions.Tests",
                 }
             );
         items
@@ -55,30 +53,22 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
     [Fact]
     public void FindsAssembliesInCandidates_Params_Multiples()
     {
-        var resolver = new DefaultAssemblyCandidateFinder(
+        var resolver = new DefaultAssemblyProvider(
             new[]
             {
                 typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly,
-                typeof(Class3).GetTypeInfo().Assembly
+                typeof(Class3).GetTypeInfo().Assembly,
             },
             Logger
         );
-        var items = resolver.GetCandidateAssemblies(
-                                 new[]
-                                 {
-                                     "Rocket.Surgery.Conventions", "Rocket.Surgery.Conventions.Abstractions",
-                                     "Rocket.Surgery.Conventions.Attributes"
-                                 }
-                             )
-                            .Select(x => x.GetName().Name)
-                            .ToArray();
-        var items2 = resolver.GetCandidateAssemblies(
-                                  "Rocket.Surgery.Conventions",
-                                  "Rocket.Surgery.Conventions.Abstractions",
-                                  "Rocket.Surgery.Conventions.Attributes"
-                              )
-                             .Select(x => x.GetName().Name)
-                             .ToArray();
+        var items = resolver
+                   .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConventionContext>().FromAssemblyDependenciesOf<ConventionContext>())
+                   .Select(x => x.GetName().Name)
+                   .ToArray();
+        var items2 = resolver
+                    .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConventionContext>().FromAssemblyDependenciesOf<ConventionContext>())
+                    .Select(x => x.GetName().Name)
+                    .ToArray();
 
         foreach (var item in items)
         {
@@ -98,7 +88,7 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
                     "Sample.DependencyOne",
                     "Sample.DependencyThree",
                     "Sample.DependencyTwo",
-                    "Rocket.Surgery.Conventions.Tests"
+                    "Rocket.Surgery.Conventions.Tests",
                 }
             );
         items
@@ -111,13 +101,11 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
     [Fact]
     public void FindsAssembliesInCandidates_Empty()
     {
-        var resolver = new DefaultAssemblyCandidateFinder(
-            new[] { typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly },
-            Logger
-        );
-        var items = resolver.GetCandidateAssemblies(Array.Empty<string>().AsEnumerable())
-                            .Select(x => x.GetName().Name)
-                            .ToArray();
+        var resolver = new DefaultAssemblyProvider(new[] { typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly, }, Logger);
+        var items = resolver
+                   .GetAssemblies(z => { })
+                   .Select(x => x.GetName().Name)
+                   .ToArray();
 
         foreach (var item in items)
         {
@@ -127,8 +115,18 @@ public class DefaultAssemblyCandidateFinderTests : AutoFakeTest
         items.Should().BeEmpty();
     }
 
-    public DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) :
-        base(outputHelper, LogLevel.Trace)
+    [Theory(Skip = "verify results are inconsistent from different environments, unsure as to exactly why at the moment.")]
+    [MemberData(nameof(GetTypesTestsData.GetTypesData), MemberType = typeof(GetTypesTestsData))]
+    public async Task Should_Generate_Assembly_Provider_For_GetTypes(GetTypesTestsData.GetTypesItem getTypesItem)
     {
+        var finder = new DefaultAssemblyProvider(AssemblyLoadContext.Default.Assemblies.Except([GetType().Assembly,]));
+        await Verify(
+                finder
+                   .GetTypes(getTypesItem.Selector)
+                   .Where(z => !z.Name.StartsWith("ObjectProxy"))
+                   .Where(z => !z.Name.StartsWith("Rocket.Surgery.Conventions"))
+                   .OrderBy(z => z.FullName)
+            )
+           .UseHashedParameters(getTypesItem.Name);
     }
 }

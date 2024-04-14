@@ -8,6 +8,7 @@ namespace Rocket.Surgery.Conventions.Logging;
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
+[PublicAPI]
 public interface ILoggingConvention : IConvention
 {
     /// <summary>

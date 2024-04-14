@@ -1,0 +1,6 @@
+﻿[
+  IServiceFactoryAdapter,
+  IServiceAsyncConvention,
+  IServiceConvention,
+  IServiceProviderDictionary
+]

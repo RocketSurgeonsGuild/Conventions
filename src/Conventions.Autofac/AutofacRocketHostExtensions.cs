@@ -20,7 +20,14 @@ public static class AutofacConventionRocketHostExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder UseAutofac(this ConventionContextBuilder builder, ContainerBuilder? containerBuilder = null)
     {
-        return builder.UseServiceProviderFactory(context => new AutofacConventionServiceProviderFactory(context, containerBuilder));
+        return builder.UseServiceProviderFactory<ContainerBuilder>(
+            async (context, services, ct) =>
+            {
+                var c = containerBuilder ?? new ContainerBuilder();
+                await c.ApplyConventionsAsync(context, services, ct);
+                return new AutofacConventionServiceProviderFactory(c);
+            }
+        );
     }
 
     /// <summary>

@@ -1,0 +1,6 @@
+﻿[
+  IConfigurationAsyncConvention,
+  IConfigurationConvention,
+  IServiceAsyncConvention,
+  IServiceConvention
+]
