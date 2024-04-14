@@ -51,19 +51,6 @@ internal static class TypeCollection
             : default;
     }
 
-    private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<INamedTypeSymbol> types, HashSet<IAssemblySymbol> privateAssemblies)
-    {
-        var block = Block();
-        foreach (var type in types.OrderBy(z => z.ToDisplayString()))
-        {
-            block = block.AddStatements(YieldStatement(SyntaxKind.YieldReturnStatement, StatementGeneration.GetTypeOfExpression(compilation, type)));
-            if (compilation.IsSymbolAccessibleWithin(type, compilation.Assembly)) continue;
-            privateAssemblies.Add(type.ContainingAssembly);
-        }
-
-        return block;
-    }
-
     internal static ImmutableArray<Item> GetTypeDetails(
         SourceProductionContext context,
         Compilation compilation,
@@ -109,6 +96,19 @@ internal static class TypeCollection
         }
 
         return items.ToImmutable();
+    }
+
+    private static BlockSyntax GenerateDescriptors(Compilation compilation, IEnumerable<INamedTypeSymbol> types, HashSet<IAssemblySymbol> privateAssemblies)
+    {
+        var block = Block();
+        foreach (var type in types.OrderBy(z => z.ToDisplayString()))
+        {
+            block = block.AddStatements(YieldStatement(SyntaxKind.YieldReturnStatement, StatementGeneration.GetTypeOfExpression(compilation, type)));
+            if (compilation.IsSymbolAccessibleWithin(type, compilation.Assembly)) continue;
+            privateAssemblies.Add(type.ContainingAssembly);
+        }
+
+        return block;
     }
 
 

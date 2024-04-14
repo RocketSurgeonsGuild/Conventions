@@ -331,7 +331,7 @@ internal static partial class AssemblyProviderConfiguration
         {
             foreach (var a in compilation.GetTypesByMetadataName(item.Attribute))
             {
-            descriptors.Add(item.Include ? new WithAttributeFilterDescriptor(a) : new WithoutAttributeFilterDescriptor(a));
+                descriptors.Add(item.Include ? new WithAttributeFilterDescriptor(a) : new WithoutAttributeFilterDescriptor(a));
             }
         }
 

@@ -204,9 +204,10 @@ public class GetTypesTestsData
             // TODO: REmove this once tests pass
             // .Replace("\r", "").Replace("\n", "")
             var typeName = argument[( argument.LastIndexOf("=> x") + 5 )..^1]
-               .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-               .Select(z => z.Trim())
-               .Aggregate("", (x, y) => x + y).Trim();
+                          .Split(new[] { '\r', '\n', }, StringSplitOptions.RemoveEmptyEntries)
+                          .Select(z => z.Trim())
+                          .Aggregate("", (x, y) => x + y)
+                          .Trim();
             return [new GetTypesItem(typeName, argument, func),];
         }
     }
