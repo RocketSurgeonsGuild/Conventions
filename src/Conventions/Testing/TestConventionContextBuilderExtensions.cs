@@ -13,40 +13,6 @@ namespace Rocket.Surgery.Conventions.Testing;
 /// </summary>
 public static class TestConventionContextBuilderExtensions
 {
-    private static void EnsureConfigured(ConventionContextBuilder builder)
-    {
-        if (builder.Properties.ContainsKey("__EnsureConfigured__"))
-        {
-            return;
-        }
-
-        builder.Set("__EnsureConfigured__", true);
-        builder.Set("EnvironmentName", "Test");
-        builder.Set<ILoggerFactory>(NullLoggerFactory.Instance);
-        builder.Set<ILogger>(NullLogger.Instance);
-
-        builder.ConfigureServices(
-            services =>
-            {
-                var loggerFactory = builder.GetOrAdd<ILoggerFactory>(() => NullLoggerFactory.Instance);
-                if (loggerFactory != NullLoggerFactory.Instance)
-                {
-                    services
-                       .RemoveAll(typeof(ILoggerFactory))
-                       .AddSingleton(loggerFactory);
-                }
-
-                var logger = builder.GetOrAdd<ILogger>(() => NullLogger.Instance);
-                if (logger != NullLogger.Instance)
-                {
-                    services
-                       .RemoveAll(typeof(ILogger))
-                       .AddSingleton(logger);
-                }
-            }
-        );
-    }
-
     /// <summary>
     ///     Create a convention test host build for the given <see cref="AppDomain" /> in the assembly.
     /// </summary>
@@ -55,7 +21,10 @@ public static class TestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, AppDomain appDomain, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        AppDomain appDomain,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
         EnsureConfigured(builder);
@@ -78,7 +47,10 @@ public static class TestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, IConventionFactory factory, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        IConventionFactory factory,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
         EnsureConfigured(builder);
@@ -100,7 +72,9 @@ public static class TestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
         EnsureConfigured(builder);
@@ -122,7 +96,10 @@ public static class TestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, IEnumerable<Assembly> assemblies, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        IEnumerable<Assembly> assemblies,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
         EnsureConfigured(builder);
@@ -204,6 +181,40 @@ public static class TestConventionContextBuilderExtensions
     {
         EnsureConfigured(builder);
         return builder.EnableConventionAttributes();
+    }
+
+    private static void EnsureConfigured(ConventionContextBuilder builder)
+    {
+        if (builder.Properties.ContainsKey("__EnsureConfigured__"))
+        {
+            return;
+        }
+
+        builder.Set("__EnsureConfigured__", true);
+        builder.Set("EnvironmentName", "Test");
+        builder.Set<ILoggerFactory>(NullLoggerFactory.Instance);
+        builder.Set<ILogger>(NullLogger.Instance);
+
+        builder.ConfigureServices(
+            services =>
+            {
+                var loggerFactory = builder.GetOrAdd<ILoggerFactory>(() => NullLoggerFactory.Instance);
+                if (loggerFactory != NullLoggerFactory.Instance)
+                {
+                    services
+                       .RemoveAll(typeof(ILoggerFactory))
+                       .AddSingleton(loggerFactory);
+                }
+
+                var logger = builder.GetOrAdd<ILogger>(() => NullLogger.Instance);
+                if (logger != NullLogger.Instance)
+                {
+                    services
+                       .RemoveAll(typeof(ILogger))
+                       .AddSingleton(logger);
+                }
+            }
+        );
     }
 
 //    /// <summary>
