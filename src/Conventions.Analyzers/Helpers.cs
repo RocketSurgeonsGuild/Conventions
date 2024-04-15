@@ -204,7 +204,7 @@ internal static class Helpers
         if (SymbolEqualityComparer.Default.Equals(assignableToType, assignableFromType))
             return true;
         if (compilation.HasImplicitConversion(assignableFromType, assignableToType)) return true;
-        if (assignableFromType is not { Arity: > 0, IsUnboundGenericType: true, }) return false;
+        if (assignableToType is not { Arity: > 0, IsUnboundGenericType: true, }) return false;
 
         var matchingBaseTypes = GetBaseTypes(compilation, assignableFromType)
                                .Select(GetUnboundGenericType)
