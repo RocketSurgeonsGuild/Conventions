@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
@@ -27,9 +28,13 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
-        conventionContext.Properties.AddIfMissing<IConfiguration>(builder.Configuration);
-        conventionContext.Properties.AddIfMissing(builder.HostEnvironment);
-        conventionContext.Properties.AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
+        conventionContext
+           .AddIfMissing(AssemblyLoadContext.Default)
+           .AddIfMissing(builder)
+           .AddIfMissing(builder.GetType(), builder)
+           .AddIfMissing<IConfiguration>(builder.Configuration)
+           .AddIfMissing(builder.HostEnvironment)
+           .AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
         conventionContext.Properties.Add("BlazorWasm", true);
         foreach (var item in conventionContext.Conventions
                                               .Get<IWebAssemblyHostingConvention,
