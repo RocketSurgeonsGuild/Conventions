@@ -273,11 +273,7 @@ public static class RocketHostApplicationExtensions
         CancellationToken cancellationToken = default
     ) where T : IHostApplicationBuilder
     {
-        var contextBuilder = new ConventionContextBuilder(builder.Properties!)
-                             #pragma warning restore RCS1249
-                             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                            .UseDependencyContext(DependencyContext.Default!)
-                            .WithConventionsFrom(getConventions);
+        var contextBuilder = new ConventionContextBuilder(builder.Properties).WithConventionsFrom(getConventions);
         await Configure(builder, contextBuilder, cancellationToken);
         return builder;
     }
