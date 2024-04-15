@@ -121,6 +121,24 @@ internal static class AssemblyCollection
         return results.Count == 0 ? AssembliesMethod : AssembliesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
+    public static (InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel ) GetAssembliesMethod(
+        GeneratorSyntaxContext context
+    )
+    {
+        var baseData = GetAssembliesMethod(context.Node);
+        if (baseData.method is null
+         || baseData.selector is null
+         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol
+            {
+                TypeArguments: [{ Name: "IAssemblyProviderAssemblySelector", }, ..,],
+            })
+        {
+            return default;
+        }
+
+        return ( baseData.method, baseData.selector, semanticModel: context.SemanticModel );
+    }
+
     public static (InvocationExpressionSyntax method, ExpressionSyntax selector ) GetAssembliesMethod(SyntaxNode node)
     {
         return node is InvocationExpressionSyntax
@@ -182,17 +200,18 @@ internal static class AssemblyCollection
     private static ImmutableArray<Item> GetAssemblyDetails(
         SourceProductionContext context,
         Compilation compilation,
-        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
+        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector, SemanticModel semanticModel)> results
     )
     {
         var items = ImmutableArray.CreateBuilder<Item>();
         foreach (var tuple in results)
         {
-            ( var methodCallSyntax, var selector ) = tuple;
+            ( var methodCallSyntax, var selector, var semanticModel ) = tuple;
 
             var assemblies = new List<IAssemblyDescriptor>();
             var typeFilters = new List<ITypeFilterDescriptor>();
             var classFilter = ClassFilter.All;
+
 
             DataHelpers.HandleInvocationExpressionSyntax(
                 context,
@@ -307,8 +326,8 @@ internal static class AssemblyCollection
     (
         Compilation Compilation,
         ConventionConfigurationData ImportConfiguration,
-        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector)> GetAssemblies,
-        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector)> GetTypes
+        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetAssemblies,
+        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetTypes
     );
 
     public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);

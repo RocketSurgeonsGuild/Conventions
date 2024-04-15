@@ -132,19 +132,19 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         var getAssembliesSyntaxProvider = context
                                          .SyntaxProvider.CreateSyntaxProvider(
                                               (node, _) => AssemblyCollection.GetAssembliesMethod(node) is { method: { }, selector: { }, },
-                                              (syntaxContext, _) => AssemblyCollection.GetAssembliesMethod(syntaxContext.Node)
+                                              (syntaxContext, _) => AssemblyCollection.GetAssembliesMethod(syntaxContext)
                                           )
                                          .Combine(hasAssemblyLoadContext)
-                                         .Where(z => z.Right)
+                                         .Where(z => z is { Right: true, Left: { method: { }, selector: { }, }, })
                                          .Select((z, _) => z.Left)
                                          .Collect();
         var getTypesSyntaxProvider = context
                                     .SyntaxProvider.CreateSyntaxProvider(
                                          (node, _) => TypeCollection.GetTypesMethod(node) is { method: { }, selector: { }, },
-                                         (syntaxContext, _) => TypeCollection.GetTypesMethod(syntaxContext.Node)
+                                         (syntaxContext, _) => TypeCollection.GetTypesMethod(syntaxContext)
                                      )
                                     .Combine(hasAssemblyLoadContext)
-                                    .Where(z => z.Right)
+                                    .Where(z => z is { Right: true, Left: { method: { }, selector: { }, }, })
                                     .Select((tuple, _) => tuple.Left)
                                     .Collect();
         context.RegisterImplementationSourceOutput(

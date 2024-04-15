@@ -36,6 +36,22 @@ internal static class TypeCollection
         return results.Count == 0 ? TypesMethod : TypesMethod.WithBody(Block(SwitchGenerator.GenerateSwitchStatement(results)));
     }
 
+    public static (InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel ) GetTypesMethod(GeneratorSyntaxContext context)
+    {
+        var baseData = GetTypesMethod(context.Node);
+        if (baseData.method is null
+         || baseData.selector is null
+         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol
+            {
+                TypeArguments: [{ Name: "ITypeProviderAssemblySelector", }, ..,],
+            })
+        {
+            return default;
+        }
+
+        return ( baseData.method, baseData.selector, semanticModel: context.SemanticModel );
+    }
+
     public static (InvocationExpressionSyntax method, ExpressionSyntax selector ) GetTypesMethod(SyntaxNode node)
     {
         return node is InvocationExpressionSyntax
@@ -43,7 +59,6 @@ internal static class TypeCollection
             Expression: MemberAccessExpressionSyntax
             {
                 Name.Identifier.Text: "GetTypes",
-                Expression: MemberAccessExpressionSyntax { Name.Identifier.Text: "AssemblyProvider", },
             },
             ArgumentList.Arguments: [.., { Expression: { } expression, },],
         } invocationExpressionSyntax
@@ -54,13 +69,13 @@ internal static class TypeCollection
     internal static ImmutableArray<Item> GetTypeDetails(
         SourceProductionContext context,
         Compilation compilation,
-        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector)> results
+        ImmutableArray<(InvocationExpressionSyntax expression, ExpressionSyntax selector, SemanticModel semanticModel)> results
     )
     {
         var items = ImmutableArray.CreateBuilder<Item>();
         foreach (var tuple in results)
         {
-            ( var methodCallSyntax, var selector ) = tuple;
+            ( var methodCallSyntax, var selector, _ ) = tuple;
 
             var assemblies = new List<IAssemblyDescriptor>();
             var typeFilters = new List<ITypeFilterDescriptor>();

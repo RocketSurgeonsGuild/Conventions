@@ -7,6 +7,8 @@
         <AssemblyName>Rocket.Surgery.Conventions.Analyzers.Tests</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
