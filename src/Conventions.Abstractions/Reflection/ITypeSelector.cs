@@ -9,14 +9,12 @@ public interface ITypeSelector : ITypeProviderAssemblySelector
     /// <summary>
     ///     Lists all of the classes in a given assembly
     /// </summary>
-    [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
     IEnumerable<Type> GetTypes();
 
     /// <summary>
     ///     Lists all of the public classes in a given assembly
     /// </summary>
     /// <param name="publicOnly">Specifies whether too add public types only.</param>
-    [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
     IEnumerable<Type> GetTypes(bool publicOnly);
 
     /// <summary>
@@ -25,7 +23,6 @@ public interface ITypeSelector : ITypeProviderAssemblySelector
     ///     to the <see cref="Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
     /// </summary>
     /// <param name="action">The filtering action.</param>
-    [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
     IEnumerable<Type> GetTypes(Action<ITypeFilter> action);
 
     /// <summary>
@@ -35,6 +32,5 @@ public interface ITypeSelector : ITypeProviderAssemblySelector
     /// </summary>
     /// <param name="action">The filtering action.</param>
     /// <param name="publicOnly">Specifies whether too add public types only.</param>
-    [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
     IEnumerable<Type> GetTypes(bool publicOnly, Action<ITypeFilter> action);
 }

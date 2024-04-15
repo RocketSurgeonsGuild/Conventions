@@ -1,8 +1,12 @@
 using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
+using AppDelegate =
+    System.Func<Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder, System.Threading.CancellationToken,
+        System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.ConventionContextBuilder>>;
 using ServiceFactoryAdapter =
     System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
         System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
@@ -16,20 +20,330 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 public static class RocketWebAssemblyExtensions
 {
     /// <summary>
+    ///     Uses the rocket booster.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static async ValueTask<WebAssemblyHostBuilder> UseRocketBooster(
+        this WebAssemblyHostBuilder builder,
+        AppDelegate func,
+        Func<ConventionContextBuilder, CancellationToken, ValueTask> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        if (func == null) throw new ArgumentNullException(nameof(func));
+        var b = await func(builder, cancellationToken);
+        await action.Invoke(b, cancellationToken);
+        await ApplyConventions(builder, b, cancellationToken);
+        return builder;
+    }
+
+    /// <summary>
+    ///     Uses the rocket booster.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> UseRocketBooster(
+        this WebAssemblyHostBuilder builder,
+        AppDelegate func,
+        Func<ConventionContextBuilder, ValueTask> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return UseRocketBooster(
+            builder,
+            func,
+            (b, _) => action.Invoke(b),
+            cancellationToken
+        );
+    }
+
+    /// <summary>
+    ///     Uses the rocket booster.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> UseRocketBooster(
+        this WebAssemblyHostBuilder builder,
+        AppDelegate func,
+        Action<ConventionContextBuilder> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return UseRocketBooster(
+            builder,
+            func,
+            (b, _) =>
+            {
+                action.Invoke(b);
+                return ValueTask.CompletedTask;
+            },
+            cancellationToken
+        );
+    }
+
+    /// <summary>
+    ///     Uses the rocket booster.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> UseRocketBooster(
+        this WebAssemblyHostBuilder builder,
+        AppDelegate func,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return UseRocketBooster(builder, func, (_, _) => ValueTask.CompletedTask, cancellationToken);
+    }
+
+
+    /// <summary>
+    ///     Launches the with.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> LaunchWith(
+        this WebAssemblyHostBuilder builder,
+        AppDelegate func,
+        Action<ConventionContextBuilder> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Launches the with.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> LaunchWith(
+        this WebAssemblyHostBuilder builder,
+        AppDelegate func,
+        Func<ConventionContextBuilder, ValueTask> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Launches the with.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> LaunchWith(
+        this WebAssemblyHostBuilder builder,
+        AppDelegate func,
+        Func<ConventionContextBuilder, CancellationToken, ValueTask> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return UseRocketBooster(builder, func, action, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Launches the with.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> LaunchWith(this WebAssemblyHostBuilder builder, AppDelegate func, CancellationToken cancellationToken)
+    {
+        return UseRocketBooster(builder, func, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Launches the with.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="func">The function.</param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> LaunchWith(this WebAssemblyHostBuilder builder, AppDelegate func)
+    {
+        return UseRocketBooster(builder, func, CancellationToken.None);
+    }
+
+    /// <summary>
+    ///     Configures the rocket Surgery.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(this WebAssemblyHostBuilder builder, CancellationToken cancellationToken = default)
+    {
+        return ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Configures the rocket Surgery.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+        this WebAssemblyHostBuilder builder,
+        Action<ConventionContextBuilder> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return ConfigureRocketSurgery(
+            builder,
+            (b, _) =>
+            {
+                action(b);
+                return ValueTask.CompletedTask;
+            },
+            cancellationToken
+        );
+    }
+
+    /// <summary>
+    ///     Configures the rocket Surgery.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+        this WebAssemblyHostBuilder builder,
+        Func<ConventionContextBuilder, ValueTask> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return ConfigureRocketSurgery(builder, (b, ct) => action(b), cancellationToken);
+    }
+
+    /// <summary>
+    ///     Configures the rocket Surgery.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="action">The action.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+        this WebAssemblyHostBuilder builder,
+        Func<ConventionContextBuilder, CancellationToken, ValueTask> action,
+        CancellationToken cancellationToken = default
+    )
+    {
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object>());
+        await action(contextBuilder, cancellationToken);
+        await ApplyConventions(builder, contextBuilder, cancellationToken);
+        return builder;
+    }
+
+    /// <summary>
+    ///     Configures the rocket Surgery.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="getConventions">The method to get the conventions.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostBuilder.</returns>
+    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+        this WebAssemblyHostBuilder builder,
+        IConventionFactory getConventions,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object>()).WithConventionsFrom(getConventions);
+        await ApplyConventions(builder, contextBuilder, cancellationToken);
+        return builder;
+    }
+
+    /// <summary>
+    ///     Configures the rocket Surgery.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="conventionContextBuilder">The convention context builder.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>IHostApplicationBuilder.</returns>
+    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+        this WebAssemblyHostBuilder builder,
+        ConventionContextBuilder conventionContextBuilder,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (builder == null) throw new ArgumentNullException(nameof(builder));
+        if (conventionContextBuilder == null) throw new ArgumentNullException(nameof(conventionContextBuilder));
+        await ApplyConventions(builder, conventionContextBuilder, cancellationToken);
+        return builder;
+    }
+
+    /// <summary>
+    ///     Applys all conventions for hosting, configuration, services and logging
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="contextBuilder"></param>
+    /// <param name="cancellationToken"></param>
+    internal static async ValueTask<WebAssemblyHostBuilder> ApplyConventions(
+        WebAssemblyHostBuilder builder,
+        ConventionContextBuilder contextBuilder,
+        CancellationToken cancellationToken
+    )
+    {
+        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
+        return await Configure(builder, context, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Applys all conventions for hosting, configuration, services and logging
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="context"></param>
+    /// <param name="cancellationToken"></param>
+    internal static ValueTask<WebAssemblyHostBuilder> ApplyConventions(
+        WebAssemblyHostBuilder builder,
+        IConventionContext context,
+        CancellationToken cancellationToken
+    )
+    {
+        return Configure(builder, context, cancellationToken);
+    }
+
+    /// <summary>
     ///     Apply the conventions to the builder
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionContext"></param>
     /// <param name="cancellationToken"></param>
-    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
+    private static async ValueTask<WebAssemblyHostBuilder> Configure(
         this WebAssemblyHostBuilder builder,
         IConventionContext conventionContext,
-        CancellationToken cancellationToken = default
+        CancellationToken cancellationToken
     )
     {
-        conventionContext.Properties.AddIfMissing<IConfiguration>(builder.Configuration);
-        conventionContext.Properties.AddIfMissing(builder.HostEnvironment);
-        conventionContext.Properties.AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
+        conventionContext
+           .AddIfMissing(AssemblyLoadContext.Default)
+           .AddIfMissing(builder)
+           .AddIfMissing(builder.GetType(), builder)
+           .AddIfMissing<IConfiguration>(builder.Configuration)
+           .AddIfMissing(builder.HostEnvironment)
+           .AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
         conventionContext.Properties.Add("BlazorWasm", true);
         foreach (var item in conventionContext.Conventions
                                               .Get<IWebAssemblyHostingConvention,
@@ -147,194 +461,5 @@ public static class RocketWebAssemblyExtensions
 
             return source;
         }
-    }
-
-    /// <summary>
-    ///     Configures the rocket Surgery.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="builderAction"></param>
-    /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
-        this WebAssemblyHostBuilder builder,
-        Action<ConventionContextBuilder> builderAction
-    )
-    {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        var contextBuilder = new ConventionContextBuilder(null);
-        builderAction.Invoke(contextBuilder);
-        await ApplyConventions(builder, contextBuilder);
-
-        return builder;
-    }
-
-    /// <summary>
-    ///     Configures the rocket Surgery.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="appDomain"></param>
-    /// <param name="action"></param>
-    /// <returns>WebAssemblyHostBuilder.</returns>
-    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
-        this WebAssemblyHostBuilder builder,
-        AppDomain appDomain,
-        Action<ConventionContextBuilder>? action = null
-    )
-    {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return ConfigureRocketSurgery(
-            builder,
-            a =>
-            {
-                a.UseAppDomain(appDomain);
-                action?.Invoke(a);
-            }
-        );
-    }
-
-    /// <summary>
-    ///     Configures the rocket Surgery.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="getConventions"></param>
-    /// <param name="action"></param>
-    /// <returns>WebAssemblyHostBuilder.</returns>
-    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
-        this WebAssemblyHostBuilder builder,
-        IConventionFactory getConventions,
-        Action<ConventionContextBuilder>? action = null
-    )
-    {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return ConfigureRocketSurgery(
-            builder,
-            a =>
-            {
-                a.WithConventionsFrom(getConventions);
-                action?.Invoke(a);
-            }
-        );
-    }
-
-    /// <summary>
-    ///     Configures the rocket Surgery.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="assemblies"></param>
-    /// <param name="action"></param>
-    /// <returns>WebAssemblyHostBuilder.</returns>
-    public static ValueTask<WebAssemblyHostBuilder> ConfigureRocketSurgery(
-        this WebAssemblyHostBuilder builder,
-        IEnumerable<Assembly> assemblies,
-        Action<ConventionContextBuilder>? action = null
-    )
-    {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return ConfigureRocketSurgery(
-            builder,
-            a =>
-            {
-                a.UseAssemblies(assemblies);
-                action?.Invoke(a);
-            }
-        );
-    }
-
-    /// <summary>
-    ///     Uses the rocket booster.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="func">The function.</param>
-    /// <param name="action">The action.</param>
-    /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async ValueTask<WebAssemblyHostBuilder> UseRocketBooster(
-        this WebAssemblyHostBuilder builder,
-        Func<WebAssemblyHostBuilder, ConventionContextBuilder> func,
-        Action<ConventionContextBuilder>? action = null
-    )
-    {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        if (func == null)
-        {
-            throw new ArgumentNullException(nameof(func));
-        }
-
-        var b = func(builder);
-        action?.Invoke(b);
-        await ApplyConventions(builder, b);
-        return builder;
-    }
-
-    /// <summary>
-    ///     Launches the with.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="func">The function.</param>
-    /// <param name="action">The action.</param>
-    /// <returns>WebAssemblyHostBuilder.</returns>
-    public static async ValueTask<WebAssemblyHostBuilder> LaunchWith(
-        this WebAssemblyHostBuilder builder,
-        Func<WebAssemblyHostBuilder, ConventionContextBuilder> func,
-        Action<ConventionContextBuilder>? action = null
-    )
-    {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        if (func == null)
-        {
-            throw new ArgumentNullException(nameof(func));
-        }
-
-        var b = func(builder);
-        action?.Invoke(b);
-        await ApplyConventions(builder, b);
-        return builder;
-    }
-
-    /// <summary>
-    ///     Applys all conventions for hosting, configuration, services and logging
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="contextBuilder"></param>
-    internal static async ValueTask<WebAssemblyHostBuilder> ApplyConventions(
-        WebAssemblyHostBuilder builder,
-        ConventionContextBuilder contextBuilder
-    )
-    {
-        var context = await ConventionContext.FromAsync(contextBuilder);
-        return await builder.ConfigureRocketSurgery(context);
-    }
-
-    /// <summary>
-    ///     Applys all conventions for hosting, configuration, services and logging
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="context"></param>
-    internal static ValueTask<WebAssemblyHostBuilder> ApplyConventions(WebAssemblyHostBuilder builder, IConventionContext context)
-    {
-        return builder.ConfigureRocketSurgery(context);
     }
 }

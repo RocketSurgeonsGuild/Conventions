@@ -1,3 +1,4 @@
+using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
@@ -272,11 +273,7 @@ public static class RocketHostApplicationExtensions
         CancellationToken cancellationToken = default
     ) where T : IHostApplicationBuilder
     {
-        var contextBuilder = new ConventionContextBuilder(builder.Properties!)
-                             #pragma warning restore RCS1249
-                             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                            .UseDependencyContext(DependencyContext.Default!)
-                            .WithConventionsFrom(getConventions);
+        var contextBuilder = new ConventionContextBuilder(builder.Properties).WithConventionsFrom(getConventions);
         await Configure(builder, contextBuilder, cancellationToken);
         return builder;
     }
@@ -319,6 +316,7 @@ public static class RocketHostApplicationExtensions
         contextBuilder.Properties["__configured__"] = true;
 
         contextBuilder
+           .AddIfMissing(AssemblyLoadContext.Default)
            .AddIfMissing(builder)
            .AddIfMissing(builder.GetType(), builder)
            .AddIfMissing(builder.Configuration)

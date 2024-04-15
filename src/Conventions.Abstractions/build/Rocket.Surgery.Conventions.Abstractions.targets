@@ -3,6 +3,9 @@
         <_ConventionApplicationDetected
             Condition="'$(_ConventionApplicationDetected)' == '' and ('$(OutputType)' != 'Library' or '$(OutputType)' != 'library')"
         >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and ('$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true')"
+        >true</_ConventionApplicationDetected>
         <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == ''">false</_ConventionApplicationDetected>
         
         <ImportConventionsNamespace Condition="'$(ImportConventionsNamespace)' == ''">$(RootNamespace)</ImportConventionsNamespace>
