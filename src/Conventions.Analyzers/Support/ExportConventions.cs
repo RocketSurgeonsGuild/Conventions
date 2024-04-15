@@ -253,7 +253,7 @@ internal static class ExportConventions
                         InvocationExpression(
                             MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName("builder"),
+                                MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("builder"), IdentifierName("Properties")),
                                 GenericName(Identifier("GetService"))
                                    .WithTypeArgumentList(
                                         TypeArgumentList(

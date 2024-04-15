@@ -21,7 +21,7 @@ namespace TestProject.Conventions
         /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(ConventionContextBuilder builder)
         {
-            yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib(builder.GetService<Rocket.Surgery.Conventions.Tests.IService>(), builder.GetService<Rocket.Surgery.Conventions.Tests.IServiceB>(), builder.GetService<Rocket.Surgery.Conventions.Tests.IServiceC>()), HostType.Undefined);
+            yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib(builder.Properties.GetService<Rocket.Surgery.Conventions.Tests.IService>(), builder.Properties.GetService<Rocket.Surgery.Conventions.Tests.IServiceB>(), builder.Properties.GetService<Rocket.Surgery.Conventions.Tests.IServiceC>()), HostType.Undefined);
         }
     }
 }

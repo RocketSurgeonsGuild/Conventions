@@ -21,7 +21,7 @@ namespace TestProject.Conventions
         /// </summary>
         public static IEnumerable<IConventionWithDependencies> GetConventions(ConventionContextBuilder builder)
         {
-            yield return new ConventionWithDependencies(new Rocket.Surgery.LaunchPad.Mapping.AutoMapperConvention(builder.GetService<Rocket.Surgery.LaunchPad.Mapping.AutoMapperOptions>()), HostType.Undefined);
+            yield return new ConventionWithDependencies(new Rocket.Surgery.LaunchPad.Mapping.AutoMapperConvention(builder.Properties.GetService<Rocket.Surgery.LaunchPad.Mapping.AutoMapperOptions>()), HostType.Undefined);
         }
     }
 }
