@@ -36,25 +36,16 @@ internal static class AssemblyCollection
                 )
             );
 
-        TypeDeclarationSyntax? assemblyProvider = null;
-        if (getAssemblies.Length == 0 && getTypes.Length == 0 && discoveredAssemblyRequests.Count == 0 && discoveredTypeRequests.Count == 0)
-        {
-            assemblyProvider = GetAssemblyProvider(compilation, ImmutableArray<Item>.Empty, ImmutableArray<TypeCollection.Item>.Empty, privateAssemblies);
-        }
-        else
-        {
-            var assemblyRequests = GetAssemblyDetails(context, compilation, getAssemblies);
-            var typeRequests = TypeCollection.GetTypeDetails(context, compilation, getTypes);
-            assemblyProvider = GetAssemblyProvider(
-                compilation,
-                assemblyRequests.AddRange(discoveredAssemblyRequests),
-                typeRequests.AddRange(discoveredTypeRequests),
-                privateAssemblies
-            );
-
-            var attributes = AssemblyProviderConfiguration.FromAssemblyAttributes(assemblyRequests, typeRequests).ToArray();
-            cu = cu.AddAttributeLists(attributes);
-        }
+        var assemblyRequests = GetAssemblyDetails(context, compilation, getAssemblies);
+        var typeRequests = TypeCollection.GetTypeDetails(context, compilation, getTypes);
+        var attributes = AssemblyProviderConfiguration.ToAssemblyAttributes(assemblyRequests, typeRequests).ToArray();
+        cu = cu.AddAttributeLists(attributes);
+        var assemblyProvider = GetAssemblyProvider(
+            compilation,
+            assemblyRequests.AddRange(discoveredAssemblyRequests),
+            typeRequests.AddRange(discoveredTypeRequests),
+            privateAssemblies
+        );
 
         if (privateAssemblies.Any())
         {

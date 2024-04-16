@@ -6,8 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies","")]
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies","")]
 namespace TestProject.Conventions
 {
     internal sealed partial class Imports
@@ -19,17 +17,7 @@ namespace TestProject.Conventions
         {
             IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
-                switch (lineNumber)
-                {
-                    // FilePath: Input1.cs Member: Register
-                    case 7:
-                        yield return typeof(global::TestConvention).Assembly;
-                        break;
-                    // FilePath: Input1.cs Member: Register
-                    case 8:
-                        yield return typeof(global::TestConvention).Assembly;
-                        break;
-                }
+                yield break;
             }
 
             IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
