@@ -13,9 +13,11 @@ public class GetTypesTestsData
     {
         // ReSharper disable RedundantNameQualifier
 
+
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.StartsWith("IService")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.StartsWith("S").EndsWith("Convention")));
         yield return TestMethod(z => z.FromAssemblyDependenciesOf<IConvention>().GetTypes(x => x.StartsWith("T").EndsWith("Convention")));
+        yield return TestMethod(z => z.FromAssemblyDependenciesOf<IConvention>().GetTypes(x => x.AssignableToAny(typeof(IConfigurationConvention))));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.EndsWith("Convention")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.Contains("Convention")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.Contains("Convention").KindOf(TypeKindFilter.Class)));

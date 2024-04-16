@@ -36,25 +36,16 @@ internal static class AssemblyCollection
                 )
             );
 
-        TypeDeclarationSyntax? assemblyProvider = null;
-        if (getAssemblies.Length == 0 && getTypes.Length == 0 && discoveredAssemblyRequests.Count == 0 && discoveredTypeRequests.Count == 0)
-        {
-            assemblyProvider = GetAssemblyProvider(compilation, ImmutableArray<Item>.Empty, ImmutableArray<TypeCollection.Item>.Empty, privateAssemblies);
-        }
-        else
-        {
-            var assemblyRequests = GetAssemblyDetails(context, compilation, getAssemblies);
-            var typeRequests = TypeCollection.GetTypeDetails(context, compilation, getTypes);
-            assemblyProvider = GetAssemblyProvider(
-                compilation,
-                assemblyRequests.AddRange(discoveredAssemblyRequests),
-                typeRequests.AddRange(discoveredTypeRequests),
-                privateAssemblies
-            );
-
-            var attributes = AssemblyProviderConfiguration.FromAssemblyAttributes(assemblyRequests, typeRequests).ToArray();
-            cu = cu.AddAttributeLists(attributes);
-        }
+        var assemblyRequests = GetAssemblyDetails(context, compilation, getAssemblies);
+        var typeRequests = TypeCollection.GetTypeDetails(context, compilation, getTypes);
+        var attributes = AssemblyProviderConfiguration.ToAssemblyAttributes(assemblyRequests, typeRequests).ToArray();
+        cu = cu.AddAttributeLists(attributes);
+        var assemblyProvider = GetAssemblyProvider(
+            compilation,
+            assemblyRequests.AddRange(discoveredAssemblyRequests),
+            typeRequests.AddRange(discoveredTypeRequests),
+            privateAssemblies
+        );
 
         if (privateAssemblies.Any())
         {
@@ -128,10 +119,7 @@ internal static class AssemblyCollection
         var baseData = GetAssembliesMethod(context.Node);
         if (baseData.method is null
          || baseData.selector is null
-         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol
-            {
-                TypeArguments: [{ Name: "IAssemblyProviderAssemblySelector", }, ..,],
-            })
+         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol { TypeArguments: [{ Name: "IAssemblyProviderAssemblySelector" }, ..] })
         {
             return default;
         }
@@ -206,7 +194,7 @@ internal static class AssemblyCollection
         var items = ImmutableArray.CreateBuilder<Item>();
         foreach (var tuple in results)
         {
-            ( var methodCallSyntax, var selector, var semanticModel ) = tuple;
+            var (methodCallSyntax, selector, semanticModel) = tuple;
 
             var assemblies = new List<IAssemblyDescriptor>();
             var typeFilters = new List<ITypeFilterDescriptor>();

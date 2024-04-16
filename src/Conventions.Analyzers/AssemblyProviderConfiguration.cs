@@ -65,7 +65,7 @@ internal static partial class AssemblyProviderConfiguration
         return ( assemblyRequests.ToImmutable(), typeRequests.ToImmutable() );
     }
 
-    public static IEnumerable<AttributeListSyntax> FromAssemblyAttributes(
+    public static IEnumerable<AttributeListSyntax> ToAssemblyAttributes(
         ImmutableArray<AssemblyCollection.Item> assemblyRequests,
         ImmutableArray<TypeCollection.Item> typeRequests
     )

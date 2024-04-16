@@ -41,10 +41,7 @@ internal static class TypeCollection
         var baseData = GetTypesMethod(context.Node);
         if (baseData.method is null
          || baseData.selector is null
-         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol
-            {
-                TypeArguments: [{ Name: "ITypeProviderAssemblySelector", }, ..,],
-            })
+         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol { TypeArguments: [{ Name: "ITypeProviderAssemblySelector" }, ..] })
         {
             return default;
         }

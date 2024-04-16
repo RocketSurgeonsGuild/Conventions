@@ -31,7 +31,20 @@ public static class ModuleInitializer
 
         VerifierSettings.SortJsonObjects();
         VerifierSettings.ScrubInlineGuids();
-        VerifierSettings.ScrubLines(z => z.Contains("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.", StringComparison.OrdinalIgnoreCase));
+        VerifierSettings.ScrubLinesWithReplace(
+            s =>
+            {
+                if (s.Contains(
+                        "Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.",
+                        StringComparison.OrdinalIgnoreCase
+                    ))
+                {
+                    return s.Substring(0, s.IndexOf('"', s.IndexOf('"') + 1) + 2) + "\"\")]";
+                }
+
+                return s;
+            }
+        );
         VerifierSettings.AddScrubber(
             (builder, counter) =>
             {
