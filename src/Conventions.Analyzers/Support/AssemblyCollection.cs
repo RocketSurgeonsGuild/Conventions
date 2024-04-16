@@ -119,7 +119,10 @@ internal static class AssemblyCollection
         var baseData = GetAssembliesMethod(context.Node);
         if (baseData.method is null
          || baseData.selector is null
-         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol { TypeArguments: [{ Name: "IAssemblyProviderAssemblySelector" }, ..] })
+         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol
+            {
+                TypeArguments: [{ Name: "IAssemblyProviderAssemblySelector", }, ..,],
+            })
         {
             return default;
         }
@@ -194,7 +197,7 @@ internal static class AssemblyCollection
         var items = ImmutableArray.CreateBuilder<Item>();
         foreach (var tuple in results)
         {
-            var (methodCallSyntax, selector, semanticModel) = tuple;
+            ( var methodCallSyntax, var selector, var semanticModel ) = tuple;
 
             var assemblies = new List<IAssemblyDescriptor>();
             var typeFilters = new List<ITypeFilterDescriptor>();
