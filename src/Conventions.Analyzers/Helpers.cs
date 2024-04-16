@@ -289,8 +289,10 @@ internal static class Helpers
         {
             throw new InvalidOperationException("Expected a member access expression");
         }
+
         var source = new SourceLocation(
-            memberAccess.Name
+            memberAccess
+               .Name
                .SyntaxTree.GetText(cancellationToken)
                .Lines.First(z => z.Span.IntersectsWith(memberAccess.Name.Span))
                .LineNumber
