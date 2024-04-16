@@ -119,10 +119,7 @@ internal static class AssemblyCollection
         var baseData = GetAssembliesMethod(context.Node);
         if (baseData.method is null
          || baseData.selector is null
-         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol
-            {
-                TypeArguments: [{ Name: "IAssemblyProviderAssemblySelector", }, ..,],
-            })
+         || context.SemanticModel.GetTypeInfo(baseData.selector).ConvertedType is not INamedTypeSymbol { TypeArguments: [{ Name: "IAssemblyProviderAssemblySelector" }, ..] })
         {
             return default;
         }
@@ -197,7 +194,7 @@ internal static class AssemblyCollection
         var items = ImmutableArray.CreateBuilder<Item>();
         foreach (var tuple in results)
         {
-            ( var methodCallSyntax, var selector, var semanticModel ) = tuple;
+            var (methodCallSyntax, selector, semanticModel) = tuple;
 
             var assemblies = new List<IAssemblyDescriptor>();
             var typeFilters = new List<ITypeFilterDescriptor>();
@@ -217,17 +214,7 @@ internal static class AssemblyCollection
 
             var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
 
-            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-
-            var source = new SourceLocation(
-                selector
-                   .SyntaxTree.GetText(context.CancellationToken)
-                   .Lines.First(z => z.Span.IntersectsWith(selector.Span))
-                   .LineNumber
-              + 1,
-                methodCallSyntax.SyntaxTree.FilePath,
-                containingMethod.Identifier.Text
-            );
+            var source = Helpers.CreateSourceLocation(methodCallSyntax, context.CancellationToken);
             // disallow list?
             if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs"))
             {

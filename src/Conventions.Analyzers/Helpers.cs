@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
+using Rocket.Surgery.Conventions.Support;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Rocket.Surgery.Conventions;
@@ -279,6 +280,25 @@ internal static class Helpers
                     Token(SyntaxKind.AssemblyKeyword)
                 )
             );
+    }
+
+    internal static SourceLocation CreateSourceLocation(InvocationExpressionSyntax methodCallSyntax, CancellationToken cancellationToken)
+    {
+        var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
+        if (methodCallSyntax.Expression is not MemberAccessExpressionSyntax memberAccess)
+        {
+            throw new InvalidOperationException("Expected a member access expression");
+        }
+        var source = new SourceLocation(
+            memberAccess.Name
+               .SyntaxTree.GetText(cancellationToken)
+               .Lines.First(z => z.Span.IntersectsWith(memberAccess.Name.Span))
+               .LineNumber
+          + 1,
+            memberAccess.SyntaxTree.FilePath,
+            containingMethod.Identifier.Text
+        );
+        return source;
     }
 
     internal static SyntaxTrivia GetXmlSummary(string text)

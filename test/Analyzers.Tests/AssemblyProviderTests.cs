@@ -16,7 +16,10 @@ using Rocket.Surgery.Conventions;
 public class TestConvention : IServiceAsyncConvention {
     public ValueTask Register(IConventionContext context, IServiceCollection services, CancellationToken cancellationToken)
     {
-            var assemblies = context.AssemblyProvider.GetAssemblies(z => z.FromAssembly());
+            var assemblies = context.AssemblyProvider.GetAssemblies(
+z =>
+z.FromAssembly()
+);
         return Task.CompletedTask;
     }
 }
