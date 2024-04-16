@@ -5,6 +5,7 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests;
 
 public class AutoMapperTests(ITestOutputHelper testOutputHelper) : GeneratorTest(testOutputHelper)
 {
+
     [Fact]
     public async Task Should_Work_With_AutoMapper()
     {
@@ -41,12 +42,11 @@ public class TestConvention : IServiceAsyncConvention {
         await Verify(result);
     }
 
-    private class Profile1 : Profile;
+    class Profile1 : Profile;
+    class Mapper : Profile;
 
-    private class Mapper : Profile;
 
-
-    private class A : IValueResolver<Source, Destination, string>
+    class A : IValueResolver<Source, Destination, string>
     {
         public string Resolve(Source source, Destination destination, string destMember, ResolutionContext context)
         {
@@ -54,7 +54,7 @@ public class TestConvention : IServiceAsyncConvention {
         }
     }
 
-    private abstract class B : IMemberValueResolver<Source, Destination, string, string>
+    abstract class B : IMemberValueResolver<Source, Destination, string, string>
     {
         public string Resolve(Source source, Destination destination, string sourceMember, string destMember, ResolutionContext context)
         {
@@ -62,7 +62,7 @@ public class TestConvention : IServiceAsyncConvention {
         }
     }
 
-    private class C : ITypeConverter<Source, Destination>
+    class C : ITypeConverter<Source, Destination>
     {
         public Destination Convert(Source source, Destination destination, ResolutionContext context)
         {
@@ -70,7 +70,7 @@ public class TestConvention : IServiceAsyncConvention {
         }
     }
 
-    private class D : IValueConverter<string, string>
+    class D : IValueConverter<string, string>
     {
         public string Convert(string sourceMember, ResolutionContext context)
         {
@@ -78,7 +78,7 @@ public class TestConvention : IServiceAsyncConvention {
         }
     }
 
-    private class E : IMappingAction<Source, Destination>
+    class E : IMappingAction<Source, Destination>
     {
         public void Process(Source source, Destination destination, ResolutionContext context)
         {
@@ -86,12 +86,12 @@ public class TestConvention : IServiceAsyncConvention {
         }
     }
 
-    private class Source
+    class Source
     {
         public string Name { get; set; }
     }
 
-    private class Destination
+    class Destination
     {
         public string Name { get; set; }
     }
@@ -113,6 +113,8 @@ using Rocket.Surgery.Conventions;
 
 public class MediatRTests(ITestOutputHelper testOutputHelper) : GeneratorTest(testOutputHelper)
 {
+
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();

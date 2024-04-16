@@ -26,7 +26,7 @@ namespace TestProject.Conventions
                 switch (lineNumber)
                 {
                     // FilePath: Input1.cs Member: Register
-                    case 16:
+                    case 17:
                         yield return RocketSurgeryConventionsAbstractions.GetType("EnumPolyfill");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Polyfill");
                         yield return RocketSurgeryConventionsAbstractions.GetType("RegexPolyfill");

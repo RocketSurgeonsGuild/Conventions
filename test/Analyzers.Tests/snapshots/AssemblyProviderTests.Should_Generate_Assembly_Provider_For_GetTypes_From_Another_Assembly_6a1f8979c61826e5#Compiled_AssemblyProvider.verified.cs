@@ -26,7 +26,7 @@ namespace TestProject.Conventions
                 switch (lineNumber)
                 {
                     // FilePath: Input1.cs Member: Register
-                    case 16:
+                    case 17:
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.AppDomainAssemblyProvider");
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.AppDomainConventionFactory);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.AssemblyConventionFactory);

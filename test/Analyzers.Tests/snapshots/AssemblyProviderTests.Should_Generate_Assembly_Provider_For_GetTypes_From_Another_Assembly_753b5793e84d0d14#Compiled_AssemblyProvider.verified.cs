@@ -26,7 +26,7 @@ namespace TestProject.Conventions
                 switch (lineNumber)
                 {
                     // FilePath: Input1.cs Member: Register
-                    case 16:
+                    case 17:
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention);
