@@ -97,9 +97,9 @@ internal static class TypeCollection
             var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
 
             var source = new SourceLocation(
-                methodCallSyntax
+                selector
                    .SyntaxTree.GetText(context.CancellationToken)
-                   .Lines.First(z => z.Span.IntersectsWith(methodCallSyntax.Span))
+                   .Lines.First(z => z.Span.IntersectsWith(selector.Span))
                    .LineNumber
               + 1,
                 methodCallSyntax.SyntaxTree.FilePath,

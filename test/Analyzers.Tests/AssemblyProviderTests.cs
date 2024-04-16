@@ -39,7 +39,8 @@ using Rocket.Surgery.Conventions;
 public class TestConvention : IServiceAsyncConvention {
     public ValueTask Register(IConventionContext context, IServiceCollection services, CancellationToken cancellationToken)
     {
-            var assemblies = context.AssemblyProvider.GetAssemblies(z => z.FromAssemblyOf<IServiceAsyncConvention>());
+            var assemblies = context.AssemblyProvider
+                .GetAssemblies(z =>z.FromAssemblyOf<IServiceAsyncConvention>());
             var assemblies = context.AssemblyProvider.GetAssemblies(z => z.FromAssemblyOf(typeof(IServiceAsyncConvention)));
         return Task.CompletedTask;
     }
@@ -134,7 +135,8 @@ public class TestConvention2 : IServiceAsyncConvention {
                                {
                                    public ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
                                    {
-                                       var assemblies = context.AssemblyProvider.GetTypes({{{getTypesItem.Expression}}});
+                                       var assemblies = context.AssemblyProvider
+                                            .GetTypes({{{getTypesItem.Expression}}});
                                        return ValueTask.CompletedTask;
                                    }
                                }
@@ -172,7 +174,8 @@ public class TestConvention2 : IServiceAsyncConvention {
                               {
                                   public ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
                                   {
-                                      var assemblies = context.AssemblyProvider.GetTypes({{{getTypesItem.Expression}}});
+                                      var assemblies = context.AssemblyProvider
+                                        .GetTypes({{{getTypesItem.Expression}}});
                                       return ValueTask.CompletedTask;
                                   }
                               }
