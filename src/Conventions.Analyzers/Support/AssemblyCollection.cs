@@ -217,17 +217,7 @@ internal static class AssemblyCollection
 
             var assemblyFilter = new CompiledAssemblyFilter(assemblies.ToImmutableArray());
 
-            var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-
-            var source = new SourceLocation(
-                selector
-                   .SyntaxTree.GetText(context.CancellationToken)
-                   .Lines.First(z => z.Span.IntersectsWith(selector.Span))
-                   .LineNumber
-              + 1,
-                methodCallSyntax.SyntaxTree.FilePath,
-                containingMethod.Identifier.Text
-            );
+            var source = Helpers.CreateSourceLocation(methodCallSyntax, context.CancellationToken);
             // disallow list?
             if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs"))
             {
