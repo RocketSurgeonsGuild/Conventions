@@ -5,6 +5,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="AutoMapper" />
+        <PackageReference Include="FluentValidation" />
         <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />

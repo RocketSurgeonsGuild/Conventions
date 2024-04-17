@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
+using FluentValidation;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,8 @@ internal static class GeneratorTestContextBuilderExtensions
             typeof(ConventionContext).Assembly,
             typeof(IConventionContext).Assembly,
             typeof(IServiceProvider).Assembly,
-            typeof(IConfiguration).Assembly
+            typeof(IConfiguration).Assembly,
+            typeof(IValidator).Assembly
         );
     }
 

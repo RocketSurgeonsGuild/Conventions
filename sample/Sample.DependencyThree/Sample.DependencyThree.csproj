@@ -16,4 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" />
+    </ItemGroup>
 </Project>
