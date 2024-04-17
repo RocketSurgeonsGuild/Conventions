@@ -11,7 +11,6 @@ public static class Nested
     public class Class2 : IConvention;
 }
 
-
 public static class Example2
 {
     public record Request(string A, double B);

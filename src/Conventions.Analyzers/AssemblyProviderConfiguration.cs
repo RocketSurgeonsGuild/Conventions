@@ -351,7 +351,7 @@ internal static partial class AssemblyProviderConfiguration
 
         foreach (var item in data.WithAttributeFilters)
         {
-            if (findType(assemblySymbols, compilation, item.Assembly, item.Attribute) is not {} type) continue;
+            if (findType(assemblySymbols, compilation, item.Assembly, item.Attribute) is not { } type) continue;
             if (item.UnboundGenericType) type = type.ConstructUnboundGenericType();
             descriptors.Add(item.Include ? new WithAttributeFilterDescriptor(type) : new WithoutAttributeFilterDescriptor(type));
         }
@@ -365,7 +365,7 @@ internal static partial class AssemblyProviderConfiguration
 
         foreach (var item in data.AssignableToTypeFilters)
         {
-            if (findType(assemblySymbols, compilation, item.Assembly, item.Type) is not {} type) continue;
+            if (findType(assemblySymbols, compilation, item.Assembly, item.Type) is not { } type) continue;
             if (item.UnboundGenericType) type = type.ConstructUnboundGenericType();
             descriptors.Add(item.Include ? new AssignableToTypeFilterDescriptor(type) : new NotAssignableToTypeFilterDescriptor(type));
         }
@@ -375,7 +375,7 @@ internal static partial class AssemblyProviderConfiguration
             var filters = ImmutableHashSet.CreateBuilder<INamedTypeSymbol>(SymbolEqualityComparer.Default);
             foreach (var typeData in item.Types)
             {
-                if (findType(assemblySymbols, compilation, typeData.Assembly, typeData.Type) is not {} type) continue;
+                if (findType(assemblySymbols, compilation, typeData.Assembly, typeData.Type) is not { } type) continue;
                 if (typeData.UnboundGenericType) type = type.ConstructUnboundGenericType();
                 filters.Add(type);
             }
@@ -389,7 +389,12 @@ internal static partial class AssemblyProviderConfiguration
 
         return new(data.Filter, descriptors.ToImmutable());
 
-        static INamedTypeSymbol? findType(ImmutableDictionary<string, IAssemblySymbol> assemblySymbols, Compilation compilation, string assemblyName, string typeName)
+        static INamedTypeSymbol? findType(
+            ImmutableDictionary<string, IAssemblySymbol> assemblySymbols,
+            Compilation compilation,
+            string assemblyName,
+            string typeName
+        )
         {
             if (CompiledAssemblyFilter._coreAssemblies.Contains(assemblyName)) return compilation.GetTypeByMetadataName(typeName);
 
