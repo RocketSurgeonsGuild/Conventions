@@ -26,7 +26,7 @@ namespace TestProject.Conventions
                 switch (lineNumber)
                 {
                     // FilePath: Input1.cs Member: Register
-                    case 17:
+                    case 18:
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceAsyncConvention);

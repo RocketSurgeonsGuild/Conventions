@@ -27,7 +27,7 @@ namespace TestProject.Conventions
                 switch (lineNumber)
                 {
                     // FilePath: Input1.cs Member: Register
-                    case 17:
+                    case 18:
                         yield return RocketSurgeryConventionsAbstractions.GetType("EnumPolyfill");
                         yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions);
                         yield return RocketSurgeryConventions.GetType("Microsoft.Extensions.DependencyInjection.LoggingBuilder");

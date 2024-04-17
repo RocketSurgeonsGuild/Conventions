@@ -19,7 +19,7 @@ internal class AlwaysMatchTypeFilter<TSymbol> : ICompiledTypeFilter<TSymbol>
 internal record CompiledAssemblyFilter
     (ImmutableArray<IAssemblyDescriptor> AssemblyDescriptors) : ICompiledTypeFilter<IAssemblySymbol>
 {
-    private static readonly HashSet<string> _coreAssemblies =
+    internal static readonly HashSet<string> _coreAssemblies =
     [
         "mscorlib",
         "netstandard",

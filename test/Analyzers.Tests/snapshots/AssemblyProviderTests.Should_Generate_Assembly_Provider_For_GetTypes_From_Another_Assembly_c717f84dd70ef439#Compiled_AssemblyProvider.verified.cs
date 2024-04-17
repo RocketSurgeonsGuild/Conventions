@@ -26,7 +26,7 @@ namespace TestProject.Conventions
                 switch (lineNumber)
                 {
                     // FilePath: Input1.cs Member: Register
-                    case 17:
+                    case 18:
                         yield return RocketSurgeryConventionsAbstractions.GetType("Polyfill");
                         yield return RocketSurgeryConventions.GetType("System.Runtime.CompilerServices.IsExternalInit");
                         break;

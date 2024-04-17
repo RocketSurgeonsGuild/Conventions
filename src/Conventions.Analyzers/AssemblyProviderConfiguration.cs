@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
 using Rocket.Surgery.Conventions.Support;
+using Compilation = Microsoft.CodeAnalysis.Compilation;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -200,12 +201,14 @@ internal static partial class AssemblyProviderConfiguration
                              WithAttributeFilterDescriptor descriptor => new(
                                  true,
                                  descriptor.Attribute.ContainingAssembly.MetadataName,
-                                 Helpers.GetFullMetadataName(descriptor.Attribute)
+                                 Helpers.GetFullMetadataName(descriptor.Attribute),
+                                 descriptor.Attribute.IsUnboundGenericType
                              ),
                              WithoutAttributeFilterDescriptor descriptor => new WithAttributeData(
                                  false,
                                  descriptor.Attribute.ContainingAssembly.MetadataName,
-                                 Helpers.GetFullMetadataName(descriptor.Attribute)
+                                 Helpers.GetFullMetadataName(descriptor.Attribute),
+                                 descriptor.Attribute.IsUnboundGenericType
                              ),
                              _ => null!,
                          }
@@ -237,12 +240,14 @@ internal static partial class AssemblyProviderConfiguration
                              AssignableToTypeFilterDescriptor descriptor => new(
                                  true,
                                  descriptor.Type.ContainingAssembly.MetadataName,
-                                 Helpers.GetFullMetadataName(descriptor.Type)
+                                 Helpers.GetFullMetadataName(descriptor.Type),
+                                 descriptor.Type.IsUnboundGenericType
                              ),
                              NotAssignableToTypeFilterDescriptor descriptor => new AssignableToTypeData(
                                  false,
                                  descriptor.Type.ContainingAssembly.MetadataName,
-                                 Helpers.GetFullMetadataName(descriptor.Type)
+                                 Helpers.GetFullMetadataName(descriptor.Type),
+                                 descriptor.Type.IsUnboundGenericType
                              ),
                              _ => null!,
                          }
@@ -260,7 +265,9 @@ internal static partial class AssemblyProviderConfiguration
                              AssignableToAnyTypeFilterDescriptor descriptor => new(
                                  true,
                                  descriptor
-                                    .Types.Select(z => new AnyTypeData(z.ContainingAssembly.MetadataName, Helpers.GetFullMetadataName(z)))
+                                    .Types.Select(
+                                         z => new AnyTypeData(z.ContainingAssembly.MetadataName, Helpers.GetFullMetadataName(z), z.IsUnboundGenericType)
+                                     )
                                     .OrderBy(z => z.Assembly)
                                     .ThenBy(z => z.Type)
                                     .ToImmutableArray()
@@ -269,7 +276,7 @@ internal static partial class AssemblyProviderConfiguration
                                  false,
                                  descriptor
                                     .Types
-                                    .Select(z => new AnyTypeData(z.ContainingAssembly.MetadataName, Helpers.GetFullMetadataName(z)))
+                                    .Select(z => new AnyTypeData(z.ContainingAssembly.MetadataName, Helpers.GetFullMetadataName(z), z.IsUnboundGenericType))
                                     .OrderBy(z => z.Assembly)
                                     .ThenBy(z => z.Type)
                                     .ToImmutableArray()
@@ -322,17 +329,31 @@ internal static partial class AssemblyProviderConfiguration
     )
     {
         var descriptors = ImmutableArray.CreateBuilder<ITypeFilterDescriptor>();
-        foreach (var item in data.NamespaceFilters) descriptors.Add(new NamespaceFilterDescriptor(item.Filter, item.Namespaces.ToImmutableHashSet()));
-        foreach (var item in data.NameFilters) descriptors.Add(new NameFilterDescriptor(item.Filter, item.Names.ToImmutableHashSet()));
-        foreach (var item in data.TypeKindFilters) descriptors.Add(new TypeKindFilterDescriptor(item.Include, item.TypeKinds.ToImmutableHashSet()));
-        foreach (var item in data.TypeInfoFilters) descriptors.Add(new TypeInfoFilterDescriptor(item.Include, item.TypeInfos.ToImmutableHashSet()));
+        foreach (var item in data.NamespaceFilters)
+        {
+            descriptors.Add(new NamespaceFilterDescriptor(item.Filter, item.Namespaces.ToImmutableHashSet()));
+        }
+
+        foreach (var item in data.NameFilters)
+        {
+            descriptors.Add(new NameFilterDescriptor(item.Filter, item.Names.ToImmutableHashSet()));
+        }
+
+        foreach (var item in data.TypeKindFilters)
+        {
+            descriptors.Add(new TypeKindFilterDescriptor(item.Include, item.TypeKinds.ToImmutableHashSet()));
+        }
+
+        foreach (var item in data.TypeInfoFilters)
+        {
+            descriptors.Add(new TypeInfoFilterDescriptor(item.Include, item.TypeInfos.ToImmutableHashSet()));
+        }
 
         foreach (var item in data.WithAttributeFilters)
         {
-            foreach (var a in compilation.GetTypesByMetadataName(item.Attribute))
-            {
-                descriptors.Add(item.Include ? new WithAttributeFilterDescriptor(a) : new WithoutAttributeFilterDescriptor(a));
-            }
+            if (findType(assemblySymbols, compilation, item.Assembly, item.Attribute) is not {} type) continue;
+            if (item.UnboundGenericType) type = type.ConstructUnboundGenericType();
+            descriptors.Add(item.Include ? new WithAttributeFilterDescriptor(type) : new WithoutAttributeFilterDescriptor(type));
         }
 
         foreach (var item in data.WithAttributeStringFilters)
@@ -344,21 +365,19 @@ internal static partial class AssemblyProviderConfiguration
 
         foreach (var item in data.AssignableToTypeFilters)
         {
-            foreach (var a in compilation.GetTypesByMetadataName(item.Type))
-            {
-                descriptors.Add(item.Include ? new AssignableToTypeFilterDescriptor(a) : new NotAssignableToTypeFilterDescriptor(a));
-            }
+            if (findType(assemblySymbols, compilation, item.Assembly, item.Type) is not {} type) continue;
+            if (item.UnboundGenericType) type = type.ConstructUnboundGenericType();
+            descriptors.Add(item.Include ? new AssignableToTypeFilterDescriptor(type) : new NotAssignableToTypeFilterDescriptor(type));
         }
 
         foreach (var item in data.AssignableToAnyTypeFilters)
         {
             var filters = ImmutableHashSet.CreateBuilder<INamedTypeSymbol>(SymbolEqualityComparer.Default);
-            foreach (var type in item.Types)
+            foreach (var typeData in item.Types)
             {
-                foreach (var a in compilation.GetTypesByMetadataName(type.Type))
-                {
-                    filters.Add(a);
-                }
+                if (findType(assemblySymbols, compilation, typeData.Assembly, typeData.Type) is not {} type) continue;
+                if (typeData.UnboundGenericType) type = type.ConstructUnboundGenericType();
+                filters.Add(type);
             }
 
             descriptors.Add(
@@ -369,6 +388,19 @@ internal static partial class AssemblyProviderConfiguration
         }
 
         return new(data.Filter, descriptors.ToImmutable());
+
+        static INamedTypeSymbol? findType(ImmutableDictionary<string, IAssemblySymbol> assemblySymbols, Compilation compilation, string assemblyName, string typeName)
+        {
+            if (CompiledAssemblyFilter._coreAssemblies.Contains(assemblyName)) return compilation.GetTypeByMetadataName(typeName);
+
+            if (!assemblySymbols.TryGetValue(assemblyName, out var assembly)
+             || FindTypeVisitor.FindType(compilation, assembly, typeName) is not { } type)
+            {
+                return null;
+            }
+
+            return type;
+        }
     }
 
     [JsonSourceGenerationOptions]
@@ -452,7 +484,9 @@ internal static partial class AssemblyProviderConfiguration
         [property: JsonPropertyName("a")]
         string Assembly,
         [property: JsonPropertyName("b")]
-        string Attribute);
+        string Attribute,
+        [property: JsonPropertyName("u")]
+        bool UnboundGenericType);
 
     internal record WithAttributeStringData
     (
@@ -468,7 +502,9 @@ internal static partial class AssemblyProviderConfiguration
         [property: JsonPropertyName("a")]
         string Assembly,
         [property: JsonPropertyName("t")]
-        string Type);
+        string Type,
+        [property: JsonPropertyName("u")]
+        bool UnboundGenericType);
 
     internal record AssignableToAnyTypeData
     (
@@ -482,7 +518,9 @@ internal static partial class AssemblyProviderConfiguration
         [property: JsonPropertyName("a")]
         string Assembly,
         [property: JsonPropertyName("t")]
-        string Type);
+        string Type,
+        [property: JsonPropertyName("u")]
+        bool UnboundGenericType);
 
 
     internal record NamespaceFilterData

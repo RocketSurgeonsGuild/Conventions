@@ -31,6 +31,7 @@ namespace TestProject.Conventions
                                 break;
                             // FilePath: Input2.cs Member: Register
                             case "Input2.cs":
+                                yield return typeof(global::FluentValidation.AbstractValidator<>).Assembly;
                                 yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationDebugViewContext).Assembly;
                                 yield return typeof(global::Microsoft.Extensions.DependencyInjection.ActivatorUtilities).Assembly;
                                 yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;

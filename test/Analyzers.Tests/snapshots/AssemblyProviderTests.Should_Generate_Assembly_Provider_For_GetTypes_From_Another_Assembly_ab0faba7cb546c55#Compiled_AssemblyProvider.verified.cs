@@ -7,7 +7,6 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 using System.Runtime.Loader;
 
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes","")]
 namespace TestProject.Conventions
 {
     internal sealed partial class Imports
@@ -28,18 +27,21 @@ namespace TestProject.Conventions
                 {
                     // FilePath: Input1.cs Member: Register
                     case 18:
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionDependency");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionOrDelegate");
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyDirection);
-                        yield return typeof(global::Rocket.Surgery.Conventions.HostType);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeInfoFilter);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeKindFilter);
+                        yield return SampleDependencyOne.GetType("Sample.DependencyOne.Example1+Validator");
+                        yield return SampleDependencyThree.GetType("Sample.DependencyThree.Example3+Validator");
+                        yield return SampleDependencyTwo.GetType("Sample.DependencyTwo.Example2+Validator");
                         break;
                 }
             }
 
-            private Assembly _RocketSurgeryConventionsAbstractions;
-            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null"));
+            private Assembly _SampleDependencyOne;
+            private Assembly SampleDependencyOne => _SampleDependencyOne ??= context.LoadFromAssemblyName(new AssemblyName("SampleDependencyOne, Version=version, Culture=neutral, PublicKeyToken=null"));
+
+            private Assembly _SampleDependencyThree;
+            private Assembly SampleDependencyThree => _SampleDependencyThree ??= context.LoadFromAssemblyName(new AssemblyName("SampleDependencyThree, Version=version, Culture=neutral, PublicKeyToken=null"));
+
+            private Assembly _SampleDependencyTwo;
+            private Assembly SampleDependencyTwo => _SampleDependencyTwo ??= context.LoadFromAssemblyName(new AssemblyName("SampleDependencyTwo, Version=version, Culture=neutral, PublicKeyToken=null"));
         }
     }
 }

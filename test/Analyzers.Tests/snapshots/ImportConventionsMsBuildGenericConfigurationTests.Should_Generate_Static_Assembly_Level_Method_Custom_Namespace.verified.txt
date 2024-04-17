@@ -11,6 +11,7 @@
     <in-memory assembly>,
     <in-memory assembly>,
     <in-memory assembly>,
+    FluentValidation.dll,
     Microsoft.Extensions.Configuration.Abstractions.dll,
     Microsoft.Extensions.DependencyInjection.Abstractions.dll,
     mscorlib.dll,
