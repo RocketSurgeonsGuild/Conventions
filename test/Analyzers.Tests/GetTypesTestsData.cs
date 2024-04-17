@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
@@ -12,7 +13,10 @@ public class GetTypesTestsData
     public static IEnumerable<object[]> GetTypesData()
     {
         // ReSharper disable RedundantNameQualifier
-
+        yield return TestMethod(z => z
+                                    .FromAssemblyDependenciesOf<IValidator>()
+                                    .GetTypes(x => x.NotInfoOf(TypeInfoFilter.Abstract).AssignableTo(typeof(AbstractValidator<>))));
+yield break;
 
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.StartsWith("IService")));
         yield return TestMethod(z => z.FromAssemblyOf<IConvention>().GetTypes(x => x.StartsWith("S").EndsWith("Convention")));

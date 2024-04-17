@@ -129,6 +129,7 @@ public class TestConvention2 : IServiceAsyncConvention {
                                using Rocket.Surgery.Conventions.Reflection;
                                using Microsoft.Extensions.Configuration;
                                using Microsoft.Extensions.DependencyInjection;
+                               using FluentValidation;
                                using System.ComponentModel;
                                using System.Threading;
                                using System.Threading.Tasks;
@@ -168,6 +169,7 @@ public class TestConvention2 : IServiceAsyncConvention {
                               using Rocket.Surgery.Conventions.Reflection;
                               using Microsoft.Extensions.Configuration;
                               using Microsoft.Extensions.DependencyInjection;
+                              using FluentValidation;
                               using System.ComponentModel;
                               using System.Threading;
                               using System.Threading.Tasks;

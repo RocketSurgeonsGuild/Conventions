@@ -18,7 +18,9 @@ internal static class Helpers
             return string.Empty;
         }
 
-        var sb = new StringBuilder(s.MetadataName);
+        var sb =s is INamedTypeSymbol { Arity: > 0, IsUnboundGenericType: true } namedTypeSymbol
+                ? new StringBuilder(namedTypeSymbol.Name + ("<" + (string.Concat(Enumerable.Range(0,3).Select(z => ","))) + ">"))
+            :new StringBuilder(s.MetadataName);
         var last = s;
 
         s = s.ContainingSymbol;
@@ -34,7 +36,7 @@ internal static class Helpers
                 sb.Insert(0, '.');
             }
 
-            sb.Insert(0, s.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+            sb.Insert(0, s.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
             //sb.Insert(0, s.MetadataName);
             s = s.ContainingSymbol;
         }
