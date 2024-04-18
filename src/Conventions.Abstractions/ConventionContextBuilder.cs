@@ -1,3 +1,6 @@
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 #if NET8_0_OR_GREATER
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
@@ -5,9 +8,6 @@ using PropertiesDictionary = System.Collections.Generic.Dictionary<object, objec
 using PropertiesType = System.Collections.Generic.IDictionary<object, object?>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object?>;
 #endif
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions;
 

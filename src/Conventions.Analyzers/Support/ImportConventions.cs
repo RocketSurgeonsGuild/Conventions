@@ -180,7 +180,7 @@ internal static class ImportConventions
                 cu = cu
                    .AddMembers(
                         configurationData is { Namespace: { Length: > 0, } relativeNamespace, }
-                            ? [NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members.ToArray())]
+                            ? [NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members.ToArray()),]
                             : members.ToArray()
                     );
 
@@ -317,7 +317,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, b, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -339,7 +339,7 @@ internal static class ImportConventions
                     cancellationToken
                 );
             }
-
+        
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -365,7 +365,7 @@ internal static class ImportConventions
                     cancellationToken
                 );
             }
-
+        
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -380,8 +380,8 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, (_, _) => ValueTask.CompletedTask, cancellationToken);
             }
-
-
+        
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -398,7 +398,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -415,7 +415,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -432,7 +432,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -443,7 +443,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -453,7 +453,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, CancellationToken.None);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -463,7 +463,7 @@ internal static class ImportConventions
             {
                 return ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -481,7 +481,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -499,7 +499,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -517,7 +517,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -534,7 +534,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>

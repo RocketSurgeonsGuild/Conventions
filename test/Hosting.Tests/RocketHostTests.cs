@@ -21,8 +21,8 @@ public class RocketHostTests
     public async Task Creates_RocketHost_ForAssemblies()
     {
         using var host = await Host
-                        .CreateApplicationBuilder()
-                        .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }));
+                              .CreateApplicationBuilder()
+                              .LaunchWith(RocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }));
         host.Should().BeAssignableTo<IHost>();
     }
 
@@ -30,8 +30,8 @@ public class RocketHostTests
     public async Task Creates_RocketHost_WithConfiguration()
     {
         using var host = await Host
-                        .CreateApplicationBuilder()
-                        .LaunchWith(RocketBooster.For(Imports.Instance));
+                              .CreateApplicationBuilder()
+                              .LaunchWith(RocketBooster.For(Imports.Instance));
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -42,11 +42,11 @@ public class RocketHostTests
     public async Task Creates_RocketHost_WithModifiedConfiguration_Json()
     {
         using var host = await Host
-                        .CreateApplicationBuilder()
-                        .LaunchWith(
-                             RocketBooster.For(Imports.Instance),
-                             z => z.ExceptConvention(typeof(YamlConvention))
-                         );
+                              .CreateApplicationBuilder()
+                              .LaunchWith(
+                                   RocketBooster.For(Imports.Instance),
+                                   z => z.ExceptConvention(typeof(YamlConvention))
+                               );
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
@@ -58,11 +58,11 @@ public class RocketHostTests
     public async Task Creates_RocketHost_WithModifiedConfiguration_Yaml()
     {
         using var host = await Host
-                        .CreateApplicationBuilder()
-                        .LaunchWith(
-                             RocketBooster.For(Imports.Instance),
-                             z => z.ExceptConvention(typeof(JsonConvention))
-                         );
+                              .CreateApplicationBuilder()
+                              .LaunchWith(
+                                   RocketBooster.For(Imports.Instance),
+                                   z => z.ExceptConvention(typeof(JsonConvention))
+                               );
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 

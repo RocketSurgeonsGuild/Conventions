@@ -57,8 +57,8 @@ public class CommandLineBuilderTests : AutoFakeTest
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
         using var host = await Host
-                            .CreateApplicationBuilder(new[] { "remote", "add", "-v", })
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(new[] { "remote", "add", "-v", })
+                              .ConfigureRocketSurgery(builder);
         await host.StartAsync();
         host.Services.GetService<ConsoleResult>().Should().BeNull();
     }
@@ -78,8 +78,8 @@ public class CommandLineBuilderTests : AutoFakeTest
                           }
                       );
         using var host = await Host
-                            .CreateApplicationBuilder(new[] { "remote", "add", "-v", })
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(new[] { "remote", "add", "-v", })
+                              .ConfigureRocketSurgery(builder);
         ( await host.RunConsoleAppAsync() ).Should().Be(0);
     }
 
@@ -95,8 +95,8 @@ public class CommandLineBuilderTests : AutoFakeTest
         );
 
         using var host = await Host
-                            .CreateApplicationBuilder(new[] { "test", })
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(new[] { "test", })
+                              .ConfigureRocketSurgery(builder);
 
         ( await host.RunConsoleAppAsync() ).Should().Be((int)LogLevel.Information);
     }
@@ -130,8 +130,8 @@ public class CommandLineBuilderTests : AutoFakeTest
             }
         );
         using var host = await Host
-                            .CreateApplicationBuilder(new[] { "test", "--log", "error", })
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(new[] { "test", "--log", "error", })
+                              .ConfigureRocketSurgery(builder);
 
         var result = await host.RunConsoleAppAsync();
 
@@ -170,21 +170,21 @@ public class CommandLineBuilderTests : AutoFakeTest
 
         builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
         using var host = await Host
-                            .CreateApplicationBuilder(
-                                 new[]
-                                 {
-                                     "cwv",
-                                     "--api-domain",
-                                     "mydomain.com",
-                                     "--origin",
-                                     "origin1",
-                                     "--origin",
-                                     "origin2",
-                                     "--client-name",
-                                     "client1",
-                                 }
-                             )
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(
+                                   new[]
+                                   {
+                                       "cwv",
+                                       "--api-domain",
+                                       "mydomain.com",
+                                       "--origin",
+                                       "origin1",
+                                       "--origin",
+                                       "origin2",
+                                       "--client-name",
+                                       "client1",
+                                   }
+                               )
+                              .ConfigureRocketSurgery(builder);
         await host.RunAsync(
         );
     }
@@ -217,8 +217,8 @@ public class CommandLineBuilderTests : AutoFakeTest
                      .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"));
 
         using var host = await Host
-                            .CreateApplicationBuilder(new[] { "logger", })
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(new[] { "logger", })
+                              .ConfigureRocketSurgery(builder);
 
         var result = await host.RunConsoleAppAsync();
         result.Should().Be(0);
@@ -256,8 +256,8 @@ public class CommandLineBuilderTests : AutoFakeTest
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
         using var host = await Host
-                            .CreateApplicationBuilder(new[] { "test", command, })
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(new[] { "test", command, })
+                              .ConfigureRocketSurgery(builder);
 
         var result = (LogLevel)await host.RunConsoleAppAsync();
         result.Should().Be(level);
@@ -281,8 +281,8 @@ public class CommandLineBuilderTests : AutoFakeTest
         );
 
         using var host = await Host
-                            .CreateApplicationBuilder(new[] { "test", }.Concat(command.Split(' ')).ToArray())
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(new[] { "test", }.Concat(command.Split(' ')).ToArray())
+                              .ConfigureRocketSurgery(builder);
 
         var result = (LogLevel)await host.RunConsoleAppAsync();
         result.Should().Be(level);
@@ -328,8 +328,8 @@ public class CommandLineBuilderTests : AutoFakeTest
         );
 
         using var host = await Host
-                            .CreateApplicationBuilder(command.Split(' ').ToArray())
-                            .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(command.Split(' ').ToArray())
+                              .ConfigureRocketSurgery(builder);
         var result = await host.RunConsoleAppAsync();
         result.Should().BeGreaterOrEqualTo(0);
     }

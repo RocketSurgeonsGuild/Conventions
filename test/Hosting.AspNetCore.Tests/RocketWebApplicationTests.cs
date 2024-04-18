@@ -60,8 +60,8 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     public async Task Creates_RocketHost_WithConfiguration()
     {
         await using var host = await WebApplication
-                        .CreateBuilder()
-                        .LaunchWith(RocketBooster.For(Imports.Instance));
+                                    .CreateBuilder()
+                                    .LaunchWith(RocketBooster.For(Imports.Instance));
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);

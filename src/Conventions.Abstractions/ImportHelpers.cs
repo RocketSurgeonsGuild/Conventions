@@ -22,7 +22,7 @@ public static class ImportHelpers
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static IConventionFactory? CallerConventions(Assembly callerAssembly)
     {
-        return Assembly.GetEntryAssembly() is not { } entryAssembly  || callerAssembly == entryAssembly || externalConventions == null
+        return Assembly.GetEntryAssembly() is not { } entryAssembly || callerAssembly == entryAssembly || externalConventions == null
             ? null
             : entryAssembly.GetCustomAttribute<ImportsTypeAttribute>()?.Type is { } executingImportsType
          && Activator.CreateInstance(executingImportsType) is IConventionFactory imports

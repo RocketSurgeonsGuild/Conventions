@@ -4,10 +4,8 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Hosting;
 
 #pragma warning disable CA1822

@@ -19,7 +19,10 @@ public static partial class Program
         return await ( await CreateHostBuilder(args) ).RunConsoleAppAsync();
     }
 
-    public static async Task<IHost> CreateHostBuilder(string[] args) => await Host.CreateApplicationBuilder(args).LaunchWith(RocketBooster.For(Imports.Instance));
+    public static async Task<IHost> CreateHostBuilder(string[] args)
+    {
+        return await Host.CreateApplicationBuilder(args).LaunchWith(RocketBooster.For(Imports.Instance));
+    }
 }
 
 [ExportConvention]

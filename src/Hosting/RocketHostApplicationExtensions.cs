@@ -2,13 +2,9 @@ using System.ComponentModel;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
-using AppDelegate =
-    System.Func<Microsoft.Extensions.Hosting.IHostApplicationBuilder, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.ConventionContextBuilder>>;
 
 #pragma warning disable CA1031
 #pragma warning disable CA2000

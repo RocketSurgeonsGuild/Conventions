@@ -4,7 +4,7 @@ using Rocket.Surgery.WebAssembly.Hosting;
 using Sample.BlazorWasm;
 
 var builder = WebAssemblyHostBuilder
-                   .CreateDefault(args);
+   .CreateDefault(args);
 //                   .ConfigureRocketSurgery(provider => Enumerable.Empty<IConventionWithDependencies>());
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");

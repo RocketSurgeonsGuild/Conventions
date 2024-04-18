@@ -200,8 +200,8 @@ public class DryIocCommandLineTests : AutoFakeTest
     public async Task Should_Integrate_With_DryIoc()
     {
         using var host = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(rb => rb.UseDryIoc());
+                              .CreateApplicationBuilder(Array.Empty<string>())
+                              .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         host.Services.GetRequiredService<IContainer>().Should().NotBeNull();
     }

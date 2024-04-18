@@ -3,7 +3,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
@@ -17,20 +16,20 @@ public class DryIocWebApplicationTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
         await using var host = await WebApplication
-                                       .CreateBuilder()
-                                       .ConfigureRocketSurgery(
-                                            rb => rb
-                                                 .UseDryIoc()
-                                                 .DisableConventionAttributes()
-                                                 .ConfigureDryIoc(
-                                                      (conventionContext, configuration, services, container) =>
-                                                      {
-                                                          container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
-                                                          services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
-                                                          return container;
-                                                      }
-                                                  )
-                                        );
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseDryIoc()
+                                              .DisableConventionAttributes()
+                                              .ConfigureDryIoc(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
+                                                       services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
+                                                       return container;
+                                                   }
+                                               )
+                                     );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefault).Should().NotBeNull();
@@ -43,21 +42,21 @@ public class DryIocWebApplicationTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithApplication()
     {
         await using var host = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
-                                              services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
-                                              container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
-                                              return container;
-                                          }
-                                      )
-                            );
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseDryIoc()
+                                              .DisableConventionAttributes()
+                                              .ConfigureDryIoc(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
+                                                       services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
+                                                       container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
+                                                       return container;
+                                                   }
+                                               )
+                                     );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefault).Should().NotBeNull();
@@ -70,20 +69,20 @@ public class DryIocWebApplicationTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithSystem()
     {
         await using var host = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<DryIocFixtures.IAbc3>());
-                                              container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
-                                              return container;
-                                          }
-                                      )
-                            );
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseDryIoc()
+                                              .DisableConventionAttributes()
+                                              .ConfigureDryIoc(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<DryIocFixtures.IAbc3>());
+                                                       container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
+                                                       return container;
+                                                   }
+                                               )
+                                     );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefault).Should().NotBeNull();
@@ -94,20 +93,20 @@ public class DryIocWebApplicationTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         await using var host = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
-                                              services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
-                                              return container;
-                                          }
-                                      )
-                            );
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseDryIoc()
+                                              .DisableConventionAttributes()
+                                              .ConfigureDryIoc(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
+                                                       services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
+                                                       return container;
+                                                   }
+                                               )
+                                     );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
 
@@ -122,21 +121,21 @@ public class DryIocWebApplicationTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         await using var host = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.Use(A.Fake<DryIocFixtures.IAbc>());
-                                              services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
-                                              container.Use(A.Fake<DryIocFixtures.IAbc4>());
-                                              return container;
-                                          }
-                                      )
-                            );
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseDryIoc()
+                                              .DisableConventionAttributes()
+                                              .ConfigureDryIoc(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.Use(A.Fake<DryIocFixtures.IAbc>());
+                                                       services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
+                                                       container.Use(A.Fake<DryIocFixtures.IAbc4>());
+                                                       return container;
+                                                   }
+                                               )
+                                     );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         var sp = items.Resolve<IServiceProvider>();
@@ -150,20 +149,20 @@ public class DryIocWebApplicationTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         await using var host = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .DisableConventionAttributes()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<DryIocFixtures.IAbc3>());
-                                              container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
-                                              return container;
-                                          }
-                                      )
-                            );
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseDryIoc()
+                                              .DisableConventionAttributes()
+                                              .ConfigureDryIoc(
+                                                   (conventionContext, configuration, services, container) =>
+                                                   {
+                                                       container.RegisterInstance(A.Fake<DryIocFixtures.IAbc3>());
+                                                       container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
+                                                       return container;
+                                                   }
+                                               )
+                                     );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         var sp = items.Resolve<IServiceProvider>();
@@ -175,14 +174,14 @@ public class DryIocWebApplicationTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
         await using var host = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) => { return container; }
-                                      )
-                            );
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseDryIoc()
+                                              .ConfigureDryIoc(
+                                                   (conventionContext, configuration, services, container) => { return container; }
+                                               )
+                                     );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
@@ -195,14 +194,14 @@ public class DryIocWebApplicationTests : AutoFakeTest
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
     {
         await using var host = await WebApplication
-                           .CreateBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                     .UseDryIoc()
-                                     .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) => { return container; }
-                                      )
-                            );
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseDryIoc()
+                                              .ConfigureDryIoc(
+                                                   (conventionContext, configuration, services, container) => { return container; }
+                                               )
+                                     );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
@@ -216,8 +215,9 @@ public class DryIocWebApplicationTests : AutoFakeTest
     [Fact]
     public async Task Should_Integrate_With_DryIoc()
     {
-        await using var host = await WebApplication.CreateBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(rb => rb.UseDryIoc());
+        await using var host = await WebApplication
+                                    .CreateBuilder(Array.Empty<string>())
+                                    .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         await host.StartAsync();
         var container = host.Services.GetRequiredService<IContainer>();
