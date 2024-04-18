@@ -61,7 +61,7 @@ internal static class AssemblyCollection
                         Token(SyntaxKind.PartialKeyword)
                     )
                 )
-               .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any()), assemblyProvider);
+               .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.IsTestProject), assemblyProvider);
 
         cu = cu
            .AddMembers(
@@ -263,7 +263,7 @@ internal static class AssemblyCollection
                );
     }
 
-    private static MethodDeclarationSyntax GetAssembliesProviderMethod(bool hasPrivateAssemblies)
+    private static MethodDeclarationSyntax GetAssembliesProviderMethod(bool hasPrivateAssemblies, bool referencesXUnit)
     {
         ArgumentSyntax[] args = hasPrivateAssemblies
             ?
@@ -281,26 +281,55 @@ internal static class AssemblyCollection
             ]
             : [];
 
-        return MethodDeclaration(IdentifierName("IAssemblyProvider"), Identifier("CreateAssemblyProvider"))
-              .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-              .WithLeadingTrivia(
-                   TriviaList(
-                       Trivia(
-                           PragmaWarningDirectiveTrivia(
-                                   Token(SyntaxKind.DisableKeyword),
-                                   true
-                               )
-                              .WithErrorCodes(
-                                   SingletonSeparatedList<ExpressionSyntax>(
-                                       IdentifierName("CA1822")
-                                   )
-                               )
-                       )
-                   )
-               )
-              .WithParameterList(ParameterList(SingletonSeparatedList(Parameter(Identifier("builder")).WithType(IdentifierName("ConventionContextBuilder")))))
-              .WithExpressionBody(ArrowExpressionClause(ObjectCreationExpression(IdentifierName("AssemblyProvider")).AddArgumentListArguments(args)))
-              .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        var method = MethodDeclaration(IdentifierName("IAssemblyProvider"), Identifier("CreateAssemblyProvider"))
+                    .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                    .WithLeadingTrivia(
+                         TriviaList(
+                             Trivia(
+                                 PragmaWarningDirectiveTrivia(
+                                         Token(SyntaxKind.DisableKeyword),
+                                         true
+                                     )
+                                    .WithErrorCodes(
+                                         SingletonSeparatedList<ExpressionSyntax>(
+                                             IdentifierName("CA1822")
+                                         )
+                                     )
+                             )
+                         )
+                     )
+                    .WithParameterList(
+                         ParameterList(SingletonSeparatedList(Parameter(Identifier("builder")).WithType(IdentifierName("ConventionContextBuilder"))))
+                     );
+
+        if (!referencesXUnit)
+        {
+            return method
+                  .WithExpressionBody(ArrowExpressionClause(ObjectCreationExpression(IdentifierName("AssemblyProvider")).AddArgumentListArguments(args)))
+                  .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        }
+
+        return method.WithBody(
+            Block(
+                ExpressionStatement(
+                    InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("builder"), IdentifierName("Set")))
+                       .WithArgumentList(
+                            ArgumentList(
+                                SingletonSeparatedList(
+                                    Argument(
+                                        MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            IdentifierName("HostType"),
+                                            IdentifierName("UnitTest")
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                ),
+                ReturnStatement(ObjectCreationExpression(IdentifierName("AssemblyProvider")).AddArgumentListArguments(args))
+            )
+        );
     }
 
     public record CollectRequest
@@ -308,7 +337,8 @@ internal static class AssemblyCollection
         Compilation Compilation,
         ConventionConfigurationData ImportConfiguration,
         ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetAssemblies,
-        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetTypes
+        ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetTypes,
+        bool IsTestProject
     );
 
     public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);

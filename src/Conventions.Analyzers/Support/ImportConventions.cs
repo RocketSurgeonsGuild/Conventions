@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Text;
+﻿using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,18 +14,17 @@ internal static class ImportConventions
         Request request
     )
     {
-        ( var compilation, var importCandidates, var hasExports, var importConfiguration, var exportConfiguration ) = request;
-        var references = getReferences(compilation, hasExports && exportConfiguration.Assembly, exportConfiguration);
+        var references = getReferences(request.Compilation, request is { HasExports: true, ExportConfiguration.Assembly: true }, request.ExportConfiguration);
 
         var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
 
-        addAssemblySource(context, compilation, functionBody, importConfiguration);
+        addAssemblySource(context, functionBody, request.ImportConfiguration, request.IsTestProject);
 
         static void addAssemblySource(
             SourceProductionContext context,
-            Compilation compilation,
             BlockSyntax syntax,
-            ConventionConfigurationData configurationData
+            ConventionConfigurationData configurationData,
+            bool referencesXUnit
         )
         {
             var members =
@@ -102,24 +100,8 @@ internal static class ImportConventions
                            .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"))
                     );
 
-            var referencesXunit = compilation
-                                 .References
-                                 .Select(compilation.GetAssemblyOrModuleSymbol)
-                                 .Concat(
-                                      [compilation.Assembly,]
-                                  )
-                                 .Select(
-                                      symbol =>
-                                      {
-                                          if (symbol is IAssemblySymbol assemblySymbol)
-                                              return assemblySymbol;
-                                          if (symbol is IModuleSymbol moduleSymbol) return moduleSymbol.ContainingAssembly;
-                                          // ReSharper disable once NullableWarningSuppressionIsUsed
-                                          return null!;
-                                      }
-                                  )
-                                 .Any(z => z is { MetadataName: "xunit.core", });
-            if (referencesXunit)
+
+            if (referencesXUnit)
             {
                 members = members.AddMembers(
                     MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier("Init"))
@@ -278,8 +260,8 @@ internal static class ImportConventions
     public record Request
     (
         Compilation Compilation,
-        ImmutableArray<SyntaxNode> ImportCandidates,
         bool HasExports,
+        bool IsTestProject,
         ConventionConfigurationData ImportConfiguration,
         ConventionConfigurationData ExportConfiguration
     );

@@ -338,7 +338,6 @@ public static class RocketWebAssemblyExtensions
     )
     {
         conventionContext
-           .AddIfMissing(AssemblyLoadContext.Default)
            .AddIfMissing(builder)
            .AddIfMissing(builder.GetType(), builder)
            .AddIfMissing<IConfiguration>(builder.Configuration)

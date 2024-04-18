@@ -316,7 +316,6 @@ public static class RocketHostApplicationExtensions
         contextBuilder.Properties["__configured__"] = true;
 
         contextBuilder
-           .AddIfMissing(AssemblyLoadContext.Default)
            .AddIfMissing(builder)
            .AddIfMissing(builder.GetType(), builder)
            .AddIfMissing(builder.Configuration)

@@ -1,3 +1,4 @@
+using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions.Extensions;
@@ -31,6 +32,7 @@ public sealed class ConventionContext : IConventionContext
 
     private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
     {
+        builder.AddIfMissing(AssemblyLoadContext.Default);
         // ReSharper disable once NullableWarningSuppressionIsUsed
         var assemblyProvider = builder._conventionProviderFactory!.CreateAssemblyProvider(builder);
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyProvider, builder.Get<ILogger>());

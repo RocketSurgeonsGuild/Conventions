@@ -21,8 +21,10 @@ using Rocket.Surgery.Conventions;
         await Verify(result);
     }
 
-    [Fact]
-    public async Task Should_Generate_Static_Assembly_Initializer_When_xunit_is_referenced()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Should_Generate_Static_Assembly_Initializer_When_xunit_is_referenced(bool isTestProject)
     {
         var result = await WithGenericSharedDeps()
                           .AddSources(
@@ -32,11 +34,11 @@ using Rocket.Surgery.Conventions;
 [assembly: ImportConventions]
 "
                            )
-                          .AddReferences(typeof(FactAttribute))
+                          .AddGlobalOption("build_property.IsTestProject", isTestProject ? "true" : "false")
                           .Build()
                           .GenerateAsync();
 
-        await Verify(result);
+        await Verify(result).UseParameters(isTestProject);
     }
 
     [Fact]
