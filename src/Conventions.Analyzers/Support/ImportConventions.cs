@@ -184,24 +184,27 @@ internal static class ImportConventions
                             : members.ToArray()
                     );
 
-                if (compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.WebApplicationBuilder") is { })
+                if (compilation.GetTypeByMetadataName("Rocket.Surgery.Hosting.RocketHostApplicationExtensions") is { })
                 {
-                    context.AddSource(
-                        "Generated_WebApplicationBuilder_Extensions.cs",
-                        _configurationMethods
-                           .Replace("{BuilderType}", "Microsoft.AspNetCore.Builder.WebApplicationBuilder")
-                           .Replace("{ReturnType}", "Microsoft.AspNetCore.Builder.WebApplication")
-                    );
-                }
+                    if (compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.WebApplicationBuilder") is { })
+                    {
+                        context.AddSource(
+                            "Generated_WebApplicationBuilder_Extensions.cs",
+                            _configurationMethods
+                               .Replace("{BuilderType}", "Microsoft.AspNetCore.Builder.WebApplicationBuilder")
+                               .Replace("{ReturnType}", "Microsoft.AspNetCore.Builder.WebApplication")
+                        );
+                    }
 
-                if (compilation.GetTypeByMetadataName("Microsoft.Extensions.Hosting.HostApplicationBuilder") is { })
-                {
-                    context.AddSource(
-                        "Generated_HostApplicationBuilder_Extensions.cs",
-                        _configurationMethods
-                           .Replace("{BuilderType}", "Microsoft.Extensions.Hosting.HostApplicationBuilder")
-                           .Replace("{ReturnType}", "Microsoft.Extensions.Hosting.IHost")
-                    );
+                    if (compilation.GetTypeByMetadataName("Microsoft.Extensions.Hosting.HostApplicationBuilder") is { })
+                    {
+                        context.AddSource(
+                            "Generated_HostApplicationBuilder_Extensions.cs",
+                            _configurationMethods
+                               .Replace("{BuilderType}", "Microsoft.Extensions.Hosting.HostApplicationBuilder")
+                               .Replace("{ReturnType}", "Microsoft.Extensions.Hosting.IHost")
+                        );
+                    }
                 }
             }
 
@@ -226,8 +229,7 @@ internal static class ImportConventions
                                var configuredMetadata =
                                    string.IsNullOrWhiteSpace(data.Namespace)
                                        ? symbol.GetTypeByMetadataName(data.ClassName)
-                                       : symbol.GetTypeByMetadataName($"{data.Namespace}.Conventions.{data.ClassName}")
-                                    ?? symbol.GetTypeByMetadataName($"{data.Namespace}.{data.ClassName}");
+                                       : symbol.GetTypeByMetadataName($"{data.Namespace}.{data.ClassName}");
                                if (configuredMetadata is { })
                                {
                                    return configuredMetadata.ToDisplayString() + $".{data.MethodName}";
@@ -283,7 +285,6 @@ internal static class ImportConventions
     private static readonly string _configurationMethods = """"
         using Microsoft.Extensions.Configuration;
         using Microsoft.Extensions.DependencyInjection;
-        using Microsoft.Extensions.DependencyModel;
         using Microsoft.Extensions.Hosting;
         using Microsoft.Extensions.Logging;
         using Rocket.Surgery.Conventions;
@@ -313,7 +314,7 @@ internal static class ImportConventions
                 if (func == null) throw new ArgumentNullException(nameof(func));
                 var b = await func(builder, cancellationToken);
                 await action.Invoke(b, cancellationToken);
-                await Configure(builder, b, cancellationToken);
+                await RocketHostApplicationExtensions.Configure(builder, b, cancellationToken);
                 return builder.Build();
             }
 

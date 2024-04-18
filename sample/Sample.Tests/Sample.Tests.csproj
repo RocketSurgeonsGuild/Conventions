@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <ImportConventions>true</ImportConventions>
+        <ImportConventionsAssembly>true</ImportConventionsAssembly>
     </PropertyGroup>
 
     <ItemGroup>

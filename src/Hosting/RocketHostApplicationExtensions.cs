@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
@@ -24,10 +25,13 @@ public static class RocketHostApplicationExtensions
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(IHostApplicationBuilder builder)
     {
-        return builder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var conventionContextBuilder)
+        var contextBuilder = builder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var conventionContextBuilder)
          && conventionContextBuilder is ConventionContextBuilder b
                 ? b
                 : new(new Dictionary<object, object>());
+        return ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
+            ? contextBuilder.UseConventionFactory(impliedFactory)
+            : contextBuilder;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]

@@ -62,11 +62,9 @@ public class Benchmarks
     [Benchmark]
     public async Task Rocket_Surgery_Hosting_Application()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(z => z.UseDependencyContext(DependencyContext.Default!));
+        var builder = Host.CreateApplicationBuilder(Array.Empty<string>());
         builder.Logging.ClearProviders();
-        var host = builder.Build();
+        var host = await builder.ConfigureRocketSurgery(Imports.Instance);
         await host.StartAsync().ConfigureAwait(false);
         await host.StopAsync().ConfigureAwait(false);
     }
@@ -86,13 +84,10 @@ public class Benchmarks
     [Benchmark]
     public async Task Rocket_Surgery_Hosting_Application_With_Service()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(z => z.UseDependencyContext(DependencyContext.Default!));
-        builder.Logging.ClearProviders();
+        var builder = Host.CreateApplicationBuilder(Array.Empty<string>());
         builder.Services.AddHostedService<HostedService>();
-        var host = builder.Build();
-
+        builder.Logging.ClearProviders();
+        var host = await builder.ConfigureRocketSurgery(Imports.Instance);
         await host.StartAsync().ConfigureAwait(false);
         await host.StopAsync().ConfigureAwait(false);
     }

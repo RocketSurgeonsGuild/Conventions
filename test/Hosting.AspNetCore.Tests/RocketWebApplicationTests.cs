@@ -44,7 +44,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         await using var host = await WebApplication
                                     .CreateBuilder()
                                     .LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
-        host.Should().BeAssignableTo<WebApplicationBuilder>();
+        host.Should().BeAssignableTo<WebApplication>();
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         await using var host = await WebApplication
                                     .CreateBuilder()
                                     .LaunchWith(RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }));
-        host.Should().BeAssignableTo<WebApplicationBuilder>();
+        host.Should().BeAssignableTo<WebApplication>();
     }
 
     [Fact]
