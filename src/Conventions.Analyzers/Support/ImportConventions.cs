@@ -14,7 +14,7 @@ internal static class ImportConventions
         Request request
     )
     {
-        var references = getReferences(request.Compilation, request is { HasExports: true, ExportConfiguration.Assembly: true }, request.ExportConfiguration);
+        var references = getReferences(request.Compilation, request is { HasExports: true, ExportConfiguration.Assembly: true, }, request.ExportConfiguration);
 
         var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
 

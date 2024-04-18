@@ -92,7 +92,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
         var isTestProject = context.AnalyzerConfigOptionsProvider
                                    .Select(
-                                        (provider, _) => provider.GlobalOptions.TryGetValue($"build_property.IsTestProject", out var value)
+                                        (provider, _) => provider.GlobalOptions.TryGetValue("build_property.IsTestProject", out var value)
                                          && bool.TryParse(value, out var v)
                                          && v
                                     );
