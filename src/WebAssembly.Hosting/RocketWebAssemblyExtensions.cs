@@ -270,7 +270,7 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
-        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object>()).UseConvetionFactory(getConventions);
+        var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object>()).UseConventionFactory(getConventions);
         await Configure(builder, await ConventionContext.FromAsync(contextBuilder, cancellationToken), cancellationToken);
         return builder.Build();
     }

@@ -16,19 +16,20 @@ using AppDelegate =
 // ReSharper disable once CheckNamespace
 namespace Rocket.Surgery.Hosting;
 
-/// <summary>
-///     Class RocketHostExtensions.
-/// </summary>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 [PublicAPI]
+[EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketHostApplicationExtensions
 {
-    /// <summary>
-    ///     Gets the or create builder.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="contextBuilder"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns>RocketHostBuilder.</returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static ConventionContextBuilder GetExisting(IHostApplicationBuilder builder)
+    {
+        return builder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var conventionContextBuilder)
+         && conventionContextBuilder is ConventionContextBuilder b
+                ? b
+                : new(new Dictionary<object, object>());
+    }
+
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static async ValueTask Configure(
         IHostApplicationBuilder builder,

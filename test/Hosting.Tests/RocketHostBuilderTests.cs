@@ -14,83 +14,77 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.Tests;
 
-public partial class RocketHostBuilderTests : AutoFakeTest
+public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
 {
     [Fact]
     public async Task Should_UseAppDomain()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder()
-                           .ConfigureRocketSurgery(
-                                rb => rb
-                                   .UseAppDomain(AppDomain.CurrentDomain)
-                            );
+        using var host = await Host
+                                    .CreateApplicationBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                            .UseAppDomain(AppDomain.CurrentDomain)
+                                     );
 
-        var host = builder.Build();
         host.Services.Should().NotBeNull();
     }
 
     [Fact]
     public async Task Should_UseAssemblies()
     {
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
                                    .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
                             );
 
-        var host = builder.Build();
         host.Services.Should().NotBeNull();
     }
 
     [Fact]
     public async Task Should_UseRocketBooster()
     {
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .UseRocketBooster(RocketBooster.For(AppDomain.CurrentDomain));
 
-        var host = builder.Build();
         host.Services.Should().NotBeNull();
     }
 
     [Fact]
     public async Task Should_UseRocketBooster_With_Conventions()
     {
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .UseRocketBooster(RocketBooster.For(Imports.Instance));
 
-        var host = builder.Build();
         host.Services.Should().NotBeNull();
     }
 
     [Fact]
     public async Task Should_UseDiagnosticLogging()
     {
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .UseRocketBooster(
                                 RocketBooster.For(AppDomain.CurrentDomain),
                                 x => x.UseDiagnosticLogging(c => c.AddConsole())
                             );
 
-        var host = builder.Build();
         host.Services.Should().NotBeNull();
     }
 
     [Fact]
     public async Task Should_UseDependencyContext()
     {
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
                                    .UseDependencyContext(DependencyContext.Default!)
                             );
 
-        var host = builder.Build();
         host.Services.Should().NotBeNull();
     }
 
@@ -98,7 +92,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
     public async Task Should_ConfigureServices()
     {
         var convention = A.Fake<ServiceConvention>();
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
@@ -106,7 +100,6 @@ public partial class RocketHostBuilderTests : AutoFakeTest
                                      .ConfigureServices(convention)
                             );
 
-        builder.Build();
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IServiceCollection>._)).MustHaveHappened();
     }
 
@@ -114,15 +107,14 @@ public partial class RocketHostBuilderTests : AutoFakeTest
     public async Task Should_ConfigureConfiguration()
     {
         var convention = A.Fake<ConfigurationConvention>();
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
-                                     .UseConvetionFactory(Imports.Instance)
+                                     .UseConventionFactory(Imports.Instance)
                                      .ConfigureConfiguration(convention)
                             );
 
-        builder.Build();
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IConfigurationBuilder>._)).MustHaveHappened();
     }
 
@@ -130,7 +122,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
     public async Task Should_ConfigureHosting()
     {
         var convention = A.Fake<HostApplicationConvention>();
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
@@ -138,7 +130,6 @@ public partial class RocketHostBuilderTests : AutoFakeTest
                                      .ConfigureApplication(convention)
                             );
 
-        builder.Build();
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
     }
 
@@ -146,7 +137,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
     public async Task Should_ConfigureLogging()
     {
         var convention = A.Fake<LoggingConvention>();
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
@@ -154,25 +145,23 @@ public partial class RocketHostBuilderTests : AutoFakeTest
                                      .ConfigureLogging(convention)
                             );
 
-        builder.Build();
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<ILoggingBuilder>._)).MustHaveHappened();
     }
 
     [Fact]
     public async Task Should_Build_The_Host_Correctly()
     {
-        var builder = await Host
+        using var host = await Host
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery();
 
-        var host = builder.Build();
         host.Services.Should().NotBeNull();
     }
 
 //    [Fact]
 //    public async Task Should_Run_Rocket_CommandLine()
 //    {
-//        var builder = Host.CreateApplicationBuilder(Array.Empty<string>())
+//        using var host = Host.CreateApplicationBuilder(Array.Empty<string>())
 //                          .ConfigureRocketSurgery(
 //                               rb => rb
 //                                  .AppendDelegate(
@@ -187,7 +176,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
 //    [Fact]
 //    public async Task Should_Inject_WebHost_Into_Command()
 //    {
-//        var builder = Host.CreateApplicationBuilder(new[] { "myself" })
+//        using var host = Host.CreateApplicationBuilder(new[] { "myself" })
 //                          .ConfigureRocketSurgery(
 //                               rb => rb
 //                                    .AppendDelegate(new CommandLineConvention((a, c) => c.OnRun(state => 1337)))
@@ -196,6 +185,4 @@ public partial class RocketHostBuilderTests : AutoFakeTest
 //
 //        ( await builder.RunCli() ).Should().Be(1234);
 //    }
-
-    public RocketHostBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 }

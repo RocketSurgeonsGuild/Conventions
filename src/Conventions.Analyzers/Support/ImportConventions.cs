@@ -18,10 +18,11 @@ internal static class ImportConventions
 
         var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
 
-        addAssemblySource(context, functionBody, request.ImportConfiguration, request.IsTestProject);
+        addAssemblySource(context, request.Compilation, functionBody, request.ImportConfiguration, request.IsTestProject);
 
         static void addAssemblySource(
             SourceProductionContext context,
+            Compilation compilation,
             BlockSyntax syntax,
             ConventionConfigurationData configurationData,
             bool referencesXUnit
@@ -182,6 +183,26 @@ internal static class ImportConventions
                             ? [NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members.ToArray())]
                             : members.ToArray()
                     );
+
+                if (compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.WebApplicationBuilder") is { })
+                {
+                    context.AddSource(
+                        "Generated_WebApplicationBuilder_Extensions.cs",
+                        _configurationMethods
+                           .Replace("{BuilderType}", "Microsoft.AspNetCore.Builder.WebApplicationBuilder")
+                           .Replace("{ReturnType}", "Microsoft.AspNetCore.Builder.WebApplication")
+                    );
+                }
+
+                if (compilation.GetTypeByMetadataName("Microsoft.Extensions.Hosting.HostApplicationBuilder") is { })
+                {
+                    context.AddSource(
+                        "Generated_HostApplicationBuilder_Extensions.cs",
+                        _configurationMethods
+                           .Replace("{BuilderType}", "Microsoft.Extensions.Hosting.HostApplicationBuilder")
+                           .Replace("{ReturnType}", "Microsoft.Extensions.Hosting.IHost")
+                    );
+                }
             }
 
             context.AddSource(
@@ -260,7 +281,6 @@ internal static class ImportConventions
     }
 
     private static readonly string _configurationMethods = """"
-        using System.ComponentModel;
         using Microsoft.Extensions.Configuration;
         using Microsoft.Extensions.DependencyInjection;
         using Microsoft.Extensions.DependencyModel;
@@ -272,9 +292,8 @@ internal static class ImportConventions
                 System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.ConventionContextBuilder>>;
 
         namespace Rocket.Surgery.Hosting;
-        
-        [PublicAPI]
-        public static class RocketHostApplicationExtensions
+
+        internal static partial class GeneratedRocketHostApplicationExtensions
         {
             /// <summary>
             ///     Uses the rocket booster.
@@ -295,7 +314,7 @@ internal static class ImportConventions
                 var b = await func(builder, cancellationToken);
                 await action.Invoke(b, cancellationToken);
                 await Configure(builder, b, cancellationToken);
-                return builder;
+                return builder.Build();
             }
 
             /// <summary>
@@ -456,10 +475,9 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
-                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                var contextBuilder = new ConventionContextBuilder(builder.Properties!).UseDependencyContext(DependencyContext.Default!);
+                var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
                 action(contextBuilder);
-                await Configure(builder, contextBuilder, cancellationToken);
+                await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
 
@@ -475,10 +493,9 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
-                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                var contextBuilder = new ConventionContextBuilder(builder.Properties!).UseDependencyContext(DependencyContext.Default!);
+                var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
                 await action(contextBuilder);
-                await Configure(builder, contextBuilder, cancellationToken);
+                await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
 
@@ -494,10 +511,9 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
-                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                var contextBuilder = new ConventionContextBuilder(builder.Properties!).UseDependencyContext(DependencyContext.Default!);
+                var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
                 await action(contextBuilder, cancellationToken);
-                await Configure(builder, contextBuilder, cancellationToken);
+                await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
 
@@ -513,8 +529,8 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
-                var contextBuilder = new ConventionContextBuilder(builder.Properties).UseConvetionFactory(getConventions);
-                await Configure(builder, contextBuilder, cancellationToken);
+                var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
+                await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
 
@@ -531,10 +547,8 @@ internal static class ImportConventions
             )
             {
                 if (builder == null) throw new ArgumentNullException(nameof(builder));
-
                 if (conventionContextBuilder == null) throw new ArgumentNullException(nameof(conventionContextBuilder));
-
-                await Configure(builder, conventionContextBuilder, cancellationToken);
+                await RocketHostApplicationExtensions.Configure(builder, conventionContextBuilder, cancellationToken);
                 return builder.Build();
             }
         }

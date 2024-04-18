@@ -12,7 +12,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     [Fact]
     public void ShouldConstruct()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConvetionFactory(Imports.Instance);
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
         scanner.Should().NotBeNull();
     }
 
@@ -20,7 +20,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     public void ShouldBuildAProvider()
     {
         var scanner = ConventionContextHelpers.CreateProvider(
-            new ConventionContextBuilder(new Dictionary<object, object?>()).UseConvetionFactory(Imports.Instance),
+            new ConventionContextBuilder(new Dictionary<object, object?>()).UseConventionFactory(Imports.Instance),
             new TestAssemblyProvider(),
             Logger
         );
@@ -34,7 +34,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     [Fact]
     public void ShouldScanAddedContributions()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConvetionFactory(Imports.Instance);
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
 
         var contribution = A.Fake<IServiceConvention>();
         var contribution2 = A.Fake<IServiceConvention>();
@@ -53,7 +53,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     [Fact]
     public void ShouldIncludeAddedDelegates()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConvetionFactory(Imports.Instance);
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
 
         var @delegate = new ServiceConvention((_, _, _) => { });
         var delegate2 = new ServiceConvention((_, _, _) => { });
@@ -72,7 +72,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     [Fact]
     public void ShouldScanExcludeContributionTypes()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConvetionFactory(Imports.Instance);
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
 
         var contribution = A.Fake<IServiceConvention>();
         var contribution2 = A.Fake<IServiceConvention>();
@@ -96,7 +96,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     [Fact]
     public void ShouldScanExcludeContributionAssemblies()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConvetionFactory(Imports.Instance);
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
 
         var contribution = A.Fake<IServiceConvention>();
 
@@ -115,7 +115,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     [Fact]
     public void ShouldScanIncludeContributionTypes()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConvetionFactory(Imports.Instance);
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
 
         var contribution = A.Fake<IServiceConvention>();
         var contribution2 = A.Fake<IServiceConvention>();
@@ -139,7 +139,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     [Fact]
     public void ShouldScanIncludeContributionAssemblies()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConvetionFactory(Imports.Instance);
+        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
         var contribution = A.Fake<IServiceConvention>();
 
         scanner.PrependConvention(contribution);

@@ -16,19 +16,10 @@ public static partial class Program
 {
     public static async Task<int> Main(string[] args)
     {
-        return await ( await CreateHostBuilder(args) ).RunAsync();
+        return await ( await CreateHostBuilder(args) ).RunConsoleAppAsync();
     }
 
-    public static async Task<HostApplicationBuilder> CreateHostBuilder(string[] args)
-    {
-        return await ( await Host
-                            .CreateApplicationBuilder(args)
-                            .LaunchWith(RocketBooster.For(Imports.Instance)) )
-           .ConfigureRocketSurgery(
-                builder => builder
-                   .ConfigureServices(_ => { })
-            );
-    }
+    public static async Task<IHost> CreateHostBuilder(string[] args) => await Host.CreateApplicationBuilder(args).LaunchWith(RocketBooster.For(Imports.Instance));
 }
 
 [ExportConvention]
