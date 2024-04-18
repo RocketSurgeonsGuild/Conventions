@@ -59,7 +59,7 @@ public static class TestConventionContextBuilderExtensions
 
         return builder
               .Set(HostType.UnitTest)
-              .WithConventionsFrom(factory)
+              .UseConventionFactory(factory)
               .WithLoggerFactory(loggerFactory)
               .WithLogger(logger)
               .WithContentRoot(contentRootPath);

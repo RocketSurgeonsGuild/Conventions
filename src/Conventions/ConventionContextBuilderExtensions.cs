@@ -22,7 +22,7 @@ public static class ConventionContextBuilderExtensions
     /// <returns></returns>
     public static ConventionContextBuilder UseAppDomain(this ConventionContextBuilder builder, AppDomain appDomain)
     {
-        return builder.WithConventionsFrom(new AppDomainConventionFactory(appDomain));
+        return builder.UseConventionFactory(new AppDomainConventionFactory(appDomain));
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public static class ConventionContextBuilderExtensions
     /// <returns></returns>
     public static ConventionContextBuilder UseAssemblies(this ConventionContextBuilder builder, IEnumerable<Assembly> assemblies)
     {
-        return builder.WithConventionsFrom(new AssemblyConventionFactory(assemblies));
+        return builder.UseConventionFactory(new AssemblyConventionFactory(assemblies));
     }
 
     /// <summary>

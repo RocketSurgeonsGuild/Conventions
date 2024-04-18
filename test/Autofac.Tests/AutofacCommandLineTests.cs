@@ -199,11 +199,10 @@ public class AutofacCommandLineTests : AutoFakeTest
     [Fact]
     public async Task Should_Integrate_With_Autofac()
     {
-        var builder = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
-                           .ConfigureRocketSurgery(rb => rb.UseAutofac());
+        using var host = await Host
+                              .CreateApplicationBuilder(Array.Empty<string>())
+                              .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
-        using var host = builder.Build();
         host.Services.GetRequiredService<ILifetimeScope>().Should().NotBeNull();
     }
 

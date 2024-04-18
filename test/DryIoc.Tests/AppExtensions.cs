@@ -6,9 +6,8 @@ namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
 internal static class AppExtensions
 {
-    public static IContainer GetLifetimeScope(this HostApplicationBuilder builder)
+    public static IContainer GetLifetimeScope(this IHost host)
     {
-        var host = builder.Build();
         return host.Services.GetRequiredService<IContainer>();
     }
 }

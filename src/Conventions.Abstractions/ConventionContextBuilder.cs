@@ -1,13 +1,14 @@
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 #if NET8_0_OR_GREATER
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
+
 #else
 using PropertiesType = System.Collections.Generic.IDictionary<object, object?>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object?>;
 #endif
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -68,7 +69,7 @@ public class ConventionContextBuilder
     /// </summary>
     /// <param name="conventionFactory"></param>
     /// <returns></returns>
-    public ConventionContextBuilder WithConventionsFrom(IConventionFactory conventionFactory)
+    public ConventionContextBuilder UseConventionFactory(IConventionFactory conventionFactory)
     {
         _conventionProviderFactory = conventionFactory;
         return this;

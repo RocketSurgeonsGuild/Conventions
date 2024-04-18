@@ -16,7 +16,7 @@ public static class AbstractConventionContextBuilderExtensions
         IConventionFactory conventionProvider
     )
     {
-        return async (builder, token) => ( await action(builder, token) ).WithConventionsFrom(conventionProvider);
+        return async (builder, token) => ( await action(builder, token) ).UseConventionFactory(conventionProvider);
     }
 
     /// <summary>
@@ -30,6 +30,6 @@ public static class AbstractConventionContextBuilderExtensions
         IConventionFactory conventionProvider
     )
     {
-        return builder => action(builder).WithConventionsFrom(conventionProvider);
+        return builder => action(builder).UseConventionFactory(conventionProvider);
     }
 }
