@@ -60,7 +60,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
     {
         var builder = await Host
                            .CreateApplicationBuilder()
-                           .UseRocketBooster(RocketBooster.For(Imports.GetConventions));
+                           .UseRocketBooster(RocketBooster.For(Imports.Instance));
 
         var host = builder.Build();
         host.Services.Should().NotBeNull();
@@ -118,7 +118,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
-                                     .UseDependencyContext(DependencyContext.Default!)
+                                     .WithConventionsFrom(Imports.Instance)
                                      .ConfigureConfiguration(convention)
                             );
 

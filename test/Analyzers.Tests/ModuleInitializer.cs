@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -9,6 +10,7 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 public static class ModuleInitializer
 {
     [ModuleInitializer]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static void Init()
     {
         VerifyGeneratorTextContext.Initialize(Customizers.Default);

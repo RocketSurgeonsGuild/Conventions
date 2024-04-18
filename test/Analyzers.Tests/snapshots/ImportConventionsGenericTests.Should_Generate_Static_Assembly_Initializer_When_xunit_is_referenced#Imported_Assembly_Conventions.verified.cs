@@ -23,7 +23,18 @@ namespace TestProject.Conventions
         /// </summary>
         public IEnumerable<IConventionWithDependencies> LoadConventions(ConventionContextBuilder builder)
         {
-            yield break;
+            foreach (var convention in Dep1.Dep1Exports.GetConventions(builder))
+                yield return convention;
+            foreach (var convention in Dep2Exports.GetConventions(builder))
+                yield return convention;
+            foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(builder))
+                yield return convention;
+        }
+
+        [System.Runtime.CompilerServices.ModuleInitializer, System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public static void Init()
+        {
+            ImportHelpers.ExternalConventions = Instance;
         }
     }
 }

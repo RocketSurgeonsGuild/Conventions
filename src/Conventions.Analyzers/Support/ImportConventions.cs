@@ -20,9 +20,14 @@ internal static class ImportConventions
 
         var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
 
-        addAssemblySource(context, functionBody, importConfiguration);
+        addAssemblySource(context, compilation, functionBody, importConfiguration);
 
-        static void addAssemblySource(SourceProductionContext context, BlockSyntax syntax, ConventionConfigurationData configurationData)
+        static void addAssemblySource(
+            SourceProductionContext context,
+            Compilation compilation,
+            BlockSyntax syntax,
+            ConventionConfigurationData configurationData
+        )
         {
             var members =
                 ClassDeclaration(configurationData.ClassName)
@@ -42,7 +47,7 @@ internal static class ImportConventions
                     )
                    .AddMembers(
                         PropertyDeclaration(
-                                IdentifierName(configurationData.ClassName),
+                                IdentifierName("IConventionFactory"),
                                 Identifier(configurationData.MethodName)
                             )
                            .WithModifiers(
@@ -65,7 +70,14 @@ internal static class ImportConventions
                             )
                            .WithInitializer(
                                 EqualsValueClause(
-                                    ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList())
+                                    InvocationExpression(
+                                            MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList()),
+                                                IdentifierName("OrCallerConventions")
+                                            )
+                                        )
+                                       .WithArgumentList(ArgumentList())
                                 )
                             )
                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
@@ -89,6 +101,81 @@ internal static class ImportConventions
                            .WithBody(syntax)
                            .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"))
                     );
+
+            var referencesXunit = compilation
+                                 .References
+                                 .Select(compilation.GetAssemblyOrModuleSymbol)
+                                 .Concat(
+                                      [compilation.Assembly,]
+                                  )
+                                 .Select(
+                                      symbol =>
+                                      {
+                                          if (symbol is IAssemblySymbol assemblySymbol)
+                                              return assemblySymbol;
+                                          if (symbol is IModuleSymbol moduleSymbol) return moduleSymbol.ContainingAssembly;
+                                          // ReSharper disable once NullableWarningSuppressionIsUsed
+                                          return null!;
+                                      }
+                                  )
+                                 .Any(z => z is { MetadataName: "xunit.core", });
+            if (referencesXunit)
+            {
+                members = members.AddMembers(
+                    MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier("Init"))
+                       .WithAttributeLists(
+                            SingletonList(
+                                AttributeList(
+                                    SeparatedList(
+                                        [
+                                            Attribute(ParseName("System.Runtime.CompilerServices.ModuleInitializer")),
+                                            Attribute(ParseName("System.ComponentModel.EditorBrowsable"))
+                                               .WithArgumentList(
+                                                    AttributeArgumentList(
+                                                        SingletonSeparatedList(
+                                                            AttributeArgument(
+                                                                MemberAccessExpression(
+                                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                                    ParseName("System.ComponentModel.EditorBrowsableState"),
+                                                                    IdentifierName("Never")
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                ),
+                                        ]
+                                    )
+                                )
+                            )
+                        )
+                       .WithModifiers(
+                            TokenList(
+                                [
+                                    Token(SyntaxKind.PublicKeyword),
+                                    Token(SyntaxKind.StaticKeyword),
+                                ]
+                            )
+                        )
+                       .WithBody(
+                            Block(
+                                SingletonList<StatementSyntax>(
+                                    ExpressionStatement(
+                                        AssignmentExpression(
+                                            SyntaxKind.SimpleAssignmentExpression,
+                                            MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                IdentifierName("ImportHelpers"),
+                                                IdentifierName("ExternalConventions")
+                                            ),
+                                            IdentifierName(configurationData.MethodName)
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                );
+            }
+
             var cu = CompilationUnit()
                     .WithAttributeLists(configurationData.ToAttributes("Imports"))
                     .WithUsings(
@@ -139,13 +226,6 @@ internal static class ImportConventions
                                if (configuredMetadata is { })
                                {
                                    return configuredMetadata.ToDisplayString() + $".{data.MethodName}";
-                               }
-
-                               var legacyMetadata = symbol.GetTypeByMetadataName($"{symbol.Name}.Conventions.Exports")
-                                ?? symbol.GetTypeByMetadataName($"{symbol.Name}.Exports");
-                               if (legacyMetadata is { })
-                               {
-                                   return legacyMetadata.ToDisplayString() + ".GetConventions";
                                }
 
                                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression

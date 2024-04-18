@@ -20,7 +20,7 @@ public partial class StaticConventionTests
     public void Should_Have_Imports_Method_Defined_On_Assembly()
     {
         var list = Imports
-                  .GetConventions.LoadConventions(new(new Dictionary<object, object>()))
+                  .Instance.LoadConventions(new(new Dictionary<object, object>()))
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -51,7 +51,7 @@ public partial class StaticConventionTests
     public void Should_Have_Imports_Method_Defined_On_Class()
     {
         var list = Imports
-                  .GetConventions
+                  .Instance
                   .LoadConventions(new(new Dictionary<object, object>()))
                   .Should()
                   .NotBeNull()
