@@ -20,6 +20,7 @@ using Rocket.Surgery.Conventions;
 
         await Verify(result);
     }
+
     [Fact]
     public async Task Should_Generate_Static_Assembly_Initializer_When_xunit_is_referenced()
     {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -119,7 +118,7 @@ internal static class ImportConventions
                                           return null!;
                                       }
                                   )
-                                 .Any(z => z is { MetadataName: "xunit.core" });
+                                 .Any(z => z is { MetadataName: "xunit.core", });
             if (referencesXunit)
             {
                 members = members.AddMembers(
@@ -143,7 +142,7 @@ internal static class ImportConventions
                                                             )
                                                         )
                                                     )
-                                                )
+                                                ),
                                         ]
                                     )
                                 )
@@ -163,7 +162,11 @@ internal static class ImportConventions
                                     ExpressionStatement(
                                         AssignmentExpression(
                                             SyntaxKind.SimpleAssignmentExpression,
-                                            MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("ImportHelpers"), IdentifierName("ExternalConventions")),
+                                            MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                IdentifierName("ImportHelpers"),
+                                                IdentifierName("ExternalConventions")
+                                            ),
                                             IdentifierName(configurationData.MethodName)
                                         )
                                     )

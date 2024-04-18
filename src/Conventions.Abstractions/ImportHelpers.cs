@@ -13,15 +13,22 @@ public class ImportsTypeAttribute(Type type) : Attribute
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class ImportHelpers
 {
-    private static IConventionFactory? externalConventions;
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IConventionFactory? ExternalConventions { set => externalConventions = value; }
+    public static IConventionFactory? ExternalConventions
+    {
+        set => externalConventions = value;
+    }
+
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IConventionFactory OrCallerConventions(this IConventionFactory conventionFactory) =>
-        Assembly.GetEntryAssembly() is not {} entryAssembly || conventionFactory.GetType().Assembly == entryAssembly || externalConventions == null
+    public static IConventionFactory OrCallerConventions(this IConventionFactory conventionFactory)
+    {
+        return Assembly.GetEntryAssembly() is not { } entryAssembly || conventionFactory.GetType().Assembly == entryAssembly || externalConventions == null
             ? conventionFactory
             : entryAssembly.GetCustomAttribute<ImportsTypeAttribute>()?.Type is { } executingImportsType
          && Activator.CreateInstance(executingImportsType) is IConventionFactory imports
                 ? imports
                 : externalConventions;
+    }
+
+    private static IConventionFactory? externalConventions;
 }

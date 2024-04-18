@@ -187,7 +187,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                                     AttributeArgumentList(
                                         SingletonSeparatedList(
                                             AttributeArgument(
-                                                TypeOfExpression(ParseTypeName(( Namespace is { Length: > 0 } ? Namespace + "." : "" ) + ClassName))
+                                                TypeOfExpression(ParseTypeName(( Namespace is { Length: > 0, } ? Namespace + "." : "" ) + ClassName))
                                             )
                                         )
                                     )
