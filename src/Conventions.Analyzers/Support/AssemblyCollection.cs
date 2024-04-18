@@ -80,11 +80,11 @@ internal static class AssemblyCollection
                      )
                  )
              )
-           .AddMembers(
-                configurationData is { Namespace: { Length: > 0, } relativeNamespace, }
-                    ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
-                    : members
-            );
+            .AddMembers(
+                 configurationData is { Namespace: { Length: > 0, } relativeNamespace, }
+                     ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
+                     : members
+             );
 
         context.AddSource(
             "Compiled_AssemblyProvider.cs",
