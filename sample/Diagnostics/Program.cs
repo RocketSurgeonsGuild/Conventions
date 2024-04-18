@@ -23,7 +23,7 @@ public static partial class Program
     {
         return await ( await Host
                             .CreateApplicationBuilder(args)
-                            .LaunchWith(RocketBooster.For(Imports.GetConventions)) )
+                            .LaunchWith(RocketBooster.For(Imports.Instance)) )
            .ConfigureRocketSurgery(
                 builder => builder
                    .ConfigureServices(_ => { })

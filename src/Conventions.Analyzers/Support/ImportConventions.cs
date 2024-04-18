@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -42,7 +43,7 @@ internal static class ImportConventions
                     )
                    .AddMembers(
                         PropertyDeclaration(
-                                IdentifierName(configurationData.ClassName),
+                                IdentifierName("IConventionFactory"),
                                 Identifier(configurationData.MethodName)
                             )
                            .WithModifiers(
@@ -65,7 +66,14 @@ internal static class ImportConventions
                             )
                            .WithInitializer(
                                 EqualsValueClause(
-                                    ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList())
+                                    InvocationExpression(
+                                            MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                ObjectCreationExpression(IdentifierName(configurationData.ClassName)).WithArgumentList(ArgumentList()),
+                                                IdentifierName("OrCallerConventions")
+                                            )
+                                        )
+                                       .WithArgumentList(ArgumentList())
                                 )
                             )
                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
@@ -139,13 +147,6 @@ internal static class ImportConventions
                                if (configuredMetadata is { })
                                {
                                    return configuredMetadata.ToDisplayString() + $".{data.MethodName}";
-                               }
-
-                               var legacyMetadata = symbol.GetTypeByMetadataName($"{symbol.Name}.Conventions.Exports")
-                                ?? symbol.GetTypeByMetadataName($"{symbol.Name}.Exports");
-                               if (legacyMetadata is { })
-                               {
-                                   return legacyMetadata.ToDisplayString() + ".GetConventions";
                                }
 
                                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression

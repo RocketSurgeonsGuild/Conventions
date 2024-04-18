@@ -3,7 +3,7 @@
 var builder = await Host
                    .CreateApplicationBuilder(args)
                    .LaunchWith(
-                        RocketBooster.For(Imports.GetConventions),
+                        RocketBooster.For(Imports.Instance),
                         z => z
                             //                   .SetDefaultCommand<DefaultCommand>()
                            .ConfigureCommandLine(configurator => configurator.AddCommand<Dump>("dump"))

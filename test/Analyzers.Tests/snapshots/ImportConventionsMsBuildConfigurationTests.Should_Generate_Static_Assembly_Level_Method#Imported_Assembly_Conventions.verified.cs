@@ -7,7 +7,7 @@ using Rocket.Surgery.Conventions;
 
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.Namespace", "TestProject.Conventions")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.ClassName", "Imports")]
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.MethodName", "GetConventions")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.MethodName", "Instance")]
 namespace TestProject.Conventions
 {
     /// <summary>
@@ -16,7 +16,7 @@ namespace TestProject.Conventions
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     internal sealed partial class Imports : IConventionFactory
     {
-        public static Imports GetConventions { get; } = new Imports();
+        public static IConventionFactory Instance { get; } = new Imports().OrCallerConventions();
 
         /// <summary>
         /// The conventions imported into this assembly

@@ -7,14 +7,14 @@ using Rocket.Surgery.Conventions;
 
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.Namespace", "")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.ClassName", "MyImports")]
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.MethodName", "GetConventions")]
+[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.MethodName", "Instance")]
 /// <summary>
 /// The class defined for importing conventions into this assembly
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed partial class MyImports : IConventionFactory
 {
-    public static MyImports GetConventions { get; } = new MyImports();
+    public static IConventionFactory Instance { get; } = new MyImports().OrCallerConventions();
 
     /// <summary>
     /// The conventions imported into this assembly

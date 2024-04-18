@@ -53,6 +53,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionFactory);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionProvider);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionWithDependencies);
+                        yield return typeof(global::Rocket.Surgery.Conventions.ImportHelpers);
                         yield return typeof(global::Rocket.Surgery.Conventions.IReadOnlyServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.IServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.Logging.ILoggingAsyncConvention);

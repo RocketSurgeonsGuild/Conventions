@@ -29,6 +29,8 @@ namespace TestProject.Conventions
                     // FilePath: Input1.cs Member: Register
                     case 18:
                         yield return RocketSurgeryConventionsAbstractions.GetType("Polyfill");
+                        yield return typeof(global::Rocket.Surgery.Conventions.ImportHelpers);
+                        yield return typeof(global::Rocket.Surgery.Conventions.ImportsTypeAttribute);
                         yield return RocketSurgeryConventions.GetType("System.Runtime.CompilerServices.IsExternalInit");
                         break;
                 }

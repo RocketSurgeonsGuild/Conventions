@@ -16,7 +16,7 @@ namespace Test.My.Namespace
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     internal sealed partial class MyImports : IConventionFactory
     {
-        public static MyImports ImportConventions { get; } = new MyImports();
+        public static IConventionFactory ImportConventions { get; } = new MyImports().OrCallerConventions();
 
         /// <summary>
         /// The conventions imported into this assembly

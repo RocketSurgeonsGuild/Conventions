@@ -1,13 +1,14 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Rocket.Surgery.Conventions;
 
 internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, string? Namespace, string ClassName, string MethodName)
 {
     public static ConventionConfigurationData ExportsDefaults { get; } = new(false, true, "", "Exports", "GetConventions") { Postfix = true, };
-    public static ConventionConfigurationData ImportsDefaults { get; } = new(false, true, "", "Imports", "GetConventions") { Postfix = true, };
+    public static ConventionConfigurationData ImportsDefaults { get; } = new(false, true, "", "Imports", "Instance") { Postfix = true, };
 
     public static IncrementalValueProvider<ConventionConfigurationData> Create(
         IncrementalGeneratorInitializationContext context,
@@ -168,15 +169,36 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
 
     public SyntaxList<AttributeListSyntax> ToAttributes(string type)
     {
-        return SyntaxFactory.List(
+        var list = List(
             new[]
             {
                 Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Namespace)}", Namespace),
                 Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(ClassName)}", ClassName),
                 Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(MethodName)}", MethodName),
-//                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Assembly)}", Assembly.ToString()),
             }
         );
+        if (type == "Import")
+        {
+            list = list.Add(
+                AttributeList(
+                        SingletonSeparatedList(
+                            Attribute(ParseName("Rocket.Surgery.Conventions.ImportsType"))
+                               .WithArgumentList(
+                                    AttributeArgumentList(
+                                        SingletonSeparatedList(
+                                            AttributeArgument(
+                                                TypeOfExpression(ParseTypeName(( Namespace is { Length: > 0 } ? Namespace + "." : "" ) + ClassName))
+                                            )
+                                        )
+                                    )
+                                )
+                        )
+                    )
+                   .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
+            );
+        }
+
+        return list;
     }
 
     private record InnerConventionConfigurationData(bool Assembly, string? Namespace, string ClassName, string MethodName)
