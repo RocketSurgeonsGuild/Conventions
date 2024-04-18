@@ -88,30 +88,31 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                           .Create(context, "ImportConventions", ConventionConfigurationData.ImportsDefaults)
                                           .Select((z, _) => !z.WasConfigured && z.Assembly ? z with { Assembly = false, } : z);
 
-        var importCandidates = context
-                              .SyntaxProvider
-                              .ForAttributeWithMetadataName(
-                                   "Rocket.Surgery.Conventions.ImportConventionsAttribute",
-                                   (node, _) => node is TypeDeclarationSyntax,
-                                   (syntaxContext, _) => syntaxContext.TargetNode
-                               );
-
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
+        var isTestProject = context.AnalyzerConfigOptionsProvider
+                                   .Select(
+                                        (provider, _) => provider.GlobalOptions.TryGetValue("build_property.IsTestProject", out var value)
+                                         && bool.TryParse(value, out var v)
+                                         && v
+                                    );
 
         context.RegisterSourceOutput(
             context
                .CompilationProvider
-               .Combine(importCandidates.Collect())
                .Combine(combinedExports.Collect())
                .Combine(importConfigurationCandidate)
                .Combine(exportConfigurationCandidate)
                .Combine(hasAssemblyLoadContext)
+               .Combine(isTestProject)
                .Select(
-                    (z, _) => ( compilation: z.Left.Left.Left.Left.Left, hasExports: z.Left.Left.Left.Right.Any(),
-                                exportedCandidates: z.Left.Left.Left.Left.Right,
-                                importConfiguration: z.Left.Left.Right, exportConfiguration: z.Left.Right, hasAssemblyLoadContext: z.Right
-                        )
+                    (z, _) => (
+                        compilation: z.Left.Left.Left.Left.Left,
+                        hasExports: z.Left.Left.Left.Left.Right.Any(),
+                        exportedCandidates: z.Left.Left.Left.Left.Right,
+                        importConfiguration: z.Left.Left.Left.Right, exportConfiguration: z.Left.Left.Right, hasAssemblyLoadContext: z.Left.Right,
+                        isTestProject: z.Right
+                    )
                 ),
             static (productionContext, tuple) =>
             {
@@ -120,8 +121,8 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     productionContext,
                     new(
                         tuple.compilation,
-                        tuple.exportedCandidates,
                         tuple.hasExports,
+                        tuple.isTestProject,
                         tuple.importConfiguration,
                         tuple.exportConfiguration
                     )
@@ -151,6 +152,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             getAssembliesSyntaxProvider
                .Combine(getTypesSyntaxProvider)
                .Combine(importConfigurationCandidate)
+               .Combine(isTestProject)
                .Combine(context.CompilationProvider),
             static (context, results) =>
             {
@@ -158,9 +160,10 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     context,
                     new(
                         results.Right,
-                        results.Left.Right,
-                        results.Left.Left.Left,
-                        results.Left.Left.Right
+                        results.Left.Left.Right,
+                        results.Left.Left.Left.Left,
+                        results.Left.Left.Left.Right,
+                        results.Left.Right
                     )
                 );
             }

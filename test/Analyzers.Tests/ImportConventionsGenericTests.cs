@@ -22,24 +22,6 @@ using Rocket.Surgery.Conventions;
     }
 
     [Fact]
-    public async Task Should_Generate_Static_Assembly_Initializer_When_xunit_is_referenced()
-    {
-        var result = await WithGenericSharedDeps()
-                          .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
-
-[assembly: ImportConventions]
-"
-                           )
-                          .AddReferences(typeof(FactAttribute))
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result);
-    }
-
-    [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_Namespace()
     {
         var result = await WithGenericSharedDeps()
@@ -192,6 +174,26 @@ namespace TestProject
                           .GenerateAsync();
 
         await Verify(result);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Should_Generate_Static_Assembly_Initializer_When_xunit_is_referenced(bool isTestProject)
+    {
+        var result = await WithGenericSharedDeps()
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
+                          .AddGlobalOption("build_property.IsTestProject", isTestProject ? "true" : "false")
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseParameters(isTestProject);
     }
 
     public override async Task InitializeAsync()

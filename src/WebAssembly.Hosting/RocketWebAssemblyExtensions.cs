@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Runtime.Loader;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
@@ -338,7 +337,6 @@ public static class RocketWebAssemblyExtensions
     )
     {
         conventionContext
-           .AddIfMissing(AssemblyLoadContext.Default)
            .AddIfMissing(builder)
            .AddIfMissing(builder.GetType(), builder)
            .AddIfMissing<IConfiguration>(builder.Configuration)

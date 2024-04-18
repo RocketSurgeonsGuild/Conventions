@@ -1,4 +1,3 @@
-using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
@@ -316,7 +315,6 @@ public static class RocketHostApplicationExtensions
         contextBuilder.Properties["__configured__"] = true;
 
         contextBuilder
-           .AddIfMissing(AssemblyLoadContext.Default)
            .AddIfMissing(builder)
            .AddIfMissing(builder.GetType(), builder)
            .AddIfMissing(builder.Configuration)

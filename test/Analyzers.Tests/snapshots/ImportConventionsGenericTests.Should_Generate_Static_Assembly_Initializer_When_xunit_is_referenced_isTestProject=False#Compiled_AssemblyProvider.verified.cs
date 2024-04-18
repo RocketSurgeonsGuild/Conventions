@@ -11,12 +11,7 @@ namespace TestProject.Conventions
     internal sealed partial class Imports
     {
 #pragma warning disable CA1822
-        public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder)
-        {
-            builder.Set(HostType.UnitTest);
-            return new AssemblyProvider();
-        }
-
+        public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
         [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider() : IAssemblyProvider
         {
