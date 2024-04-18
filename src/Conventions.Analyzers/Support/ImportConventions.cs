@@ -310,14 +310,14 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
-                if (builder == null) throw new ArgumentNullException(nameof(builder));
-                if (func == null) throw new ArgumentNullException(nameof(func));
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(func);
                 var b = await func(builder, cancellationToken);
                 await action.Invoke(b, cancellationToken);
                 await RocketHostApplicationExtensions.Configure(builder, b, cancellationToken);
                 return builder.Build();
             }
-        
+
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -339,7 +339,7 @@ internal static class ImportConventions
                     cancellationToken
                 );
             }
-        
+
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -365,7 +365,7 @@ internal static class ImportConventions
                     cancellationToken
                 );
             }
-        
+
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -380,8 +380,8 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, (_, _) => ValueTask.CompletedTask, cancellationToken);
             }
-        
-        
+
+
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -398,7 +398,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -415,7 +415,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -432,7 +432,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -443,7 +443,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -453,7 +453,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, CancellationToken.None);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -463,7 +463,7 @@ internal static class ImportConventions
             {
                 return ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -476,12 +476,14 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
                 action(contextBuilder);
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -494,12 +496,14 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
                 await action(contextBuilder);
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -512,12 +516,14 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
                 await action(contextBuilder, cancellationToken);
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -530,11 +536,13 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(getConventions);
                 var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -547,8 +555,8 @@ internal static class ImportConventions
                 CancellationToken cancellationToken = default
             )
             {
-                if (builder == null) throw new ArgumentNullException(nameof(builder));
-                if (conventionContextBuilder == null) throw new ArgumentNullException(nameof(conventionContextBuilder));
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(conventionContextBuilder);
                 await RocketHostApplicationExtensions.Configure(builder, conventionContextBuilder, cancellationToken);
                 return builder.Build();
             }

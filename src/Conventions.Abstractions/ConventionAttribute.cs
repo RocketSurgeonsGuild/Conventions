@@ -19,7 +19,8 @@ public class ConventionAttribute : Attribute
         Type type
     )
     {
-        Type = type ?? throw new ArgumentNullException(nameof(type));
+        ArgumentNullException.ThrowIfNull(type);
+        Type = type;
     }
 
     /// <summary>

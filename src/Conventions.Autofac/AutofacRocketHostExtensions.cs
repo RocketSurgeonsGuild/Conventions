@@ -38,11 +38,7 @@ public static class AutofacConventionRocketHostExtensions
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, AutofacConvention @delegate)
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
+        ArgumentNullException.ThrowIfNull(builder);
         builder.AppendDelegate(@delegate);
         return builder;
     }
@@ -58,11 +54,7 @@ public static class AutofacConventionRocketHostExtensions
         Action<IConfiguration, IServiceCollection, ContainerBuilder> @delegate
     )
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
+        ArgumentNullException.ThrowIfNull(builder);
         builder.AppendDelegate(new AutofacConvention((_, configuration, services, container) => @delegate(configuration, services, container)));
         return builder;
     }
@@ -75,11 +67,7 @@ public static class AutofacConventionRocketHostExtensions
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, Action<IServiceCollection, ContainerBuilder> @delegate)
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
+        ArgumentNullException.ThrowIfNull(builder);
         builder.AppendDelegate(new AutofacConvention((_, _, services, container) => @delegate(services, container)));
         return builder;
     }
@@ -92,11 +80,7 @@ public static class AutofacConventionRocketHostExtensions
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, Action<ContainerBuilder> @delegate)
     {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
+        ArgumentNullException.ThrowIfNull(builder);
         builder.AppendDelegate(new AutofacConvention((_, _, _, container) => @delegate(container)));
         return builder;
     }

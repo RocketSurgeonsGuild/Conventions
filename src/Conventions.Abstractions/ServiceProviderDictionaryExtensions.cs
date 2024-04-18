@@ -15,11 +15,7 @@ public static class ServiceProviderDictionaryExtensions
     public static T? Get<T>(this IReadOnlyServiceProviderDictionary serviceProviderDictionary)
         where T : class
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         return (T?)serviceProviderDictionary[typeof(T)];
     }
 
@@ -33,11 +29,7 @@ public static class ServiceProviderDictionaryExtensions
     public static T? Get<T>(this IReadOnlyServiceProviderDictionary serviceProviderDictionary, string key)
         where T : class
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         return (T?)serviceProviderDictionary[key];
     }
 
@@ -50,11 +42,7 @@ public static class ServiceProviderDictionaryExtensions
     public static T? Get<T>(this IServiceProviderDictionary serviceProviderDictionary)
         where T : class
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         return (T?)serviceProviderDictionary[typeof(T)];
     }
 
@@ -68,11 +56,7 @@ public static class ServiceProviderDictionaryExtensions
     public static T? Get<T>(this IServiceProviderDictionary serviceProviderDictionary, string key)
         where T : class
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         return (T?)serviceProviderDictionary[key];
     }
 
@@ -85,11 +69,7 @@ public static class ServiceProviderDictionaryExtensions
     public static T? Get<T>(this ServiceProviderDictionary serviceProviderDictionary)
         where T : class
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         return (T?)serviceProviderDictionary[typeof(T)];
     }
 
@@ -103,11 +83,7 @@ public static class ServiceProviderDictionaryExtensions
     public static T? Get<T>(this ServiceProviderDictionary serviceProviderDictionary, string key)
         where T : class
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         return (T?)serviceProviderDictionary[key];
     }
 
@@ -121,17 +97,10 @@ public static class ServiceProviderDictionaryExtensions
     public static T GetOrAdd<T>(this IServiceProviderDictionary serviceProviderDictionary, Func<T> factory)
         where T : class
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
+        ArgumentNullException.ThrowIfNull(factory);
 
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-
-        if (!( serviceProviderDictionary[typeof(T)] is T value ))
+        if (serviceProviderDictionary[typeof(T)] is not T value)
         {
             value = factory();
             serviceProviderDictionary.Set(value);
@@ -151,17 +120,10 @@ public static class ServiceProviderDictionaryExtensions
     public static T GetOrAdd<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, Func<T> factory)
         where T : class
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
+        ArgumentNullException.ThrowIfNull(factory);
 
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-
-        if (!( serviceProviderDictionary[key] is T value ))
+        if (serviceProviderDictionary[key] is not T value)
         {
             value = factory();
             serviceProviderDictionary.Set(value);
@@ -178,11 +140,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="value">The value to save</param>
     public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, T value) where T : notnull
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         serviceProviderDictionary[typeof(T)] = value;
         return serviceProviderDictionary;
     }
@@ -195,11 +153,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="value">The value to save</param>
     public static IServiceProviderDictionary Set(this IServiceProviderDictionary serviceProviderDictionary, Type key, object value)
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         serviceProviderDictionary[key] = value;
         return serviceProviderDictionary;
     }
@@ -213,11 +167,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="value">The value to save</param>
     public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value) where T : notnull
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+            ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         serviceProviderDictionary[key] = value;
         return serviceProviderDictionary;
     }
@@ -230,11 +180,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="value">The value to save</param>
     public static IServiceProviderDictionary AddIfMissing<T>(this IServiceProviderDictionary serviceProviderDictionary, T value) where T : notnull
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         if (serviceProviderDictionary.TryGetValue(typeof(T), out _))
             return serviceProviderDictionary;
 
@@ -250,11 +196,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="value">The value to save</param>
     public static IServiceProviderDictionary AddIfMissing(this IServiceProviderDictionary serviceProviderDictionary, Type key, object value)
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         if (serviceProviderDictionary.TryGetValue(key, out _))
             return serviceProviderDictionary;
 
@@ -271,11 +213,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="value">The value to save</param>
     public static IServiceProviderDictionary AddIfMissing<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value) where T : notnull
     {
-        if (serviceProviderDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(serviceProviderDictionary));
-        }
-
+        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
         if (serviceProviderDictionary.TryGetValue(key, out _))
             return serviceProviderDictionary;
 

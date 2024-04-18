@@ -18,11 +18,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, WebAssemblyHostingConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
-
+        ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
         return container;
     }
@@ -35,11 +31,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, WebAssemblyHostingAsyncConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
-
+        ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
         return container;
     }
@@ -52,11 +44,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, Action<WebAssemblyHostBuilder> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
-
+        ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(new WebAssemblyHostingConvention((_, builder) => @delegate(builder)));
         return container;
     }
@@ -69,11 +57,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, Func<WebAssemblyHostBuilder, ValueTask> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
-
+        ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, _) => @delegate(builder)));
         return container;
     }
@@ -89,11 +73,7 @@ public static class WebAssemblyHostingConventionExtensions
         Func<WebAssemblyHostBuilder, CancellationToken, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
-
+        ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
     }

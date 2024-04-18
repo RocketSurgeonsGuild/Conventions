@@ -34,8 +34,8 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
-        if (builder == null) throw new ArgumentNullException(nameof(builder));
-        if (func == null) throw new ArgumentNullException(nameof(func));
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(func);
         var contextBuilder = await func(builder, cancellationToken);
         await action.Invoke(contextBuilder, cancellationToken);
         await Configure(builder, await ConventionContext.FromAsync(contextBuilder, cancellationToken), cancellationToken);
@@ -250,7 +250,8 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object>());
         await action(contextBuilder, cancellationToken);
         await Configure(builder, await ConventionContext.FromAsync(contextBuilder, cancellationToken), cancellationToken);
@@ -270,6 +271,8 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(getConventions);
         var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object>()).UseConventionFactory(getConventions);
         await Configure(builder, await ConventionContext.FromAsync(contextBuilder, cancellationToken), cancellationToken);
         return builder.Build();
@@ -288,18 +291,12 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
-        if (builder == null) throw new ArgumentNullException(nameof(builder));
-        if (conventionContextBuilder == null) throw new ArgumentNullException(nameof(conventionContextBuilder));
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(conventionContextBuilder);
         await Configure(builder, await ConventionContext.FromAsync(conventionContextBuilder, cancellationToken), cancellationToken);
         return builder.Build();
     }
 
-    /// <summary>
-    ///     Apply the conventions to the builder
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="conventionContext"></param>
-    /// <param name="cancellationToken"></param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     private static async ValueTask<WebAssemblyHostBuilder> Configure(
         this WebAssemblyHostBuilder builder,
