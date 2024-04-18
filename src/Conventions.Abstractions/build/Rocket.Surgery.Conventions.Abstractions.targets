@@ -10,7 +10,7 @@
         
         <ImportConventionsNamespace Condition="'$(ImportConventionsNamespace)' == ''">$(RootNamespace)</ImportConventionsNamespace>
         <ImportConventionsClassName Condition="'$(ImportConventionsClassName)' == ''">Imports</ImportConventionsClassName>        
-        <ImportConventionsMethodName Condition="'$(ImportConventionsMethodName)' == ''">GetConventions</ImportConventionsMethodName>   
+        <ImportConventionsMethodName Condition="'$(ImportConventionsMethodName)' == ''">Instance</ImportConventionsMethodName>   
         
         <ExportConventionsNamespace Condition="'$(ExportConventionsNamespace)' == ''">$(RootNamespace).Conventions</ExportConventionsNamespace>
         <ExportConventionsClassName Condition="'$(ExportConventionsClassName)' == ''">Exports</ExportConventionsClassName>        
