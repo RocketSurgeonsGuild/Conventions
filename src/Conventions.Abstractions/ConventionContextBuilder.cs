@@ -68,7 +68,7 @@ public class ConventionContextBuilder
     /// </summary>
     /// <param name="conventionFactory"></param>
     /// <returns></returns>
-    public ConventionContextBuilder WithConventionsFrom(IConventionFactory conventionFactory)
+    public ConventionContextBuilder UseConvetionFactory(IConventionFactory conventionFactory)
     {
         _conventionProviderFactory = conventionFactory;
         return this;

@@ -15,6 +15,6 @@ public static class DependencyContextConventionContextBuilderExtensions
     /// <returns></returns>
     public static ConventionContextBuilder UseDependencyContext(this ConventionContextBuilder builder, DependencyContext dependencyContext)
     {
-        return builder.WithConventionsFrom(new DependencyContextConventionFactory(dependencyContext));
+        return builder.UseConvetionFactory(new DependencyContextConventionFactory(dependencyContext));
     }
 }

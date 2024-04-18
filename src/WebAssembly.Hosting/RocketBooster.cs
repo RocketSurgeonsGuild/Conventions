@@ -22,7 +22,7 @@ public static partial class RocketBooster
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     public static AppDelegate ForConventions(IConventionFactory getConventions)
     {
-        return (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>()).WithConventionsFrom(getConventions));
+        return (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>()).UseConvetionFactory(getConventions));
     }
 
     /// <summary>

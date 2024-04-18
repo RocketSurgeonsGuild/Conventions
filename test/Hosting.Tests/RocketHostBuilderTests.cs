@@ -118,7 +118,7 @@ public partial class RocketHostBuilderTests : AutoFakeTest
                            .CreateApplicationBuilder()
                            .ConfigureRocketSurgery(
                                 rb => rb
-                                     .WithConventionsFrom(Imports.Instance)
+                                     .UseConvetionFactory(Imports.Instance)
                                      .ConfigureConfiguration(convention)
                             );
 
