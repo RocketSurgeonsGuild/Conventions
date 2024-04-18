@@ -1,4 +1,7 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Compiled_AssemblyProvider.cs
+#pragma warning disable CA1822
+#pragma warning disable CS8618
+#pragma warning disable CS8603
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -13,7 +16,6 @@ namespace TestProject.Conventions
 {
     internal sealed partial class Imports
     {
-#pragma warning disable CA1822
         public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
         [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider

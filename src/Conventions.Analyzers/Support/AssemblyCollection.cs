@@ -64,6 +64,22 @@ internal static class AssemblyCollection
                .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.IsTestProject), assemblyProvider);
 
         cu = cu
+            .WithLeadingTrivia(
+                 TriviaList(
+                     Trivia(
+                         PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                            .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CA1822")))
+                     ),
+                     Trivia(
+                         PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                            .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8618")))
+                     ),
+                     Trivia(
+                         PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                            .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8603")))
+                     )
+                 )
+             )
            .AddMembers(
                 configurationData is { Namespace: { Length: > 0, } relativeNamespace, }
                     ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
@@ -283,21 +299,6 @@ internal static class AssemblyCollection
 
         var method = MethodDeclaration(IdentifierName("IAssemblyProvider"), Identifier("CreateAssemblyProvider"))
                     .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                    .WithLeadingTrivia(
-                         TriviaList(
-                             Trivia(
-                                 PragmaWarningDirectiveTrivia(
-                                         Token(SyntaxKind.DisableKeyword),
-                                         true
-                                     )
-                                    .WithErrorCodes(
-                                         SingletonSeparatedList<ExpressionSyntax>(
-                                             IdentifierName("CA1822")
-                                         )
-                                     )
-                             )
-                         )
-                     )
                     .WithParameterList(
                          ParameterList(SingletonSeparatedList(Parameter(Identifier("builder")).WithType(IdentifierName("ConventionContextBuilder"))))
                      );
