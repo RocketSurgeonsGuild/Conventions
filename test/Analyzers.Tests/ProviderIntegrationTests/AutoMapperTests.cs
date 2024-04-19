@@ -45,6 +45,22 @@ public class TestConvention : IServiceAsyncConvention {
 
     private class Mapper : Profile;
 
+    public class DocumentCreatedByValueResolver<TSource, TDestination> : DocumentStringMetadataValueResolver<TSource, TDestination>;
+
+    public abstract class DocumentStringMetadataValueResolver<TSource, TDestination>()
+        : IValueResolver<TSource, TDestination, string>
+    {
+        protected virtual string GetValue(string metadataValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Resolve(TSource source, TDestination destination, string destMember, ResolutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
     private class A : IValueResolver<Source, Destination, string>
     {
