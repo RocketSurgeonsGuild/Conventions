@@ -18,10 +18,7 @@ internal class AssemblyCandidateResolver
     private static Dependency CreateDependency(Assembly library, ISet<string?> referenceAssemblies)
     {
         var classification = DependencyClassification.Unknown;
-        if (referenceAssemblies.Contains(library.GetName().Name))
-        {
-            classification = DependencyClassification.Reference;
-        }
+        if (referenceAssemblies.Contains(library.GetName().Name)) classification = DependencyClassification.Reference;
 
         return new(library, classification);
     }
@@ -70,16 +67,10 @@ internal class AssemblyCandidateResolver
         ISet<Assembly> processedAssemblies
     )
     {
-        if (!processedAssemblies.Add(assembly))
-        {
-            return;
-        }
+        if (!processedAssemblies.Add(assembly)) return;
 
         var key = assembly.GetName().Name;
-        if (!string.IsNullOrWhiteSpace(key) && !dependenciesWithNoDuplicates.ContainsKey(key))
-        {
-            dependenciesWithNoDuplicates.Add(key, CreateDependency(assembly, referenceAssemblies));
-        }
+        if (!string.IsNullOrWhiteSpace(key) && !dependenciesWithNoDuplicates.ContainsKey(key)) dependenciesWithNoDuplicates.Add(key, CreateDependency(assembly, referenceAssemblies));
 
         foreach (var dependency in assembly.GetReferencedAssemblies())
         {
@@ -87,9 +78,7 @@ internal class AssemblyCandidateResolver
              || dependency.Name?.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) == true
              || dependency.Name?.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase) == true
              || dependency.Name?.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) == true)
-            {
                 continue;
-            }
 
             Assembly dependentAssembly;
             try
@@ -130,28 +119,17 @@ internal class AssemblyCandidateResolver
          || dependency.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase)
          || dependency.StartsWith("Windows", StringComparison.OrdinalIgnoreCase)
          || dependency.StartsWith("DynamicProxyGenAssembly", StringComparison.OrdinalIgnoreCase))
-        {
             return DependencyClassification.NotCandidate;
-        }
 
-        if (!_dependencies.TryGetValue(dependency, out var candidateEntry) || candidateEntry.Assembly == null)
-        {
-            return DependencyClassification.Unknown;
-        }
+        if (!_dependencies.TryGetValue(dependency, out var candidateEntry) || candidateEntry.Assembly == null) return DependencyClassification.Unknown;
 
-        if (candidateEntry.Classification != DependencyClassification.Unknown)
-        {
-            return candidateEntry.Classification;
-        }
+        if (candidateEntry.Classification != DependencyClassification.Unknown) return candidateEntry.Classification;
 
         var classification = DependencyClassification.NotCandidate;
 
         foreach (var candidateDependency in candidateEntry.Assembly.GetReferencedAssemblies())
         {
-            if (string.IsNullOrWhiteSpace(candidateDependency.Name) || processedAssemblies.Contains(candidateDependency.Name))
-            {
-                continue;
-            }
+            if (string.IsNullOrWhiteSpace(candidateDependency.Name) || processedAssemblies.Contains(candidateDependency.Name)) continue;
 
             var dependencyClassification = ComputeClassification(candidateDependency.Name, processedAssemblies);
             if (dependencyClassification == DependencyClassification.Candidate || dependencyClassification == DependencyClassification.Reference)
@@ -176,9 +154,7 @@ internal class AssemblyCandidateResolver
         {
             if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate or DependencyClassification.NotCandidate
              && dependency.Value.Assembly is { })
-            {
                 yield return dependency.Value.Assembly;
-            }
         }
     }
 
@@ -190,10 +166,7 @@ internal class AssemblyCandidateResolver
     {
         foreach (var dependency in _dependencies)
         {
-            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate && dependency.Value.Assembly is { })
-            {
-                yield return dependency.Value;
-            }
+            if (ComputeClassification(dependency.Key) is DependencyClassification.Candidate && dependency.Value.Assembly is { }) yield return dependency.Value;
         }
     }
 

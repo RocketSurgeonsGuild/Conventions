@@ -277,10 +277,7 @@ public class ConventionContextTests : AutoFakeTest
     {
         public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             services.AddSingleton(A.Fake<IAbc>());
             services.AddSingleton(A.Fake<IAbc2>());
@@ -291,10 +288,7 @@ public class ConventionContextTests : AutoFakeTest
     {
         public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             services.AddSingleton(convention);
         }
@@ -304,10 +298,7 @@ public class ConventionContextTests : AutoFakeTest
     {
         public ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             if (convention is { })
                 services.AddSingleton(convention);

@@ -40,9 +40,7 @@ public static class ModuleInitializer
                         "Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.",
                         StringComparison.OrdinalIgnoreCase
                     ))
-                {
                     return s.Substring(0, s.IndexOf('"', s.IndexOf('"') + 1) + 2) + "\"\")]";
-                }
 
                 return s;
             }

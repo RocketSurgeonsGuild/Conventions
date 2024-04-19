@@ -15,6 +15,8 @@ public static class DependencyContextConventionContextBuilderExtensions
     /// <returns></returns>
     public static ConventionContextBuilder UseDependencyContext(this ConventionContextBuilder builder, DependencyContext dependencyContext)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(dependencyContext);
         return builder.UseConventionFactory(new DependencyContextConventionFactory(dependencyContext));
     }
 }

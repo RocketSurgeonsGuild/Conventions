@@ -11,13 +11,8 @@ public static class DatabaseConfiguratorExtensions
         foreach (var item in conventionContext.Conventions.Get<IDatabaseConvention, DatabaseConvention>())
         {
             if (item is IDatabaseConvention convention)
-            {
                 convention.Register(conventionContext, configurator);
-            }
-            else if (item is DatabaseConvention @delegate)
-            {
-                @delegate(conventionContext, configurator);
-            }
+            else if (item is DatabaseConvention @delegate) @delegate(conventionContext, configurator);
         }
 
         return configurator;

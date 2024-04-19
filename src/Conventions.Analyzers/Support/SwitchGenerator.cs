@@ -47,11 +47,9 @@ internal static class SwitchGenerator
     )
     {
         if (blocks is [var localBlock,])
-        {
             return SwitchSection()
                   .AddStatements(localBlock.block.Statements.ToArray())
                   .AddStatements(BreakStatement());
-        }
 
         var section = SwitchStatement(identifier);
         foreach (var item in blocks.GroupBy(regroup))

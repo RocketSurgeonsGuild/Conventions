@@ -49,10 +49,7 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
 
     private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
     {
-        if (!candidates.Any())
-        {
-            return Enumerable.Empty<Assembly>();
-        }
+        if (!candidates.Any()) return Enumerable.Empty<Assembly>();
 
         // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
         var candidatesResolver = new AssemblyCandidateResolver(
@@ -90,10 +87,7 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
             : selector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(selector.AssemblyDependencies)
                 : selector.Assemblies;
-        if (!selector.SystemAssemblies)
-        {
-            assemblies = assemblies.Where(z => !_coreAssemblies.Contains(z.GetName().Name ?? ""));
-        }
+        if (!selector.SystemAssemblies) assemblies = assemblies.Where(z => !_coreAssemblies.Contains(z.GetName().Name ?? ""));
 
         return assemblies;
     }

@@ -12,10 +12,8 @@ internal class ConsoleInterceptor(
     {
         commandInterceptor?.Intercept(context, settings);
         if (settings is not AppSettings appSettings)
-        {
-//            _consoleResult.ExitCode = CommandLineConstants.WaitCode;
+            //            _consoleResult.ExitCode = CommandLineConstants.WaitCode;
             return;
-        }
 
         appSettingsConfigurationSource.Update(context, appSettings);
     }

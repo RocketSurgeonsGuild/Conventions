@@ -45,10 +45,7 @@ internal class AppSettingsConfigurationProvider : ConfigurationProvider, IEnumer
                 LogLevel.None     => null,
                 _                 => appSettings.LogLevel.Value.ToString()
             };
-            if (serilogStringValue is not null)
-            {
-                additionalData.Add("Serilog:MinimumLevel:Default", serilogStringValue);
-            }
+            if (serilogStringValue is not null) additionalData.Add("Serilog:MinimumLevel:Default", serilogStringValue);
         }
 
         foreach (var item in additionalData)

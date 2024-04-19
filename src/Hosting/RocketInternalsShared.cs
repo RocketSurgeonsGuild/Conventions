@@ -52,7 +52,6 @@ internal static class RocketInternalsShared
         );
 
         if (!string.IsNullOrEmpty(hostApplicationBuilder.Environment.EnvironmentName))
-        {
             hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
                 sources => sources
                           .OfType<FileConfigurationSource>()
@@ -68,7 +67,6 @@ internal static class RocketInternalsShared
                    .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, hostApplicationBuilder.Environment.EnvironmentName))
                    .Select(z => z.Factory(null))
             );
-        }
 
         hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
             sources => sources
@@ -87,9 +85,7 @@ internal static class RocketInternalsShared
              || ( item is EnvironmentVariablesConfigurationSource env
                  && ( string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) )
              || ( item is FileConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase) ))
-            {
                 continue;
-            }
 
             source = item;
             break;
@@ -102,7 +98,6 @@ internal static class RocketInternalsShared
 
         var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, hostApplicationBuilder.Configuration, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0, })
-        {
             hostApplicationBuilder.Configuration.Sources.Insert(
                 index + 1,
                 new ChainedConfigurationSource
@@ -111,6 +106,5 @@ internal static class RocketInternalsShared
                     ShouldDisposeConfiguration = true,
                 }
             );
-        }
     }
 }

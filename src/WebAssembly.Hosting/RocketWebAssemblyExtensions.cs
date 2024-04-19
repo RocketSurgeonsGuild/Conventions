@@ -34,8 +34,8 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
-        if (builder == null) throw new ArgumentNullException(nameof(builder));
-        if (func == null) throw new ArgumentNullException(nameof(func));
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(func);
         var contextBuilder = await func(builder, cancellationToken);
         await action.Invoke(contextBuilder, cancellationToken);
         await Configure(builder, await ConventionContext.FromAsync(contextBuilder, cancellationToken), cancellationToken);
@@ -250,7 +250,8 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object>());
         await action(contextBuilder, cancellationToken);
         await Configure(builder, await ConventionContext.FromAsync(contextBuilder, cancellationToken), cancellationToken);
@@ -270,6 +271,8 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(getConventions);
         var contextBuilder = new ConventionContextBuilder(new Dictionary<object, object>()).UseConventionFactory(getConventions);
         await Configure(builder, await ConventionContext.FromAsync(contextBuilder, cancellationToken), cancellationToken);
         return builder.Build();
@@ -288,8 +291,8 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken = default
     )
     {
-        if (builder == null) throw new ArgumentNullException(nameof(builder));
-        if (conventionContextBuilder == null) throw new ArgumentNullException(nameof(conventionContextBuilder));
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(conventionContextBuilder);
         await Configure(builder, await ConventionContext.FromAsync(conventionContextBuilder, cancellationToken), cancellationToken);
         return builder.Build();
     }
@@ -396,7 +399,6 @@ public static class RocketWebAssemblyExtensions
 
         var cb = await new ConfigurationBuilder().ApplyConventionsAsync(conventionContext, builder.Configuration, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0, })
-        {
             configurationBuilder.Add(
                 new ChainedConfigurationSource
                 {
@@ -404,12 +406,8 @@ public static class RocketWebAssemblyExtensions
                     ShouldDisposeConfiguration = true,
                 }
             );
-        }
 
-        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
-        {
-            builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
-        }
+        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory) builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
 
         return builder;
 

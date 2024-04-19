@@ -38,20 +38,11 @@ internal class YamlConfigurationStreamParser
 
     private void VisitYamlNode(string context, YamlNode node)
     {
-        if (node is YamlScalarNode scalarNode)
-        {
-            VisitYamlScalarNode(context, scalarNode);
-        }
+        if (node is YamlScalarNode scalarNode) VisitYamlScalarNode(context, scalarNode);
 
-        if (node is YamlMappingNode mappingNode)
-        {
-            VisitYamlMappingNode(context, mappingNode);
-        }
+        if (node is YamlMappingNode mappingNode) VisitYamlMappingNode(context, mappingNode);
 
-        if (node is YamlSequenceNode sequenceNode)
-        {
-            VisitYamlSequenceNode(context, sequenceNode);
-        }
+        if (node is YamlSequenceNode sequenceNode) VisitYamlSequenceNode(context, sequenceNode);
     }
 
     private void VisitYamlScalarNode(string context, YamlScalarNode yamlValue)
@@ -60,10 +51,7 @@ internal class YamlConfigurationStreamParser
         EnterContext(context);
         var currentKey = _currentPath;
 
-        if (_data.ContainsKey(currentKey))
-        {
-            throw new FormatException($"A duplicate key '{currentKey}' was found.");
-        }
+        if (_data.ContainsKey(currentKey)) throw new FormatException($"A duplicate key '{currentKey}' was found.");
 
         _data[currentKey] = IsNullValue(yamlValue) ? null : yamlValue.Value;
         ExitContext();

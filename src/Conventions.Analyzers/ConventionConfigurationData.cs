@@ -21,25 +21,13 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                 (config, _) =>
                 {
                     var data = InnerConventionConfigurationData.FromDefaults(defaults);
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value))
-                    {
-                        data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
-                    }
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value)) data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value))
-                    {
-                        data = data with { ClassName = value, WasConfigured = true, };
-                    }
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value)) data = data with { ClassName = value, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.MethodName)}", out value))
-                    {
-                        data = data with { MethodName = value, WasConfigured = true, };
-                    }
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.MethodName)}", out value)) data = data with { MethodName = value, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value))
-                    {
-                        data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
-                    }
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value)) data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
 
                     return data;
                 }
@@ -62,10 +50,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                     (attributes, _) =>
                     {
                         var data = InnerConventionConfigurationData.FromDefaults(defaults);
-                        if (!attributes.Any())
-                        {
-                            return data;
-                        }
+                        if (!attributes.Any()) return data;
 
                         data = data with { WasConfigured = true, };
 
@@ -157,10 +142,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
     private static string GetNamespaceForCompilation(Compilation compilation, bool postfix = false)
     {
         var @namespace = compilation.AssemblyName ?? "";
-        if (postfix)
-        {
-            return ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.');
-        }
+        if (postfix) return ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.');
 
         return @namespace;
     }
@@ -178,7 +160,6 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
             }
         );
         if (type == "Import")
-        {
             list = list.Add(
                 AttributeList(
                         SingletonSeparatedList(
@@ -196,7 +177,6 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                     )
                    .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
             );
-        }
 
         return list;
     }

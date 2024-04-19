@@ -24,19 +24,15 @@ internal static class DataHelpers
              || simpleLambdaExpressionSyntax is { ExpressionBody: null, }
              || simpleLambdaExpressionSyntax.ExpressionBody is not
                     InvocationExpressionSyntax body)
-            {
-//                context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAnExpression, selectorExpression.GetLocation()));
+                //                context.ReportDiagnostic(Diagnostic.Create(Diagnostics.MustBeAnExpression, selectorExpression.GetLocation()));
                 return;
-            }
 
             expression = body;
         }
 
         if (expression.Expression is not MemberAccessExpressionSyntax memberAccessExpressionSyntax
          || !memberAccessExpressionSyntax.IsKind(SyntaxKind.SimpleMemberAccessExpression))
-        {
             return;
-        }
 
         if (memberAccessExpressionSyntax.Expression is InvocationExpressionSyntax childExpression)
         {
@@ -70,13 +66,9 @@ internal static class DataHelpers
                 if (cancellationToken.IsCancellationRequested) return;
                 var selector = HandleCompiledAssemblySelector(semanticModel, expression, memberAccessExpressionSyntax.Name);
                 if (selector is { })
-                {
                     assemblies.Add(selector);
-                }
                 else
-                {
                     classFilter = HandleCompiledImplementationTypeSelector(expression, memberAccessExpressionSyntax.Name);
-                }
             }
 
             if (typeName == "Rocket.Surgery.Conventions.Reflection.ITypeFilter")
@@ -167,15 +159,10 @@ internal static class DataHelpers
     )
     {
         if (name.ToFullString() == "GetTypes" && expression.ArgumentList.Arguments.Count is >= 0 and <= 2)
-        {
             foreach (var argument in expression.ArgumentList.Arguments)
             {
-                if (argument.Expression is LiteralExpressionSyntax literalExpressionSyntax && literalExpressionSyntax.Token.IsKind(SyntaxKind.TrueKeyword))
-                {
-                    return ClassFilter.PublicOnly;
-                }
+                if (argument.Expression is LiteralExpressionSyntax literalExpressionSyntax && literalExpressionSyntax.Token.IsKind(SyntaxKind.TrueKeyword)) return ClassFilter.PublicOnly;
             }
-        }
 
         return ClassFilter.All;
     }

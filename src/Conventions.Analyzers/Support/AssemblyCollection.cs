@@ -47,10 +47,7 @@ internal static class AssemblyCollection
             privateAssemblies
         );
 
-        if (privateAssemblies.Any())
-        {
-            cu = cu.AddUsings(UsingDirective(ParseName("System.Runtime.Loader")));
-        }
+        if (privateAssemblies.Any()) cu = cu.AddUsings(UsingDirective(ParseName("System.Runtime.Loader")));
 
         var members =
             ClassDeclaration(configurationData.ClassName)
@@ -139,9 +136,7 @@ internal static class AssemblyCollection
             {
                 TypeArguments: [{ Name: "IAssemblyProviderAssemblySelector", }, ..,],
             })
-        {
             return default;
-        }
 
         return ( baseData.method, baseData.selector, semanticModel: context.SemanticModel );
     }
@@ -235,10 +230,7 @@ internal static class AssemblyCollection
 
             var source = Helpers.CreateSourceLocation(methodCallSyntax, context.CancellationToken);
             // disallow list?
-            if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs"))
-            {
-                continue;
-            }
+            if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs")) continue;
 
             var i = new Item(source, assemblyFilter);
             items.Add(i);
@@ -260,10 +252,7 @@ internal static class AssemblyCollection
             ParameterList(
                 SingletonSeparatedList(Parameter(Identifier("context")).WithType(IdentifierName("AssemblyLoadContext")))
             );
-        if (!privateAssemblies.Any())
-        {
-            parameters = ParameterList();
-        }
+        if (!privateAssemblies.Any()) parameters = ParameterList();
 
         return ClassDeclaration("AssemblyProvider")
               .AddAttributeLists(Helpers.CompilerGeneratedAttributes)
@@ -304,11 +293,9 @@ internal static class AssemblyCollection
                      );
 
         if (!referencesXUnit)
-        {
             return method
                   .WithExpressionBody(ArrowExpressionClause(ObjectCreationExpression(IdentifierName("AssemblyProvider")).AddArgumentListArguments(args)))
                   .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-        }
 
         return method.WithBody(
             Block(
