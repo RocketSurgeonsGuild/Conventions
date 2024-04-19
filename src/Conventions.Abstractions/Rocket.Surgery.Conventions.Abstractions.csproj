@@ -13,11 +13,6 @@
             PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
             OutputItemType="Analyzer"
         />
-        <PackageReference
-            Include="Polyfill"
-            IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
-            PrivateAssets="All"
-        />
         <PackageReference Include="Microsoft.Extensions.Logging" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />

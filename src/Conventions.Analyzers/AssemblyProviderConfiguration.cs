@@ -389,11 +389,10 @@ internal static partial class AssemblyProviderConfiguration
         {
             if (CompiledAssemblyFilter._coreAssemblies.Contains(assemblyName)) return compilation.GetTypeByMetadataName(typeName);
 
-            if (!assemblySymbols.TryGetValue(assemblyName, out var assembly)
-             || FindTypeVisitor.FindType(compilation, assembly, typeName) is not { } type)
-                return null;
-
-            return type;
+            return !assemblySymbols.TryGetValue(assemblyName, out var assembly)
+             || FindTypeVisitor.FindType(compilation, assembly, typeName) is not { } type
+                    ? compilation.GetTypeByMetadataName(typeName)
+                    : type;
         }
     }
 

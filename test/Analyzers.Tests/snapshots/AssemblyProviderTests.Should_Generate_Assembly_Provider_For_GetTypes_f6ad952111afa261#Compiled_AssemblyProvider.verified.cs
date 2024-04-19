@@ -30,9 +30,6 @@ namespace TestProject.Conventions
                 {
                     // FilePath: Input1.cs Member: Register
                     case 18:
-                        yield return RocketSurgeryConventionsAbstractions.GetType("EnumPolyfill");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Polyfill");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("RegexPolyfill");
                         yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions);
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports+AssemblyProvider");
@@ -106,7 +103,6 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupConvention);
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ThrowHelper");
                         yield return typeof(global::Rocket.Surgery.Conventions.UnitTestConventionAttribute);
-                        yield return RocketSurgeryConventionsAbstractions.GetType("StringPolyfill");
                         break;
                 }
             }
