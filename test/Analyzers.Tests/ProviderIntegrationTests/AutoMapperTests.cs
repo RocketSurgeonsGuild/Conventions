@@ -47,8 +47,7 @@ public class TestConvention : IServiceAsyncConvention {
 
     public class DocumentCreatedByValueResolver<TSource, TDestination> : DocumentStringMetadataValueResolver<TSource, TDestination>;
 
-    public abstract class DocumentStringMetadataValueResolver<TSource, TDestination>()
-        : IValueResolver<TSource, TDestination, string>
+    public abstract class DocumentStringMetadataValueResolver<TSource, TDestination> : IValueResolver<TSource, TDestination, string>
     {
         protected virtual string GetValue(string metadataValue)
         {
