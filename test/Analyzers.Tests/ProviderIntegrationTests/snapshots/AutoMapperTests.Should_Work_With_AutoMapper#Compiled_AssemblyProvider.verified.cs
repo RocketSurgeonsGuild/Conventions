@@ -39,6 +39,7 @@ namespace TestProject.Conventions
                         yield return RocketSurgeryConventionsAnalyzersTests.GetType("Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.AutoMapperTests+A");
                         yield return RocketSurgeryConventionsAnalyzersTests.GetType("Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.AutoMapperTests+C");
                         yield return RocketSurgeryConventionsAnalyzersTests.GetType("Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.AutoMapperTests+D");
+                        yield return typeof(global::Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.AutoMapperTests.DocumentCreatedByValueResolver<, >);
                         yield return RocketSurgeryConventionsAnalyzersTests.GetType("Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.AutoMapperTests+E");
                         break;
                 }

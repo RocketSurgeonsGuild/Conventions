@@ -72,7 +72,7 @@ internal static class Helpers
             if (namedTypeSymbol.IsOpenGenericType())
             {
                 sb.Append('<');
-                for (var i = 1; i < namedTypeSymbol.Arity - 1; i++)
+                for (var i = 1; i < namedTypeSymbol.Arity; i++)
                     sb.Append(',');
                 sb.Append('>');
             }
@@ -135,7 +135,7 @@ internal static class Helpers
             if (namedTypeSymbol.IsOpenGenericType())
             {
                 sb.Append('<');
-                for (var i = 1; i < namedTypeSymbol.Arity - 1; i++)
+                for (var i = 1; i < namedTypeSymbol.Arity; i++)
                     sb.Append(',');
                 sb.Append('>');
             }
