@@ -30,7 +30,6 @@ namespace TestProject.Conventions
                 {
                     // FilePath: Input1.cs Member: Register
                     case 18:
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Polyfill");
                         yield return typeof(global::Rocket.Surgery.Conventions.ImportHelpers);
                         yield return typeof(global::Rocket.Surgery.Conventions.ImportsTypeAttribute);
                         yield return RocketSurgeryConventions.GetType("System.Runtime.CompilerServices.IsExternalInit");
@@ -40,9 +39,6 @@ namespace TestProject.Conventions
 
             private Assembly _RocketSurgeryConventions;
             private Assembly RocketSurgeryConventions => _RocketSurgeryConventions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions, Version=version, Culture=neutral, PublicKeyToken=null"));
-
-            private Assembly _RocketSurgeryConventionsAbstractions;
-            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null"));
         }
     }
 }

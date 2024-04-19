@@ -59,10 +59,7 @@ public class DiagnosticLogger : ILogger
         Func<TState, Exception?, string> formatter
     )
     {
-        if (formatter == null)
-        {
-            throw new ArgumentNullException(nameof(formatter));
-        }
+        ArgumentNullException.ThrowIfNull(formatter);
 
         DiagnosticSource.Write(
             GetName(logLevel),

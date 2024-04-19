@@ -38,10 +38,7 @@ internal class ConventionProvider : IConventionProvider
         }
         else
         {
-            if (!sorted.Contains(item))
-            {
-                throw new NotSupportedException($"Cyclic dependency found {item}");
-            }
+            if (!sorted.Contains(item)) throw new NotSupportedException($"Cyclic dependency found {item}");
         }
     }
 
@@ -421,10 +418,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     {
         if (Convention != null)
         {
-            if (HostType != HostType.Undefined)
-            {
-                return $"{HostType}:{Convention.GetType().Name}";
-            }
+            if (HostType != HostType.Undefined) return $"{HostType}:{Convention.GetType().Name}";
 
             return Convention.GetType().Name;
         }

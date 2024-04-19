@@ -20,10 +20,14 @@ public static class DependencyModelTestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, Type type, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        Type type,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
-        if (type == null) throw new ArgumentNullException(nameof(type));
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(type);
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return ForTesting(builder, DependencyContext.Load(type.Assembly)!, loggerFactory, contentRootPath);
     }
@@ -36,10 +40,14 @@ public static class DependencyModelTestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, Assembly assembly, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        Assembly assembly,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
-        if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(assembly);
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return ForTesting(builder, DependencyContext.Load(assembly)!, loggerFactory, contentRootPath);
     }
@@ -52,9 +60,14 @@ public static class DependencyModelTestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, DependencyContext context, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        DependencyContext context,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(context);
         loggerFactory ??= NullLoggerFactory.Instance;
         var logger = loggerFactory.CreateLogger("TestContext");
 

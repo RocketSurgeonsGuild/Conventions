@@ -68,10 +68,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
 
     private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
     {
-        if (candidates.Count == 0)
-        {
-            return Enumerable.Empty<Assembly>();
-        }
+        if (candidates.Count == 0) return Enumerable.Empty<Assembly>();
 
         var candidatesResolver = new RuntimeLibraryCandidateResolver(
             _dependencyContext.RuntimeLibraries,
@@ -100,6 +97,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
         int lineNumber = 0
     )
     {
+        ArgumentNullException.ThrowIfNull(action);
         var selector = new AssemblyProviderAssemblySelector();
         action(selector);
         var assemblies = selector.AllAssemblies
@@ -107,10 +105,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
             : selector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(selector.AssemblyDependencies)
                 : selector.Assemblies;
-        if (!selector.SystemAssemblies)
-        {
-            assemblies = assemblies.Where(z => !_coreAssemblies.Contains(z.GetName().Name ?? ""));
-        }
+        if (!selector.SystemAssemblies) assemblies = assemblies.Where(z => !_coreAssemblies.Contains(z.GetName().Name ?? ""));
 
         return assemblies;
     }
@@ -133,6 +128,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
         int lineNumber = 0
     )
     {
+        ArgumentNullException.ThrowIfNull(action);
         var assemblySelector = new AssemblyProviderAssemblySelector();
         action(assemblySelector);
         var assemblies = assemblySelector.AllAssemblies

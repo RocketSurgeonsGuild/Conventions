@@ -103,11 +103,7 @@ public class ConventionContextBuilder
     /// <returns>IConventionHostBuilder.</returns>
     public ConventionContextBuilder UseDiagnosticLogging(Action<ILoggingBuilder> action)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
-
+        ArgumentNullException.ThrowIfNull(action);
         UseDiagnosticLogger(
             new ServiceCollection()
                .AddLogging(action)

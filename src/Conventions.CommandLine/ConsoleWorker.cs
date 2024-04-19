@@ -41,10 +41,7 @@ internal class ConsoleWorker
         }
         finally
         {
-            if (consoleResult.ExitCode != CommandLineConstants.WaitCode)
-            {
-                _ = Task.Run(hostLifetime.StopApplication, cancellationToken);
-            }
+            if (consoleResult.ExitCode != CommandLineConstants.WaitCode) _ = Task.Run(hostLifetime.StopApplication, cancellationToken);
         }
     }
 

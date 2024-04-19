@@ -13,10 +13,7 @@ internal static class Helpers
 {
     public static string GetFullMetadataName(ISymbol? s)
     {
-        if (s == null || isRootNamespace(s))
-        {
-            return string.Empty;
-        }
+        if (s == null || isRootNamespace(s)) return string.Empty;
 
         var sb = new StringBuilder(s.MetadataName);
         var last = s;
@@ -26,13 +23,9 @@ internal static class Helpers
         while (!isRootNamespace(s))
         {
             if (s is ITypeSymbol && last is ITypeSymbol)
-            {
                 sb.Insert(0, '+');
-            }
             else
-            {
                 sb.Insert(0, '.');
-            }
 
             sb.Insert(0, s.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
             //sb.Insert(0, s.MetadataName);
@@ -60,10 +53,7 @@ internal static class Helpers
 
     public static string GetGenericDisplayName(ISymbol? symbol)
     {
-        if (symbol == null || IsRootNamespace(symbol))
-        {
-            return string.Empty;
-        }
+        if (symbol == null || IsRootNamespace(symbol)) return string.Empty;
 
         var sb = new StringBuilder(symbol.MetadataName);
         if (symbol is INamedTypeSymbol namedTypeSymbol && ( namedTypeSymbol.IsOpenGenericType() || namedTypeSymbol.IsGenericType ))
@@ -73,7 +63,10 @@ internal static class Helpers
             {
                 sb.Append('<');
                 for (var i = 1; i < namedTypeSymbol.Arity; i++)
+                {
                     sb.Append(',');
+                }
+
                 sb.Append('>');
             }
             else
@@ -98,13 +91,9 @@ internal static class Helpers
         while (!IsRootNamespace(workingSymbol))
         {
             if (workingSymbol is ITypeSymbol && last is ITypeSymbol)
-            {
                 sb.Insert(0, '+');
-            }
             else
-            {
                 sb.Insert(0, '.');
-            }
 
             sb.Insert(0, workingSymbol.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat).Trim());
             //sb.Insert(0, symbol.MetadataName);
@@ -123,10 +112,7 @@ internal static class Helpers
 
     public static string GetTypeOfName(ISymbol? symbol)
     {
-        if (symbol == null || IsRootNamespace(symbol))
-        {
-            return string.Empty;
-        }
+        if (symbol == null || IsRootNamespace(symbol)) return string.Empty;
 
         var sb = new StringBuilder(symbol.MetadataName);
         if (symbol is INamedTypeSymbol namedTypeSymbol && ( namedTypeSymbol.IsOpenGenericType() || namedTypeSymbol.IsGenericType ))
@@ -136,7 +122,10 @@ internal static class Helpers
             {
                 sb.Append('<');
                 for (var i = 1; i < namedTypeSymbol.Arity; i++)
+                {
                     sb.Append(',');
+                }
+
                 sb.Append('>');
             }
             else
@@ -161,13 +150,9 @@ internal static class Helpers
         while (!IsRootNamespace(workingSymbol))
         {
             if (workingSymbol is ITypeSymbol && last is ITypeSymbol)
-            {
                 sb.Insert(0, '.');
-            }
             else
-            {
                 sb.Insert(0, '.');
-            }
 
             sb.Insert(0, workingSymbol.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat).Trim());
             //sb.Insert(0, symbol.MetadataName);
@@ -210,10 +195,7 @@ internal static class Helpers
         var matchingBaseTypes = GetBaseTypes(compilation, assignableFromType)
                                .Select(GetUnboundGenericType)
                                .Where(symbol => symbol is { } && compilation.HasImplicitConversion(symbol, assignableToType));
-        if (matchingBaseTypes.Any())
-        {
-            return true;
-        }
+        if (matchingBaseTypes.Any()) return true;
 
         var matchingInterfaces = assignableFromType
                                 .AllInterfaces
@@ -286,9 +268,7 @@ internal static class Helpers
     {
         var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
         if (methodCallSyntax.Expression is not MemberAccessExpressionSyntax memberAccess)
-        {
             throw new InvalidOperationException("Expected a member access expression");
-        }
 
         var source = new SourceLocation(
             memberAccess

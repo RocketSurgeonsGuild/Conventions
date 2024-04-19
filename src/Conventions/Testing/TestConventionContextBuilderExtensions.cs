@@ -185,10 +185,7 @@ public static class TestConventionContextBuilderExtensions
 
     private static void EnsureConfigured(ConventionContextBuilder builder)
     {
-        if (builder.Properties.ContainsKey("__EnsureConfigured__"))
-        {
-            return;
-        }
+        if (builder.Properties.ContainsKey("__EnsureConfigured__")) return;
 
         builder.Set("__EnsureConfigured__", true);
         builder.Set("EnvironmentName", "Test");
@@ -200,19 +197,15 @@ public static class TestConventionContextBuilderExtensions
             {
                 var loggerFactory = builder.GetOrAdd<ILoggerFactory>(() => NullLoggerFactory.Instance);
                 if (loggerFactory != NullLoggerFactory.Instance)
-                {
                     services
                        .RemoveAll(typeof(ILoggerFactory))
                        .AddSingleton(loggerFactory);
-                }
 
                 var logger = builder.GetOrAdd<ILogger>(() => NullLogger.Instance);
                 if (logger != NullLogger.Instance)
-                {
                     services
                        .RemoveAll(typeof(ILogger))
                        .AddSingleton(logger);
-                }
             }
         );
     }

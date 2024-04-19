@@ -56,8 +56,6 @@ public static class RocketHostApplicationExtensions
         await builder.Logging.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
         if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
-        {
             builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken));
-        }
     }
 }

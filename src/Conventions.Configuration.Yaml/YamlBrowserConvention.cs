@@ -12,10 +12,7 @@ public class YamlBrowserConvention : ISetupConvention
 {
     private static IConfigurationSource LoadBlazorWasmYamlFile(Stream? stream)
     {
-        if (stream is null)
-        {
-            throw new NotSupportedException("Yaml is not supported without a stream");
-        }
+        if (stream is null) throw new NotSupportedException("Yaml is not supported without a stream");
 
         return YamlConfigurationExtensions.CreateYamlConfigurationSource(stream);
     }

@@ -20,10 +20,7 @@ public static partial class CommandAppHostBuilderExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, CommandLineConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        ArgumentNullException.ThrowIfNull(container);
 
         EnsureShouldRun(container);
         container.AppendDelegate(@delegate);
@@ -38,10 +35,7 @@ public static partial class CommandAppHostBuilderExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, Action<IConfigurator> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        ArgumentNullException.ThrowIfNull(container);
 
         EnsureShouldRun(container);
         container.AppendDelegate(new CommandLineConvention((_, context) => @delegate(context)));
@@ -56,10 +50,7 @@ public static partial class CommandAppHostBuilderExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, CommandAppConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        ArgumentNullException.ThrowIfNull(container);
 
         EnsureShouldRun(container);
         container.AppendDelegate(@delegate);
@@ -74,10 +65,7 @@ public static partial class CommandAppHostBuilderExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, Action<CommandApp> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        ArgumentNullException.ThrowIfNull(container);
 
         EnsureShouldRun(container);
         container.AppendDelegate(new CommandAppConvention((_, context) => @delegate(context)));
@@ -92,10 +80,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder SetDefaultCommand<TDefaultCommand>(this ConventionContextBuilder container)
         where TDefaultCommand : class, ICommand
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        ArgumentNullException.ThrowIfNull(container);
 
         EnsureShouldRun(container);
         container.AppendDelegate(new CommandAppConvention((_, context) => context.SetDefaultCommand<TDefaultCommand>()));
@@ -121,10 +106,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static async Task<int> RunConsoleAppAsync(this IHost host, CancellationToken cancellationToken = default)
     {
         var result = host.Services.GetService<ConsoleResult>();
-        if (result == null)
-        {
-            LogWarning(host.Services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(CommandAppHostBuilderExtensions)));
-        }
+        if (result == null) LogWarning(host.Services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(CommandAppHostBuilderExtensions)));
 
         await host.StartAsync(cancellationToken);
         await host.WaitForShutdownAsync(cancellationToken);
@@ -139,9 +121,6 @@ public static partial class CommandAppHostBuilderExtensions
 
     private static void EnsureShouldRun(ConventionContextBuilder container)
     {
-        if (!container.Properties.TryGetValue(typeof(ConsoleConvention), out _))
-        {
-            container.Properties.Add(typeof(ConsoleConvention), true);
-        }
+        if (!container.Properties.TryGetValue(typeof(ConsoleConvention), out _)) container.Properties.Add(typeof(ConsoleConvention), true);
     }
 }

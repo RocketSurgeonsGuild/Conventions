@@ -20,5 +20,14 @@
     </ItemGroup>
     <ItemGroup>        
         <Compile Include="..\Conventions.Analyzers\**\*.cs" Exclude="..\Conventions.Analyzers\obj\**\*.cs" />
+        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\ICompiledTypeFilter.cs">
+          <Link>Support\AssemblyProviders\ICompiledTypeFilter.cs</Link>
+        </Compile>        
+        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\AlwaysMatchTypeFilter.cs">
+          <Link>Support\AssemblyProviders\AlwaysMatchTypeFilter.cs</Link>
+        </Compile>        
+        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\CompiledAssemblyFilter.cs">
+          <Link>Support\AssemblyProviders\CompiledAssemblyFilter.cs</Link>
+        </Compile>
     </ItemGroup>
 </Project>

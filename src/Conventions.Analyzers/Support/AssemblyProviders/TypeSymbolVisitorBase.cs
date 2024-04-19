@@ -33,10 +33,7 @@ internal abstract class TypeSymbolVisitorBase
     public override void VisitNamedType(INamedTypeSymbol symbol)
     {
         if (_abort) return;
-        if (symbol.CanBeReferencedByName && typeFilter.IsMatch(compilation, symbol))
-        {
-            _abort = FoundNamedType(symbol);
-        }
+        if (symbol.CanBeReferencedByName && typeFilter.IsMatch(compilation, symbol)) _abort = FoundNamedType(symbol);
 
         if (_abort) return;
         Accept(symbol.GetMembers());

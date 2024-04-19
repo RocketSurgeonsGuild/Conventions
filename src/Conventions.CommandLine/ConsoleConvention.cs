@@ -38,10 +38,7 @@ public class ConsoleConvention : IHostApplicationConvention
 
                 foreach (var item in context.Conventions.Get<ICommandLineConvention, CommandLineConvention>())
                 {
-                    if (!context.Properties.TryGetValue(typeof(ConsoleConvention), out _))
-                    {
-                        context.Properties.Add(typeof(ConsoleConvention), true);
-                    }
+                    if (!context.Properties.TryGetValue(typeof(ConsoleConvention), out _)) context.Properties.Add(typeof(ConsoleConvention), true);
 
                     switch (item)
                     {
@@ -55,18 +52,12 @@ public class ConsoleConvention : IHostApplicationConvention
                 }
 
                 var defaultCommandProperty = configurator.GetType().GetProperty("DefaultCommand");
-                if (defaultCommandProperty?.GetValue(configurator) == null)
-                {
-                    command.SetDefaultCommand<DefaultCommand>();
-                }
+                if (defaultCommandProperty?.GetValue(configurator) == null) command.SetDefaultCommand<DefaultCommand>();
             }
         );
 
         // We don't want to run if there were no possible command conventions.
-        if (!context.Properties.TryGetValue(typeof(ConsoleConvention), out _))
-        {
-            return;
-        }
+        if (!context.Properties.TryGetValue(typeof(ConsoleConvention), out _)) return;
 
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         builder.Services.AddSingleton<IAnsiConsole>(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);

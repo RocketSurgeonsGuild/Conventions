@@ -45,9 +45,7 @@ internal static class TypeCollection
             {
                 TypeArguments: [{ Name: "ITypeProviderAssemblySelector", }, ..,],
             })
-        {
             return default;
-        }
 
         return ( baseData.method, baseData.selector, semanticModel: context.SemanticModel );
     }

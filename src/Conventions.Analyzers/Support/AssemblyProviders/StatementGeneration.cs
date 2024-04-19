@@ -73,7 +73,6 @@ internal static class StatementGeneration
             {
                 var name = ParseTypeName(type.ConstructUnboundGenericType().ToDisplayString());
                 if (name is GenericNameSyntax genericNameSyntax)
-                {
                     name = genericNameSyntax.WithTypeArgumentList(
                         TypeArgumentList(
                             SeparatedList<TypeSyntax>(
@@ -81,7 +80,6 @@ internal static class StatementGeneration
                             )
                         )
                     );
-                }
 
                 return InvocationExpression(
                         MemberAccessExpression(
@@ -101,10 +99,7 @@ internal static class StatementGeneration
             }
         }
 
-        if (compilation.IsSymbolAccessibleWithin(type, compilation.Assembly))
-        {
-            return TypeOfExpression(ParseTypeName(Helpers.GetTypeOfName(type)));
-        }
+        if (compilation.IsSymbolAccessibleWithin(type, compilation.Assembly)) return TypeOfExpression(ParseTypeName(Helpers.GetTypeOfName(type)));
 
         return GetPrivateType(compilation, type);
     }
@@ -142,15 +137,10 @@ internal static class StatementGeneration
                               .GetBaseTypes(compilation, type)
                               .FirstOrDefault(z => z.IsGenericType && compilation.HasImplicitConversion(z, relatedType));
                 if (baseType == null)
-                {
                     // ReSharper disable once AccessToModifiedClosure
                     baseType = type.AllInterfaces.FirstOrDefault(z => z.IsGenericType && compilation.HasImplicitConversion(z, relatedType));
-                }
 
-                if (baseType != null)
-                {
-                    type = type.Construct(baseType.TypeArguments.ToArray());
-                }
+                if (baseType != null) type = type.Construct(baseType.TypeArguments.ToArray());
             }
         }
 
@@ -168,13 +158,11 @@ internal static class StatementGeneration
                 )
             );
         if (type.IsGenericType && !type.IsOpenGenericType())
-        {
             return InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expression, IdentifierName("MakeGenericType")))
                .WithArgumentList(
                     // ReSharper disable once NullableWarningSuppressionIsUsed
                     ArgumentList(SeparatedList(type.TypeArguments.Select(t => Argument(GetTypeOfExpression(compilation, ( t as INamedTypeSymbol )!)))))
                 );
-        }
 
         return expression;
     }

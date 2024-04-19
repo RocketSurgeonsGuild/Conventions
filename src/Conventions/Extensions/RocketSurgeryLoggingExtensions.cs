@@ -33,10 +33,7 @@ public static class RocketSurgeryLoggingExtensions
 
         loggingBuilder.AddConfiguration(configuration.GetSection("Logging"));
         var logLevel = conventionContext.GetOrAdd(() => new RocketLoggingOptions()).GetLogLevel(configuration);
-        if (logLevel.HasValue)
-        {
-            loggingBuilder.SetMinimumLevel(logLevel.Value);
-        }
+        if (logLevel.HasValue) loggingBuilder.SetMinimumLevel(logLevel.Value);
 
         foreach (var item in conventionContext.Conventions.Get<
                      ILoggingConvention,

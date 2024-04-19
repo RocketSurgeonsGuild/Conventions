@@ -18,11 +18,7 @@ public static class HostingConventionExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, HostApplicationConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
-
+        ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
         return container;
     }
@@ -35,11 +31,7 @@ public static class HostingConventionExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, HostApplicationAsyncConvention @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
-
+        ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
         return container;
     }
@@ -52,10 +44,7 @@ public static class HostingConventionExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, Action<IHostApplicationBuilder> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        ArgumentNullException.ThrowIfNull(container);
 
         container.AppendDelegate(new HostApplicationConvention((_, builder) => @delegate(builder)));
         return container;
@@ -69,10 +58,7 @@ public static class HostingConventionExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, Func<IHostApplicationBuilder, ValueTask> @delegate)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        ArgumentNullException.ThrowIfNull(container);
 
         container.AppendDelegate(new HostApplicationAsyncConvention((_, builder, _) => @delegate(builder)));
         return container;
@@ -89,10 +75,7 @@ public static class HostingConventionExtensions
         Func<IHostApplicationBuilder, CancellationToken, ValueTask> @delegate
     )
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
+        ArgumentNullException.ThrowIfNull(container);
 
         container.AppendDelegate(new HostApplicationAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;

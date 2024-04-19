@@ -33,10 +33,7 @@ public sealed class ConventionContext : IConventionContext
     private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
     {
         builder.AddIfMissing(AssemblyLoadContext.Default);
-        if (builder._conventionProviderFactory is null)
-        {
-            throw new NotSupportedException("The convention provider factory must be set on the builder");
-        }
+        if (builder._conventionProviderFactory is null) throw new NotSupportedException("The convention provider factory must be set on the builder");
 
         // ReSharper disable once NullableWarningSuppressionIsUsed
         var assemblyProvider = builder._conventionProviderFactory!.CreateAssemblyProvider(builder);

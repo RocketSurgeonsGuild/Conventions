@@ -74,10 +74,7 @@ internal static partial class AssemblyProviderConfiguration
         foreach (var request in assemblyRequests.OrderBy(z => z.Location.FilePath).ThenBy(z => z.Location.LineNumber).ThenBy(z => z.Location.MemberName))
         {
             // disallow list?
-            if (request.Location.MemberName == "GetAssemblyConventions" && request.Location.FilePath.EndsWith("ConventionFactoryBase.cs"))
-            {
-                continue;
-            }
+            if (request.Location.MemberName == "GetAssemblyConventions" && request.Location.FilePath.EndsWith("ConventionFactoryBase.cs")) continue;
 
             yield return Helpers.AddAssemblyAttribute(getAssembliesKey, GetAssembliesToString(request));
         }
@@ -294,15 +291,9 @@ internal static partial class AssemblyProviderConfiguration
     private static CompiledAssemblyFilter LoadAssemblyFilter(GetAssembliesFilterData data, ImmutableDictionary<string, IAssemblySymbol> assemblySymbols)
     {
         var descriptors = ImmutableArray.CreateBuilder<IAssemblyDescriptor>();
-        if (data.AllAssembly)
-        {
-            descriptors.Add(new AllAssemblyDescriptor());
-        }
+        if (data.AllAssembly) descriptors.Add(new AllAssemblyDescriptor());
 
-        if (data.IncludeSystem)
-        {
-            descriptors.Add(new IncludeSystemAssembliesDescriptor());
-        }
+        if (data.IncludeSystem) descriptors.Add(new IncludeSystemAssembliesDescriptor());
 
         foreach (var item in data.Assembly)
         {
@@ -398,13 +389,10 @@ internal static partial class AssemblyProviderConfiguration
         {
             if (CompiledAssemblyFilter._coreAssemblies.Contains(assemblyName)) return compilation.GetTypeByMetadataName(typeName);
 
-            if (!assemblySymbols.TryGetValue(assemblyName, out var assembly)
-             || FindTypeVisitor.FindType(compilation, assembly, typeName) is not { } type)
-            {
-                return null;
-            }
-
-            return type;
+            return !assemblySymbols.TryGetValue(assemblyName, out var assembly)
+             || FindTypeVisitor.FindType(compilation, assembly, typeName) is not { } type
+                    ? compilation.GetTypeByMetadataName(typeName)
+                    : type;
         }
     }
 

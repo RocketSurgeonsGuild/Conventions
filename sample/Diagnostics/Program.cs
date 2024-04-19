@@ -55,10 +55,7 @@ internal class MyCommand : AsyncCommand<AppSettings>
     {
         using var host = _hostBuilder.Build();
         await host.StartAsync();
-        if (host.Services.GetRequiredService<IConfiguration>() is IConfigurationRoot root)
-        {
-            _console.WriteLine(root.GetDebugView());
-        }
+        if (host.Services.GetRequiredService<IConfiguration>() is IConfigurationRoot root) _console.WriteLine(root.GetDebugView());
 
         return 0;
     }

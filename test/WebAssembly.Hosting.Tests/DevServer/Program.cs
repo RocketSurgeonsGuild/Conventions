@@ -51,7 +51,6 @@ public class DevHostServerProgram
         var applyCopHeaders = builder.Configuration.GetValue<bool>("ApplyCopHeaders");
 
         if (applyCopHeaders)
-        {
             app.Use(
                 async (ctx, next) =>
                 {
@@ -61,16 +60,13 @@ public class DevHostServerProgram
                     {
                         var fileExtension = Path.GetExtension(ctx.Request.Path);
                         if (string.Equals(fileExtension, ".js"))
-                        {
                             // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
                             ApplyCrossOriginPolicyHeaders(ctx);
-                        }
                     }
 
                     await next(ctx);
                 }
             );
-        }
 
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles(
@@ -90,10 +86,8 @@ public class DevHostServerProgram
                 OnPrepareResponse = fileContext =>
                                     {
                                         if (applyCopHeaders)
-                                        {
                                             // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
                                             ApplyCrossOriginPolicyHeaders(fileContext.Context);
-                                        }
                                     },
             }
         );
@@ -113,10 +107,7 @@ public class DevHostServerProgram
             app.Use(
                 (context, next) =>
                 {
-                    if (context.Request.PathBase == pathBase)
-                    {
-                        return next(context);
-                    }
+                    if (context.Request.PathBase == pathBase) return next(context);
 
                     context.Response.StatusCode = 404;
                     return context.Response.WriteAsync($"The server is configured only to " + $"handle request URIs within the PathBase '{pathBase}'.");

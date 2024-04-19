@@ -77,14 +77,9 @@ internal static class ExportConventions
                 }
 
                 if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.UnitTestConventionAttribute))
-                {
                     hostType = _hostTypeUnitTestHost;
-                }
 
-                else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LiveConventionAttribute))
-                {
-                    hostType = _hostTypeLive;
-                }
+                else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LiveConventionAttribute)) hostType = _hostTypeLive;
             }
 
             ExpressionSyntax withDependencies = ObjectCreationExpression(IdentifierName("ConventionWithDependencies"))
@@ -208,14 +203,11 @@ internal static class ExportConventions
                  );
 
         if (data.Configuration.Assembly)
-        {
             cu = cu.AddMembers(
                 data is { Namespace.Length: > 0, } ? NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass) : helperClass
             );
-        }
 
         if (exportedConventions.Length > 0)
-        {
             cu = cu.AddAttributeLists(
                 exportedConventions
                    .Select(
@@ -243,7 +235,6 @@ internal static class ExportConventions
                     )
                    .ToArray()
             );
-        }
 
         context.AddSource(
             "Exported_Conventions.cs",
@@ -253,10 +244,7 @@ internal static class ExportConventions
 
     private static ExpressionSyntax NewConventionOrActivate(INamedTypeSymbol convention)
     {
-        if (convention.Constructors.Length is 0)
-        {
-            return ObjectCreationExpression(ParseName(convention.ToDisplayString()));
-        }
+        if (convention.Constructors.Length is 0) return ObjectCreationExpression(ParseName(convention.ToDisplayString()));
 
         if (convention.Constructors.Count(z => z.DeclaredAccessibility is Accessibility.Internal or Accessibility.Public) == 1)
         {

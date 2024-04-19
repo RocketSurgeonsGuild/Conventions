@@ -1,9 +1,11 @@
 using AutoMapper;
+using MediatR;
+using Microsoft.CodeAnalysis;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests;
 
-public class AutoMapperTests(ITestOutputHelper testOutputHelper) : GeneratorTest(testOutputHelper)
+public class LibraryIntegrationTests(ITestOutputHelper testOutputHelper) : GeneratorTest(testOutputHelper)
 {
     [Fact]
     public async Task Should_Work_With_AutoMapper()
@@ -14,10 +16,15 @@ public class AutoMapperTests(ITestOutputHelper testOutputHelper) : GeneratorTest
                           .AddSources(
                                @"
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.DependencyInjection;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class TestConvention : IServiceAsyncConvention {
-    public ValueTask Register(IConventionContext context, IServiceCollection services, CancellationToken cancellationToken)
+    public ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
     {
         var provider = context.AssemblyProvider;
         var assemblies = provider.GetTypes(z => z.FromAssemblyDependenciesOf<IMapper>().GetTypes(f => f.AssignableTo<Profile>()));
@@ -30,7 +37,7 @@ public class TestConvention : IServiceAsyncConvention {
                           )
                          .NotInfoOf(TypeInfoFilter.Abstract)
                          .KindOf(TypeKindFilter.Class)));
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }
 "
@@ -38,6 +45,74 @@ public class TestConvention : IServiceAsyncConvention {
                           .Build()
                           .GenerateAsync();
 
+        await Verify(result);
+    }
+
+    [Fact]
+    public async Task Should_Work_With_Interface_Assignability()
+    {
+        var targetDep = await Builder
+                             .WithProjectName("targetDp")
+                             .AddReferences(typeof(IMediator))
+                             .AddReferences(typeof(INotification))
+                             .AddSources(
+                                  """"
+                                  using MediatR;
+                                  namespace Syndicates.Core.Support;
+
+                                  public interface IResponseEvent : INotification;
+                                  """"
+                              )
+                             .GenerateAsync();
+        targetDep.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
+        var depWithEvents = await Builder
+                                 .WithProjectName("depWithEvents")
+                                 .AddCompilationReferences(targetDep)
+                                 .AddReferences(targetDep.FinalCompilation.References.ToArray())
+                                 .AddSources(
+                                      """"
+                                      using Syndicates.Core.Support;
+                                      namespace OtherDep;
+
+                                      public partial record CreatedNotification() : IResponseEvent;
+                                      public partial record UpdatedNotification() : IResponseEvent;
+                                      """"
+                                  )
+                                 .GenerateAsync();
+        depWithEvents.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
+        var intermediate = await Builder
+                                .WithProjectName("intermediate")
+                                .AddReferences(depWithEvents.FinalCompilation.References.ToArray())
+                                .AddCompilationReferences(depWithEvents)
+                                .AddSources(
+                                     @"
+using MediatR;
+using Syndicates.Core.Support;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.DependencyInjection;
+using System.Threading;
+using System.Threading.Tasks;
+
+public class TestConvention : IServiceAsyncConvention {
+    public ValueTask Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
+    {
+        var provider = context.AssemblyProvider;
+        var assemblies = provider.GetTypes(z => z.FromAssemblyDependenciesOf<IResponseEvent>().GetTypes(f => f.AssignableToAny(typeof(IResponseEvent))));
+        return ValueTask.CompletedTask;
+    }
+}
+"
+                                 )
+                                .Build()
+                                .GenerateAsync();
+        intermediate.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
+        var result = await Builder
+                          .AddReferences(intermediate.FinalCompilation.References.ToArray())
+                          .AddCompilationReferences(intermediate)
+                          .Build()
+                          .GenerateAsync();
         await Verify(result);
     }
 
