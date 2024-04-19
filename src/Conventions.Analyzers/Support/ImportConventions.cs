@@ -161,6 +161,22 @@ internal static class ImportConventions
 
             var cu = CompilationUnit()
                     .WithAttributeLists(configurationData.ToAttributes("Imports"))
+                    .WithLeadingTrivia(
+                         TriviaList(
+                             Trivia(
+                                 PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                                    .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CA1822")))
+                             ),
+                             Trivia(
+                                 PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                                    .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8618")))
+                             ),
+                             Trivia(
+                                 PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                                    .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8603")))
+                             )
+                         )
+                     )
                     .WithUsings(
                          List(
                              new[]

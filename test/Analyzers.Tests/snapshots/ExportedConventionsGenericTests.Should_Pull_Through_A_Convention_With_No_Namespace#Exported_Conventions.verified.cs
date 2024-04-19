@@ -1,4 +1,7 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Exported_Conventions.cs
+#pragma warning disable CA1822
+#pragma warning disable CS8618
+#pragma warning disable CS8603
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
