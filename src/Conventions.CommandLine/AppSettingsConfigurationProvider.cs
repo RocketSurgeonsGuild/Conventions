@@ -15,9 +15,7 @@ internal class AppSettingsConfigurationProvider : ConfigurationProvider, IEnumer
     ///     Initialize a new instance from the source.
     /// </summary>
     public AppSettingsConfigurationProvider(
-    )
-    {
-    }
+    ) { }
 
     public void Update(CommandContext commandContext, AppSettings appSettings)
     {
@@ -26,7 +24,7 @@ internal class AppSettingsConfigurationProvider : ConfigurationProvider, IEnumer
                              {
                                  [nameof(AppSettings.Trace)] = appSettings.Trace.ToString(CultureInfo.InvariantCulture),
                                  [nameof(AppSettings.Verbose)] = appSettings.Verbose.ToString(CultureInfo.InvariantCulture),
-                                 [nameof(AppSettings.LogLevel)] = appSettings.LogLevel.HasValue ? appSettings.LogLevel.Value.ToString() : ""
+                                 [nameof(AppSettings.LogLevel)] = appSettings.LogLevel.HasValue ? appSettings.LogLevel.Value.ToString() : "",
                              }
                             .Select(z => new KeyValuePair<string, string>($"{nameof(AppSettings)}:{z.Key}", z.Value))
                              // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
@@ -39,13 +37,13 @@ internal class AppSettingsConfigurationProvider : ConfigurationProvider, IEnumer
             additionalData.Add("Logging:Console:LogLevel:Default", appSettings.LogLevel.Value.ToString());
 
             var serilogStringValue = appSettings.LogLevel.Value switch
-            {
-                LogLevel.Trace    => "Verbose",
-                LogLevel.Critical => "Fatal",
-                LogLevel.None     => null,
-                _                 => appSettings.LogLevel.Value.ToString()
-            };
-            if (serilogStringValue is not null) additionalData.Add("Serilog:MinimumLevel:Default", serilogStringValue);
+                                     {
+                                         LogLevel.Trace    => "Verbose",
+                                         LogLevel.Critical => "Fatal",
+                                         LogLevel.None     => null,
+                                         _                 => appSettings.LogLevel.Value.ToString(),
+                                     };
+            if (serilogStringValue is { }) additionalData.Add("Serilog:MinimumLevel:Default", serilogStringValue);
         }
 
         foreach (var item in additionalData)

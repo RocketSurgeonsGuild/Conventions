@@ -7,6 +7,14 @@ namespace Rocket.Surgery.Conventions.Reflection;
 /// </summary>
 internal class RuntimeLibraryCandidateResolver
 {
+    private static Dependency CreateDependency(RuntimeLibrary library, ISet<string> referenceAssemblies)
+    {
+        var classification = DependencyClassification.Unknown;
+        if (referenceAssemblies.Contains(library.Name)) classification = DependencyClassification.Reference;
+
+        return new(library, classification);
+    }
+
     private readonly IDictionary<string, Dependency> _dependencies;
 
     /// <summary>
@@ -28,14 +36,6 @@ internal class RuntimeLibraryCandidateResolver
         _dependencies = dependenciesWithNoDuplicates;
     }
 
-    private static Dependency CreateDependency(RuntimeLibrary library, ISet<string> referenceAssemblies)
-    {
-        var classification = DependencyClassification.Unknown;
-        if (referenceAssemblies.Contains(library.Name)) classification = DependencyClassification.Reference;
-
-        return new Dependency(library, classification);
-    }
-
     private DependencyClassification ComputeClassification(string dependency)
     {
         if (!_dependencies.TryGetValue(dependency, out var candidateEntry)) return DependencyClassification.Unknown;
@@ -46,8 +46,7 @@ internal class RuntimeLibraryCandidateResolver
         foreach (var candidateDependency in candidateEntry.Library.Dependencies)
         {
             var dependencyClassification = ComputeClassification(candidateDependency.Name);
-            if (dependencyClassification == DependencyClassification.Candidate ||
-                dependencyClassification == DependencyClassification.Reference)
+            if (dependencyClassification == DependencyClassification.Candidate || dependencyClassification == DependencyClassification.Reference)
             {
                 classification = DependencyClassification.Candidate;
                 break;
