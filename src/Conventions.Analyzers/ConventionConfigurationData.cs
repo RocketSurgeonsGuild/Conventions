@@ -21,17 +21,13 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                 (config, _) =>
                 {
                     var data = InnerConventionConfigurationData.FromDefaults(defaults);
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value))
-                        data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value)) data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value))
-                        data = data with { ClassName = value, WasConfigured = true, };
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value)) data = data with { ClassName = value, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.MethodName)}", out value))
-                        data = data with { MethodName = value, WasConfigured = true, };
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.MethodName)}", out value)) data = data with { MethodName = value, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value))
-                        data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value)) data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
 
                     return data;
                 }

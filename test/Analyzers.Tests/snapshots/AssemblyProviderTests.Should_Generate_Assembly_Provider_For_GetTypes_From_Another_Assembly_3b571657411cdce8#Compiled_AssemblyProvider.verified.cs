@@ -107,7 +107,6 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Testing.TestConventionContextBuilderExtensions);
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ThrowHelper");
-                        yield return RocketSurgeryConventions.GetType("System.Runtime.CompilerServices.IsExternalInit");
                         break;
                 }
             }

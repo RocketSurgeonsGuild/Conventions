@@ -58,7 +58,7 @@ internal static class AssemblyCollection
                         Token(SyntaxKind.PartialKeyword)
                     )
                 )
-               .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.IsTestProject), assemblyProvider);
+               .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.MsBuildConfig.isTestProject), assemblyProvider);
 
         cu = cu
             .WithLeadingTrivia(
@@ -326,7 +326,7 @@ internal static class AssemblyCollection
         ConventionConfigurationData ImportConfiguration,
         ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetAssemblies,
         ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetTypes,
-        bool IsTestProject
+        (bool isTestProject, string rootNamespace) MsBuildConfig
     );
 
     public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);

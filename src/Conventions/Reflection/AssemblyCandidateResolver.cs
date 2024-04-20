@@ -70,8 +70,7 @@ internal class AssemblyCandidateResolver
         if (!processedAssemblies.Add(assembly)) return;
 
         var key = assembly.GetName().Name;
-        if (!string.IsNullOrWhiteSpace(key) && !dependenciesWithNoDuplicates.ContainsKey(key))
-            dependenciesWithNoDuplicates.Add(key, CreateDependency(assembly, referenceAssemblies));
+        if (!string.IsNullOrWhiteSpace(key) && !dependenciesWithNoDuplicates.ContainsKey(key)) dependenciesWithNoDuplicates.Add(key, CreateDependency(assembly, referenceAssemblies));
 
         foreach (var dependency in assembly.GetReferencedAssemblies())
         {

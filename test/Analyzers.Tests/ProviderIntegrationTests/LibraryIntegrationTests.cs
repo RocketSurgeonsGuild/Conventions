@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.CodeAnalysis;
+using Rocket.Surgery.Conventions.DependencyInjection;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests;
@@ -66,26 +67,26 @@ public class TestConvention : IServiceAsyncConvention {
                              .GenerateAsync();
         targetDep.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
         var depWithEvents = await Builder
-                                 .WithProjectName("depWithEvents")
-                                 .AddCompilationReferences(targetDep)
-                                 .AddReferences(targetDep.FinalCompilation.References.ToArray())
-                                 .AddSources(
-                                      """"
-                                      using Syndicates.Core.Support;
-                                      namespace OtherDep;
+                             .WithProjectName("depWithEvents")
+                             .AddCompilationReferences(targetDep)
+                                .AddReferences(targetDep.FinalCompilation.References.ToArray())
+                             .AddSources(
+                                  """"
+                                  using Syndicates.Core.Support;
+                                  namespace OtherDep;
 
-                                      public partial record CreatedNotification() : IResponseEvent;
-                                      public partial record UpdatedNotification() : IResponseEvent;
-                                      """"
-                                  )
-                                 .GenerateAsync();
+                                  public partial record CreatedNotification() : IResponseEvent;
+                                  public partial record UpdatedNotification() : IResponseEvent;
+                                  """"
+                              )
+                             .GenerateAsync();
         depWithEvents.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
         var intermediate = await Builder
                                 .WithProjectName("intermediate")
-                                .AddReferences(depWithEvents.FinalCompilation.References.ToArray())
-                                .AddCompilationReferences(depWithEvents)
-                                .AddSources(
-                                     @"
+                          .AddReferences(depWithEvents.FinalCompilation.References.ToArray())
+                          .AddCompilationReferences(depWithEvents)
+                          .AddSources(
+                               @"
 using MediatR;
 using Syndicates.Core.Support;
 using Microsoft.Extensions.Configuration;
@@ -104,9 +105,9 @@ public class TestConvention : IServiceAsyncConvention {
     }
 }
 "
-                                 )
-                                .Build()
-                                .GenerateAsync();
+                           )
+                          .Build()
+                          .GenerateAsync();
         intermediate.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
         var result = await Builder
                           .AddReferences(intermediate.FinalCompilation.References.ToArray())

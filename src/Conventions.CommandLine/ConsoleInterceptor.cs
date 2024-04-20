@@ -2,11 +2,10 @@ using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.Conventions.CommandLine;
 
-internal class ConsoleInterceptor
-(
-    AppSettingsConfigurationSource appSettingsConfigurationSource,
-    ICommandInterceptor? commandInterceptor
-)
+internal class ConsoleInterceptor(
+        AppSettingsConfigurationSource appSettingsConfigurationSource,
+        ICommandInterceptor? commandInterceptor
+    )
     : ICommandInterceptor
 {
     public void Intercept(CommandContext context, CommandSettings settings)

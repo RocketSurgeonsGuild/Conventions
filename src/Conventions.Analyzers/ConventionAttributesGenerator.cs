@@ -90,11 +90,18 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
-        var isTestProject = context.AnalyzerConfigOptionsProvider
+        var msBuildConfig = context.AnalyzerConfigOptionsProvider
                                    .Select(
-                                        (provider, _) => provider.GlobalOptions.TryGetValue("build_property.IsTestProject", out var value)
-                                         && bool.TryParse(value, out var v)
-                                         && v
+                                        (provider, _) => ( isTestProject: provider.GlobalOptions.TryGetValue("build_property.IsTestProject", out var isTestProjectString)
+                                                        && bool.TryParse(isTestProjectString, out var isTestProject)
+                                                        && isTestProject,
+                                                           rootNamespace: provider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var rootNamespace)
+                                                               ? rootNamespace
+                                                               : "" )
+                                    );
+        var rootNamespace = context.AnalyzerConfigOptionsProvider
+                                   .Select(
+                                        (provider, _) => provider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var value) ? value : ""
                                     );
 
         context.RegisterSourceOutput(
@@ -104,14 +111,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                .Combine(importConfigurationCandidate)
                .Combine(exportConfigurationCandidate)
                .Combine(hasAssemblyLoadContext)
-               .Combine(isTestProject)
+               .Combine(msBuildConfig)
                .Select(
                     (z, _) => (
                         compilation: z.Left.Left.Left.Left.Left,
                         hasExports: z.Left.Left.Left.Left.Right.Any(),
                         exportedCandidates: z.Left.Left.Left.Left.Right,
                         importConfiguration: z.Left.Left.Left.Right, exportConfiguration: z.Left.Left.Right, hasAssemblyLoadContext: z.Left.Right,
-                        isTestProject: z.Right
+                        msBuildConfig: z.Right
                     )
                 ),
             static (productionContext, tuple) =>
@@ -122,7 +129,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     new(
                         tuple.compilation,
                         tuple.hasExports,
-                        tuple.isTestProject,
+                        tuple.msBuildConfig,
                         tuple.importConfiguration,
                         tuple.exportConfiguration
                     )
@@ -152,7 +159,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             getAssembliesSyntaxProvider
                .Combine(getTypesSyntaxProvider)
                .Combine(importConfigurationCandidate)
-               .Combine(isTestProject)
+               .Combine(msBuildConfig)
                .Combine(context.CompilationProvider),
             static (context, results) =>
             {
@@ -168,5 +175,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 );
             }
         );
+
+        // add utility to create the public class declaration for a single file source file.
     }
 }

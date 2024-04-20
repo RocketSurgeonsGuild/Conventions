@@ -161,8 +161,7 @@ internal static class DataHelpers
         if (name.ToFullString() == "GetTypes" && expression.ArgumentList.Arguments.Count is >= 0 and <= 2)
             foreach (var argument in expression.ArgumentList.Arguments)
             {
-                if (argument.Expression is LiteralExpressionSyntax literalExpressionSyntax && literalExpressionSyntax.Token.IsKind(SyntaxKind.TrueKeyword))
-                    return ClassFilter.PublicOnly;
+                if (argument.Expression is LiteralExpressionSyntax literalExpressionSyntax && literalExpressionSyntax.Token.IsKind(SyntaxKind.TrueKeyword)) return ClassFilter.PublicOnly;
             }
 
         return ClassFilter.All;
