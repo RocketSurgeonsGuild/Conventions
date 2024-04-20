@@ -23,7 +23,7 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input0.cs Member: Register
                     case 7:
                         yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;
                         yield return typeof(global::Dep1.Dep1Exports).Assembly;
@@ -31,7 +31,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Dep2Exports).Assembly;
                         yield return typeof(global::TestConvention).Assembly;
                         break;
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input0.cs Member: Register
                     case 8:
                         yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;
                         yield return typeof(global::Dep1.Dep1Exports).Assembly;

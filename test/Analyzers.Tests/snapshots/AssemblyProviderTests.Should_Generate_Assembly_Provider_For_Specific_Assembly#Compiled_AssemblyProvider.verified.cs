@@ -23,11 +23,11 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input0.cs Member: Register
                     case 8:
                         yield return typeof(global::TestConvention).Assembly;
                         break;
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input0.cs Member: Register
                     case 9:
                         yield return typeof(global::TestConvention).Assembly;
                         break;

@@ -35,7 +35,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{6E25DD54-88B0-4647-9AB1-2575C5253B52}"
 	ProjectSection(SolutionItems) = preProject
 		benchmarks/Directory.Build.props = benchmarks/Directory.Build.props
-		benchmarks\Directory.Build.targets = benchmarks\Directory.Build.targets
+		benchmarks/Directory.Build.targets = benchmarks/Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hosting.Benchmarks", "benchmarks\Hosting.Benchmarks\Hosting.Benchmarks.csproj", "{3E4C7202-8D87-4A52-A50A-0F0CC62BA70B}"

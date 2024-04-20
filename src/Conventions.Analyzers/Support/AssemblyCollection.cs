@@ -18,70 +18,72 @@ internal static class AssemblyCollection
         var getAssemblies = request.GetAssemblies;
         var getTypes = request.GetTypes;
         var compilation = request.Compilation;
-        var configurationData = request.ImportConfiguration;
         ( var discoveredAssemblyRequests, var discoveredTypeRequests ) = AssemblyProviderConfiguration.FromAssemblyAttributes(compilation);
-        var privateAssemblies = new HashSet<IAssemblySymbol>(SymbolEqualityComparer.Default);
-
-        var cu = CompilationUnit()
-           .WithUsings(
-                List(
-                    [
-                        UsingDirective(ParseName("System")),
-                        UsingDirective(ParseName("System.Collections.Generic")),
-                        UsingDirective(ParseName("System.Reflection")),
-                        UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
-                        UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                        UsingDirective(ParseName("Rocket.Surgery.Conventions.Reflection")),
-                    ]
-                )
-            );
 
         var assemblyRequests = GetAssemblyDetails(context, compilation, getAssemblies);
         var typeRequests = TypeCollection.GetTypeDetails(context, compilation, getTypes);
         var attributes = AssemblyProviderConfiguration.ToAssemblyAttributes(assemblyRequests, typeRequests).ToArray();
-        cu = cu.AddAttributeLists(attributes);
-        var assemblyProvider = GetAssemblyProvider(
-            compilation,
-            assemblyRequests.AddRange(discoveredAssemblyRequests),
-            typeRequests.AddRange(discoveredTypeRequests),
-            privateAssemblies
-        );
 
-        if (privateAssemblies.Any()) cu = cu.AddUsings(UsingDirective(ParseName("System.Runtime.Loader")));
-
-        var members =
-            ClassDeclaration(configurationData.ClassName)
-               .WithModifiers(
-                    TokenList(
-                        Token(SyntaxKind.InternalKeyword),
-                        Token(SyntaxKind.SealedKeyword),
-                        Token(SyntaxKind.PartialKeyword)
-                    )
-                )
-               .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.IsTestProject), assemblyProvider);
-
-        cu = cu
-            .WithLeadingTrivia(
-                 TriviaList(
-                     Trivia(
-                         PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                            .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CA1822")))
-                     ),
-                     Trivia(
-                         PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                            .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8618")))
-                     ),
-                     Trivia(
-                         PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                            .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8603")))
+        var cu = CompilationUnit()
+                .WithUsings(
+                     List(
+                         [
+                             UsingDirective(ParseName("System")),
+                             UsingDirective(ParseName("System.Collections.Generic")),
+                             UsingDirective(ParseName("System.Reflection")),
+                             UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
+                             UsingDirective(ParseName("Rocket.Surgery.Conventions")),
+                             UsingDirective(ParseName("Rocket.Surgery.Conventions.Reflection")),
+                         ]
                      )
                  )
-             )
-            .AddMembers(
-                 configurationData is { Namespace: { Length: > 0, } relativeNamespace, }
-                     ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
-                     : members
-             );
+                .AddAttributeLists(attributes);
+
+        if (request.ImportConfiguration.Assembly)
+        {
+            var privateAssemblies = new HashSet<IAssemblySymbol>(SymbolEqualityComparer.Default);
+            var assemblyProvider = GetAssemblyProvider(
+                compilation,
+                assemblyRequests.AddRange(discoveredAssemblyRequests),
+                typeRequests.AddRange(discoveredTypeRequests),
+                privateAssemblies
+            );
+            if (privateAssemblies.Any()) cu = cu.AddUsings(UsingDirective(ParseName("System.Runtime.Loader")));
+            var members =
+                ClassDeclaration(request.ImportConfiguration.ClassName)
+                   .WithModifiers(
+                        TokenList(
+                            Token(SyntaxKind.InternalKeyword),
+                            Token(SyntaxKind.SealedKeyword),
+                            Token(SyntaxKind.PartialKeyword)
+                        )
+                    )
+                   .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.MsBuildConfig.isTestProject), assemblyProvider);
+            cu = cu
+                .WithLeadingTrivia(
+                     TriviaList(
+                         Trivia(
+                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CA1822")))
+                         ),
+                         Trivia(
+                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8618")))
+                         ),
+                         Trivia(
+                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8603")))
+                         )
+                     )
+                 )
+                .AddMembers(
+                     request.ImportConfiguration is { Namespace: { Length: > 0, } relativeNamespace, }
+                         ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
+                         : members
+                 );
+        }
+
+        if (cu.Members.Count == 0) return;
 
         context.AddSource(
             "Compiled_AssemblyProvider.cs",
@@ -326,7 +328,7 @@ internal static class AssemblyCollection
         ConventionConfigurationData ImportConfiguration,
         ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetAssemblies,
         ImmutableArray<(InvocationExpressionSyntax method, ExpressionSyntax selector, SemanticModel semanticModel)> GetTypes,
-        bool IsTestProject
+        (bool isTestProject, string? rootNamespace) MsBuildConfig
     );
 
     public record Request(Compilation Compilation, ImmutableArray<Item> Items, HashSet<IAssemblySymbol> PrivateAssemblies);

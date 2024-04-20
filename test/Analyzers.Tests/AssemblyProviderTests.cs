@@ -25,6 +25,13 @@ z.FromAssembly()
 }
 "
                            )
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
                           .Build()
                           .GenerateAsync();
 
@@ -50,6 +57,13 @@ public class TestConvention : IServiceAsyncConvention {
 }
 "
                            )
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
                           .Build()
                           .GenerateAsync();
 
@@ -72,6 +86,13 @@ public class TestConvention : IServiceAsyncConvention {
         return Task.CompletedTask;
     }
 }
+"
+                           )
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
 "
                            )
                           .Build()
@@ -108,6 +129,13 @@ public class TestConvention2 : IServiceAsyncConvention {
         return Task.CompletedTask;
     }
 }
+"
+                           )
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
 "
                            )
                           .Build()
@@ -148,6 +176,13 @@ public class TestConvention2 : IServiceAsyncConvention {
                            )
                           .IgnoreOutputFile("Imported_Assembly_Conventions.cs")
                           .IgnoreOutputFile("Exported_Conventions.cs")
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
                           .Build()
                           .GenerateAsync();
 
@@ -199,24 +234,16 @@ public class TestConvention2 : IServiceAsyncConvention {
                           .AddReferences(other.FinalCompilation.References.ToArray())
                           .IgnoreOutputFile("Imported_Assembly_Conventions.cs")
                           .IgnoreOutputFile("Exported_Conventions.cs")
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result).UseHashedParameters(getTypesItem.Name);
-    }
-
-    public override async Task InitializeAsync()
-    {
-        await base.InitializeAsync();
-        Configure(
-            z => z
-               .AddSources(
-                    @"
+                          .AddSources(
+                               @"
 using Rocket.Surgery.Conventions;
 
 [assembly: ImportConventions]
 "
-                )
-        );
+                           )
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseHashedParameters(getTypesItem.Name);
     }
 }
