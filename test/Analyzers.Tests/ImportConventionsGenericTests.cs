@@ -118,6 +118,7 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
 [assembly: Convention(typeof(Contrib))]
+[assembly: ImportConventions]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
@@ -129,7 +130,6 @@ using Rocket.Surgery.Conventions;
 
 namespace TestProject
 {
-    [ImportConventions]
     public partial class Program
     {
     }
@@ -150,6 +150,7 @@ namespace TestProject
                                @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
+[assembly: ImportConventions]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
@@ -162,7 +163,6 @@ using Rocket.Surgery.Conventions;
 
 namespace TestProject
 {
-    [ImportConventions]
     public partial class Program
     {
     }

@@ -28,7 +28,7 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input0.cs Member: Register
                     case 18:
                         yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions);
                         yield return RocketSurgeryConventions.GetType("Microsoft.Extensions.DependencyInjection.LoggingBuilder");
@@ -72,10 +72,10 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionProvider);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionWithDependencies);
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.IHostBasedConvention");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports");
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Imports");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports+AssemblyProvider");
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports");
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Imports+AssemblyProvider");
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports+AssemblyProvider");
                         yield return typeof(global::Rocket.Surgery.Conventions.IReadOnlyServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.IServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.Logging.ILoggingAsyncConvention);

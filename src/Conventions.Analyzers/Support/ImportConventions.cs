@@ -568,7 +568,7 @@ internal static class ImportConventions
     (
         Compilation Compilation,
         bool HasExports,
-        (bool isTestProject, string rootNamespace) MsBuildConfig,
+        (bool isTestProject, string? rootNamespace) MsBuildConfig,
         ConventionConfigurationData ImportConfiguration,
         ConventionConfigurationData ExportConfiguration
     );

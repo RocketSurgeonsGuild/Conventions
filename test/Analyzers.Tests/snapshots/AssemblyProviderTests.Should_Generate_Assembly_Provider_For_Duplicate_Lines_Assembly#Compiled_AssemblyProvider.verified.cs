@@ -23,16 +23,16 @@ namespace TestProject.Conventions
             {
                 switch (lineNumber)
                 {
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input0.cs Member: Register
                     case 7:
                         switch (filePath)
                         {
-                            // FilePath: Input1.cs Member: Register
-                            case "Input1.cs":
+                            // FilePath: Input0.cs Member: Register
+                            case "Input0.cs":
                                 yield return typeof(global::TestConvention).Assembly;
                                 break;
-                            // FilePath: Input2.cs Member: Register
-                            case "Input2.cs":
+                            // FilePath: Input1.cs Member: Register
+                            case "Input1.cs":
                                 yield return typeof(global::FluentValidation.AbstractValidator<>).Assembly;
                                 yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationDebugViewContext).Assembly;
                                 yield return typeof(global::Microsoft.Extensions.DependencyInjection.ActivatorUtilities).Assembly;
