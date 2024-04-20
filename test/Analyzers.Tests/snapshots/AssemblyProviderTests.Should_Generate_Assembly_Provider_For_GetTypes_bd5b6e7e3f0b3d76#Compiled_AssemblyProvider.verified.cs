@@ -80,8 +80,6 @@ namespace TestProject.Conventions
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.IHostBasedConvention");
                         yield return typeof(global::Rocket.Surgery.Conventions.ImportConventionsAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.ImportHelpers);
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports+AssemblyProvider");
                         yield return typeof(global::Rocket.Surgery.Conventions.ImportsTypeAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.IReadOnlyServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.IServiceProviderDictionary);
