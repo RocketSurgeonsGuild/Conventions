@@ -407,7 +407,8 @@ public static class RocketWebAssemblyExtensions
                 }
             );
 
-        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory) builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
+        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
+            builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
 
         return builder;
 

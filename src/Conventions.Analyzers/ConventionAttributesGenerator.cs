@@ -86,16 +86,22 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
         var importConfigurationCandidate = ConventionConfigurationData
                                           .Create(context, "ImportConventions", ConventionConfigurationData.ImportsDefaults)
-                                          .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true } && z.Assembly, });
+                                          .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true, } && z.Assembly, });
 
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
         var msBuildConfig = context.AnalyzerConfigOptionsProvider
                                    .Select(
-                                        (provider, _) => ( isTestProject: provider.GlobalOptions.TryGetValue("build_property.IsTestProject", out var isTestProjectString)
+                                        (provider, _) => ( isTestProject: provider.GlobalOptions.TryGetValue(
+                                                               "build_property.IsTestProject",
+                                                               out var isTestProjectString
+                                                           )
                                                         && bool.TryParse(isTestProjectString, out var isTestProject)
                                                         && isTestProject,
-                                                           rootNamespace: provider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var rootNamespace)
+                                                           rootNamespace: provider.GlobalOptions.TryGetValue(
+                                                               "build_property.RootNamespace",
+                                                               out var rootNamespace
+                                                           )
                                                                ? rootNamespace
                                                                : null )
                                     );

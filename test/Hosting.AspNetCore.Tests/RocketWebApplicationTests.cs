@@ -9,7 +9,6 @@ using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
-using Rocket.Surgery.Hosting.AspNetCore.Tests;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Xunit.Abstractions;
 using Imports = Rocket.Surgery.Hosting.AspNetCore.Tests.Imports;

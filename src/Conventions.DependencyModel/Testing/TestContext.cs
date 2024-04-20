@@ -20,7 +20,10 @@ public static class DependencyModelTestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, Type type, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        Type type,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -37,7 +40,10 @@ public static class DependencyModelTestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, Assembly assembly, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        Assembly assembly,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -54,7 +60,10 @@ public static class DependencyModelTestConventionContextBuilderExtensions
     /// <param name="loggerFactory">Optional logger factory.</param>
     /// <param name="contentRootPath">The content root path for the host environment.</param>
     public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder, DependencyContext context, ILoggerFactory? loggerFactory = null, string? contentRootPath = null
+        this ConventionContextBuilder builder,
+        DependencyContext context,
+        ILoggerFactory? loggerFactory = null,
+        string? contentRootPath = null
     )
     {
         ArgumentNullException.ThrowIfNull(builder);

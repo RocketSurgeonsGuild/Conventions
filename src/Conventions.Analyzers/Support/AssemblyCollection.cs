@@ -18,7 +18,7 @@ internal static class AssemblyCollection
         var getAssemblies = request.GetAssemblies;
         var getTypes = request.GetTypes;
         var compilation = request.Compilation;
-        (var discoveredAssemblyRequests, var discoveredTypeRequests) = AssemblyProviderConfiguration.FromAssemblyAttributes(compilation);
+        ( var discoveredAssemblyRequests, var discoveredTypeRequests ) = AssemblyProviderConfiguration.FromAssemblyAttributes(compilation);
 
         var assemblyRequests = GetAssemblyDetails(context, compilation, getAssemblies);
         var typeRequests = TypeCollection.GetTypeDetails(context, compilation, getTypes);

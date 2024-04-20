@@ -267,7 +267,8 @@ internal static class Helpers
     internal static SourceLocation CreateSourceLocation(InvocationExpressionSyntax methodCallSyntax, CancellationToken cancellationToken)
     {
         var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-        if (methodCallSyntax.Expression is not MemberAccessExpressionSyntax memberAccess) throw new InvalidOperationException("Expected a member access expression");
+        if (methodCallSyntax.Expression is not MemberAccessExpressionSyntax memberAccess)
+            throw new InvalidOperationException("Expected a member access expression");
 
         var source = new SourceLocation(
             memberAccess

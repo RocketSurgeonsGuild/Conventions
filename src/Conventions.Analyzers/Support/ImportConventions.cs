@@ -18,7 +18,7 @@ internal static class ImportConventions
 
         var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
 
-        Compilation compilation = request.Compilation;
+        var compilation = request.Compilation;
 
         var importsClass =
             ClassDeclaration(request.ImportConfiguration.ClassName)
@@ -215,52 +215,55 @@ internal static class ImportConventions
             cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
         );
 
-        static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ConventionConfigurationData configurationData) => compilation
-           .References
-           .Select(compilation.GetAssemblyOrModuleSymbol)
-           .OfType<IAssemblySymbol>()
-           .Select(
-                symbol =>
-                {
-                    try
-                    {
-                        var config = ConventionConfigurationData.FromAssemblyAttributes(symbol, ConventionConfigurationData.ExportsDefaults);
-                        if (symbol.GetTypeByMetadataName(
-                                config switch
-                                {
-                                    { Namespace.Length: > 0, Postfix: true }  => $"{config.Namespace}.Conventions.{config.ClassName}",
-                                    { Postfix: true }                         => $"Conventions.{config.ClassName}",
-                                    { Namespace.Length: > 0, Postfix: false } => $"{config.Namespace}.{config.ClassName}",
-                                    _                                         => config.ClassName,
-                                }
-                            ) is { } configuredMetadata)
-                        {
-                            return configuredMetadata.ToDisplayString() + $".{config.MethodName}";
-                        }
-                    }
-                    catch
-                    {
-                        //
-                    }
+        static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ConventionConfigurationData configurationData)
+        {
+            return compilation
+                  .References
+                  .Select(compilation.GetAssemblyOrModuleSymbol)
+                  .OfType<IAssemblySymbol>()
+                  .Select(
+                       symbol =>
+                       {
+                           try
+                           {
+                               var config = ConventionConfigurationData.FromAssemblyAttributes(symbol, ConventionConfigurationData.ExportsDefaults);
+                               if (symbol.GetTypeByMetadataName(
+                                       config switch
+                                       {
+                                           { Namespace.Length: > 0, Postfix: true, }  => $"{config.Namespace}.Conventions.{config.ClassName}",
+                                           { Postfix: true, }                         => $"Conventions.{config.ClassName}",
+                                           { Namespace.Length: > 0, Postfix: false, } => $"{config.Namespace}.{config.ClassName}",
+                                           _                                          => config.ClassName,
+                                       }
+                                   ) is { } configuredMetadata)
+                               {
+                                   return configuredMetadata.ToDisplayString() + $".{config.MethodName}";
+                               }
+                           }
+                           catch
+                           {
+                               //
+                           }
 
-                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                    return null!;
-                }
-            )
-           .Where(z => !string.IsNullOrWhiteSpace(z))
-           .Concat(
-                exports
-                    ? new[]
-                    {
-                        ( string.IsNullOrWhiteSpace(configurationData.Namespace) ? "" : configurationData.Namespace + "." )
-                      + configurationData.ClassName
-                      + "."
-                      + configurationData.MethodName,
-                    }
-                    : Enumerable.Empty<string>()
-            )
-           .OrderBy(z => z)
-           .ToArray();
+                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                           return null!;
+                       }
+                   )
+                  .Where(z => !string.IsNullOrWhiteSpace(z))
+                  .Concat(
+                       exports
+                           ? new[]
+                           {
+                               ( string.IsNullOrWhiteSpace(configurationData.Namespace) ? "" : configurationData.Namespace + "." )
+                             + configurationData.ClassName
+                             + "."
+                             + configurationData.MethodName,
+                           }
+                           : Enumerable.Empty<string>()
+                   )
+                  .OrderBy(z => z)
+                  .ToArray();
+        }
 
         static BlockSyntax addEnumerateExportStatements(IReadOnlyCollection<string> references)
         {
@@ -318,7 +321,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, b, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -340,7 +343,7 @@ internal static class ImportConventions
                     cancellationToken
                 );
             }
-
+        
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -366,7 +369,7 @@ internal static class ImportConventions
                     cancellationToken
                 );
             }
-
+        
             /// <summary>
             ///     Uses the rocket booster.
             /// </summary>
@@ -381,8 +384,8 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, (_, _) => ValueTask.CompletedTask, cancellationToken);
             }
-
-
+        
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -399,7 +402,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -416,7 +419,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -433,7 +436,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, action, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -444,7 +447,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Launches the with.
             /// </summary>
@@ -454,7 +457,7 @@ internal static class ImportConventions
             {
                 return UseRocketBooster(builder, func, CancellationToken.None);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -464,7 +467,7 @@ internal static class ImportConventions
             {
                 return ConfigureRocketSurgery(builder, _ => { }, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -484,7 +487,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -504,7 +507,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -524,7 +527,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -543,7 +546,7 @@ internal static class ImportConventions
                 await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
                 return builder.Build();
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>

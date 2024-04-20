@@ -21,14 +21,19 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                 (config, _) =>
                 {
                     var data = InnerConventionConfigurationData.FromDefaults(defaults);
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value)) data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
-                    else if (config.GlobalOptions.TryGetValue("build_property.RootNamespace", out value)) data = data with { Namespace = value, DefinedNamespace = true };
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value))
+                        data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
+                    else if (config.GlobalOptions.TryGetValue("build_property.RootNamespace", out value))
+                        data = data with { Namespace = value, DefinedNamespace = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value)) data = data with { ClassName = value, WasConfigured = true, };
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value))
+                        data = data with { ClassName = value, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.MethodName)}", out value)) data = data with { MethodName = value, WasConfigured = true, };
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.MethodName)}", out value))
+                        data = data with { MethodName = value, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value)) data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
+                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value))
+                        data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
 
                     return data;
                 }
@@ -72,17 +77,17 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                                        nameof(InnerConventionConfigurationData.ClassName) => data with
                                        {
                                            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           ClassName = (string)syntax.Token.Value!
+                                           ClassName = (string)syntax.Token.Value!,
                                        },
                                        nameof(InnerConventionConfigurationData.MethodName) => data with
                                        {
                                            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           MethodName = (string)syntax.Token.Value!
+                                           MethodName = (string)syntax.Token.Value!,
                                        },
                                        nameof(InnerConventionConfigurationData.Assembly) => data with
                                        {
                                            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           Assembly = (bool)syntax.Token.Value!
+                                           Assembly = (bool)syntax.Token.Value!,
                                        },
                                        _ => data,
                                    };
