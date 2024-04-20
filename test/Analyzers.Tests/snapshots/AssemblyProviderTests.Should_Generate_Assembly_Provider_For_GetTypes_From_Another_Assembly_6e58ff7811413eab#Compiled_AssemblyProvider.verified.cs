@@ -34,8 +34,6 @@ namespace TestProject.Conventions
                         yield return typeof(global::Microsoft.Extensions.DependencyInjection.RocketSurgeryServiceCollectionExtensions);
                         yield return typeof(global::Microsoft.Extensions.Logging.RocketSurgeryLoggingExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions);
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports+AssemblyProvider");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.AssemblyProviderFactory");
@@ -74,7 +72,9 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionWithDependencies);
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.IHostBasedConvention");
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Imports");
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports");
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Imports+AssemblyProvider");
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports+AssemblyProvider");
                         yield return typeof(global::Rocket.Surgery.Conventions.IReadOnlyServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.IServiceProviderDictionary);
                         yield return typeof(global::Rocket.Surgery.Conventions.Logging.ILoggingAsyncConvention);

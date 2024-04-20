@@ -22,6 +22,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                 {
                     var data = InnerConventionConfigurationData.FromDefaults(defaults);
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value)) data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
+                    else if (config.GlobalOptions.TryGetValue("build_property.RootNamespace", out value)) data = data with { Namespace = value, DefinedNamespace = true };
 
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value)) data = data with { ClassName = value, WasConfigured = true, };
 
@@ -71,17 +72,17 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                                        nameof(InnerConventionConfigurationData.ClassName) => data with
                                        {
                                            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           ClassName = (string)syntax.Token.Value!,
+                                           ClassName = (string)syntax.Token.Value!
                                        },
                                        nameof(InnerConventionConfigurationData.MethodName) => data with
                                        {
                                            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           MethodName = (string)syntax.Token.Value!,
+                                           MethodName = (string)syntax.Token.Value!
                                        },
                                        nameof(InnerConventionConfigurationData.Assembly) => data with
                                        {
                                            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           Assembly = (bool)syntax.Token.Value!,
+                                           Assembly = (bool)syntax.Token.Value!
                                        },
                                        _ => data,
                                    };

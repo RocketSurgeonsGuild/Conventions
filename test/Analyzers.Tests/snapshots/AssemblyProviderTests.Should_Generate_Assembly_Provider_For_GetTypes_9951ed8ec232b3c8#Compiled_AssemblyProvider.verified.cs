@@ -30,7 +30,6 @@ namespace TestProject.Conventions
                 {
                     // FilePath: Input1.cs Member: Register
                     case 18:
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Abstractions.Conventions.Imports");
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.AssemblyProviderFactory");
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderApplicationDelegate);
@@ -43,6 +42,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.HostType);
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Imports");
                         yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeInfoFilter);

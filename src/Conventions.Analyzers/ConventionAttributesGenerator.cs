@@ -86,7 +86,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
         var importConfigurationCandidate = ConventionConfigurationData
                                           .Create(context, "ImportConventions", ConventionConfigurationData.ImportsDefaults)
-                                          .Select((z, _) => !z.WasConfigured && z.Assembly ? z with { Assembly = false, } : z);
+                                          .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true } && z.Assembly, });
 
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
@@ -97,7 +97,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                         && isTestProject,
                                                            rootNamespace: provider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var rootNamespace)
                                                                ? rootNamespace
-                                                               : "" )
+                                                               : null )
                                     );
         var rootNamespace = context.AnalyzerConfigOptionsProvider
                                    .Select(
@@ -175,7 +175,5 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 );
             }
         );
-
-        // add utility to create the public class declaration for a single file source file.
     }
 }
