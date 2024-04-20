@@ -1,6 +1,9 @@
 using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using Rocket.Surgery.Conventions.Support;
 
 // ReSharper disable UnusedVariable
@@ -178,6 +181,284 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                         results.Left.Left.Left.Right,
                         results.Left.Right
                     )
+                );
+            }
+        );
+
+        var topLevelClass = context
+                           .SyntaxProvider
+                           .CreateSyntaxProvider(
+                                (node, _) => node is CompilationUnitSyntax compilationUnitSyntax
+                                 && compilationUnitSyntax.Members.OfType<GlobalStatementSyntax>().Any(),
+                                (syntaxContext, _) => ( node: (CompilationUnitSyntax)syntaxContext.Node, semanticModel: syntaxContext.SemanticModel )
+                            )
+            ;
+        context.RegisterImplementationSourceOutput(
+            topLevelClass,
+            static (context, input) =>
+            {
+                var (compilation, semanticModel) = input;
+                var hasReturn = compilation
+                               .Members
+                               .OfType<GlobalStatementSyntax>()
+                               .FirstOrDefault(z => z.Statement is ReturnStatementSyntax { Expression: { } });
+
+                // UseRocketBooster
+                // LaunchWith
+                // ConfigureRocketSurgery
+                var method = MethodDeclaration(
+                                 hasReturn is { }
+                                     ? GenericName(Identifier("Task"))
+                                        .WithTypeArgumentList(
+                                             TypeArgumentList(SingletonSeparatedList<TypeSyntax>(PredefinedType(Token(SyntaxKind.IntKeyword))))
+                                         )
+                                     : IdentifierName("Task"),
+                                 Identifier("RunAsync")
+                             )
+                            .WithAttributeLists(SingletonList(Helpers.CompilerGeneratedAttributes))
+                            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
+                            .WithParameterList(
+                                 ParameterList(
+                                     SeparatedList(
+                                         [
+                                             Parameter(Identifier("args"))
+                                                .WithType(
+                                                     ArrayType(PredefinedType(Token(SyntaxKind.StringKeyword)))
+                                                        .WithRankSpecifiers(
+                                                             SingletonList(
+                                                                 ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))
+                                                             )
+                                                         )
+                                                 ),
+                                             Parameter(Identifier("factory"))
+                                                .WithType(IdentifierName("IConventionFactory"))
+                                                .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))),
+                                             Parameter(Identifier("action"))
+                                                .WithType(
+                                                     GenericName(Identifier("Func"))
+                                                        .WithTypeArgumentList(
+                                                             TypeArgumentList(
+                                                                 SeparatedList<TypeSyntax>(
+                                                                     new[]
+                                                                     {
+                                                                         IdentifierName("ConventionContextBuilder"),
+                                                                         IdentifierName("CancellationToken"),
+                                                                         IdentifierName("ValueTask")
+                                                                     }
+                                                                 )
+                                                             )
+                                                         )
+                                                 )
+                                                .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression)))
+                                         ]
+                                     )
+                                 )
+                             );
+                var methodBlock = Block();
+                foreach (var i in compilation.Members.OfType<GlobalStatementSyntax>())
+                {
+                    var nodes = i.Statement.DescendantNodesAndSelf();
+                    var statement = i.Statement;
+                    foreach (var (node, memberAccessExpression) in nodes
+                                                                  .OfType<InvocationExpressionSyntax>()
+                                                                  .Select(
+                                                                       z => z is
+                                                                       {
+                                                                           Expression: MemberAccessExpressionSyntax
+                                                                           {
+                                                                               Name.Identifier.Text: "LaunchWith"
+                                                                                                  or "UseRocketBooster"
+                                                                                                  or "ConfigureRocketSurgery"
+                                                                           } memberAccessExpression
+                                                                       }
+                                                                           ? ( z, memberAccessExpression )
+                                                                           : ( z, null! )
+                                                                   )
+                                                                  .Where(z => z.memberAccessExpression is { })
+                                                                  .Reverse())
+                    {
+                        var newNode = node;
+                        if (node.ArgumentList.Arguments.Count > 1
+                         && node is
+                            {
+                                ArgumentList.Arguments:
+                                [{ Expression: var factoryExpression }, { Expression: LambdaExpressionSyntax lambdaExpressionSyntax }, ..]
+                            })
+                        {
+                            TypeSyntax? sourceActionType = null;
+                            LambdaExpressionSyntax newLambdaExpressionSyntax = lambdaExpressionSyntax;
+                            if (lambdaExpressionSyntax is SimpleLambdaExpressionSyntax slex)
+                            {
+                                sourceActionType =
+                                    GenericName(Identifier("Func"))
+                                       .WithTypeArgumentList(
+                                            TypeArgumentList(
+                                                SeparatedList<TypeSyntax>(
+                                                    new[]
+                                                    {
+                                                        IdentifierName("ConventionContextBuilder"),
+                                                        IdentifierName("ValueTask")
+                                                    }
+                                                )
+                                            )
+                                        );
+                                if (!slex.Modifiers.Any(z => z.IsKind(SyntaxKind.AsyncKeyword))
+                                 && slex.ExpressionBody is { }
+                                                       and not MemberAccessExpressionSyntax
+                                                           {
+                                                               Name.Identifier.Text: "CompletedTask",
+                                                               Expression: IdentifierNameSyntax { Identifier.Text: "ValueTask" }
+                                                           }
+                                   )
+                                {
+                                    newLambdaExpressionSyntax = lambdaExpressionSyntax
+                                                               .WithExpressionBody(null)
+                                                               .WithBlock(
+                                                                    Block(
+                                                                        ExpressionStatement(slex.ExpressionBody),
+                                                                        ExpressionStatement(
+                                                                            MemberAccessExpression(
+                                                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                                                IdentifierName("ValueTask"),
+                                                                                IdentifierName("CompletedTask")
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                );
+                                }
+                                else if (lambdaExpressionSyntax.Block is { })
+                                {
+                                    newLambdaExpressionSyntax = lambdaExpressionSyntax
+                                       .WithBody(
+                                            lambdaExpressionSyntax.Block.AddStatements(
+                                                ReturnStatement(
+                                                    MemberAccessExpression(
+                                                        SyntaxKind.SimpleMemberAccessExpression,
+                                                        IdentifierName("ValueTask"),
+                                                        IdentifierName("CompletedTask")
+                                                    )
+                                                )
+                                            )
+                                        );
+                                }
+                            }
+                            else if (lambdaExpressionSyntax is ParenthesizedLambdaExpressionSyntax plex)
+                            {
+                                sourceActionType =
+                                    GenericName(Identifier("Func"))
+                                       .WithTypeArgumentList(
+                                            TypeArgumentList(
+                                                SeparatedList<TypeSyntax>(
+                                                    new[]
+                                                    {
+                                                        IdentifierName("ConventionContextBuilder"),
+                                                        IdentifierName("CancellationToken"),
+                                                        IdentifierName("ValueTask")
+                                                    }
+                                                )
+                                            )
+                                        );
+                            }
+
+                            if (sourceActionType is { })
+                            {
+                                var variable = LocalDeclarationStatement(
+                                    VariableDeclaration(sourceActionType)
+                                       .WithVariables(
+                                            SingletonSeparatedList(
+                                                VariableDeclarator(Identifier("sourceAction"))
+                                                   .WithInitializer(EqualsValueClause(newLambdaExpressionSyntax))
+                                            )
+                                        )
+                                );
+
+                                methodBlock = methodBlock.InsertNodesBefore(methodBlock.Statements.First(), [variable]);
+                            }
+
+                            newNode = newNode.ReplaceNodes([factoryExpression, lambdaExpressionSyntax],
+                                (original, _) =>
+                                {
+                                    return ( original == factoryExpression ) ? BinaryExpression(SyntaxKind.CoalesceExpression, IdentifierName("factory"), factoryExpression) : ParenthesizedLambdaExpression()
+                                          .WithAsyncKeyword(Token(SyntaxKind.AsyncKeyword))
+                                          .WithParameterList(
+                                               ParameterList(SeparatedList(new[] { Parameter(Identifier("builder")), Parameter(Identifier("token")) }))
+                                           )
+                                          .WithBlock(
+                                               Block(
+                                                   ExpressionStatement(
+                                                       AwaitExpression(
+                                                           InvocationExpression(IdentifierName("sourceAction"))
+                                                              .WithArgumentList(
+                                                                   ArgumentList(
+                                                                       sourceActionType is GenericNameSyntax { TypeArgumentList.Arguments.Count: 3 }
+                                                                           ? SeparatedList(
+                                                                               new[] { Argument(IdentifierName("builder")), Argument(IdentifierName("token")) }
+                                                                           )
+                                                                           : SeparatedList(
+                                                                               new[] { Argument(IdentifierName("builder")) }
+                                                                           )
+                                                                   )
+                                                               )
+                                                       )
+                                                   ),
+                                                   ExpressionStatement(
+                                                       AwaitExpression(
+                                                           InvocationExpression(IdentifierName("action"))
+                                                              .WithArgumentList(
+                                                                   ArgumentList(
+                                                                       SeparatedList(
+                                                                           new[]
+                                                                           {
+                                                                               Argument(
+                                                                                   IdentifierName("builder")
+                                                                               ),
+                                                                               Argument(
+                                                                                   IdentifierName("token")
+                                                                               )
+                                                                           }
+                                                                       )
+                                                                   )
+                                                               )
+                                                       )
+                                                   )
+                                               )
+                                           );
+                                });
+                        }
+
+                        else
+                        {
+                            newNode = newNode.AddArgumentListArguments(Argument(IdentifierName("action")));
+                        }
+
+                        statement = statement.ReplaceNode(node, newNode);
+                    }
+
+                    methodBlock = methodBlock.AddStatements(statement);
+                }
+
+                var program = ClassDeclaration("Program")
+                             .WithModifiers(TokenList([Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.PartialKeyword)]))
+                             .AddMembers(method.WithBody(methodBlock));
+
+
+                var cu = CompilationUnit()
+                        .AddUsings(
+                             compilation
+                                .Usings.AddRange(
+                                     [
+                                         UsingDirective(ParseName("Rocket.Surgery.Conventions")),
+                                         UsingDirective(ParseName("System.Threading")),
+                                         UsingDirective(ParseName("System.Threading.Tasks"))
+                                     ]
+                                 )
+                                .ToArray()
+                         )
+                        .AddMembers(program);
+
+                context.AddSource(
+                    "Program.cs",
+                    cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
                 );
             }
         );
