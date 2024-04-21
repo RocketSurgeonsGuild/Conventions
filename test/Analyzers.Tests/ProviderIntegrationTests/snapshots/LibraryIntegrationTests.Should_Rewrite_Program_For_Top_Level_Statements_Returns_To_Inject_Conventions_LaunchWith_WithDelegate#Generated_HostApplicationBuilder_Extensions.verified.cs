@@ -1,4 +1,6 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Generated_HostApplicationBuilder_Extensions.cs
+#pragma warning disable CS0105
+#pragma warning disable CS8602
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -54,6 +56,7 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(func);
+        ArgumentNullException.ThrowIfNull(action);
         var b = await func(builder, cancellationToken);
         await action(b);
         return await ConfigureRocketSurgery(builder, b, cancellationToken);
@@ -70,6 +73,7 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(func);
+        ArgumentNullException.ThrowIfNull(action);
         var b = await func(builder, cancellationToken);
         action(b);
         return await ConfigureRocketSurgery(builder, b, cancellationToken);
@@ -114,7 +118,6 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static ValueTask<Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, CancellationToken cancellationToken = default)
     {
@@ -179,6 +182,7 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(getConventions);
+        ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
         await action(contextBuilder, cancellationToken);
         return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
@@ -194,8 +198,8 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     public static async ValueTask<Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder,IConventionFactory getConventions, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(getConventions);
+        ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
         await action(contextBuilder);
         return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
@@ -206,7 +210,6 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="getConventions">The method to get the conventions.</param>
-    /// <param name="action">The configuration action.</param>
     /// <param name="cancellationToken"></param>
     public static ValueTask<Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, IConventionFactory getConventions, CancellationToken cancellationToken = default)
     {
@@ -226,8 +229,8 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     public static ValueTask<Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, IConventionFactory getConventions, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(getConventions);
+        ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
         action(contextBuilder);
         return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
@@ -238,12 +241,13 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="contextBuilder">The convention context builder.</param>
+    /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static async ValueTask<Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, ConventionContextBuilder contextBuilder, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(contextBuilder);
+        ArgumentNullException.ThrowIfNull(action);
         await action(contextBuilder, cancellationToken);
         return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -253,12 +257,13 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="contextBuilder">The convention context builder.</param>
+    /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static async ValueTask<Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, ConventionContextBuilder contextBuilder, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(contextBuilder);
+        ArgumentNullException.ThrowIfNull(action);
         await action(contextBuilder);
         return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -272,8 +277,8 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     public static ValueTask<Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, ConventionContextBuilder contextBuilder, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(contextBuilder);
+        ArgumentNullException.ThrowIfNull(action);
         action(contextBuilder);
         return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
