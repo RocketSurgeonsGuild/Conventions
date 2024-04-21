@@ -55,7 +55,11 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupAsyncConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupConvention);
                         break;
+                }
             }
+
+            private Assembly _RocketSurgeryConventionsAbstractions;
+            private Assembly RocketSurgeryConventionsAbstractions => _RocketSurgeryConventionsAbstractions ??= context.LoadFromAssemblyName(new AssemblyName("Rocket.Surgery.Conventions.Abstractions, Version=version, Culture=neutral, PublicKeyToken=null"));
         }
     }
 }
