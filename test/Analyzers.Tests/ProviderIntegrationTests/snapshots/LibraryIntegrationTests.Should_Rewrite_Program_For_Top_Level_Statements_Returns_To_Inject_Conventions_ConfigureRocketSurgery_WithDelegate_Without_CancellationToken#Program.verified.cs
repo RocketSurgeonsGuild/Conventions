@@ -4,6 +4,7 @@ using Rocket.Surgery.Conventions;
 using System.Threading;
 using System.Threading.Tasks;
 
+namespace TestProject.Conventions;
 public partial class Program
 {
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

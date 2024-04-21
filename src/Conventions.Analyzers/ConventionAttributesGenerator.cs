@@ -193,13 +193,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                 (syntaxContext, _) => ( node: (CompilationUnitSyntax)syntaxContext.Node, semanticModel: syntaxContext.SemanticModel )
                             )
                            .Combine(importConfiguration)
-                           .Where(z => z.Right.Assembly)
-                           .Select((z, _) => z.Left);
+                           .Where(z => z.Right.Assembly);
         context.RegisterImplementationSourceOutput(
             topLevelClass,
             static (context, input) =>
             {
-                ( var compilation, var semanticModel ) = input;
+                var (compilation, semanticModel) = input.Left;
+                var importConfiguration = input.Right;
+
 
                 var hasReturn = compilation
                                .Members
@@ -469,8 +470,13 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                      ]
                                  )
                                 .ToArray()
-                         )
-                        .AddMembers(program);
+                         );
+                if (importConfiguration is { Namespace.Length: > 0 })
+                {
+                    cu = cu.AddMembers(FileScopedNamespaceDeclaration(ParseName(importConfiguration.Namespace)));
+                }
+
+                cu = cu.AddMembers(program);
 
                 context.AddSource(
                     "Program.cs",
