@@ -83,7 +83,7 @@ internal static class AssemblyCollection
                  );
         }
 
-        if (cu is { Members: [], AttributeLists: [] }) return;
+        if (cu is { Members: [], AttributeLists: [], }) return;
 
         context.AddSource(
             "Compiled_AssemblyProvider.cs",
