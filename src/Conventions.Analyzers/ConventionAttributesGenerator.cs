@@ -198,7 +198,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             topLevelClass,
             static (context, input) =>
             {
-                var (compilation, semanticModel) = input.Left;
+                ( var compilation, var semanticModel ) = input.Left;
                 var importConfiguration = input.Right;
 
 
@@ -460,18 +460,18 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
 
                 var cu = CompilationUnit()
-                        .AddUsings(
-                             compilation
-                                .Usings.AddRange(
-                                     [
-                                         UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                                         UsingDirective(ParseName("System.Threading")),
-                                         UsingDirective(ParseName("System.Threading.Tasks")),
-                                     ]
-                                 )
-                                .ToArray()
-                         );
-                if (importConfiguration is { Namespace.Length: > 0 })
+                   .AddUsings(
+                        compilation
+                           .Usings.AddRange(
+                                [
+                                    UsingDirective(ParseName("Rocket.Surgery.Conventions")),
+                                    UsingDirective(ParseName("System.Threading")),
+                                    UsingDirective(ParseName("System.Threading.Tasks")),
+                                ]
+                            )
+                           .ToArray()
+                    );
+                if (importConfiguration is { Namespace.Length: > 0, })
                 {
                     cu = cu.AddMembers(FileScopedNamespaceDeclaration(ParseName(importConfiguration.Namespace)));
                 }
