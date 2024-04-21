@@ -8,7 +8,7 @@ using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public class GetTypesTestsData
+public static class GetTypesTestsData
 {
     public static IEnumerable<object[]> GetTypesData()
     {

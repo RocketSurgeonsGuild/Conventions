@@ -7,7 +7,7 @@ namespace Rocket.Surgery.Conventions.Reflection;
 /// </summary>
 internal class RuntimeLibraryCandidateResolver
 {
-    private static Dependency CreateDependency(RuntimeLibrary library, ISet<string> referenceAssemblies)
+    private static Dependency CreateDependency(RuntimeLibrary library, ISet<string?> referenceAssemblies)
     {
         var classification = DependencyClassification.Unknown;
         if (referenceAssemblies.Contains(library.Name)) classification = DependencyClassification.Reference;
@@ -24,7 +24,7 @@ internal class RuntimeLibraryCandidateResolver
     /// <param name="referenceAssemblies">The reference assemblies.</param>
     public RuntimeLibraryCandidateResolver(
         IReadOnlyList<RuntimeLibrary> runtimeDependencies,
-        ISet<string> referenceAssemblies
+        ISet<string?> referenceAssemblies
     )
     {
         var dependenciesWithNoDuplicates = new Dictionary<string, Dependency>(StringComparer.OrdinalIgnoreCase);

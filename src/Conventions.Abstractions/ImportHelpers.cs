@@ -5,6 +5,7 @@ using System.Reflection;
 namespace Rocket.Surgery.Conventions;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
+[AttributeUsage(AttributeTargets.Assembly)]
 public class ImportsTypeAttribute(Type type) : Attribute
 {
     public Type Type { get; } = type;

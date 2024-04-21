@@ -12,10 +12,12 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.Features" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Verify.SourceGenerators" />
