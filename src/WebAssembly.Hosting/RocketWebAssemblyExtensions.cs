@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
-using AppDelegate =
-    System.Func<Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.ConventionContextBuilder>>;
 using ServiceFactoryAdapter =
     System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
         System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
@@ -18,7 +15,6 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketWebAssemblyExtensions
 {
-    private static ConventionContextBuilder? _builder = default!;
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(WebAssemblyHostBuilder builder)
     {
@@ -159,4 +155,6 @@ public static class RocketWebAssemblyExtensions
             return source;
         }
     }
+
+    private static ConventionContextBuilder? _builder;
 }

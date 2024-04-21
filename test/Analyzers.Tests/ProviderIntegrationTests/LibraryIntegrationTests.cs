@@ -42,118 +42,6 @@ public class LibraryIntegrationTests(ITestOutputHelper testOutputHelper) : Gener
         await Verify(result);
     }
 
-    [Theory]
-    [MemberData(nameof(Should_Rewrite_Program_For_Top_Level_Statements_Returns_To_Inject_Conventions_Data))]
-    public async Task Should_Rewrite_Program_For_Top_Level_Statements_Returns_To_Inject_Conventions(string name, string source)
-    {
-        var result = await Builder
-                          .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
-
-[assembly: ImportConventions]
-"
-                           )
-                          .AddSources(source)
-                          .AddReferences(typeof(IHost), typeof(HostApplicationBuilder), typeof(RocketHostApplicationExtensions))
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result).UseTextForParameters(name);
-    }
-
-    public static IEnumerable<object[]> Should_Rewrite_Program_For_Top_Level_Statements_Returns_To_Inject_Conventions_Data()
-    {
-        yield return
-        [
-            "LaunchWith_WithDelegate",
-            """"
-            using Microsoft.Extensions.Hosting;
-
-            var builder = Host.CreateApplicationBuilder(args);
-            var host = await builder.LaunchWith(RocketBooster.For(Imports.Instance), (z, c) => ValueTask.CompletedTask);
-            await host.RunAsync();
-            """"
-        ];
-        yield return
-        [
-            "LaunchWith",
-            """"
-            using Microsoft.Extensions.Hosting;
-
-            var builder = Host.CreateApplicationBuilder(args);
-            var host = await builder.LaunchWith(RocketBooster.For(Imports.Instance));
-            await host.RunAsync();
-            """"
-        ];
-        yield return
-        [
-            "UseRocketBooster_WithDelegate",
-            """"
-            using Microsoft.Extensions.Hosting;
-
-            var builder = Host.CreateApplicationBuilder(args);
-            var host = await builder.UseRocketBooster(RocketBooster.For(Imports.Instance), (z, c) => ValueTask.CompletedTask);
-            await host.RunAsync();
-            """"
-        ];
-        yield return
-        [
-            "UseRocketBooster",
-            """"
-            using Microsoft.Extensions.Hosting;
-
-            var builder = Host.CreateApplicationBuilder(args);
-            var host = await builder.UseRocketBooster(RocketBooster.For(Imports.Instance));
-            await host.RunAsync();
-            """"
-        ];
-        yield return
-        [
-            "ConfigureRocketSurgery_WithDelegate",
-            """"
-            using Microsoft.Extensions.Hosting;
-
-            var builder = Host.CreateApplicationBuilder(args);
-            var host = await builder.ConfigureRocketSurgery(Imports.Instance, (z, c) => ValueTask.CompletedTask);
-            await host.RunAsync();
-            """"
-        ];
-        yield return
-        [
-            "ConfigureRocketSurgery_WithDelegate_Without_CancellationToken",
-            """"
-            using Microsoft.Extensions.Hosting;
-
-            var builder = Host.CreateApplicationBuilder(args);
-            var host = await builder.ConfigureRocketSurgery(Imports.Instance, z => ValueTask.CompletedTask);
-            await host.RunAsync();
-            """"
-        ];
-        yield return
-        [
-            "ConfigureRocketSurgery_WithDelegate_Action",
-            """"
-            using Microsoft.Extensions.Hosting;
-
-            var builder = Host.CreateApplicationBuilder(args);
-            var host = await builder.ConfigureRocketSurgery(Imports.Instance, z => {});
-            await host.RunAsync();
-            """"
-        ];
-        yield return
-        [
-            "ConfigureRocketSurgery",
-            """"
-            using Microsoft.Extensions.Hosting;
-
-            var builder = Host.CreateApplicationBuilder(args);
-            var host = await builder.ConfigureRocketSurgery(Imports.Instance);
-            await host.RunAsync();
-            """"
-        ];
-    }
-
     [Fact]
     public async Task Should_Work_With_AutoMapper()
     {
@@ -261,6 +149,118 @@ public class TestConvention : IServiceAsyncConvention {
                           .Build()
                           .GenerateAsync();
         await Verify(result);
+    }
+
+    [Theory]
+    [MemberData(nameof(Should_Rewrite_Program_For_Top_Level_Statements_Returns_To_Inject_Conventions_Data))]
+    public async Task Should_Rewrite_Program_For_Top_Level_Statements_Returns_To_Inject_Conventions(string name, string source)
+    {
+        var result = await Builder
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
+                          .AddSources(source)
+                          .AddReferences(typeof(IHost), typeof(HostApplicationBuilder), typeof(RocketHostApplicationExtensions))
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseTextForParameters(name);
+    }
+
+    public static IEnumerable<object[]> Should_Rewrite_Program_For_Top_Level_Statements_Returns_To_Inject_Conventions_Data()
+    {
+        yield return
+        [
+            "LaunchWith_WithDelegate",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var builder = Host.CreateApplicationBuilder(args);
+            var host = await builder.LaunchWith(RocketBooster.For(Imports.Instance), (z, c) => ValueTask.CompletedTask);
+            await host.RunAsync();
+            """",
+        ];
+        yield return
+        [
+            "LaunchWith",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var builder = Host.CreateApplicationBuilder(args);
+            var host = await builder.LaunchWith(RocketBooster.For(Imports.Instance));
+            await host.RunAsync();
+            """",
+        ];
+        yield return
+        [
+            "UseRocketBooster_WithDelegate",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var builder = Host.CreateApplicationBuilder(args);
+            var host = await builder.UseRocketBooster(RocketBooster.For(Imports.Instance), (z, c) => ValueTask.CompletedTask);
+            await host.RunAsync();
+            """",
+        ];
+        yield return
+        [
+            "UseRocketBooster",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var builder = Host.CreateApplicationBuilder(args);
+            var host = await builder.UseRocketBooster(RocketBooster.For(Imports.Instance));
+            await host.RunAsync();
+            """",
+        ];
+        yield return
+        [
+            "ConfigureRocketSurgery_WithDelegate",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var builder = Host.CreateApplicationBuilder(args);
+            var host = await builder.ConfigureRocketSurgery(Imports.Instance, (z, c) => ValueTask.CompletedTask);
+            await host.RunAsync();
+            """",
+        ];
+        yield return
+        [
+            "ConfigureRocketSurgery_WithDelegate_Without_CancellationToken",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var builder = Host.CreateApplicationBuilder(args);
+            var host = await builder.ConfigureRocketSurgery(Imports.Instance, z => ValueTask.CompletedTask);
+            await host.RunAsync();
+            """",
+        ];
+        yield return
+        [
+            "ConfigureRocketSurgery_WithDelegate_Action",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var builder = Host.CreateApplicationBuilder(args);
+            var host = await builder.ConfigureRocketSurgery(Imports.Instance, z => {});
+            await host.RunAsync();
+            """",
+        ];
+        yield return
+        [
+            "ConfigureRocketSurgery",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var builder = Host.CreateApplicationBuilder(args);
+            var host = await builder.ConfigureRocketSurgery(Imports.Instance);
+            await host.RunAsync();
+            """",
+        ];
     }
 
     private class Profile1 : Profile;

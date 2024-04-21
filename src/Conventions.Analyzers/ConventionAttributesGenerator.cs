@@ -3,8 +3,8 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using Rocket.Surgery.Conventions.Support;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 // ReSharper disable UnusedVariable
 namespace Rocket.Surgery.Conventions;
@@ -199,12 +199,12 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             topLevelClass,
             static (context, input) =>
             {
-                var (compilation, semanticModel) = input;
+                ( var compilation, var semanticModel ) = input;
 
                 var hasReturn = compilation
                                .Members
                                .OfType<GlobalStatementSyntax>()
-                               .FirstOrDefault(z => z.Statement is ReturnStatementSyntax { Expression: { } });
+                               .FirstOrDefault(z => z.Statement is ReturnStatementSyntax { Expression: { }, });
 
                 // UseRocketBooster
                 // LaunchWith
@@ -247,14 +247,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                                          {
                                                                              IdentifierName("ConventionContextBuilder"),
                                                                              IdentifierName("CancellationToken"),
-                                                                             IdentifierName("ValueTask")
+                                                                             IdentifierName("ValueTask"),
                                                                          }
                                                                      )
                                                                  )
                                                              )
                                                      )
                                                  )
-                                                .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression)))
+                                                .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))),
                                          ]
                                      )
                                  )
@@ -264,36 +264,36 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 {
                     var nodes = i.Statement.DescendantNodesAndSelf();
                     var statement = i.Statement;
-                    foreach (var (node, memberAccessExpression) in nodes
-                                                                  .OfType<InvocationExpressionSyntax>()
-                                                                  .Select(
-                                                                       static z => z is
-                                                                       {
-                                                                           Expression: MemberAccessExpressionSyntax
-                                                                           {
-                                                                               Name.Identifier.Text: "LaunchWith"
-                                                                                                  or "UseRocketBooster"
-                                                                                                  or "ConfigureRocketSurgery"
-                                                                           } memberAccessExpression
-                                                                       }
-                                                                           ? ( z, memberAccessExpression )
-                                                                           : ( z, null! )
-                                                                   )
-                                                                  .Where(z => z.memberAccessExpression is { })
-                                                                  .Reverse())
+                    foreach (( var node, var memberAccessExpression ) in nodes
+                                                                        .OfType<InvocationExpressionSyntax>()
+                                                                        .Select(
+                                                                             static z => z is
+                                                                             {
+                                                                                 Expression: MemberAccessExpressionSyntax
+                                                                                 {
+                                                                                     Name.Identifier.Text: "LaunchWith"
+                                                                                  or "UseRocketBooster"
+                                                                                  or "ConfigureRocketSurgery",
+                                                                                 } memberAccessExpression,
+                                                                             }
+                                                                                 ? ( z, memberAccessExpression )
+                                                                                 : ( z, null! )
+                                                                         )
+                                                                        .Where(z => z.memberAccessExpression is { })
+                                                                        .Reverse())
                     {
                         var newNode = node;
                         if (node.ArgumentList.Arguments.Count > 1
                          && node is
                             {
                                 ArgumentList.Arguments:
-                                [{ Expression: var factoryExpression }, { Expression: LambdaExpressionSyntax lambdaExpressionSyntax }, ..]
+                                [{ Expression: var factoryExpression, }, { Expression: LambdaExpressionSyntax lambdaExpressionSyntax, }, ..,],
                             })
                         {
                             TypeSyntax? sourceActionType = null;
-                            LambdaExpressionSyntax newLambdaExpressionSyntax = lambdaExpressionSyntax;
+                            var newLambdaExpressionSyntax = lambdaExpressionSyntax;
                             NameSyntax factoryNameExpression = IdentifierName("factory");
-                            if (factoryExpression is InvocationExpressionSyntax { ArgumentList.Arguments: [{ Expression: var otherFactoryExpresion }] })
+                            if (factoryExpression is InvocationExpressionSyntax { ArgumentList.Arguments: [{ Expression: var otherFactoryExpresion, },], })
                             {
                                 factoryExpression = otherFactoryExpresion;
                             }
@@ -308,7 +308,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                     new[]
                                                     {
                                                         IdentifierName("ConventionContextBuilder"),
-                                                        IdentifierName("ValueTask")
+                                                        IdentifierName("ValueTask"),
                                                     }
                                                 )
                                             )
@@ -318,7 +318,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                        and not MemberAccessExpressionSyntax
                                                            {
                                                                Name.Identifier.Text: "CompletedTask",
-                                                               Expression: IdentifierNameSyntax { Identifier.Text: "ValueTask" }
+                                                               Expression: IdentifierNameSyntax { Identifier.Text: "ValueTask", },
                                                            }
                                    )
                                 {
@@ -364,7 +364,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                     {
                                                         IdentifierName("ConventionContextBuilder"),
                                                         IdentifierName("CancellationToken"),
-                                                        IdentifierName("ValueTask")
+                                                        IdentifierName("ValueTask"),
                                                     }
                                                 )
                                             )
@@ -383,19 +383,19 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                         )
                                 );
 
-                                methodBlock = methodBlock.InsertNodesBefore(methodBlock.Statements.First(), [variable]);
+                                methodBlock = methodBlock.InsertNodesBefore(methodBlock.Statements.First(), [variable,]);
                             }
 
                             newNode = newNode.ReplaceNodes(
-                                [factoryExpression, lambdaExpressionSyntax],
+                                [factoryExpression, lambdaExpressionSyntax,],
                                 (original, _) =>
                                 {
-                                    return ( original == factoryExpression )
+                                    return original == factoryExpression
                                         ? BinaryExpression(SyntaxKind.CoalesceExpression, factoryNameExpression, factoryExpression)
                                         : ParenthesizedLambdaExpression()
                                          .WithAsyncKeyword(Token(SyntaxKind.AsyncKeyword))
                                          .WithParameterList(
-                                              ParameterList(SeparatedList(new[] { Parameter(Identifier("builder")), Parameter(Identifier("token")) }))
+                                              ParameterList(SeparatedList(new[] { Parameter(Identifier("builder")), Parameter(Identifier("token")), }))
                                           )
                                          .WithBlock(
                                               Block(
@@ -404,12 +404,12 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                           InvocationExpression(IdentifierName("sourceAction"))
                                                              .WithArgumentList(
                                                                   ArgumentList(
-                                                                      sourceActionType is GenericNameSyntax { TypeArgumentList.Arguments.Count: 3 }
+                                                                      sourceActionType is GenericNameSyntax { TypeArgumentList.Arguments.Count: 3, }
                                                                           ? SeparatedList(
-                                                                              new[] { Argument(IdentifierName("builder")), Argument(IdentifierName("token")) }
+                                                                              new[] { Argument(IdentifierName("builder")), Argument(IdentifierName("token")), }
                                                                           )
                                                                           : SeparatedList(
-                                                                              new[] { Argument(IdentifierName("builder")) }
+                                                                              new[] { Argument(IdentifierName("builder")), }
                                                                           )
                                                                   )
                                                               )
@@ -428,7 +428,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                                               ),
                                                                               Argument(
                                                                                   IdentifierName("token")
-                                                                              )
+                                                                              ),
                                                                           }
                                                                       )
                                                                   )
@@ -453,7 +453,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 }
 
                 var program = ClassDeclaration("Program")
-                             .WithModifiers(TokenList([Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.PartialKeyword)]))
+                             .WithModifiers(TokenList([Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.PartialKeyword),]))
                              .AddMembers(method.WithBody(methodBlock));
 
 
@@ -464,7 +464,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                      [
                                          UsingDirective(ParseName("Rocket.Surgery.Conventions")),
                                          UsingDirective(ParseName("System.Threading")),
-                                         UsingDirective(ParseName("System.Threading.Tasks"))
+                                         UsingDirective(ParseName("System.Threading.Tasks")),
                                      ]
                                  )
                                 .ToArray()
