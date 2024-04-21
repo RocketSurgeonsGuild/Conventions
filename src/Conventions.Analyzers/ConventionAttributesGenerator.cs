@@ -383,7 +383,8 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                         )
                                 );
 
-                                methodBlock = methodBlock.InsertNodesBefore(methodBlock.Statements.First(), [variable,]);
+                                var beforeSpot = methodBlock.Statements.FirstOrDefault();
+                                methodBlock = beforeSpot is { } ? methodBlock.InsertNodesBefore(beforeSpot, [variable,]) : methodBlock.AddStatements(variable);
                             }
 
                             newNode = newNode.ReplaceNodes(

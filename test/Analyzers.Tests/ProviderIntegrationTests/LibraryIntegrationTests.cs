@@ -261,6 +261,17 @@ using Rocket.Surgery.Conventions;
             await host.RunAsync();
             """",
         ];
+        yield return
+        [
+            "ConfigureRocketSurgery_Bug_Failure",
+            """"
+            using Microsoft.Extensions.Hosting;
+
+            var host = await Host.CreateApplicationBuilder(args)
+                .LaunchWith(RocketBooster.For(Imports.Instance), b => b.Set(AssemblyLoadContext.Default));
+            await host.RunAsync();
+            """",
+        ];
     }
 
     private class Profile1 : Profile;
