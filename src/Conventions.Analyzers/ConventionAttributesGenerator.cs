@@ -220,7 +220,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                  Identifier("RunAsync")
                              )
                             .WithAttributeLists(SingletonList(Helpers.CompilerGeneratedAttributes))
-                            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
+                            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.AsyncKeyword)))
                             .WithParameterList(
                                  ParameterList(
                                      SeparatedList(
