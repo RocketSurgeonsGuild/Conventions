@@ -193,13 +193,14 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                 (syntaxContext, _) => ( node: (CompilationUnitSyntax)syntaxContext.Node, semanticModel: syntaxContext.SemanticModel )
                             )
                            .Combine(importConfiguration)
-                           .Where(z => z.Right.Assembly)
-                           .Select((z, _) => z.Left);
+                           .Where(z => z.Right.Assembly);
         context.RegisterImplementationSourceOutput(
             topLevelClass,
             static (context, input) =>
             {
-                ( var compilation, var semanticModel ) = input;
+                ( var compilation, var semanticModel ) = input.Left;
+                var importConfiguration = input.Right;
+
 
                 var hasReturn = compilation
                                .Members
@@ -219,7 +220,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                  Identifier("RunAsync")
                              )
                             .WithAttributeLists(SingletonList(Helpers.CompilerGeneratedAttributes))
-                            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
+                            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.AsyncKeyword)))
                             .WithParameterList(
                                  ParameterList(
                                      SeparatedList(
@@ -459,18 +460,23 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
 
                 var cu = CompilationUnit()
-                        .AddUsings(
-                             compilation
-                                .Usings.AddRange(
-                                     [
-                                         UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                                         UsingDirective(ParseName("System.Threading")),
-                                         UsingDirective(ParseName("System.Threading.Tasks")),
-                                     ]
-                                 )
-                                .ToArray()
-                         )
-                        .AddMembers(program);
+                   .AddUsings(
+                        compilation
+                           .Usings.AddRange(
+                                [
+                                    UsingDirective(ParseName("Rocket.Surgery.Conventions")),
+                                    UsingDirective(ParseName("System.Threading")),
+                                    UsingDirective(ParseName("System.Threading.Tasks")),
+                                ]
+                            )
+                           .ToArray()
+                    );
+                if (importConfiguration is { Namespace.Length: > 0, })
+                {
+                    cu = cu.AddMembers(FileScopedNamespaceDeclaration(ParseName(importConfiguration.Namespace)));
+                }
+
+                cu = cu.AddMembers(program);
 
                 context.AddSource(
                     "Program.cs",
