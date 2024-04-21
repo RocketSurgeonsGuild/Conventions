@@ -24,7 +24,20 @@ namespace TestProject.Conventions
 
             IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
             {
-                yield break;
+                switch (lineNumber)
+                {
+                    // FilePath: Input0.cs Member: Register
+                    case 18:
+                        yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationConvention);
+                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention);
+                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingAsyncConvention);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingConvention);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupAsyncConvention);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupConvention);
+                        break;
+                }
             }
         }
     }

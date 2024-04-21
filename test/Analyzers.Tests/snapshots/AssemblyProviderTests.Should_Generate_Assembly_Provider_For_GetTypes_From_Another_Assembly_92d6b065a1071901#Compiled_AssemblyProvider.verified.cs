@@ -24,7 +24,25 @@ namespace TestProject.Conventions
 
             IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
             {
-                yield break;
+                switch (lineNumber)
+                {
+                    // FilePath: Input0.cs Member: Register
+                    case 18:
+                        yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationDebugViewContext);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationExtensions);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationKeyNameAttribute);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationPath);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationRootExtensions);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.IConfiguration);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.IConfigurationBuilder);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.IConfigurationManager);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.IConfigurationProvider);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.IConfigurationRoot);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.IConfigurationSection);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.IConfigurationSource);
+                        yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions);
+                        break;
+                }
             }
         }
     }
