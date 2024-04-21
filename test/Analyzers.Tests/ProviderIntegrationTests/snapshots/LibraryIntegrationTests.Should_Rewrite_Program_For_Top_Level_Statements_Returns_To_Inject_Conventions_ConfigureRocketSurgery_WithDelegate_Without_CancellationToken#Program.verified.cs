@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public partial class Program
 {
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    public async Task RunAsync(string[] args, IConventionFactory factory = null, Func<ConventionContextBuilder, CancellationToken, ValueTask> action = null)
+    public async Task RunAsync(string[] args, IConventionFactory? factory = null, Func<ConventionContextBuilder, CancellationToken, ValueTask>? action = null)
     {
         Func<ConventionContextBuilder, ValueTask> sourceAction = z => ValueTask.CompletedTask;
         var builder = Host.CreateApplicationBuilder(args);

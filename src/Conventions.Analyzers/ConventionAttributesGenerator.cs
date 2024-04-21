@@ -234,23 +234,25 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                          )
                                                  ),
                                              Parameter(Identifier("factory"))
-                                                .WithType(IdentifierName("IConventionFactory"))
+                                                .WithType(NullableType(IdentifierName("IConventionFactory")))
                                                 .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))),
                                              Parameter(Identifier("action"))
                                                 .WithType(
-                                                     GenericName(Identifier("Func"))
-                                                        .WithTypeArgumentList(
-                                                             TypeArgumentList(
-                                                                 SeparatedList<TypeSyntax>(
-                                                                     new[]
-                                                                     {
-                                                                         IdentifierName("ConventionContextBuilder"),
-                                                                         IdentifierName("CancellationToken"),
-                                                                         IdentifierName("ValueTask")
-                                                                     }
+                                                     NullableType(
+                                                         GenericName(Identifier("Func"))
+                                                            .WithTypeArgumentList(
+                                                                 TypeArgumentList(
+                                                                     SeparatedList<TypeSyntax>(
+                                                                         new[]
+                                                                         {
+                                                                             IdentifierName("ConventionContextBuilder"),
+                                                                             IdentifierName("CancellationToken"),
+                                                                             IdentifierName("ValueTask")
+                                                                         }
+                                                                     )
                                                                  )
                                                              )
-                                                         )
+                                                     )
                                                  )
                                                 .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression)))
                                          ]
@@ -325,7 +327,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                                                .WithBlock(
                                                                     Block(
                                                                         ExpressionStatement(slex.ExpressionBody),
-                                                                        ExpressionStatement(
+                                                                        ReturnStatement(
                                                                             MemberAccessExpression(
                                                                                 SyntaxKind.SimpleMemberAccessExpression,
                                                                                 IdentifierName("ValueTask"),

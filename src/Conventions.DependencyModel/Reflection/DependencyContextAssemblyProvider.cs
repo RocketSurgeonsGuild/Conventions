@@ -37,7 +37,8 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     public DependencyContextAssemblyProvider(DependencyContext context, ILogger? logger = null)
     {
         _dependencyContext = context;
-        _assembles = new(() => context.GetDefaultAssemblyNames().Select(TryLoad).Where(x => x != null).ToImmutableArray());
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        _assembles = new(() => context.GetDefaultAssemblyNames().Select(TryLoad).Where(x => x != null).Select(z => z!).ToImmutableArray());
         _logger = logger ?? NullLogger.Instance;
     }
 

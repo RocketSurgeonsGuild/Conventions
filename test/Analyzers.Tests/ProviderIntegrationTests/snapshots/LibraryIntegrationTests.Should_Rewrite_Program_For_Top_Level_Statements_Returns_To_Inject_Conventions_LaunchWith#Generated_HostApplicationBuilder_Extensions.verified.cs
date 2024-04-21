@@ -10,7 +10,7 @@ using AppDelegate =
 
 namespace Rocket.Surgery.Hosting;
 
-internal static partial class GeneratedRocketHostApplicationExtensions
+internal static partial class GeneratedRocketWebAssemblyExtensions
 {
     /// <summary>
     ///     Uses the rocket booster.
@@ -119,7 +119,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
     public static ValueTask<Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
+        var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder);
         return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
 
@@ -133,7 +133,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(action);
-        var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
+        var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder);
         await action(contextBuilder, cancellationToken);
         return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -148,7 +148,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(action);
-        var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
+        var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder);
         await action(contextBuilder);
         return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -163,7 +163,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(action);
-        var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder);
+        var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder);
         action(contextBuilder);
         return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -179,7 +179,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(getConventions);
-        var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
+        var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
         await action(contextBuilder, cancellationToken);
         return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -196,7 +196,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(getConventions);
-        var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
+        var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
         await action(contextBuilder);
         return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -212,7 +212,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(getConventions);
-        var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
+        var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
         return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
 
@@ -228,7 +228,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(getConventions);
-        var contextBuilder = RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
+        var contextBuilder = Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).UseConventionFactory(getConventions);
         action(contextBuilder);
         return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -288,7 +288,7 @@ internal static partial class GeneratedRocketHostApplicationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(contextBuilder);
-        await RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
+        await Rocket.Surgery.Hosting.RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
         return builder.Build();
     }
 }
