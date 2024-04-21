@@ -1,6 +1,8 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Hosting;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests;
@@ -45,7 +47,15 @@ public class LibraryIntegrationTests(ITestOutputHelper testOutputHelper) : Gener
     public async Task Should_Rewrite_Program_For_Top_Level_Statements_Returns_To_Inject_Conventions(string name, string source)
     {
         var result = await Builder
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
                           .AddSources(source)
+                          .AddReferences(typeof(IHost), typeof(HostApplicationBuilder), typeof(RocketHostApplicationExtensions))
                           .Build()
                           .GenerateAsync();
 

@@ -31,7 +31,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var exportConfigurationCandidate = ConventionConfigurationData.Create(context, "ExportConventions", ConventionConfigurationData.ExportsDefaults);
+        var exportConfiguration = ConventionConfigurationData.Create(context, "ExportConventions", ConventionConfigurationData.ExportsDefaults);
 
         var exportCandidates = context
                               .SyntaxProvider
@@ -73,7 +73,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(
             context
                .CompilationProvider
-               .Combine(exportConfigurationCandidate)
+               .Combine(exportConfiguration)
                .Select((z, _) => ConventionAttributeData.Create(z.Right, z.Left))
                .Combine(combinedExports.Collect().Select(static (z, _) => z.Distinct(SymbolEqualityComparer.Default).OfType<INamedTypeSymbol>()))
                .Combine(exportedConventions.Collect()),
@@ -87,9 +87,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             )
         );
 
-        var importConfigurationCandidate = ConventionConfigurationData
-                                          .Create(context, "ImportConventions", ConventionConfigurationData.ImportsDefaults)
-                                          .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true, } && z.Assembly, });
+        var importConfiguration = ConventionConfigurationData
+                                 .Create(context, "ImportConventions", ConventionConfigurationData.ImportsDefaults)
+                                 .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true, } && z.Assembly, });
 
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
@@ -117,8 +117,8 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
             context
                .CompilationProvider
                .Combine(combinedExports.Collect())
-               .Combine(importConfigurationCandidate)
-               .Combine(exportConfigurationCandidate)
+               .Combine(importConfiguration)
+               .Combine(exportConfiguration)
                .Combine(hasAssemblyLoadContext)
                .Combine(msBuildConfig)
                .Select(
@@ -167,7 +167,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         context.RegisterImplementationSourceOutput(
             getAssembliesSyntaxProvider
                .Combine(getTypesSyntaxProvider)
-               .Combine(importConfigurationCandidate)
+               .Combine(importConfiguration)
                .Combine(msBuildConfig)
                .Combine(context.CompilationProvider),
             static (context, results) =>
@@ -192,12 +192,15 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                  && compilationUnitSyntax.Members.OfType<GlobalStatementSyntax>().Any(),
                                 (syntaxContext, _) => ( node: (CompilationUnitSyntax)syntaxContext.Node, semanticModel: syntaxContext.SemanticModel )
                             )
-            ;
+                           .Combine(importConfiguration)
+                           .Where(z => z.Right.Assembly)
+                           .Select((z, _) => z.Left);
         context.RegisterImplementationSourceOutput(
             topLevelClass,
             static (context, input) =>
             {
                 var (compilation, semanticModel) = input;
+
                 var hasReturn = compilation
                                .Members
                                .OfType<GlobalStatementSyntax>()
@@ -262,7 +265,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     foreach (var (node, memberAccessExpression) in nodes
                                                                   .OfType<InvocationExpressionSyntax>()
                                                                   .Select(
-                                                                       z => z is
+                                                                       static z => z is
                                                                        {
                                                                            Expression: MemberAccessExpressionSyntax
                                                                            {
@@ -287,6 +290,12 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                         {
                             TypeSyntax? sourceActionType = null;
                             LambdaExpressionSyntax newLambdaExpressionSyntax = lambdaExpressionSyntax;
+                            NameSyntax factoryNameExpression = IdentifierName("factory");
+                            if (factoryExpression is InvocationExpressionSyntax { ArgumentList.Arguments: [{ Expression: var otherFactoryExpresion }] })
+                            {
+                                factoryExpression = otherFactoryExpresion;
+                            }
+
                             if (lambdaExpressionSyntax is SimpleLambdaExpressionSyntax slex)
                             {
                                 sourceActionType =
@@ -375,55 +384,59 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                 methodBlock = methodBlock.InsertNodesBefore(methodBlock.Statements.First(), [variable]);
                             }
 
-                            newNode = newNode.ReplaceNodes([factoryExpression, lambdaExpressionSyntax],
+                            newNode = newNode.ReplaceNodes(
+                                [factoryExpression, lambdaExpressionSyntax],
                                 (original, _) =>
                                 {
-                                    return ( original == factoryExpression ) ? BinaryExpression(SyntaxKind.CoalesceExpression, IdentifierName("factory"), factoryExpression) : ParenthesizedLambdaExpression()
-                                          .WithAsyncKeyword(Token(SyntaxKind.AsyncKeyword))
-                                          .WithParameterList(
-                                               ParameterList(SeparatedList(new[] { Parameter(Identifier("builder")), Parameter(Identifier("token")) }))
-                                           )
-                                          .WithBlock(
-                                               Block(
-                                                   ExpressionStatement(
-                                                       AwaitExpression(
-                                                           InvocationExpression(IdentifierName("sourceAction"))
-                                                              .WithArgumentList(
-                                                                   ArgumentList(
-                                                                       sourceActionType is GenericNameSyntax { TypeArgumentList.Arguments.Count: 3 }
-                                                                           ? SeparatedList(
-                                                                               new[] { Argument(IdentifierName("builder")), Argument(IdentifierName("token")) }
-                                                                           )
-                                                                           : SeparatedList(
-                                                                               new[] { Argument(IdentifierName("builder")) }
-                                                                           )
-                                                                   )
-                                                               )
-                                                       )
-                                                   ),
-                                                   ExpressionStatement(
-                                                       AwaitExpression(
-                                                           InvocationExpression(IdentifierName("action"))
-                                                              .WithArgumentList(
-                                                                   ArgumentList(
-                                                                       SeparatedList(
-                                                                           new[]
-                                                                           {
-                                                                               Argument(
-                                                                                   IdentifierName("builder")
-                                                                               ),
-                                                                               Argument(
-                                                                                   IdentifierName("token")
-                                                                               )
-                                                                           }
-                                                                       )
-                                                                   )
-                                                               )
-                                                       )
-                                                   )
-                                               )
-                                           );
-                                });
+                                    return ( original == factoryExpression )
+                                        ? BinaryExpression(SyntaxKind.CoalesceExpression, factoryNameExpression, factoryExpression)
+                                        : ParenthesizedLambdaExpression()
+                                         .WithAsyncKeyword(Token(SyntaxKind.AsyncKeyword))
+                                         .WithParameterList(
+                                              ParameterList(SeparatedList(new[] { Parameter(Identifier("builder")), Parameter(Identifier("token")) }))
+                                          )
+                                         .WithBlock(
+                                              Block(
+                                                  ExpressionStatement(
+                                                      AwaitExpression(
+                                                          InvocationExpression(IdentifierName("sourceAction"))
+                                                             .WithArgumentList(
+                                                                  ArgumentList(
+                                                                      sourceActionType is GenericNameSyntax { TypeArgumentList.Arguments.Count: 3 }
+                                                                          ? SeparatedList(
+                                                                              new[] { Argument(IdentifierName("builder")), Argument(IdentifierName("token")) }
+                                                                          )
+                                                                          : SeparatedList(
+                                                                              new[] { Argument(IdentifierName("builder")) }
+                                                                          )
+                                                                  )
+                                                              )
+                                                      )
+                                                  ),
+                                                  ExpressionStatement(
+                                                      AwaitExpression(
+                                                          InvocationExpression(IdentifierName("action"))
+                                                             .WithArgumentList(
+                                                                  ArgumentList(
+                                                                      SeparatedList(
+                                                                          new[]
+                                                                          {
+                                                                              Argument(
+                                                                                  IdentifierName("builder")
+                                                                              ),
+                                                                              Argument(
+                                                                                  IdentifierName("token")
+                                                                              )
+                                                                          }
+                                                                      )
+                                                                  )
+                                                              )
+                                                      )
+                                                  )
+                                              )
+                                          );
+                                }
+                            );
                         }
 
                         else

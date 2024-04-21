@@ -47,7 +47,7 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
         _logger.FoundAssembly(nameof(DependencyContextAssemblyProvider), value.GetName().Name!);
     }
 
-    private Assembly TryLoad(AssemblyName assemblyName)
+    private Assembly? TryLoad(AssemblyName assemblyName)
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         _logger.TryingToLoadAssembly(assemblyName.Name);
@@ -72,13 +72,16 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
 
         var candidatesResolver = new RuntimeLibraryCandidateResolver(
             _dependencyContext.RuntimeLibraries,
-            new HashSet<string>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase)
+            // ReSharper disable once NullableWarningSuppressionIsUsed
+            new HashSet<string?>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase)
         );
         return candidatesResolver
               .GetCandidates()
               .SelectMany(library => library.GetDefaultAssemblyNames(_dependencyContext))
               .Select(TryLoad)
               .Where(x => x != null)
+               // ReSharper disable once NullableWarningSuppressionIsUsed
+              .Select(z => z!)
               .Reverse();
     }
 

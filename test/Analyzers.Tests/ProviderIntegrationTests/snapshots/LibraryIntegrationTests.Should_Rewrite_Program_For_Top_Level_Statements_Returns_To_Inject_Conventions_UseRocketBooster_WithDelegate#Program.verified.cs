@@ -11,7 +11,7 @@ public partial class Program
     {
         Func<ConventionContextBuilder, CancellationToken, ValueTask> sourceAction = (z, c) => ValueTask.CompletedTask;
         var builder = Host.CreateApplicationBuilder(args);
-        var host = await builder.UseRocketBooster(factory ?? RocketBooster.For(Imports.Instance), async (builder, token) =>
+        var host = await builder.UseRocketBooster(RocketBooster.For(factory ?? Imports.Instance), async (builder, token) =>
         {
             await sourceAction(builder, token);
             await action(builder, token);
