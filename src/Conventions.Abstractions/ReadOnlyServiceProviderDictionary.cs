@@ -1,17 +1,9 @@
-#if NET8_0_OR_GREATER
+using System.Collections;
 using ReadOnlyPropertiesType = System.Collections.Generic.IReadOnlyDictionary<object, object>;
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.ObjectModel.ReadOnlyDictionary<object, object>;
 using RealDictionary = System.Collections.Generic.Dictionary<object, object>;
 using PropertiesKeyValuePair = System.Collections.Generic.KeyValuePair<object, object>;
-#else
-using ReadOnlyPropertiesType = System.Collections.Generic.IReadOnlyDictionary<object, object?>;
-using PropertiesType = System.Collections.Generic.IDictionary<object, object?>;
-using PropertiesDictionary = System.Collections.ObjectModel.ReadOnlyDictionary<object, object?>;
-using RealDictionary = System.Collections.Generic.Dictionary<object, object?>;
-using PropertiesKeyValuePair = System.Collections.Generic.KeyValuePair<object, object?>;
-#endif
-using System.Collections;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -63,33 +55,20 @@ public class ReadOnlyServiceProviderDictionary : IReadOnlyServiceProviderDiction
     }
 
     /// <inheritdoc />
-    #if NET8_0_OR_GREATER
     public bool TryGetValue(object key, out object value)
-        #else
-    public bool TryGetValue(object key, out object? value)
-        #endif
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return _values.TryGetValue(key, out value!);
     }
 
     /// <inheritdoc />
-    #if NET8_0_OR_GREATER
     public object this[object key] => _values[key];
-    #else
-    public object? this[object key] => _values[key];
-    #endif
 
     /// <inheritdoc />
     public IEnumerable<object> Keys => _values.Keys;
 
     /// <inheritdoc />
-
-    #if NET8_0_OR_GREATER
     public IEnumerable<object> Values => _values.Values;
-    #else
-    public IEnumerable<object?> Values => _values.Values;
-    #endif
 
     /// <summary>
     ///     Gets the service.

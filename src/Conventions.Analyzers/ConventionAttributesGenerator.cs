@@ -454,7 +454,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                     methodBlock = methodBlock.AddStatements(statement);
                 }
 
-                var program = ClassDeclaration("Program")
+                var program = ClassDeclaration("TopLevelProgram")
                              .WithModifiers(TokenList([Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.PartialKeyword),]))
                              .AddMembers(method.WithBody(methodBlock));
 
@@ -479,7 +479,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 cu = cu.AddMembers(program);
 
                 context.AddSource(
-                    "Program.cs",
+                    "TopLevel.cs",
                     cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
                 );
             }

@@ -30,7 +30,6 @@ namespace TestProject.Conventions
                 {
                     // FilePath: Input0.cs Member: Register
                     case 18:
-                        yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute<>);
                         yield return typeof(global::Rocket.Surgery.Conventions.BeforeConventionAttribute);
