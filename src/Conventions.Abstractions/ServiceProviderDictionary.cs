@@ -1,7 +1,7 @@
 #pragma warning disable IDE0058 // Expression value is never used
+using System.Collections;
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
-using System.Collections;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -32,6 +32,10 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
         _values = new PropertiesDictionary();
     }
 
+    IEnumerable<object> IReadOnlyDictionary<object, object>.Keys => Keys;
+
+    IEnumerable<object> IReadOnlyDictionary<object, object>.Values => Values;
+
     /// <summary>
     ///     Gets or sets the <see cref="object" /> with the specified key.
     /// </summary>
@@ -43,10 +47,6 @@ public class ServiceProviderDictionary : IServiceProviderDictionary, IReadOnlySe
         get => _values.TryGetValue(key, out var b) ? b : null!;
         set => _values[key] = value;
     }
-
-    IEnumerable<object> IReadOnlyDictionary<object, object>.Keys => Keys;
-
-    IEnumerable<object> IReadOnlyDictionary<object, object>.Values => Values;
 
     /// <summary>
     ///     Gets the keys.

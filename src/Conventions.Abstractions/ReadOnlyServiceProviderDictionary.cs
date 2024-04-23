@@ -1,9 +1,9 @@
+using System.Collections;
 using ReadOnlyPropertiesType = System.Collections.Generic.IReadOnlyDictionary<object, object>;
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.ObjectModel.ReadOnlyDictionary<object, object>;
 using RealDictionary = System.Collections.Generic.Dictionary<object, object>;
 using PropertiesKeyValuePair = System.Collections.Generic.KeyValuePair<object, object>;
-using System.Collections;
 
 namespace Rocket.Surgery.Conventions;
 
