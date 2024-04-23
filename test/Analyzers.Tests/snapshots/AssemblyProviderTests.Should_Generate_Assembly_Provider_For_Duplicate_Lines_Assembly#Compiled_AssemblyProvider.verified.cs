@@ -37,7 +37,7 @@ namespace TestProject.Conventions
                                 yield return typeof(global::Microsoft.Extensions.Configuration.ConfigurationDebugViewContext).Assembly;
                                 yield return typeof(global::Microsoft.Extensions.DependencyInjection.ActivatorUtilities).Assembly;
                                 yield return typeof(global::Microsoft.Extensions.Configuration.RocketSurgeryLoggingExtensions).Assembly;
-                                yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions).Assembly;
+                                yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute).Assembly;
                                 yield return typeof(global::Dep1.Dep1Exports).Assembly;
                                 yield return typeof(global::Sample.DependencyThree.Class3).Assembly;
                                 yield return typeof(global::Dep2Exports).Assembly;

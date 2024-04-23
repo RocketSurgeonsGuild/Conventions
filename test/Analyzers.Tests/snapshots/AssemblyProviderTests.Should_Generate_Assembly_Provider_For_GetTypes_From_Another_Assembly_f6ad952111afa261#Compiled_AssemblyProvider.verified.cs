@@ -29,12 +29,8 @@ namespace TestProject.Conventions
                 {
                     // FilePath: Input0.cs Member: Register
                     case 18:
-                        yield return typeof(global::Rocket.Surgery.Conventions.AbstractConventionContextBuilderExtensions);
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.IServiceFactoryAdapter");
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.Adapters.ServiceFactoryAdapter`1");
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.AfterConventionAttribute<>);
-                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.AssemblyProviderFactory");
                         yield return typeof(global::Rocket.Surgery.Conventions.BeforeConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.BeforeConventionAttribute<>);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention);
