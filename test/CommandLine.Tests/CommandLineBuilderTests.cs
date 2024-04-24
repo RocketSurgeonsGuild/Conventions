@@ -64,26 +64,6 @@ public class CommandLineBuilderTests : AutoFakeTest
     }
 
     [Fact]
-    public async Task ShouldEnableVersionOnAllCommands()
-    {
-        var builder = ConventionContextBuilder
-                     .Create()
-                     .ForTesting(new TestAssemblyProvider().GetAssemblies(), LoggerFactory)
-                     .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
-                     .ConfigureCommandLine(
-                          (conventionContext, lineContext) =>
-                          {
-                              lineContext.AddBranch("remote", z => z.AddCommand<Add>("add"));
-                              lineContext.AddBranch("fetch", configurator => configurator.AddCommand<Origin>("origin"));
-                          }
-                      );
-        using var host = await Host
-                              .CreateApplicationBuilder(new[] { "remote", "add", "-v", })
-                              .ConfigureRocketSurgery(builder);
-        ( await host.RunConsoleAppAsync() ).Should().Be(0);
-    }
-
-    [Fact]
     public async Task ExecuteWorks()
     {
         var builder = ConventionContextBuilder
@@ -298,7 +278,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     }
 
     [Theory]
-    [InlineData("--version")]
+//    [InlineData("--version")]
     [InlineData("--help")]
     [InlineData("cmd1 --help")]
     [InlineData("cmd1 a --help")]

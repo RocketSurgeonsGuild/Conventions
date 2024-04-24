@@ -6,17 +6,11 @@ namespace Rocket.Surgery.CommandLine;
 /// <summary>
 ///     Represents in-memory data as an <see cref="IConfigurationSource" />.
 /// </summary>
-internal class AppSettingsConfigurationSource : IConfigurationSource
+internal class AppSettingsConfigurationSource(IEnumerable<string> args) : IConfigurationSource
 {
-    private readonly AppSettingsConfigurationProvider _provider;
+    private readonly AppSettingsConfigurationProvider _provider = new();
 
-    public AppSettingsConfigurationSource(IEnumerable<string> args)
-    {
-        Args = args;
-        _provider = new();
-    }
-
-    public IEnumerable<string> Args { get; }
+    public IEnumerable<string> Args { get; } = args;
 
     public void Update(CommandContext commandContext, AppSettings appSettings)
     {

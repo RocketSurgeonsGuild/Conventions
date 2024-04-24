@@ -3,9 +3,8 @@
 var builder = Host
    .CreateApplicationBuilder(args);
 builder.Services.Configure<ConsoleLifetimeOptions>(z => z.SuppressStatusMessages = true);
-var host = await builder
+await builder
    .LaunchWith(
         RocketBooster.For(Imports.Instance),
         z => z.ConfigureCommandLine(configurator => configurator.AddCommand<Dump>("dump"))
-    );
-await host.RunAsync();
+    ).RunConsoleAppAsync();

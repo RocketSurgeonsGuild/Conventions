@@ -25,6 +25,7 @@ public class ConsoleConvention : IHostApplicationAsyncConvention
         var registry = new ConventionTypeRegistrar();
         var command = new CommandApp(registry);
         var consoleResult = new ConsoleResult();
+        var found = false;
 
         command.Configure(
             configurator =>
@@ -43,21 +44,27 @@ public class ConsoleConvention : IHostApplicationAsyncConvention
             {
                 case ICommandAppConvention convention:
                     convention.Register(context, command);
+                    found = true;
                     break;
                 case CommandAppConvention @delegate:
                     @delegate(context, command);
+                    found = true;
                     break;
                 case ICommandAppAsyncConvention convention:
                     await convention.Register(context, command, cancellationToken);
+                    found = true;
                     break;
                 case CommandAppAsyncConvention @delegate:
                     await @delegate(context, command, cancellationToken);
+                    found = true;
                     break;
                 case ICommandLineConvention convention:
                     command.Configure(configurator => convention.Register(context, configurator));
+                    found = true;
                     break;
                 case CommandLineConvention @delegate:
                     command.Configure(configurator => @delegate(context, configurator));
+                    found = true;
                     break;
                 case ICommandLineAsyncConvention convention:
                     {
@@ -80,6 +87,7 @@ public class ConsoleConvention : IHostApplicationAsyncConvention
                         );
                         await itcs.Task;
                     }
+                    found = true;
                     break;
                 case CommandLineAsyncConvention @delegate:
                     {
@@ -100,6 +108,7 @@ public class ConsoleConvention : IHostApplicationAsyncConvention
                                 }
                             }
                         );
+                        found = true;
                         await dtcs.Task;
                     }
                     break;
@@ -115,7 +124,7 @@ public class ConsoleConvention : IHostApplicationAsyncConvention
         );
 
         // We don't want to run if there were no possible command conventions.
-        if (!context.Properties.TryGetValue(typeof(ConsoleConvention), out _)) return;
+        if (!found) return;
 
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         builder.Services.AddSingleton<IAnsiConsole>(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);
