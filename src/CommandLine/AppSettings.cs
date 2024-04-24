@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 /// <summary>
 ///     Default class used for application settings

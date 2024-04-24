@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Hosting;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 /// <summary>
 ///     Convention for console applications
@@ -30,8 +31,7 @@ public class ConsoleConvention : IHostApplicationAsyncConvention
             {
                 var interceptor = new ConsoleInterceptor(
                     // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                    context.Get<AppSettingsConfigurationSource>()!,
-                    configurator.Settings.Interceptor
+                    context.Get<AppSettingsConfigurationSource>()!
                 );
                 configurator.SetInterceptor(interceptor);
             }

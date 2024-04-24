@@ -1,6 +1,7 @@
+using Rocket.Surgery.Conventions;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 /// <summary>
 ///     Delegate CommandLineConvention

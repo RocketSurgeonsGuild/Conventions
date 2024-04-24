@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.CommandLine;
+using Rocket.Surgery.CommandLine;
 using Spectre.Console.Cli;
 
 // ReSharper disable once CheckNamespace

@@ -1,4 +1,4 @@
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 /// <summary>
 ///     Constants for use with the commandline interface
