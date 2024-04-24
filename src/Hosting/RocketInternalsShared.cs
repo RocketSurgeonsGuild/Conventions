@@ -106,5 +106,9 @@ internal static class RocketInternalsShared
                     ShouldDisposeConfiguration = true,
                 }
             );
+
+        hostApplicationBuilder.Configuration.AddInMemoryCollection(
+            new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
+        );
     }
 }

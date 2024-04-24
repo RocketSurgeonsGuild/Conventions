@@ -5,16 +5,11 @@ namespace Rocket.Surgery.Conventions.CommandLine;
 
 internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
 {
-    private readonly IServiceCollection _services;
+    private readonly IServiceCollection _services = new ServiceCollection();
 
     // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
     private IServiceProvider _serviceProvider = null!;
     private ServiceProvider? _internalServices;
-
-    public ConventionTypeRegistrar()
-    {
-        _services = new ServiceCollection();
-    }
 
     internal void SetServiceProvider(IServiceProvider serviceProvider)
     {

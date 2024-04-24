@@ -11,16 +11,15 @@ namespace Rocket.Surgery.Conventions.CommandLine;
 ///     Convention for console applications
 /// </summary>
 [ExportConvention]
-public class ConsoleConvention : IHostApplicationConvention
+public class ConsoleConvention : IHostApplicationAsyncConvention
 {
     /// <inheritdoc />
-    public void Register(IConventionContext context, IHostApplicationBuilder builder)
+    public async ValueTask Register(IConventionContext context, IHostApplicationBuilder builder, CancellationToken cancellationToken)
     {
         var sourcesToRemove = builder.Configuration.Sources.OfType<CommandLineConfigurationSource>().ToList();
         var appSettings = new AppSettingsConfigurationSource(sourcesToRemove.FirstOrDefault()?.Args ?? Array.Empty<string>());
         builder.Configuration.Add(appSettings);
         context.Set(appSettings);
-
 
         var registry = new ConventionTypeRegistrar();
         var command = new CommandApp(registry);
@@ -35,22 +34,81 @@ public class ConsoleConvention : IHostApplicationConvention
                     configurator.Settings.Interceptor
                 );
                 configurator.SetInterceptor(interceptor);
+            }
+        );
 
-                foreach (var item in context.Conventions.Get<ICommandLineConvention, CommandLineConvention>())
-                {
-                    if (!context.Properties.TryGetValue(typeof(ConsoleConvention), out _)) context.Properties.Add(typeof(ConsoleConvention), true);
-
-                    switch (item)
+        foreach (var item in context.Conventions.GetAll())
+        {
+            switch (item)
+            {
+                case ICommandAppConvention convention:
+                    convention.Register(context, command);
+                    break;
+                case CommandAppConvention @delegate:
+                    @delegate(context, command);
+                    break;
+                case ICommandAppAsyncConvention convention:
+                    await convention.Register(context, command, cancellationToken);
+                    break;
+                case CommandAppAsyncConvention @delegate:
+                    await @delegate(context, command, cancellationToken);
+                    break;
+                case ICommandLineConvention convention:
+                    command.Configure(configurator => convention.Register(context, configurator));
+                    break;
+                case CommandLineConvention @delegate:
+                    command.Configure(configurator => @delegate(context, configurator));
+                    break;
+                case ICommandLineAsyncConvention convention:
                     {
-                        case ICommandLineConvention convention:
-                            convention.Register(context, configurator);
-                            break;
-                        case CommandLineConvention @delegate:
-                            @delegate(context, configurator);
-                            break;
+                        var itcs = new TaskCompletionSource();
+                        cancellationToken.Register(() => itcs.TrySetCanceled());
+                        // ReSharper disable once AsyncVoidLambda
+                        command.Configure(
+                            async configurator =>
+                            {
+                                try
+                                {
+                                    await convention.Register(context, configurator, cancellationToken);
+                                    itcs.SetResult();
+                                }
+                                catch (Exception e)
+                                {
+                                    itcs.SetException(e);
+                                }
+                            }
+                        );
+                        await itcs.Task;
                     }
-                }
+                    break;
+                case CommandLineAsyncConvention @delegate:
+                    {
+                        var dtcs = new TaskCompletionSource();
+                        cancellationToken.Register(() => dtcs.TrySetCanceled());
+                        // ReSharper disable once AsyncVoidLambda
+                        command.Configure(
+                            async configurator =>
+                            {
+                                try
+                                {
+                                    await @delegate(context, configurator, cancellationToken);
+                                    dtcs.SetResult();
+                                }
+                                catch (Exception e)
+                                {
+                                    dtcs.SetException(e);
+                                }
+                            }
+                        );
+                        await dtcs.Task;
+                    }
+                    break;
+            }
+        }
 
+        command.Configure(
+            configurator =>
+            {
                 var defaultCommandProperty = configurator.GetType().GetProperty("DefaultCommand");
                 if (defaultCommandProperty?.GetValue(configurator) == null) command.SetDefaultCommand<DefaultCommand>();
             }

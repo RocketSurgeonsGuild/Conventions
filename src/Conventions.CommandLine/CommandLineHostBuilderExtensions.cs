@@ -10,6 +10,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Helper method for working with <see cref="ConventionContextBuilder" />
 /// </summary>
+[PublicAPI]
 public static partial class CommandAppHostBuilderExtensions
 {
     /// <summary>
@@ -19,6 +20,21 @@ public static partial class CommandAppHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, CommandLineConvention @delegate)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        EnsureShouldRun(container);
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the commandline delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, CommandLineAsyncConvention @delegate)
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -48,7 +64,53 @@ public static partial class CommandAppHostBuilderExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, Func<IConfigurator, ValueTask> @delegate)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        EnsureShouldRun(container);
+        container.AppendDelegate(new CommandLineAsyncConvention((_, context, _) => @delegate(context)));
+        return container;
+    }
+
+
+    /// <summary>
+    ///     Configure the commandline delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, Func<IConfigurator, CancellationToken, ValueTask> @delegate)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        EnsureShouldRun(container);
+        container.AppendDelegate(new CommandLineAsyncConvention((_, context, ct) => @delegate(context, ct)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the commandline delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, CommandAppConvention @delegate)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        EnsureShouldRun(container);
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the commandline delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, CommandAppAsyncConvention @delegate)
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -69,6 +131,37 @@ public static partial class CommandAppHostBuilderExtensions
 
         EnsureShouldRun(container);
         container.AppendDelegate(new CommandAppConvention((_, context) => @delegate(context)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the commandline delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, Func<CommandApp, ValueTask> @delegate)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        EnsureShouldRun(container);
+        container.AppendDelegate(new CommandAppAsyncConvention((_, context, _) => @delegate(context)));
+        return container;
+    }
+
+
+    /// <summary>
+    ///     Configure the commandline delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns>IConventionHostBuilder.</returns>
+    public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, Func<CommandApp, CancellationToken, ValueTask> @delegate)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        EnsureShouldRun(container);
+        container.AppendDelegate(new CommandAppAsyncConvention((_, context, ct) => @delegate(context, ct)));
         return container;
     }
 
@@ -95,6 +188,48 @@ public static partial class CommandAppHostBuilderExtensions
     public static int RunConsoleApp(this IHost host)
     {
         return RunConsoleAppAsync(host).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    ///     Run the host as a commandline application and return the result
+    /// </summary>
+    /// <param name="host"></param>
+    /// <returns></returns>
+    public static int RunConsoleApp(this ValueTask<IHost> host)
+    {
+        return RunConsoleAppAsync(host).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    ///     Run the host as a commandline application and return the result
+    /// </summary>
+    /// <param name="host"></param>
+    /// <returns></returns>
+    public static int RunConsoleApp(this Task<IHost> host)
+    {
+        return RunConsoleAppAsync(host).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    ///     Run the host as a commandline application and return the result
+    /// </summary>
+    /// <param name="host"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async Task<int> RunConsoleAppAsync(this ValueTask<IHost> host, CancellationToken cancellationToken = default)
+    {
+        return await RunConsoleAppAsync(await host, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Run the host as a commandline application and return the result
+    /// </summary>
+    /// <param name="host"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public static async Task<int> RunConsoleAppAsync(this Task<IHost> host, CancellationToken cancellationToken = default)
+    {
+        return await RunConsoleAppAsync(await host, cancellationToken);
     }
 
     /// <summary>
