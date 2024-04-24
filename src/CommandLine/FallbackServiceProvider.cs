@@ -1,6 +1,6 @@
 ﻿namespace Rocket.Surgery.CommandLine;
 
-class FallbackServiceProvider(IServiceProvider serviceProvider, IServiceProvider fallbackServiceProvider) : IServiceProvider
+internal class FallbackServiceProvider(IServiceProvider serviceProvider, IServiceProvider fallbackServiceProvider) : IServiceProvider
 {
     public object? GetService(Type serviceType)
     {

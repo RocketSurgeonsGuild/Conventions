@@ -8,14 +8,15 @@ namespace Rocket.Surgery.CommandLine;
 /// </summary>
 internal class AppSettingsConfigurationSource : IConfigurationSource
 {
-    public IEnumerable<string> Args { get; }
     private readonly AppSettingsConfigurationProvider _provider;
 
     public AppSettingsConfigurationSource(IEnumerable<string> args)
     {
         Args = args;
-        _provider = new AppSettingsConfigurationProvider();
+        _provider = new();
     }
+
+    public IEnumerable<string> Args { get; }
 
     public void Update(CommandContext commandContext, AppSettings appSettings)
     {
