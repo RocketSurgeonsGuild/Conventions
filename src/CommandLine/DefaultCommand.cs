@@ -1,6 +1,6 @@
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 internal class DefaultCommand : Command<AppSettings>
 {

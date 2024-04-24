@@ -3,7 +3,7 @@
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
+        <ProjectReference Include="..\..\src\CommandLine\Rocket.Surgery.CommandLine.csproj" />
     <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
     </ItemGroup>

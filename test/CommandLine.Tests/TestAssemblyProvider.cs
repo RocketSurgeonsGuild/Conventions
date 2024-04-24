@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.Reflection;
 
 namespace Rocket.Surgery.Extensions.CommandLine.Tests;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 internal class ConventionTypeResolver(IServiceProvider serviceProvider, IServiceProvider instances) : ITypeResolver
 {

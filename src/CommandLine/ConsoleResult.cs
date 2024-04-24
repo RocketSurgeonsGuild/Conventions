@@ -1,4 +1,4 @@
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 internal class ConsoleResult
 {

@@ -1,20 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
 {
-    private readonly IServiceCollection _services;
+    private readonly IServiceCollection _services = new ServiceCollection();
 
     // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
     private IServiceProvider _serviceProvider = null!;
     private ServiceProvider? _internalServices;
-
-    public ConventionTypeRegistrar()
-    {
-        _services = new ServiceCollection();
-    }
 
     internal void SetServiceProvider(IServiceProvider serviceProvider)
     {

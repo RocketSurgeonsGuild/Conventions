@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.CommandLine;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Hosting;
 using Spectre.Console;

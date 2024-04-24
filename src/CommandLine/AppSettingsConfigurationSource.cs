@@ -1,21 +1,16 @@
 using Microsoft.Extensions.Configuration;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Conventions.CommandLine;
+namespace Rocket.Surgery.CommandLine;
 
 /// <summary>
 ///     Represents in-memory data as an <see cref="IConfigurationSource" />.
 /// </summary>
-internal class AppSettingsConfigurationSource : IConfigurationSource
+internal class AppSettingsConfigurationSource(IEnumerable<string> args) : IConfigurationSource
 {
-    public IEnumerable<string> Args { get; }
-    private readonly AppSettingsConfigurationProvider _provider;
+    private readonly AppSettingsConfigurationProvider _provider = new();
 
-    public AppSettingsConfigurationSource(IEnumerable<string> args)
-    {
-        Args = args;
-        _provider = new AppSettingsConfigurationProvider();
-    }
+    public IEnumerable<string> Args { get; } = args;
 
     public void Update(CommandContext commandContext, AppSettings appSettings)
     {
