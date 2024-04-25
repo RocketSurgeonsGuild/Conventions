@@ -35,6 +35,7 @@ public static class RocketWebAssemblyExtensions
         contextBuilder.Properties["__configured__"] = true;
 
         contextBuilder
+           .AddIfMissing(HostType.Live)
            .AddIfMissing(builder)
            .AddIfMissing(builder.GetType(), builder)
            .AddIfMissing<IConfiguration>(builder.Configuration)
