@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Reflection;
 
 namespace Rocket.Surgery.Conventions;
@@ -64,7 +65,7 @@ internal class ConventionProvider : IConventionProvider
 
     private readonly HostType _hostType;
 
-    private readonly Lazy<ConventionOrDelegate[]> _conventions;
+    private readonly Lazy<ImmutableArray<ConventionOrDelegate>> _conventions;
 
 
     /// <summary>
@@ -196,10 +197,10 @@ internal class ConventionProvider : IConventionProvider
                                     )
                                    .ToLookup(x => x.convention.Convention, x => x.dependsOn);
 
-                    return TopographicalSort(c, x => dependsOn[x.Convention]).ToArray();
+                    return [..TopographicalSort(c, x => dependsOn[x.Convention]),];
                 }
 
-                return c.ToArray();
+                return [..c,];
             }
         );
 
@@ -220,13 +221,11 @@ internal class ConventionProvider : IConventionProvider
     /// </summary>
     /// <typeparam name="TContribution">The type of the contribution.</typeparam>
     /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-    /// <param name="hostType">The host type.</param>
-    public IEnumerable<object> Get<TContribution, TDelegate>(HostType hostType = HostType.Undefined)
+    public IEnumerable<object> Get<TContribution, TDelegate>()
         where TContribution : IConvention
         where TDelegate : Delegate
     {
-        return GetAll(hostType)
-           .Where(x => x is TContribution or TDelegate);
+        return GetAll().Where(x => x is TContribution or TDelegate);
     }
 
     /// <summary>
@@ -236,30 +235,23 @@ internal class ConventionProvider : IConventionProvider
     /// <typeparam name="TAsyncContribution">The type of the async contribution.</typeparam>
     /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
     /// <typeparam name="TAsyncDelegate">The type of the async delegate.</typeparam>
-    /// <param name="hostType">The host type.</param>
-    public IEnumerable<object> Get<TContribution, TDelegate, TAsyncContribution, TAsyncDelegate>(HostType hostType = HostType.Undefined)
+    public IEnumerable<object> Get<TContribution, TDelegate, TAsyncContribution, TAsyncDelegate>()
         where TContribution : IConvention
         where TDelegate : Delegate
         where TAsyncContribution : IConvention
         where TAsyncDelegate : Delegate
     {
-        return GetAll(hostType)
-           .Where(x => x is TContribution or TDelegate or TAsyncContribution or TAsyncDelegate);
+        return GetAll().Where(x => x is TContribution or TDelegate or TAsyncContribution or TAsyncDelegate);
     }
 
     /// <summary>
     ///     Gets a all the conventions from the provider
     /// </summary>
-    /// <param name="hostType">The host type.</param>
-    public IEnumerable<object> GetAll(HostType hostType = HostType.Undefined)
+    public IEnumerable<object> GetAll()
     {
         return _conventions
               .Value
-              .Where(
-                   cod => cod.HostType == HostType.Undefined
-                    || ( hostType != HostType.Undefined && cod.HostType == hostType )
-                    || cod.HostType == _hostType
-               )
+              .Where(cod => cod.HostType == HostType.Undefined || cod.HostType == _hostType)
               .Select(ToObject)
               .Where(
                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
@@ -324,7 +316,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
         Convention = default;
         Delegate = @delegate;
         HostType = HostType.Undefined;
-        Dependencies = Array.Empty<ConventionDependency>();
+        Dependencies = [];
     }
 
     /// <summary>

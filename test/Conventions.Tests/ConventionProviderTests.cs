@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -23,14 +22,15 @@ public class ConventionProviderTests : AutoFakeTest
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c },
-            new object[] { d, f },
-            new object[] { e }
+            new IConvention[] { b, c, },
+            new object[] { d, f, },
+            new object[] { e, }
         );
 
-        provider.GetAll()
-                .Should()
-                .ContainInOrder(e, d, b);
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(e, d, b);
     }
 
     [Fact]
@@ -44,14 +44,15 @@ public class ConventionProviderTests : AutoFakeTest
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c },
-            new object[] { d },
-            new object[] { e, f }
+            new IConvention[] { b, c, },
+            new object[] { d, },
+            new object[] { e, f, }
         );
 
-        provider.GetAll()
-                .Should()
-                .ContainInOrder(e, d, b);
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(e, d, b);
     }
 
     [Fact]
@@ -68,21 +69,22 @@ public class ConventionProviderTests : AutoFakeTest
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c },
-            new object[] { d1, d, d2 },
-            new object[] { e, d3, f }
+            new IConvention[] { b, c, },
+            new object[] { d1, d, d2, },
+            new object[] { e, d3, f, }
         );
 
-        provider.GetAll()
-                .Should()
-                .ContainInOrder(
-                     d1,
-                     e,
-                     d,
-                     d2,
-                     b,
-                     d3
-                 );
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(
+                d1,
+                e,
+                d,
+                d2,
+                b,
+                d3
+            );
     }
 
     [Fact]
@@ -93,85 +95,13 @@ public class ConventionProviderTests : AutoFakeTest
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { c1, c2 },
+            new IConvention[] { c1, c2, },
             Array.Empty<object>(),
             Array.Empty<object>()
         );
 
         Action a = () => provider.GetAll();
         a.Should().Throw<NotSupportedException>();
-    }
-
-    [Theory]
-    [InlineData(HostType.Undefined, HostType.Live)]
-    [InlineData(HostType.Live, HostType.Live)]
-    [InlineData(HostType.Live, HostType.Undefined)]
-    [InlineData(HostType.UnitTest, HostType.Live)] // call has precedence
-    public void Should_Exclude_Unit_Test_Conventions(HostType ctor, HostType call)
-    {
-        var b = new B();
-        var d1 = new ServiceConvention((_, _, _) => { });
-        var d2 = new ServiceConvention((_, _, _) => { });
-        var d3 = new ServiceConvention((_, _, _) => { });
-        var c = new C();
-        var d = new D();
-        var e = new E();
-        var f = new F();
-
-        var provider = new ConventionProvider(
-            ctor,
-            new IConvention[] { b, c },
-            new object[] { d1, d, d2 },
-            new object[] { e, d3, f }
-        );
-
-        provider.GetAll(call)
-                .Should()
-                .ContainInOrder(
-                     d1,
-                     e,
-                     d,
-                     d2,
-                     b,
-                     d3,
-                     f
-                 );
-    }
-
-    [Theory]
-    [InlineData(HostType.Undefined, HostType.UnitTest)]
-    [InlineData(HostType.UnitTest, HostType.UnitTest)]
-    [InlineData(HostType.UnitTest, HostType.Undefined)]
-    [InlineData(HostType.Live, HostType.UnitTest)] // call has precedence
-    public void Should_Include_Unit_Test_Conventions(HostType ctor, HostType call)
-    {
-        var b = new B();
-        var d1 = new ServiceConvention((_, _, _) => { });
-        var d2 = new ServiceConvention((_, _, _) => { });
-        var d3 = new ServiceConvention((_, _, _) => { });
-        var c = new C();
-        var d = new D();
-        var e = new E();
-        var f = new F();
-
-        var provider = new ConventionProvider(
-            ctor,
-            new IConvention[] { b, c },
-            new object[] { d1, d, d2 },
-            new object[] { e, d3, f }
-        );
-
-        provider.GetAll(call)
-                .Should()
-                .ContainInOrder(
-                     d1,
-                     e,
-                     d,
-                     d2,
-                     b,
-                     c,
-                     d3
-                 );
     }
 
     [Fact]
@@ -190,17 +120,84 @@ public class ConventionProviderTests : AutoFakeTest
                 new ConventionWithDependencies(b, HostType.Undefined).WithDependency(DependencyDirection.DependsOn, typeof(C)),
                 new ConventionWithDependencies(c, HostType.Undefined).WithDependency(DependencyDirection.DependentOf, typeof(D)),
             },
-            new object[] { d, f },
-            new object[] { e }
+            new object[] { d, f, },
+            new object[] { e, }
         );
 
-        provider.GetAll()
-                .Should()
-                .ContainInOrder(e, d, b);
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(e, d, b);
     }
 
-    public ConventionProviderTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information)
+    public ConventionProviderTests(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information) { }
+
+    [Theory]
+    [InlineData(HostType.Live)]
+    public void Should_Exclude_Unit_Test_Conventions(HostType ctor)
     {
+        var b = new B();
+        var d1 = new ServiceConvention((_, _, _) => { });
+        var d2 = new ServiceConvention((_, _, _) => { });
+        var d3 = new ServiceConvention((_, _, _) => { });
+        var c = new C();
+        var d = new D();
+        var e = new E();
+        var f = new F();
+
+        var provider = new ConventionProvider(
+            ctor,
+            new IConvention[] { b, c, },
+            new object[] { d1, d, d2, },
+            new object[] { e, d3, f, }
+        );
+
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(
+                d1,
+                e,
+                d,
+                d2,
+                b,
+                d3,
+                f
+            );
+    }
+
+    [Theory]
+    [InlineData(HostType.UnitTest)]
+    public void Should_Include_Unit_Test_Conventions(HostType ctor)
+    {
+        var b = new B();
+        var d1 = new ServiceConvention((_, _, _) => { });
+        var d2 = new ServiceConvention((_, _, _) => { });
+        var d3 = new ServiceConvention((_, _, _) => { });
+        var c = new C();
+        var d = new D();
+        var e = new E();
+        var f = new F();
+
+        var provider = new ConventionProvider(
+            ctor,
+            new IConvention[] { b, c, },
+            new object[] { d1, d, d2, },
+            new object[] { e, d3, f, }
+        );
+
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(
+                d1,
+                e,
+                d,
+                d2,
+                b,
+                c,
+                d3
+            );
     }
 
     [DependentOfConvention(typeof(C))]
