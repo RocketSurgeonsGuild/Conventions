@@ -7,7 +7,7 @@
             "commands": ["dotnet-gitversion"]
         },
         "dotnet-reportgenerator-globaltool": {
-            "version": "5.2.4",
+            "version": "5.2.5",
             "commands": ["reportgenerator"]
         },
         "nuke.globaltool": {
@@ -19,7 +19,7 @@
             "commands": ["codecov"]
         },
         "jetbrains.resharper.globaltools": {
-            "version": "2024.1.0",
+            "version": "2024.1.1",
             "commands": ["jb"]
         },
         "nukeeper": {
