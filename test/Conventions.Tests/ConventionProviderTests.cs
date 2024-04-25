@@ -103,11 +103,8 @@ public class ConventionProviderTests : AutoFakeTest
     }
 
     [Theory]
-    [InlineData(HostType.Undefined, HostType.Live)]
-    [InlineData(HostType.Live, HostType.Live)]
-    [InlineData(HostType.Live, HostType.Undefined)]
-    [InlineData(HostType.UnitTest, HostType.Live)] // call has precedence
-    public void Should_Exclude_Unit_Test_Conventions(HostType ctor, HostType call)
+    [InlineData(HostType.Live)]
+    public void Should_Exclude_Unit_Test_Conventions(HostType ctor)
     {
         var b = new B();
         var d1 = new ServiceConvention((_, _, _) => { });
@@ -125,7 +122,7 @@ public class ConventionProviderTests : AutoFakeTest
             new object[] { e, d3, f }
         );
 
-        provider.GetAll(call)
+        provider.GetAll()
                 .Should()
                 .ContainInOrder(
                      d1,
@@ -139,11 +136,8 @@ public class ConventionProviderTests : AutoFakeTest
     }
 
     [Theory]
-    [InlineData(HostType.Undefined, HostType.UnitTest)]
-    [InlineData(HostType.UnitTest, HostType.UnitTest)]
-    [InlineData(HostType.UnitTest, HostType.Undefined)]
-    [InlineData(HostType.Live, HostType.UnitTest)] // call has precedence
-    public void Should_Include_Unit_Test_Conventions(HostType ctor, HostType call)
+    [InlineData(HostType.UnitTest)]
+    public void Should_Include_Unit_Test_Conventions(HostType ctor)
     {
         var b = new B();
         var d1 = new ServiceConvention((_, _, _) => { });
@@ -161,7 +155,7 @@ public class ConventionProviderTests : AutoFakeTest
             new object[] { e, d3, f }
         );
 
-        provider.GetAll(call)
+        provider.GetAll()
                 .Should()
                 .ContainInOrder(
                      d1,
