@@ -7,6 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="BenchMarkDotNet" />
+    <ProjectReference
+            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="all"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,7 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Exported_Conventions.cs
+#pragma warning disable CA1822
+#pragma warning disable CS8618
+#pragma warning disable CS8603
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,9 +22,9 @@ namespace TestProject.Conventions
         /// <summary>
         /// The conventions exports from this assembly
         /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        public static IEnumerable<IConventionWithDependencies> GetConventions(ConventionContextBuilder builder)
         {
-            yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib(serviceProvider.GetService<Rocket.Surgery.Conventions.Tests.IService>(), serviceProvider.GetService<Rocket.Surgery.Conventions.Tests.IServiceB>(), serviceProvider.GetService<Rocket.Surgery.Conventions.Tests.IServiceC>()), HostType.Undefined);
+            yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.ParentContrib.Contrib(builder.Properties.GetService<Rocket.Surgery.Conventions.Tests.IService>(), builder.Properties.GetService<Rocket.Surgery.Conventions.Tests.IServiceB>(), builder.Properties.GetService<Rocket.Surgery.Conventions.Tests.IServiceC>()), HostType.Undefined);
         }
     }
 }

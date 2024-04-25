@@ -1,0 +1,31 @@
+﻿<Project>    
+    <PropertyGroup>
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and ('$(OutputType)' != 'Library' or '$(OutputType)' != 'library')"
+        >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and ('$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true')"
+        >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == ''">false</_ConventionApplicationDetected>
+        
+        <ImportConventionsNamespace Condition="'$(ImportConventionsNamespace)' == ''">$(RootNamespace)</ImportConventionsNamespace>
+        <ImportConventionsClassName Condition="'$(ImportConventionsClassName)' == ''">Imports</ImportConventionsClassName>        
+        <ImportConventionsMethodName Condition="'$(ImportConventionsMethodName)' == ''">Instance</ImportConventionsMethodName>   
+        
+        <ExportConventionsNamespace Condition="'$(ExportConventionsNamespace)' == ''">$(RootNamespace).Conventions</ExportConventionsNamespace>
+        <ExportConventionsClassName Condition="'$(ExportConventionsClassName)' == ''">Exports</ExportConventionsClassName>        
+        <ExportConventionsMethodName Condition="'$(ExportConventionsMethodName)' == ''">GetConventions</ExportConventionsMethodName>    
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>        
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">true</ExportConventionsAssembly>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">true</ImportConventionsAssembly>             
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">true</ExportConventionsAssembly>    
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' != 'true'">
+        <ImportConventionsAssembly Condition="'$(ImportConventionsAssembly)' == ''">false</ImportConventionsAssembly>        
+        <ExportConventionsAssembly Condition="'$(ExportConventionsAssembly)' == ''">true</ExportConventionsAssembly>
+    </PropertyGroup>
+</Project>

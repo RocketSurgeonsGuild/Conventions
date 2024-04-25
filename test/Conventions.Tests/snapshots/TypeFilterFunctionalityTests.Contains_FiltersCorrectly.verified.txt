@@ -1,0 +1,5 @@
+﻿[
+  TypeFilterFunctionalityTests.MyClass,
+  TypeFilterFunctionalityTests.YourClass,
+  TypeFilterFunctionalityTests.ClassInterface
+]

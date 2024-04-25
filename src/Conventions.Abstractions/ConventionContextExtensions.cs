@@ -5,6 +5,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Base convention extensions
 /// </summary>
+[PublicAPI]
 public static class ConventionContextExtensions
 {
     /// <summary>
@@ -15,11 +16,7 @@ public static class ConventionContextExtensions
     /// <returns>T.</returns>
     public static T? Get<T>(this IConventionContext context) where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
+        ArgumentNullException.ThrowIfNull(context);
         return (T?)context[typeof(T)];
     }
 
@@ -32,11 +29,7 @@ public static class ConventionContextExtensions
     /// <returns>T.</returns>
     public static T? Get<T>(this IConventionContext context, string key) where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
+        ArgumentNullException.ThrowIfNull(context);
         return (T?)context[key];
     }
 
@@ -50,17 +43,10 @@ public static class ConventionContextExtensions
     public static T GetOrAdd<T>(this IConventionContext context, Func<T> factory)
         where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(factory);
 
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-
-        if (!( context[typeof(T)] is T value ))
+        if (context[typeof(T)] is not T value)
         {
             value = factory();
             context.Set(value);
@@ -80,17 +66,10 @@ public static class ConventionContextExtensions
     public static T GetOrAdd<T>(this IConventionContext context, string key, Func<T> factory)
         where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(factory);
 
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-
-        if (!( context[key] is T value ))
+        if (context[key] is not T value)
         {
             value = factory();
             context.Set(value);
@@ -107,12 +86,25 @@ public static class ConventionContextExtensions
     /// <param name="value">The value to save</param>
     public static IConventionContext Set<T>(this IConventionContext context, T value)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(value);
 
         context[typeof(T)] = value;
+        return context;
+    }
+
+    /// <summary>
+    ///     Get a value by type from the context
+    /// </summary>
+    /// <param name="context">The context</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext Set(this IConventionContext context, Type key, object value)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(key);
+
+        context[key] = value;
         return context;
     }
 
@@ -125,12 +117,50 @@ public static class ConventionContextExtensions
     /// <param name="value">The value to save</param>
     public static IConventionContext Set<T>(this IConventionContext context, string key, T value)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
         context[key] = value;
+        return context;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the type is missing
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing<T>(this IConventionContext context, T value) where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Properties.AddIfMissing(value);
+        return context;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the key is missing
+    /// </summary>
+    /// <param name="context">The properties</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing(this IConventionContext context, Type key, object value)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Properties.AddIfMissing(key, value);
+        return context;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the key is missing
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The properties</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing<T>(this IConventionContext context, string key, T value) where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Properties.AddIfMissing(key, value);
         return context;
     }
 
@@ -140,11 +170,7 @@ public static class ConventionContextExtensions
     /// <param name="context">The context</param>
     public static bool IsUnitTestHost(this IConventionContext context)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
+        ArgumentNullException.ThrowIfNull(context);
         return context.GetHostType() == HostType.UnitTest;
     }
 
@@ -154,6 +180,7 @@ public static class ConventionContextExtensions
     /// <param name="context">The context</param>
     public static HostType GetHostType(this IConventionContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
         return context.Properties.TryGetValue(typeof(HostType), out var hostType)
             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
             ? (HostType)hostType!

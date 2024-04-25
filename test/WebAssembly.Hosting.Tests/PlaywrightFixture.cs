@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Playwright;
 using Rocket.Surgery.WebAssembly.Hosting.Tests.DevServer;
 using Sample.BlazorWasm;
+using Xunit;
 
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests;
 
@@ -35,15 +36,9 @@ public sealed class PlaywrightFixture : IAsyncLifetime
             }
         ).Start();
 
-        if (!isDone.WaitOne(TimeSpan.FromSeconds(10)))
-        {
-            throw new TimeoutException("Timed out waiting for: " + action);
-        }
+        if (!isDone.WaitOne(TimeSpan.FromSeconds(10))) throw new TimeoutException("Timed out waiting for: " + action);
 
-        if (edi != null)
-        {
-            throw edi.SourceException;
-        }
+        if (edi != null) throw edi.SourceException;
     }
 
     public string Uri { get; set; } = null!;
@@ -110,10 +105,7 @@ public sealed class PlaywrightFixture : IAsyncLifetime
 
         public void Configure(IApplicationBuilder app)
         {
-            if (!string.IsNullOrEmpty(PathBase))
-            {
-                app.UsePathBase(PathBase);
-            }
+            if (!string.IsNullOrEmpty(PathBase)) app.UsePathBase(PathBase);
 
             app.UseStaticFiles(
                 new StaticFileOptions

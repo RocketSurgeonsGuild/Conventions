@@ -4,12 +4,12 @@
     Rocket.Surgery.Conventions.ConventionAttributesGenerator: []
   },
   References: [
+    FluentValidation.dll,
     Microsoft.Extensions.Configuration.Abstractions.dll,
     Microsoft.Extensions.DependencyInjection.Abstractions.dll,
     mscorlib.dll,
     netstandard.dll,
     Rocket.Surgery.Conventions.Abstractions.dll,
-    Rocket.Surgery.Conventions.Attributes.dll,
     Rocket.Surgery.Conventions.dll,
     System.ComponentModel.dll,
     System.Core.dll,

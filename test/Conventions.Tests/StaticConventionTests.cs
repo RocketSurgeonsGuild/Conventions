@@ -1,17 +1,15 @@
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests.Conventions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-[ImportConventions]
 public partial class StaticConventionTests
 {
     [Fact]
     public void Should_Have_Exports_Method_Defined()
     {
         var list = Exports
-                  .GetConventions(new ServiceCollection().BuildServiceProvider())
+                  .GetConventions(new(new Dictionary<object, object>()))
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -22,7 +20,7 @@ public partial class StaticConventionTests
     public void Should_Have_Imports_Method_Defined_On_Assembly()
     {
         var list = Imports
-                  .GetConventions(new ServiceCollection().BuildServiceProvider())
+                  .Instance.LoadConventions(new(new Dictionary<object, object>()))
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -33,7 +31,7 @@ public partial class StaticConventionTests
     public void Should_Have_Imports_Method_Defined_On_Assembly_Into_Provider()
     {
         var list = Exports
-                  .GetConventions(new ServiceCollection().BuildServiceProvider())
+                  .GetConventions(new(new Dictionary<object, object>()))
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -52,7 +50,9 @@ public partial class StaticConventionTests
     [Fact]
     public void Should_Have_Imports_Method_Defined_On_Class()
     {
-        var list = GetConventions(new ServiceCollection().BuildServiceProvider())
+        var list = Imports
+                  .Instance
+                  .LoadConventions(new(new Dictionary<object, object>()))
                   .Should()
                   .NotBeNull()
                   .And.Subject;

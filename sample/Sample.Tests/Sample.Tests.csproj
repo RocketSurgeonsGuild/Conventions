@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <IsPackable>false</IsPackable>
+        <ImportConventionsAssembly>true</ImportConventionsAssembly>
     </PropertyGroup>
 
     <ItemGroup>
@@ -9,6 +10,12 @@
         <PackageReference Include="xunit" />
         <PackageReference Include="xunit.analyzers" />
         <PackageReference Include="xunit.runner.visualstudio" />
+        <ProjectReference
+            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="all"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
+using FluentValidation;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,11 +24,11 @@ internal static class GeneratorTestContextBuilderExtensions
     {
         return builder.AddReferences(
             typeof(ActivatorUtilities).Assembly,
-            typeof(ConventionAttribute).Assembly,
             typeof(ConventionContext).Assembly,
             typeof(IConventionContext).Assembly,
             typeof(IServiceProvider).Assembly,
-            typeof(IConfiguration).Assembly
+            typeof(IConfiguration).Assembly,
+            typeof(IValidator).Assembly
         );
     }
 

@@ -1,4 +1,7 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Exported_Conventions.cs
+#pragma warning disable CA1822
+#pragma warning disable CS8618
+#pragma warning disable CS8603
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +23,7 @@ namespace Source.Space
         /// <summary>
         /// The conventions exports from this assembly
         /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(IServiceProvider serviceProvider)
+        public static IEnumerable<IConventionWithDependencies> GetConventions(ConventionContextBuilder builder)
         {
             yield return new ConventionWithDependencies(new Contrib1(), HostType.Undefined);
             yield return new ConventionWithDependencies(new Contrib2(), HostType.Undefined);

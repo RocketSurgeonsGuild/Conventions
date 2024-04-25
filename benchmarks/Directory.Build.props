@@ -1,6 +1,8 @@
 <Project>
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+    <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Abstractions/build/Rocket.Surgery.Conventions.Abstractions.props" />
     <PropertyGroup>
         <IsPackable>false</IsPackable>
+        <NoWarn>$(NoWarn);CA1050</NoWarn>
     </PropertyGroup>
 </Project>

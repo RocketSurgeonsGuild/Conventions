@@ -1,0 +1,13 @@
+﻿<Project>
+    <ItemGroup>        
+        <CompilerVisibleProperty Include="ImportConventionsAssembly" />
+        <CompilerVisibleProperty Include="ImportConventionsNamespace" />
+        <CompilerVisibleProperty Include="ImportConventionsClassName" />
+        <CompilerVisibleProperty Include="ImportConventionsMethodName" />
+        <CompilerVisibleProperty Include="ExportConventionsAssembly" />
+        <CompilerVisibleProperty Include="ExportConventionsNamespace" />
+        <CompilerVisibleProperty Include="ExportConventionsClassName" />
+        <CompilerVisibleProperty Include="ExportConventionsMethodName" />
+        <CompilerVisibleProperty Include="IsTestProject" />
+    </ItemGroup>
+</Project>

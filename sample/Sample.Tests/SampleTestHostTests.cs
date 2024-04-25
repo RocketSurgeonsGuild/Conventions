@@ -13,25 +13,19 @@ namespace Sample.Tests;
 
 public class SampleTestHostTests : IAsyncLifetime
 {
-    private readonly IHost _host;
-
-    public SampleTestHostTests()
-    {
-        var builder = ConventionContextBuilder.Create().ForTesting(typeof(SampleTestHostTests));
-        _host = new HostBuilder()
-               .ConfigureRocketSurgery(builder)
-               .Build();
-    }
-
     [Fact]
     public void Should_Register_Services()
     {
         Assert.Equal("TestService", _host.Services.GetRequiredService<IService>().GetString());
     }
 
-    public Task InitializeAsync()
+    private IHost _host = null!;
+
+    public async Task InitializeAsync()
     {
-        return _host.StartAsync();
+        var builder = ConventionContextBuilder.Create().ForTesting(typeof(SampleTestHostTests));
+        _host = await Host.CreateApplicationBuilder().ConfigureRocketSurgery(builder);
+        await _host.StartAsync();
     }
 
     public async Task DisposeAsync()

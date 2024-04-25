@@ -8,36 +8,32 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
+        <PackageReference Include="System.Text.Json" PrivateAssets="all" />
         <PackageReference
             Include="Polyfill"
             IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
             PrivateAssets="All"
         />
-        
         <ProjectReference
-            Include="../Conventions.Analyzers.roslyn4.0/Rocket.Surgery.Conventions.Analyzers.roslyn4.0.csproj"
-            PrivateAssets="all"
-            ReferenceOutputAssembly="false"
-        />
-        <ProjectReference
-            Include="../Conventions.Analyzers.roslyn4.4/Rocket.Surgery.Conventions.Analyzers.roslyn4.4.csproj"
+            Include="../Conventions.Analyzers.roslyn4.8/Rocket.Surgery.Conventions.Analyzers.roslyn4.8.csproj"
             PrivateAssets="all"
             ReferenceOutputAssembly="false"
         />
     </ItemGroup>
     <ItemGroup>
         <None
-            Include="$(MSBuildThisFileDirectory)\..\Conventions.Analyzers.roslyn4.0\bin\$(Configuration)\netstandard2.0\$(AssemblyName).dll"
+            Include="$(MSBuildThisFileDirectory)\..\Conventions.Analyzers.roslyn4.8\bin\$(Configuration)\netstandard2.0\$(AssemblyName).dll"
             Pack="true"
-            PackagePath="analyzers/dotnet/roslyn4.0/cs"
+            PackagePath="analyzers/dotnet/roslyn4.8/cs"
             Visible="false"
         />
         <None
-            Include="$(MSBuildThisFileDirectory)\..\Conventions.Analyzers.roslyn4.4\bin\$(Configuration)\netstandard2.0\$(AssemblyName).dll"
+            Include="bin\$(Configuration)\netstandard2.0\$(AssemblyName).dll"
             Pack="true"
-            PackagePath="analyzers/dotnet/roslyn4.4/cs"
+            PackagePath="analyzers/dotnet/roslyn4.9/cs"
             Visible="false"
-        />
-        <None Include="bin\$(Configuration)\netstandard2.0\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.9/cs" Visible="false" />
+        />        
+        <None Include="$(PkgSystem_Text_Json)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.8/cs" Visible="false" />
+        <None Include="$(PkgSystem_Text_Json)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.9/cs" Visible="false" />
     </ItemGroup>
 </Project>

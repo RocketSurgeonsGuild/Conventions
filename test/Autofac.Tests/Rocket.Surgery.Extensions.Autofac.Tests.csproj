@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <ProjectReference Include="..\..\src\Conventions.Autofac\Rocket.Surgery.Conventions.Autofac.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
-        <ProjectReference Include="..\..\src\Conventions.CommandLine\Rocket.Surgery.Conventions.CommandLine.csproj" />
+        <ProjectReference Include="..\..\src\CommandLine\Rocket.Surgery.CommandLine.csproj" />
         <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
-        <ProjectReference Include="..\..\src\Web.Hosting\Rocket.Surgery.Web.Hosting.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 </Project>

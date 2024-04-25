@@ -6,9 +6,8 @@ namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
 internal static class AppExtensions
 {
-    public static ILifetimeScope GetLifetimeScope(this IHostBuilder builder)
+    public static ILifetimeScope GetLifetimeScope(this IHost host)
     {
-        var host = builder.Build();
         return host.Services.GetRequiredService<ILifetimeScope>();
     }
 }

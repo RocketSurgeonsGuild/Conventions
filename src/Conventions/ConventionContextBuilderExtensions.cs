@@ -1,5 +1,8 @@
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Reflection;
 
 #pragma warning disable CA2000
 
@@ -12,24 +15,52 @@ namespace Rocket.Surgery.Conventions;
 public static class ConventionContextBuilderExtensions
 {
     /// <summary>
+    ///     Use the given app domain for resolving assemblies
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="appDomain"></param>
+    /// <returns></returns>
+    public static ConventionContextBuilder UseAppDomain(this ConventionContextBuilder builder, AppDomain appDomain)
+    {
+        return builder.UseConventionFactory(new AppDomainConventionFactory(appDomain));
+    }
+
+    /// <summary>
+    ///     Use the given set of assemblies
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
+    public static ConventionContextBuilder UseAssemblies(this ConventionContextBuilder builder, IEnumerable<Assembly> assemblies)
+    {
+        return builder.UseConventionFactory(new AssemblyConventionFactory(assemblies));
+    }
+
+    /// <summary>
     ///     Allows creation of a service provider from the convention context.  This will apply configuration
     /// </summary>
     /// <param name="context"></param>
     /// <param name="configuration"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static IServiceProvider CreateServiceProvider(this IConventionContext context, IConfiguration? configuration = null)
+    public static async ValueTask<IServiceProvider> CreateServiceProvider(
+        this IConventionContext context,
+        IConfiguration? configuration = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var cb = new ConfigurationBuilder();
         configuration ??= context.Get<IConfiguration>();
         if (configuration is { })
             cb.AddConfiguration(configuration);
-        configuration = cb.ApplyConventions(context).Build();
+        configuration = ( await cb.ApplyConventionsAsync(context, configuration, cancellationToken) ).Build();
         context.Set(configuration);
         var services = new ServiceCollection();
         services.AddSingleton(configuration);
+        await services.ApplyConventionsAsync(context, cancellationToken);
+        await new LoggingBuilder(services).ApplyConventionsAsync(context, cancellationToken);
 
-        var factory = ConventionServiceProviderFactory.From(context);
-        return factory.CreateServiceProvider(factory.CreateBuilder(services));
+        return services.BuildServiceProvider(context.GetOrAdd(() => new ServiceProviderOptions()));
     }
 
     /// <summary>
@@ -37,9 +68,14 @@ public static class ConventionContextBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="configuration"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static IServiceProvider CreateServiceProvider(this ConventionContextBuilder builder, IConfiguration? configuration = null)
+    public static async ValueTask<IServiceProvider> CreateServiceProvider(
+        this ConventionContextBuilder builder,
+        IConfiguration? configuration = null,
+        CancellationToken cancellationToken = default
+    )
     {
-        return CreateServiceProvider(ConventionContext.From(builder), configuration);
+        return await CreateServiceProvider(await ConventionContext.FromAsync(builder, cancellationToken), configuration, cancellationToken);
     }
 }

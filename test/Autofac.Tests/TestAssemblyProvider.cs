@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
-using Rocket.Surgery.Conventions.Autofac;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
-using Rocket.Surgery.Hosting;
-using Rocket.Surgery.Web.Hosting;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
@@ -12,10 +10,34 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
     {
         return new[]
         {
-            typeof(AutofacConventionServiceProviderFactory).GetTypeInfo().Assembly,
-            typeof(RocketHostExtensions).GetTypeInfo().Assembly,
-            typeof(RocketWebHostExtensions).GetTypeInfo().Assembly,
-            typeof(TestAssemblyProvider).GetTypeInfo().Assembly
+            typeof(ConventionContextBuilder).GetTypeInfo().Assembly,
+            typeof(IConventionContext).GetTypeInfo().Assembly,
+            typeof(TestAssemblyProvider).GetTypeInfo().Assembly,
         };
+    }
+
+    public IEnumerable<Assembly> GetAssemblies(
+        Action<IAssemblyProviderAssemblySelector> action,
+        string filePath = "",
+        string memberName = "",
+        int lineNumber = 0
+    )
+    {
+        var selector = new AssemblyProviderAssemblySelector();
+        action(selector);
+
+        return selector.AssemblyDependencies.Any()
+            ? GetAssemblies()
+            : selector.Assemblies;
+    }
+
+    public IEnumerable<Type> GetTypes(
+        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
+        string filePath = "",
+        string memberName = "",
+        int lineNumber = 0
+    )
+    {
+        return selector(new TypeProviderAssemblySelector());
     }
 }

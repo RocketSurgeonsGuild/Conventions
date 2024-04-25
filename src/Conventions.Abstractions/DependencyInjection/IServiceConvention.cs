@@ -8,6 +8,7 @@ namespace Rocket.Surgery.Conventions.DependencyInjection;
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
+[PublicAPI]
 public interface IServiceConvention : IConvention
 {
     /// <summary>

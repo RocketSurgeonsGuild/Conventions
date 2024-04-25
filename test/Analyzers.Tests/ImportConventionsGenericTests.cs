@@ -1,4 +1,3 @@
-#if !ROSLYN4_0
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -14,20 +13,6 @@ public class ImportConventionsGenericTests(ITestOutputHelper testOutputHelper) :
 using Rocket.Surgery.Conventions;
 
 [assembly: ImportConventions]
-"
-                           )
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result);
-    }
-
-    [Fact]
-    public async Task Should_Not_Generate_Static_Assembly_Level_Method_By_Default()
-    {
-        var result = await WithGenericSharedDeps()
-                          .AddSources(
-                               @"
 "
                            )
                           .Build()
@@ -107,53 +92,6 @@ using Rocket.Surgery.Conventions;
     }
 
     [Fact]
-    public async Task Should_Generate_Static_Class_Member_Level_Method()
-    {
-        var result = await WithGenericSharedDeps()
-                          .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    [ImportConventions]
-    public partial class Program
-    {
-    }
-}
-"
-                           )
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result);
-    }
-
-
-    [Fact]
-    public async Task Should_Generate_Static_Class_Member_Level_Method_FullName()
-    {
-        var result = await WithGenericSharedDeps()
-                          .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
-
-namespace TestProject
-{
-    [ImportConventionsAttribute]
-    public partial class Program
-    {
-    }
-}
-"
-                           )
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result);
-    }
-
-    [Fact]
     public async Task Should_Support_No_Exported_Convention_Assemblies()
     {
         var result = await Builder
@@ -180,6 +118,7 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
 [assembly: Convention(typeof(Contrib))]
+[assembly: ImportConventions]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
@@ -191,7 +130,6 @@ using Rocket.Surgery.Conventions;
 
 namespace TestProject
 {
-    [ImportConventions]
     public partial class Program
     {
     }
@@ -212,6 +150,7 @@ namespace TestProject
                                @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
+[assembly: ImportConventions]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
@@ -224,7 +163,6 @@ using Rocket.Surgery.Conventions;
 
 namespace TestProject
 {
-    [ImportConventions]
     public partial class Program
     {
     }
@@ -237,5 +175,30 @@ namespace TestProject
 
         await Verify(result);
     }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Should_Generate_Static_Assembly_Initializer_When_xunit_is_referenced(bool isTestProject)
+    {
+        var result = await WithGenericSharedDeps()
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
+                          .AddGlobalOption("build_property.IsTestProject", isTestProject ? "true" : "false")
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseParameters(isTestProject);
+    }
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+        Configure(b => b.IgnoreOutputFile("Exported_Conventions.cs"));
+    }
 }
-#endif

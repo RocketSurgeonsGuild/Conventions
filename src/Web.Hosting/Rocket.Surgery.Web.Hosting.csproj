@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+        <TargetFramework>net8.0</TargetFramework>
         <PackageDescription
         >Adds helpers to easily bootstrap an application using conventions by just using the correct extension method. This adds command line operations, additional configuration, logging and service injections by convention.</PackageDescription>
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <Compile Include="../Hosting/RocketInternalsShared.cs" />
         <ProjectReference
             Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
             IncludeAssets="all"
@@ -16,7 +15,7 @@
         />
         <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
-        <ProjectReference Include="..\Hosting.Abstractions\Rocket.Surgery.Hosting.Abstractions.csproj" />
+        <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting" />

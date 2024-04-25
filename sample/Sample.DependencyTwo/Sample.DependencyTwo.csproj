@@ -1,16 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <TargetFramework>net8.0</TargetFramework>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     </PropertyGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Conventions.Attributes\Rocket.Surgery.Conventions.Attributes.csproj" />
-    </ItemGroup>
     <!-- Used to simulate anaylzer getting added by package reference -->
     <ItemGroup>
         <Analyzer
             Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)\..\..))\src\Conventions.Analyzers\bin\$(Configuration)\netstandard2.0\Rocket.Surgery.Conventions.Analyzers.dll"
             Condition="'$(Language)'=='C#'"
         />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" />
     </ItemGroup>
 </Project>

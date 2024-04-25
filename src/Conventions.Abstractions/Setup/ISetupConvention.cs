@@ -3,6 +3,7 @@
 /// <summary>
 ///     IInitConvention
 /// </summary>
+[PublicAPI]
 public interface ISetupConvention : IConvention
 {
     /// <summary>

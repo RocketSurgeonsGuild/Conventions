@@ -1,11 +1,15 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Rocket.Surgery.Conventions;
 
 internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, string? Namespace, string ClassName, string MethodName)
 {
+    public static ConventionConfigurationData ExportsDefaults { get; } = new(false, true, "", "Exports", "GetConventions") { Postfix = true, };
+    public static ConventionConfigurationData ImportsDefaults { get; } = new(false, true, "", "Imports", "Instance") { Postfix = true, };
+
     public static IncrementalValueProvider<ConventionConfigurationData> Create(
         IncrementalGeneratorInitializationContext context,
         string attributeName,
@@ -18,24 +22,18 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                 {
                     var data = InnerConventionConfigurationData.FromDefaults(defaults);
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Namespace)}", out var value))
-                    {
                         data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
-                    }
+                    else if (config.GlobalOptions.TryGetValue("build_property.RootNamespace", out value))
+                        data = data with { Namespace = value, DefinedNamespace = true, };
 
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.ClassName)}", out value))
-                    {
                         data = data with { ClassName = value, WasConfigured = true, };
-                    }
 
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.MethodName)}", out value))
-                    {
                         data = data with { MethodName = value, WasConfigured = true, };
-                    }
 
                     if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerConventionConfigurationData.Assembly)}", out value))
-                    {
                         data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
-                    }
 
                     return data;
                 }
@@ -58,10 +56,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                     (attributes, _) =>
                     {
                         var data = InnerConventionConfigurationData.FromDefaults(defaults);
-                        if (!attributes.Any())
-                        {
-                            return data;
-                        }
+                        if (!attributes.Any()) return data;
 
                         data = data with { WasConfigured = true, };
 
@@ -153,10 +148,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
     private static string GetNamespaceForCompilation(Compilation compilation, bool postfix = false)
     {
         var @namespace = compilation.AssemblyName ?? "";
-        if (postfix)
-        {
-            return ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.');
-        }
+        if (postfix) return ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.');
 
         return @namespace;
     }
@@ -165,15 +157,34 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
 
     public SyntaxList<AttributeListSyntax> ToAttributes(string type)
     {
-        return SyntaxFactory.List(
+        var list = List(
             new[]
             {
                 Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Namespace)}", Namespace),
                 Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(ClassName)}", ClassName),
                 Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(MethodName)}", MethodName),
-//                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ConventionConfigurationData.{type}.{nameof(Assembly)}", Assembly.ToString()),
             }
         );
+        if (type == "Import")
+            list = list.Add(
+                AttributeList(
+                        SingletonSeparatedList(
+                            Attribute(ParseName("Rocket.Surgery.Conventions.ImportsType"))
+                               .WithArgumentList(
+                                    AttributeArgumentList(
+                                        SingletonSeparatedList(
+                                            AttributeArgument(
+                                                TypeOfExpression(ParseTypeName(( Namespace is { Length: > 0, } ? Namespace + "." : "" ) + ClassName))
+                                            )
+                                        )
+                                    )
+                                )
+                        )
+                    )
+                   .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
+            );
+
+        return list;
     }
 
     private record InnerConventionConfigurationData(bool Assembly, string? Namespace, string ClassName, string MethodName)
