@@ -197,10 +197,10 @@ internal class ConventionProvider : IConventionProvider
                                     )
                                    .ToLookup(x => x.convention.Convention, x => x.dependsOn);
 
-                    return [..TopographicalSort(c, x => dependsOn[x.Convention])];
+                    return [..TopographicalSort(c, x => dependsOn[x.Convention]),];
                 }
 
-                return [..c];
+                return [..c,];
             }
         );
 
