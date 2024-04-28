@@ -236,7 +236,7 @@ public class DryIocBuilderTests : AutoFakeTest
     protected override IContainer BuildContainer(IContainer container)
     {
         return container
-           .With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic)
+               .With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic)
             ;
     }
 }
