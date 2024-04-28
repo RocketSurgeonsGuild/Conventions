@@ -1,5 +1,4 @@
 using DryIoc;
-using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions.DryIoc;
@@ -24,7 +23,7 @@ public static class DryIocConventionRocketHostExtensions
         return builder.UseServiceProviderFactory<IContainer>(
             async (context, services, ct) =>
             {
-                var c = container ?? new Container().WithDependencyInjectionAdapter();
+                var c = ( container ?? new Container() ).With(r => r.WithBaseMicrosoftDependencyInjectionRules(null));
                 return new DryIocConventionServiceProviderFactory(context, await c.ApplyConventionsAsync(context, services, ct));
             }
         );

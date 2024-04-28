@@ -232,4 +232,11 @@ public class DryIocBuilderTests : AutoFakeTest
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
     }
+
+    protected override IContainer BuildContainer(IContainer container)
+    {
+        return container
+               .With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic)
+            ;
+    }
 }
