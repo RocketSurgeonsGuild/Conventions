@@ -24,7 +24,7 @@ public static class DryIocConventionRocketHostExtensions
         return builder.UseServiceProviderFactory<IContainer>(
             async (context, services, ct) =>
             {
-                var c = container ?? new Container().WithDependencyInjectionAdapter();
+                var c = container ?? new Container();
                 return new DryIocConventionServiceProviderFactory(context, await c.ApplyConventionsAsync(context, services, ct));
             }
         );

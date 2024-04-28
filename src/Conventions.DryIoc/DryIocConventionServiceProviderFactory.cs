@@ -15,8 +15,8 @@ internal class DryIocConventionServiceProviderFactory(IConventionContext convent
 
     public IServiceProvider CreateServiceProvider(IContainer containerBuilder)
     {
-        return conventionContext.GetOrAdd(() => new DryIocOptions()).NoMoreRegistrationAllowed
+        return ( conventionContext.GetOrAdd(() => new DryIocOptions()).NoMoreRegistrationAllowed
             ? containerBuilder.WithNoMoreRegistrationAllowed()
-            : containerBuilder;
+            : containerBuilder ).WithDependencyInjectionAdapter();
     }
 }
