@@ -196,6 +196,7 @@ internal static class ImportConventions
                     context.AddSource(
                         "Generated_WebApplicationBuilder_Extensions.cs",
                         _configurationMethods
+                           .Replace("{BuilderName}", "WebApplicationBuilder")
                            .Replace("{BuilderType}", "Microsoft.AspNetCore.Builder.WebApplicationBuilder")
                            .Replace("{ReturnType}", "Microsoft.AspNetCore.Builder.WebApplication")
                            .Replace("{ExtensionsType}", "Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
@@ -207,6 +208,7 @@ internal static class ImportConventions
                     context.AddSource(
                         "Generated_HostApplicationBuilder_Extensions.cs",
                         _configurationMethods
+                           .Replace("{BuilderName}", "HostApplicationBuilder")
                            .Replace("{BuilderType}", "Microsoft.Extensions.Hosting.HostApplicationBuilder")
                            .Replace("{ReturnType}", "Microsoft.Extensions.Hosting.IHost")
                            .Replace("{ExtensionsType}", "Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
@@ -221,6 +223,7 @@ internal static class ImportConventions
                 context.AddSource(
                     "Generated_WebAssemblyBuilder_Extensions.cs",
                     _configurationMethods
+                       .Replace("{BuilderName}", "WebAssemblyHostBuilder")
                        .Replace("{BuilderType}", "Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder")
                        .Replace("{ReturnType}", "Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost")
                        .Replace("{ExtensionsType}", "Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions")
@@ -320,7 +323,7 @@ internal static class ImportConventions
 
         namespace {RocketUsing};
 
-        internal static partial class GeneratedRocketWebAssemblyExtensions
+        internal static partial class GeneratedRocket{BuilderName}Extensions
         {
             /// <summary>
             ///     Uses the rocket booster.

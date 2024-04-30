@@ -2,6 +2,8 @@ using System.ComponentModel;
 using System.Reflection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using ServiceFactoryAdapter =
@@ -42,6 +44,7 @@ public static class RocketWebAssemblyExtensions
            .AddIfMissing(builder.HostEnvironment)
            .AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
         contextBuilder.Properties.Add("BlazorWasm", true);
+
         var conventionContext = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
         foreach (var item in conventionContext.Conventions
                                               .Get<IWebAssemblyHostingConvention,
@@ -67,6 +70,23 @@ public static class RocketWebAssemblyExtensions
             }
         }
 
+
+        await SharedHostConfigurationAsync(conventionContext, builder, cancellationToken).ConfigureAwait(false);
+        await builder.Services.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
+        await builder.Logging.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
+
+        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
+            builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
+
+        return builder.Build();
+    }
+
+    internal static async ValueTask SharedHostConfigurationAsync(
+        IConventionContext conventionContext,
+        WebAssemblyHostBuilder builder,
+        CancellationToken cancellationToken
+    )
+    {
         var foundConfigurationFiles = Assembly
                                      .GetEntryAssembly()
                                     ?.GetCustomAttributes<AssemblyMetadataAttribute>()
@@ -132,11 +152,6 @@ public static class RocketWebAssemblyExtensions
                     ShouldDisposeConfiguration = true,
                 }
             );
-
-        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
-            builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
-
-        return builder.Build();
 
         static async Task<IConfigurationSource?> getConfigurationSource(
             HttpClient httpClient,
