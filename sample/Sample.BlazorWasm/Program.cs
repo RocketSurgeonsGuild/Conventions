@@ -11,7 +11,5 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new(builder.HostEnvironment.BaseAddress), });
 
-var host = await builder
-   .ConfigureRocketSurgery(Imports.Instance);
-
+var host = await builder.ConfigureRocketSurgery(Imports.Instance);
 await host.RunAsync();

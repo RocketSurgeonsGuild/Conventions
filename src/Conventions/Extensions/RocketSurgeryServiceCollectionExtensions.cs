@@ -32,6 +32,8 @@ public static class RocketSurgeryServiceCollectionExtensions
             conventionContext.Logger.LogWarning("Configuration was not found in context");
         }
 
+        services.AddSingleton(conventionContext.AssemblyProvider);
+
         foreach (var item in conventionContext.Conventions.Get<IServiceConvention, ServiceConvention, IServiceAsyncConvention, ServiceAsyncConvention>())
         {
             switch (item)
