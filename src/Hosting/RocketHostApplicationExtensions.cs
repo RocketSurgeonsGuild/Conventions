@@ -33,9 +33,11 @@ public static class RocketHostApplicationExtensions
          && conventionContextBuilder is ConventionContextBuilder b
                 ? b
                 : new(new Dictionary<object, object>());
-        return ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
+        var ccb = ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
             ? contextBuilder.UseConventionFactory(impliedFactory)
             : contextBuilder;
+        builder.Properties[typeof(ConventionContextBuilder)] = ccb;
+        return ccb;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -77,6 +79,7 @@ public static class RocketHostApplicationExtensions
         {
             await item.Action(host, cancellationToken);
         }
+
         return host;
     }
 
