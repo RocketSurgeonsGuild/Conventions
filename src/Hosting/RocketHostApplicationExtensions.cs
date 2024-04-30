@@ -22,6 +22,10 @@ namespace Rocket.Surgery.Hosting;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketHostApplicationExtensions
 {
+    [PublicAPI]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public record HostBuiltEvent<T>(Func<T, CancellationToken, ValueTask> Action);
+
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(IHostApplicationBuilder builder)
     {
@@ -35,14 +39,19 @@ public static class RocketHostApplicationExtensions
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static async ValueTask Configure(
-        IHostApplicationBuilder builder,
+    public static async ValueTask<THost> Configure<T, THost>(
+        T builder,
+        Func<T, THost> buildHost,
         ConventionContextBuilder contextBuilder,
         CancellationToken cancellationToken
     )
+        where T : IHostApplicationBuilder
+        where THost : IHost
     {
         if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
         contextBuilder.Properties["__configured__"] = true;
+
+        var events = contextBuilder.GetOrAdd(() => new List<HostBuiltEvent<THost>>());
 
         contextBuilder
            .AddIfMissing(HostType.Live)
@@ -62,6 +71,13 @@ public static class RocketHostApplicationExtensions
 
         if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
             builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken));
+
+        var host = buildHost(builder);
+        foreach (var item in events)
+        {
+            await item.Action(host, cancellationToken);
+        }
+        return host;
     }
 
     internal static async ValueTask SharedHostConfigurationAsync(

@@ -199,6 +199,7 @@ internal static class ImportConventions
                            .Replace("{BuilderName}", "WebApplicationBuilder")
                            .Replace("{BuilderType}", "Microsoft.AspNetCore.Builder.WebApplicationBuilder")
                            .Replace("{ReturnType}", "Microsoft.AspNetCore.Builder.WebApplication")
+                           .Replace("{HostBuiltEvent}", "Rocket.Surgery.Hosting.RocketHostApplicationExtensions.HostBuiltEvent<Microsoft.AspNetCore.Builder.WebApplication>")
                            .Replace("{ExtensionsType}", "Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
                            .Replace("{HostingUsing}", "Microsoft.Extensions.Hosting")
                            .Replace("{RocketUsing}", "Rocket.Surgery.Hosting")
@@ -211,6 +212,7 @@ internal static class ImportConventions
                            .Replace("{BuilderName}", "HostApplicationBuilder")
                            .Replace("{BuilderType}", "Microsoft.Extensions.Hosting.HostApplicationBuilder")
                            .Replace("{ReturnType}", "Microsoft.Extensions.Hosting.IHost")
+                           .Replace("{HostBuiltEvent}", "Rocket.Surgery.Hosting.RocketHostApplicationExtensions.HostBuiltEvent<Microsoft.Extensions.Hosting.IHost>")
                            .Replace("{ExtensionsType}", "Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
                            .Replace("{HostingUsing}", "Microsoft.Extensions.Hosting")
                            .Replace("{RocketUsing}", "Rocket.Surgery.Hosting")
@@ -226,6 +228,7 @@ internal static class ImportConventions
                        .Replace("{BuilderName}", "WebAssemblyHostBuilder")
                        .Replace("{BuilderType}", "Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder")
                        .Replace("{ReturnType}", "Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost")
+                       .Replace("{HostBuiltEvent}", "Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions.HostBuiltEvent")
                        .Replace("{ExtensionsType}", "Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions")
                        .Replace("{HostingUsing}", "Microsoft.AspNetCore.Components.WebAssembly.Hosting")
                        .Replace("{RocketUsing}", "Rocket.Surgery.WebAssembly.Hosting")
@@ -595,6 +598,48 @@ internal static class ImportConventions
             }
 
             /// <summary>
+            /// Run a simple action when the host has been built
+            /// </summary>
+            /// <param name="builder"></param>
+            /// <param name="action"></param>
+            /// <returns></returns>
+            public static {BuilderType} OnHostBuilt(this {BuilderType} builder, Action<{ReturnType}> action)
+            {
+                {ExtensionsType}.GetExisting(builder).GetOrAdd(() => new List<{HostBuiltEvent}>()).Add(new((provider, _) =>
+                        {
+                            action(provider);
+                            return ValueTask.CompletedTask;
+                        }
+                    )
+                );
+                return builder;
+            }
+
+            /// <summary>
+            /// Run a simple action when the host has been built
+            /// </summary>
+            /// <param name="builder"></param>
+            /// <param name="action"></param>
+            /// <returns></returns>
+            public static {BuilderType} OnHostBuilt(this {BuilderType} builder, Func<{ReturnType}, ValueTask> action)
+            {
+                {ExtensionsType}.GetExisting(builder).GetOrAdd(() => new List<{HostBuiltEvent}>()).Add(new((provider, _) => action(provider)));
+                return builder;
+            }
+
+            /// <summary>
+            /// Run a simple action when the host has been built
+            /// </summary>
+            /// <param name="builder"></param>
+            /// <param name="action"></param>
+            /// <returns></returns>
+            public static {BuilderType} OnHostBuilt(this {BuilderType} builder, Func<{ReturnType}, CancellationToken, ValueTask> action)
+            {
+                {ExtensionsType}.GetExisting(builder).GetOrAdd(() => new List<{HostBuiltEvent}>()).Add(new(action));
+                return builder;
+            }
+
+            /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
@@ -604,8 +649,7 @@ internal static class ImportConventions
             {
                 ArgumentNullException.ThrowIfNull(builder);
                 ArgumentNullException.ThrowIfNull(contextBuilder);
-                await {ExtensionsType}.Configure(builder, contextBuilder, cancellationToken);
-                return builder.Build();
+                return await {ExtensionsType}.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
             }
         }
         """";

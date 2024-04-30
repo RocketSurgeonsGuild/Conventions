@@ -12,7 +12,7 @@ using AppDelegate =
 
 namespace Rocket.Surgery.Hosting;
 
-internal static partial class GeneratedRocketWebAssemblyExtensions
+internal static partial class GeneratedRocketHostApplicationBuilderExtensions
 {
     /// <summary>
     ///     Uses the rocket booster.
@@ -284,6 +284,48 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     }
 
     /// <summary>
+    /// Run a simple action when the host has been built
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public static Microsoft.Extensions.Hosting.HostApplicationBuilder OnHostBuilt(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, Action<Microsoft.Extensions.Hosting.IHost> action)
+    {
+        Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).GetOrAdd(() => new List<Rocket.Surgery.Hosting.RocketHostApplicationExtensions.HostBuiltEvent<Microsoft.Extensions.Hosting.IHost>>()).Add(new((provider, _) =>
+                {
+                    action(provider);
+                    return ValueTask.CompletedTask;
+                }
+            )
+        );
+        return builder;
+    }
+
+    /// <summary>
+    /// Run a simple action when the host has been built
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public static Microsoft.Extensions.Hosting.HostApplicationBuilder OnHostBuilt(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, Func<Microsoft.Extensions.Hosting.IHost, ValueTask> action)
+    {
+        Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).GetOrAdd(() => new List<Rocket.Surgery.Hosting.RocketHostApplicationExtensions.HostBuiltEvent<Microsoft.Extensions.Hosting.IHost>>()).Add(new((provider, _) => action(provider)));
+        return builder;
+    }
+
+    /// <summary>
+    /// Run a simple action when the host has been built
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public static Microsoft.Extensions.Hosting.HostApplicationBuilder OnHostBuilt(this Microsoft.Extensions.Hosting.HostApplicationBuilder builder, Func<Microsoft.Extensions.Hosting.IHost, CancellationToken, ValueTask> action)
+    {
+        Rocket.Surgery.Hosting.RocketHostApplicationExtensions.GetExisting(builder).GetOrAdd(() => new List<Rocket.Surgery.Hosting.RocketHostApplicationExtensions.HostBuiltEvent<Microsoft.Extensions.Hosting.IHost>>()).Add(new(action));
+        return builder;
+    }
+
+    /// <summary>
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
@@ -293,7 +335,6 @@ internal static partial class GeneratedRocketWebAssemblyExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(contextBuilder);
-        await Rocket.Surgery.Hosting.RocketHostApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
-        return builder.Build();
+        return await Rocket.Surgery.Hosting.RocketHostApplicationExtensions.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
     }
 }

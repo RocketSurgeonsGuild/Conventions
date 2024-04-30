@@ -151,10 +151,13 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
     [Fact]
     public async Task Should_Build_The_Host_Correctly()
     {
+        var @delegate = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
         using var host = await Host
                               .CreateApplicationBuilder()
+                              .OnHostBuilt(@delegate)
                               .ConfigureRocketSurgery();
 
+        A.CallTo(() => @delegate.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
         host.Services.Should().NotBeNull();
     }
 
