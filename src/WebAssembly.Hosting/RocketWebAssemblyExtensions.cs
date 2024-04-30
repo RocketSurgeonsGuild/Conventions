@@ -17,10 +17,6 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketWebAssemblyExtensions
 {
-    [PublicAPI]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public record HostBuiltEvent(Func<WebAssemblyHost, CancellationToken, ValueTask> Action);
-
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(WebAssemblyHostBuilder builder)
     {
@@ -90,6 +86,7 @@ public static class RocketWebAssemblyExtensions
         {
             await item.Action(host, cancellationToken);
         }
+
         return host;
     }
 
@@ -185,4 +182,8 @@ public static class RocketWebAssemblyExtensions
     }
 
     private static ConventionContextBuilder? _builder;
+
+    [PublicAPI]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public record HostBuiltEvent(Func<WebAssemblyHost, CancellationToken, ValueTask> Action);
 }

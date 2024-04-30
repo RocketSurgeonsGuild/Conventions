@@ -22,10 +22,6 @@ namespace Rocket.Surgery.Hosting;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketHostApplicationExtensions
 {
-    [PublicAPI]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public record HostBuiltEvent<T>(Func<T, CancellationToken, ValueTask> Action);
-
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(IHostApplicationBuilder builder)
     {
@@ -184,4 +180,8 @@ public static class RocketHostApplicationExtensions
             new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
         );
     }
+
+    [PublicAPI]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public record HostBuiltEvent<T>(Func<T, CancellationToken, ValueTask> Action);
 }
