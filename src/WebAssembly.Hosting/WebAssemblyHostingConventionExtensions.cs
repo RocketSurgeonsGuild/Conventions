@@ -16,7 +16,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>ConventionContextBuilder.</returns>
-    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, WebAssemblyHostingConvention @delegate)
+    public static ConventionContextBuilder ConfigureWebAssembly(this ConventionContextBuilder container, WebAssemblyHostingConvention @delegate)
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -30,7 +30,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>ConventionContextBuilder.</returns>
-    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, WebAssemblyHostingAsyncConvention @delegate)
+    public static ConventionContextBuilder ConfigureWebAssembly(this ConventionContextBuilder container, WebAssemblyHostingAsyncConvention @delegate)
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -44,7 +44,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>ConventionContextBuilder.</returns>
-    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, Action<WebAssemblyHostBuilder> @delegate)
+    public static ConventionContextBuilder ConfigureWebAssembly(this ConventionContextBuilder container, Action<WebAssemblyHostBuilder> @delegate)
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -58,7 +58,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>ConventionContextBuilder.</returns>
-    public static ConventionContextBuilder ConfigureHosting(this ConventionContextBuilder container, Func<WebAssemblyHostBuilder, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureWebAssembly(this ConventionContextBuilder container, Func<WebAssemblyHostBuilder, ValueTask> @delegate)
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -72,7 +72,7 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <returns>ConventionContextBuilder.</returns>
-    public static ConventionContextBuilder ConfigureHosting(
+    public static ConventionContextBuilder ConfigureWebAssembly(
         this ConventionContextBuilder container,
         Func<WebAssemblyHostBuilder, CancellationToken, ValueTask> @delegate
     )

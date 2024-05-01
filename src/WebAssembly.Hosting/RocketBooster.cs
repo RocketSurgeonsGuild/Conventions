@@ -6,8 +6,7 @@ using AppDelegate =
 
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
 
-// ReSharper disable once CheckNamespace
-namespace Rocket.Surgery.Hosting;
+namespace Rocket.Surgery.WebAssembly.Hosting;
 
 /// <summary>
 ///     Class RocketBooster.
