@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
 #pragma warning disable CA1848
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     Extension method to apply service conventions

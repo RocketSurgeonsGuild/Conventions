@@ -1,20 +1,19 @@
-﻿using FluentAssertions;
+﻿using FakeItEasy;
+using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Xunit.Abstractions;
-using Imports = Rocket.Surgery.Hosting.AspNetCore.Tests.Imports;
 
-// ReSharper disable once CheckNamespace
-namespace AspNetCore.Tests;
+namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
 public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
 {
@@ -66,6 +65,20 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
         configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
+    }
+
+    [Fact]
+    public async Task Should_Build_The_Host_Correctly()
+    {
+        var @delegate = A.Fake<Func<WebApplication, CancellationToken, ValueTask>>();
+        var @delegate2 = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
+        using var host = await WebApplication
+                              .CreateBuilder()
+                              .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(@delegate2));
+
+        A.CallTo(() => @delegate.Invoke(A<WebApplication>._, A<CancellationToken>._)).MustHaveHappened();
+        A.CallTo(() => @delegate2.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
+        host.Services.Should().NotBeNull();
     }
 
     [Fact]

@@ -9,12 +9,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.Extensions;
 
 #pragma warning disable CA1031
 #pragma warning disable CA2000
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
 
-// ReSharper disable once CheckNamespace
 namespace Rocket.Surgery.Hosting;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -49,8 +49,6 @@ public static class RocketHostApplicationExtensions
         if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
         contextBuilder.Properties["__configured__"] = true;
 
-        var events = contextBuilder.GetOrAdd(() => new List<HostBuiltEvent<THost>>());
-
         contextBuilder
            .AddIfMissing(HostType.Live)
            .AddIfMissing(builder)
@@ -71,11 +69,7 @@ public static class RocketHostApplicationExtensions
             builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken));
 
         var host = buildHost(builder);
-        foreach (var item in events)
-        {
-            await item.Action(host, cancellationToken);
-        }
-
+        await context.ApplyHostCreatedConventionsAsync(host, cancellationToken);
         return host;
     }
 
@@ -180,8 +174,4 @@ public static class RocketHostApplicationExtensions
             new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
         );
     }
-
-    [PublicAPI]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public record HostBuiltEvent<T>(Func<T, CancellationToken, ValueTask> Action);
 }

@@ -1,13 +1,14 @@
+using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.Configuration;
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     Extension method to apply configuration conventions
 /// </summary>
-public static class RocketSurgeryLoggingExtensions
+public static class RocketSurgeryConfigurationExtensions
 {
     /// <summary>
     ///     Apply configuration conventions

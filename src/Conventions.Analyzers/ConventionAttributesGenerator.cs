@@ -479,7 +479,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 cu = cu.AddMembers(program);
 
                 context.AddSource(
-                    "TopLevel.cs",
+                    "TopLevel.g.cs",
                     cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
                 );
             }

@@ -1,11 +1,10 @@
-﻿#if NET6_0_OR_GREATER
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Hosting;
 
 /// <summary>
-///     ILoggingConvention
+///     IHostApplicationConvention
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
@@ -13,10 +12,9 @@ namespace Rocket.Surgery.Hosting;
 public interface IHostApplicationConvention : IConvention
 {
     /// <summary>
-    ///     Register additional logging providers with the logging builder
+    ///     Register an event to happen when a host application is being configured
     /// </summary>
     /// <param name="context">The context.</param>
     /// <param name="builder"></param>
     void Register(IConventionContext context, IHostApplicationBuilder builder);
 }
-#endif

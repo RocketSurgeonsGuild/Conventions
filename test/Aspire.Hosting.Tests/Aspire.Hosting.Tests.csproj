@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\sample\AspireSample\AspireSample.csproj" />
+    <ProjectReference Include="..\..\src\Aspire.Hosting\Rocket.Surgery.Aspire.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\Aspire.Hosting.Testing\Rocket.Surgery.Aspire.Hosting.Testing.csproj" />
+    <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
+  </ItemGroup>
+</Project>

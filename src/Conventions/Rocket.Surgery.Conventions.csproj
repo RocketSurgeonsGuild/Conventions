@@ -23,6 +23,8 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Aspire.Hosting" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Aspire.Hosting.Testing" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Web.Hosting" />
