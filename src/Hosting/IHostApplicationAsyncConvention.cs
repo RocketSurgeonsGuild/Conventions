@@ -4,7 +4,7 @@ using Rocket.Surgery.Conventions;
 namespace Rocket.Surgery.Hosting;
 
 /// <summary>
-///     ILoggingConvention
+///     IHostApplicationAsyncConvention
 ///     Implements the <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="IConvention" />
@@ -12,7 +12,7 @@ namespace Rocket.Surgery.Hosting;
 public interface IHostApplicationAsyncConvention : IConvention
 {
     /// <summary>
-    ///     Register additional logging providers with the logging builder
+    ///     Register an event to happen when a host application is being configured
     /// </summary>
     /// <param name="context">The context.</param>
     /// <param name="builder"></param>

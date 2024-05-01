@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Logging;
 
 // ReSharper disable once CheckNamespace
 #pragma warning disable CA1848
-namespace Microsoft.Extensions.Logging;
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     Extension method to apply logging conventions

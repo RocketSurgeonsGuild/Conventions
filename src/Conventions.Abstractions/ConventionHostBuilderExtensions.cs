@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Conventions.Hosting;
 using Rocket.Surgery.Conventions.Logging;
 using Rocket.Surgery.Conventions.Setup;
 
@@ -467,6 +468,87 @@ public static class ConventionHostBuilderExtensions
         ArgumentNullException.ThrowIfNull(container);
 
         container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, _) => @delegate(builder)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the host created event for the given host type
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder OnHostCreated<THost>(this ConventionContextBuilder container, HostCreatedConvention<THost> @delegate)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder OnHostCreated<THost>(this ConventionContextBuilder container, HostCreatedAsyncConvention<THost> @delegate)
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder OnHostCreated<THost>(
+        this ConventionContextBuilder container,
+        Action<THost> @delegate
+    )
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        container.AppendDelegate(new HostCreatedConvention<THost>((_, host) => @delegate(host)));
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder OnHostCreated<THost>(
+        this ConventionContextBuilder container,
+        Func<THost, CancellationToken, ValueTask> @delegate
+    )
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        container.AppendDelegate(
+            new HostCreatedAsyncConvention<THost>((_, host, cancellationToken) => @delegate(host, cancellationToken))
+        );
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder OnHostCreated<THost>(
+        this ConventionContextBuilder container,
+        Func<THost, ValueTask> @delegate
+    )
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        container.AppendDelegate(new HostCreatedAsyncConvention<THost>((_, host, _) => @delegate(host)));
         return container;
     }
 

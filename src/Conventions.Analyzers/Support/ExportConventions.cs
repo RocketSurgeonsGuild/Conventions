@@ -237,7 +237,7 @@ internal static class ExportConventions
             );
 
         context.AddSource(
-            "Exported_Conventions.cs",
+            "Exported_Conventions.g.cs",
             cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
         );
     }

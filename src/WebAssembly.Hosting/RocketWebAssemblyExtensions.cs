@@ -1,11 +1,13 @@
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
+using Rocket.Surgery.Conventions.Extensions;
 using ServiceFactoryAdapter =
     System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
         System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
@@ -17,13 +19,19 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketWebAssemblyExtensions
 {
+    private static readonly ConditionalWeakTable<WebAssemblyHostBuilder, ConventionContextBuilder> _weakTable = new();
+
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(WebAssemblyHostBuilder builder)
     {
-        _builder ??= new(new Dictionary<object, object>());
-        return ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
-            ? _builder.UseConventionFactory(impliedFactory)
-            : _builder;
+        var contextBuilder = _weakTable.TryGetValue(builder, out var ccb)
+            ? ccb
+            : new(new Dictionary<object, object>());
+        ccb = ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
+            ? contextBuilder.UseConventionFactory(impliedFactory)
+            : contextBuilder;
+        _weakTable.Add(builder, ccb);
+        return ccb;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -36,8 +44,6 @@ public static class RocketWebAssemblyExtensions
     {
         if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
         contextBuilder.Properties["__configured__"] = true;
-
-        var events = contextBuilder.GetOrAdd(() => new List<HostBuiltEvent>());
 
         contextBuilder
            .AddIfMissing(HostType.Live)
@@ -82,11 +88,7 @@ public static class RocketWebAssemblyExtensions
             builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
 
         var host = buildHost(builder);
-        foreach (var item in events)
-        {
-            await item.Action(host, cancellationToken);
-        }
-
+        await conventionContext.ApplyHostCreatedConventionsAsync(host, cancellationToken);
         return host;
     }
 
@@ -180,10 +182,4 @@ public static class RocketWebAssemblyExtensions
             return source;
         }
     }
-
-    private static ConventionContextBuilder? _builder;
-
-    [PublicAPI]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public record HostBuiltEvent(Func<WebAssemblyHost, CancellationToken, ValueTask> Action);
 }

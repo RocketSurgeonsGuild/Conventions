@@ -86,7 +86,7 @@ internal static class AssemblyCollection
         if (cu is { Members: [], AttributeLists: [], }) return;
 
         context.AddSource(
-            "Compiled_AssemblyProvider.cs",
+            "Compiled_AssemblyProvider.g.cs",
             cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
         );
     }

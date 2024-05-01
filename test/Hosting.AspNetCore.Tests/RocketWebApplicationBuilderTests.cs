@@ -2,12 +2,10 @@
 using Microsoft.AspNetCore.TestHost;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Xunit.Abstractions;
 
-// ReSharper disable once CheckNamespace
-namespace AspNetCore.Tests;
+namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
 public class RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
 {
