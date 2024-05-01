@@ -107,9 +107,6 @@ jobs:
       - name: 🚒 dotnet workload restore
         run: |
           dotnet workload restore
-      - name: 🚒 dotnet workload restore
-        run: |
-          dotnet workload restore
       - name: ⚒️ dotnet tool restore
         run: |
           dotnet tool restore
