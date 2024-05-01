@@ -107,9 +107,6 @@ jobs:
       - name: 🚒 dotnet workload restore
         run: |
           dotnet workload restore
-      - name: 🚒 dotnet workload restore
-        run: |
-          dotnet workload restore
       - name: ⚒️ dotnet tool restore
         run: |
           dotnet tool restore
@@ -141,7 +138,7 @@ jobs:
           path: 'coverage/'
       - name: 📫 Publish Coverage
         if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target') || ((github.event_name == 'pull_request' || github.event_name == 'pull_request_target') && github.event.pull_request.user.login != 'renovate[bot]' && github.event.pull_request.user.login != 'dependabot[bot]')
-        uses: codecov/codecov-action@v4.3.1
+        uses: codecov/codecov-action@v4.3.0
         with:
           name: 'actions-${{ matrix.os }}'
           token: '${{ secrets.CODECOV_TOKEN }}'
