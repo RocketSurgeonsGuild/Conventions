@@ -72,11 +72,13 @@ public partial class Pipeline
            .AddNugetPublish()
            .Jobs.OfType<RocketSurgeonsGithubActionsJob>()
            .First(z => z.Name.Equals("build", StringComparison.OrdinalIgnoreCase))
+            .InsertAfterCheckOut(new RunStep("dotnet workload restore") { Run = "dotnet workload restore" })
            .UseDotNetSdks("6.0", "8.0")
            .AddNuGetCache()
            // .ConfigureForGitVersion()
            .ConfigureStep<CheckoutStep>(step => step.FetchDepth = 0)
            .PublishLogs<Pipeline>();
+
 
         return configuration;
     }
