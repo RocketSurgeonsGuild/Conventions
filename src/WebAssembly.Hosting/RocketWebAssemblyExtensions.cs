@@ -55,6 +55,22 @@ public static class RocketWebAssemblyExtensions
         contextBuilder.Properties.Add("BlazorWasm", true);
 
         var conventionContext = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
+
+        await SharedHostConfigurationAsync(conventionContext, builder, cancellationToken).ConfigureAwait(false);
+        await builder.Services.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
+        await builder.Logging.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
+
+        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
+            builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
+
+        await ApplyConventions(conventionContext, builder, contextBuilder, cancellationToken);
+        var host = buildHost(builder);
+        await conventionContext.ApplyHostCreatedConventionsAsync(host, cancellationToken);
+        return host;
+    }
+
+    private static async Task<IConventionContext> ApplyConventions(IConventionContext conventionContext, WebAssemblyHostBuilder builder, ConventionContextBuilder contextBuilder, CancellationToken cancellationToken)
+    {
         foreach (var item in conventionContext.Conventions
                                               .Get<IWebAssemblyHostingConvention,
                                                    WebAssemblyHostingConvention,
@@ -79,17 +95,7 @@ public static class RocketWebAssemblyExtensions
             }
         }
 
-
-        await SharedHostConfigurationAsync(conventionContext, builder, cancellationToken).ConfigureAwait(false);
-        await builder.Services.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
-        await builder.Logging.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
-
-        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
-            builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
-
-        var host = buildHost(builder);
-        await conventionContext.ApplyHostCreatedConventionsAsync(host, cancellationToken);
-        return host;
+        return conventionContext;
     }
 
     internal static async ValueTask SharedHostConfigurationAsync(
