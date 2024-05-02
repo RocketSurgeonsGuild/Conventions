@@ -3,8 +3,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Aspire.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Extensions;
 
@@ -19,8 +17,6 @@ namespace Rocket.Surgery.Aspire.Hosting;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketDistributedApplicationExtensions
 {
-    private static readonly ConditionalWeakTable<IDistributedApplicationBuilder, ConventionContextBuilder> _weakTable = new();
-
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(IDistributedApplicationBuilder builder)
     {
@@ -55,13 +51,16 @@ public static class RocketDistributedApplicationExtensions
            .AddIfMissing(builder.Environment.GetType(), builder.Environment);
 
         var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
-        await builder.ApplyConventionsAsync(context, cancellationToken);
-        await builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), })
-               .ApplyConventionsAsync(context, builder.Configuration, cancellationToken);
+        await builder
+             .Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), })
+             .ApplyConventionsAsync(context, builder.Configuration, cancellationToken);
         await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
+        await builder.ApplyConventionsAsync(context, cancellationToken);
         var host = builder.Build();
         await context.ApplyHostCreatedConventionsAsync(host, cancellationToken);
         return host;
     }
+
+    private static readonly ConditionalWeakTable<IDistributedApplicationBuilder, ConventionContextBuilder> _weakTable = new();
 }

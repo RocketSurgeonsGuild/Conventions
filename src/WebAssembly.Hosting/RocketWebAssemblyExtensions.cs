@@ -3,8 +3,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.Extensions;
@@ -19,8 +17,6 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketWebAssemblyExtensions
 {
-    private static readonly ConditionalWeakTable<WebAssemblyHostBuilder, ConventionContextBuilder> _weakTable = new();
-
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(WebAssemblyHostBuilder builder)
     {
@@ -55,30 +51,6 @@ public static class RocketWebAssemblyExtensions
         contextBuilder.Properties.Add("BlazorWasm", true);
 
         var conventionContext = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
-        foreach (var item in conventionContext.Conventions
-                                              .Get<IWebAssemblyHostingConvention,
-                                                   WebAssemblyHostingConvention,
-                                                   IWebAssemblyHostingAsyncConvention,
-                                                   WebAssemblyHostingAsyncConvention
-                                               >())
-        {
-            switch (item)
-            {
-                case IWebAssemblyHostingConvention convention:
-                    convention.Register(conventionContext, builder);
-                    break;
-                case WebAssemblyHostingConvention @delegate:
-                    @delegate(conventionContext, builder);
-                    break;
-                case IWebAssemblyHostingAsyncConvention convention:
-                    await convention.Register(conventionContext, builder, cancellationToken);
-                    break;
-                case WebAssemblyHostingAsyncConvention @delegate:
-                    await @delegate(conventionContext, builder, cancellationToken);
-                    break;
-            }
-        }
-
 
         await SharedHostConfigurationAsync(conventionContext, builder, cancellationToken).ConfigureAwait(false);
         await builder.Services.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
@@ -87,6 +59,7 @@ public static class RocketWebAssemblyExtensions
         if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
             builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
 
+        await ApplyConventions(conventionContext, builder, contextBuilder, cancellationToken);
         var host = buildHost(builder);
         await conventionContext.ApplyHostCreatedConventionsAsync(host, cancellationToken);
         return host;
@@ -181,5 +154,41 @@ public static class RocketWebAssemblyExtensions
 
             return source;
         }
+    }
+
+    private static readonly ConditionalWeakTable<WebAssemblyHostBuilder, ConventionContextBuilder> _weakTable = new();
+
+    private static async Task<IConventionContext> ApplyConventions(
+        IConventionContext conventionContext,
+        WebAssemblyHostBuilder builder,
+        ConventionContextBuilder contextBuilder,
+        CancellationToken cancellationToken
+    )
+    {
+        foreach (var item in conventionContext.Conventions
+                                              .Get<IWebAssemblyHostingConvention,
+                                                   WebAssemblyHostingConvention,
+                                                   IWebAssemblyHostingAsyncConvention,
+                                                   WebAssemblyHostingAsyncConvention
+                                               >())
+        {
+            switch (item)
+            {
+                case IWebAssemblyHostingConvention convention:
+                    convention.Register(conventionContext, builder);
+                    break;
+                case WebAssemblyHostingConvention @delegate:
+                    @delegate(conventionContext, builder);
+                    break;
+                case IWebAssemblyHostingAsyncConvention convention:
+                    await convention.Register(conventionContext, builder, cancellationToken);
+                    break;
+                case WebAssemblyHostingAsyncConvention @delegate:
+                    await @delegate(conventionContext, builder, cancellationToken);
+                    break;
+            }
+        }
+
+        return conventionContext;
     }
 }
