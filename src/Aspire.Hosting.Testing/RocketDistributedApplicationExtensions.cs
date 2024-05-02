@@ -18,8 +18,6 @@ namespace Rocket.Surgery.Aspire.Hosting.Testing;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class RocketDistributedApplicationTestingExtensions
 {
-    private static readonly ConditionalWeakTable<IDistributedApplicationTestingBuilder, ConventionContextBuilder> _weakTable = new();
-
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static ConventionContextBuilder GetExisting(IDistributedApplicationTestingBuilder builder)
     {
@@ -57,8 +55,9 @@ public static class RocketDistributedApplicationTestingExtensions
         builder.Configuration.AddInMemoryCollection(
             new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
         );
-        await builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), })
-                     .ApplyConventionsAsync(context, builder.Configuration, cancellationToken);
+        await builder
+             .Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), })
+             .ApplyConventionsAsync(context, builder.Configuration, cancellationToken);
         await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
         await builder.ApplyConventionsAsync(context, cancellationToken);
@@ -66,4 +65,6 @@ public static class RocketDistributedApplicationTestingExtensions
         await context.ApplyHostCreatedConventionsAsync(host, cancellationToken);
         return host;
     }
+
+    private static readonly ConditionalWeakTable<IDistributedApplicationTestingBuilder, ConventionContextBuilder> _weakTable = new();
 }
