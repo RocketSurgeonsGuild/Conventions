@@ -34,13 +34,14 @@ public static class AutofacConventionRocketHostExtensions
     ///     Uses the Autofac.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, AutofacConvention @delegate)
+    public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, AutofacConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(@delegate);
+        builder.AppendDelegate(@delegate, priority);
         return builder;
     }
 
@@ -48,16 +49,17 @@ public static class AutofacConventionRocketHostExtensions
     ///     Uses the Autofac.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureAutofac(
         this ConventionContextBuilder builder,
-        Action<IConfiguration, IServiceCollection, ContainerBuilder> @delegate
+        Action<IConfiguration, IServiceCollection, ContainerBuilder> @delegate, int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(new AutofacConvention((_, configuration, services, container) => @delegate(configuration, services, container)));
+        builder.AppendDelegate(new AutofacConvention((_, configuration, services, container) => @delegate(configuration, services, container)), priority);
         return builder;
     }
 
@@ -65,13 +67,14 @@ public static class AutofacConventionRocketHostExtensions
     ///     Uses the Autofac.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, Action<IServiceCollection, ContainerBuilder> @delegate)
+    public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, Action<IServiceCollection, ContainerBuilder> @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(new AutofacConvention((_, _, services, container) => @delegate(services, container)));
+        builder.AppendDelegate(new AutofacConvention((_, _, services, container) => @delegate(services, container)), priority);
         return builder;
     }
 
@@ -79,13 +82,14 @@ public static class AutofacConventionRocketHostExtensions
     ///     Uses the Autofac.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, Action<ContainerBuilder> @delegate)
+    public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, Action<ContainerBuilder> @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(new AutofacConvention((_, _, _, container) => @delegate(container)));
+        builder.AppendDelegate(new AutofacConvention((_, _, _, container) => @delegate(container)), priority);
         return builder;
     }
 }

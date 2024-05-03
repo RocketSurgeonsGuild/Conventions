@@ -21,7 +21,7 @@ namespace TestProject.Conventions
         /// <summary>
         /// The conventions imported into this assembly
         /// </summary>
-        public IEnumerable<IConventionWithDependencies> LoadConventions(ConventionContextBuilder builder)
+        public IEnumerable<IConventionMetadata> LoadConventions(ConventionContextBuilder builder)
         {
             foreach (var convention in Dep1.Dep1Exports.GetConventions(builder))
                 yield return convention;

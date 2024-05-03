@@ -16,5 +16,5 @@ public interface IConventionFactory
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    IEnumerable<IConventionWithDependencies> LoadConventions(ConventionContextBuilder builder);
+    IEnumerable<IConventionMetadata> LoadConventions(ConventionContextBuilder builder);
 }

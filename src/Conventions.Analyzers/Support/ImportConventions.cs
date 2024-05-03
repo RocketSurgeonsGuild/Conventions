@@ -76,7 +76,7 @@ internal static class ImportConventions
                             GenericName(Identifier("IEnumerable"))
                                .WithTypeArgumentList(
                                     TypeArgumentList(
-                                        SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies"))
+                                        SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionMetadata"))
                                     )
                                 ),
                             Identifier("LoadConventions")

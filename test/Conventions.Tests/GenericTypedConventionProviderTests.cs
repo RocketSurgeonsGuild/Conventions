@@ -88,6 +88,38 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
     }
 
     [Fact]
+    public void Should_Leave_Delegates_In_Place_Order_Delegates()
+    {
+        var b = new B();
+        var d1 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), 0);
+        var d2 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MinValue);
+        var d3 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MaxValue);
+        var c = new C();
+        var d = new D();
+        var e = new E();
+        var f = new F();
+
+        var provider = new ConventionProvider(
+            HostType.Undefined,
+            new IConvention[] { b, c, },
+            new object[] { d1, d, d2, },
+            new object[] { e, d3, f, }
+        );
+
+        provider
+           .GetAll()
+           .Should()
+           .ContainInOrder(
+                d2.Delegate,
+                d1.Delegate,
+                e,
+                d,
+                b,
+                d3.Delegate
+            );
+    }
+
+    [Fact]
     public void Should_Throw_When_A_Cycle_Is_Detected()
     {
         var c1 = new Cyclic1();
@@ -105,7 +137,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
     }
 
     [Fact]
-    public void Should_Sort_ConventionWithDependencies_Correctly()
+    public void Should_Sort_ConventionMetadata_Correctly()
     {
         var b = new B();
         var c = new C();
@@ -115,10 +147,10 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConventionWithDependencies[]
+            new IConventionMetadata[]
             {
-                new ConventionWithDependencies(b, HostType.Undefined).WithDependency(DependencyDirection.DependsOn, typeof(C)),
-                new ConventionWithDependencies(c, HostType.Undefined).WithDependency(DependencyDirection.DependentOf, typeof(D)),
+                new ConventionMetadata(b, HostType.Undefined).WithDependency(DependencyDirection.DependsOn, typeof(C)),
+                new ConventionMetadata(c, HostType.Undefined).WithDependency(DependencyDirection.DependentOf, typeof(D)),
             },
             new object[] { d, f, },
             new object[] { e, }

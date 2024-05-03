@@ -22,9 +22,9 @@ namespace TestProject.Conventions
         /// <summary>
         /// The conventions exports from this assembly
         /// </summary>
-        public static IEnumerable<IConventionWithDependencies> GetConventions(ConventionContextBuilder builder)
+        public static IEnumerable<IConventionMetadata> GetConventions(ConventionContextBuilder builder)
         {
-            yield return new ConventionWithDependencies(new Rocket.Surgery.LaunchPad.Mapping.AutoMapperConvention(builder.Properties.GetService<Rocket.Surgery.LaunchPad.Mapping.AutoMapperOptions>()), HostType.Undefined);
+            yield return new ConventionMetadata(new Rocket.Surgery.LaunchPad.Mapping.AutoMapperConvention(builder.Properties.GetService<Rocket.Surgery.LaunchPad.Mapping.AutoMapperOptions>()), HostType.Undefined);
         }
     }
 }

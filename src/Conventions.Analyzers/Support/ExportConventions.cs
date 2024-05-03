@@ -82,7 +82,7 @@ internal static class ExportConventions
                 else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LiveConventionAttribute)) hostType = _hostTypeLive;
             }
 
-            ExpressionSyntax withDependencies = ObjectCreationExpression(IdentifierName("ConventionWithDependencies"))
+            ExpressionSyntax withDependencies = ObjectCreationExpression(IdentifierName("ConventionMetadata"))
                .WithArgumentList(
                     ArgumentList(
                         SeparatedList(
@@ -139,7 +139,7 @@ internal static class ExportConventions
                         MethodDeclaration(
                                 GenericName(Identifier("IEnumerable"))
                                    .WithTypeArgumentList(
-                                        TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionWithDependencies")))
+                                        TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionMetadata")))
                                     ),
                                 data.Configuration.MethodName
                             )

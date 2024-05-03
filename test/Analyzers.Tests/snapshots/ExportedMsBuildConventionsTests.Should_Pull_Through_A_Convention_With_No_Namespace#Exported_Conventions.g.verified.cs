@@ -20,8 +20,8 @@ public static partial class Exports
     /// <summary>
     /// The conventions exports from this assembly
     /// </summary>
-    public static IEnumerable<IConventionWithDependencies> GetConventions(ConventionContextBuilder builder)
+    public static IEnumerable<IConventionMetadata> GetConventions(ConventionContextBuilder builder)
     {
-        yield return new ConventionWithDependencies(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined);
+        yield return new ConventionMetadata(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined);
     }
 }

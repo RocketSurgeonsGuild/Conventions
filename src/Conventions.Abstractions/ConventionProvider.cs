@@ -26,10 +26,8 @@ internal class ConventionProvider : IConventionProvider
 
     private static void Visit<T>(T item, HashSet<T> visited, List<T> sorted, Func<T, IEnumerable<T>> dependencies)
     {
-        if (!visited.Contains(item))
+        if (visited.Add(item))
         {
-            visited.Add(item);
-
             foreach (var dep in dependencies(item))
             {
                 Visit(dep, visited, sorted, dependencies);
@@ -53,7 +51,7 @@ internal class ConventionProvider : IConventionProvider
     }
 
 
-    private static ConventionOrDelegate FromConvention(IConventionWithDependencies convention)
+    private static ConventionOrDelegate FromConvention(IConventionMetadata convention)
     {
         return new(convention);
     }
@@ -92,7 +90,7 @@ internal class ConventionProvider : IConventionProvider
     /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
     public ConventionProvider(
         HostType hostType,
-        IEnumerable<IConventionWithDependencies> contributions,
+        IEnumerable<IConventionMetadata> contributions,
         IEnumerable<object> prependedContributionsOrDelegates,
         IEnumerable<object> appendedContributionsOrDelegates
     ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates) { }
@@ -107,7 +105,7 @@ internal class ConventionProvider : IConventionProvider
     /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
     public ConventionProvider(
         HostType hostType,
-        IEnumerable<IConventionWithDependencies> contributions,
+        IEnumerable<IConventionMetadata> contributions,
         IEnumerable<IConvention> additionalContributions,
         IEnumerable<object> prependedContributionsOrDelegates,
         IEnumerable<object> appendedContributionsOrDelegates
@@ -145,11 +143,11 @@ internal class ConventionProvider : IConventionProvider
                     return values.Select(selector).Where(x => x != ConventionOrDelegate.None).ToArray();
                 }
 
-                var c = prepended.Union(contributionsList).Union(appended);
+                var c = prepended.Union(contributionsList).Union(appended)
+                                 .OrderBy(z => z.Priority);
 
-                if (c.Any(z => z.Dependencies.Length > 0))
-                {
-                    var conventions = c
+                if (!c.Any(z => z.Dependencies.Length > 0)) return [..c,];
+                var conventions = c
                                      .Where(x => x.Convention != null)
                                      .Select(
                                           convention =>
@@ -170,37 +168,35 @@ internal class ConventionProvider : IConventionProvider
                                       )
                                      .ToArray();
 
-                    var lookup = conventions.ToLookup(z => z.type, z => z.convention);
-                    var dependentFor = conventions
-                                      .SelectMany(
-                                           data => data
-                                                  .dependentFor
-                                                  .SelectMany(z => lookup[z])
-                                                  .Select(innerDependentFor => ( dependentFor: innerDependentFor, data.convention ))
-                                       )
-                                      .ToLookup(z => z.dependentFor, z => z.convention);
+                var lookup = conventions.ToLookup(z => z.type, z => z.convention);
+                var dependentFor = conventions
+                                  .SelectMany(
+                                       data => data
+                                              .dependentFor
+                                              .SelectMany(z => lookup[z])
+                                              .Select(innerDependentFor => ( dependentFor: innerDependentFor, data.convention ))
+                                   )
+                                  .ToLookup(z => z.dependentFor, z => z.convention);
 
-                    var dependsOn = conventions
-                                   .SelectMany(
-                                        data => data
-                                               .dependsOn
-                                               .SelectMany(z => lookup[z])
-                                               .Select(innerDependsOn => ( data.convention, dependsOn: innerDependsOn ))
-                                    )
-                                   .Concat(
-                                        conventions
-                                           .SelectMany(
-                                                data =>
-                                                    dependentFor[data.convention]
-                                                       .Select(innerDependsOn => ( data.convention, dependsOn: innerDependsOn ))
-                                            )
-                                    )
-                                   .ToLookup(x => x.convention.Convention, x => x.dependsOn);
+                var dependsOn = conventions
+                               .SelectMany(
+                                    data => data
+                                           .dependsOn
+                                           .SelectMany(z => lookup[z])
+                                           .Select(innerDependsOn => ( data.convention, dependsOn: innerDependsOn ))
+                                )
+                               .Concat(
+                                    conventions
+                                       .SelectMany(
+                                            data =>
+                                                dependentFor[data.convention]
+                                                   .Select(innerDependsOn => ( data.convention, dependsOn: innerDependsOn ))
+                                        )
+                                )
+                               .ToLookup(x => x.convention.Convention, x => x.dependsOn);
 
-                    return [..TopographicalSort(c, x => dependsOn[x.Convention]),];
-                }
+                return [..TopographicalSort(c, x => dependsOn[x.Convention]),];
 
-                return [..c,];
             }
         );
 
@@ -208,10 +204,11 @@ internal class ConventionProvider : IConventionProvider
         {
             return value switch
                    {
-                       IConventionWithDependencies cwd => new(cwd),
-                       IConvention convention          => FromConvention(convention),
-                       Delegate d                      => new(d),
-                       var _                           => ConventionOrDelegate.None,
+                       IConventionMetadata cwd => new(cwd),
+                       IConvention convention  => FromConvention(convention),
+                       Delegate d              => new(d, 0),
+                       ConventionOrDelegate d  => d,
+                       var _                   => ConventionOrDelegate.None,
                    };
         }
     }
@@ -286,6 +283,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     {
         Convention = convention;
         Delegate = default;
+        Priority = convention.Priority;
         HostType = hostType;
         Dependencies = dependencies
                       .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
@@ -296,10 +294,11 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     ///     Create a convention
     /// </summary>
     /// <param name="convention">The convention.</param>
-    internal ConventionOrDelegate(IConventionWithDependencies convention)
+    internal ConventionOrDelegate(IConventionMetadata convention)
     {
         Convention = convention.Convention;
         Delegate = default;
+        Priority = convention.Convention.Priority;
         HostType = convention.HostType;
         Dependencies = convention
                       .Dependencies
@@ -311,10 +310,12 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     ///     Create a delegate
     /// </summary>
     /// <param name="delegate">The delegate.</param>
-    internal ConventionOrDelegate(Delegate @delegate)
+    /// <param name="priority">The priority.</param>
+    internal ConventionOrDelegate(Delegate @delegate, int priority)
     {
         Convention = default;
         Delegate = @delegate;
+        Priority = priority;
         HostType = HostType.Undefined;
         Dependencies = [];
     }
@@ -341,6 +342,11 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     /// </summary>
     /// <value>The delegate.</value>
     public HostType HostType { get; }
+
+    /// <summary>
+    /// The priority of the convention or delegate
+    /// </summary>
+    public int Priority { get; }
 
     /// <summary>
     ///     Implements the operator ==.

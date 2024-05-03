@@ -135,12 +135,10 @@ public class ConventionContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <param name="convention">The first convention</param>
-    /// <param name="conventions">The additional conventions.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder AppendConvention(IConvention convention, params IConvention[] conventions)
+    public ConventionContextBuilder AppendConvention(IConvention convention)
     {
         _appendedConventions.Add(convention);
-        _appendedConventions.AddRange(conventions);
         return this;
     }
 
@@ -148,12 +146,10 @@ public class ConventionContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <param name="convention">The first convention</param>
-    /// <param name="conventions">The additional conventions.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder AppendConvention(Type convention, params Type[] conventions)
+    public ConventionContextBuilder AppendConvention(Type convention)
     {
         _appendedConventions.Add(convention);
-        _appendedConventions.AddRange(conventions);
         return this;
     }
 
@@ -194,12 +190,10 @@ public class ConventionContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <param name="convention">The first convention</param>
-    /// <param name="conventions">The additional conventions.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder PrependConvention(IConvention convention, params IConvention[] conventions)
+    public ConventionContextBuilder PrependConvention(IConvention convention)
     {
         _prependedConventions.Add(convention);
-        _prependedConventions.AddRange(conventions);
         return this;
     }
 
@@ -209,10 +203,9 @@ public class ConventionContextBuilder
     /// <param name="convention">The first convention</param>
     /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder PrependConvention(Type convention, params Type[] conventions)
+    public ConventionContextBuilder PrependConvention(Type convention)
     {
         _prependedConventions.Add(convention);
-        _prependedConventions.AddRange(conventions);
         return this;
     }
 
@@ -242,12 +235,11 @@ public class ConventionContextBuilder
     ///     Adds a set of delegates to the scanner
     /// </summary>
     /// <param name="delegate">The initial delegate</param>
-    /// <param name="delegates">The additional delegates.</param>
+    /// <param name="priority">The priority of the delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder AppendDelegate(Delegate @delegate, params Delegate[] delegates)
+    public ConventionContextBuilder AppendDelegate(Delegate @delegate, int priority)
     {
-        _appendedConventions.Add(@delegate);
-        _appendedConventions.AddRange(delegates);
+        _appendedConventions.Add(new ConventionOrDelegate(@delegate, priority));
         return this;
     }
 
@@ -266,12 +258,11 @@ public class ConventionContextBuilder
     ///     Adds a set of delegates to the scanner
     /// </summary>
     /// <param name="delegate">The initial delegate</param>
-    /// <param name="delegates">The additional delegates.</param>
+    /// <param name="priority">The priority of the delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder PrependDelegate(Delegate @delegate, params Delegate[] delegates)
+    public ConventionContextBuilder PrependDelegate(Delegate @delegate, int priority)
     {
-        _prependedConventions.Add(@delegate);
-        _prependedConventions.AddRange(delegates);
+        _prependedConventions.Add(new ConventionOrDelegate(@delegate, priority));
         return this;
     }
 

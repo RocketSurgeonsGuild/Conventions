@@ -3,7 +3,7 @@ namespace Rocket.Surgery.Conventions;
 /// <summary>
 ///     Declares a convention result with it's dependencies pre-computed
 /// </summary>
-public interface IConventionWithDependencies
+public interface IConventionMetadata
 {
     /// <summary>
     ///     The convention

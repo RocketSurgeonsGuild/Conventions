@@ -39,9 +39,9 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilder);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionHostBuilderExtensions);
+                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionMetadata);
                         yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionProvider");
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionsConfigurationAttribute);
-                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionWithDependencies);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependentOfConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependentOfConventionAttribute<>);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependsOnConventionAttribute);

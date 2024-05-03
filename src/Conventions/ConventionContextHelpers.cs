@@ -142,7 +142,7 @@ internal static partial class ConventionContextHelpers
     static partial void TraceScanningPostFilter(ILogger logger, string? assembly, string? type);
 
 
-    private static IEnumerable<IConventionWithDependencies> GetStaticConventions(
+    private static IEnumerable<IConventionMetadata> GetStaticConventions(
         ConventionContextBuilder builder,
         ILogger? logger
     )
