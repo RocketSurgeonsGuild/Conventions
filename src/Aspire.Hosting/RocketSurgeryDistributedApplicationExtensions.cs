@@ -24,12 +24,12 @@ public static class RocketSurgeryDistributedApplicationExtensions
     )
     {
         foreach (var item in context.Conventions
-                                              .Get<
-                                                   IDistributedApplicationConvention,
-                                                   DistributedApplicationConvention,
-                                                   IDistributedApplicationAsyncConvention,
-                                                   DistributedApplicationAsyncConvention
-                                               >())
+                                    .Get<
+                                         IDistributedApplicationConvention,
+                                         DistributedApplicationConvention,
+                                         IDistributedApplicationAsyncConvention,
+                                         DistributedApplicationAsyncConvention
+                                     >())
         {
             switch (item)
             {

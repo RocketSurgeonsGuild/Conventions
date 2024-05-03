@@ -1,5 +1,4 @@
 ﻿using Rocket.Surgery.Conventions.Hosting;
-using Rocket.Surgery.Conventions.Setup;
 
 namespace Rocket.Surgery.Conventions.Extensions;
 
@@ -22,11 +21,11 @@ internal static class RocketSurgeryHostCreatedExtensions
     )
     {
         foreach (var item in context.Conventions
-                                              .Get<
-                                                   IHostCreatedConvention<THost>,
-                                                   HostCreatedConvention<THost>,
-                                                   IHostCreatedAsyncConvention<THost>,
-                                                   HostCreatedAsyncConvention<THost>>()
+                                    .Get<
+                                         IHostCreatedConvention<THost>,
+                                         HostCreatedConvention<THost>,
+                                         IHostCreatedAsyncConvention<THost>,
+                                         HostCreatedAsyncConvention<THost>>()
                 )
         {
             switch (item)

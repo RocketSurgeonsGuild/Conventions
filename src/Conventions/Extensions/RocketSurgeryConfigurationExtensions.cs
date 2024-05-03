@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Configuration;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 
 // ReSharper disable once CheckNamespace

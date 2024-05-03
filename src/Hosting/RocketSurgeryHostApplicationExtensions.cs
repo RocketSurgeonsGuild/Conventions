@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Hosting;
 
 // ReSharper disable once CheckNamespace
@@ -25,12 +24,12 @@ public static class RocketSurgeryHostApplicationExtensions
     )
     {
         foreach (var item in context.Conventions
-                                              .Get<
-                                                   IHostApplicationConvention,
-                                                   HostApplicationConvention,
-                                                   IHostApplicationAsyncConvention,
-                                                   HostApplicationAsyncConvention
-                                               >())
+                                    .Get<
+                                         IHostApplicationConvention,
+                                         HostApplicationConvention,
+                                         IHostApplicationAsyncConvention,
+                                         HostApplicationAsyncConvention
+                                     >())
         {
             switch (item)
             {

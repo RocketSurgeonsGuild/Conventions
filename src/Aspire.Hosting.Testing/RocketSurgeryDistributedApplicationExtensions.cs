@@ -1,6 +1,4 @@
-using Aspire.Hosting;
 using Aspire.Hosting.Testing;
-using Rocket.Surgery.Aspire.Hosting;
 using Rocket.Surgery.Aspire.Hosting.Testing;
 
 // ReSharper disable once CheckNamespace
@@ -26,12 +24,12 @@ public static class RocketSurgeryDistributedApplicationTestingExtensions
     )
     {
         foreach (var item in context.Conventions
-                                              .Get<
-                                                   IDistributedApplicationTestingConvention,
-                                                   DistributedApplicationTestingConvention,
-                                                   IDistributedApplicationTestingAsyncConvention,
-                                                   DistributedApplicationTestingAsyncConvention
-                                               >())
+                                    .Get<
+                                         IDistributedApplicationTestingConvention,
+                                         DistributedApplicationTestingConvention,
+                                         IDistributedApplicationTestingAsyncConvention,
+                                         DistributedApplicationTestingAsyncConvention
+                                     >())
         {
             switch (item)
             {
