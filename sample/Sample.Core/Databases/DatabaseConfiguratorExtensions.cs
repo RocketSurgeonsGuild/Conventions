@@ -6,13 +6,13 @@ namespace Sample.Core.Databases;
 
 public static class DatabaseConfiguratorExtensions
 {
-    public static IDatabaseConfigurator ApplyConventions(this IDatabaseConfigurator configurator, IConventionContext conventionContext)
+    public static IDatabaseConfigurator ApplyConventions(this IDatabaseConfigurator configurator, IConventionContext context)
     {
-        foreach (var item in conventionContext.Conventions.Get<IDatabaseConvention, DatabaseConvention>())
+        foreach (var item in context.Conventions.Get<IDatabaseConvention, DatabaseConvention>())
         {
             if (item is IDatabaseConvention convention)
-                convention.Register(conventionContext, configurator);
-            else if (item is DatabaseConvention @delegate) @delegate(conventionContext, configurator);
+                convention.Register(context, configurator);
+            else if (item is DatabaseConvention @delegate) @delegate(context, configurator);
         }
 
         return configurator;

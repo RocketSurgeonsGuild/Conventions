@@ -15,9 +15,9 @@ public interface IDryIocConvention : IConvention
     /// <summary>
     ///     Register additional things with the container
     /// </summary>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="configuration"></param>
     /// <param name="services"></param>
     /// <param name="container"></param>
-    IContainer Register(IConventionContext conventionContext, IConfiguration configuration, IServiceCollection services, IContainer container);
+    IContainer Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, IContainer container);
 }

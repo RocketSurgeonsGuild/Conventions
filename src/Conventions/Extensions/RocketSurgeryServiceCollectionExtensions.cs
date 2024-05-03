@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
@@ -17,39 +16,39 @@ public static class RocketSurgeryServiceCollectionExtensions
     ///     Apply service conventions
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask<IServiceCollection> ApplyConventionsAsync(
         this IServiceCollection services,
-        IConventionContext conventionContext,
+        IConventionContext context,
         CancellationToken cancellationToken = default
     )
     {
-        var configuration = conventionContext.Get<IConfiguration>();
+        var configuration = context.Get<IConfiguration>();
         if (configuration is null)
         {
             configuration = new ConfigurationBuilder().Build();
-            conventionContext.Logger.LogWarning("Configuration was not found in context");
+            context.Logger.LogWarning("Configuration was not found in context");
         }
 
-        services.AddSingleton(conventionContext.AssemblyProvider);
+        services.AddSingleton(context.AssemblyProvider);
 
-        foreach (var item in conventionContext.Conventions.Get<IServiceConvention, ServiceConvention, IServiceAsyncConvention, ServiceAsyncConvention>())
+        foreach (var item in context.Conventions.Get<IServiceConvention, ServiceConvention, IServiceAsyncConvention, ServiceAsyncConvention>())
         {
             switch (item)
             {
                 case IServiceConvention convention:
-                    convention.Register(conventionContext, configuration, services);
+                    convention.Register(context, configuration, services);
                     break;
                 case ServiceConvention @delegate:
-                    @delegate(conventionContext, configuration, services);
+                    @delegate(context, configuration, services);
                     break;
                 case IServiceAsyncConvention convention:
-                    await convention.Register(conventionContext, configuration, services, cancellationToken).ConfigureAwait(false);
+                    await convention.Register(context, configuration, services, cancellationToken).ConfigureAwait(false);
                     break;
                 case ServiceAsyncConvention @delegate:
-                    await @delegate(conventionContext, configuration, services, cancellationToken).ConfigureAwait(false);
+                    await @delegate(context, configuration, services, cancellationToken).ConfigureAwait(false);
                     break;
             }
         }

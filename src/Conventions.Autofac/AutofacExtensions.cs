@@ -13,34 +13,34 @@ public static class AutofacExtensions
     ///     Applies conventions to the given ContainerBuilder
     /// </summary>
     /// <param name="containerBuilder"></param>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="services"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public static async ValueTask<ContainerBuilder> ApplyConventionsAsync(
         this ContainerBuilder containerBuilder,
-        IConventionContext conventionContext,
+        IConventionContext context,
         IServiceCollection services,
         CancellationToken cancellationToken = default
     )
     {
-        var configuration = conventionContext.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
-        foreach (var item in conventionContext.Conventions.Get<IAutofacConvention, AutofacConvention>())
+        var configuration = context.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
+        foreach (var item in context.Conventions.Get<IAutofacConvention, AutofacConvention>())
         {
             switch (item)
             {
                 case IAutofacConvention convention:
-                    convention.Register(conventionContext, configuration, services, containerBuilder);
+                    convention.Register(context, configuration, services, containerBuilder);
                     break;
                 case AutofacConvention @delegate:
-                    @delegate(conventionContext, configuration, services, containerBuilder);
+                    @delegate(context, configuration, services, containerBuilder);
                     break;
                 case IAutofacAsyncConvention convention:
-                    await convention.Register(conventionContext, configuration, services, containerBuilder, cancellationToken);
+                    await convention.Register(context, configuration, services, containerBuilder, cancellationToken);
                     break;
                 case AutofacAsyncConvention @delegate:
-                    await @delegate(conventionContext, configuration, services, containerBuilder, cancellationToken);
+                    await @delegate(context, configuration, services, containerBuilder, cancellationToken);
                     break;
             }
         }

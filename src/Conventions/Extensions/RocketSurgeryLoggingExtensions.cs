@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Logging;
 
 // ReSharper disable once CheckNamespace
@@ -16,27 +15,27 @@ public static class RocketSurgeryLoggingExtensions
     ///     Apply logging conventions
     /// </summary>
     /// <param name="loggingBuilder"></param>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask<ILoggingBuilder> ApplyConventionsAsync(
         this ILoggingBuilder loggingBuilder,
-        IConventionContext conventionContext,
+        IConventionContext context,
         CancellationToken cancellationToken = default
     )
     {
-        var configuration = conventionContext.Get<IConfiguration>();
+        var configuration = context.Get<IConfiguration>();
         if (configuration is null)
         {
             configuration = new ConfigurationBuilder().Build();
-            conventionContext.Logger.LogWarning("Configuration was not found in context");
+            context.Logger.LogWarning("Configuration was not found in context");
         }
 
         loggingBuilder.AddConfiguration(configuration.GetSection("Logging"));
-        var logLevel = conventionContext.GetOrAdd(() => new RocketLoggingOptions()).GetLogLevel(configuration);
+        var logLevel = context.GetOrAdd(() => new RocketLoggingOptions()).GetLogLevel(configuration);
         if (logLevel.HasValue) loggingBuilder.SetMinimumLevel(logLevel.Value);
 
-        foreach (var item in conventionContext.Conventions.Get<
+        foreach (var item in context.Conventions.Get<
                      ILoggingConvention,
                      LoggingConvention,
                      ILoggingAsyncConvention,
@@ -46,16 +45,16 @@ public static class RocketSurgeryLoggingExtensions
             switch (item)
             {
                 case ILoggingConvention convention:
-                    convention.Register(conventionContext, configuration, loggingBuilder);
+                    convention.Register(context, configuration, loggingBuilder);
                     break;
                 case LoggingConvention @delegate:
-                    @delegate(conventionContext, configuration, loggingBuilder);
+                    @delegate(context, configuration, loggingBuilder);
                     break;
                 case ILoggingAsyncConvention convention:
-                    await convention.Register(conventionContext, configuration, loggingBuilder, cancellationToken).ConfigureAwait(false);
+                    await convention.Register(context, configuration, loggingBuilder, cancellationToken).ConfigureAwait(false);
                     break;
                 case LoggingAsyncConvention @delegate:
-                    await @delegate(conventionContext, configuration, loggingBuilder, cancellationToken).ConfigureAwait(false);
+                    await @delegate(context, configuration, loggingBuilder, cancellationToken).ConfigureAwait(false);
                     break;
             }
         }

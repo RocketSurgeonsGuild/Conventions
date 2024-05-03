@@ -14,33 +14,33 @@ public static class DryIocExtensions
     ///     Applies conventions from the given context onto the container
     /// </summary>
     /// <param name="container"></param>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="services"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public static async ValueTask<IContainer> ApplyConventionsAsync(
         this IContainer container,
-        IConventionContext conventionContext,
+        IConventionContext context,
         IServiceCollection services,
         CancellationToken cancellationToken = default
     )
     {
-        var configuration = conventionContext.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
-        foreach (var item in conventionContext.Conventions.Get<IDryIocConvention, DryIocConvention>())
+        var configuration = context.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
+        foreach (var item in context.Conventions.Get<IDryIocConvention, DryIocConvention>())
         {
             container = item switch
                         {
-                            IDryIocConvention convention => convention.Register(conventionContext, configuration, services, container),
-                            DryIocConvention @delegate   => @delegate(conventionContext, configuration, services, container),
+                            IDryIocConvention convention => convention.Register(context, configuration, services, container),
+                            DryIocConvention @delegate   => @delegate(context, configuration, services, container),
                             IDryIocAsyncConvention convention => await convention.Register(
-                                conventionContext,
+                                context,
                                 configuration,
                                 services,
                                 container,
                                 cancellationToken
                             ),
-                            DryIocAsyncConvention @delegate => await @delegate(conventionContext, configuration, services, container, cancellationToken),
+                            DryIocAsyncConvention @delegate => await @delegate(context, configuration, services, container, cancellationToken),
                             _                               => container,
                         };
         }

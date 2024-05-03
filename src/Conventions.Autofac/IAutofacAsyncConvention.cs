@@ -15,13 +15,13 @@ public interface IAutofacAsyncConvention : IConvention
     /// <summary>
     ///     Register additional things with the container
     /// </summary>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="configuration"></param>
     /// <param name="services"></param>
     /// <param name="container"></param>
     /// <param name="cancellationToken"></param>
     ValueTask Register(
-        IConventionContext conventionContext,
+        IConventionContext context,
         IConfiguration configuration,
         IServiceCollection services,
         ContainerBuilder container,

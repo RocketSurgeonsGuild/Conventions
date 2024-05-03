@@ -24,7 +24,7 @@ public class DryIocCommandLineTests : AutoFakeTest
                                      .UseDryIoc()
                                      .DisableConventionAttributes()
                                      .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
                                               services.AddSingleton(A.Fake<IAbc2>());
@@ -49,7 +49,7 @@ public class DryIocCommandLineTests : AutoFakeTest
                                      .UseDryIoc()
                                      .DisableConventionAttributes()
                                      .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
                                               services.AddSingleton(A.Fake<IAbc2>());
@@ -75,7 +75,7 @@ public class DryIocCommandLineTests : AutoFakeTest
                                      .UseDryIoc()
                                      .DisableConventionAttributes()
                                      .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc3>());
                                               container.RegisterInstance(A.Fake<IAbc4>());
@@ -98,7 +98,7 @@ public class DryIocCommandLineTests : AutoFakeTest
                                      .UseDryIoc()
                                      .DisableConventionAttributes()
                                      .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
                                               services.AddSingleton(A.Fake<IAbc2>());
@@ -125,7 +125,7 @@ public class DryIocCommandLineTests : AutoFakeTest
                                      .UseDryIoc()
                                      .DisableConventionAttributes()
                                      .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
                                               services.AddSingleton(A.Fake<IAbc2>());
@@ -152,7 +152,7 @@ public class DryIocCommandLineTests : AutoFakeTest
                                      .UseDryIoc()
                                      .DisableConventionAttributes()
                                      .ConfigureDryIoc(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc3>());
                                               container.RegisterInstance(A.Fake<IAbc4>());

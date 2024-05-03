@@ -25,7 +25,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                      .UseAutofac()
                                      .DisableConventionAttributes()
                                      .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
                                               services.AddSingleton(A.Fake<IAbc2>());
@@ -50,7 +50,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                      .UseAutofac()
                                      .DisableConventionAttributes()
                                      .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
                                               services.AddSingleton(A.Fake<IAbc2>());
@@ -76,7 +76,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                      .UseAutofac()
                                      .DisableConventionAttributes()
                                      .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc3>());
                                               container.RegisterInstance(A.Fake<IAbc4>());
@@ -99,7 +99,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                      .UseAutofac()
                                      .DisableConventionAttributes()
                                      .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
                                               services.AddSingleton(A.Fake<IAbc2>());
@@ -126,7 +126,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                      .UseAutofac()
                                      .DisableConventionAttributes()
                                      .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
                                               services.AddSingleton(A.Fake<IAbc2>());
@@ -153,7 +153,7 @@ public class AutofacWebApplicationTests : AutoFakeTest
                                      .UseAutofac()
                                      .DisableConventionAttributes()
                                      .ConfigureAutofac(
-                                          (conventionContext, configuration, services, container) =>
+                                          (context, configuration, services, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc3>());
                                               container.RegisterInstance(A.Fake<IAbc4>());

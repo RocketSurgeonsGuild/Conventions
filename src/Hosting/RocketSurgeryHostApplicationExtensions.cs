@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Hosting;
 
 // ReSharper disable once CheckNamespace
@@ -15,36 +14,36 @@ public static class RocketSurgeryHostApplicationExtensions
     ///     Apply logging conventions
     /// </summary>
     /// <param name="hostBuilder"></param>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask ApplyConventionsAsync(
         this IHostApplicationBuilder hostBuilder,
-        IConventionContext conventionContext,
+        IConventionContext context,
         CancellationToken cancellationToken = default
     )
     {
-        foreach (var item in conventionContext.Conventions
-                                              .Get<
-                                                   IHostApplicationConvention,
-                                                   HostApplicationConvention,
-                                                   IHostApplicationAsyncConvention,
-                                                   HostApplicationAsyncConvention
-                                               >())
+        foreach (var item in context.Conventions
+                                    .Get<
+                                         IHostApplicationConvention,
+                                         HostApplicationConvention,
+                                         IHostApplicationAsyncConvention,
+                                         HostApplicationAsyncConvention
+                                     >())
         {
             switch (item)
             {
                 case IHostApplicationConvention convention:
-                    convention.Register(conventionContext, hostBuilder);
+                    convention.Register(context, hostBuilder);
                     break;
                 case HostApplicationConvention @delegate:
-                    @delegate(conventionContext, hostBuilder);
+                    @delegate(context, hostBuilder);
                     break;
                 case IHostApplicationAsyncConvention convention:
-                    await convention.Register(conventionContext, hostBuilder, cancellationToken).ConfigureAwait(false);
+                    await convention.Register(context, hostBuilder, cancellationToken).ConfigureAwait(false);
                     break;
                 case HostApplicationAsyncConvention @delegate:
-                    await @delegate(conventionContext, hostBuilder, cancellationToken).ConfigureAwait(false);
+                    await @delegate(context, hostBuilder, cancellationToken).ConfigureAwait(false);
                     break;
             }
         }

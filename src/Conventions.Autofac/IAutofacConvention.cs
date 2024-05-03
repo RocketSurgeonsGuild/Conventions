@@ -15,9 +15,9 @@ public interface IAutofacConvention : IConvention
     /// <summary>
     ///     Register additional things with the container
     /// </summary>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="configuration"></param>
     /// <param name="services"></param>
     /// <param name="container"></param>
-    void Register(IConventionContext conventionContext, IConfiguration configuration, IServiceCollection services, ContainerBuilder container);
+    void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, ContainerBuilder container);
 }

@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Configuration;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 
 // ReSharper disable once CheckNamespace
@@ -14,19 +13,19 @@ public static class RocketSurgeryConfigurationExtensions
     ///     Apply configuration conventions
     /// </summary>
     /// <param name="configurationBuilder"></param>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="outerConfiguration"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask<IConfigurationBuilder> ApplyConventionsAsync(
         this IConfigurationBuilder configurationBuilder,
-        IConventionContext conventionContext,
+        IConventionContext context,
         IConfiguration? outerConfiguration = null,
         CancellationToken cancellationToken = default
     )
     {
         outerConfiguration ??= new ConfigurationBuilder().Build();
-        foreach (var item in conventionContext.Conventions.Get<
+        foreach (var item in context.Conventions.Get<
                      IConfigurationConvention,
                      ConfigurationConvention,
                      IConfigurationAsyncConvention,
@@ -36,16 +35,16 @@ public static class RocketSurgeryConfigurationExtensions
             switch (item)
             {
                 case IConfigurationConvention convention:
-                    convention.Register(conventionContext, outerConfiguration, configurationBuilder);
+                    convention.Register(context, outerConfiguration, configurationBuilder);
                     break;
                 case ConfigurationConvention @delegate:
-                    @delegate(conventionContext, outerConfiguration, configurationBuilder);
+                    @delegate(context, outerConfiguration, configurationBuilder);
                     break;
                 case IConfigurationAsyncConvention convention:
-                    await convention.Register(conventionContext, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
+                    await convention.Register(context, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
                     break;
                 case ConfigurationAsyncConvention @delegate:
-                    await @delegate(conventionContext, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
+                    await @delegate(context, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
                     break;
             }
         }

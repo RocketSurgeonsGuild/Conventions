@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Rocket.Surgery.Conventions.DryIoc;
 
-internal class DryIocConventionServiceProviderFactory(IConventionContext conventionContext, IContainer container) : IServiceProviderFactory<IContainer>
+internal class DryIocConventionServiceProviderFactory(IConventionContext context, IContainer container) : IServiceProviderFactory<IContainer>
 {
     public IContainer CreateBuilder(IServiceCollection services)
     {
@@ -15,7 +15,7 @@ internal class DryIocConventionServiceProviderFactory(IConventionContext convent
 
     public IServiceProvider CreateServiceProvider(IContainer containerBuilder)
     {
-        return ( conventionContext.GetOrAdd(() => new DryIocOptions()).NoMoreRegistrationAllowed
+        return ( context.GetOrAdd(() => new DryIocOptions()).NoMoreRegistrationAllowed
             ? containerBuilder.WithNoMoreRegistrationAllowed()
             : containerBuilder ).WithDependencyInjectionAdapter();
     }
