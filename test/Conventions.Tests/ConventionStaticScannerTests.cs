@@ -58,8 +58,8 @@ public class ConventionStaticScannerTests : AutoFakeTest
         var @delegate = new ServiceConvention((_, _, _) => { });
         var delegate2 = new ServiceConvention((_, _, _) => { });
 
-        scanner.PrependDelegate(delegate2, 0);
-        scanner.AppendDelegate(@delegate, 0);
+        scanner.PrependDelegate(delegate2);
+        scanner.AppendDelegate(@delegate);
 
         var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 
@@ -122,7 +122,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
 
         scanner.AppendConvention(contribution);
         scanner.PrependConvention(contribution2);
-        scanner.IncludeConvention(typeof(Contrib));
+        scanner.IncludeConvention(typeof(Contrib).Assembly);
 
         var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 

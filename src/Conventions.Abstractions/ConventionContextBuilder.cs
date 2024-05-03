@@ -22,11 +22,10 @@ public class ConventionContextBuilder
         return new(properties ?? new PropertiesDictionary());
     }
 
-    internal readonly List<object> _prependedConventions = new();
-    internal readonly List<object> _appendedConventions = new();
+    // this null is used a marker to indicate where in the list is the middle
+    internal readonly List<object?> _conventions = [null!];
     internal readonly List<Type> _exceptConventions = new();
     internal readonly List<Assembly> _exceptAssemblyConventions = new();
-    internal readonly List<object> _includeConventions = new();
     internal readonly List<Assembly> _includeAssemblyConventions = new();
     internal IConventionFactory? _conventionProviderFactory;
     internal ServiceProviderFactoryAdapter? _serviceProviderFactory;
@@ -110,13 +109,25 @@ public class ConventionContextBuilder
     }
 
     /// <summary>
+    ///     Adds a set of delegates to the scanner
+    /// </summary>
+    /// <param name="delegate">The initial delegate</param>
+    /// <param name="priority">The priority of the delegate.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public ConventionContextBuilder AddDelegate(Delegate @delegate, int priority)
+    {
+        _conventions.Add(new ConventionOrDelegate(@delegate, priority));
+        return this;
+    }
+
+    /// <summary>
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <param name="conventions">The conventions.</param>
     /// <returns>IConventionScanner.</returns>
     public ConventionContextBuilder AppendConvention(IEnumerable<IConvention> conventions)
     {
-        _appendedConventions.AddRange(conventions);
+        _conventions.AddRange(conventions);
         return this;
     }
 
@@ -127,7 +138,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder AppendConvention(IEnumerable<Type> conventions)
     {
-        _appendedConventions.AddRange(conventions);
+        _conventions.AddRange(conventions);
         return this;
     }
 
@@ -138,7 +149,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder AppendConvention(IConvention convention)
     {
-        _appendedConventions.Add(convention);
+        _conventions.Add(convention);
         return this;
     }
 
@@ -149,7 +160,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder AppendConvention(Type convention)
     {
-        _appendedConventions.Add(convention);
+        _conventions.Add(convention);
         return this;
     }
 
@@ -160,7 +171,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder AppendConvention<T>()
         where T : IConvention
     {
-        _appendedConventions.Add(typeof(T));
+        _conventions.Add(typeof(T));
         return this;
     }
 
@@ -171,7 +182,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependConvention(IEnumerable<IConvention> conventions)
     {
-        _prependedConventions.AddRange(conventions);
+        _conventions.InsertRange(0, conventions);
         return this;
     }
 
@@ -182,7 +193,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependConvention(IEnumerable<Type> conventions)
     {
-        _prependedConventions.AddRange(conventions);
+        _conventions.InsertRange(0, conventions);
         return this;
     }
 
@@ -193,7 +204,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependConvention(IConvention convention)
     {
-        _prependedConventions.Add(convention);
+        _conventions.Insert(0, convention);
         return this;
     }
 
@@ -205,7 +216,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependConvention(Type convention)
     {
-        _prependedConventions.Add(convention);
+        _conventions.Insert(0, convention);
         return this;
     }
 
@@ -216,7 +227,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder PrependConvention<T>()
         where T : IConvention
     {
-        _prependedConventions.Add(typeof(T));
+        _conventions.Insert(0, typeof(T));
         return this;
     }
 
@@ -227,7 +238,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder AppendDelegate(IEnumerable<Delegate> delegates)
     {
-        _appendedConventions.AddRange(delegates);
+        _conventions.AddRange(delegates);
         return this;
     }
 
@@ -235,11 +246,10 @@ public class ConventionContextBuilder
     ///     Adds a set of delegates to the scanner
     /// </summary>
     /// <param name="delegate">The initial delegate</param>
-    /// <param name="priority">The priority of the delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder AppendDelegate(Delegate @delegate, int priority)
+    public ConventionContextBuilder AppendDelegate(Delegate @delegate)
     {
-        _appendedConventions.Add(new ConventionOrDelegate(@delegate, priority));
+        _conventions.Add(@delegate);
         return this;
     }
 
@@ -250,7 +260,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependDelegate(IEnumerable<Delegate> delegates)
     {
-        _prependedConventions.AddRange(delegates);
+        _conventions.InsertRange(0, delegates);
         return this;
     }
 
@@ -258,11 +268,10 @@ public class ConventionContextBuilder
     ///     Adds a set of delegates to the scanner
     /// </summary>
     /// <param name="delegate">The initial delegate</param>
-    /// <param name="priority">The priority of the delegate.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder PrependDelegate(Delegate @delegate, int priority)
+    public ConventionContextBuilder PrependDelegate(Delegate @delegate)
     {
-        _prependedConventions.Add(new ConventionOrDelegate(@delegate, priority));
+        _conventions.Insert(0, @delegate);
         return this;
     }
 
@@ -311,30 +320,6 @@ public class ConventionContextBuilder
     {
         _exceptAssemblyConventions.Add(assembly);
         _exceptAssemblyConventions.AddRange(assemblies);
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds an exception to the scanner to exclude a specific convention
-    /// </summary>
-    /// <param name="types">The convention types to exclude.</param>
-    /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder IncludeConvention(IEnumerable<Type> types)
-    {
-        _includeConventions.AddRange(types);
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds an exception to the scanner to exclude a specific convention
-    /// </summary>
-    /// <param name="type">The first type to exclude</param>
-    /// <param name="types">The additional types to exclude.</param>
-    /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder IncludeConvention(Type type, params Type[] types)
-    {
-        _includeConventions.Add(type);
-        _includeConventions.AddRange(types);
         return this;
     }
 

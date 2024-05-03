@@ -23,7 +23,7 @@ public static class DistributedApplicationTestingConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedTestingApplication(this ConventionContextBuilder container, DistributedApplicationTestingConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -37,7 +37,7 @@ public static class DistributedApplicationTestingConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedTestingApplication(this ConventionContextBuilder container, DistributedApplicationTestingAsyncConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -52,7 +52,7 @@ public static class DistributedApplicationTestingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new DistributedApplicationTestingConvention((_, builder) => @delegate(builder)), priority);
+        container.AppendDelegate(new DistributedApplicationTestingConvention((_, builder) => @delegate(builder)));
         return container;
     }
 
@@ -67,7 +67,7 @@ public static class DistributedApplicationTestingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new DistributedApplicationTestingAsyncConvention((_, builder, _) => @delegate(builder)), priority);
+        container.AppendDelegate(new DistributedApplicationTestingAsyncConvention((_, builder, _) => @delegate(builder)));
         return container;
     }
 
@@ -85,7 +85,7 @@ public static class DistributedApplicationTestingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new DistributedApplicationTestingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority);
+        container.AppendDelegate(new DistributedApplicationTestingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
     }
 }

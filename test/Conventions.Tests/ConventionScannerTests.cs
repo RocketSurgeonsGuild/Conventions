@@ -72,8 +72,8 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
         var @delegate = new ServiceConvention((_, _, _) => { });
         var delegate2 = new ServiceConvention((_, _, _) => { });
 
-        scanner.PrependDelegate(delegate2, 0);
-        scanner.AppendDelegate(@delegate, 0);
+        scanner.PrependDelegate(delegate2);
+        scanner.AppendDelegate(@delegate);
 
         var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
 
@@ -175,7 +175,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         scanner.AppendConvention(contribution);
         scanner.PrependConvention(contribution2);
-        scanner.IncludeConvention(typeof(Contrib));
+        scanner.IncludeConvention(typeof(Contrib).Assembly);
 
         var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
 

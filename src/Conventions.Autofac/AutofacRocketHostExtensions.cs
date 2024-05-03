@@ -41,7 +41,7 @@ public static class AutofacConventionRocketHostExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(@delegate, priority);
+        builder.AppendDelegate(@delegate);
         return builder;
     }
 
@@ -59,7 +59,7 @@ public static class AutofacConventionRocketHostExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(new AutofacConvention((_, configuration, services, container) => @delegate(configuration, services, container)), priority);
+        builder.AppendDelegate(new AutofacConvention((_, configuration, services, container) => @delegate(configuration, services, container)));
         return builder;
     }
 
@@ -74,7 +74,7 @@ public static class AutofacConventionRocketHostExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(new AutofacConvention((_, _, services, container) => @delegate(services, container)), priority);
+        builder.AppendDelegate(new AutofacConvention((_, _, services, container) => @delegate(services, container)));
         return builder;
     }
 
@@ -89,7 +89,7 @@ public static class AutofacConventionRocketHostExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(new AutofacConvention((_, _, _, container) => @delegate(container)), priority);
+        builder.AppendDelegate(new AutofacConvention((_, _, _, container) => @delegate(container)));
         return builder;
     }
 }

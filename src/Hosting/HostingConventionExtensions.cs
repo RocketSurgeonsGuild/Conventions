@@ -20,7 +20,7 @@ public static class HostingConventionExtensions
     public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, HostApplicationConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -34,7 +34,7 @@ public static class HostingConventionExtensions
     public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, HostApplicationAsyncConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -49,7 +49,7 @@ public static class HostingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new HostApplicationConvention((_, builder) => @delegate(builder)), priority);
+        container.AppendDelegate(new HostApplicationConvention((_, builder) => @delegate(builder)));
         return container;
     }
 
@@ -64,7 +64,7 @@ public static class HostingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new HostApplicationAsyncConvention((_, builder, _) => @delegate(builder)), priority);
+        container.AppendDelegate(new HostApplicationAsyncConvention((_, builder, _) => @delegate(builder)));
         return container;
     }
 
@@ -82,7 +82,7 @@ public static class HostingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new HostApplicationAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority);
+        container.AppendDelegate(new HostApplicationAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
     }
 }

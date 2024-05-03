@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Rocket.Surgery.Conventions;
@@ -41,6 +42,16 @@ internal class ConventionProvider : IConventionProvider
         }
     }
 
+    private static ConventionOrDelegate FromConvention(object? value) =>
+        value switch
+        {
+            IConventionMetadata cwd => new(cwd),
+            IConvention convention  => FromConvention(convention),
+            Delegate d              => new(d, 0),
+            ConventionOrDelegate d  => d,
+            _                       => ConventionOrDelegate.None,
+        };
+
     private static ConventionOrDelegate FromConvention(IConvention convention)
     {
         var type = convention.GetType();
@@ -65,108 +76,48 @@ internal class ConventionProvider : IConventionProvider
 
     private readonly Lazy<ImmutableArray<ConventionOrDelegate>> _conventions;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
+    /// </summary>
+    /// <param name="hostType"></param>
+    /// <param name="contributions">The contributions.</param>
+    public ConventionProvider(HostType hostType, List<object?> contributions) : this(hostType, contributions.Where(z => z is { }).Select(FromConvention)) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
     /// </summary>
     /// <param name="hostType"></param>
     /// <param name="contributions">The contributions.</param>
-    /// <param name="prependedContributionsOrDelegates">The prepended contributions or delegates.</param>
-    /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
-    public ConventionProvider(
-        HostType hostType,
-        IEnumerable<IConvention> contributions,
-        IEnumerable<object> prependedContributionsOrDelegates,
-        IEnumerable<object> appendedContributionsOrDelegates
-    ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates) { }
-
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
-    /// </summary>
-    /// <param name="hostType"></param>
-    /// <param name="contributions">The contributions.</param>
-    /// <param name="prependedContributionsOrDelegates">The prepended contributions or delegates.</param>
-    /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
-    public ConventionProvider(
-        HostType hostType,
-        IEnumerable<IConventionMetadata> contributions,
-        IEnumerable<object> prependedContributionsOrDelegates,
-        IEnumerable<object> appendedContributionsOrDelegates
-    ) : this(hostType, contributions.Select(FromConvention), prependedContributionsOrDelegates, appendedContributionsOrDelegates) { }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
-    /// </summary>
-    /// <param name="hostType"></param>
-    /// <param name="contributions">The contributions.</param>
-    /// <param name="additionalContributions">The additional contributions.</param>
-    /// <param name="prependedContributionsOrDelegates">The prepended contributions or delegates.</param>
-    /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
-    public ConventionProvider(
-        HostType hostType,
-        IEnumerable<IConventionMetadata> contributions,
-        IEnumerable<IConvention> additionalContributions,
-        IEnumerable<object> prependedContributionsOrDelegates,
-        IEnumerable<object> appendedContributionsOrDelegates
-    ) : this(
-        hostType,
-        contributions.Select(FromConvention).Concat(additionalContributions.Select(FromConvention)),
-        prependedContributionsOrDelegates,
-        appendedContributionsOrDelegates
-    ) { }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
-    /// </summary>
-    /// <param name="hostType"></param>
-    /// <param name="contributions">The contributions.</param>
-    /// <param name="prependedContributionsOrDelegates">The prepended contributions or delegates.</param>
-    /// <param name="appendedContributionsOrDelegates">The appended contributions or delegates.</param>
-    private ConventionProvider(
-        HostType hostType,
-        IEnumerable<ConventionOrDelegate> contributions,
-        IEnumerable<object> prependedContributionsOrDelegates,
-        IEnumerable<object> appendedContributionsOrDelegates
-    )
+    private ConventionProvider(HostType hostType, IEnumerable<ConventionOrDelegate> contributions)
     {
         _hostType = hostType;
         _conventions = new(
             () =>
             {
-                var prepended = toConventionOrDelegate(prependedContributionsOrDelegates);
-                var appended = toConventionOrDelegate(appendedContributionsOrDelegates);
                 var contributionsList = contributions as IReadOnlyCollection<ConventionOrDelegate> ?? contributions.ToArray();
 
-                static IReadOnlyCollection<ConventionOrDelegate> toConventionOrDelegate(IEnumerable<object> values)
-                {
-                    return values.Select(selector).Where(x => x != ConventionOrDelegate.None).ToArray();
-                }
-
-                var c = prepended.Union(contributionsList).Union(appended)
-                                 .OrderBy(z => z.Priority);
-
-                if (!c.Any(z => z.Dependencies.Length > 0)) return [..c,];
+                var c = contributionsList;
+                if (!c.Any(z => z.Dependencies.Length > 0)) return [..c.OrderBy(z => z.Priority),];
                 var conventions = c
-                                     .Where(x => x.Convention != null)
-                                     .Select(
-                                          convention =>
-                                          {
-                                              return (
-                                                  convention,
-                                                  // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                                  type: convention.Convention!.GetType(),
-                                                  dependsOn: convention
-                                                            .Dependencies.Where(x => x.Direction == DependencyDirection.DependsOn)
-                                                            .Select(z => z.Type),
-                                                  dependentFor: convention
-                                                               .Dependencies
-                                                               .Where(x => x.Direction == DependencyDirection.DependentOf)
-                                                               .Select(z => z.Type)
-                                              );
-                                          }
-                                      )
-                                     .ToArray();
+                                 .Where(x => x.Convention != null)
+                                 .Select(
+                                      convention =>
+                                      {
+                                          return (
+                                              convention,
+                                              // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                              type: convention.Convention!.GetType(),
+                                              dependsOn: convention
+                                                        .Dependencies.Where(x => x.Direction == DependencyDirection.DependsOn)
+                                                        .Select(z => z.Type),
+                                              dependentFor: convention
+                                                           .Dependencies
+                                                           .Where(x => x.Direction == DependencyDirection.DependentOf)
+                                                           .Select(z => z.Type)
+                                          );
+                                      }
+                                  )
+                                 .ToArray();
 
                 var lookup = conventions.ToLookup(z => z.type, z => z.convention);
                 var dependentFor = conventions
@@ -195,22 +146,9 @@ internal class ConventionProvider : IConventionProvider
                                 )
                                .ToLookup(x => x.convention.Convention, x => x.dependsOn);
 
-                return [..TopographicalSort(c, x => dependsOn[x.Convention]),];
-
+                return [..TopographicalSort(c.OrderBy(z => z.Priority), x => dependsOn[x.Convention]),];
             }
         );
-
-        static ConventionOrDelegate selector(object value)
-        {
-            return value switch
-                   {
-                       IConventionMetadata cwd => new(cwd),
-                       IConvention convention  => FromConvention(convention),
-                       Delegate d              => new(d, 0),
-                       ConventionOrDelegate d  => d,
-                       var _                   => ConventionOrDelegate.None,
-                   };
-        }
     }
 
     /// <summary>
@@ -264,6 +202,7 @@ internal class ConventionProvider : IConventionProvider
 ///     Implements the <see cref="ConventionOrDelegate" />
 /// </summary>
 /// <seealso cref="ConventionOrDelegate" />
+[DebuggerDisplay("{ToString()}")]
 internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
 {
     /// <summary>
@@ -416,16 +355,16 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     {
         if (Convention != null)
         {
-            if (HostType != HostType.Undefined) return $"{HostType}:{Convention.GetType().Name}";
+            if (HostType != HostType.Undefined) return $"{HostType}:{Convention.GetType().Name} | Priority:{Priority}";
 
-            return Convention.GetType().Name;
+            return $"{Convention.GetType().Name} | Priority:{Priority}";
         }
 
         if (Delegate != null)
         {
             var name = Delegate.Method.Name;
             var methodType = Delegate.Method.DeclaringType;
-            return $"{methodType?.FullName}:{name}";
+            return $"{methodType?.FullName}:{name} | Priority:{Priority}";
         }
 
         return "None";

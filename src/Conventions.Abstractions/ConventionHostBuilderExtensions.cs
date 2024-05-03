@@ -28,7 +28,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -43,7 +43,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -116,7 +116,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -131,7 +131,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -146,7 +146,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ServiceConvention((_, configuration, services) => @delegate(configuration, services)), priority);
+        container.AppendDelegate(new ServiceConvention((_, configuration, services) => @delegate(configuration, services)));
         return container;
     }
 
@@ -164,7 +164,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(
-            new ServiceAsyncConvention((_, configuration, services, cancellationToken) => @delegate(configuration, services, cancellationToken)), priority
+            new ServiceAsyncConvention((_, configuration, services, cancellationToken) => @delegate(configuration, services, cancellationToken))
         );
         return container;
     }
@@ -183,7 +183,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ServiceAsyncConvention((_, configuration, services, _) => @delegate(configuration, services)), priority);
+        container.AppendDelegate(new ServiceAsyncConvention((_, configuration, services, _) => @delegate(configuration, services)));
         return container;
     }
 
@@ -198,7 +198,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ServiceConvention((_, _, services) => @delegate(services)), priority);
+        container.AppendDelegate(new ServiceConvention((_, _, services) => @delegate(services)));
         return container;
     }
 
@@ -213,7 +213,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ServiceAsyncConvention((_, _, services, _) => @delegate(services)), priority);
+        container.AppendDelegate(new ServiceAsyncConvention((_, _, services, _) => @delegate(services)));
         return container;
     }
 
@@ -231,7 +231,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ServiceAsyncConvention((_, _, services, cancellationToken) => @delegate(services, cancellationToken)), priority);
+        container.AppendDelegate(new ServiceAsyncConvention((_, _, services, cancellationToken) => @delegate(services, cancellationToken)));
         return container;
     }
 
@@ -246,7 +246,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -261,7 +261,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -276,7 +276,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new LoggingConvention((_, configuration, builder) => @delegate(configuration, builder)), priority);
+        container.AppendDelegate(new LoggingConvention((_, configuration, builder) => @delegate(configuration, builder)));
         return container;
     }
 
@@ -295,7 +295,7 @@ public static class ConventionHostBuilderExtensions
         ArgumentNullException.ThrowIfNull(container);
 
         container.AppendDelegate(
-            new LoggingAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken)), priority
+            new LoggingAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken))
         );
         return container;
     }
@@ -311,7 +311,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new LoggingAsyncConvention((_, configuration, builder, _) => @delegate(configuration, builder)), priority);
+        container.AppendDelegate(new LoggingAsyncConvention((_, configuration, builder, _) => @delegate(configuration, builder)));
         return container;
     }
 
@@ -326,7 +326,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new LoggingConvention((_, _, builder) => @delegate(builder)), priority);
+        container.AppendDelegate(new LoggingConvention((_, _, builder) => @delegate(builder)));
         return container;
     }
 
@@ -344,7 +344,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new LoggingAsyncConvention((_, _, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority);
+        container.AppendDelegate(new LoggingAsyncConvention((_, _, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
     }
 
@@ -359,7 +359,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new LoggingAsyncConvention((_, _, builder, _) => @delegate(builder)), priority);
+        container.AppendDelegate(new LoggingAsyncConvention((_, _, builder, _) => @delegate(builder)));
         return container;
     }
 
@@ -374,7 +374,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -389,7 +389,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -407,7 +407,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ConfigurationConvention((_, configuration, builder) => @delegate(configuration, builder)), priority);
+        container.AppendDelegate(new ConfigurationConvention((_, configuration, builder) => @delegate(configuration, builder)));
         return container;
     }
 
@@ -426,7 +426,7 @@ public static class ConventionHostBuilderExtensions
         ArgumentNullException.ThrowIfNull(container);
 
         container.AppendDelegate(
-            new ConfigurationAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken)), priority
+            new ConfigurationAsyncConvention((_, configuration, builder, cancellationToken) => @delegate(configuration, builder, cancellationToken))
         );
         return container;
     }
@@ -445,7 +445,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ConfigurationAsyncConvention((_, configuration, builder, _) => @delegate(configuration, builder)), priority);
+        container.AppendDelegate(new ConfigurationAsyncConvention((_, configuration, builder, _) => @delegate(configuration, builder)));
         return container;
     }
 
@@ -460,7 +460,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ConfigurationConvention((_, _, builder) => @delegate(builder)), priority);
+        container.AppendDelegate(new ConfigurationConvention((_, _, builder) => @delegate(builder)));
         return container;
     }
 
@@ -478,7 +478,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority);
+        container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
     }
 
@@ -493,7 +493,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, _) => @delegate(builder)), priority);
+        container.AppendDelegate(new ConfigurationAsyncConvention((_, _, builder, _) => @delegate(builder)));
         return container;
     }
 
@@ -508,7 +508,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -523,7 +523,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -541,7 +541,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new HostCreatedConvention<THost>((_, host) => @delegate(host)), priority);
+        container.AppendDelegate(new HostCreatedConvention<THost>((_, host) => @delegate(host)));
         return container;
     }
 
@@ -560,7 +560,7 @@ public static class ConventionHostBuilderExtensions
         ArgumentNullException.ThrowIfNull(container);
 
         container.AppendDelegate(
-            new HostCreatedAsyncConvention<THost>((_, host, cancellationToken) => @delegate(host, cancellationToken)), priority
+            new HostCreatedAsyncConvention<THost>((_, host, cancellationToken) => @delegate(host, cancellationToken))
         );
         return container;
     }
@@ -579,7 +579,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new HostCreatedAsyncConvention<THost>((_, host, _) => @delegate(host)), priority);
+        container.AppendDelegate(new HostCreatedAsyncConvention<THost>((_, host, _) => @delegate(host)));
         return container;
     }
 

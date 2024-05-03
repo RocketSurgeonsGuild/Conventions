@@ -22,9 +22,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c, },
-            new object[] { d, f, },
-            new object[] { e, }
+            [d, f, b, c, e,]
         );
 
         provider
@@ -44,9 +42,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c, },
-            new object[] { d, },
-            new object[] { e, f, }
+            [d, b, c, e, f,]
         );
 
         provider
@@ -69,9 +65,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c, },
-            new object[] { d1, d, d2, },
-            new object[] { e, d3, f, }
+            [d1, d, d2, b, c, e, d3, f,]
         );
 
         provider
@@ -101,9 +95,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConvention[] { b, c, },
-            new object[] { d1, d, d2, },
-            new object[] { e, d3, f, }
+            [d1, d, d2, b, c, e, d3, f,]
         );
 
         provider
@@ -125,12 +117,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
         var c1 = new Cyclic1();
         var c2 = new Cyclic2();
 
-        var provider = new ConventionProvider(
-            HostType.Undefined,
-            new IConvention[] { c1, c2, },
-            Array.Empty<object>(),
-            Array.Empty<object>()
-        );
+        var provider = new ConventionProvider(HostType.Undefined, [c1, c2,]);
 
         Action a = () => provider.GetAll();
         a.Should().Throw<NotSupportedException>();
@@ -147,13 +134,13 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             HostType.Undefined,
-            new IConventionMetadata[]
-            {
+            [
+                d,
+                f,
                 new ConventionMetadata(b, HostType.Undefined).WithDependency(DependencyDirection.DependsOn, typeof(C)),
                 new ConventionMetadata(c, HostType.Undefined).WithDependency(DependencyDirection.DependentOf, typeof(D)),
-            },
-            new object[] { d, f, },
-            new object[] { e, }
+                e,
+            ]
         );
 
         provider
@@ -177,9 +164,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             ctor,
-            new IConvention[] { b, c, },
-            new object[] { d1, d, d2, },
-            new object[] { e, d3, f, }
+            [d1, d, d2, b, c, e, d3, f,]
         );
 
         provider
@@ -211,9 +196,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             ctor,
-            new IConvention[] { b, c, },
-            new object[] { d1, d, d2, },
-            new object[] { e, d3, f, }
+            [d1, d, d2, b, c, e, d3, f,]
         );
 
         provider

@@ -23,7 +23,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, CommandLineConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -37,7 +37,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, CommandLineAsyncConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -51,7 +51,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, Action<IConfigurator> @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new CommandLineConvention((_, context) => @delegate(context)), priority);
+        container.AppendDelegate(new CommandLineConvention((_, context) => @delegate(context)));
         return container;
     }
 
@@ -65,7 +65,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, Func<IConfigurator, ValueTask> @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new CommandLineAsyncConvention((_, context, _) => @delegate(context)), priority);
+        container.AppendDelegate(new CommandLineAsyncConvention((_, context, _) => @delegate(context)));
         return container;
     }
 
@@ -83,7 +83,7 @@ public static partial class CommandAppHostBuilderExtensions
     )
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new CommandLineAsyncConvention((_, context, ct) => @delegate(context, ct)), priority);
+        container.AppendDelegate(new CommandLineAsyncConvention((_, context, ct) => @delegate(context, ct)));
         return container;
     }
 
@@ -97,7 +97,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, CommandAppConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -111,7 +111,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, CommandAppAsyncConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -125,7 +125,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, Action<CommandApp> @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new CommandAppConvention((_, context) => @delegate(context)), priority);
+        container.AppendDelegate(new CommandAppConvention((_, context) => @delegate(context)));
         return container;
     }
 
@@ -139,7 +139,7 @@ public static partial class CommandAppHostBuilderExtensions
     public static ConventionContextBuilder ConfigureCommandApp(this ConventionContextBuilder container, Func<CommandApp, ValueTask> @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new CommandAppAsyncConvention((_, context, _) => @delegate(context)), priority);
+        container.AppendDelegate(new CommandAppAsyncConvention((_, context, _) => @delegate(context)));
         return container;
     }
 
@@ -157,7 +157,7 @@ public static partial class CommandAppHostBuilderExtensions
     )
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new CommandAppAsyncConvention((_, context, ct) => @delegate(context, ct)), priority);
+        container.AppendDelegate(new CommandAppAsyncConvention((_, context, ct) => @delegate(context, ct)));
         return container;
     }
 
@@ -170,7 +170,7 @@ public static partial class CommandAppHostBuilderExtensions
         where TDefaultCommand : class, ICommand
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new CommandAppConvention((_, context) => context.SetDefaultCommand<TDefaultCommand>()), priority);
+        container.AppendDelegate(new CommandAppConvention((_, context) => context.SetDefaultCommand<TDefaultCommand>()));
         return container;
     }
 

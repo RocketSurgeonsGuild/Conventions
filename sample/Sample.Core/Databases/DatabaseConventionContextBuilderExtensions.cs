@@ -9,13 +9,13 @@ public static class DatabaseConventionContextBuilderExtensions
 {
     public static ConventionContextBuilder ConfigureDatabase(this ConventionContextBuilder container, DatabaseConvention @delegate)
     {
-        container.AppendDelegate(@delegate, 0);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
     public static ConventionContextBuilder ConfigureDatabase(this ConventionContextBuilder container, Action<IDatabaseConfigurator> @delegate)
     {
-        container.AppendDelegate(new DatabaseConvention((context, configurator) => @delegate(configurator)), 0);
+        container.AppendDelegate(new DatabaseConvention((context, configurator) => @delegate(configurator)));
         return container;
     }
 }

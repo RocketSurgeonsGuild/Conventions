@@ -21,7 +21,7 @@ public static class WebAssemblyHostingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -36,7 +36,7 @@ public static class WebAssemblyHostingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -51,7 +51,7 @@ public static class WebAssemblyHostingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new WebAssemblyHostingConvention((_, builder) => @delegate(builder)), priority);
+        container.AppendDelegate(new WebAssemblyHostingConvention((_, builder) => @delegate(builder)));
         return container;
     }
 
@@ -66,7 +66,7 @@ public static class WebAssemblyHostingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, _) => @delegate(builder)), priority);
+        container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, _) => @delegate(builder)));
         return container;
     }
 
@@ -84,7 +84,7 @@ public static class WebAssemblyHostingConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority);
+        container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
     }
 }

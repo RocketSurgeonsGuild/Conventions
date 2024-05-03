@@ -21,7 +21,7 @@ public static class DistributedApplicationConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedApplication(this ConventionContextBuilder container, DistributedApplicationConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -35,7 +35,7 @@ public static class DistributedApplicationConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedApplication(this ConventionContextBuilder container, DistributedApplicationAsyncConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority);
+        container.AppendDelegate(@delegate);
         return container;
     }
 
@@ -50,7 +50,7 @@ public static class DistributedApplicationConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new DistributedApplicationConvention((_, builder) => @delegate(builder)), priority);
+        container.AppendDelegate(new DistributedApplicationConvention((_, builder) => @delegate(builder)));
         return container;
     }
 
@@ -65,7 +65,7 @@ public static class DistributedApplicationConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new DistributedApplicationAsyncConvention((_, builder, _) => @delegate(builder)), priority);
+        container.AppendDelegate(new DistributedApplicationAsyncConvention((_, builder, _) => @delegate(builder)));
         return container;
     }
 
@@ -83,7 +83,7 @@ public static class DistributedApplicationConventionExtensions
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new DistributedApplicationAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority);
+        container.AppendDelegate(new DistributedApplicationAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)));
         return container;
     }
 }
