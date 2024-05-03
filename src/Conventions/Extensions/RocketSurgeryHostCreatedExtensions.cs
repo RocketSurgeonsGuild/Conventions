@@ -11,17 +11,17 @@ internal static class RocketSurgeryHostCreatedExtensions
     /// <summary>
     ///     Apply configuration conventions
     /// </summary>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="host">The host</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask<IConventionContext> ApplyHostCreatedConventionsAsync<THost>(
-        this IConventionContext conventionContext,
+        this IConventionContext context,
         THost host,
         CancellationToken cancellationToken = default
     )
     {
-        foreach (var item in conventionContext.Conventions
+        foreach (var item in context.Conventions
                                               .Get<
                                                    IHostCreatedConvention<THost>,
                                                    HostCreatedConvention<THost>,
@@ -32,20 +32,20 @@ internal static class RocketSurgeryHostCreatedExtensions
             switch (item)
             {
                 case IHostCreatedConvention<THost> convention:
-                    convention.Register(conventionContext, host);
+                    convention.Register(context, host);
                     break;
                 case HostCreatedConvention<THost> @delegate:
-                    @delegate(conventionContext, host);
+                    @delegate(context, host);
                     break;
                 case IHostCreatedAsyncConvention<THost> convention:
-                    await convention.Register(conventionContext, host, cancellationToken).ConfigureAwait(false);
+                    await convention.Register(context, host, cancellationToken).ConfigureAwait(false);
                     break;
                 case HostCreatedAsyncConvention<THost> @delegate:
-                    await @delegate(conventionContext, host, cancellationToken).ConfigureAwait(false);
+                    await @delegate(context, host, cancellationToken).ConfigureAwait(false);
                     break;
             }
         }
 
-        return conventionContext;
+        return context;
     }
 }

@@ -25,7 +25,7 @@ public class DryIocBuilderTests : AutoFakeTest
                                         .UseDryIoc()
                                         .DisableConventionAttributes()
                                         .ConfigureDryIoc(
-                                             (conventionContext, configuration, services, container) =>
+                                             (context, configuration, services, container) =>
                                              {
                                                  container.RegisterInstance(A.Fake<IAbc>());
                                                  services.AddSingleton(A.Fake<IAbc2>());
@@ -51,7 +51,7 @@ public class DryIocBuilderTests : AutoFakeTest
                                         .UseDryIoc()
                                         .DisableConventionAttributes()
                                         .ConfigureDryIoc(
-                                             (conventionContext, configuration, services, container) =>
+                                             (context, configuration, services, container) =>
                                              {
                                                  container.RegisterInstance(A.Fake<IAbc>());
                                                  services.AddSingleton(A.Fake<IAbc2>());
@@ -78,7 +78,7 @@ public class DryIocBuilderTests : AutoFakeTest
                                         .UseDryIoc()
                                         .DisableConventionAttributes()
                                         .ConfigureDryIoc(
-                                             (conventionContext, configuration, services, container) =>
+                                             (context, configuration, services, container) =>
                                              {
                                                  container.RegisterInstance(A.Fake<IAbc3>());
                                                  container.RegisterInstance(A.Fake<IAbc4>());
@@ -102,7 +102,7 @@ public class DryIocBuilderTests : AutoFakeTest
                                         .UseDryIoc()
                                         .DisableConventionAttributes()
                                         .ConfigureDryIoc(
-                                             (conventionContext, configuration, services, container) =>
+                                             (context, configuration, services, container) =>
                                              {
                                                  container.RegisterInstance(A.Fake<IAbc>());
                                                  services.AddSingleton(A.Fake<IAbc2>());
@@ -130,7 +130,7 @@ public class DryIocBuilderTests : AutoFakeTest
                                         .UseDryIoc()
                                         .DisableConventionAttributes()
                                         .ConfigureDryIoc(
-                                             (conventionContext, configuration, services, container) =>
+                                             (context, configuration, services, container) =>
                                              {
                                                  container.Use(A.Fake<IAbc>());
                                                  services.AddSingleton(A.Fake<IAbc2>());
@@ -158,7 +158,7 @@ public class DryIocBuilderTests : AutoFakeTest
                                         .UseDryIoc()
                                         .DisableConventionAttributes()
                                         .ConfigureDryIoc(
-                                             (conventionContext, configuration, services, container) =>
+                                             (context, configuration, services, container) =>
                                              {
                                                  container.RegisterInstance(A.Fake<IAbc3>());
                                                  container.RegisterInstance(A.Fake<IAbc4>());
@@ -182,7 +182,7 @@ public class DryIocBuilderTests : AutoFakeTest
                                    rb => rb
                                         .UseDryIoc()
                                         .ConfigureDryIoc(
-                                             (conventionContext, configuration, services, container) => { return container; }
+                                             (context, configuration, services, container) => { return container; }
                                          )
                                );
 
@@ -202,7 +202,7 @@ public class DryIocBuilderTests : AutoFakeTest
                                    rb => rb
                                         .UseDryIoc()
                                         .ConfigureDryIoc(
-                                             (conventionContext, configuration, services, container) => { return container; }
+                                             (context, configuration, services, container) => { return container; }
                                          )
                                );
 

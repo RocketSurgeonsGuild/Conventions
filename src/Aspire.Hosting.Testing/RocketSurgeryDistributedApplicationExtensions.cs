@@ -16,16 +16,16 @@ public static class RocketSurgeryDistributedApplicationTestingExtensions
     ///     Apply logging conventions
     /// </summary>
     /// <param name="hostBuilder"></param>
-    /// <param name="conventionContext"></param>
+    /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask ApplyConventionsAsync(
         this IDistributedApplicationTestingBuilder hostBuilder,
-        IConventionContext conventionContext,
+        IConventionContext context,
         CancellationToken cancellationToken = default
     )
     {
-        foreach (var item in conventionContext.Conventions
+        foreach (var item in context.Conventions
                                               .Get<
                                                    IDistributedApplicationTestingConvention,
                                                    DistributedApplicationTestingConvention,
@@ -36,16 +36,16 @@ public static class RocketSurgeryDistributedApplicationTestingExtensions
             switch (item)
             {
                 case IDistributedApplicationTestingConvention convention:
-                    convention.Register(conventionContext, hostBuilder);
+                    convention.Register(context, hostBuilder);
                     break;
                 case DistributedApplicationTestingConvention @delegate:
-                    @delegate(conventionContext, hostBuilder);
+                    @delegate(context, hostBuilder);
                     break;
                 case IDistributedApplicationTestingAsyncConvention convention:
-                    await convention.Register(conventionContext, hostBuilder, cancellationToken).ConfigureAwait(false);
+                    await convention.Register(context, hostBuilder, cancellationToken).ConfigureAwait(false);
                     break;
                 case DistributedApplicationTestingAsyncConvention @delegate:
-                    await @delegate(conventionContext, hostBuilder, cancellationToken).ConfigureAwait(false);
+                    await @delegate(context, hostBuilder, cancellationToken).ConfigureAwait(false);
                     break;
             }
         }

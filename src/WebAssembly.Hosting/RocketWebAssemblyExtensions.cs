@@ -50,23 +50,23 @@ public static class RocketWebAssemblyExtensions
            .AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
         contextBuilder.Properties.Add("BlazorWasm", true);
 
-        var conventionContext = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
+        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
 
-        await SharedHostConfigurationAsync(conventionContext, builder, cancellationToken).ConfigureAwait(false);
-        await builder.Services.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
-        await builder.Logging.ApplyConventionsAsync(conventionContext, cancellationToken).ConfigureAwait(false);
+        await SharedHostConfigurationAsync(context, builder, cancellationToken).ConfigureAwait(false);
+        await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.Logging.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
-        if (conventionContext.Get<ServiceFactoryAdapter>() is { } factory)
-            builder.ConfigureContainer(await factory(conventionContext, builder.Services, cancellationToken));
+        if (context.Get<ServiceFactoryAdapter>() is { } factory)
+            builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken));
 
-        await ApplyConventions(conventionContext, builder, contextBuilder, cancellationToken);
+        await ApplyConventions(context, builder, contextBuilder, cancellationToken);
         var host = buildHost(builder);
-        await conventionContext.ApplyHostCreatedConventionsAsync(host, cancellationToken);
+        await context.ApplyHostCreatedConventionsAsync(host, cancellationToken);
         return host;
     }
 
     internal static async ValueTask SharedHostConfigurationAsync(
-        IConventionContext conventionContext,
+        IConventionContext context,
         WebAssemblyHostBuilder builder,
         CancellationToken cancellationToken
     )
@@ -98,15 +98,15 @@ public static class RocketWebAssemblyExtensions
         //   Instead of the more desired order appsettings.json, appsettings.yaml, appsettings.Development.json, appsettings.Development.yaml
         // However this case is fairly rare as I would not expect an application to maintain both kinds of configuration files.
 
-        var appTasks = conventionContext
+        var appTasks = context
                       .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
                       .SelectMany(z => z.Invoke(configurationBuilder));
 
-        var envTasks = conventionContext
+        var envTasks = context
                       .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
                       .SelectMany(z => z.Invoke(configurationBuilder, builder.HostEnvironment.Environment));
 
-        var localTasks = conventionContext
+        var localTasks = context
                         .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
                         .SelectMany(z => z.Invoke(configurationBuilder, "local"))
                         .ToArray();
@@ -127,7 +127,7 @@ public static class RocketWebAssemblyExtensions
             configurationBuilder.Add(task);
         }
 
-        var cb = await new ConfigurationBuilder().ApplyConventionsAsync(conventionContext, builder.Configuration, cancellationToken).ConfigureAwait(false);
+        var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, builder.Configuration, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0, })
             configurationBuilder.Add(
                 new ChainedConfigurationSource

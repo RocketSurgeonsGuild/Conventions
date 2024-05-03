@@ -25,7 +25,7 @@ public static class AutofacFixtures
     [ExportConvention]
     public class AbcConvention : IAutofacConvention
     {
-        public void Register(IConventionContext conventionContext, IConfiguration configuration, IServiceCollection services, ContainerBuilder container)
+        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, ContainerBuilder container)
         {
             container.RegisterInstance(A.Fake<IAbc>());
             services.AddSingleton(A.Fake<IAbc2>());

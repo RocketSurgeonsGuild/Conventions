@@ -25,7 +25,7 @@ public static class DryIocFixtures
     [ExportConvention]
     public class AbcConvention : IDryIocConvention
     {
-        public IContainer Register(IConventionContext conventionContext, IConfiguration configuration, IServiceCollection services, IContainer container)
+        public IContainer Register(IConventionContext context, IConfiguration configuration, IServiceCollection services, IContainer container)
         {
             container.RegisterInstance(A.Fake<IAbc>());
             services.AddSingleton(A.Fake<IAbc2>());
