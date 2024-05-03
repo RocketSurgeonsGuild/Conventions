@@ -1,5 +1,4 @@
 using Aspire.Hosting;
-using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Aspire.Hosting;
 
 // ReSharper disable once CheckNamespace
@@ -16,8 +15,13 @@ public static class DistributedApplicationConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDistributedApplication(this ConventionContextBuilder container, DistributedApplicationConvention @delegate)
+    public static ConventionContextBuilder ConfigureDistributedApplication(
+        this ConventionContextBuilder container,
+        DistributedApplicationConvention @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
@@ -29,8 +33,13 @@ public static class DistributedApplicationConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDistributedApplication(this ConventionContextBuilder container, DistributedApplicationAsyncConvention @delegate)
+    public static ConventionContextBuilder ConfigureDistributedApplication(
+        this ConventionContextBuilder container,
+        DistributedApplicationAsyncConvention @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
@@ -42,8 +51,13 @@ public static class DistributedApplicationConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDistributedApplication(this ConventionContextBuilder container, Action<IDistributedApplicationBuilder> @delegate)
+    public static ConventionContextBuilder ConfigureDistributedApplication(
+        this ConventionContextBuilder container,
+        Action<IDistributedApplicationBuilder> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -56,8 +70,13 @@ public static class DistributedApplicationConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDistributedApplication(this ConventionContextBuilder container, Func<IDistributedApplicationBuilder, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureDistributedApplication(
+        this ConventionContextBuilder container,
+        Func<IDistributedApplicationBuilder, ValueTask> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -70,10 +89,12 @@ public static class DistributedApplicationConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureDistributedApplication(
         this ConventionContextBuilder container,
-        Func<IDistributedApplicationBuilder, CancellationToken, ValueTask> @delegate
+        Func<IDistributedApplicationBuilder, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);

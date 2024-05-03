@@ -5,7 +5,7 @@ using Sample.BlazorWasm;
 
 var builder = WebAssemblyHostBuilder
    .CreateDefault(args);
-//                   .ConfigureRocketSurgery(provider => Enumerable.Empty<IConventionWithDependencies>());
+//                   .ConfigureRocketSurgery(provider => Enumerable.Empty<IConventionMetadata>());
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 

@@ -179,7 +179,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
 
         scanner.AppendConvention(contribution);
         scanner.PrependConvention(contribution2);
-        scanner.IncludeConvention(typeof(Contrib));
+        scanner.IncludeConvention(typeof(Contrib).Assembly);
 
         var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
 

@@ -45,8 +45,8 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilder);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextExtensions);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionHostBuilderExtensions);
+                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionMetadata);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionsConfigurationAttribute);
-                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionWithDependencies);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependencyDirection);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependentOfConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.DependentOfConventionAttribute<>);
@@ -65,8 +65,8 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionContext);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionDependency);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionFactory);
+                        yield return typeof(global::Rocket.Surgery.Conventions.IConventionMetadata);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionProvider);
-                        yield return typeof(global::Rocket.Surgery.Conventions.IConventionWithDependencies);
                         yield return typeof(global::Rocket.Surgery.Conventions.ImportConventionsAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.ImportHelpers);
                         yield return typeof(global::Rocket.Surgery.Conventions.ImportsTypeAttribute);

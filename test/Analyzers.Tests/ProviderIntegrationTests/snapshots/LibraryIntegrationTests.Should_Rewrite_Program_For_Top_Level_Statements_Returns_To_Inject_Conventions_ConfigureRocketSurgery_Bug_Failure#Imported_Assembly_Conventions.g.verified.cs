@@ -24,7 +24,7 @@ namespace TestProject.Conventions
         /// <summary>
         /// The conventions imported into this assembly
         /// </summary>
-        public IEnumerable<IConventionWithDependencies> LoadConventions(ConventionContextBuilder builder)
+        public IEnumerable<IConventionMetadata> LoadConventions(ConventionContextBuilder builder)
         {
             yield break;
         }

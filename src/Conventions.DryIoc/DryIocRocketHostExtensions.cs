@@ -33,9 +33,10 @@ public static class DryIocConventionRocketHostExtensions
     ///     Uses the DryIoc.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDryIoc(this ConventionContextBuilder builder, DryIocConvention @delegate)
+    public static ConventionContextBuilder ConfigureDryIoc(this ConventionContextBuilder builder, DryIocConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -47,11 +48,13 @@ public static class DryIocConventionRocketHostExtensions
     ///     Uses the DryIoc.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureDryIoc(
         this ConventionContextBuilder builder,
-        Action<IConventionContext, IConfiguration, IServiceCollection, IContainer> @delegate
+        Action<IConventionContext, IConfiguration, IServiceCollection, IContainer> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -72,9 +75,14 @@ public static class DryIocConventionRocketHostExtensions
     ///     Uses the DryIoc.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDryIoc(this ConventionContextBuilder builder, Func<IServiceCollection, IContainer, IContainer> @delegate)
+    public static ConventionContextBuilder ConfigureDryIoc(
+        this ConventionContextBuilder builder,
+        Func<IServiceCollection, IContainer, IContainer> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -86,11 +94,13 @@ public static class DryIocConventionRocketHostExtensions
     ///     Uses the DryIoc.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureDryIoc(
         this ConventionContextBuilder builder,
-        Action<IConfiguration, IServiceCollection, IContainer> @delegate
+        Action<IConfiguration, IServiceCollection, IContainer> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -111,11 +121,13 @@ public static class DryIocConventionRocketHostExtensions
     ///     Uses the DryIoc.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureDryIoc(
         this ConventionContextBuilder builder,
-        Func<IConfiguration, IServiceCollection, IContainer, IContainer> @delegate
+        Func<IConfiguration, IServiceCollection, IContainer, IContainer> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -128,9 +140,14 @@ public static class DryIocConventionRocketHostExtensions
     ///     Uses the DryIoc.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDryIoc(this ConventionContextBuilder builder, Action<IServiceCollection, IContainer> @delegate)
+    public static ConventionContextBuilder ConfigureDryIoc(
+        this ConventionContextBuilder builder,
+        Action<IServiceCollection, IContainer> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -150,9 +167,10 @@ public static class DryIocConventionRocketHostExtensions
     ///     Uses the DryIoc.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDryIoc(this ConventionContextBuilder builder, Func<IContainer, IContainer> @delegate)
+    public static ConventionContextBuilder ConfigureDryIoc(this ConventionContextBuilder builder, Func<IContainer, IContainer> @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -164,9 +182,10 @@ public static class DryIocConventionRocketHostExtensions
     ///     Uses the DryIoc.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDryIoc(this ConventionContextBuilder builder, Action<IContainer> @delegate)
+    public static ConventionContextBuilder ConfigureDryIoc(this ConventionContextBuilder builder, Action<IContainer> @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(builder);
 

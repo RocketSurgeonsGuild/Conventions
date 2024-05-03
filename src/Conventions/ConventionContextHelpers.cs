@@ -79,44 +79,31 @@ internal static partial class ConventionContextHelpers
         ILogger? logger
     )
     {
-        for (var i = 0; i < builder._prependedConventions.Count; i++)
+        for (var i = 0; i < builder._conventions.Count; i++)
         {
-            if (builder._prependedConventions[i] is Type type) builder._prependedConventions[i] = ActivatorUtilities.CreateInstance(builder.Properties, type);
-        }
-
-        for (var i = 0; i < builder._appendedConventions.Count; i++)
-        {
-            if (builder._appendedConventions[i] is Type type) builder._appendedConventions[i] = ActivatorUtilities.CreateInstance(builder.Properties, type);
-        }
-
-        for (var i = 0; i < builder._includeConventions.Count; i++)
-        {
-            if (builder._includeConventions[i] is Type type) builder._includeConventions[i] = ActivatorUtilities.CreateInstance(builder.Properties, type);
+            if (builder._conventions[i] is Type type) builder._conventions[i] = ActivatorUtilities.CreateInstance(builder.Properties, type);
         }
 
         var includedConventions = builder
                                  ._includeAssemblyConventions.SelectMany(assembly => GetConventionsFromAssembly(builder, assembly, logger))
-                                 .Concat(builder._includeConventions.OfType<IConvention>());
-
+                                 .ToArray();
+        if (includedConventions.Any())
+        {
+            builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null) + 1, includedConventions);
+        }
 
         if (builder._conventionProviderFactory != null)
-            return new ConventionProvider(
-                builder.GetHostType(),
-                GetStaticConventions(builder, logger),
-                includedConventions,
-                builder._prependedConventions,
-                builder._appendedConventions
-            );
+        {
+            builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null), GetStaticConventions(builder, logger));
+        }
+        else if (builder._useAttributeConventions)
+        {
+            builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null), GetAssemblyConventions(builder, assemblyProvider, logger));
+        }
 
         return new ConventionProvider(
             builder.GetHostType(),
-            (
-                builder._useAttributeConventions
-                    ? GetAssemblyConventions(builder, assemblyProvider, logger)
-                    : Enumerable.Empty<IConvention>() )
-           .Concat(includedConventions),
-            builder._prependedConventions,
-            builder._appendedConventions
+            builder._conventions
         );
     }
 
@@ -142,7 +129,7 @@ internal static partial class ConventionContextHelpers
     static partial void TraceScanningPostFilter(ILogger logger, string? assembly, string? type);
 
 
-    private static IEnumerable<IConventionWithDependencies> GetStaticConventions(
+    private static IEnumerable<IConventionMetadata> GetStaticConventions(
         ConventionContextBuilder builder,
         ILogger? logger
     )
@@ -151,15 +138,10 @@ internal static partial class ConventionContextHelpers
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         var conventions = builder._conventionProviderFactory!.LoadConventions(builder);
 
-        var prependedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._prependedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
-        var appendedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._appendedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
-
         if (builder._exceptAssemblyConventions.Count > 0)
             SkippingConventionsInAssemblies(logger, builder._exceptAssemblyConventions.Select(x => x.GetName().Name));
 
         if (builder._exceptConventions.Count > 0) SkippingExplicitConventionTypes(logger, builder._exceptConventions.Select(x => x.FullName));
-
-        SkippingExistingConventionTypes(logger, prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName));
 
         return conventions
               .Where(z => builder._exceptConventions.All(x => x != z.Convention.GetType()))
@@ -177,24 +159,17 @@ internal static partial class ConventionContextHelpers
                         .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConvention>())
                         .ToImmutableArray();
 
-        var prependedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._prependedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
-        var appendedConventionTypes = new Lazy<HashSet<Type>>(() => [..builder._appendedConventions.Select(x => x as Type ?? x.GetType()).Distinct(),]);
-
         ScanningForConventionsInAssemblies(logger, assemblies.Select(x => x.GetName().Name));
         if (builder._exceptAssemblyConventions.Count > 0)
             SkippingConventionsInAssemblies(logger, builder._exceptAssemblyConventions.Select(x => x.GetName().Name));
 
         if (builder._exceptConventions.Count > 0) SkippingExplicitConventionTypes(logger, builder._exceptConventions.Select(x => x.FullName));
 
-        SkippingExistingConventionTypes(logger, prependedConventionTypes.Value.Concat(appendedConventionTypes.Value).Select(x => x.FullName));
-
         return assemblies
               .Except(builder._exceptAssemblyConventions)
               .SelectMany(z => GetConventionsFromAssembly(builder, z, logger))
               .Where(z => builder._exceptConventions.All(x => x != z.GetType()))
-              .Where(
-                   type => !prependedConventionTypes.Value.Contains(type.GetType())
-                    && !appendedConventionTypes.Value.Contains(type.GetType())
-               );
+//              .Where(type => !builder._conventions.Contains(type.GetType()))
+            ;
     }
 }

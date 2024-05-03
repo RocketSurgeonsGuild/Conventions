@@ -7,13 +7,13 @@ namespace Rocket.Surgery.Conventions.Reflection;
 /// <inheritdoc />
 public abstract partial class ConventionFactoryBase : IConventionFactory
 {
-    private static IConventionWithDependencies FromConvention(IConvention convention)
+    private static IConventionMetadata FromConvention(IConvention convention)
     {
         var type = convention.GetType();
         var dependencies = type.GetCustomAttributes().OfType<IConventionDependency>();
         var hostType = convention.GetType().GetCustomAttributes().OfType<IHostBasedConvention>().FirstOrDefault()?.HostType ?? HostType.Undefined;
 
-        var c = new ConventionWithDependencies(convention, hostType);
+        var c = new ConventionMetadata(convention, hostType);
         foreach (var dependency in dependencies)
         {
             c.WithDependency(dependency.Direction, dependency.Type);
@@ -60,7 +60,7 @@ public abstract partial class ConventionFactoryBase : IConventionFactory
     public abstract IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder);
 
     /// <inheritdoc />
-    public IEnumerable<IConventionWithDependencies> LoadConventions(ConventionContextBuilder builder)
+    public IEnumerable<IConventionMetadata> LoadConventions(ConventionContextBuilder builder)
     {
         return GetAssemblyConventions(builder).Select(FromConvention);
     }

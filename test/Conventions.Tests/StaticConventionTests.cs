@@ -13,7 +13,7 @@ public partial class StaticConventionTests
                   .Should()
                   .NotBeNull()
                   .And.Subject;
-        list.As<IEnumerable<IConventionWithDependencies>>().Should().NotBeNull();
+        list.As<IEnumerable<IConventionMetadata>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public partial class StaticConventionTests
                   .Should()
                   .NotBeNull()
                   .And.Subject;
-        list.As<IEnumerable<IConventionWithDependencies>>().Should().NotBeNull();
+        list.As<IEnumerable<IConventionMetadata>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -36,9 +36,9 @@ public partial class StaticConventionTests
                   .NotBeNull()
                   .And.Subject;
 
-        var items = list.As<IEnumerable<IConventionWithDependencies>>().Should().NotBeNull().And.Subject;
+        var items = list.As<IEnumerable<IConventionMetadata>>().Should().NotBeNull().And.Subject;
 
-        var provider = new ConventionProvider(HostType.Undefined, items, Array.Empty<object>(), Array.Empty<object>());
+        var provider = new ConventionProvider(HostType.Undefined, items.Cast<object>().ToList());
         var a = () => provider.GetAll();
 
         a.Should().NotThrow();
@@ -57,6 +57,6 @@ public partial class StaticConventionTests
                   .NotBeNull()
                   .And.Subject;
 
-        list.As<IEnumerable<IConventionWithDependencies>>().Should().NotBeNull();
+        list.As<IEnumerable<IConventionMetadata>>().Should().NotBeNull();
     }
 }

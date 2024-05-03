@@ -4,7 +4,7 @@ namespace Rocket.Surgery.Conventions;
 ///     Container for conventions
 /// </summary>
 [PublicAPI]
-public sealed class ConventionWithDependencies : IConventionWithDependencies
+public sealed class ConventionMetadata : IConventionMetadata
 {
     private readonly List<ConventionDependency> _dependencies;
 
@@ -13,7 +13,8 @@ public sealed class ConventionWithDependencies : IConventionWithDependencies
     /// </summary>
     /// <param name="convention"></param>
     /// <param name="hostType"></param>
-    public ConventionWithDependencies(IConvention convention, HostType hostType)
+    /// <param name="priority"></param>
+    public ConventionMetadata(IConvention convention, HostType hostType)
     {
         Convention = convention;
         HostType = hostType;
@@ -26,7 +27,7 @@ public sealed class ConventionWithDependencies : IConventionWithDependencies
     /// <param name="direction"></param>
     /// <param name="type"></param>
     /// <returns></returns>
-    public ConventionWithDependencies WithDependency(DependencyDirection direction, Type type)
+    public ConventionMetadata WithDependency(DependencyDirection direction, Type type)
     {
         _dependencies.Add(new(direction, type));
         return this;

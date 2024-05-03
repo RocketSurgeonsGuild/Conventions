@@ -15,8 +15,9 @@ public static class HostingConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, HostApplicationConvention @delegate)
+    public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, HostApplicationConvention @delegate, int priority = 0)
     {
         ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
@@ -28,8 +29,13 @@ public static class HostingConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, HostApplicationAsyncConvention @delegate)
+    public static ConventionContextBuilder ConfigureApplication(
+        this ConventionContextBuilder container,
+        HostApplicationAsyncConvention @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
@@ -41,8 +47,13 @@ public static class HostingConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, Action<IHostApplicationBuilder> @delegate)
+    public static ConventionContextBuilder ConfigureApplication(
+        this ConventionContextBuilder container,
+        Action<IHostApplicationBuilder> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -55,8 +66,13 @@ public static class HostingConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureApplication(this ConventionContextBuilder container, Func<IHostApplicationBuilder, ValueTask> @delegate)
+    public static ConventionContextBuilder ConfigureApplication(
+        this ConventionContextBuilder container,
+        Func<IHostApplicationBuilder, ValueTask> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -69,10 +85,12 @@ public static class HostingConventionExtensions
     /// </summary>
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication(
         this ConventionContextBuilder container,
-        Func<IHostApplicationBuilder, CancellationToken, ValueTask> @delegate
+        Func<IHostApplicationBuilder, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
