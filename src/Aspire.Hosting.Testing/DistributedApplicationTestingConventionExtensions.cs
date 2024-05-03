@@ -1,7 +1,4 @@
-using Aspire.Hosting;
 using Aspire.Hosting.Testing;
-using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Aspire.Hosting;
 using Rocket.Surgery.Aspire.Hosting.Testing;
 
 // ReSharper disable once CheckNamespace
@@ -20,7 +17,11 @@ public static class DistributedApplicationTestingConventionExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDistributedTestingApplication(this ConventionContextBuilder container, DistributedApplicationTestingConvention @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureDistributedTestingApplication(
+        this ConventionContextBuilder container,
+        DistributedApplicationTestingConvention @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
@@ -34,7 +35,11 @@ public static class DistributedApplicationTestingConventionExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDistributedTestingApplication(this ConventionContextBuilder container, DistributedApplicationTestingAsyncConvention @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureDistributedTestingApplication(
+        this ConventionContextBuilder container,
+        DistributedApplicationTestingAsyncConvention @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate);
@@ -48,7 +53,11 @@ public static class DistributedApplicationTestingConventionExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDistributedTestingApplication(this ConventionContextBuilder container, Action<IDistributedApplicationTestingBuilder> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureDistributedTestingApplication(
+        this ConventionContextBuilder container,
+        Action<IDistributedApplicationTestingBuilder> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -63,7 +72,11 @@ public static class DistributedApplicationTestingConventionExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureDistributedTestingApplication(this ConventionContextBuilder container, Func<IDistributedApplicationTestingBuilder, ValueTask> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureDistributedTestingApplication(
+        this ConventionContextBuilder container,
+        Func<IDistributedApplicationTestingBuilder, ValueTask> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -80,7 +93,8 @@ public static class DistributedApplicationTestingConventionExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureDistributedTestingApplication(
         this ConventionContextBuilder container,
-        Func<IDistributedApplicationTestingBuilder, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<IDistributedApplicationTestingBuilder, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);

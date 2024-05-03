@@ -62,7 +62,11 @@ public static partial class CommandAppHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureCommandLine(this ConventionContextBuilder container, Func<IConfigurator, ValueTask> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureCommandLine(
+        this ConventionContextBuilder container,
+        Func<IConfigurator, ValueTask> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(new CommandLineAsyncConvention((_, context, _) => @delegate(context)));
@@ -79,7 +83,8 @@ public static partial class CommandAppHostBuilderExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureCommandLine(
         this ConventionContextBuilder container,
-        Func<IConfigurator, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<IConfigurator, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -153,7 +158,8 @@ public static partial class CommandAppHostBuilderExtensions
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureCommandApp(
         this ConventionContextBuilder container,
-        Func<CommandApp, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<CommandApp, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);

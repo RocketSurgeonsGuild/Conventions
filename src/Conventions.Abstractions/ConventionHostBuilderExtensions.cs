@@ -142,7 +142,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Action<IConfiguration, IServiceCollection> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureServices(
+        this ConventionContextBuilder container,
+        Action<IConfiguration, IServiceCollection> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -159,7 +163,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(
         this ConventionContextBuilder container,
-        Func<IConfiguration, IServiceCollection, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<IConfiguration, IServiceCollection, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -178,7 +183,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(
         this ConventionContextBuilder container,
-        Func<IConfiguration, IServiceCollection, ValueTask> @delegate, int priority = 0
+        Func<IConfiguration, IServiceCollection, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -209,7 +215,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureServices(this ConventionContextBuilder container, Func<IServiceCollection, ValueTask> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureServices(
+        this ConventionContextBuilder container,
+        Func<IServiceCollection, ValueTask> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -226,7 +236,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureServices(
         this ConventionContextBuilder container,
-        Func<IServiceCollection, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<IServiceCollection, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -272,7 +283,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Action<IConfiguration, ILoggingBuilder> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureLogging(
+        this ConventionContextBuilder container,
+        Action<IConfiguration, ILoggingBuilder> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -289,7 +304,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(
         this ConventionContextBuilder container,
-        Func<IConfiguration, ILoggingBuilder, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<IConfiguration, ILoggingBuilder, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -307,7 +323,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<IConfiguration, ILoggingBuilder, ValueTask> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureLogging(
+        this ConventionContextBuilder container,
+        Func<IConfiguration, ILoggingBuilder, ValueTask> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -339,7 +359,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureLogging(
         this ConventionContextBuilder container,
-        Func<ILoggingBuilder, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<ILoggingBuilder, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -355,7 +376,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureLogging(this ConventionContextBuilder container, Func<ILoggingBuilder, ValueTask> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureLogging(
+        this ConventionContextBuilder container,
+        Func<ILoggingBuilder, ValueTask> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -385,7 +410,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, ConfigurationAsyncConvention @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureConfiguration(
+        this ConventionContextBuilder container,
+        ConfigurationAsyncConvention @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -402,7 +431,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(
         this ConventionContextBuilder container,
-        Action<IConfiguration, IConfigurationBuilder> @delegate, int priority = 0
+        Action<IConfiguration, IConfigurationBuilder> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -420,7 +450,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(
         this ConventionContextBuilder container,
-        Func<IConfiguration, IConfigurationBuilder, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<IConfiguration, IConfigurationBuilder, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -440,7 +471,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(
         this ConventionContextBuilder container,
-        Func<IConfiguration, IConfigurationBuilder, ValueTask> @delegate, int priority = 0
+        Func<IConfiguration, IConfigurationBuilder, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -456,7 +488,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Action<IConfigurationBuilder> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureConfiguration(
+        this ConventionContextBuilder container,
+        Action<IConfigurationBuilder> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -473,7 +509,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder ConfigureConfiguration(
         this ConventionContextBuilder container,
-        Func<IConfigurationBuilder, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<IConfigurationBuilder, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -489,7 +526,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder ConfigureConfiguration(this ConventionContextBuilder container, Func<IConfigurationBuilder, ValueTask> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureConfiguration(
+        this ConventionContextBuilder container,
+        Func<IConfigurationBuilder, ValueTask> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -504,22 +545,11 @@ public static class ConventionHostBuilderExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder OnHostCreated<THost>(this ConventionContextBuilder container, HostCreatedConvention<THost> @delegate, int priority = 0)
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        container.AppendDelegate(@delegate);
-        return container;
-    }
-
-    /// <summary>
-    ///     Configure the configuration delegate to the convention scanner
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public static ConventionContextBuilder OnHostCreated<THost>(this ConventionContextBuilder container, HostCreatedAsyncConvention<THost> @delegate, int priority = 0)
+    public static ConventionContextBuilder OnHostCreated<THost>(
+        this ConventionContextBuilder container,
+        HostCreatedConvention<THost> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(container);
 
@@ -536,7 +566,27 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder OnHostCreated<THost>(
         this ConventionContextBuilder container,
-        Action<THost> @delegate, int priority = 0
+        HostCreatedAsyncConvention<THost> @delegate,
+        int priority = 0
+    )
+    {
+        ArgumentNullException.ThrowIfNull(container);
+
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    /// <summary>
+    ///     Configure the configuration delegate to the convention scanner
+    /// </summary>
+    /// <param name="container">The container.</param>
+    /// <param name="delegate">The delegate.</param>
+    /// <param name="priority">The priority.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    public static ConventionContextBuilder OnHostCreated<THost>(
+        this ConventionContextBuilder container,
+        Action<THost> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -554,7 +604,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder OnHostCreated<THost>(
         this ConventionContextBuilder container,
-        Func<THost, CancellationToken, ValueTask> @delegate, int priority = 0
+        Func<THost, CancellationToken, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -574,7 +625,8 @@ public static class ConventionHostBuilderExtensions
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public static ConventionContextBuilder OnHostCreated<THost>(
         this ConventionContextBuilder container,
-        Func<THost, ValueTask> @delegate, int priority = 0
+        Func<THost, ValueTask> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(container);

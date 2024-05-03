@@ -54,7 +54,8 @@ public static class AutofacConventionRocketHostExtensions
     /// <returns>IHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureAutofac(
         this ConventionContextBuilder builder,
-        Action<IConfiguration, IServiceCollection, ContainerBuilder> @delegate, int priority = 0
+        Action<IConfiguration, IServiceCollection, ContainerBuilder> @delegate,
+        int priority = 0
     )
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -70,7 +71,11 @@ public static class AutofacConventionRocketHostExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns>IHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureAutofac(this ConventionContextBuilder builder, Action<IServiceCollection, ContainerBuilder> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureAutofac(
+        this ConventionContextBuilder builder,
+        Action<IServiceCollection, ContainerBuilder> @delegate,
+        int priority = 0
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
 

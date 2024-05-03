@@ -23,7 +23,7 @@ public class ConventionContextBuilder
     }
 
     // this null is used a marker to indicate where in the list is the middle
-    internal readonly List<object?> _conventions = [null!];
+    internal readonly List<object?> _conventions = [null!,];
     internal readonly List<Type> _exceptConventions = new();
     internal readonly List<Assembly> _exceptAssemblyConventions = new();
     internal readonly List<Assembly> _includeAssemblyConventions = new();

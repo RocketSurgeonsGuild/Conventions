@@ -170,6 +170,6 @@ internal static partial class ConventionContextHelpers
               .SelectMany(z => GetConventionsFromAssembly(builder, z, logger))
               .Where(z => builder._exceptConventions.All(x => x != z.GetType()))
 //              .Where(type => !builder._conventions.Contains(type.GetType()))
-               ;
+            ;
     }
 }

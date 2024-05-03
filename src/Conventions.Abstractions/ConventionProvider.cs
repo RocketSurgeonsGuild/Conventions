@@ -42,15 +42,17 @@ internal class ConventionProvider : IConventionProvider
         }
     }
 
-    private static ConventionOrDelegate FromConvention(object? value) =>
-        value switch
-        {
-            IConventionMetadata cwd => new(cwd),
-            IConvention convention  => FromConvention(convention),
-            Delegate d              => new(d, 0),
-            ConventionOrDelegate d  => d,
-            _                       => ConventionOrDelegate.None,
-        };
+    private static ConventionOrDelegate FromConvention(object? value)
+    {
+        return value switch
+               {
+                   IConventionMetadata cwd => new(cwd),
+                   IConvention convention  => FromConvention(convention),
+                   Delegate d              => new(d, 0),
+                   ConventionOrDelegate d  => d,
+                   _                       => ConventionOrDelegate.None,
+               };
+    }
 
     private static ConventionOrDelegate FromConvention(IConvention convention)
     {
@@ -283,7 +285,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     public HostType HostType { get; }
 
     /// <summary>
-    /// The priority of the convention or delegate
+    ///     The priority of the convention or delegate
     /// </summary>
     public int Priority { get; }
 
