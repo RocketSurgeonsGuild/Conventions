@@ -52,7 +52,9 @@ public static class RocketDistributedApplicationTestingExtensions
            .AddIfMissing(builder.Environment.GetType(), builder.Environment);
 
         var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
-        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), });
+        builder.Configuration.AddInMemoryCollection(
+            new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
+        );
 
         await builder.ApplyConventionsAsync(context, cancellationToken);
         var host = await builder.BuildAsync(cancellationToken);

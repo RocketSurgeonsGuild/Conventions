@@ -1,16 +1,11 @@
 using Aspire.Hosting.Testing;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Projects;
 using Rocket.Surgery.Aspire.Hosting.Testing;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Configuration;
-using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Conventions.Logging;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit.Abstractions;
 using RocketBooster = Rocket.Surgery.Aspire.Hosting.Testing.RocketBooster;
@@ -23,7 +18,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
     public async Task Should_UseAppDomain()
     {
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
+                                    .CreateAsync<AspireSample>()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                             .UseAppDomain(AppDomain.CurrentDomain)
@@ -36,7 +31,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
     public async Task Should_UseAssemblies()
     {
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
+                                    .CreateAsync<AspireSample>()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                             .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
@@ -49,7 +44,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
     public async Task Should_UseRocketBooster()
     {
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
+                                    .CreateAsync<AspireSample>()
                                     .LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
 
         host.Services.Should().NotBeNull();
@@ -59,7 +54,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
     public async Task Should_UseRocketBooster_With_Conventions()
     {
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
+                                    .CreateAsync<AspireSample>()
                                     .UseRocketBooster(RocketBooster.For(Imports.Instance));
 
         host.Services.Should().NotBeNull();
@@ -69,7 +64,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
     public async Task Should_UseDiagnosticLogging()
     {
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
+                                    .CreateAsync<AspireSample>()
                                     .UseRocketBooster(
                                          RocketBooster.For(AppDomain.CurrentDomain),
                                          x => x.UseDiagnosticLogging(c => c.AddConsole())
@@ -83,7 +78,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
     {
         var convention = A.Fake<DistributedApplicationTestingConvention>();
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
+                                    .CreateAsync<AspireSample>()
                                     .ConfigureRocketSurgery(
                                          rb => rb
                                               .UseConventionFactory(Imports.Instance)
@@ -97,13 +92,13 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
     public async Task Should_Build_The_Host_Correctly()
     {
         var @delegate = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
-        var @delegate2 = A.Fake<Func<DistributedApplication, CancellationToken, ValueTask>>();
+        var delegate2 = A.Fake<Func<DistributedApplication, CancellationToken, ValueTask>>();
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
-                                    .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(@delegate2));
+                                    .CreateAsync<AspireSample>()
+                                    .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(delegate2));
 
         A.CallTo(() => @delegate.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
-        A.CallTo(() => @delegate2.Invoke(A<DistributedApplication>._, A<CancellationToken>._)).MustHaveHappened();
+        A.CallTo(() => delegate2.Invoke(A<DistributedApplication>._, A<CancellationToken>._)).MustHaveHappened();
         host.Services.Should().NotBeNull();
     }
 }

@@ -16,7 +16,9 @@ internal static class SwitchGenerator
             var location = lineGrouping.First().location;
             var lineSwitchSection = createNestedSwitchSections(
                     lineGrouping.ToArray(),
-                    InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ParseName("System.IO.Path"), IdentifierName("GetFileName")))
+                    InvocationExpression(
+                            MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ParseName("System.IO.Path"), IdentifierName("GetFileName"))
+                        )
                        .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("filePath"))))),
                     x => x.location.FileName,
                     generateFilePathSwitchStatement,

@@ -19,4 +19,3 @@ public interface IHostApplicationConvention<in TBuilder> : IConvention
     /// <param name="builder"></param>
     void Register(IConventionContext context, TBuilder builder);
 }
-

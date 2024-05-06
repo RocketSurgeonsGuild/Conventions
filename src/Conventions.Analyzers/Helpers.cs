@@ -268,7 +268,8 @@ internal static class Helpers
     internal static SourceLocation CreateSourceLocation(InvocationExpressionSyntax methodCallSyntax, CancellationToken cancellationToken)
     {
         var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-        if (methodCallSyntax is not { Expression: MemberAccessExpressionSyntax memberAccess, ArgumentList.Arguments: [{ Expression: {} argumentExpression }] } )
+        if (methodCallSyntax is not
+            { Expression: MemberAccessExpressionSyntax memberAccess, ArgumentList.Arguments: [{ Expression: { } argumentExpression, },], })
             throw new InvalidOperationException("Expected a member access expression");
 
         var hasher = MD5.Create();

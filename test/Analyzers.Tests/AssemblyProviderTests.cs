@@ -129,7 +129,8 @@ public class TestConvention2 : IServiceAsyncConvention {
 }
 "
                            )
-                          .AddSource("Folder/Input0.cs",
+                          .AddSource(
+                               "Folder/Input0.cs",
                                @"
 using Rocket.Surgery.Conventions;
 
@@ -142,7 +143,8 @@ public class TestConvention3 : IServiceAsyncConvention {
 }
 "
                            )
-                          .AddSource("Folder/Input1.cs",
+                          .AddSource(
+                               "Folder/Input1.cs",
                                @"
 using Rocket.Surgery.Conventions;
 

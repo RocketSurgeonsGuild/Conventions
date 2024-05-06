@@ -18,7 +18,7 @@ internal record SourceLocation
     string ExpressionHash)
 {
     public string FileName => Path.GetFileName(FilePath);
-};
+}
 
 internal static class TypeCollection
 {
@@ -143,9 +143,12 @@ internal static class TypeCollection
                                                                                           )
                                                                                   )
                                                                           ),
-                                                                      Parameter(Identifier("lineNumber")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword))),
-                                                                      Parameter(Identifier("filePath")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
-                                                                      Parameter(Identifier("argumentExpression")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
+                                                                      Parameter(Identifier("lineNumber"))
+                                                                         .WithType(PredefinedType(Token(SyntaxKind.IntKeyword))),
+                                                                      Parameter(Identifier("filePath"))
+                                                                         .WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
+                                                                      Parameter(Identifier("argumentExpression"))
+                                                                         .WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
                                                                   )
                                                                  .WithBody(
                                                                       Block(SingletonList<StatementSyntax>(YieldStatement(SyntaxKind.YieldBreakStatement)))

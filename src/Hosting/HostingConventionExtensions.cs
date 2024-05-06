@@ -17,7 +17,11 @@ public static class HostingConventionExtensions
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ConventionContextBuilder ConfigureApplication<TBuilder>(this ConventionContextBuilder container, HostApplicationConvention<TBuilder> @delegate, int priority = 0)
+    public static ConventionContextBuilder ConfigureApplication<TBuilder>(
+        this ConventionContextBuilder container,
+        HostApplicationConvention<TBuilder> @delegate,
+        int priority = 0
+    )
         where TBuilder : IHostApplicationBuilder
     {
         ArgumentNullException.ThrowIfNull(container);
