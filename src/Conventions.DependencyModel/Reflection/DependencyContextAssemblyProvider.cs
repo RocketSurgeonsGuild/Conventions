@@ -93,12 +93,12 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     /// <returns>IEnumerable{Assembly}.</returns>
     public IEnumerable<Assembly> GetAssemblies(
         Action<IAssemblyProviderAssemblySelector> action,
+        [CallerLineNumber]
+        int lineNumber = 0,
         [CallerFilePath]
         string filePath = "",
-        [CallerMemberName]
-        string memberName = "",
-        [CallerLineNumber]
-        int lineNumber = 0
+        [CallerArgumentExpression(nameof(action))]
+        string argumentExpression = ""
     )
     {
         ArgumentNullException.ThrowIfNull(action);
@@ -117,29 +117,25 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     /// <summary>
     ///     Get the full list of types using the given selector
     /// </summary>
-    /// <param name="action"></param>
-    /// <param name="filePath"></param>
-    /// <param name="memberName"></param>
-    /// <param name="lineNumber"></param>
     /// <returns></returns>
     public IEnumerable<Type> GetTypes(
-        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> action,
+        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
+        [CallerLineNumber]
+        int lineNumber = 0,
         [CallerFilePath]
         string filePath = "",
-        [CallerMemberName]
-        string memberName = "",
-        [CallerLineNumber]
-        int lineNumber = 0
+        [CallerArgumentExpression(nameof(selector))]
+        string argumentExpression = ""
     )
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(selector);
         var assemblySelector = new AssemblyProviderAssemblySelector();
-        action(assemblySelector);
+        selector(assemblySelector);
         var assemblies = assemblySelector.AllAssemblies
             ? _assembles.Value
             : assemblySelector.AssemblyDependencies.Any()
                 ? GetCandidateLibraries(assemblySelector.AssemblyDependencies)
                 : assemblySelector.Assemblies;
-        return action(new TypeProviderAssemblySelector { Assemblies = assemblies, });
+        return selector(new TypeProviderAssemblySelector { Assemblies = assemblies, });
     }
 }

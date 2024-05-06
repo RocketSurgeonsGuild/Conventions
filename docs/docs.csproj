@@ -6,5 +6,6 @@
     </PropertyGroup>
     <ItemGroup>
         <None Remove="api/**/*.yml" />
+        <Using Remove="*" />
     </ItemGroup>
 </Project>

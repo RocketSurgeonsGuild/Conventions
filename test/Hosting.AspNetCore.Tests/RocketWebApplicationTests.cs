@@ -71,14 +71,44 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     public async Task Should_Build_The_Host_Correctly()
     {
         var @delegate = A.Fake<Func<WebApplication, CancellationToken, ValueTask>>();
-        var @delegate2 = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
+        var delegate2 = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
         using var host = await WebApplication
                               .CreateBuilder()
-                              .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(@delegate2));
+                              .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(delegate2));
 
         A.CallTo(() => @delegate.Invoke(A<WebApplication>._, A<CancellationToken>._)).MustHaveHappened();
-        A.CallTo(() => @delegate2.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
+        A.CallTo(() => delegate2.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
         host.Services.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task Should_ConfigureHosting()
+    {
+        var convention = A.Fake<HostApplicationConvention<IHostApplicationBuilder>>();
+        await using var host = await WebApplication
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseConventionFactory(Imports.Instance)
+                                              .ConfigureApplication(convention)
+                                     );
+
+        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
+    }
+
+    [Fact]
+    public async Task Should_ConfigureHosting_HostApplication()
+    {
+        var convention = A.Fake<HostApplicationConvention<WebApplicationBuilder>>();
+        await using var host = await WebApplication
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb
+                                              .UseConventionFactory(Imports.Instance)
+                                              .ConfigureApplication(convention)
+                                     );
+
+        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<WebApplicationBuilder>._)).MustHaveHappened();
     }
 
     [Fact]

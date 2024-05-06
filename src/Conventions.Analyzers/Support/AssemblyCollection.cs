@@ -195,9 +195,9 @@ internal static class AssemblyCollection
                                 )
                             )
                     ),
+                Parameter(Identifier("lineNumber")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword))),
                 Parameter(Identifier("filePath")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
-                Parameter(Identifier("memberName")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword))),
-                Parameter(Identifier("lineNumber")).WithType(PredefinedType(Token(SyntaxKind.IntKeyword)))
+                Parameter(Identifier("argumentExpression")).WithType(PredefinedType(Token(SyntaxKind.StringKeyword)))
             )
            .WithBody(Block(SingletonList<StatementSyntax>(YieldStatement(SyntaxKind.YieldBreakStatement))));
 
@@ -232,7 +232,7 @@ internal static class AssemblyCollection
 
             var source = Helpers.CreateSourceLocation(methodCallSyntax, context.CancellationToken);
             // disallow list?
-            if (source.MemberName == "GetAssemblyConventions" && source.FilePath.EndsWith("ConventionContextHelpers.cs")) continue;
+            if (source.FileName == "ConventionContextHelpers.cs") continue;
 
             var i = new Item(source, assemblyFilter);
             items.Add(i);

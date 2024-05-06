@@ -20,9 +20,9 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
 
     public IEnumerable<Assembly> GetAssemblies(
         Action<IAssemblyProviderAssemblySelector> action,
+        int lineNumber = 0,
         string filePath = "",
-        string memberName = "",
-        int lineNumber = 0
+        string argumentExpression = ""
     )
     {
         var selector = new AssemblyProviderAssemblySelector();
@@ -35,9 +35,9 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
 
     public IEnumerable<Type> GetTypes(
         Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
+        int lineNumber = 0,
         string filePath = "",
-        string memberName = "",
-        int lineNumber = 0
+        string argumentExpression = ""
     )
     {
         return selector(new TypeProviderAssemblySelector());

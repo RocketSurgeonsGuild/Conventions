@@ -17,16 +17,16 @@ namespace TestProject.Conventions
         [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider() : IAssemblyProvider
         {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
+            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
             {
                 yield break;
             }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
+            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
             {
                 switch (lineNumber)
                 {
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input1.cs Expression: Ey7AtSmc2HYXWGbsvWseqw==
                     case 15:
                         yield return typeof(global::OtherDep.CreatedNotification);
                         yield return typeof(global::OtherDep.UpdatedNotification);

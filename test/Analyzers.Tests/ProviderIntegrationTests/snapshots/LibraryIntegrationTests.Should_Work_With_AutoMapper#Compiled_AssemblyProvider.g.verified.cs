@@ -20,21 +20,21 @@ namespace TestProject.Conventions
         [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
         {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
+            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
             {
                 yield break;
             }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
+            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
             {
                 switch (lineNumber)
                 {
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input1.cs Expression: wgnEQ0+p18R+bMgUsWT3sw==
                     case 14:
                         yield return RocketSurgeryConventionsAnalyzersTests.GetType("Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.LibraryIntegrationTests+Mapper");
                         yield return RocketSurgeryConventionsAnalyzersTests.GetType("Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.LibraryIntegrationTests+Profile1");
                         break;
-                    // FilePath: Input1.cs Member: Register
+                    // FilePath: Input1.cs Expression: l3hPOV3IoAdlDDyp5Ce76w==
                     case 15:
                         yield return RocketSurgeryConventionsAnalyzersTests.GetType("Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.LibraryIntegrationTests+A");
                         yield return RocketSurgeryConventionsAnalyzersTests.GetType("Rocket.Surgery.Conventions.Analyzers.Tests.ProviderIntegrationTests.LibraryIntegrationTests+C");

@@ -10,4 +10,5 @@ namespace Rocket.Surgery.Hosting;
 /// <param name="builder">The builder.</param>
 /// <param name="cancellationToken">The cancellation token.</param>
 [PublicAPI]
-public delegate ValueTask HostApplicationAsyncConvention(IConventionContext context, IHostApplicationBuilder builder, CancellationToken cancellationToken);
+public delegate ValueTask HostApplicationAsyncConvention<in TBuilder>(IConventionContext context, TBuilder builder, CancellationToken cancellationToken)
+    where TBuilder : IHostApplicationBuilder;

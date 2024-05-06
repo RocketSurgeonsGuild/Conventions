@@ -55,10 +55,6 @@ public static class RocketDistributedApplicationTestingExtensions
         builder.Configuration.AddInMemoryCollection(
             new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
         );
-        await builder
-             .Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), })
-             .ApplyConventionsAsync(context, builder.Configuration, cancellationToken);
-        await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
         await builder.ApplyConventionsAsync(context, cancellationToken);
         var host = await builder.BuildAsync(cancellationToken);

@@ -18,18 +18,18 @@ namespace TestProject.Conventions
         [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider() : IAssemblyProvider
         {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
+            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
             {
                 switch (lineNumber)
                 {
-                    // FilePath: Input0.cs Member: Register
+                    // FilePath: Input0.cs Expression: U9KM8hBPL7ik8fDNaBfbbQ==
                     case 7:
                         yield return typeof(global::TestConvention).Assembly;
                         break;
                 }
             }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
+            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
             {
                 yield break;
             }
