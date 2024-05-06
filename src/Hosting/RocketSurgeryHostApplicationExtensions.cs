@@ -17,32 +17,32 @@ public static class RocketSurgeryHostApplicationExtensions
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask ApplyConventionsAsync(
-        this IHostApplicationBuilder hostBuilder,
+    public static async ValueTask ApplyConventionsAsync<TBuilder>(
+        this TBuilder hostBuilder,
         IConventionContext context,
         CancellationToken cancellationToken = default
-    )
+    ) where TBuilder : IHostApplicationBuilder
     {
         foreach (var item in context.Conventions
                                     .Get<
-                                         IHostApplicationConvention,
-                                         HostApplicationConvention,
-                                         IHostApplicationAsyncConvention,
-                                         HostApplicationAsyncConvention
+                                         IHostApplicationConvention<TBuilder>,
+                                         HostApplicationConvention<TBuilder>,
+                                         IHostApplicationAsyncConvention<TBuilder>,
+                                         HostApplicationAsyncConvention<TBuilder>
                                      >())
         {
             switch (item)
             {
-                case IHostApplicationConvention convention:
+                case IHostApplicationConvention<TBuilder> convention:
                     convention.Register(context, hostBuilder);
                     break;
-                case HostApplicationConvention @delegate:
+                case HostApplicationConvention<TBuilder> @delegate:
                     @delegate(context, hostBuilder);
                     break;
-                case IHostApplicationAsyncConvention convention:
+                case IHostApplicationAsyncConvention<TBuilder> convention:
                     await convention.Register(context, hostBuilder, cancellationToken).ConfigureAwait(false);
                     break;
-                case HostApplicationAsyncConvention @delegate:
+                case HostApplicationAsyncConvention<TBuilder> @delegate:
                     await @delegate(context, hostBuilder, cancellationToken).ConfigureAwait(false);
                     break;
             }

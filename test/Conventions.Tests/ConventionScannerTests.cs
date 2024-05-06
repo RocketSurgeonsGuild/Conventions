@@ -39,7 +39,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         // ReSharper disable ExplicitCallerInfoArgument
         A
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
            .Returns(Array.Empty<Assembly>());
         // ReSharper restore ExplicitCallerInfoArgument
 
@@ -65,7 +65,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         // ReSharper disable ExplicitCallerInfoArgument
         A
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
            .Returns(Array.Empty<Assembly>());
         // ReSharper restore ExplicitCallerInfoArgument
 
@@ -91,7 +91,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         // ReSharper disable ExplicitCallerInfoArgument
         A
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
            .Returns(
                 new[]
                 {
@@ -128,7 +128,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         // ReSharper disable ExplicitCallerInfoArgument
         A
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
            .Returns(
                 new[]
                 {
@@ -160,7 +160,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         // ReSharper disable ExplicitCallerInfoArgument
         A
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
            .Returns(
                 new[]
                 {
@@ -197,7 +197,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         // ReSharper disable ExplicitCallerInfoArgument
         A
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
            .Returns(
                 new[]
                 {

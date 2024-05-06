@@ -82,6 +82,34 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     }
 
     [Fact]
+    public async Task Should_ConfigureHosting()
+    {
+        var convention = A.Fake<HostApplicationConvention<IHostApplicationBuilder>>();
+        await using var host = await WebApplication
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb.UseConventionFactory(Imports.Instance)
+                                                 .ConfigureApplication(convention)
+                                     );
+
+        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
+    }
+
+    [Fact]
+    public async Task Should_ConfigureHosting_HostApplication()
+    {
+        var convention = A.Fake<HostApplicationConvention<WebApplicationBuilder>>();
+        await using var host = await WebApplication
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(
+                                         rb => rb.UseConventionFactory(Imports.Instance)
+                                                 .ConfigureApplication(convention)
+                                     );
+
+        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<WebApplicationBuilder>._)).MustHaveHappened();
+    }
+
+    [Fact]
     public async Task Creates_RocketHost_WithModifiedConfiguration_Json()
     {
         await using var host = await WebApplication

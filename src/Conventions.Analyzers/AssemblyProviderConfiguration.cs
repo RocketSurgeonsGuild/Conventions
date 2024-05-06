@@ -71,15 +71,20 @@ internal static partial class AssemblyProviderConfiguration
         ImmutableArray<TypeCollection.Item> typeRequests
     )
     {
-        foreach (var request in assemblyRequests.OrderBy(z => z.Location.FilePath).ThenBy(z => z.Location.LineNumber).ThenBy(z => z.Location.MemberName))
+        foreach (var request in assemblyRequests
+                               .OrderBy(z => z.Location.FileName)
+                               .ThenBy(z => z.Location.LineNumber)
+                               .ThenBy(z => z.Location.ExpressionHash))
         {
             // disallow list?
-            if (request.Location.MemberName == "GetAssemblyConventions" && request.Location.FilePath.EndsWith("ConventionFactoryBase.cs")) continue;
-
+            if (request.Location.FileName == "ConventionFactoryBase.cs") continue;
             yield return Helpers.AddAssemblyAttribute(getAssembliesKey, GetAssembliesToString(request));
         }
 
-        foreach (var request in typeRequests.OrderBy(z => z.Location.FilePath).ThenBy(z => z.Location.LineNumber).ThenBy(z => z.Location.MemberName))
+        foreach (var request in typeRequests
+                               .OrderBy(z => z.Location.FileName)
+                               .ThenBy(z => z.Location.LineNumber)
+                               .ThenBy(z => z.Location.ExpressionHash))
         {
             yield return Helpers.AddAssemblyAttribute(getTypesKey, GetTypesToString(request));
         }

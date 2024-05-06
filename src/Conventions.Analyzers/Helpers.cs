@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -267,8 +268,13 @@ internal static class Helpers
     internal static SourceLocation CreateSourceLocation(InvocationExpressionSyntax methodCallSyntax, CancellationToken cancellationToken)
     {
         var containingMethod = methodCallSyntax.Ancestors().OfType<MethodDeclarationSyntax>().First();
-        if (methodCallSyntax.Expression is not MemberAccessExpressionSyntax memberAccess)
+        if (methodCallSyntax is not { Expression: MemberAccessExpressionSyntax memberAccess, ArgumentList.Arguments: [{ Expression: {} argumentExpression }] } )
             throw new InvalidOperationException("Expected a member access expression");
+
+        var hasher = MD5.Create();
+        var expression = argumentExpression.ToFullString().Replace("\r", "");
+        expression = string.Join("", expression.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(z => z.Trim()));
+        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(expression));
 
         var source = new SourceLocation(
             memberAccess
@@ -278,7 +284,7 @@ internal static class Helpers
                .LineNumber
           + 1,
             memberAccess.SyntaxTree.FilePath,
-            containingMethod.Identifier.Text
+            Convert.ToBase64String(hash)
         );
         return source;
     }

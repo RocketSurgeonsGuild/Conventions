@@ -12,7 +12,7 @@ namespace Rocket.Surgery.CommandLine;
 ///     Convention for console applications
 /// </summary>
 [ExportConvention]
-public class ConsoleConvention : IHostApplicationAsyncConvention
+public class ConsoleConvention : IHostApplicationAsyncConvention<IHostApplicationBuilder>
 {
     /// <inheritdoc />
     public async ValueTask Register(IConventionContext context, IHostApplicationBuilder builder, CancellationToken cancellationToken)

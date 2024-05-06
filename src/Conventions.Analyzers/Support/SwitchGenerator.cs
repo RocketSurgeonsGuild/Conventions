@@ -16,8 +16,9 @@ internal static class SwitchGenerator
             var location = lineGrouping.First().location;
             var lineSwitchSection = createNestedSwitchSections(
                     lineGrouping.ToArray(),
-                    IdentifierName("filePath"),
-                    x => x.location.FilePath,
+                    InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ParseName("System.IO.Path"), IdentifierName("GetFileName")))
+                       .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("filePath"))))),
+                    x => x.location.FileName,
                     generateFilePathSwitchStatement,
                     value => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(value))
                 )
@@ -25,7 +26,7 @@ internal static class SwitchGenerator
                     CaseSwitchLabel(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(lineGrouping.Key)))
                        .WithKeyword(
                             Token(
-                                TriviaList(Comment($"// FilePath: {location.FilePath} Member: {location.MemberName}")),
+                                TriviaList(Comment($"// FilePath: {location.FilePath} Expression: {location.ExpressionHash}")),
                                 SyntaxKind.CaseKeyword,
                                 TriviaList()
                             )
@@ -40,7 +41,7 @@ internal static class SwitchGenerator
 
     private static SwitchSectionSyntax createNestedSwitchSections<T>(
         IReadOnlyList<(SourceLocation location, BlockSyntax block)> blocks,
-        NameSyntax identifier,
+        ExpressionSyntax identifier,
         Func<(SourceLocation location, BlockSyntax block), T> regroup,
         Func<IGrouping<T, (SourceLocation location, BlockSyntax block)>, SwitchSectionSyntax> next,
         Func<T, LiteralExpressionSyntax> literalFactory
@@ -55,18 +56,19 @@ internal static class SwitchGenerator
         foreach (var item in blocks.GroupBy(regroup))
         {
             var location = item.First().location;
-            section = section.AddSections(
-                next(item)
-                   .AddLabels(
-                        CaseSwitchLabel(literalFactory(item.Key))
-                           .WithKeyword(
-                                Token(
-                                    TriviaList(Comment($"// FilePath: {location.FilePath} Member: {location.MemberName}")),
-                                    SyntaxKind.CaseKeyword,
-                                    TriviaList()
-                                )
+            var newSection = next(item)
+               .AddLabels(
+                    CaseSwitchLabel(literalFactory(item.Key))
+                       .WithKeyword(
+                            Token(
+                                TriviaList(Comment($"// FilePath: {location.FilePath} Expression: {location.ExpressionHash}")),
+                                SyntaxKind.CaseKeyword,
+                                TriviaList()
                             )
-                    )
+                        )
+                );
+            section = section.AddSections(
+                newSection
             );
         }
 
@@ -76,10 +78,17 @@ internal static class SwitchGenerator
     private static SwitchSectionSyntax generateFilePathSwitchStatement(IGrouping<string, (SourceLocation location, BlockSyntax block)> innerGroup)
     {
         return createNestedSwitchSections(
-            innerGroup.ToArray(),
-            IdentifierName("memberName"),
-            x => x.location.MemberName,
-            generateMemberNameSwitchStatement,
+            innerGroup.GroupBy(z => z.location.ExpressionHash).Select(z => z.First()).ToArray(),
+            InvocationExpression(
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        IdentifierName("IAssemblyProvider"),
+                        IdentifierName("GetArgumentExpressionHash")
+                    )
+                )
+               .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("argumentExpression"))))),
+            x => x.location.ExpressionHash,
+            generateExpressionHashSwitchStatement,
             value =>
                 LiteralExpression(
                     SyntaxKind.StringLiteralExpression,
@@ -88,25 +97,9 @@ internal static class SwitchGenerator
         );
     }
 
-    private static SwitchSectionSyntax generateMemberNameSwitchStatement(IGrouping<string, (SourceLocation location, BlockSyntax block)> innerGroup)
+    private static SwitchSectionSyntax generateExpressionHashSwitchStatement(IGrouping<string, (SourceLocation location, BlockSyntax block)> innerGroup)
     {
-        var location = innerGroup.First().location;
         return SwitchSection()
-              .AddLabels(
-                   CaseSwitchLabel(
-                           LiteralExpression(
-                               SyntaxKind.StringLiteralExpression,
-                               Literal(innerGroup.Key)
-                           )
-                       )
-                      .WithKeyword(
-                           Token(
-                               TriviaList(Comment($"// FilePath: {location.FilePath} Member: {location.MemberName}")),
-                               SyntaxKind.CaseKeyword,
-                               TriviaList()
-                           )
-                       )
-               )
               .AddStatements(innerGroup.FirstOrDefault().block?.Statements.ToArray() ?? Array.Empty<StatementSyntax>())
               .AddStatements(BreakStatement());
     }

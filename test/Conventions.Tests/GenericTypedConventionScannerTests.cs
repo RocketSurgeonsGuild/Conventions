@@ -43,7 +43,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
 
         A
             // ReSharper disable ExplicitCallerInfoArgument
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
             // ReSharper restore ExplicitCallerInfoArgument
            .Returns(Array.Empty<Assembly>());
 
@@ -69,7 +69,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
 
         // ReSharper disable ExplicitCallerInfoArgument
         A
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
             // ReSharper restore ExplicitCallerInfoArgument
            .Returns(Array.Empty<Assembly>());
 
@@ -95,7 +95,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
 
         A
             // ReSharper disable ExplicitCallerInfoArgument
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
             // ReSharper restore ExplicitCallerInfoArgument
            .Returns(
                 new[]
@@ -132,7 +132,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
 
         A
             // ReSharper disable ExplicitCallerInfoArgument
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
             // ReSharper restore ExplicitCallerInfoArgument
            .Returns(
                 new[]
@@ -164,7 +164,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
 
         A
             // ReSharper disable ExplicitCallerInfoArgument
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
             // ReSharper restore ExplicitCallerInfoArgument
            .Returns(
                 new[]
@@ -201,7 +201,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
 
         A
             // ReSharper disable ExplicitCallerInfoArgument
-           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<string>._, A<string>._, A<int>._))
+           .CallTo(() => finder.GetAssemblies(A<Action<IAssemblyProviderAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
             // ReSharper restore ExplicitCallerInfoArgument
            .Returns(
                 new[]

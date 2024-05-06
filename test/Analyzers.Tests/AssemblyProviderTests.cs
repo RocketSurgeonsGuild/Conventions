@@ -116,9 +116,7 @@ public class TestConvention : IServiceAsyncConvention {
         return Task.CompletedTask;
     }
 }
-"
-                           )
-                          .AddSources(
+",
                                @"
 using Rocket.Surgery.Conventions;
 
@@ -126,6 +124,32 @@ public class TestConvention2 : IServiceAsyncConvention {
     public ValueTask Register(IConventionContext context, IServiceCollection services, CancellationToken cancellationToken)
     {
             var assemblies = context.AssemblyProvider.GetAssemblies(z => z.FromAssemblies());
+        return Task.CompletedTask;
+    }
+}
+"
+                           )
+                          .AddSource("Folder/Input0.cs",
+                               @"
+using Rocket.Surgery.Conventions;
+
+public class TestConvention3 : IServiceAsyncConvention {
+    public ValueTask Register(IConventionContext context, IServiceCollection services, CancellationToken cancellationToken)
+    {
+            var assemblies = context.AssemblyProvider.GetAssemblies(z => z.FromAssemblies());
+        return Task.CompletedTask;
+    }
+}
+"
+                           )
+                          .AddSource("Folder/Input1.cs",
+                               @"
+using Rocket.Surgery.Conventions;
+
+public class TestConvention3 : IServiceAsyncConvention {
+    public ValueTask Register(IConventionContext context, IServiceCollection services, CancellationToken cancellationToken)
+    {
+            var assemblies = context.AssemblyProvider.GetAssemblies(z => z.FromAssembly());
         return Task.CompletedTask;
     }
 }

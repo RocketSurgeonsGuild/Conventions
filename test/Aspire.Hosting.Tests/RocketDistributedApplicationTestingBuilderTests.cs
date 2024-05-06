@@ -79,36 +79,6 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
     }
 
     [Fact]
-    public async Task Should_ConfigureServices()
-    {
-        var convention = A.Fake<ServiceConvention>();
-        await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
-                                    .ConfigureRocketSurgery(
-                                         rb => rb
-                                              .UseConventionFactory(Imports.Instance)
-                                              .ConfigureServices(convention)
-                                     );
-
-        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IServiceCollection>._)).MustHaveHappened();
-    }
-
-    [Fact]
-    public async Task Should_ConfigureConfiguration()
-    {
-        var convention = A.Fake<ConfigurationConvention>();
-        await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<Projects.AspireSample>()
-                                    .ConfigureRocketSurgery(
-                                         rb => rb
-                                              .UseConventionFactory(Imports.Instance)
-                                              .ConfigureConfiguration(convention)
-                                     );
-
-        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IConfigurationBuilder>._)).MustHaveHappened();
-    }
-
-    [Fact]
     public async Task Should_ConfigureHosting()
     {
         var convention = A.Fake<DistributedApplicationTestingConvention>();

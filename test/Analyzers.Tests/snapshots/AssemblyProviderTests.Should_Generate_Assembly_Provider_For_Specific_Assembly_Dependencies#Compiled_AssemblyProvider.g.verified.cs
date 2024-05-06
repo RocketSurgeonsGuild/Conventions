@@ -19,11 +19,11 @@ namespace TestProject.Conventions
         [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private class AssemblyProvider() : IAssemblyProvider
         {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
+            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
             {
                 switch (lineNumber)
                 {
-                    // FilePath: Input0.cs Member: Register
+                    // FilePath: Input0.cs Expression: 5tg6hWgrFiHDCBWi6s+JGA==
                     case 7:
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContext).Assembly;
                         yield return typeof(global::Dep1.Dep1Exports).Assembly;
@@ -31,7 +31,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Dep2Exports).Assembly;
                         yield return typeof(global::TestConvention).Assembly;
                         break;
-                    // FilePath: Input0.cs Member: Register
+                    // FilePath: Input0.cs Expression: o/2suEaSvYkjJbC/dFs/KA==
                     case 8:
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContext).Assembly;
                         yield return typeof(global::Dep1.Dep1Exports).Assembly;
@@ -42,7 +42,7 @@ namespace TestProject.Conventions
                 }
             }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
+            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
             {
                 yield break;
             }

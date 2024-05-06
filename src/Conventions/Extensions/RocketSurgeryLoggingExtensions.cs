@@ -31,7 +31,7 @@ public static class RocketSurgeryLoggingExtensions
             context.Logger.LogWarning("Configuration was not found in context");
         }
 
-        loggingBuilder.AddConfiguration(configuration.GetSection("Logging"));
+        loggingBuilder.AddConfiguration(configuration.GetSection(nameof(Logging)));
         var logLevel = context.GetOrAdd(() => new RocketLoggingOptions()).GetLogLevel(configuration);
         if (logLevel.HasValue) loggingBuilder.SetMinimumLevel(logLevel.Value);
 

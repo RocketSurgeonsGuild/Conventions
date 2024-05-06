@@ -119,7 +119,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
     [Fact]
     public async Task Should_ConfigureHosting()
     {
-        var convention = A.Fake<HostApplicationConvention>();
+        var convention = A.Fake<HostApplicationConvention<IHostApplicationBuilder>>();
         using var host = await Host
                               .CreateApplicationBuilder()
                               .ConfigureRocketSurgery(
@@ -128,6 +128,20 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
                                );
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
+    }
+
+    [Fact]
+    public async Task Should_ConfigureHosting_HostApplication()
+    {
+        var convention = A.Fake<HostApplicationConvention<HostApplicationBuilder>>();
+        using var host = await Host
+                              .CreateApplicationBuilder()
+                              .ConfigureRocketSurgery(
+                                   rb => rb.UseConventionFactory(Imports.Instance)
+                                           .ConfigureApplication(convention)
+                               );
+
+        A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<HostApplicationBuilder>._)).MustHaveHappened();
     }
 
     [Fact]

@@ -9,7 +9,8 @@ namespace Rocket.Surgery.Hosting;
 /// </summary>
 /// <seealso cref="IConvention" />
 [PublicAPI]
-public interface IHostApplicationAsyncConvention : IConvention
+public interface IHostApplicationAsyncConvention<in TBuilder> : IConvention
+    where TBuilder : IHostApplicationBuilder
 {
     /// <summary>
     ///     Register an event to happen when a host application is being configured
@@ -17,5 +18,5 @@ public interface IHostApplicationAsyncConvention : IConvention
     /// <param name="context">The context.</param>
     /// <param name="builder"></param>
     /// <param name="cancellationToken"></param>
-    ValueTask Register(IConventionContext context, IHostApplicationBuilder builder, CancellationToken cancellationToken);
+    ValueTask Register(IConventionContext context, TBuilder builder, CancellationToken cancellationToken);
 }
