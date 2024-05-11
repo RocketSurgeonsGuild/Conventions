@@ -65,7 +65,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="4.9.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.9.2" />
-    <PackageVersion Include="YamlDotNet" Version="15.1.2" />
+    <PackageVersion Include="YamlDotNet" Version="15.1.4" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.Azure.WebJobs" Version="3.0.39" />
