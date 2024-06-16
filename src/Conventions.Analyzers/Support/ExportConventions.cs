@@ -168,22 +168,7 @@ internal static class ExportConventions
                          }
                      )
                  )
-                .WithLeadingTrivia(
-                     TriviaList(
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CA1822")))
-                         ),
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8618")))
-                         ),
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8603")))
-                         )
-                     )
-                 )
+                .AddSharedTrivia()
                 .WithAttributeLists(data.Configuration.ToAttributes("Exports"))
                 .AddAttributeLists(
                      AttributeList(

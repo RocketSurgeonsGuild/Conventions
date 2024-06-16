@@ -1,7 +1,6 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Compiled_AssemblyProvider.g.cs
-#pragma warning disable CA1822
-#pragma warning disable CS8618
-#pragma warning disable CS8603
+#nullable enable
+#pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8602, CS8603, CS8618
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -62,3 +61,5 @@ namespace TestProject.Conventions
         }
     }
 }
+#pragma warning restore CS0105, CA1002, CA1034, CA1822, CS8602, CS8603, CS8618
+#nullable restore

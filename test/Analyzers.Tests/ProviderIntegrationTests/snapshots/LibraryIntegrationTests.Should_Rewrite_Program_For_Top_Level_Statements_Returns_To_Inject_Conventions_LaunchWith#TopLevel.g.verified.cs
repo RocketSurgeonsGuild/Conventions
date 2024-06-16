@@ -15,3 +15,8 @@ public partial class TopLevelProgram
         await host.RunAsync();
     }
 }
+#nullable enable
+#pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8602, CS8603, CS8618
+
+#pragma warning restore CS0105, CA1002, CA1034, CA1822, CS8602, CS8603, CS8618
+#nullable restore

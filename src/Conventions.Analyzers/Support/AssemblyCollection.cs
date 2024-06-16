@@ -60,22 +60,7 @@ internal static class AssemblyCollection
                     )
                    .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.MsBuildConfig.isTestProject), assemblyProvider);
             cu = cu
-                .WithLeadingTrivia(
-                     TriviaList(
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CA1822")))
-                         ),
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8618")))
-                         ),
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8603")))
-                         )
-                     )
-                 )
+                .AddSharedTrivia()
                 .AddMembers(
                      request.ImportConfiguration is { Namespace: { Length: > 0, } relativeNamespace, }
                          ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)

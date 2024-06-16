@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -51,6 +52,27 @@ internal static class Helpers
             namedTypeSymbol = namedTypeSymbol.BaseType;
         }
     }
+
+    public static CompilationUnitSyntax AddSharedTrivia(this CompilationUnitSyntax source)
+    {
+        return source
+              .WithLeadingTrivia(
+                   Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)),
+                   Trivia(
+                       PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
+                          .WithErrorCodes(SeparatedList(List(DisabledWarnings.Value)))
+                   )
+               )
+              .WithTrailingTrivia(
+                   Trivia(
+                       PragmaWarningDirectiveTrivia(Token(SyntaxKind.RestoreKeyword), true)
+                          .WithErrorCodes(SeparatedList(List(DisabledWarnings.Value)))
+                   ),
+                   Trivia(NullableDirectiveTrivia(Token(SyntaxKind.RestoreKeyword), true)),
+                   CarriageReturnLineFeed
+               );
+    }
+
 
     public static string GetGenericDisplayName(ISymbol? symbol)
     {
@@ -332,6 +354,24 @@ internal static class Helpers
             )
         );
     }
+
+
+    private static readonly string[] _disabledWarnings =
+    [
+        "CS0105",
+        "CA1002",
+        "CA1034",
+        "CA1822",
+        "CS8602",
+        "CS8603",
+        "CS8618",
+    ];
+
+    private static readonly Lazy<ImmutableArray<ExpressionSyntax>> DisabledWarnings = new(
+        () => _disabledWarnings
+             .Select(z => (ExpressionSyntax)IdentifierName(z))
+             .ToImmutableArray()
+    );
 
     private static readonly SyntaxToken XmlNewLine = XmlTextNewLine(TriviaList(), "\n", "\n", TriviaList());
 }
