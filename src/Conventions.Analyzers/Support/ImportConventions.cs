@@ -151,22 +151,7 @@ internal static class ImportConventions
 
         var cu = CompilationUnit()
                 .WithAttributeLists(request.ImportConfiguration.ToAttributes("Imports"))
-                .WithLeadingTrivia(
-                     TriviaList(
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CA1822")))
-                         ),
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8618")))
-                         ),
-                         Trivia(
-                             PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)
-                                .WithErrorCodes(SingletonSeparatedList<ExpressionSyntax>(IdentifierName("CS8603")))
-                         )
-                     )
-                 )
+                .AddSharedTrivia()
                 .WithUsings(
                      List(
                          new[]
@@ -342,10 +327,8 @@ internal static class ImportConventions
         }
     }
 
-
     private static readonly string _configurationMethods = """"
-        #pragma warning disable CS0105
-        #pragma warning disable CS8602
+        #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
         using System.Threading.Tasks;
         using Microsoft.Extensions.Configuration;
         using Microsoft.Extensions.DependencyInjection;
@@ -812,6 +795,7 @@ internal static class ImportConventions
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ConventionContextBuilder contextBuilder, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
         }
         """";
+
 
     public record Request
     (

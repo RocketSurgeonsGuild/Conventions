@@ -460,17 +460,18 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
 
                 var cu = CompilationUnit()
-                   .AddUsings(
-                        compilation
-                           .Usings.AddRange(
-                                [
-                                    UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                                    UsingDirective(ParseName("System.Threading")),
-                                    UsingDirective(ParseName("System.Threading.Tasks")),
-                                ]
-                            )
-                           .ToArray()
-                    );
+                        .AddSharedTrivia()
+                        .AddUsings(
+                             compilation
+                                .Usings.AddRange(
+                                     [
+                                         UsingDirective(ParseName("Rocket.Surgery.Conventions")),
+                                         UsingDirective(ParseName("System.Threading")),
+                                         UsingDirective(ParseName("System.Threading.Tasks")),
+                                     ]
+                                 )
+                                .ToArray()
+                         );
                 if (importConfiguration is { Namespace.Length: > 0, })
                 {
                     cu = cu.AddMembers(FileScopedNamespaceDeclaration(ParseName(importConfiguration.Namespace)));
