@@ -1,0 +1,638 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class ReadOnlyServiceProviderDictionary </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class ReadOnlyServiceProviderDictionary ">
+    <meta name="generator" content="docfx ">
+  
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  
+  
+  
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary">
+
+
+
+  <h1 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary" class="text-break">Class ReadOnlyServiceProviderDictionary</h1>
+  <div class="markdown level0 summary"><p>ServiceProviderDictionary.
+Implements the <a class="xref" href="Rocket.Surgery.Conventions.IServiceProviderDictionary.html">IServiceProviderDictionary</a></p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ReadOnlyServiceProviderDictionary</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Rocket.Surgery.Conventions.IReadOnlyServiceProviderDictionary.html">IReadOnlyServiceProviderDictionary</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Rocket.html">Rocket</a>.<a class="xref" href="Rocket.Surgery.html">Surgery</a>.<a class="xref" href="Rocket.Surgery.Conventions.html">Conventions</a></h6>
+  <h6><strong>Assembly</strong>: Rocket.Surgery.Conventions.Abstractions.dll</h6>
+  <h5 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ReadOnlyServiceProviderDictionary : IReadOnlyServiceProviderDictionary, IReadOnlyDictionary&lt;object, object&gt;, IReadOnlyCollection&lt;KeyValuePair&lt;object, object&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;object, object&gt;&gt;, IEnumerable, IServiceProvider</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary__ctor.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.%23ctor%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L32">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary__ctor_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.#ctor*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary__ctor" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.#ctor">ReadOnlyServiceProviderDictionary()</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Rocket.Surgery.Conventions.ServiceProviderDictionary.html">ServiceProviderDictionary</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ReadOnlyServiceProviderDictionary()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary__ctor_System_Collections_Generic_IDictionary_System_Object_System_Object__.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.%23ctor(System.Collections.Generic.IDictionary%7BSystem.Object%2CSystem.Object%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L24">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary__ctor_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.#ctor*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary__ctor_System_Collections_Generic_IDictionary_System_Object_System_Object__" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.#ctor(System.Collections.Generic.IDictionary{System.Object,System.Object})">ReadOnlyServiceProviderDictionary(IDictionary&lt;object, object&gt;?)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Rocket.Surgery.Conventions.ServiceProviderDictionary.html">ServiceProviderDictionary</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ReadOnlyServiceProviderDictionary(IDictionary&lt;object, object&gt;? values)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</td>
+        <td><span class="parametername">values</span></td>
+        <td><p>The values.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Count.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Count%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L49">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Count_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Count*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Count" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Count">Count</h4>
+  <div class="markdown level1 summary"><p>Gets the number of elements in the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+        <td><p>The number of elements in the collection.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Item_System_Object_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Item(System.Object)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L65">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Item_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Item*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Item_System_Object_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Item(System.Object)">this[object]</h4>
+  <div class="markdown level1 summary"><p>Gets the element that has the specified key in the read-only dictionary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object this[object key] { get; }</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></td>
+        <td><span class="parametername">key</span></td>
+        <td><p>The key to locate.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></td>
+        <td><p>The element that has the specified key in the read-only dictionary.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+        <td><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></td>
+        <td><p>The property is retrieved and <code class="paramref">key</code> is not found.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Keys.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Keys%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L68">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Keys_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Keys*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Keys" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Keys">Keys</h4>
+  <div class="markdown level1 summary"><p>Gets an enumerable collection that contains the keys in the read-only dictionary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;object&gt; Keys { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</td>
+        <td><p>An enumerable collection that contains the keys in the read-only dictionary.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Values.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Values%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L71">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Values_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Values*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_Values" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.Values">Values</h4>
+  <div class="markdown level1 summary"><p>Gets an enumerable collection that contains the values in the read-only dictionary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;object&gt; Values { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</td>
+        <td><p>An enumerable collection that contains the values in the read-only dictionary.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_ContainsKey_System_Object_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.ContainsKey(System.Object)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L52">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_ContainsKey_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.ContainsKey*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_ContainsKey_System_Object_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.ContainsKey(System.Object)">ContainsKey(object)</h4>
+  <div class="markdown level1 summary"><p>Determines whether the read-only dictionary contains an element that has the specified key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsKey(object key)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></td>
+        <td><span class="parametername">key</span></td>
+        <td><p>The key to locate.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the read-only dictionary contains an element that has the specified key; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+        <td><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_GetEnumerator.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.GetEnumerator%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L38">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_GetEnumerator_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.GetEnumerator*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_GetEnumerator" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.GetEnumerator">GetEnumerator()</h4>
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;KeyValuePair&lt;object, object&gt;&gt; GetEnumerator()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;&gt;</td>
+        <td><p>An enumerator that can be used to iterate through the collection.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_GetService_System_Type_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.GetService(System.Type)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L78">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_GetService_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.GetService*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_GetService_System_Type_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.GetService(System.Type)">GetService(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets the service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object? GetService(Type serviceType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">serviceType</span></td>
+        <td><p>Type of the service.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></td>
+        <td><p>System.Object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_TryGetValue_System_Object_System_Object__.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.TryGetValue(System.Object%2CSystem.Object%40)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L58">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_TryGetValue_" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.TryGetValue*"></a>
+  <h4 id="Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary_TryGetValue_System_Object_System_Object__" data-uid="Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.TryGetValue(System.Object,System.Object@)">TryGetValue(object, out object)</h4>
+  <div class="markdown level1 summary"><p>Gets the value that is associated with the specified key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetValue(object key, out object value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></td>
+        <td><span class="parametername">key</span></td>
+        <td><p>The key to locate.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <code class="paramref">value</code> parameter. This parameter is passed uninitialized.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the object that implements the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary&lt;TKey, TValue&gt;</a> interface contains an element that has the specified key; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+        <td><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="Rocket.Surgery.Conventions.IReadOnlyServiceProviderDictionary.html">IReadOnlyServiceProviderDictionary</a>
+  </div>
+  <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary&lt;TKey, TValue&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a>
+  </div>
+  <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Rocket.Surgery.Conventions.ServiceProviderDictionaryExtensions.html#Rocket_Surgery_Conventions_ServiceProviderDictionaryExtensions_Get__1_Rocket_Surgery_Conventions_IReadOnlyServiceProviderDictionary_">ServiceProviderDictionaryExtensions.Get&lt;T&gt;(IReadOnlyServiceProviderDictionary)</a>
+  </div>
+  <div>
+      <a class="xref" href="Rocket.Surgery.Conventions.ServiceProviderDictionaryExtensions.html#Rocket_Surgery_Conventions_ServiceProviderDictionaryExtensions_Get__1_Rocket_Surgery_Conventions_IReadOnlyServiceProviderDictionary_System_String_">ServiceProviderDictionaryExtensions.Get&lt;T&gt;(IReadOnlyServiceProviderDictionary, string)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Rocket.Surgery.Conventions.IServiceProviderDictionary.html">IServiceProviderDictionary</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_ReadOnlyServiceProviderDictionary.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Edit this page</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/ReadOnlyServiceProviderDictionary.cs/#L15" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

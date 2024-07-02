@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>What are Conventions? </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="What are Conventions? ">
+    <meta name="generator" content="docfx ">
+  
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  
+  
+  
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="what-are-conventions">What are Conventions?</h1>
+
+<p>The goal of Conventions is to be a simple way to bridge the gap between Configuration driven development and Convention driven development.
+In an ASP.NET Core application it is &quot;pay-for-play&quot; in that you must register all your configurations, services, etc. This is great but it
+also forces you into cases where if you forget to call an extension method nothing lights up like you expected. Another draw back of using
+extension methods is that any dependencies you need, to configure services for example, must be included in the method call.</p>
+<p>One thing to keep in mind is that ASP.NET Core just got rid of the <a href="https://github.com/aspnet/Announcements/issues/353">double container</a>
+problem, we are not introducing a second container, instead we just implement <code>IServiceProvider</code> using the same <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihostbuilder.properties">dictionary that is provided
+by <code>IHostBuilder.Properties</code></a>. Any services
+that you inject into your conventions must exist inside of this dictionary, or be optional.</p>
+<p>At a high level Conventions this problem in a very similar way to something like <a href="https://autofaccn.readthedocs.io/en/latest/configuration/modules.html">Autofac Modules</a>
+or other similar assembly scanning solutions. Our goal is to be agnostic at a high level, strictly speaking using MSDI/MSEL/MSC is not required however is currently
+assumed that .NET Platform Extensions are going to be used. In the future this might be broken out.</p>
+<h2 id="why-use-conventions">Why use Conventions?</h2>
+<p>You have to make a choice with every library you introduce, and using Conventions is no different. If it's not for you, that's okay! Here are some possible reasons why and why not to use Conventions.</p>
+<h3 id="reasons-to-use">Reasons to use?</h3>
+<ul>
+<li>You can create library code that &quot;just works&quot; without having to ensure that the correct extension method was called, with the corret parameters, for every library you add.</li>
+<li>You can worry about service registration in each convention class isolated from the rest of your application.</li>
+<li>You can can group bootstrapping logic together to lessen cognitive load.</li>
+</ul>
+<h3 id="reasons-not-to-use">Reasons not to use?</h3>
+<p>Everything has it's positives and negatives. We cannot lie using conventions will add time to starting up your application. There is a trade off to be made here
+and optimizations that can be made to lessen that trade-off.</p>
+<p>Fundamentally if you're making a highly focused, and specialized microservice then using Conventions may not be for you. You will own the burden
+to ensuring that configuration is done the same, extension methods are called, and everything else. It is called &quot;pay-to-play&quot; after all.</p>
+<h4 id="note-on-performance">Note on performance</h4>
+<p>A quick note on performance. We are now using Source Generators to generate export methods, that return all conventions for a given assembly. This allows convention
+loading to have similar performance characteristics to pure extension methods, it's still slower but reduces the need to assembly scan.</p>
+<p>The <a class="xref" href="../api/Rocket.Surgery.Conventions.IAssemblyProvider.html">IAssemblyProvider</a> is now generated by source generator at compile time, further reducing the need to assembly scan at runtime.</p>
+<h1 id="what-is-a-convention">What is a Convention</h1>
+<p>A convention is nothing but a class that implements the <a class="xref" href="../api/Rocket.Surgery.Conventions.IConvention.html">IConvention</a> interface. Nothing special.
+By itself <a class="xref" href="../api/Rocket.Surgery.Conventions.IConvention.html">IConvention</a> is just a marker interface used to identify a class that may implement one more conventions.</p>
+<p>Conventions are then interfaces that are implemented by the class some examples are:</p>
+<ul>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.Configuration.IConfigurationConvention.html">IConfigurationConvention</a></li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention.html">IServiceConvention</a></li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.Logging.ILoggingConvention.html">ILoggingConvention</a></li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.Setup.ISetupConvention.html">ISetupConvention</a></li>
+<li>&lt;xref:Rocket.Surgery.Hosting.IHostingConvention&gt;</li>
+</ul>
+<p>ad-hoc Conventions (or delegate Conventions) are a different kind of convention but written as a delegate, but they mirror the method given by the Convention interface.<br>
+These can be used to during program startup just like <code>ConfigureServices</code> are used today.</p>
+<p>Some examples are:</p>
+<ul>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.Configuration.ConfigurationConvention.html">ConfigurationConvention</a></li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention.html">ServiceConvention</a></li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.Logging.LoggingConvention.html">LoggingConvention</a></li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.Setup.SetupConvention.html">SetupConvention</a></li>
+<li>&lt;xref:Rocket.Surgery.Hosting.HostingConvention&gt;</li>
+</ul>
+<h2 id="exporting-a-convention">Exporting a Convention</h2>
+<p>A convention can be exported by using the <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionAttribute.html">ConventionAttribute</a> (eg. <code>[assembly: Convention(typeof(MyConvention))]</code>).<br>
+This is important you may want to make conventions are <strong>not</strong> enabled by default but are available to be loaded by users if they want to.</p>
+<p>The rules are straight forward.</p>
+<ul>
+<li>A public convention - Will not be loaded unless it is added to the <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html">ConventionContextBuilder</a>.</li>
+<li>A public exported convention - Will always be loaded unless excluded by assembly or type in the <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html">ConventionContextBuilder</a>.</li>
+<li>A private convention - Will never be loaded. ever.</li>
+<li>A private exported convention - Will always be loaded unless excluded by assembly in the <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html">ConventionContextBuilder</a>.</li>
+</ul>
+<h1 id="writing-your-own-custom-conventions">Writing your own custom conventions</h1>
+<p>Creating your own conventions is fairly easily, and can be done by using existing conventions or by executing it yourself.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>More information can be found <a href="../guides/custom-conventions.html">here</a></p>
+</div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/docs/concepts/introduction.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
