@@ -1,6 +1,6 @@
 ﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Exported_Conventions.g.cs
 #nullable enable
-#pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8602, CS8603, CS8618
+#pragma warning disable CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,5 +27,5 @@ namespace Source.Space
         }
     }
 }
-#pragma warning restore CS0105, CA1002, CA1034, CA1822, CS8602, CS8603, CS8618
+#pragma warning restore CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669
 #nullable restore
