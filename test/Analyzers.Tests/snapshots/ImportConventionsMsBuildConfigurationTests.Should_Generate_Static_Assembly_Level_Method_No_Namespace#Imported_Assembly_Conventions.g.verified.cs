@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 
 #nullable enable
-#pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8602, CS8603, CS8618
+#pragma warning disable CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.Namespace", "")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.ClassName", "MyImports")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Imports.MethodName", "Instance")]
@@ -31,5 +31,5 @@ internal sealed partial class MyImports : IConventionFactory
             yield return convention;
     }
 }
-#pragma warning restore CS0105, CA1002, CA1034, CA1822, CS8602, CS8603, CS8618
+#pragma warning restore CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669
 #nullable restore
