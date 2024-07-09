@@ -21,6 +21,27 @@ public static class ImportHelpers
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void SetExternalConfigureMethodWithLock(Func<ConventionContextBuilder, CancellationToken, ValueTask> configure, CancellationToken cancellationToken = default)
+    {
+//        _lock.Wait(cancellationToken);
+//        externalConfigureMethod = configure;
+        throw new NotImplementedException("Review later");
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static async ValueTask RunExternalConfigureMethod(ConventionContextBuilder builder, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (externalConfigureMethod is { }) await externalConfigureMethod(builder, cancellationToken);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static IConventionFactory? CallerConventions(Assembly callerAssembly)
     {
         return Assembly.GetEntryAssembly() is not { } entryAssembly || callerAssembly == entryAssembly || externalConventions == null
@@ -43,4 +64,6 @@ public static class ImportHelpers
     }
 
     private static IConventionFactory? externalConventions;
+    private static Func<ConventionContextBuilder, CancellationToken, ValueTask>? externalConfigureMethod;
+    private static readonly SemaphoreSlim _lock = new(1, 1);
 }

@@ -47,6 +47,8 @@ public static class RocketHostApplicationExtensions
         if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
         contextBuilder.Properties["__configured__"] = true;
 
+        await ImportHelpers.RunExternalConfigureMethod(contextBuilder, cancellationToken);
+
         contextBuilder
            .AddIfMissing(HostType.Live)
            .AddIfMissing(builder)
