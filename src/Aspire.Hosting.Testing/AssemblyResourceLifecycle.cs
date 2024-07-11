@@ -1,6 +1,8 @@
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
+using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Lifecycle;
 using Microsoft.AspNetCore.Hosting;
@@ -16,26 +18,11 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 
 namespace Rocket.Surgery.Aspire.Hosting.Testing;
 
-public class AssemblyResourceLifecycle : IDistributedApplicationLifecycleHook
+public class AssemblyResourceLifecycle(
+    DistributedApplicationExecutionContext executionContext,
+    ResourceLoggerService loggerService
+    ) : IDistributedApplicationLifecycleHook
 {
-    public Task BeforeStartAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken = new CancellationToken())
-    {
-        foreach (var assemblyResource in appModel.Resources.OfType<AssemblyResource>())
-        {
-            assemblyResource.Annotations.Add(
-                new EnvironmentCallbackAnnotation(
-                    async context =>
-                    {
-                        // work in real environment variables to this
-                        // work in real args to this
-                    }
-                )
-            );
-        }
-
-        return Task.CompletedTask;
-    }
-
     public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken = new CancellationToken())
     {
         foreach (var assemblyResource in appModel.Resources.OfType<AssemblyResource>())
@@ -44,59 +31,130 @@ public class AssemblyResourceLifecycle : IDistributedApplicationLifecycleHook
         }
     }
 
-    private async Task<IProgramFixture> StartAssemblyResource(DistributedApplicationModel appModel, AssemblyResource assemblyResource, CancellationToken cancellationToken)
+    private async Task<IProgramFixture> StartAssemblyResource(
+        DistributedApplicationModel appModel,
+        AssemblyResource assemblyResource,
+        CancellationToken cancellationToken
+    )
     {
         var args = new List<string>();
         var urls = new List<string>();
+        var environmentVariables = new Dictionary<string, string>();
+
         if (assemblyResource.TryGetEndpoints(out var endpoints))
         {
             urls.AddRange(
                 endpoints
                    .Where(e => e.Port.HasValue)
+                   .OrderBy(z => z.UriScheme == "https")
                    .Select(e => $"{e.UriScheme}://localhost:{e.Port}")
             );
             args.Add($"--urls={string.Join(";", urls)}");
         }
 
-        var loggerFactory = new AppFixtureLoggerFactory();
-        var hostTcs = new TaskCompletionSource<IHost>();
-
-        // This will wait until the semaphore is released in many tests are happening in parallel
-        ImportHelpers.SetExternalConfigureMethodWithLock(
-            (builder, ct) =>
+        if (assemblyResource.TryGetAnnotationsOfType<CommandLineArgsCallbackAnnotation>(out var commandLineArgsCallbackAnnotations))
+        {
+            var context = new CommandLineArgsCallbackContext(new List<object>(), cancellationToken);
+            foreach (var annotation in commandLineArgsCallbackAnnotations)
             {
-                builder.Set(HostType.UnitTest);
-                builder.PrependConvention(
-                    new ProgramInstanceConvention(assemblyResource.Project.GetProjectMetadata().ProjectPath, loggerFactory, new(urls.First()))
-                );
-                builder.Set<ILoggerFactory>(loggerFactory);
-                builder.ConfigureServices(s => s.AddHostedService<HostedStartedService>(provider => new(provider.GetRequiredService<IHost>(), hostTcs)));
+                await annotation.Callback(context);
+            }
 
-                foreach (var ext in assemblyResource.Extensions)
+            foreach (var arg in context.Args)
+            {
+                var value = arg switch
+                            {
+                                string s                     => s,
+                                IValueProvider valueProvider => await GetValue(valueProvider, cancellationToken).ConfigureAwait(false),
+                                null                         => null,
+                                _                            => throw new InvalidOperationException($"Unexpected value for arg \"{arg}\"."),
+                            };
+
+                if (value is { }) args.Add(value);
+            }
+        }
+
+        if (assemblyResource.TryGetEnvironmentVariables(out var environmentCallbackAnnotations))
+        {
+            var context = new EnvironmentCallbackContext(executionContext, new());
+            foreach (var annotation in environmentCallbackAnnotations)
+            {
+                await annotation.Callback(context);
+            }
+
+            foreach (var kvp in context.EnvironmentVariables)
+            {
+                if (kvp.Key == "ASPNETCORE_URLS") continue;
+                if (kvp.Key == "OTEL_RESOURCE_ATTRIBUTES")
                 {
-                    builder.AppendConvention(ext);
+                    environmentVariables.Add(kvp.Key, $"service.instance.id={Guid.NewGuid():N}");
+                    continue;
                 }
 
-                return assemblyResource.Configure(builder, ct);
-            },
-            cancellationToken
-        );
+                if (kvp.Key == "OTEL_SERVICE_NAME")
+                {
+                    environmentVariables.Add(kvp.Key, assemblyResource.Name);
+                    continue;
+                }
 
-        Task runAction()
-        {
-            return assemblyResource.EntryPoint.Invoke(null, [args]) switch
-                   {
-                       Task<int> t      => t,
-                       Task t           => t,
-                       ValueTask<int> t => t.AsTask(),
-                       ValueTask t      => t.AsTask(),
-                       { } v            => throw new NotSupportedException($"The following return type is not supported {v.GetType().FullName}"),
-                       _                => throw new NotSupportedException("Null returned :("),
-                   };
+                var value = kvp.Value switch
+                            {
+                                string s => s,
+                                IValueProvider valueProvider => await GetValue(valueProvider, cancellationToken).ConfigureAwait(false),
+                                null => null,
+                                _ => throw new InvalidOperationException($"Unexpected value for environment variable \"{kvp.Key}\"."),
+                            };
+
+                if (value is { }) environmentVariables.Add(kvp.Key, value);
+            }
         }
+
+        var loggerFactory = new LoggerFactory();
+        var logger = loggerService.GetLogger(assemblyResource);
+        loggerFactory.AddProvider(new AspireLoggerProvider(logger));
+
+        var hostTcs = new TaskCompletionSource<IHost>();
 
         try
         {
+            // This will wait until the semaphore is released in many tests are happening in parallel
+            using var disposable = ImportHelpers.SetExternalConfigureMethodWithLock(
+                (builder, ct) =>
+                {
+                    builder.Set(HostType.UnitTest);
+                    builder.PrependConvention(
+                        new ProgramInstanceConvention(
+                            assemblyResource.Project.GetProjectMetadata(),
+                            loggerFactory,
+                            environmentVariables.ToFrozenDictionary()
+                        )
+                    );
+                    builder.Set<ILoggerFactory>(loggerFactory);
+                    builder.ConfigureServices(s => s.AddHostedService<HostedStartedService>(provider => new(provider.GetRequiredService<IHost>(), hostTcs)));
+
+                    foreach (var ext in assemblyResource.Extensions)
+                    {
+                        builder.AppendConvention(ext);
+                    }
+
+                    return assemblyResource.Configure(builder, ct);
+                },
+                cancellationToken
+            );
+
+            Task runAction()
+            {
+                return assemblyResource.EntryPoint.Invoke(null, [args.ToArray()]) switch
+                       {
+                           Task<int> t      => t,
+                           Task t           => t,
+                           ValueTask<int> t => t.AsTask(),
+                           ValueTask t      => t.AsTask(),
+                           { } v            => throw new NotSupportedException($"The following return type is not supported {v.GetType().FullName}"),
+                           _                => throw new NotSupportedException("Null returned :("),
+                       };
+            }
+
             _ = Task.Run(
                 async () =>
                 {
@@ -134,6 +192,10 @@ public class AssemblyResourceLifecycle : IDistributedApplicationLifecycleHook
         return program;
     }
 
+    private static async Task<string?> GetValue(IValueProvider valueProvider, CancellationToken cancellationToken)
+    {
+        return await valueProvider.GetValueAsync(cancellationToken).ConfigureAwait(false);
+    }
 
     private static TimeSpan SetupDefaultTimeout()
     {
@@ -201,7 +263,7 @@ file class ProgramInstance : IProgramFixture, IAsyncDisposable
 
     public IHost Host { get; }
 
-    public Uri BaseAddress => new($"http://localhost:{_urls.First()}/");
+    public Uri BaseAddress => new(_urls.First());
     public IServiceProvider Services => Host.Services;
 
     public async Task Reset()
@@ -310,18 +372,19 @@ file class DeferredLogger(string categoryName) : ILogger
 
 class ProgramInstanceConvention
 (
-    string projectPath,
+    IProjectMetadata projectMetadata,
     ILoggerFactory loggerFactory,
-    Uri baseAddress
+    FrozenDictionary<string, string> environmentVariables
 ) : IServiceConvention, IConfigurationConvention
 {
     public void Register(IConventionContext context, IConfiguration configuration, IConfigurationBuilder builder)
     {
-        var wwwRoot = Path.Combine(projectPath, "wwwroot");
+        var projectDirectory = Path.GetDirectoryName(projectMetadata.ProjectPath);
+        var wwwRoot = Path.Combine(projectDirectory, "wwwroot");
         if (context.Get<IHostEnvironment>() is { } hostEnvironment)
         {
-            hostEnvironment.ContentRootPath = projectPath;
-            hostEnvironment.ContentRootFileProvider = new PhysicalFileProvider(projectPath);
+            hostEnvironment.ContentRootPath = projectDirectory;
+            hostEnvironment.ContentRootFileProvider = new PhysicalFileProvider(projectDirectory);
             if (hostEnvironment is IWebHostEnvironment webEnvironment)
             {
                 webEnvironment.WebRootPath = wwwRoot;
@@ -332,29 +395,35 @@ class ProgramInstanceConvention
         builder
            .AddInMemoryCollection(
                 [
-                    new(HostDefaults.ContentRootKey, projectPath),
+                    new(HostDefaults.ContentRootKey, projectDirectory),
                     new(WebHostDefaults.WebRootKey, wwwRoot),
                 ]
             )
-           .SetBasePath(projectPath);
+           .SetBasePath(projectDirectory);
+
+        builder.AddInMemoryCollection(environmentVariables.Select(z => new KeyValuePair<string, string?>(z.Key.Replace("__", ":"), z.Value)));
     }
 
     void IServiceConvention.Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
     {
         services.AddSingleton(loggerFactory);
-        services.AddHttpClient(
-            "Internal",
-            c =>
-            {
-                c.BaseAddress = baseAddress;
-                c.Timeout = Debugger.IsAttached ? TimeSpan.FromMinutes(5) : TimeSpan.FromSeconds(30);
-            }
-        );
         services.AddHttpLogging(options => options.LoggingFields = HttpLoggingFields.All);
         services.AddW3CLogging(options => options.LoggingFields = W3CLoggingFields.All);
     }
 }
 
+file class AspireLoggerProvider(ILogger logger) : ILoggerProvider
+{
+    public void Dispose()
+    {
+
+    }
+
+    public ILogger CreateLogger(string categoryName)
+    {
+        return logger;
+    }
+}
 
 file class HostedStartedService(IHost host, TaskCompletionSource<IHost> tcs) : IHostedLifecycleService
 {

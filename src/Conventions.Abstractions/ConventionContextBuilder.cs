@@ -38,6 +38,8 @@ public class ConventionContextBuilder
     public ConventionContextBuilder(PropertiesType? properties)
     {
         Properties = new ServiceProviderDictionary(properties ?? new PropertiesDictionary());
+        // Should we do configuration?
+        if (Enum.TryParse<HostType>(Environment.GetEnvironmentVariable("ROCKETSURGERYCONVENTIONS__HOSTTYPE"), out var hostType)) Properties[typeof(HostType)] = hostType;
     }
 
     /// <summary>

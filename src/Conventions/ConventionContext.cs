@@ -20,6 +20,8 @@ public sealed class ConventionContext : IConventionContext
     /// <returns></returns>
     public static async ValueTask<IConventionContext> FromAsync(ConventionContextBuilder builder, CancellationToken cancellationToken = default)
     {
+        builder.AddIfMissing(HostType.Live);
+        await ImportHelpers.RunExternalConfigureMethod(builder, cancellationToken);
         var context = FromInitInternal(builder);
         if (context.Properties.ContainsKey(ConventionsSetup)) return context;
 

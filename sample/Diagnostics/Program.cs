@@ -42,20 +42,18 @@ internal class Convention : ICommandLineConvention, IServiceConvention
 
 internal class MyCommand : AsyncCommand<AppSettings>
 {
-    private readonly IHostBuilder _hostBuilder;
+    private readonly IConfiguration _configuration;
     private readonly IAnsiConsole _console;
 
-    public MyCommand(IHostBuilder hostBuilder, IAnsiConsole console)
+    public MyCommand(IConfiguration configuration, IAnsiConsole console)
     {
-        _hostBuilder = hostBuilder;
+        _configuration = configuration;
         _console = console;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, AppSettings settings)
     {
-        using var host = _hostBuilder.Build();
-        await host.StartAsync();
-        if (host.Services.GetRequiredService<IConfiguration>() is IConfigurationRoot root) _console.WriteLine(root.GetDebugView());
+        if (_configuration is IConfigurationRoot root) _console.WriteLine(root.GetDebugView());
 
         return 0;
     }

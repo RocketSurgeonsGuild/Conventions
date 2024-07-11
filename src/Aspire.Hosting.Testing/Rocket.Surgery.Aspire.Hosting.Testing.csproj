@@ -18,5 +18,8 @@
     <ItemGroup>
         <InternalsVisibleTo Include="Aspire.Hosting.Tests" />
         <PackageReference Include="Aspire.Hosting.Testing" />
+        <PackageReference Include="System.Interactive" />
+        <PackageReference Include="System.Interactive.Async" />
+        <PackageReference Include="System.Reactive" />
     </ItemGroup>
 </Project>

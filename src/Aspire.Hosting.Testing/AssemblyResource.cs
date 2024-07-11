@@ -8,11 +8,11 @@ namespace Rocket.Surgery.Aspire.Hosting.Testing;
 
 public class AssemblyResource : Resource, IResourceWithEnvironment, IResourceWithArgs, IResourceWithServiceDiscovery
 {
-    public ProjectResource Project { get; }
-    public MethodInfo EntryPoint { get; }
-    public Func<ConventionContextBuilder, CancellationToken, ValueTask> Configure { get; }
+    internal ProjectResource Project { get; }
+    internal MethodInfo EntryPoint { get; }
+    internal Func<ConventionContextBuilder, CancellationToken, ValueTask> Configure { get; }
 
-    public Collection<ITestConvention> Extensions { get; } = new();
+    internal Collection<ITestConvention> Extensions { get; } = new();
 
     public AssemblyResource(
         ProjectResource project,
@@ -23,5 +23,6 @@ public class AssemblyResource : Resource, IResourceWithEnvironment, IResourceWit
         Project = project;
         EntryPoint = entryPoint;
         Configure = configure ?? ( (_, _) => ValueTask.CompletedTask );
+        foreach (var item in project.Annotations) Annotations.Add(item);
     }
 }
