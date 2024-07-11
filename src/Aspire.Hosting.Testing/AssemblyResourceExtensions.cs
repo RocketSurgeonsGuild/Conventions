@@ -99,17 +99,28 @@ public class AssemblyResourceViewModel : IResourceWithEnvironment, IResourceWith
     private readonly List<LogLine> _logLines = new();
     private readonly IDisposable _disposable;
 
-    public AssemblyResourceViewModel(AssemblyResource assemblyResource,
-        IObservable<LogLine> logs)
+    public AssemblyResourceViewModel(
+        AssemblyResource assemblyResource,
+        IObservable<LogLine> logs
+    )
     {
         _assemblyResource = assemblyResource;
         _logs = logs;
         _disposable = logs.Subscribe(z => _logLines.Add(z));
     }
 
+    public IReadOnlyList<LogLine> Logs => _logLines;
+
+    public IObservable<LogLine> ObserveLogs()
+    {
+        return _logs;
+    }
+
+    public void Dispose()
+    {
+        _disposable.Dispose();
+    }
+
     public string Name => _assemblyResource.Name;
     public ResourceAnnotationCollection Annotations => _assemblyResource.Annotations;
-    public IObservable<LogLine> ObserveLogs() => _logs;
-    public IReadOnlyList<LogLine> Logs => _logLines;
-    public void Dispose() => _disposable.Dispose();
 }

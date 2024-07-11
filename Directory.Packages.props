@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <ItemGroup>
     <PackageVersion Include="Aspirant.Hosting" Version="0.0.4" />
@@ -103,5 +103,8 @@
     <PackageVersion Include="Verify.Playwright" Version="3.0.0" />
     <PackageVersion Include="Verify.SourceGenerators" Version="2.2.0" />
   </ItemGroup>
-  <Import Project="$(MSBuildThisFileDirectory)/Directory.Packages.support.props" Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')" />
+  <Import
+        Project="$(MSBuildThisFileDirectory)/Directory.Packages.support.props"
+        Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')"
+    />
 </Project>

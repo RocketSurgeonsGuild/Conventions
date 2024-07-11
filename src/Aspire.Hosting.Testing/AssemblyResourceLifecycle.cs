@@ -18,17 +18,24 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 
 namespace Rocket.Surgery.Aspire.Hosting.Testing;
 
-public class AssemblyResourceLifecycle(
+public class AssemblyResourceLifecycle
+(
     DistributedApplicationExecutionContext executionContext,
     ResourceLoggerService loggerService
-    ) : IDistributedApplicationLifecycleHook
+) : IDistributedApplicationLifecycleHook
 {
-    public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken = new CancellationToken())
+    private static async Task<string?> GetValue(IValueProvider valueProvider, CancellationToken cancellationToken)
     {
-        foreach (var assemblyResource in appModel.Resources.OfType<AssemblyResource>())
-        {
-            await StartAssemblyResource(appModel, assemblyResource, cancellationToken);
-        }
+        return await valueProvider.GetValueAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private static TimeSpan SetupDefaultTimeout()
+    {
+        return Debugger.IsAttached
+            ? Timeout.InfiniteTimeSpan
+            : uint.TryParse(Environment.GetEnvironmentVariable("ASPIRE_DEFAULT_TIMEOUT_IN_SECONDS"), out var result)
+                ? TimeSpan.FromSeconds((int)result)
+                : TimeSpan.FromMinutes(5);
     }
 
     private async Task<IProgramFixture> StartAssemblyResource(
@@ -144,7 +151,7 @@ public class AssemblyResourceLifecycle(
 
             Task runAction()
             {
-                return assemblyResource.EntryPoint.Invoke(null, [args.ToArray()]) switch
+                return assemblyResource.EntryPoint.Invoke(null, [args.ToArray(),]) switch
                        {
                            Task<int> t      => t,
                            Task t           => t,
@@ -183,7 +190,7 @@ public class AssemblyResourceLifecycle(
         catch (AggregateException) when (hostTcs.Task.IsCompleted) { }
 
         var host = await hostTcs.Task;
-        var program = new ProgramInstance(host, loggerFactory, urls, [..assemblyResource.Extensions]);
+        var program = new ProgramInstance(host, loggerFactory, urls, [..assemblyResource.Extensions,]);
         foreach (var ext in assemblyResource.Extensions)
         {
             await ext.Start(program, host);
@@ -192,18 +199,12 @@ public class AssemblyResourceLifecycle(
         return program;
     }
 
-    private static async Task<string?> GetValue(IValueProvider valueProvider, CancellationToken cancellationToken)
+    public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken = new())
     {
-        return await valueProvider.GetValueAsync(cancellationToken).ConfigureAwait(false);
-    }
-
-    private static TimeSpan SetupDefaultTimeout()
-    {
-        return Debugger.IsAttached
-            ? Timeout.InfiniteTimeSpan
-            : uint.TryParse(Environment.GetEnvironmentVariable("ASPIRE_DEFAULT_TIMEOUT_IN_SECONDS"), out var result)
-                ? TimeSpan.FromSeconds((int)result)
-                : TimeSpan.FromMinutes(5);
+        foreach (var assemblyResource in appModel.Resources.OfType<AssemblyResource>())
+        {
+            await StartAssemblyResource(appModel, assemblyResource, cancellationToken);
+        }
     }
 }
 
@@ -370,7 +371,7 @@ file class DeferredLogger(string categoryName) : ILogger
     }
 }
 
-class ProgramInstanceConvention
+internal class ProgramInstanceConvention
 (
     IProjectMetadata projectMetadata,
     ILoggerFactory loggerFactory,
@@ -414,10 +415,7 @@ class ProgramInstanceConvention
 
 file class AspireLoggerProvider(ILogger logger) : ILoggerProvider
 {
-    public void Dispose()
-    {
-
-    }
+    public void Dispose() { }
 
     public ILogger CreateLogger(string categoryName)
     {

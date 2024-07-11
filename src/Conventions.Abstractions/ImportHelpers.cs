@@ -21,7 +21,10 @@ public static class ImportHelpers
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IDisposable SetExternalConfigureMethodWithLock(Func<ConventionContextBuilder, CancellationToken, ValueTask> configure, CancellationToken cancellationToken = default)
+    public static IDisposable SetExternalConfigureMethodWithLock(
+        Func<ConventionContextBuilder, CancellationToken, ValueTask> configure,
+        CancellationToken cancellationToken = default
+    )
     {
         _lock.Wait(cancellationToken);
         externalConfigureMethod = configure;
@@ -62,6 +65,9 @@ public static class ImportHelpers
 
     private class Disposable : IDisposable
     {
-        public void Dispose() => _lock.Release();
+        public void Dispose()
+        {
+            _lock.Release();
+        }
     }
 }
