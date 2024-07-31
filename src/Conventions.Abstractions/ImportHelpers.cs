@@ -21,6 +21,23 @@ public static class ImportHelpers
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
+    public static IDisposable SetExternalConfigureMethodWithLock(
+        Func<ConventionContextBuilder, CancellationToken, ValueTask> configure,
+        CancellationToken cancellationToken = default
+    )
+    {
+        _lock.Wait(cancellationToken);
+        externalConfigureMethod = configure;
+        return new Disposable();
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static ValueTask RunExternalConfigureMethod(ConventionContextBuilder builder, CancellationToken cancellationToken = default)
+    {
+        return externalConfigureMethod?.Invoke(builder, cancellationToken) ?? ValueTask.CompletedTask;
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static IConventionFactory? CallerConventions(Assembly callerAssembly)
     {
         return Assembly.GetEntryAssembly() is not { } entryAssembly || callerAssembly == entryAssembly || externalConventions == null
@@ -43,4 +60,14 @@ public static class ImportHelpers
     }
 
     private static IConventionFactory? externalConventions;
+    private static Func<ConventionContextBuilder, CancellationToken, ValueTask>? externalConfigureMethod;
+    private static readonly SemaphoreSlim _lock = new(1, 1);
+
+    private class Disposable : IDisposable
+    {
+        public void Dispose()
+        {
+            _lock.Release();
+        }
+    }
 }

@@ -9,3 +9,5 @@ await builder
           z => z.ConfigureCommandLine(configurator => configurator.AddCommand<Dump>("dump"))
       )
      .RunConsoleAppAsync();
+
+public partial class Program;
