@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Convention Contexts </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Convention Contexts ">
+    <meta name="generator" content="docfx ">
+  
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  
+  
+  
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="convention-contexts">Convention Contexts</h1>
+
+<p>The convention context is the the result of collecting all the known conventions for a given set of assembly. How those assemblies are collected can diff
+depending on on the convention context is created. Generally the convention context is created using the <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html">ConventionContextBuilder</a>
+however you can implement your own <a class="xref" href="../api/Rocket.Surgery.Conventions.IConventionContext.html">IConventionContext</a> if you wish.</p>
+<h2 id="builder">Builder</h2>
+<p>A convention context is created from a <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html">ConventionContextBuilder</a>. This class is used during the bootstrapping phase of your application.</p>
+<p>You can add conventions manually, you can add them via attribute scanning, you can disable attribute scanning if you wish as well.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The assemblies used during scanning can be added by using an AppDomain, DependencyContext, or List of assemblies.</p>
+</div>
+<h2 id="creating-the-context">Creating the context</h2>
+<p>A context can be created from a <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html">ConventionContextBuilder</a> by using <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContext.html#Rocket_Surgery_Conventions_ConventionContext_From_Rocket_Surgery_Conventions_ConventionContextBuilder_">ConventionContext.From</a>.</p>
+<h2 id="using-the-context">Using the context</h2>
+<p>Once the context is created you can use the context to find out all sorts of information.</p>
+<p>Useful properties:</p>
+<ul>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.IConventionContext.html#Rocket_Surgery_Conventions_ConventionContext_AssemblyProvider"><code>AssemblyProvider</code></a> - The assembly provider can be used to get a list of assemblies</li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.IConventionContext.html#Rocket_Surgery_Conventions_ConventionContext_Logger"><code>Logger</code></a> - This is a diagnostic logger that can be used for logging details. If a logger is provided to the builder it will be used here.</li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.IConventionContext.html#Rocket_Surgery_Conventions_ConventionContext_Properties"><code>Properties</code></a> - Contains all the properties provided to the builder. This implements <code>IServiceProvider</code> and can be used with `ActivatorExtensions</li>
+</ul>
+<p>Useful methods / extension methods:</p>
+<ul>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextExtensions.html#Rocket_Surgery_Conventions_ConventionContextExtensions_Get__1_Rocket_Surgery_Conventions_IConventionContext_"><code>Get&lt;T&gt;([string name])</code></a> - Get a given type from the <code>Properties</code> dictionary.</li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextExtensions.html#Rocket_Surgery_Conventions_ConventionContextExtensions_GetHostType_Rocket_Surgery_Conventions_IConventionContext_"><code>GetHostType()</code></a> - Get's the given host type, as defined in the builder.</li>
+<li><a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextExtensions.html#Rocket_Surgery_Conventions_ConventionContextExtensions_IsUnitTestHost_Rocket_Surgery_Conventions_IConventionContext_"><code>IsUnitTestHost()</code></a> - Tests if the builder was setup for unit testing
+<ul>
+<li>This is handy to ensure different behavior during <a href="unit-tests.html">unit tests</a>.</li>
+</ul>
+</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/docs/concepts/convention-context.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
