@@ -22,20 +22,17 @@
         <NukeTelemetryVersion>1</NukeTelemetryVersion>
         <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
         <ImplicitUsings>enable</ImplicitUsings>
-        <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
-            true</IsTrimmable>
+        <IsTrimmable>true</IsTrimmable>
         <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
         <AnalysisLevel>latest</AnalysisLevel>
         <!--        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
         <!--        <WarningsNotAsErrors></WarningsNotAsErrors>-->
         <WarningsAsErrors>RS0017</WarningsAsErrors>
+        <NoWarn>$(NoWarn);CA1510</NoWarn>
 
         <NuGetAudit>true</NuGetAudit>
         <NuGetAuditMode>all</NuGetAuditMode>
         <NuGetAuditLevel>moderate</NuGetAuditLevel>
-    </PropertyGroup>
-    <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
-        <NoWarn>$(NoWarn);CA1510</NoWarn>
     </PropertyGroup>
     <ItemGroup>
         <None
