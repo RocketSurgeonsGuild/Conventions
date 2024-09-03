@@ -1,0 +1,1733 @@
+{
+  "source_base_path": "/home/runner/work/Conventions/Conventions/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.DistributedApplicationAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.DistributedApplicationAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.DistributedApplicationConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.DistributedApplicationConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.IDistributedApplicationAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.IDistributedApplicationAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.IDistributedApplicationConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.IDistributedApplicationConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.RocketBooster.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.RocketBooster.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.DistributedApplicationTestingAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.DistributedApplicationTestingAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.DistributedApplicationTestingConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.DistributedApplicationTestingConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.IDistributedApplicationTestingAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.IDistributedApplicationTestingAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.IDistributedApplicationTestingConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.IDistributedApplicationTestingConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.RocketBooster.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.RocketBooster.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.Testing.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Aspire.Hosting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Aspire.Hosting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.AppSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.AppSettings.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.CommandAppAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.CommandAppAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.CommandAppConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.CommandAppConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.CommandLineAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.CommandLineAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.CommandLineConstants.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.CommandLineConstants.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.CommandLineConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.CommandLineConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.ConsoleConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.ConsoleConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.Exports.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.Exports.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.ICommandAppAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.ICommandAppAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.ICommandAppConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.ICommandAppConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.ICommandLineAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.ICommandLineAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.ICommandLineConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.ICommandLineConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.CommandLine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.CommandLine.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.AfterConventionAttribute-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.AfterConventionAttribute-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.AfterConventionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.AfterConventionAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Autofac.AutofacAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Autofac.AutofacAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Autofac.AutofacConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Autofac.AutofacConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Autofac.AutofacExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Autofac.AutofacExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Autofac.IAutofacAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Autofac.IAutofacAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Autofac.IAutofacConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Autofac.IAutofacConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Autofac.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Autofac.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.AutofacConventionRocketHostExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.AutofacConventionRocketHostExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.BeforeConventionAttribute-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.BeforeConventionAttribute-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.BeforeConventionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.BeforeConventionAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.CommandAppHostBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.CommandAppHostBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderApplicationDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderApplicationDelegate.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderDelegateResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderDelegateResult.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderEnvironmentDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderEnvironmentDelegate.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationOptionsExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.ConfigurationOptionsExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.IConfigurationAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.IConfigurationAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.IConfigurationConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.IConfigurationConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Json.Exports.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Json.Exports.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Json.JsonConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Json.JsonConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Json.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Json.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.Exports.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.Exports.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.YamlConfigurationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.YamlConfigurationExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.YamlConfigurationProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.YamlConfigurationProvider.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.YamlConfigurationSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.YamlConfigurationSource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.YamlConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.YamlConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.Yaml.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Configuration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Configuration.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionAttribute-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionAttribute-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionAttributesGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionAttributesGenerator.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionContext.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionContextBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionContextBuilder.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionContextBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionContextBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionContextExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionContextExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionHostBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionMetadata.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ConventionsConfigurationAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ConventionsConfigurationAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependencyContextConventionContextBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependencyContextConventionContextBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependencyContextConventionFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependencyContextConventionFactory.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependencyDirection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependencyDirection.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.IServiceAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.IServiceAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependencyInjection.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependentOfConventionAttribute-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependentOfConventionAttribute-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependentOfConventionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependentOfConventionAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependsOnConventionAttribute-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependsOnConventionAttribute-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DependsOnConventionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DependsOnConventionAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Diagnostics.DiagnosticLogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Diagnostics.DiagnosticLogger.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Diagnostics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Diagnostics.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DistributedApplicationConventionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DistributedApplicationConventionExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DistributedApplicationTestingConventionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DistributedApplicationTestingConventionExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DryIoc.DryIocAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DryIoc.DryIocAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DryIoc.DryIocConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DryIoc.DryIocConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DryIoc.DryIocExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DryIoc.DryIocExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DryIoc.DryIocOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DryIoc.DryIocOptions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DryIoc.IDryIocAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DryIoc.IDryIocAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DryIoc.IDryIocConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DryIoc.IDryIocConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DryIoc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DryIoc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.DryIocConventionRocketHostExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.DryIocConventionRocketHostExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ExportConventionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ExportConventionAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ExportConventionsAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ExportConventionsAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ExportedConventionsAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ExportedConventionsAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.HostType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.HostType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Hosting.HostCreatedAsyncConvention-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Hosting.HostCreatedAsyncConvention-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Hosting.HostCreatedConvention-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Hosting.HostCreatedConvention-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Hosting.IHostCreatedAsyncConvention-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Hosting.IHostCreatedAsyncConvention-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Hosting.IHostCreatedConvention-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Hosting.IHostCreatedConvention-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Hosting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Hosting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.HostingConventionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.HostingConventionExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IAssemblyProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IAssemblyProvider.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IConventionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IConventionContext.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IConventionDependency.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IConventionDependency.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IConventionFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IConventionFactory.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IConventionMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IConventionMetadata.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IConventionProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IConventionProvider.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IReadOnlyServiceProviderDictionary.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IReadOnlyServiceProviderDictionary.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.IServiceProviderDictionary.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.IServiceProviderDictionary.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ImportConventionsAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ImportConventionsAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.LiveConventionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.LiveConventionAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Logging.ILoggingAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Logging.ILoggingAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Logging.ILoggingConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Logging.ILoggingConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Logging.LoggingAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Logging.LoggingAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Logging.LoggingConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Logging.LoggingConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Logging.RocketLoggingOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Logging.RocketLoggingOptions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Logging.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Logging.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ReadOnlyServiceProviderDictionary.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.AppDomainConventionFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.AppDomainConventionFactory.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.AssemblyConventionFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.AssemblyConventionFactory.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.ConventionFactoryBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.ConventionFactoryBase.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.IAssemblyProviderAssemblySelector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.IAssemblyProviderAssemblySelector.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.ITypeFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.ITypeFilter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.ITypeProviderAssemblySelector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.ITypeProviderAssemblySelector.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.ITypeSelector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.ITypeSelector.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.TypeInfoFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.TypeInfoFilter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.TypeKindFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.TypeKindFilter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Reflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Reflection.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryConfigurationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryConfigurationExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryDistributedApplicationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryDistributedApplicationExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryDistributedApplicationTestingExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryDistributedApplicationTestingExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryHostApplicationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryHostApplicationExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryLoggingExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryLoggingExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryServiceCollectionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.RocketSurgeryServiceCollectionExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ServiceProviderDictionary.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ServiceProviderDictionary.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.ServiceProviderDictionaryExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.ServiceProviderDictionaryExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Setup.ISetupAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Setup.ISetupAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Setup.ISetupConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Setup.ISetupConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Setup.SetupAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Setup.SetupAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Setup.SetupConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Setup.SetupConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Setup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Setup.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Testing.DependencyModelTestConventionContextBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Testing.DependencyModelTestConventionContextBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Testing.TestConventionContextBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Testing.TestConventionContextBuilderExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.Testing.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.Testing.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.UnitTestConventionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.UnitTestConventionAttribute.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.WebAssemblyHostingConventionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.WebAssemblyHostingConventionExtensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Conventions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Conventions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Hosting.HostApplicationAsyncConvention-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Hosting.HostApplicationAsyncConvention-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Hosting.HostApplicationConvention-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Hosting.HostApplicationConvention-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Hosting.IHostApplicationAsyncConvention-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Hosting.IHostApplicationAsyncConvention-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Hosting.IHostApplicationConvention-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Hosting.IHostApplicationConvention-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Hosting.RocketBooster.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Hosting.RocketBooster.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.Hosting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.Hosting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.IWebAssemblyHostingAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.IWebAssemblyHostingAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.IWebAssemblyHostingConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.IWebAssemblyHostingConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.RocketBooster.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.RocketBooster.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.WebAssemblyHostingAsyncConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.WebAssemblyHostingAsyncConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.WebAssemblyHostingConvention.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.WebAssemblyHostingConvention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Rocket.Surgery.WebAssembly.Hosting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "api/toc.json"
+        },
+        ".html": {
+          "relative_path": "api/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/convention-context.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/convention-context.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/defining-conventions.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/defining-conventions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/introduction.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/introduction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/source-generation.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/source-generation.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "concepts/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "concepts/toc.json"
+        },
+        ".html": {
+          "relative_path": "concepts/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/unit-tests.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/unit-tests.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/custom-conventions.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/custom-conventions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "guides/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "guides/toc.json"
+        },
+        ".html": {
+          "relative_path": "guides/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "toc.json"
+        },
+        ".html": {
+          "relative_path": "toc.html"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

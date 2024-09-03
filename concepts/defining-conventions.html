@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Defining Conventions </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Defining Conventions ">
+    <meta name="generator" content="docfx ">
+  
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  
+  
+  
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="defining-conventions">Defining Conventions</h1>
+
+<p>As stated <a href="defining-conventions.html">previously</a> conventions are nothing more than a class that implements <a class="xref" href="../api/Rocket.Surgery.Conventions.IConvention.html">IConvention</a>.</p>
+<h2 id="implementing-multiple-conventions">Implementing Multiple Conventions</h2>
+<p>A defined convention can implement as many conventions as you want. Configuration, Services, Command Line, Custom Conventions can all be be handled by one convention.</p>
+<pre><code class="lang-c#">public class MultipleConvention : IServiceConvention, IConfigurationConvention
+{
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) { }
+    public void Register(IConventionContext context, IConfiguration configuration, IConfigurationBuilder builder) { }
+}
+</code></pre>
+<h2 id="convention-ordering">Convention Ordering</h2>
+<p>By default the order of conventions is <a href="https://en.m.wikipedia.org/wiki/Nondeterministic_algorithm">non-deterministic</a> and not controlled. Conventions are &quot;left in place&quot; such that once the list of conventions is created it is no changed between convention runs.</p>
+<p>Sometimes you want to ensure that one convention runs before another, that can be done using different attributes. Delegate
+conventions <em>cannot</em> be ordered in this manner and must be sorted manually.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Sorting is done using a <a href="https://en.wikipedia.org/wiki/Topological_sorting">Topological sort</a> and if you define a cycle (A requires B, B requires A)
+then a <code>NotSupportedException</code> will be thrown.</p>
+</div>
+<h3 id="beforeconvention--dependentofconvention"><a class="xref" href="../api/Rocket.Surgery.Conventions.BeforeConventionAttribute.html">[BeforeConvention]</a> / <a class="xref" href="../api/Rocket.Surgery.Conventions.DependentOfConventionAttribute.html">[DependentOfConvention]</a></h3>
+<p>This attribute can be used to ensure that your convention is called before another convention. The order is still non-deterministic but
+Conventions will ensure that the defined convention is run before the convention type defined by the attribute.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Multiple dependencies can be defined.</p>
+</div>
+<pre><code class="lang-c#">// A before B
+[BeforeConvention(typeof(ConventionB))]
+public class ConventionA
+{
+}
+
+public class ConventionB
+{
+}
+</code></pre>
+<h3 id="afterconvention--dependsonconvention"><a class="xref" href="../api/Rocket.Surgery.Conventions.AfterConventionAttribute.html">[AfterConvention]</a> / <a class="xref" href="../api/Rocket.Surgery.Conventions.DependsOnConventionAttribute.html">[DependsOnConvention]</a></h3>
+<p>This attribute can be used to ensure that your convention is called after another convention. The order is still non-deterministic but
+Conventions will ensure that the defined convention is run after the convention type defined by the attribute.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Multiple dependencies can be defined.</p>
+</div>
+<pre><code class="lang-c#">// B before A
+[AfterConvention(typeof(ConventionB))]
+public class ConventionA
+{
+}
+
+public class ConventionB
+{
+}
+</code></pre>
+<h3 id="custom-attributes">Custom Attributes</h3>
+<p>If you want you can define your own custom attribute for use with convention ordering. Your attribute must implement <a class="xref" href="../api/Rocket.Surgery.Conventions.IConventionDependency.html">IConventionDependency</a>
+and specify the <a class="xref" href="../api/Rocket.Surgery.Conventions.DependencyDirection.html">DependencyDirection</a>.</p>
+<h2 id="convention-host-type">Convention Host Type</h2>
+<p>You can define a convention that only runs for a given <a class="xref" href="../api/Rocket.Surgery.Conventions.HostType.html">HostType</a>. The HostType can be defined on the
+<a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html">ConventionContextBuilder</a> using <code>Set&lt;HostType&gt;(HostType.UnitTest)</code>. Using the <code>HostType</code> an assembly
+can define different behaviors given the context.</p>
+<p>A good example of this is designing a system that uses <a href="https://nodatime.org/">NodaTime</a>. You can have a <a class="xref" href="../api/Rocket.Surgery.Conventions.LiveConventionAttribute.html">[LiveConvention]</a> that registers
+<code>IClock</code> using the expected calendar system, and another <a class="xref" href="../api/Rocket.Surgery.Conventions.UnitTestConventionAttribute.html">[UnitTestConvention]</a> that registers a <code>FakeClock</code>
+with a predefined starting date and time.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Currently only three host types are defined</p>
+</div>
+<ul>
+<li><code>Undefined</code> - The default host type, means the convention runs everywhere.</li>
+<li><code>Live</code> - This convention applies in a live running application</li>
+<li><code>UnitTest</code> - This convention applies to unit tests.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>There is no attribute for the <code>HostType.Undefined</code>.</p>
+</div>
+<h3 id="liveconvention"><a class="xref" href="../api/Rocket.Surgery.Conventions.LiveConventionAttribute.html">[LiveConvention]</a></h3>
+<p>This attribute ensures a convention that only runs when the <code>HostType</code> is <code>Live</code>.</p>
+<pre><code class="lang-c#">[LiveConvention]
+public class ConventionA
+{
+}
+</code></pre>
+<h3 id="unittestconvention"><a class="xref" href="../api/Rocket.Surgery.Conventions.UnitTestConventionAttribute.html">[UnitTestConvention]</a></h3>
+<p>This attribute ensures a convention that only runs when the <code>HostType</code> is <code>UnitTest</code>.</p>
+<pre><code class="lang-c#">[UnitTestConvention]
+public class ConventionA
+{
+}
+</code></pre>
+<h2 id="injecting-dependencies">Injecting dependencies</h2>
+<p>By default conventions are a simple class that can be created using <code>Activator.CreateInstance</code> however the goal of conventions was to allow &quot;bootstrap time&quot;
+configuration to be provided. The <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html">ConventionContextBuilder</a> acts as a bag of properties using <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html#Rocket_Surgery_Conventions_ConventionContextBuilder_Item_System_Object_"><code>indexer</code></a> or <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html#Rocket_Surgery_Conventions_ConventionContextBuilder_Properties"><code>Properties</code></a>.</p>
+<p>Any type defined in the context is injectable into any defined convention. This can be used for any number of purposes such as...</p>
+<ul>
+<li>allow consumers to provide configuration to your convention</li>
+<li>allow conventions to communicate or share common state</li>
+</ul>
+<p>Under the covers the <a class="xref" href="../api/Rocket.Surgery.Conventions.ConventionContextBuilder.html#Rocket_Surgery_Conventions_ConventionContextBuilder_Properties"><code>Properties</code></a> implements <code>IServiceProvider</code>
+and we simply activate conventions using <code>ActivatorUtilities.CreateInstance</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>All dependencies must be registered into the builder, as activation happens while <a class="xref" href="../api/Rocket.Surgery.Conventions.IConventionContext.html">IConventionContext</a> is built.</p>
+</div>
+<hr>
+<pre><code class="lang-c#">public class InjectableConvention : IServiceConvention
+{
+    private readonly IInjectData _convention;
+
+    public InjectableConvention(IInjectData convention) =&gt; _convention = convention;
+
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
+    {
+        //...
+    }
+}
+
+public class OptionalInjectableConvention : IServiceConvention
+{
+    private readonly IInjectData? _convention;
+
+    public OptionalInjectableConvention(IInjectData? convention = null) =&gt; _convention = convention;
+
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
+    {
+        if (_convention is { })
+        {
+            //...
+        }
+    }
+}
+</code></pre>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/docs/concepts/defining-conventions.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

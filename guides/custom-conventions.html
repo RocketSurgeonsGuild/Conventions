@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating a custom convention </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating a custom convention ">
+    <meta name="generator" content="docfx ">
+  
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  
+  
+  
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-a-custom-convention">Creating a custom convention</h1>
+
+<p>The essence of a convention is a method, with any number of parameters, that can be implemented to do some work.</p>
+<p>Lets say you want to create a convention for handling database configuration.</p>
+<p>Goal: Distribute database configuration across assemblies</p>
+<p>Given this fake interface for configuring the database.</p>
+<pre><code class="lang-c#" name="IDatabaseConfigurator">
+public interface IDatabaseConfigurator
+{
+    void AddTable(string name);
+    void AddView(string name);
+}
+
+</code></pre><h2 id="define-your-interface-and-optional-delegate">Define your interface and optional delegate</h2>
+<p>Now we will define our interface and delegate. The delegate and extenison methods are optional but makes it easier for consumers to create adhoc conventions.</p>
+<pre><code class="lang-c#" name="IDatabaseConfigurator">
+public delegate void DatabaseConvention(IConventionContext context, IDatabaseConfigurator configurator);
+
+</code></pre><pre><code class="lang-c#" name="IDatabaseConfigurator">
+public interface IDatabaseConvention : IConvention
+{
+    public void Register(IConventionContext context, IDatabaseConfigurator configurator);
+}
+
+</code></pre><pre><code class="lang-c#" name="IDatabaseConfigurator">
+public static class DatabaseConventionContextBuilderExtensions
+{
+    public static ConventionContextBuilder ConfigureDatabase(this ConventionContextBuilder container, DatabaseConvention @delegate)
+    {
+        container.AppendDelegate(@delegate);
+        return container;
+    }
+
+    public static ConventionContextBuilder ConfigureDatabase(this ConventionContextBuilder container, Action&lt;IDatabaseConfigurator&gt; @delegate)
+    {
+        container.AppendDelegate(new DatabaseConvention((context, configurator) =&gt; @delegate(configurator)));
+        return container;
+    }
+}
+
+</code></pre><h2 id="create-your-application-method">Create your application method</h2>
+<p>We have defined our conventions now we need to be able to apply our conventions.</p>
+<p>There are two ways to do this, if for example your database configuration happens during service registration (perhaps via <code>IOptions</code>) then you can implement this
+a convention that will run during the services convention. The other way additional way is to create an extension method that takes takes the convention and applies it.</p>
+<p>In this example we'll support both. The manual way using an extension method and a convention that will do it &quot;automagically&quot;.</p>
+<pre><code class="lang-c#" name="IDatabaseConfigurator">
+public static class DatabaseConfiguratorExtensions
+{
+    public static IDatabaseConfigurator ApplyConventions(this IDatabaseConfigurator configurator, IConventionContext context)
+    {
+        foreach (var item in context.Conventions.Get&lt;IDatabaseConvention, DatabaseConvention&gt;())
+        {
+            if (item is IDatabaseConvention convention)
+                convention.Register(context, configurator);
+            else if (item is DatabaseConvention @delegate) @delegate(context, configurator);
+        }
+
+        return configurator;
+    }
+}
+
+</code></pre><pre><code class="lang-c#" name="IDatabaseConfigurator">
+public class DatabaseServiceConvention : IServiceConvention
+{
+    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
+    {
+        var configurator = new DatabaseConfigurator();
+        configurator.ApplyConventions(context);
+    }
+}
+
+</code></pre>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/docs/guides/custom-conventions.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

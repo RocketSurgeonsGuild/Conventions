@@ -1,0 +1,1561 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interface ITypeFilter </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interface ITypeFilter ">
+    <meta name="generator" content="docfx ">
+  
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  
+  
+  
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter">
+
+
+
+  <h1 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter" class="text-break">Interface ITypeFilter</h1>
+  <div class="markdown level0 summary"><p>The Compiled Implementation Type Filter</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Rocket.html">Rocket</a>.<a class="xref" href="Rocket.Surgery.html">Surgery</a>.<a class="xref" href="Rocket.Surgery.Conventions.html">Conventions</a>.<a class="xref" href="Rocket.Surgery.Conventions.Reflection.html">Reflection</a></h6>
+  <h6><strong>Assembly</strong>: Rocket.Surgery.Conventions.Abstractions.dll</h6>
+  <h5 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface ITypeFilter</code></pre>
+  </div>
+  <h3 id="methods">Methods
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableTo_System_Type_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableTo(System.Type)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L19">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableTo_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableTo*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableTo_System_Type_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableTo(System.Type)">AssignableTo(Type)</h4>
+  <div class="markdown level1 summary"><p>Will match all types that are assignable to the specified <code class="paramref">type</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter AssignableTo(Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type that should be assignable from the matching types.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableToAny_System_Type_System_Type___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableToAny(System.Type%2CSystem.Type%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L26">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableToAny_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableToAny*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableToAny_System_Type_System_Type___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableToAny(System.Type,System.Type[])">AssignableToAny(Type, params Type[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types that are assignable to any of the specified <code class="paramref">types</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter AssignableToAny(Type type, params Type[] types)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The first type that should be assignable from the matching types.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a>[]</td>
+        <td><span class="parametername">types</span></td>
+        <td><p>The types that should be assignable from the matching types.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableTo__1.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableTo%60%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L13">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableTo_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableTo*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_AssignableTo__1" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.AssignableTo``1">AssignableTo&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Will match all types that are assignable to <code class="typeparamref">T</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter AssignableTo&lt;T&gt;()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type that should be assignable from the matching types.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_Contains_System_String_System_String___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.Contains(System.String%2CSystem.String%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L69">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_Contains_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.Contains*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_Contains_System_String_System_String___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.Contains(System.String,System.String[])">Contains(string, params string[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types that contain the given values</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter Contains(string value, params string[] values)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</td>
+        <td><span class="parametername">values</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_EndsWith_System_String_System_String___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.EndsWith(System.String%2CSystem.String%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L53">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_EndsWith_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.EndsWith*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_EndsWith_System_String_System_String___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.EndsWith(System.String,System.String[])">EndsWith(string, params string[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types that end with</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter EndsWith(string value, params string[] values)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</td>
+        <td><span class="parametername">values</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaceOf_System_Type_System_Type___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaceOf(System.Type%2CSystem.Type%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L82">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaceOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaceOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaceOf_System_Type_System_Type___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaceOf(System.Type,System.Type[])">InExactNamespaceOf(Type, params Type[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types in the exact same namespace as the type <code class="paramref">types</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter InExactNamespaceOf(Type type, params Type[] types)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The first type in the namespaces to include.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a>[]</td>
+        <td><span class="parametername">types</span></td>
+        <td><p>The types in the namespaces to include.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaceOf__1.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaceOf%60%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L75">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaceOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaceOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaceOf__1" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaceOf``1">InExactNamespaceOf&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Will match all types in the exact same namespace as the type <code class="typeparamref">T</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter InExactNamespaceOf&lt;T&gt;()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type in the namespace to include</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaces_System_String_System_String___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaces(System.String%2CSystem.String%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L89">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaces_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaces*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InExactNamespaces_System_String_System_String___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InExactNamespaces(System.String,System.String[])">InExactNamespaces(string, params string[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types in the exact same namespace as the type <code class="paramref">namespaces</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter InExactNamespaces(string first, params string[] namespaces)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">first</span></td>
+        <td><p>The first namespace to include.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</td>
+        <td><span class="parametername">namespaces</span></td>
+        <td><p>The namespace to include.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaceOf_System_Type_System_Type___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaceOf(System.Type%2CSystem.Type%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L102">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaceOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaceOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaceOf_System_Type_System_Type___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaceOf(System.Type,System.Type[])">InNamespaceOf(Type, params Type[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types in any of the namespaces of the <code class="paramref">types</code> specified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter InNamespaceOf(Type type, params Type[] types)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The first type in the namespaces to include.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a>[]</td>
+        <td><span class="parametername">types</span></td>
+        <td><p>The types in the namespaces to include.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaceOf__1.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaceOf%60%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L95">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaceOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaceOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaceOf__1" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaceOf``1">InNamespaceOf&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Will match all types in the same namespace as the type <code class="typeparamref">T</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter InNamespaceOf&lt;T&gt;()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>A type inside the namespace to include.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaces_System_String_System_String___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaces(System.String%2CSystem.String%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L109">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaces_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaces*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InNamespaces_System_String_System_String___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InNamespaces(System.String,System.String[])">InNamespaces(string, params string[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types in any of the <code class="paramref">namespaces</code> specified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter InNamespaces(string first, params string[] namespaces)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">first</span></td>
+        <td><p>The first namespace to include.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</td>
+        <td><span class="parametername">namespaces</span></td>
+        <td><p>The namespaces to include.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_InfoOf_Rocket_Surgery_Conventions_Reflection_TypeInfoFilter_Rocket_Surgery_Conventions_Reflection_TypeInfoFilter___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.InfoOf(Rocket.Surgery.Conventions.Reflection.TypeInfoFilter%2CRocket.Surgery.Conventions.Reflection.TypeInfoFilter%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L188">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InfoOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InfoOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_InfoOf_Rocket_Surgery_Conventions_Reflection_TypeInfoFilter_Rocket_Surgery_Conventions_Reflection_TypeInfoFilter___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.InfoOf(Rocket.Surgery.Conventions.Reflection.TypeInfoFilter,Rocket.Surgery.Conventions.Reflection.TypeInfoFilter[])">InfoOf(TypeInfoFilter, params TypeInfoFilter[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types that are of the specified <code class="paramref">typeInfoFilter</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter InfoOf(TypeInfoFilter typeInfoFilter, params TypeInfoFilter[] typeInfoFilters)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.TypeInfoFilter.html">TypeInfoFilter</a></td>
+        <td><span class="parametername">typeInfoFilter</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.TypeInfoFilter.html">TypeInfoFilter</a>[]</td>
+        <td><span class="parametername">typeInfoFilters</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_KindOf_Rocket_Surgery_Conventions_Reflection_TypeKindFilter_Rocket_Surgery_Conventions_Reflection_TypeKindFilter___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.KindOf(Rocket.Surgery.Conventions.Reflection.TypeKindFilter%2CRocket.Surgery.Conventions.Reflection.TypeKindFilter%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L172">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_KindOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.KindOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_KindOf_Rocket_Surgery_Conventions_Reflection_TypeKindFilter_Rocket_Surgery_Conventions_Reflection_TypeKindFilter___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.KindOf(Rocket.Surgery.Conventions.Reflection.TypeKindFilter,Rocket.Surgery.Conventions.Reflection.TypeKindFilter[])">KindOf(TypeKindFilter, params TypeKindFilter[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types that are of the specified <code class="paramref">typeKindFilter</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter KindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.TypeKindFilter.html">TypeKindFilter</a></td>
+        <td><span class="parametername">typeKindFilter</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.TypeKindFilter.html">TypeKindFilter</a>[]</td>
+        <td><span class="parametername">typeKindFilters</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableTo_System_Type_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableTo(System.Type)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L38">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableTo_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableTo*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableTo_System_Type_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableTo(System.Type)">NotAssignableTo(Type)</h4>
+  <div class="markdown level1 summary"><p>Will not match all types that are assignable to the specified <code class="paramref">type</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter NotAssignableTo(Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type that should be assignable from the matching types.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableToAny_System_Type_System_Type___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableToAny(System.Type%2CSystem.Type%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L45">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableToAny_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableToAny*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableToAny_System_Type_System_Type___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableToAny(System.Type,System.Type[])">NotAssignableToAny(Type, params Type[])</h4>
+  <div class="markdown level1 summary"><p>Will not match all types that are assignable to any of the specified <code class="paramref">types</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter NotAssignableToAny(Type type, params Type[] types)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The first type that should be assignable from the matching types.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a>[]</td>
+        <td><span class="parametername">types</span></td>
+        <td><p>The types that should be assignable from the matching types.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableTo__1.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableTo%60%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L32">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableTo_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableTo*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotAssignableTo__1" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotAssignableTo``1">NotAssignableTo&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Will not match all types that are assignable to <code class="typeparamref">T</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter NotAssignableTo&lt;T&gt;()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type that should be assignable from the matching types.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaceOf_System_Type_System_Type___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaceOf(System.Type%2CSystem.Type%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L121">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaceOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaceOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaceOf_System_Type_System_Type___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaceOf(System.Type,System.Type[])">NotInNamespaceOf(Type, params Type[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types outside of all of the namespaces of the <code class="paramref">types</code> specified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter NotInNamespaceOf(Type type, params Type[] types)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The first type in the namespaces to include.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a>[]</td>
+        <td><span class="parametername">types</span></td>
+        <td><p>The types in the namespaces to include.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaceOf__1.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaceOf%60%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L114">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaceOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaceOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaceOf__1" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaceOf``1">NotInNamespaceOf&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Will match all types outside of the same namespace as the type <code class="typeparamref">T</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter NotInNamespaceOf&lt;T&gt;()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaces_System_String_System_String___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaces(System.String%2CSystem.String%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L128">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaces_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaces*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInNamespaces_System_String_System_String___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInNamespaces(System.String,System.String[])">NotInNamespaces(string, params string[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types outside of all of the <code class="paramref">namespaces</code> specified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter NotInNamespaces(string first, params string[] namespaces)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">first</span></td>
+        <td><p>The first namespace to include.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</td>
+        <td><span class="parametername">namespaces</span></td>
+        <td><p>The namespaces to include.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInfoOf_Rocket_Surgery_Conventions_Reflection_TypeInfoFilter_Rocket_Surgery_Conventions_Reflection_TypeInfoFilter___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInfoOf(Rocket.Surgery.Conventions.Reflection.TypeInfoFilter%2CRocket.Surgery.Conventions.Reflection.TypeInfoFilter%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L196">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInfoOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInfoOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotInfoOf_Rocket_Surgery_Conventions_Reflection_TypeInfoFilter_Rocket_Surgery_Conventions_Reflection_TypeInfoFilter___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotInfoOf(Rocket.Surgery.Conventions.Reflection.TypeInfoFilter,Rocket.Surgery.Conventions.Reflection.TypeInfoFilter[])">NotInfoOf(TypeInfoFilter, params TypeInfoFilter[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types that are not of the specified <code class="paramref">typeInfoFilter</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter NotInfoOf(TypeInfoFilter typeInfoFilter, params TypeInfoFilter[] typeInfoFilters)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.TypeInfoFilter.html">TypeInfoFilter</a></td>
+        <td><span class="parametername">typeInfoFilter</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.TypeInfoFilter.html">TypeInfoFilter</a>[]</td>
+        <td><span class="parametername">typeInfoFilters</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotKindOf_Rocket_Surgery_Conventions_Reflection_TypeKindFilter_Rocket_Surgery_Conventions_Reflection_TypeKindFilter___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotKindOf(Rocket.Surgery.Conventions.Reflection.TypeKindFilter%2CRocket.Surgery.Conventions.Reflection.TypeKindFilter%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L180">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotKindOf_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotKindOf*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_NotKindOf_Rocket_Surgery_Conventions_Reflection_TypeKindFilter_Rocket_Surgery_Conventions_Reflection_TypeKindFilter___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.NotKindOf(Rocket.Surgery.Conventions.Reflection.TypeKindFilter,Rocket.Surgery.Conventions.Reflection.TypeKindFilter[])">NotKindOf(TypeKindFilter, params TypeKindFilter[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types that are not of the specified <code class="paramref">typeKindFilter</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter NotKindOf(TypeKindFilter typeKindFilter, params TypeKindFilter[] typeKindFilters)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.TypeKindFilter.html">TypeKindFilter</a></td>
+        <td><span class="parametername">typeKindFilter</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.TypeKindFilter.html">TypeKindFilter</a>[]</td>
+        <td><span class="parametername">typeKindFilters</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_StartsWith_System_String_System_String___.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.StartsWith(System.String%2CSystem.String%5B%5D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L61">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_StartsWith_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.StartsWith*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_StartsWith_System_String_System_String___" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.StartsWith(System.String,System.String[])">StartsWith(string, params string[])</h4>
+  <div class="markdown level1 summary"><p>Will match all types that end with</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter StartsWith(string value, params string[] values)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</td>
+        <td><span class="parametername">values</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute_System_String_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L146">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute_System_String_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute(System.String)">WithAttribute(string?)</h4>
+  <div class="markdown level1 summary"><p>Will match all types that has an attribute of <code class="paramref">attributeFullName</code> defined.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter WithAttribute(string? attributeFullName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">attributeFullName</span></td>
+        <td><p>The full name of the attribute.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute_System_Type_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute(System.Type)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L140">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute_System_Type_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute(System.Type)">WithAttribute(Type)</h4>
+  <div class="markdown level1 summary"><p>Will match all types that has an attribute of <code class="paramref">attributeType</code> defined.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter WithAttribute(Type attributeType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">attributeType</span></td>
+        <td><p>Type of the attribute.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute__1.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute%60%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L134">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithAttribute__1" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithAttribute``1">WithAttribute&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Will match all types that has an attribute of type <code class="typeparamref">T</code> defined.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter WithAttribute&lt;T&gt;() where T : Attribute</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of attribute that needs to be defined.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute_System_String_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L164">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute_System_String_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute(System.String)">WithoutAttribute(string?)</h4>
+  <div class="markdown level1 summary"><p>Will match all types that doesn't have an attribute of <code class="paramref">attributeFullName</code> defined.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter WithoutAttribute(string? attributeFullName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">attributeFullName</span></td>
+        <td><p>The full name of the attribute.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute_System_Type_.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute(System.Type)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L158">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute_System_Type_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute(System.Type)">WithoutAttribute(Type)</h4>
+  <div class="markdown level1 summary"><p>Will match all types that doesn't have an attribute of <code class="paramref">attributeType</code> defined.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter WithoutAttribute(Type attributeType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></td>
+        <td><span class="parametername">attributeType</span></td>
+        <td><p>Type of the attribute.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute__1.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute%60%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L152">View Source</a>
+  </span>
+  <a id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute_" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute*"></a>
+  <h4 id="Rocket_Surgery_Conventions_Reflection_ITypeFilter_WithoutAttribute__1" data-uid="Rocket.Surgery.Conventions.Reflection.ITypeFilter.WithoutAttribute``1">WithoutAttribute&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Will match all types that doesn't have an attribute of type <code class="typeparamref">T</code> defined.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITypeFilter WithoutAttribute&lt;T&gt;() where T : Attribute</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Rocket.Surgery.Conventions.Reflection.ITypeFilter.html">ITypeFilter</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of attribute that needs to be defined.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/RocketSurgeonsGuild/Conventions/new/master/apiSpec/new?filename=Rocket_Surgery_Conventions_Reflection_ITypeFilter.md&amp;value=---%0Auid%3A%20Rocket.Surgery.Conventions.Reflection.ITypeFilter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Edit this page</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/RocketSurgeonsGuild/Conventions/blob/master/src/Conventions.Abstractions/Reflection/ITypeFilter.cs/#L6" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
