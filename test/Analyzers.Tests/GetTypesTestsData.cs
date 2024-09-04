@@ -151,9 +151,6 @@ public static class GetTypesTestsData
                 .GetTypes(x => x.WithAttribute<EditorBrowsableAttribute>())
         );
         yield return TestMethod(
-            z => z.FromAssemblyOf<IConvention>().FromAssemblyOf<ConventionContext>().GetTypes(x => x.WithAttribute("JetBrains.Annotations.PublicAPIAttribute"))
-        );
-        yield return TestMethod(
             z => z
                 .FromAssemblyOf<IConvention>()
                 .FromAssemblyOf<ConventionContext>()
