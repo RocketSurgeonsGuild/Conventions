@@ -9,7 +9,6 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" VersionOverride="4.8.0" PrivateAssets="all" />
         <PackageReference Include="System.Text.Json" PrivateAssets="all" />
         <PackageReference
@@ -17,15 +16,20 @@
             IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
             PrivateAssets="All"
         />
+        <PackageReference
+            Include="JetBrains.Annotations"
+            IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
+            PrivateAssets="All"
+        />
     </ItemGroup>
-    <ItemGroup>        
+    <ItemGroup>
         <Compile Include="..\Conventions.Analyzers\**\*.cs" Exclude="..\Conventions.Analyzers\obj\**\*.cs" />
         <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\ICompiledTypeFilter.cs">
           <Link>Support\AssemblyProviders\ICompiledTypeFilter.cs</Link>
-        </Compile>        
+        </Compile>
         <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\AlwaysMatchTypeFilter.cs">
           <Link>Support\AssemblyProviders\AlwaysMatchTypeFilter.cs</Link>
-        </Compile>        
+        </Compile>
         <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\CompiledAssemblyFilter.cs">
           <Link>Support\AssemblyProviders\CompiledAssemblyFilter.cs</Link>
         </Compile>
