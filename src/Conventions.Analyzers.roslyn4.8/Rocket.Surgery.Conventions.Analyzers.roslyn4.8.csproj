@@ -1,33 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <NoPackageAnalysis>true</NoPackageAnalysis>
-        <_Analyzer_Roslyn_Version_>$(MSBuildProjectName.Replace("Rocket.Surgery.LaunchPad.Analyzers.", ""))</_Analyzer_Roslyn_Version_>
-        <DefineConstants>$(DefineConstants);ROSLYN4_4</DefineConstants>
-        <IsPackable>false</IsPackable>
-        <AssemblyName>Rocket.Surgery.Conventions.Analyzers</AssemblyName>
-        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" VersionOverride="4.8.0" PrivateAssets="all" />
-        <PackageReference Include="System.Text.Json" PrivateAssets="all" />
-        <PackageReference
-            Include="Polyfill"
-            IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
-            PrivateAssets="All"
-        />
-    </ItemGroup>
-    <ItemGroup>        
-        <Compile Include="..\Conventions.Analyzers\**\*.cs" Exclude="..\Conventions.Analyzers\obj\**\*.cs" />
-        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\ICompiledTypeFilter.cs">
-          <Link>Support\AssemblyProviders\ICompiledTypeFilter.cs</Link>
-        </Compile>        
-        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\AlwaysMatchTypeFilter.cs">
-          <Link>Support\AssemblyProviders\AlwaysMatchTypeFilter.cs</Link>
-        </Compile>        
-        <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\CompiledAssemblyFilter.cs">
-          <Link>Support\AssemblyProviders\CompiledAssemblyFilter.cs</Link>
-        </Compile>
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <_Analyzer_Roslyn_Version_>$(MSBuildProjectName.Replace("Rocket.Surgery.LaunchPad.Analyzers.",
+      ""))</_Analyzer_Roslyn_Version_>
+    <DefineConstants>$(DefineConstants);ROSLYN4_4</DefineConstants>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>Rocket.Surgery.Conventions.Analyzers</AssemblyName>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" VersionOverride="4.8.0"
+      PrivateAssets="all" />
+    <PackageReference Include="System.Text.Json" PrivateAssets="all" />
+    <PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
+    <PackageReference Include="Polyfill" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Conventions.Analyzers\**\*.cs"
+      Exclude="..\Conventions.Analyzers\obj\**\*.cs" />
+    <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\ICompiledTypeFilter.cs">
+      <Link>Support\AssemblyProviders\ICompiledTypeFilter.cs</Link>
+    </Compile>
+    <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\AlwaysMatchTypeFilter.cs">
+      <Link>Support\AssemblyProviders\AlwaysMatchTypeFilter.cs</Link>
+    </Compile>
+    <Compile Update="..\Conventions.Analyzers\Support\AssemblyProviders\CompiledAssemblyFilter.cs">
+      <Link>Support\AssemblyProviders\CompiledAssemblyFilter.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
