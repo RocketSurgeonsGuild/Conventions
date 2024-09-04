@@ -61,6 +61,7 @@ public partial class Pipeline : NukeBuild,
     public Target Lint => _ => _.Inherit<ICanLint>(x => x.Lint);
     public Target Restore => _ => _;
     public Target Test => _ => _;
+    public Target GenerateDocumentation => _ => _;
 
     /// <summary>
     /// Only run the JetBrains cleanup code when running on the server
