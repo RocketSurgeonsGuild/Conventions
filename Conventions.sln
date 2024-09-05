@@ -113,6 +113,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{AE3FEC
 		.lintstagedrc.js = .lintstagedrc.js
 		NuGet.config = NuGet.config
 		package.json = package.json
+		.build/.editorconfig = .build/.editorconfig
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{7CF3978C-6394-4092-AF5D-7AD77C7D5170}"
@@ -138,6 +139,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".husky", ".husky", "{833B6922-4C63-4058-8E4A-3167489B18FA}"
 	ProjectSection(SolutionItems) = preProject
 		.husky/pre-commit = .husky/pre-commit
+		.husky/task-runner.json = .husky/task-runner.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{888D214B-CD66-4122-81D2-27C9A2B0F34F}"
@@ -166,6 +168,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.Hosting.Tests", "test\Aspire.Hosting.Tests\Aspire.Hosting.Tests.csproj", "{5A1D2C50-BDC3-4322-B6E2-E1169C4B20A9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireSample", "sample\AspireSample\AspireSample.csproj", "{8A70E596-7382-4094-B048-EBA6D9EF2CFF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{AC944243-E471-40F9-A522-7853C593947A}"
+	ProjectSection(SolutionItems) = preProject
+		.build/.editorconfig = .build/.editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
