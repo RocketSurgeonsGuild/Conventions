@@ -1,13 +1,8 @@
-using System.Collections.Immutable;
-using System.Text.Json;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
-using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
-using Nuke.Common.Tools.DocFX;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.MSBuild;
@@ -44,10 +39,7 @@ public partial class Pipeline : NukeBuild,
     ///     - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///     - Microsoft VSCode           https://nuke.build/vscode
     /// </summary>
-    public static int Main()
-    {
-        return Execute<Pipeline>(x => x.Default);
-    }
+    public static int Main() => Execute<Pipeline>(x => x.Default);
 
     [NonEntryTarget]
     private Target Default => _ => _
@@ -62,7 +54,7 @@ public partial class Pipeline : NukeBuild,
     public Target Lint => _ => _;
     public Target Restore => _ => _;
     public Target Test => _ => _;
-    public Target GenerateDocumentation => _ => _;
+    public Target Docs => _ => _;
 
     /// <summary>
     /// Only run the JetBrains cleanup code when running on the server
