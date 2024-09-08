@@ -49,6 +49,7 @@ public partial class Pipeline : NukeBuild,
         return Execute<Pipeline>(x => x.Default);
     }
 
+    [NonEntryTarget]
     private Target Default => _ => _
                                   .DependsOn(Restore)
                                   .DependsOn(Build)
@@ -58,7 +59,7 @@ public partial class Pipeline : NukeBuild,
     public Target Build => _ => _;
     public Target Pack => _ => _;
     public Target Clean => _ => _;
-    public Target Lint => _ => _.Inherit<ICanLint>(x => x.Lint);
+    public Target Lint => _ => _;
     public Target Restore => _ => _;
     public Target Test => _ => _;
     public Target GenerateDocumentation => _ => _;
