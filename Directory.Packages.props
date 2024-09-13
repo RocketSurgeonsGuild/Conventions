@@ -35,7 +35,7 @@
         <PackageVersion Include="docfx.console" Version="2.59.4" />
         <PackageVersion Include="Nuke.Common" Version="8.1.0" />
         <PackageVersion Include="ReportGenerator" Version="5.3.9" />
-        <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.8.3" />
+        <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.8.104" />
         <PackageVersion Include="Autofac" Version="9.0.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="BenchMarkDotNet" Version="0.14.0" />
