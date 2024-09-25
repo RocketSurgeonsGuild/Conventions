@@ -1,8 +1,9 @@
+using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
+using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -10,6 +11,7 @@ namespace Rocket.Surgery.Conventions;
 ///     Builder that can be used to create a context.
 /// </summary>
 [PublicAPI]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class ConventionContextBuilder
 {
     /// <summary>
@@ -24,9 +26,9 @@ public class ConventionContextBuilder
 
     // this null is used a marker to indicate where in the list is the middle
     internal readonly List<object?> _conventions = [null!,];
-    internal readonly List<Type> _exceptConventions = new();
-    internal readonly List<Assembly> _exceptAssemblyConventions = new();
-    internal readonly List<Assembly> _includeAssemblyConventions = new();
+    internal readonly List<Type> _exceptConventions = [];
+    internal readonly List<Assembly> _exceptAssemblyConventions = [];
+    internal readonly List<Assembly> _includeAssemblyConventions = [];
     internal IConventionFactory? _conventionProviderFactory;
     internal ServiceProviderFactoryAdapter? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
@@ -38,6 +40,14 @@ public class ConventionContextBuilder
     public ConventionContextBuilder(PropertiesType? properties)
     {
         Properties = new ServiceProviderDictionary(properties ?? new PropertiesDictionary());
+        // Should we do configuration?
+        if (!Enum.TryParse<HostType>(Environment.GetEnvironmentVariable("ROCKETSURGERYCONVENTIONS__HOSTTYPE"), out var hostType)
+         && !Enum.TryParse(Environment.GetEnvironmentVariable("RSG__HOSTTYPE"), out hostType))
+        {
+            return;
+        }
+
+        Properties[typeof(HostType)] = hostType;
     }
 
     /// <summary>
@@ -45,6 +55,9 @@ public class ConventionContextBuilder
     /// </summary>
     /// <value>The properties.</value>
     public IServiceProviderDictionary Properties { get; }
+
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    private string DebuggerDisplay => ToString();
 
     /// <summary>
     ///     Enables convention attributes
@@ -97,7 +110,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder UseDiagnosticLogging(Action<ILoggingBuilder> action)
     {
         ArgumentNullException.ThrowIfNull(action);
-        UseDiagnosticLogger(
+        _ = UseDiagnosticLogger(
             new ServiceCollection()
                .AddLogging(action)
                .BuildServiceProvider()
@@ -212,7 +225,6 @@ public class ConventionContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <param name="convention">The first convention</param>
-    /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependConvention(Type convention)
     {
