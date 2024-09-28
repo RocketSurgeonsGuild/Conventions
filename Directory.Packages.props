@@ -34,7 +34,7 @@
         <PackageVersion Include="GitVersion.Tool" Version="6.0.2" />
         <PackageVersion Include="docfx.console" Version="2.59.4" />
         <PackageVersion Include="Nuke.Common" Version="8.1.0" />
-        <PackageVersion Include="ReportGenerator" Version="5.3.9" />
+        <PackageVersion Include="ReportGenerator" Version="5.3.10" />
         <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.8.110" />
         <PackageVersion Include="Autofac" Version="9.0.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
