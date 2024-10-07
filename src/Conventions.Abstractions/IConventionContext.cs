@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions;
@@ -43,4 +44,9 @@ public interface IConventionContext
     /// </summary>
     /// <returns></returns>
     ConventionContextBuilder ToBuilder();
+
+    /// <summary>
+    /// The underlying configuration
+    /// </summary>
+    IConfiguration Configuration { get; }
 }

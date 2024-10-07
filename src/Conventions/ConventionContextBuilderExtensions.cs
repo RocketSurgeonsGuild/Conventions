@@ -15,28 +15,6 @@ namespace Rocket.Surgery.Conventions;
 public static class ConventionContextBuilderExtensions
 {
     /// <summary>
-    ///     Use the given app domain for resolving assemblies
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="appDomain"></param>
-    /// <returns></returns>
-    public static ConventionContextBuilder UseAppDomain(this ConventionContextBuilder builder, AppDomain appDomain)
-    {
-        return builder.UseConventionFactory(new AppDomainConventionFactory(appDomain));
-    }
-
-    /// <summary>
-    ///     Use the given set of assemblies
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="assemblies"></param>
-    /// <returns></returns>
-    public static ConventionContextBuilder UseAssemblies(this ConventionContextBuilder builder, IEnumerable<Assembly> assemblies)
-    {
-        return builder.UseConventionFactory(new AssemblyConventionFactory(assemblies));
-    }
-
-    /// <summary>
     ///     Allows creation of a service provider from the convention context.  This will apply configuration
     /// </summary>
     /// <param name="context"></param>

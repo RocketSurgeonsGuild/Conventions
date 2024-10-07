@@ -25,26 +25,6 @@ public static partial class RocketBooster
     }
 
     /// <summary>
-    ///     Fors the application domain.
-    /// </summary>
-    /// <param name="appDomain">The application domain.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAppDomain(AppDomain appDomain)
-    {
-        return (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>()).UseAppDomain(appDomain));
-    }
-
-    /// <summary>
-    ///     Fors the assemblies.
-    /// </summary>
-    /// <param name="assemblies">The assemblies.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies)
-    {
-        return (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>()).UseAssemblies(assemblies));
-    }
-
-    /// <summary>
     ///     ForTesting the specified conventions
     /// </summary>
     /// <param name="conventionProvider">The conventions provider.</param>
@@ -52,25 +32,5 @@ public static partial class RocketBooster
     public static AppDelegate For(IConventionFactory conventionProvider)
     {
         return ForConventions(conventionProvider);
-    }
-
-    /// <summary>
-    ///     Fors the specified application domain.
-    /// </summary>
-    /// <param name="appDomain">The application domain.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(AppDomain appDomain)
-    {
-        return ForAppDomain(appDomain);
-    }
-
-    /// <summary>
-    ///     Fors the specified assemblies.
-    /// </summary>
-    /// <param name="assemblies">The assemblies.</param>
-    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IEnumerable<Assembly> assemblies)
-    {
-        return ForAssemblies(assemblies);
     }
 }

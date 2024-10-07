@@ -4,7 +4,8 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\src\CommandLine\Rocket.Surgery.CommandLine.csproj" />
-    <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Hosting.Reflection\Rocket.Surgery.Hosting.Reflection.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 </Project>

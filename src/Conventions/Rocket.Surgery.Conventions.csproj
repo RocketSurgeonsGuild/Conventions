@@ -19,6 +19,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
         <PackageReference Include="Microsoft.Extensions.Configuration" />
         <PackageReference Include="System.Collections.Immutable" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Reflection" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.CommandLine" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />

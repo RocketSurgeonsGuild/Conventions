@@ -1,4 +1,5 @@
 using System.Runtime.Loader;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions.Extensions;
@@ -44,6 +45,7 @@ public sealed class ConventionContext : IConventionContext
     }
 
     private readonly ConventionContextBuilder _builder;
+    private static readonly IConfiguration _emptyConfiguration = new ConfigurationBuilder().Build();
 
     /// <summary>
     ///     Creates a base context
@@ -101,6 +103,11 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <value>The assembly provider.</value>
     public IAssemblyProvider AssemblyProvider { get; }
+
+    /// <summary>
+    /// Gets the configuration.
+    /// </summary>
+    public IConfiguration Configuration => this.Get<IConfiguration>() ?? _emptyConfiguration;
 
     /// <summary>
     ///     Return the source builder for this context (to create new contexts if required).

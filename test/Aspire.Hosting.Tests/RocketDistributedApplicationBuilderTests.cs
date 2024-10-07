@@ -12,37 +12,11 @@ namespace Aspire.Hosting.Tests;
 public partial class RocketDistributedApplicationBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
 {
     [Fact]
-    public async Task Should_UseAppDomain()
-    {
-        await using var host = await DistributedApplication
-                                    .CreateBuilder()
-                                    .ConfigureRocketSurgery(
-                                         rb => rb
-                                            .UseAppDomain(AppDomain.CurrentDomain)
-                                     );
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseAssemblies()
-    {
-        await using var host = await DistributedApplication
-                                    .CreateBuilder()
-                                    .ConfigureRocketSurgery(
-                                         rb => rb
-                                            .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
-                                     );
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task Should_UseRocketBooster()
     {
         await using var host = await DistributedApplication
                                     .CreateBuilder()
-                                    .UseRocketBooster(RocketBooster.For(AppDomain.CurrentDomain));
+                                    .UseRocketBooster(RocketBooster.For(Imports.Instance));
 
         host.Services.Should().NotBeNull();
     }
@@ -63,7 +37,7 @@ public partial class RocketDistributedApplicationBuilderTests(ITestOutputHelper 
         await using var host = await DistributedApplication
                                     .CreateBuilder()
                                     .UseRocketBooster(
-                                         RocketBooster.For(AppDomain.CurrentDomain),
+                                         RocketBooster.For(Imports.Instance),
                                          x => x.UseDiagnosticLogging(c => c.AddConsole())
                                      );
 

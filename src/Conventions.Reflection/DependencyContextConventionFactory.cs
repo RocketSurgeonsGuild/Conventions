@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyModel;
-using Rocket.Surgery.Conventions.Reflection;
 
-namespace Rocket.Surgery.Conventions;
+namespace Rocket.Surgery.Conventions.Reflection;
 
 /// <inheritdoc />
 public class DependencyContextConventionFactory(DependencyContext dependencyContext) : ConventionFactoryBase
