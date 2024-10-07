@@ -4,6 +4,7 @@
         <PackageDescription
         >Adds support for loading configuration, services, logging, command line and more via simple and easy to setup assembly attributes</PackageDescription>
         <PackageTags>$(PackageTags);reflection</PackageTags>
+        <IsTimmable>false</IsTimmable>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference
@@ -18,6 +19,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Reflection" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.CommandLine" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Abstractions" />

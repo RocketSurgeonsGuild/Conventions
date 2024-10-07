@@ -1,8 +1,5 @@
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Reflection;
 
 #pragma warning disable CA2000
 
@@ -14,28 +11,6 @@ namespace Rocket.Surgery.Conventions;
 [PublicAPI]
 public static class ConventionContextBuilderExtensions
 {
-    /// <summary>
-    ///     Use the given app domain for resolving assemblies
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="appDomain"></param>
-    /// <returns></returns>
-    public static ConventionContextBuilder UseAppDomain(this ConventionContextBuilder builder, AppDomain appDomain)
-    {
-        return builder.UseConventionFactory(new AppDomainConventionFactory(appDomain));
-    }
-
-    /// <summary>
-    ///     Use the given set of assemblies
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="assemblies"></param>
-    /// <returns></returns>
-    public static ConventionContextBuilder UseAssemblies(this ConventionContextBuilder builder, IEnumerable<Assembly> assemblies)
-    {
-        return builder.UseConventionFactory(new AssemblyConventionFactory(assemblies));
-    }
-
     /// <summary>
     ///     Allows creation of a service provider from the convention context.  This will apply configuration
     /// </summary>

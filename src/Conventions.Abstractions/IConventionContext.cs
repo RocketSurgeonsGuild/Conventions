@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket.Surgery.Conventions;
@@ -37,6 +38,11 @@ public interface IConventionContext
     ///     Get the conventions from the context
     /// </summary>
     IConventionProvider Conventions { get; }
+
+    /// <summary>
+    ///     The underlying configuration
+    /// </summary>
+    IConfiguration Configuration { get; }
 
     /// <summary>
     ///     Returns the source builder for this context

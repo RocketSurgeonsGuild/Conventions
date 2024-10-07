@@ -13,7 +13,6 @@
             ReferenceOutputAssembly="false"
         />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
-         <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="Aspire.Hosting.Tests" />

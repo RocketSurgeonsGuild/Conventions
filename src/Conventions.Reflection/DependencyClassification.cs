@@ -23,5 +23,5 @@ internal enum DependencyClassification
     /// <summary>
     ///     The reference
     /// </summary>
-    Reference = 3
+    Reference = 3,
 }

@@ -15,37 +15,11 @@ namespace Aspire.Hosting.Tests;
 public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
 {
     [Fact]
-    public async Task Should_UseAppDomain()
-    {
-        await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<AspireSample>()
-                                    .ConfigureRocketSurgery(
-                                         rb => rb
-                                            .UseAppDomain(AppDomain.CurrentDomain)
-                                     );
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseAssemblies()
-    {
-        await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<AspireSample>()
-                                    .ConfigureRocketSurgery(
-                                         rb => rb
-                                            .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
-                                     );
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task Should_UseRocketBooster()
     {
         await using var host = await DistributedApplicationTestingBuilder
                                     .CreateAsync<AspireSample>()
-                                    .LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
+                                    .LaunchWith(RocketBooster.For(Imports.Instance));
 
         host.Services.Should().NotBeNull();
     }
@@ -66,7 +40,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests(ITestOutput
         await using var host = await DistributedApplicationTestingBuilder
                                     .CreateAsync<AspireSample>()
                                     .UseRocketBooster(
-                                         RocketBooster.For(AppDomain.CurrentDomain),
+                                         RocketBooster.For(Imports.Instance),
                                          x => x.UseDiagnosticLogging(c => c.AddConsole())
                                      );
 

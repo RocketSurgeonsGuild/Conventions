@@ -1,21 +1,18 @@
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
 /// <summary>
-///     Assembly provider that uses <see cref="DependencyContext" />
-///     Implements the <see cref="IAssemblyProvider" />
+///     Assembly provider that uses <see cref="AppDomain" />
 /// </summary>
 /// <seealso cref="IAssemblyProvider" />
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
-internal class DependencyContextAssemblyProvider : IAssemblyProvider
+internal class AppDomainAssemblyProvider : IAssemblyProvider
 {
-    private readonly DependencyContext _dependencyContext;
     private readonly ILogger _logger;
     private readonly Lazy<ImmutableArray<Assembly>> _assembles;
 
@@ -23,66 +20,48 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
     [
         "mscorlib",
         "netstandard",
-        "System",
+        nameof(System),
         "System.Core",
         "System.Runtime",
         "System.Private.CoreLib",
     ];
 
+    private readonly Action<ILogger, string, string, Exception?> _logFoundAssembly = LoggerMessage.Define<string, string>(
+        LogLevel.Debug,
+        new(1337),
+        "[{AssemblyProvider}] Found assembly {AssemblyName}"
+    );
+
     /// <summary>
-    ///     Initializes a new instance of the <see cref="DependencyContextAssemblyProvider" /> class.
+    ///     Initializes a new instance of the <see cref="AppDomainAssemblyProvider" /> class.
     /// </summary>
-    /// <param name="context">The dependency contenxt to list assemblies for.</param>
-    /// <param name="logger">The logger to log out diagnostic information.</param>
-    public DependencyContextAssemblyProvider(DependencyContext context, ILogger? logger = null)
+    /// <param name="appDomain">The application domain</param>
+    /// <param name="logger">The logger to log information</param>
+    public AppDomainAssemblyProvider(AppDomain? appDomain = null, ILogger? logger = null)
     {
-        _dependencyContext = context;
-        // ReSharper disable once NullableWarningSuppressionIsUsed
-        _assembles = new(() => context.GetDefaultAssemblyNames().Select(TryLoad).Where(x => x != null).Select(z => z!).ToImmutableArray());
+        _assembles = new(
+            () =>
+                // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                ( appDomain ?? AppDomain.CurrentDomain ).GetAssemblies().Where(x => x != null!).ToImmutableArray()
+        );
         _logger = logger ?? NullLogger.Instance;
-    }
-
-    private void LogValue(Assembly value)
-    {
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        _logger.FoundAssembly(nameof(DependencyContextAssemblyProvider), value.GetName().Name!);
-    }
-
-    private Assembly? TryLoad(AssemblyName assemblyName)
-    {
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        _logger.TryingToLoadAssembly(assemblyName.Name);
-
-        try
-        {
-            return Assembly.Load(assemblyName);
-        }
-        #pragma warning disable CA1031
-        catch (Exception e)
-        {
-            _logger.FailedToLoadAssembly(assemblyName.Name, e);
-            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            return default!;
-        }
-        #pragma warning restore CA1031
     }
 
     private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
     {
-        if (candidates.Count == 0) return Enumerable.Empty<Assembly>();
+        if (!candidates.Any()) return Enumerable.Empty<Assembly>();
 
-        var candidatesResolver = new RuntimeLibraryCandidateResolver(
-            _dependencyContext.RuntimeLibraries,
-            // ReSharper disable once NullableWarningSuppressionIsUsed
-            new HashSet<string?>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase)
+        // Sometimes all the assemblies are not loaded... so we kind of have to yolo it and try a few times until we get all of them
+        var candidatesResolver = new AssemblyCandidateResolver(
+            _assembles.Value,
+            new HashSet<string?>(candidates.Select(z => z.GetName().Name), StringComparer.OrdinalIgnoreCase),
+            _logger
         );
+        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return candidatesResolver
               .GetCandidates()
-              .SelectMany(library => library.GetDefaultAssemblyNames(_dependencyContext))
-              .Select(TryLoad)
-              .Where(x => x != null)
-               // ReSharper disable once NullableWarningSuppressionIsUsed
-              .Select(z => z!)
+              .Where(x => x.Assembly is { })
+              .Select(x => x.Assembly!)
               .Reverse();
     }
 
@@ -101,7 +80,6 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
         string argumentExpression = ""
     )
     {
-        ArgumentNullException.ThrowIfNull(action);
         var selector = new AssemblyProviderAssemblySelector();
         action(selector);
         var assemblies = selector.AllAssemblies
@@ -128,7 +106,6 @@ internal class DependencyContextAssemblyProvider : IAssemblyProvider
         string argumentExpression = ""
     )
     {
-        ArgumentNullException.ThrowIfNull(selector);
         var assemblySelector = new AssemblyProviderAssemblySelector();
         selector(assemblySelector);
         var assemblies = assemblySelector.AllAssemblies

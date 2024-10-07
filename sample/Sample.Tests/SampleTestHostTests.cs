@@ -23,7 +23,7 @@ public class SampleTestHostTests : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var builder = ConventionContextBuilder.Create().ForTesting(typeof(SampleTestHostTests));
+        var builder = ConventionContextBuilder.Create().ForTesting(Imports.Instance);
         _host = await Host.CreateApplicationBuilder().ConfigureRocketSurgery(builder);
         await _host.StartAsync();
     }

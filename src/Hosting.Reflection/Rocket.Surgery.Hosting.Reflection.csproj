@@ -4,6 +4,7 @@
         <PackageDescription
         >Adds helpers to easily bootstrap an application using conventions by just using the correct extension method. This adds command line operations, additional configuration, logging and service injections by convention.</PackageDescription>
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
+        <IsTrimmable>false</IsTrimmable>
     </PropertyGroup>
     <ItemGroup>
          <ProjectReference
@@ -12,7 +13,7 @@
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
-        <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <ProjectReference Include="..\Conventions.Reflection\Rocket.Surgery.Conventions.Reflection.csproj" />
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.AspNetCore.Tests" />

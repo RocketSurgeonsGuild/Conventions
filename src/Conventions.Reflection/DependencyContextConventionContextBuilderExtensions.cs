@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyModel;
 
-namespace Rocket.Surgery.Conventions;
+namespace Rocket.Surgery.Conventions.Reflection;
 
 /// <summary>
 ///     Extensions to support dependency context

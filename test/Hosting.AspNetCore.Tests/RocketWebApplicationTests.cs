@@ -9,8 +9,10 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
+using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
+using Rocket.Surgery.Hosting.Reflection;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
@@ -42,7 +44,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     {
         await using var host = await WebApplication
                                     .CreateBuilder()
-                                    .LaunchWith(RocketBooster.For(AppDomain.CurrentDomain));
+                                    .LaunchWith(ReflectionRocketBooster.For(AppDomain.CurrentDomain));
         host.Should().BeAssignableTo<WebApplication>();
     }
 
@@ -51,7 +53,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     {
         await using var host = await WebApplication
                                     .CreateBuilder()
-                                    .LaunchWith(RocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }));
+                                    .LaunchWith(ReflectionRocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }));
         host.Should().BeAssignableTo<WebApplication>();
     }
 

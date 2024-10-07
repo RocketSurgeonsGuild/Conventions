@@ -8,7 +8,9 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
+using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
+using Rocket.Surgery.Hosting.Reflection;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.Tests;
@@ -46,7 +48,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
     {
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .UseRocketBooster(RocketBooster.For(AppDomain.CurrentDomain));
+                              .UseRocketBooster(ReflectionRocketBooster.For(AppDomain.CurrentDomain));
 
         host.Services.Should().NotBeNull();
     }
@@ -67,7 +69,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
         using var host = await Host
                               .CreateApplicationBuilder()
                               .UseRocketBooster(
-                                   RocketBooster.For(AppDomain.CurrentDomain),
+                                   ReflectionRocketBooster.For(AppDomain.CurrentDomain),
                                    x => x.UseDiagnosticLogging(c => c.AddConsole())
                                );
 

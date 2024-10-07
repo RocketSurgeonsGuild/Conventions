@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Reflection;
 using Xunit;
 
 #pragma warning disable CA1707

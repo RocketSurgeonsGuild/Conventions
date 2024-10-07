@@ -1,8 +1,8 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Extensions.Testing;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -36,14 +36,14 @@ public class TestContextTests_DependencyContext : AutoFakeTest
     [Fact]
     public void Builder_Should_Use_A_Custom_ILogger()
     {
-        var a = () => ConventionContextBuilder.Create().ForTesting(GetType(), LoggerFactory)
-                                              .WithLogger(AutoFake.Resolve<ILogger>())
+        var a = () => ConventionContextBuilder
+                     .Create()
+                     .ForTesting(GetType(), LoggerFactory)
+                     .WithLogger(AutoFake.Resolve<ILogger>())
             ;
         var context = a.Should().NotThrow().Subject;
         context.Get<ILogger>().Should().BeSameAs(AutoFake.Resolve<ILogger>());
     }
 
-    public TestContextTests_DependencyContext(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information)
-    {
-    }
+    public TestContextTests_DependencyContext(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information) { }
 }

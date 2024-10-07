@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -13,32 +12,6 @@ namespace Rocket.Surgery.Conventions.Testing;
 /// </summary>
 public static class TestConventionContextBuilderExtensions
 {
-    /// <summary>
-    ///     Create a convention test host build for the given <see cref="AppDomain" /> in the assembly.
-    /// </summary>
-    /// <param name="builder">The convention context builder.</param>
-    /// <param name="appDomain">The application domain that that will be used for the test host.</param>
-    /// <param name="loggerFactory">Optional logger factory.</param>
-    /// <param name="contentRootPath">The content root path for the host environment.</param>
-    public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder,
-        AppDomain appDomain,
-        ILoggerFactory? loggerFactory = null,
-        string? contentRootPath = null
-    )
-    {
-        EnsureConfigured(builder);
-        loggerFactory ??= NullLoggerFactory.Instance;
-        var logger = loggerFactory.CreateLogger("TestContext");
-
-        return builder
-              .Set(HostType.UnitTest)
-              .UseAppDomain(appDomain)
-              .WithLoggerFactory(loggerFactory)
-              .WithLogger(logger)
-              .WithContentRoot(contentRootPath);
-    }
-
     /// <summary>
     ///     Create a convention test host build for the given <see cref="IConventionFactory" /> in the assembly.
     /// </summary>
@@ -83,32 +56,6 @@ public static class TestConventionContextBuilderExtensions
 
         return builder
               .Set(HostType.UnitTest)
-              .WithLoggerFactory(loggerFactory)
-              .WithLogger(logger)
-              .WithContentRoot(contentRootPath);
-    }
-
-    /// <summary>
-    ///     Create a convention test host build for the given the list of assemblies.
-    /// </summary>
-    /// <param name="builder">The convention context builder.</param>
-    /// <param name="assemblies">The application domain that that will be used for the test host.</param>
-    /// <param name="loggerFactory">Optional logger factory.</param>
-    /// <param name="contentRootPath">The content root path for the host environment.</param>
-    public static ConventionContextBuilder ForTesting(
-        this ConventionContextBuilder builder,
-        IEnumerable<Assembly> assemblies,
-        ILoggerFactory? loggerFactory = null,
-        string? contentRootPath = null
-    )
-    {
-        EnsureConfigured(builder);
-        loggerFactory ??= NullLoggerFactory.Instance;
-        var logger = loggerFactory.CreateLogger("TestContext");
-
-        return builder
-              .Set(HostType.UnitTest)
-              .UseAssemblies(assemblies)
               .WithLoggerFactory(loggerFactory)
               .WithLogger(logger)
               .WithContentRoot(contentRootPath);

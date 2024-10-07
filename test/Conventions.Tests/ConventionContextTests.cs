@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions.DependencyInjection;
+using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Setup;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit.Abstractions;
