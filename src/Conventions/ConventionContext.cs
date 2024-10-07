@@ -44,8 +44,9 @@ public sealed class ConventionContext : IConventionContext
         return new(builder, provider, assemblyProvider, builder.Properties);
     }
 
-    private readonly ConventionContextBuilder _builder;
     private static readonly IConfiguration _emptyConfiguration = new ConfigurationBuilder().Build();
+
+    private readonly ConventionContextBuilder _builder;
 
     /// <summary>
     ///     Creates a base context
@@ -105,7 +106,7 @@ public sealed class ConventionContext : IConventionContext
     public IAssemblyProvider AssemblyProvider { get; }
 
     /// <summary>
-    /// Gets the configuration.
+    ///     Gets the configuration.
     /// </summary>
     public IConfiguration Configuration => this.Get<IConfiguration>() ?? _emptyConfiguration;
 

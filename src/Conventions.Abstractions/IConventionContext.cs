@@ -40,13 +40,13 @@ public interface IConventionContext
     IConventionProvider Conventions { get; }
 
     /// <summary>
+    ///     The underlying configuration
+    /// </summary>
+    IConfiguration Configuration { get; }
+
+    /// <summary>
     ///     Returns the source builder for this context
     /// </summary>
     /// <returns></returns>
     ConventionContextBuilder ToBuilder();
-
-    /// <summary>
-    /// The underlying configuration
-    /// </summary>
-    IConfiguration Configuration { get; }
 }

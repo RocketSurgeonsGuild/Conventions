@@ -1,8 +1,5 @@
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Reflection;
 
 #pragma warning disable CA2000
 

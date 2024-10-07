@@ -1,4 +1,3 @@
-using System.Reflection;
 using Rocket.Surgery.Conventions;
 using AppDelegate =
     System.Func<Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder, System.Threading.CancellationToken,

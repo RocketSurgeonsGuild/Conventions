@@ -15,7 +15,6 @@ namespace Rocket.Surgery.Conventions.Reflection;
 /// </summary>
 public static class DependencyModelTestConventionContextBuilderExtensions
 {
-
     /// <summary>
     ///     Create a convention test host build for the given <see cref="AppDomain" /> in the assembly.
     /// </summary>
