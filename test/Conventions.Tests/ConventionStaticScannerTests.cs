@@ -20,7 +20,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     public void ShouldBuildAProvider()
     {
         var scanner = ConventionContextHelpers.CreateProvider(
-            new ConventionContextBuilder(new Dictionary<object, object?>()).UseConventionFactory(Imports.Instance),
+            new ConventionContextBuilder(new Dictionary<object, object?>(), []).UseConventionFactory(Imports.Instance),
             new TestAssemblyProvider(),
             Logger
         );
@@ -58,8 +58,8 @@ public class ConventionStaticScannerTests : AutoFakeTest
         var @delegate = new ServiceConvention((_, _, _) => { });
         var delegate2 = new ServiceConvention((_, _, _) => { });
 
-        scanner.PrependDelegate(delegate2);
-        scanner.AppendDelegate(@delegate);
+        scanner.PrependDelegate(delegate2, null, null);
+        scanner.AppendDelegate(@delegate, null, null);
 
         var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<IAssemblyProvider>(), Logger);
 

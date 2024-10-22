@@ -47,7 +47,7 @@ internal class ConventionProvider : IConventionProvider
                {
                    IConventionMetadata cwd => new(cwd),
                    IConvention convention  => FromConvention(convention),
-                   Delegate d              => new(d, 0),
+                   Delegate d              => new(d, 0, default),
                    ConventionOrDelegate d  => d,
                    _                       => ConventionOrDelegate.None,
                };
@@ -59,7 +59,8 @@ internal class ConventionProvider : IConventionProvider
         var dependencies =
             type.GetCustomAttributes().OfType<IConventionDependency>().ToArray();
         var hostType = convention.GetType().GetCustomAttributes().OfType<IHostBasedConvention>().FirstOrDefault()?.HostType ?? HostType.Undefined;
-        return new(convention, hostType, dependencies);
+        var category = convention.GetType().GetCustomAttribute<ConventionCategoryAttribute>()?.Category ?? ConventionCategory.Application;
+        return new(convention, hostType, category, dependencies);
     }
 
     private static object? ToObject(ConventionOrDelegate delegateOrConvention)
@@ -75,15 +76,21 @@ internal class ConventionProvider : IConventionProvider
     ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
     /// </summary>
     /// <param name="hostType"></param>
+    /// <param name="categories"></param>
     /// <param name="contributions">The contributions.</param>
-    public ConventionProvider(HostType hostType, List<object?> contributions) : this(hostType, contributions.Where(z => z is { }).Select(FromConvention)) { }
+    public ConventionProvider(HostType hostType, ImmutableHashSet<ConventionCategory> categories, List<object?> contributions) : this(
+        hostType,
+        categories,
+        contributions.Where(z => z is { }).Select(FromConvention)
+    ) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
     /// </summary>
     /// <param name="hostType"></param>
+    /// <param name="categories"></param>
     /// <param name="contributions">The contributions.</param>
-    private ConventionProvider(HostType hostType, IEnumerable<ConventionOrDelegate> contributions)
+    private ConventionProvider(HostType hostType, ImmutableHashSet<ConventionCategory> categories, IEnumerable<ConventionOrDelegate> contributions)
     {
         _hostType = hostType;
         _conventions = new(
@@ -91,7 +98,12 @@ internal class ConventionProvider : IConventionProvider
             {
                 var contributionsList = contributions as IReadOnlyCollection<ConventionOrDelegate> ?? contributions.ToArray();
 
-                var c = contributionsList;
+                var c = contributionsList.AsEnumerable();
+                if (categories.Any())
+                {
+                    c = c.Where(z => categories.Contains(z.Category));
+                }
+
                 if (!c.Any(z => z.Dependencies.Length > 0)) return [..c.OrderBy(z => z.Priority),];
                 var conventions = c
                                  .Where(x => x.Convention != null)

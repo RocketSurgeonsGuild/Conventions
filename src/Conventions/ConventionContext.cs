@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -21,7 +23,7 @@ public sealed class ConventionContext : IConventionContext
     /// <returns></returns>
     public static async ValueTask<IConventionContext> FromAsync(ConventionContextBuilder builder, CancellationToken cancellationToken = default)
     {
-        var context = FromInitInternal(builder);
+        var context = FromInitInternal(builder, Assembly.GetCallingAssembly());
         if (context.Properties.ContainsKey(ConventionsSetup)) return context;
 
         await context.ApplyConventionsAsync(cancellationToken);
@@ -31,17 +33,18 @@ public sealed class ConventionContext : IConventionContext
 
     private const string ConventionsSetup = "__ConventionsSetup__" + nameof(ConventionContext);
 
-    private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
+    private static ConventionContext FromInitInternal(ConventionContextBuilder builder, Assembly callerAssembly)
     {
         builder.AddIfMissing(AssemblyLoadContext.Default);
-        if (builder._conventionProviderFactory is null) throw new NotSupportedException("The convention provider factory must be set on the builder");
+        builder._conventionProviderFactory ??= ImportHelpers.CallerConventions(callerAssembly);
+        if (builder._conventionProviderFactory is null) throw new InvalidOperationException("No convention provider factory was found");
 
         // ReSharper disable once NullableWarningSuppressionIsUsed
         var assemblyProvider = builder._conventionProviderFactory!.CreateAssemblyProvider(builder);
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyProvider, builder.Get<ILogger>());
         // ReSharper disable once NullableWarningSuppressionIsUsed
         builder.Properties.Set(builder._serviceProviderFactory!);
-        return new(builder, provider, assemblyProvider, builder.Properties);
+        return new(builder, provider, assemblyProvider);
     }
 
     private static readonly IConfiguration _emptyConfiguration = new ConfigurationBuilder().Build();
@@ -53,20 +56,29 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionProvider"></param>
-    /// <param name="properties"></param>
     /// <param name="assemblyProvider"></param>
     private ConventionContext(
         ConventionContextBuilder builder,
         IConventionProvider conventionProvider,
-        IAssemblyProvider assemblyProvider,
-        IServiceProviderDictionary properties
+        IAssemblyProvider assemblyProvider
     )
     {
         _builder = builder;
         Conventions = conventionProvider;
         AssemblyProvider = assemblyProvider;
-        Properties = properties;
+        Properties = builder.Properties;
+        Categories = builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer);
     }
+
+    /// <summary>
+    ///     The host type
+    /// </summary>
+    public HostType HostType => this.GetHostType();
+
+    /// <summary>
+    ///     The categories of the convention context
+    /// </summary>
+    public ImmutableHashSet<ConventionCategory> Categories { get; set; }
 
     /// <summary>
     ///     A central location for sharing state between components during the convention building process.

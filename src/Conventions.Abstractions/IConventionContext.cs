@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -9,6 +10,16 @@ namespace Rocket.Surgery.Conventions;
 [PublicAPI]
 public interface IConventionContext
 {
+    /// <summary>
+    ///     The underlying host type
+    /// </summary>
+    HostType HostType { get; }
+
+    /// <summary>
+    ///     The categories of the convention context
+    /// </summary>
+    ImmutableHashSet<ConventionCategory> Categories { get; }
+
     /// <summary>
     ///     Allows a context to hold additional information for conventions to consume such as configuration objects
     /// </summary>

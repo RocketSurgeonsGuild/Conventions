@@ -22,7 +22,7 @@ public static class RocketWebAssemblyExtensions
     {
         var contextBuilder = _weakTable.TryGetValue(builder, out var ccb)
             ? ccb
-            : new(new Dictionary<object, object>());
+            : new(new Dictionary<object, object>(), []);
         ccb = ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
             ? contextBuilder.UseConventionFactory(impliedFactory)
             : contextBuilder;

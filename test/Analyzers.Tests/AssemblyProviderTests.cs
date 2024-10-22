@@ -212,7 +212,7 @@ using Rocket.Surgery.Conventions;
                           .Build()
                           .GenerateAsync();
 
-        await Verify(result).UseHashedParameters(getTypesItem.Name);
+        await Verify(result).UseParameters(getTypesItem.Name).HashParameters();
     }
 
 
@@ -251,7 +251,7 @@ using Rocket.Surgery.Conventions;
                          .GenerateAsync();
 
         var diags = other.FinalDiagnostics.Where(x => x.Severity >= DiagnosticSeverity.Error).ToArray();
-        if (diags.Length > 0) await Verify(diags).UseHashedParameters(getTypesItem.Name);
+        if (diags.Length > 0) await Verify(diags).UseParameters(getTypesItem.Name).HashParameters();
 
         other.EnsureDiagnosticSeverity(DiagnosticSeverity.Error);
 
@@ -270,6 +270,6 @@ using Rocket.Surgery.Conventions;
                           .Build()
                           .GenerateAsync();
 
-        await Verify(result).UseHashedParameters(getTypesItem.Name);
+        await Verify(result).UseParameters(getTypesItem.Name).HashParameters();
     }
 }

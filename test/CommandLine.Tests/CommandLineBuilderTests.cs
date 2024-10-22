@@ -42,9 +42,9 @@ public class CommandLineBuilderTests : AutoFakeTest
         a.Should().NotThrow();
         a = () => { builder.AppendConvention(A.Fake<ICommandLineConvention>()); };
         a.Should().NotThrow();
-        a = () => { builder.PrependDelegate(new ServiceConvention((context, configuration, services) => { })); };
+        a = () => { builder.PrependDelegate(new ServiceConvention((context, configuration, services) => { }), null, null); };
         a.Should().NotThrow();
-        a = () => { builder.AppendDelegate(new ServiceConvention((context, configuration, services) => { })); };
+        a = () => { builder.AppendDelegate(new ServiceConvention((context, configuration, services) => { }), null, null); };
         a.Should().NotThrow();
     }
 

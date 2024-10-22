@@ -19,4 +19,9 @@ public interface IConventionMetadata
     ///     The host type of the convention
     /// </summary>
     HostType HostType { get; }
+
+    /// <summary>
+    ///     The category of the convention
+    /// </summary>
+    ConventionCategory Category { get; }
 }

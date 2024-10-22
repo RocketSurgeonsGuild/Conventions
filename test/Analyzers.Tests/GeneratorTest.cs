@@ -11,17 +11,17 @@ public abstract class GeneratorTest(ITestOutputHelper outputHelper) : LoggerTest
 
     protected GeneratorTestContextBuilder WithSharedDeps()
     {
-        return Builder = Builder.AddSharedDeps();
+        return Builder.AddSharedDeps();
     }
 
     protected GeneratorTestContextBuilder WithGenericSharedDeps()
     {
-        return Builder = Builder.AddSharedGenericDeps();
+        return Builder.AddSharedGenericDeps();
     }
 
     protected GeneratorTestContextBuilder Configure(Func<GeneratorTestContextBuilder, GeneratorTestContextBuilder> builder)
     {
-        return Builder = builder(Builder);
+        return builder(Builder);
     }
 
     public virtual Task InitializeAsync()

@@ -18,13 +18,20 @@ public class ConventionContextBuilder
     ///     Create a default context builder
     /// </summary>
     /// <param name="properties"></param>
+    /// <param name="categories"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder Create(PropertiesType? properties = null)
+    public static ConventionContextBuilder Create(PropertiesType? properties = null, params ConventionCategory[] categories)
     {
-        return new(properties ?? new PropertiesDictionary());
+        return new(properties ?? new PropertiesDictionary(), categories);
     }
 
+    private static string[] categoryEnvironmentVariables =
+        ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES",];
+
+    private static string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE",];
+
     // this null is used a marker to indicate where in the list is the middle
+    // ReSharper disable once NullableWarningSuppressionIsUsed
     internal readonly List<object?> _conventions = [null!,];
     internal readonly List<Type> _exceptConventions = [];
     internal readonly List<Assembly> _exceptAssemblyConventions = [];
@@ -37,18 +44,34 @@ public class ConventionContextBuilder
     ///     Create a context builder with a set of properties
     /// </summary>
     /// <param name="properties"></param>
-    public ConventionContextBuilder(PropertiesType? properties)
+    /// <param name="categories"></param>
+    public ConventionContextBuilder(PropertiesType? properties, IEnumerable<ConventionCategory> categories)
     {
         Properties = new ServiceProviderDictionary(properties ?? new PropertiesDictionary());
-        // Should we do configuration?
-        if (!Enum.TryParse<HostType>(Environment.GetEnvironmentVariable("ROCKETSURGERYCONVENTIONS__HOSTTYPE"), out var hostType)
-         && !Enum.TryParse(Environment.GetEnvironmentVariable("RSG__HOSTTYPE"), out hostType))
+
+        foreach (var variable in hostTypeEnvironmentVariables)
         {
-            return;
+            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } hostType) continue;
+            Properties[typeof(HostType)] = hostType;
         }
 
-        Properties[typeof(HostType)] = hostType;
+        var categoriesBuilder = new List<ConventionCategory>();
+        foreach (var variable in categoryEnvironmentVariables)
+        {
+            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } category) continue;
+            foreach (var item in category.Split(',', StringSplitOptions.RemoveEmptyEntries))
+            {
+                categoriesBuilder.Add(new(item));
+            }
+        }
+
+        Categories = new(categoriesBuilder, ConventionCategory.ValueComparer);
     }
+
+    /// <summary>
+    ///     The categories of the convention context
+    /// </summary>
+    public HashSet<ConventionCategory> Categories { get; }
 
     /// <summary>
     ///     A central location for sharing state between components during the convention building process.
@@ -118,18 +141,6 @@ public class ConventionContextBuilder
                .CreateLogger("DiagnosticLogger")
         );
 
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds a set of delegates to the scanner
-    /// </summary>
-    /// <param name="delegate">The initial delegate</param>
-    /// <param name="priority">The priority of the delegate.</param>
-    /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder AddDelegate(Delegate @delegate, int priority)
-    {
-        _conventions.Add(new ConventionOrDelegate(@delegate, priority));
         return this;
     }
 
@@ -247,10 +258,12 @@ public class ConventionContextBuilder
     ///     Adds a set of delegates to the scanner
     /// </summary>
     /// <param name="delegates">The conventions.</param>
+    /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder AppendDelegate(IEnumerable<Delegate> delegates)
+    public ConventionContextBuilder AppendDelegate(IEnumerable<Delegate> delegates, int? priority, ConventionCategory? category)
     {
-        _conventions.AddRange(delegates);
+        _conventions.AddRange(delegates.Select(z => (object)new ConventionOrDelegate(z, priority ?? 0, category)));
         return this;
     }
 
@@ -258,10 +271,12 @@ public class ConventionContextBuilder
     ///     Adds a set of delegates to the scanner
     /// </summary>
     /// <param name="delegate">The initial delegate</param>
+    /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder AppendDelegate(Delegate @delegate)
+    public ConventionContextBuilder AppendDelegate(Delegate @delegate, int? priority, ConventionCategory? category)
     {
-        _conventions.Add(@delegate);
+        _conventions.Add(new ConventionOrDelegate(@delegate, priority ?? 0, category));
         return this;
     }
 
@@ -269,10 +284,12 @@ public class ConventionContextBuilder
     ///     Adds a set of delegates to the scanner
     /// </summary>
     /// <param name="delegates">The conventions.</param>
+    /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder PrependDelegate(IEnumerable<Delegate> delegates)
+    public ConventionContextBuilder PrependDelegate(IEnumerable<Delegate> delegates, int? priority, ConventionCategory? category)
     {
-        _conventions.InsertRange(0, delegates);
+        _conventions.InsertRange(0, delegates.Select(z => (object)new ConventionOrDelegate(z, priority ?? 0, category)));
         return this;
     }
 
@@ -280,10 +297,12 @@ public class ConventionContextBuilder
     ///     Adds a set of delegates to the scanner
     /// </summary>
     /// <param name="delegate">The initial delegate</param>
+    /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
-    public ConventionContextBuilder PrependDelegate(Delegate @delegate)
+    public ConventionContextBuilder PrependDelegate(Delegate @delegate, int? priority, ConventionCategory? category)
     {
-        _conventions.Insert(0, @delegate);
+        _conventions.Insert(0, new ConventionOrDelegate(@delegate, priority ?? 0, category));
         return this;
     }
 

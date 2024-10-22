@@ -101,10 +101,7 @@ internal static partial class ConventionContextHelpers
             builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null), GetAssemblyConventions(builder, assemblyProvider, logger));
         }
 
-        return new ConventionProvider(
-            builder.GetHostType(),
-            builder._conventions
-        );
+        return new ConventionProvider(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), builder._conventions);
     }
 
     [LoggerMessage(1337, LogLevel.Debug, "Scanning for conventions in assemblies: {Assemblies}")]

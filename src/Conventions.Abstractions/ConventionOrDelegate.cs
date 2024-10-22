@@ -33,6 +33,26 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
         Dependencies = dependencies
                       .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
                       .ToArray();
+        Category = ConventionCategory.Application;
+    }
+
+    /// <summary>
+    ///     Create a convention
+    /// </summary>
+    /// <param name="convention">The convention.</param>
+    /// <param name="hostType">The host type.</param>
+    /// <param name="dependencies">The dependencies.</param>
+    /// <param name="category">The category.</param>
+    internal ConventionOrDelegate(IConvention convention, HostType hostType, ConventionCategory category, IEnumerable<IConventionDependency> dependencies)
+    {
+        Convention = convention;
+        Delegate = default;
+        Priority = convention.Priority;
+        HostType = hostType;
+        Dependencies = dependencies
+                      .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
+                      .ToArray();
+        Category = category;
     }
 
     /// <summary>
@@ -49,6 +69,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
                       .Dependencies
                       .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
                       .ToArray();
+        Category = convention.Category;
     }
 
     /// <summary>
@@ -56,13 +77,15 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     /// </summary>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
-    internal ConventionOrDelegate(Delegate @delegate, int priority)
+    /// <param name="category">The category.</param>
+    internal ConventionOrDelegate(Delegate @delegate, int priority, ConventionCategory? category)
     {
         Convention = default;
         Delegate = @delegate;
         Priority = priority;
         HostType = HostType.Undefined;
         Dependencies = [];
+        Category = category ?? ConventionCategory.Application;
     }
 
     /// <summary>
@@ -70,6 +93,12 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     /// </summary>
     /// <value>The convention.</value>
     public IConvention? Convention { get; }
+
+    /// <summary>
+    ///     The convention, only Convention or Delegate are available
+    /// </summary>
+    /// <value>The convention.</value>
+    public ConventionCategory Category { get; }
 
     /// <summary>
     ///     The dependencies of this item

@@ -21,7 +21,7 @@ public static partial class Exports
     /// </summary>
     public static IEnumerable<IConventionMetadata> GetConventions(ConventionContextBuilder builder)
     {
-        yield return new ConventionMetadata(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined);
+        yield return new ConventionMetadata(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined, ConventionCategory.Application);
     }
 }
 #pragma warning restore CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669

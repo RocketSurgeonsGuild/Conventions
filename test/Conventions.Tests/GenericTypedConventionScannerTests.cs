@@ -24,7 +24,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldBuildAProvider()
     {
         var scanner = ConventionContextHelpers.CreateProvider(
-            new(new Dictionary<object, object?>()),
+            new(new Dictionary<object, object?>(), []),
             new TestAssemblyProvider(),
             Logger
         );
@@ -76,8 +76,8 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var @delegate = new ServiceConvention((_, _, _) => { });
         var delegate2 = new ServiceConvention((_, _, _) => { });
 
-        scanner.PrependDelegate(delegate2);
-        scanner.AppendDelegate(@delegate);
+        scanner.PrependDelegate(delegate2, null, null);
+        scanner.AppendDelegate(@delegate, null, null);
 
         var provider = ConventionContextHelpers.CreateProvider(scanner, finder, Logger);
 

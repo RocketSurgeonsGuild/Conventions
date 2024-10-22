@@ -354,6 +354,33 @@ namespace Rocket.Surgery.Conventions.Tests
     }
 
     [Theory]
+    [InlineData("Custom")]
+    [InlineData("Infrastructure")]
+    [InlineData("Application")]
+    public async Task Should_Support_Category_Conventions(string category)
+    {
+        var result = await WithGenericSharedDeps()
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions.Tests;
+
+[assembly: Convention<Contrib>]
+
+namespace Rocket.Surgery.Conventions.Tests
+{
+    [ConventionCategory(""{Category}"")]
+    internal class Contrib : IConvention { }
+}
+".Replace("{Category}", category, StringComparison.OrdinalIgnoreCase)
+                           )
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseTextForParameters(category);
+    }
+
+    [Theory]
     [InlineData("AfterConventionAttribute")]
     [InlineData("DependsOnConventionAttribute")]
     [InlineData("BeforeConventionAttribute")]
