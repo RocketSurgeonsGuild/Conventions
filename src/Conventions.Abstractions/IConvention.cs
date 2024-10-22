@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-#pragma warning disable CA1040
+﻿#pragma warning disable CA1040
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>

@@ -1,10 +1,7 @@
 using System.Collections.Immutable;
-using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Rocket.Surgery.Conventions.Support;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 // ReSharper disable UnusedVariable
 namespace Rocket.Surgery.Conventions;

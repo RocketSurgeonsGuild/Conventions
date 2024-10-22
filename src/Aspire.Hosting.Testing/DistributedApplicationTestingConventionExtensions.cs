@@ -21,7 +21,8 @@ public static class DistributedApplicationTestingConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedTestingApplication(
         this ConventionContextBuilder container,
         DistributedApplicationTestingConvention @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -40,7 +41,8 @@ public static class DistributedApplicationTestingConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedTestingApplication(
         this ConventionContextBuilder container,
         DistributedApplicationTestingAsyncConvention @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -59,7 +61,8 @@ public static class DistributedApplicationTestingConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedTestingApplication(
         this ConventionContextBuilder container,
         Action<IDistributedApplicationTestingBuilder> @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -79,7 +82,8 @@ public static class DistributedApplicationTestingConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedTestingApplication(
         this ConventionContextBuilder container,
         Func<IDistributedApplicationTestingBuilder, ValueTask> @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -99,12 +103,17 @@ public static class DistributedApplicationTestingConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedTestingApplication(
         this ConventionContextBuilder container,
         Func<IDistributedApplicationTestingBuilder, CancellationToken, ValueTask> @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new DistributedApplicationTestingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority, category);
+        container.AppendDelegate(
+            new DistributedApplicationTestingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)),
+            priority,
+            category
+        );
         return container;
     }
 }

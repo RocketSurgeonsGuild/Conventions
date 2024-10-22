@@ -11,12 +11,12 @@ namespace Rocket.Surgery.Conventions;
 public interface IConventionContext
 {
     /// <summary>
-    /// The underlying host type
+    ///     The underlying host type
     /// </summary>
     HostType HostType { get; }
 
     /// <summary>
-    /// The categories of the convention context
+    ///     The categories of the convention context
     /// </summary>
     ImmutableHashSet<ConventionCategory> Categories { get; }
 
