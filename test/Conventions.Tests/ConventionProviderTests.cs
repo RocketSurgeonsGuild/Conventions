@@ -90,7 +90,7 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var b = new B();
         var d1 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), 0, new("Custom"));
-        var d2 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MinValue, ConventionCategory.Infrastructure);
+        var d2 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MinValue, ConventionCategory.Core);
         var d3 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MaxValue, ConventionCategory.Application);
         var c = new C();
         var d = new D();
@@ -123,7 +123,7 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
                 d,
                 f,
                 new ConventionMetadata(b, HostType.Undefined, ConventionCategory.Application).WithDependency(DependencyDirection.DependsOn, typeof(C)),
-                new ConventionMetadata(c, HostType.Undefined, ConventionCategory.Infrastructure).WithDependency(DependencyDirection.DependentOf, typeof(D)),
+                new ConventionMetadata(c, HostType.Undefined, ConventionCategory.Core).WithDependency(DependencyDirection.DependentOf, typeof(D)),
                 e,
             ]
         );
@@ -181,7 +181,7 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
            .UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
     }
 
-    [ConventionCategory(ConventionCategory.Infrastructure)]
+    [ConventionCategory(ConventionCategory.Core)]
     [DependentOfConvention(typeof(C))]
     private sealed class B : IConvention;
 
@@ -222,8 +222,8 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application),];
         yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom")),];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Infrastructure),];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Infrastructure, new("Custom")),];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core),];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core, new("Custom")),];
         yield return [hostType, ImmutableArray.Create(new ConventionCategory("Custom")),];
     }
 }

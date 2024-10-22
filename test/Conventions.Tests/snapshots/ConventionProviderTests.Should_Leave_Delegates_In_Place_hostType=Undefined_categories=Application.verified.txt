@@ -1,6 +1,6 @@
 ﻿[
-  <Should_Leave_Delegates_In_Place>b__3_0,
+  <Should_Leave_Delegates_In_Place>b__4_0,
   D,
-  <Should_Leave_Delegates_In_Place>b__3_1,
-  <Should_Leave_Delegates_In_Place>b__3_2
+  <Should_Leave_Delegates_In_Place>b__4_1,
+  <Should_Leave_Delegates_In_Place>b__4_2
 ]

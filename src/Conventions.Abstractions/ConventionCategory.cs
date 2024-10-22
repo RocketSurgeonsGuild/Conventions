@@ -39,7 +39,7 @@ public sealed class ConventionCategory(string name)
     /// <summary>
     ///     This convention is to load for any infrastructure bits (serializer, logging, etc)
     /// </summary>
-    public const string Infrastructure = nameof(Infrastructure);
+    public const string Core = nameof(Core);
 
     /// <summary>
     ///     Implicitly convert to a string
