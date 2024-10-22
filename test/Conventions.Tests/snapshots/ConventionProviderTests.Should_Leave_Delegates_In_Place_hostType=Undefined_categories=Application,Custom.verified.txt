@@ -1,0 +1,7 @@
+﻿[
+  <Should_Leave_Delegates_In_Place>b__3_0,
+  E,
+  D,
+  <Should_Leave_Delegates_In_Place>b__3_1,
+  <Should_Leave_Delegates_In_Place>b__3_2
+]

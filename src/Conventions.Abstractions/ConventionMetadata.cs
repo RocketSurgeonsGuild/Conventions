@@ -13,11 +13,25 @@ public sealed class ConventionMetadata : IConventionMetadata
     /// </summary>
     /// <param name="convention"></param>
     /// <param name="hostType"></param>
-    /// <param name="priority"></param>
     public ConventionMetadata(IConvention convention, HostType hostType)
     {
         Convention = convention;
         HostType = hostType;
+        _dependencies = new();
+        Category = ConventionCategory.Application;
+    }
+
+    /// <summary>
+    ///     The default constructor
+    /// </summary>
+    /// <param name="convention"></param>
+    /// <param name="hostType"></param>
+    /// <param name="category"></param>
+    public ConventionMetadata(IConvention convention, HostType hostType, ConventionCategory category)
+    {
+        Convention = convention;
+        HostType = hostType;
+        Category = category;
         _dependencies = new();
     }
 
@@ -43,4 +57,6 @@ public sealed class ConventionMetadata : IConventionMetadata
 
     /// <inheritdoc />
     public HostType HostType { get; }
+
+    public ConventionCategory Category { get; }
 }

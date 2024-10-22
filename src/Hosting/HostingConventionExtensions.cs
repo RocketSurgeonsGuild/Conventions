@@ -16,16 +16,17 @@ public static class HostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication<TBuilder>(
         this ConventionContextBuilder container,
         HostApplicationConvention<TBuilder> @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
         where TBuilder : IHostApplicationBuilder
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate);
+        container.AppendDelegate(@delegate, priority , category);
         return container;
     }
 
@@ -35,16 +36,17 @@ public static class HostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication<TBuilder>(
         this ConventionContextBuilder container,
         HostApplicationAsyncConvention<TBuilder> @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
         where TBuilder : IHostApplicationBuilder
     {
         ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate);
+        container.AppendDelegate(@delegate, priority , category);
         return container;
     }
 
@@ -54,17 +56,18 @@ public static class HostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication<TBuilder>(
         this ConventionContextBuilder container,
         Action<TBuilder> @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
         where TBuilder : IHostApplicationBuilder
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new HostApplicationConvention<TBuilder>((_, builder) => @delegate(builder)));
+        container.AppendDelegate(new HostApplicationConvention<TBuilder>((_, builder) => @delegate(builder)), priority , category);
         return container;
     }
 
@@ -74,17 +77,18 @@ public static class HostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication<TBuilder>(
         this ConventionContextBuilder container,
         Func<IHostApplicationBuilder, ValueTask> @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
         where TBuilder : IHostApplicationBuilder
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new HostApplicationAsyncConvention<TBuilder>((_, builder, _) => @delegate(builder)));
+        container.AppendDelegate(new HostApplicationAsyncConvention<TBuilder>((_, builder, _) => @delegate(builder)), priority , category);
         return container;
     }
 
@@ -94,17 +98,18 @@ public static class HostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>IConventionHostBuilder.</returns>
     public static ConventionContextBuilder ConfigureApplication<TBuilder>(
         this ConventionContextBuilder container,
         Func<IHostApplicationBuilder, CancellationToken, ValueTask> @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
         where TBuilder : IHostApplicationBuilder
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new HostApplicationAsyncConvention<TBuilder>((_, builder, cancellationToken) => @delegate(builder, cancellationToken)));
+        container.AppendDelegate(new HostApplicationAsyncConvention<TBuilder>((_, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority , category);
         return container;
     }
 }

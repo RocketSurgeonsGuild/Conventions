@@ -23,7 +23,7 @@ namespace TestProject.Conventions
         /// </summary>
         public static IEnumerable<IConventionMetadata> GetConventions(ConventionContextBuilder builder)
         {
-            yield return new ConventionMetadata(new Rocket.Surgery.LaunchPad.Mapping.AutoMapperConvention(builder.Properties.GetService<Rocket.Surgery.LaunchPad.Mapping.AutoMapperOptions>()), HostType.Undefined);
+            yield return new ConventionMetadata(new Rocket.Surgery.LaunchPad.Mapping.AutoMapperConvention(builder.Properties.GetService<Rocket.Surgery.LaunchPad.Mapping.AutoMapperOptions>()), HostType.Undefined, ConventionCategory.Application);
         }
     }
 }

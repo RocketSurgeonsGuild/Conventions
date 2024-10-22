@@ -38,7 +38,7 @@ public partial class StaticConventionTests
 
         var items = list.As<IEnumerable<IConventionMetadata>>().Should().NotBeNull().And.Subject;
 
-        var provider = new ConventionProvider(HostType.Undefined, items.Cast<object>().ToList());
+        var provider = new ConventionProvider(HostType.Undefined, [], items.Cast<object>().ToList());
         var a = () => provider.GetAll();
 
         a.Should().NotThrow();

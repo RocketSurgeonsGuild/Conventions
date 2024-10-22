@@ -24,10 +24,10 @@ namespace Source.Space
         /// </summary>
         public static IEnumerable<IConventionMetadata> GetConventions(ConventionContextBuilder builder)
         {
-            yield return new ConventionMetadata(new Contrib1(), HostType.Undefined);
-            yield return new ConventionMetadata(new Contrib2(), HostType.Undefined);
-            yield return new ConventionMetadata(new Contrib3(), HostType.Undefined);
-            yield return new ConventionMetadata(new Contrib4(), HostType.Undefined);
+            yield return new ConventionMetadata(new Contrib1(), HostType.Undefined, ConventionCategory.Application);
+            yield return new ConventionMetadata(new Contrib2(), HostType.Undefined, ConventionCategory.Application);
+            yield return new ConventionMetadata(new Contrib3(), HostType.Undefined, ConventionCategory.Application);
+            yield return new ConventionMetadata(new Contrib4(), HostType.Undefined, ConventionCategory.Application);
         }
     }
 }

@@ -35,6 +35,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationBuilderEnvironmentDelegate);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationOptionsExtensions);
+                        yield return typeof(global::Rocket.Surgery.Conventions.ConventionCategory);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContext);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilder);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilderExtensions);

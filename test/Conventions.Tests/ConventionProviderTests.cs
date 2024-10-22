@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Immutable;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -6,13 +7,15 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit.Abstractions;
+using VerifyTests;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
 public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper, LogLevel.Information)
 {
-    [Fact]
-    public void Should_Sort_Conventions_Correctly()
+    [Theory]
+    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    public async Task Should_Sort_Conventions_Correctly(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
         var c = new C();
@@ -21,18 +24,17 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         var f = new F();
 
         var provider = new ConventionProvider(
-            HostType.Undefined,
+            hostType,
+            [..categories],
             [d, f, b, c, e,]
         );
 
-        provider
-           .GetAll()
-           .Should()
-           .ContainInOrder(e, d, b);
+        await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Fact]
-    public void Should_Not_Affect_Default_Sort_Order()
+    [Theory]
+    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    public async Task Should_Not_Affect_Default_Sort_Order(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
         var c = new C();
@@ -41,18 +43,17 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         var f = new F();
 
         var provider = new ConventionProvider(
-            HostType.Undefined,
+            hostType,
+            [..categories],
             [d, b, c, e, f,]
         );
 
-        provider
-           .GetAll()
-           .Should()
-           .ContainInOrder(e, d, b);
+        await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Fact]
-    public void Should_Leave_Delegates_In_Place()
+    [Theory]
+    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    public async Task Should_Leave_Delegates_In_Place(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
         var d1 = new ServiceConvention((_, _, _) => { });
@@ -64,51 +65,34 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         var f = new F();
 
         var provider = new ConventionProvider(
-            HostType.Undefined,
+            hostType,
+            [..categories],
             [d1, d, d2, b, c, e, d3, f,]
         );
 
-        provider
-           .GetAll()
-           .Should()
-           .ContainInOrder(
-                d1,
-                e,
-                d,
-                d2,
-                b,
-                d3
-            );
+        await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Fact]
-    public void Should_Leave_Delegates_In_Place_Order_Delegates()
+    [Theory]
+    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    public async Task Should_Leave_Delegates_In_Place_Order_Delegates(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
-        var d1 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), 0);
-        var d2 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MinValue);
-        var d3 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MaxValue);
+        var d1 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), 0, new("Custom"));
+        var d2 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MinValue, ConventionCategory.Infrastructure);
+        var d3 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MaxValue, ConventionCategory.Application);
         var c = new C();
         var d = new D();
         var e = new E();
         var f = new F();
 
         var provider = new ConventionProvider(
-            HostType.Undefined,
+            hostType,
+            [..categories],
             [d1, d, d2, b, c, e, d3, f,]
         );
 
-        provider
-           .GetAll()
-           .Should()
-           .ContainInOrder(
-                d2.Delegate,
-                d1.Delegate,
-                e,
-                d,
-                b,
-                d3.Delegate
-            );
+        await VerifyWithParameters(provider, hostType, categories);
     }
 
     [Fact]
@@ -117,14 +101,15 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         var c1 = new Cyclic1();
         var c2 = new Cyclic2();
 
-        var provider = new ConventionProvider(HostType.Undefined, [c1, c2,]);
+        var provider = new ConventionProvider(HostType.Undefined, [], [c1, c2,]);
 
         Action a = () => provider.GetAll();
         a.Should().Throw<NotSupportedException>();
     }
 
-    [Fact]
-    public void Should_Sort_ConventionMetadata_Correctly()
+    [Theory]
+    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    public async Task Should_Sort_ConventionMetadata_Correctly(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
         var c = new C();
@@ -133,25 +118,23 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         var f = new F();
 
         var provider = new ConventionProvider(
-            HostType.Undefined,
+            hostType,
+            [..categories],
             [
                 d,
                 f,
-                new ConventionMetadata(b, HostType.Undefined).WithDependency(DependencyDirection.DependsOn, typeof(C)),
-                new ConventionMetadata(c, HostType.Undefined).WithDependency(DependencyDirection.DependentOf, typeof(D)),
+                new ConventionMetadata(b, HostType.Undefined, ConventionCategory.Application).WithDependency(DependencyDirection.DependsOn, typeof(C)),
+                new ConventionMetadata(c, HostType.Undefined, ConventionCategory.Infrastructure).WithDependency(DependencyDirection.DependentOf, typeof(D)),
                 e,
             ]
         );
 
-        provider
-           .GetAll()
-           .Should()
-           .ContainInOrder(e, d, b);
+        await VerifyWithParameters(provider, hostType, categories);
     }
 
     [Theory]
-    [InlineData(HostType.Live)]
-    public void Should_Exclude_Unit_Test_Conventions(HostType ctor)
+    [MemberData(nameof(GetCategories), HostType.Live)]
+    public async Task Should_Exclude_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
         var d1 = new ServiceConvention((_, _, _) => { });
@@ -163,27 +146,17 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         var f = new F();
 
         var provider = new ConventionProvider(
-            ctor,
+            hostType,
+            [..categories],
             [d1, d, d2, b, c, e, d3, f,]
         );
 
-        provider
-           .GetAll()
-           .Should()
-           .ContainInOrder(
-                d1,
-                e,
-                d,
-                d2,
-                b,
-                d3,
-                f
-            );
+        await VerifyWithParameters(provider, hostType, categories);
     }
 
     [Theory]
-    [InlineData(HostType.UnitTest)]
-    public void Should_Include_Unit_Test_Conventions(HostType ctor)
+    [MemberData(nameof(GetCategories), HostType.UnitTest)]
+    public async Task Should_Include_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
         var d1 = new ServiceConvention((_, _, _) => { });
@@ -195,24 +168,21 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         var f = new F();
 
         var provider = new ConventionProvider(
-            ctor,
+            hostType,
+            [..categories],
             [d1, d, d2, b, c, e, d3, f,]
         );
 
-        provider
-           .GetAll()
-           .Should()
-           .ContainInOrder(
-                d1,
-                e,
-                d,
-                d2,
-                b,
-                c,
-                d3
-            );
+        await VerifyWithParameters(provider, hostType, categories);
     }
 
+    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories)
+    {
+        return Verify(provider.GetAll().Select(z => z switch { Delegate d => d.Method.Name, IConvention c => c.GetType().Name, _ => z.ToString() }))
+           .UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
+    }
+
+    [ConventionCategory(ConventionCategory.Infrastructure)]
     [DependentOfConvention(typeof(C))]
     private sealed class B : IConvention;
 
@@ -226,6 +196,7 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         }
     }
 
+    [ConventionCategory(ConventionCategory.Application)]
     [AfterConvention(typeof(E))]
     private sealed class D : ITestConvention
     {
@@ -235,6 +206,7 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
         }
     }
 
+    [ConventionCategory("Custom")]
     private sealed class E : IConvention;
 
     [DependsOnConvention(typeof(E))]
@@ -246,4 +218,13 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [BeforeConvention(typeof(Cyclic1))]
     [DependsOnConvention(typeof(Cyclic1))]
     private sealed class Cyclic2 : IConvention;
+
+    public static IEnumerable<object[]> GetCategories(HostType hostType)
+    {
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application)];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom"))];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Infrastructure)];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Infrastructure, new("Custom"))];
+        yield return [hostType, ImmutableArray.Create(new ConventionCategory("Custom"))];
+    }
 }

@@ -14,77 +14,58 @@ namespace Rocket.Surgery.Conventions.Tests;
 public class ConventionContextTests : AutoFakeTest
 {
     [Fact]
-    public Task Constructs()
+    public async Task ReturnsNullOfNoValue()
     {
-        var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary { [typeof(IConvention)] = new AbcConvention(), });
-        var servicesBuilder = AutoFake.Resolve<ConventionContext>();
-
-        servicesBuilder.AssemblyProvider.Should().BeSameAs(assemblyProvider);
-        servicesBuilder.Properties.Should().ContainKey(typeof(IConvention));
-        return Task.CompletedTask;
+        var builder = new ConventionContextBuilder(new ServiceProviderDictionary());
+        var context = await ConventionContext.FromAsync(builder);
+        context[typeof(string)].Should().BeNull();
     }
 
     [Fact]
-    public Task ReturnsNullOfNoValue()
+    public async Task SetAValue()
     {
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var container = AutoFake.Resolve<ConventionContext>();
-        container[typeof(string)].Should().BeNull();
-        return Task.CompletedTask;
-    }
-
-
-    [Fact]
-    public Task SetAValue()
-    {
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var container = AutoFake.Resolve<ConventionContext>();
+        var builder = new ConventionContextBuilder(new ServiceProviderDictionary());
+        var container = await ConventionContext.FromAsync(builder);
         container[typeof(string)] = "abc";
         container[typeof(string)].Should().Be("abc");
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task StoresAndReturnsItems()
+    public async Task StoresAndReturnsItems()
     {
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var servicesBuilder = AutoFake.Resolve<ConventionContext>();
+        var builder = new ConventionContextBuilder(new ServiceProviderDictionary());
+        var context = await ConventionContext.FromAsync(builder);
 
         var value = new object();
-        servicesBuilder[string.Empty] = value;
-        servicesBuilder[string.Empty].Should().BeSameAs(value);
-        return Task.CompletedTask;
+        context[string.Empty] = value;
+        context[string.Empty].Should().BeSameAs(value);
     }
 
     [Fact]
-    public Task IgnoreNonExistentItems()
+    public async Task IgnoreNonExistentItems()
     {
-        AutoFake.Provide<IDictionary<object, object>>(new Dictionary<object, object>());
-        var servicesBuilder = AutoFake.Resolve<ConventionContext>();
+        var builder = new ConventionContextBuilder(new ServiceProviderDictionary());
+        var context = await ConventionContext.FromAsync(builder);
 
-        servicesBuilder[string.Empty].Should().BeNull();
-        return Task.CompletedTask;
+        context[string.Empty].Should().BeNull();
     }
 
     [Fact]
-    public Task GetAStronglyTypedValue()
+    public async Task GetAStronglyTypedValue()
     {
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var container = AutoFake.Resolve<ConventionContext>();
+        var builder = new ConventionContextBuilder(new ServiceProviderDictionary());
+        var container = await ConventionContext.FromAsync(builder);
         container[typeof(string)] = "abc";
         container.Get<string>().Should().Be("abc");
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task SetAStronglyTypedValue()
+    public async Task SetAStronglyTypedValue()
     {
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
-        var container = AutoFake.Resolve<ConventionContext>();
+        var builder = new ConventionContextBuilder(new ServiceProviderDictionary());
+        var container = await ConventionContext.FromAsync(builder);
         container.Set("abc");
         container.Get<string>().Should().Be("abc");
-        return Task.CompletedTask;
     }
 
     [Fact]
@@ -185,7 +166,6 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var builder = AutoFake
                      .Resolve<ConventionContextBuilder>()
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
@@ -236,7 +216,6 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public async Task ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
     {
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var builder = AutoFake
                      .Resolve<ConventionContextBuilder>()
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())
@@ -249,7 +228,6 @@ public class ConventionContextTests : AutoFakeTest
     [Fact]
     public async Task ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
     {
-        AutoFake.Provide<IServiceProviderDictionary>(new ServiceProviderDictionary());
         var builder = AutoFake
                      .Resolve<ConventionContextBuilder>()
                      .UseAssemblies(new TestAssemblyProvider().GetAssemblies())

@@ -1,0 +1,19 @@
+﻿[
+  {
+    Type: ServiceConvention,
+    Target: GenericTypedConventionProviderTests.<>c,
+    Method: Void Should_Include_Unit_Test_Conventions(Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.Configuration.IConfiguration, Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  },
+  {},
+  {
+    Type: ServiceConvention,
+    Target: GenericTypedConventionProviderTests.<>c,
+    Method: Void Should_Include_Unit_Test_Conventions(Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.Configuration.IConfiguration, Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  },
+  {},
+  {
+    Type: ServiceConvention,
+    Target: GenericTypedConventionProviderTests.<>c,
+    Method: Void Should_Include_Unit_Test_Conventions(Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.Configuration.IConfiguration, Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  }
+]

@@ -16,16 +16,17 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureWebAssembly(
         this ConventionContextBuilder container,
         WebAssemblyHostingConvention @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate);
+        container.AppendDelegate(@delegate, priority , category);
         return container;
     }
 
@@ -35,16 +36,17 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureWebAssembly(
         this ConventionContextBuilder container,
         WebAssemblyHostingAsyncConvention @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(@delegate);
+        container.AppendDelegate(@delegate, priority , category);
         return container;
     }
 
@@ -54,16 +56,17 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureWebAssembly(
         this ConventionContextBuilder container,
         Action<WebAssemblyHostBuilder> @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new WebAssemblyHostingConvention((_, builder) => @delegate(builder)));
+        container.AppendDelegate(new WebAssemblyHostingConvention((_, builder) => @delegate(builder)), priority , category);
         return container;
     }
 
@@ -73,16 +76,17 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureWebAssembly(
         this ConventionContextBuilder container,
         Func<WebAssemblyHostBuilder, ValueTask> @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, _) => @delegate(builder)));
+        container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, _) => @delegate(builder)), priority , category);
         return container;
     }
 
@@ -92,16 +96,17 @@ public static class WebAssemblyHostingConventionExtensions
     /// <param name="container">The container.</param>
     /// <param name="delegate">The delegate.</param>
     /// <param name="priority">The priority.</param>
+    /// <param name="category">The category.</param>
     /// <returns>ConventionContextBuilder.</returns>
     public static ConventionContextBuilder ConfigureWebAssembly(
         this ConventionContextBuilder container,
         Func<WebAssemblyHostBuilder, CancellationToken, ValueTask> @delegate,
-        int priority = 0
+        int priority = 0, ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)));
+        container.AppendDelegate(new WebAssemblyHostingAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority , category);
         return container;
     }
 }

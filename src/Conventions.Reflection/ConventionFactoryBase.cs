@@ -12,8 +12,9 @@ public abstract partial class ConventionFactoryBase : IConventionFactory
         var type = convention.GetType();
         var dependencies = type.GetCustomAttributes().OfType<IConventionDependency>();
         var hostType = convention.GetType().GetCustomAttributes().OfType<IHostBasedConvention>().FirstOrDefault()?.HostType ?? HostType.Undefined;
+        var category = convention.GetType().GetCustomAttribute<ConventionCategoryAttribute>(true)?.Category ?? ConventionCategory.Application;
 
-        var c = new ConventionMetadata(convention, hostType);
+        var c = new ConventionMetadata(convention, hostType, category);
         foreach (var dependency in dependencies)
         {
             c.WithDependency(dependency.Direction, dependency.Type);

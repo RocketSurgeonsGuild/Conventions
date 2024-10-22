@@ -35,6 +35,7 @@ internal static class ExportConventions
 
             var attributes = convention.GetAttributes();
             var hostType = _hostTypeUndefined;
+            ExpressionSyntax conventionCategory = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("ConventionCategory"), IdentifierName("Application"));
             var dependencies = new List<(MemberAccessExpressionSyntax direction, TypeSyntax type)>();
             foreach (var attributeData in attributes)
             {
@@ -77,9 +78,18 @@ internal static class ExportConventions
                 }
 
                 if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.UnitTestConventionAttribute))
+                {
                     hostType = _hostTypeUnitTestHost;
+                }
+                else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LiveConventionAttribute))
+                {
+                    hostType = _hostTypeLive;
+                }
 
-                else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LiveConventionAttribute)) hostType = _hostTypeLive;
+                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.ConventionCategoryAttribute) && attributeData.ConstructorArguments is [{ Value: string category }])
+                {
+                    conventionCategory = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(category));
+                }
             }
 
             ExpressionSyntax withDependencies = ObjectCreationExpression(IdentifierName("ConventionMetadata"))
@@ -88,7 +98,7 @@ internal static class ExportConventions
                         SeparatedList(
                             new[]
                             {
-                                Argument(createConvention), Argument(hostType),
+                                Argument(createConvention), Argument(hostType), Argument(conventionCategory),
                             }
                         )
                     )
