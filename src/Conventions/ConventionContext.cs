@@ -71,12 +71,12 @@ public sealed class ConventionContext : IConventionContext
     }
 
     /// <summary>
-    /// The host type
+    ///     The host type
     /// </summary>
     public HostType HostType => this.GetHostType();
 
     /// <summary>
-    /// The categories of the convention context
+    ///     The categories of the convention context
     /// </summary>
     public ImmutableHashSet<ConventionCategory> Categories { get; set; }
 

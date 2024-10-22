@@ -21,7 +21,7 @@ public interface IConventionMetadata
     HostType HostType { get; }
 
     /// <summary>
-    /// The category of the convention
+    ///     The category of the convention
     /// </summary>
     ConventionCategory Category { get; }
 }

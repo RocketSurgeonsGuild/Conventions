@@ -78,9 +78,11 @@ internal class ConventionProvider : IConventionProvider
     /// <param name="hostType"></param>
     /// <param name="categories"></param>
     /// <param name="contributions">The contributions.</param>
-    public ConventionProvider(HostType hostType, ImmutableHashSet<ConventionCategory> categories, List<object?> contributions) : this(hostType, categories, contributions.Where(z => z is { }).Select(FromConvention))
-    {
-    }
+    public ConventionProvider(HostType hostType, ImmutableHashSet<ConventionCategory> categories, List<object?> contributions) : this(
+        hostType,
+        categories,
+        contributions.Where(z => z is { }).Select(FromConvention)
+    ) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.

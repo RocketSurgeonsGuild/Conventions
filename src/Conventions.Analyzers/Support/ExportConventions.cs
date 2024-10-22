@@ -35,7 +35,11 @@ internal static class ExportConventions
 
             var attributes = convention.GetAttributes();
             var hostType = _hostTypeUndefined;
-            ExpressionSyntax conventionCategory = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("ConventionCategory"), IdentifierName("Application"));
+            ExpressionSyntax conventionCategory = MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                IdentifierName("ConventionCategory"),
+                IdentifierName("Application")
+            );
             var dependencies = new List<(MemberAccessExpressionSyntax direction, TypeSyntax type)>();
             foreach (var attributeData in attributes)
             {
@@ -86,7 +90,8 @@ internal static class ExportConventions
                     hostType = _hostTypeLive;
                 }
 
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.ConventionCategoryAttribute) && attributeData.ConstructorArguments is [{ Value: string category }])
+                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.ConventionCategoryAttribute)
+                 && attributeData.ConstructorArguments is [{ Value: string category, },])
                 {
                     conventionCategory = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(category));
                 }

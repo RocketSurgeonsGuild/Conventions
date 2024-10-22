@@ -26,6 +26,11 @@ public class ConventionContextBuilder
         return new(properties ?? new PropertiesDictionary(), categories);
     }
 
+    private static string[] categoryEnvironmentVariables =
+        ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES",];
+
+    private static string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE",];
+
     // this null is used a marker to indicate where in the list is the middle
     // ReSharper disable once NullableWarningSuppressionIsUsed
     internal readonly List<object?> _conventions = [null!,];
@@ -35,10 +40,6 @@ public class ConventionContextBuilder
     internal IConventionFactory? _conventionProviderFactory;
     internal ServiceProviderFactoryAdapter? _serviceProviderFactory;
     internal bool _useAttributeConventions = true;
-
-    static string[] categoryEnvironmentVariables =
-        ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES"];
-    static string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE"];
 
     /// <summary>
     ///     Create a context builder with a set of properties
@@ -51,24 +52,25 @@ public class ConventionContextBuilder
 
         foreach (var variable in hostTypeEnvironmentVariables)
         {
-            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0 } hostType) continue;
+            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } hostType) continue;
             Properties[typeof(HostType)] = hostType;
         }
 
         var categoriesBuilder = new List<ConventionCategory>();
         foreach (var variable in categoryEnvironmentVariables)
         {
-            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0 } category) continue;
+            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } category) continue;
             foreach (var item in category.Split(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 categoriesBuilder.Add(new(item));
             }
         }
+
         Categories = new (categoriesBuilder, ConventionCategory.ValueComparer);
     }
 
     /// <summary>
-    /// The categories of the convention context
+    ///     The categories of the convention context
     /// </summary>
     public HashSet<ConventionCategory> Categories { get; }
 

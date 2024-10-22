@@ -21,7 +21,8 @@ public static class DistributedApplicationConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedApplication(
         this ConventionContextBuilder container,
         DistributedApplicationConvention @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -40,7 +41,8 @@ public static class DistributedApplicationConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedApplication(
         this ConventionContextBuilder container,
         DistributedApplicationAsyncConvention @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -59,7 +61,8 @@ public static class DistributedApplicationConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedApplication(
         this ConventionContextBuilder container,
         Action<IDistributedApplicationBuilder> @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -79,7 +82,8 @@ public static class DistributedApplicationConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedApplication(
         this ConventionContextBuilder container,
         Func<IDistributedApplicationBuilder, ValueTask> @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
@@ -99,12 +103,17 @@ public static class DistributedApplicationConventionExtensions
     public static ConventionContextBuilder ConfigureDistributedApplication(
         this ConventionContextBuilder container,
         Func<IDistributedApplicationBuilder, CancellationToken, ValueTask> @delegate,
-        int priority = 0, ConventionCategory? category = null
+        int priority = 0,
+        ConventionCategory? category = null
     )
     {
         ArgumentNullException.ThrowIfNull(container);
 
-        container.AppendDelegate(new DistributedApplicationAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)), priority, category);
+        container.AppendDelegate(
+            new DistributedApplicationAsyncConvention((_, builder, cancellationToken) => @delegate(builder, cancellationToken)),
+            priority,
+            category
+        );
         return container;
     }
 }

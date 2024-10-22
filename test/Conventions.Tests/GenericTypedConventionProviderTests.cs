@@ -12,6 +12,18 @@ namespace Rocket.Surgery.Conventions.Tests;
 
 public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper, LogLevel.Information)
 {
+    [Fact]
+    public void Should_Throw_When_A_Cycle_Is_Detected()
+    {
+        var c1 = new Cyclic1();
+        var c2 = new Cyclic2();
+
+        var provider = new ConventionProvider(HostType.Undefined, [], [c1, c2,]);
+
+        Action a = () => provider.GetAll();
+        a.Should().Throw<NotSupportedException>();
+    }
+
     [Theory]
     [MemberData(nameof(GetCategories), HostType.Undefined)]
     public async Task Should_Sort_Conventions_Correctly(HostType hostType, ImmutableArray<ConventionCategory> categories)
@@ -24,7 +36,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [..categories,],
             [d, f, b, c, e,]
         );
 
@@ -43,7 +55,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [..categories,],
             [d, b, c, e, f,]
         );
 
@@ -65,7 +77,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [..categories,],
             [d1, d, d2, b, c, e, d3, f,]
         );
 
@@ -79,7 +91,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
         var b = new B();
         var d1 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), 0, ConventionCategory.Application);
         var d2 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MinValue, ConventionCategory.Infrastructure);
-        var d3 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MaxValue, new ("Custom"));
+        var d3 = new ConventionOrDelegate(new ServiceConvention((_, _, _) => { }), int.MaxValue, new("Custom"));
         var c = new C();
         var d = new D();
         var e = new E();
@@ -87,23 +99,11 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [..categories,],
             [d1, d, d2, b, c, e, d3, f,]
         );
 
         await VerifyWithParameters(provider, hostType, categories);
-    }
-
-    [Fact]
-    public void Should_Throw_When_A_Cycle_Is_Detected()
-    {
-        var c1 = new Cyclic1();
-        var c2 = new Cyclic2();
-
-        var provider = new ConventionProvider(HostType.Undefined, [], [c1, c2,]);
-
-        Action a = () => provider.GetAll();
-        a.Should().Throw<NotSupportedException>();
     }
 
     [Theory]
@@ -118,7 +118,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [..categories,],
             [
                 d,
                 f,
@@ -146,7 +146,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [..categories,],
             [d1, d, d2, b, c, e, d3, f,]
         );
 
@@ -168,7 +168,7 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [..categories,],
             [d1, d, d2, b, c, e, d3, f,]
         );
 
@@ -219,10 +219,10 @@ public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper)
 
     public static IEnumerable<object[]> GetCategories(HostType hostType)
     {
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application)];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom"))];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Infrastructure)];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Infrastructure, new("Custom"))];
-        yield return [hostType, ImmutableArray.Create(new ConventionCategory("Custom"))];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application),];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom")),];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Infrastructure),];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Infrastructure, new("Custom")),];
+        yield return [hostType, ImmutableArray.Create(new ConventionCategory("Custom")),];
     }
 }
