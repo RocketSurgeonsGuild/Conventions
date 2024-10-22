@@ -121,12 +121,13 @@ public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper)
     {
         var finder = new DefaultAssemblyProvider(AssemblyLoadContext.Default.Assemblies.Except([GetType().Assembly,]));
         await Verify(
-                finder
-                   .GetTypes(getTypesItem.Selector)
-                   .Where(z => !z.Name.StartsWith("ObjectProxy"))
-                   .Where(z => !z.Name.StartsWith("Rocket.Surgery.Conventions"))
-                   .OrderBy(z => z.FullName)
-            )
-           .UseParameters(getTypesItem.Name).HashParameters();
+                  finder
+                     .GetTypes(getTypesItem.Selector)
+                     .Where(z => !z.Name.StartsWith("ObjectProxy"))
+                     .Where(z => !z.Name.StartsWith("Rocket.Surgery.Conventions"))
+                     .OrderBy(z => z.FullName)
+              )
+             .UseParameters(getTypesItem.Name)
+             .HashParameters();
     }
 }

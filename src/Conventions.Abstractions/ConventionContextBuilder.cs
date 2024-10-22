@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,7 +65,7 @@ public class ConventionContextBuilder
             }
         }
 
-        Categories = new (categoriesBuilder, ConventionCategory.ValueComparer);
+        Categories = new(categoriesBuilder, ConventionCategory.ValueComparer);
     }
 
     /// <summary>
