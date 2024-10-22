@@ -20,7 +20,9 @@ public static partial class RocketBooster
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     public static AppDelegate ForConventions(IConventionFactory conventionFactory, params ConventionCategory[] categories)
     {
-        return (_, _) => ValueTask.FromResult(new ConventionContextBuilder(new Dictionary<object, object>(), categories).UseConventionFactory(conventionFactory));
+        return (_, _) => ValueTask.FromResult(
+                   new ConventionContextBuilder(new Dictionary<object, object>(), categories).UseConventionFactory(conventionFactory)
+               );
     }
 
     /// <summary>

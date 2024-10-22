@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using AngleSharp.Dom;
 using DiffEngine;
-using Microsoft.Playwright;
 using VerifyTests.AngleSharp;
 
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests;
@@ -11,7 +10,7 @@ public static class ModuleInitializer
     [ModuleInitializer]
     public static void Init()
     {
-        VerifyPlaywright.Initialize(installPlaywright: true);
+        VerifyPlaywright.Initialize(true);
         VerifyAngleSharpDiffing.Initialize();
         HtmlPrettyPrint.All(
             list =>
@@ -21,7 +20,8 @@ public static class ModuleInitializer
                 {
                     comment.Remove();
                 }
-            });
+            }
+        );
         VerifyImageMagick.Initialize();
         VerifyImageMagick.RegisterComparers(.05);
         DiffRunner.Disabled = true;
