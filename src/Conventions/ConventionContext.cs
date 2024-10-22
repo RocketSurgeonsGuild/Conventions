@@ -67,7 +67,7 @@ public sealed class ConventionContext : IConventionContext
         Conventions = conventionProvider;
         AssemblyProvider = assemblyProvider;
         Properties = builder.Properties;
-        Categories = builder.Categories;
+        Categories = builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer);
     }
 
     /// <summary>

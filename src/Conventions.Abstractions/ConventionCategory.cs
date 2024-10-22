@@ -11,6 +11,25 @@ namespace Rocket.Surgery.Conventions;
 [DebuggerDisplay("{_value}")]
 public sealed class ConventionCategory(string name)
 {
+    private sealed class ValueEqualityComparer : IEqualityComparer<ConventionCategory>
+    {
+        public bool Equals(ConventionCategory? x, ConventionCategory? y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+            if (x is null) return false;
+            if (y is null) return false;
+            if (x.GetType() != y.GetType()) return false;
+            return x._value == y._value;
+        }
+
+        public int GetHashCode(ConventionCategory obj)
+        {
+            return obj._value.GetHashCode();
+        }
+    }
+
+    public static IEqualityComparer<ConventionCategory> ValueComparer { get; } = new ValueEqualityComparer();
+
     private bool Equals(ConventionCategory other)
     {
         return _value == other._value;

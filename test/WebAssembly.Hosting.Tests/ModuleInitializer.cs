@@ -17,7 +17,7 @@ public static class ModuleInitializer
             list =>
             {
                 list.ScrubAttributes(attr => attr.Name.StartsWith("b-") && attr.Name.Length == 12);
-                foreach (var comment in list.DescendentsAndSelf<IComment>().Where(z => z.NodeValue == "!").ToArray())
+                foreach (var comment in list.DescendantsAndSelf<IComment>().Where(z => z.NodeValue == "!").ToArray())
                 {
                     comment.Remove();
                 }

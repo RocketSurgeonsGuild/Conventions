@@ -9,7 +9,7 @@ public partial class StaticConventionTests
     public void Should_Have_Exports_Method_Defined()
     {
         var list = Exports
-                  .GetConventions(new(new Dictionary<object, object>()))
+                  .GetConventions(new(new Dictionary<object, object>(), []))
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -20,7 +20,7 @@ public partial class StaticConventionTests
     public void Should_Have_Imports_Method_Defined_On_Assembly()
     {
         var list = Imports
-                  .Instance.LoadConventions(new(new Dictionary<object, object>()))
+                  .Instance.LoadConventions(new(new Dictionary<object, object>(), []))
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -31,7 +31,7 @@ public partial class StaticConventionTests
     public void Should_Have_Imports_Method_Defined_On_Assembly_Into_Provider()
     {
         var list = Exports
-                  .GetConventions(new(new Dictionary<object, object>()))
+                  .GetConventions(new(new Dictionary<object, object>(), []))
                   .Should()
                   .NotBeNull()
                   .And.Subject;
@@ -52,7 +52,7 @@ public partial class StaticConventionTests
     {
         var list = Imports
                   .Instance
-                  .LoadConventions(new(new Dictionary<object, object>()))
+                  .LoadConventions(new(new Dictionary<object, object>(), []))
                   .Should()
                   .NotBeNull()
                   .And.Subject;

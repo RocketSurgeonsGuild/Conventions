@@ -43,6 +43,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionAttribute<>);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionCategory);
+                        yield return RocketSurgeryConventionsAbstractions.GetType("Rocket.Surgery.Conventions.ConventionCategory+ValueEqualityComparer");
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionCategoryAttribute);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextBuilder);
                         yield return typeof(global::Rocket.Surgery.Conventions.ConventionContextExtensions);

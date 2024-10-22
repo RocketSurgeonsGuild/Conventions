@@ -20,7 +20,7 @@ public class ConventionStaticScannerTests : AutoFakeTest
     public void ShouldBuildAProvider()
     {
         var scanner = ConventionContextHelpers.CreateProvider(
-            new ConventionContextBuilder(new Dictionary<object, object?>()).UseConventionFactory(Imports.Instance),
+            new ConventionContextBuilder(new Dictionary<object, object?>(), []).UseConventionFactory(Imports.Instance),
             new TestAssemblyProvider(),
             Logger
         );

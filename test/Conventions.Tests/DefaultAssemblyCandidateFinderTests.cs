@@ -127,6 +127,6 @@ public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper)
                    .Where(z => !z.Name.StartsWith("Rocket.Surgery.Conventions"))
                    .OrderBy(z => z.FullName)
             )
-           .UseHashedParameters(getTypesItem.Name);
+           .UseParameters(getTypesItem.Name).HashParameters();
     }
 }

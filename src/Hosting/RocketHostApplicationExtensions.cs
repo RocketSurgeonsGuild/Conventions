@@ -26,7 +26,7 @@ public static class RocketHostApplicationExtensions
         var contextBuilder = builder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var conventionContextBuilder)
          && conventionContextBuilder is ConventionContextBuilder b
                 ? b
-                : new(new Dictionary<object, object>());
+                : new(new Dictionary<object, object>(), []);
         var ccb = ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
             ? contextBuilder.UseConventionFactory(impliedFactory)
             : contextBuilder;

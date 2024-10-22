@@ -19,10 +19,11 @@ public class ConventionContextBuilder
     ///     Create a default context builder
     /// </summary>
     /// <param name="properties"></param>
+    /// <param name="categories"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder Create(PropertiesType? properties = null)
+    public static ConventionContextBuilder Create(PropertiesType? properties = null, params ConventionCategory[] categories)
     {
-        return new(properties ?? new PropertiesDictionary());
+        return new(properties ?? new PropertiesDictionary(), categories);
     }
 
     // this null is used a marker to indicate where in the list is the middle
@@ -43,7 +44,8 @@ public class ConventionContextBuilder
     ///     Create a context builder with a set of properties
     /// </summary>
     /// <param name="properties"></param>
-    public ConventionContextBuilder(PropertiesType? properties)
+    /// <param name="categories"></param>
+    public ConventionContextBuilder(PropertiesType? properties, IEnumerable<ConventionCategory> categories)
     {
         Properties = new ServiceProviderDictionary(properties ?? new PropertiesDictionary());
 
@@ -53,22 +55,22 @@ public class ConventionContextBuilder
             Properties[typeof(HostType)] = hostType;
         }
 
-        var categories = ImmutableHashSet.CreateBuilder<ConventionCategory>();
+        var categoriesBuilder = new List<ConventionCategory>();
         foreach (var variable in categoryEnvironmentVariables)
         {
             if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0 } category) continue;
             foreach (var item in category.Split(',', StringSplitOptions.RemoveEmptyEntries))
             {
-                categories.Add(new(item));
+                categoriesBuilder.Add(new(item));
             }
         }
-        Categories = categories.ToImmutable();
+        Categories = new (categoriesBuilder, ConventionCategory.ValueComparer);
     }
 
     /// <summary>
     /// The categories of the convention context
     /// </summary>
-    public ImmutableHashSet<ConventionCategory> Categories { get; }
+    public HashSet<ConventionCategory> Categories { get; }
 
     /// <summary>
     ///     A central location for sharing state between components during the convention building process.
