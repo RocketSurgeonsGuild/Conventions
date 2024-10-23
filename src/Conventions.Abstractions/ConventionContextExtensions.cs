@@ -182,8 +182,8 @@ public static class ConventionContextExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
         return context.Properties.TryGetValue(typeof(HostType), out var hostType)
-            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            ? (HostType)hostType!
-            : HostType.Undefined;
+         && ( hostType is HostType ht || ( hostType is string str && Enum.TryParse(str, true, out ht) ) )
+                ? ht
+                : HostType.Undefined;
     }
 }

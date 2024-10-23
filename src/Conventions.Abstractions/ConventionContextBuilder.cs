@@ -51,8 +51,10 @@ public class ConventionContextBuilder
 
         foreach (var variable in hostTypeEnvironmentVariables)
         {
-            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } hostType) continue;
-            Properties[typeof(HostType)] = hostType;
+            if (Environment.GetEnvironmentVariable(variable) is { Length: > 0, } hostType && Enum.TryParse<HostType>(hostType, true, out var type))
+            {
+                Properties[typeof(HostType)] = type;
+            }
         }
 
         var categoriesBuilder = new List<ConventionCategory>();
