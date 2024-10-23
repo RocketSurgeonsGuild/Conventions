@@ -911,8 +911,8 @@ public static class ConventionHostBuilderExtensions
     public static HostType GetHostType(this ConventionContextBuilder context)
     {
         return context.Properties.TryGetValue(typeof(HostType), out var hostType)
-            // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-            ? (HostType)hostType!
+         && ( hostType is HostType ht || hostType is string str && Enum.TryParse(str, true, out ht) )
+            ? ht
             : HostType.Undefined;
     }
 
