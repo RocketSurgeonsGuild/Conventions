@@ -7,20 +7,20 @@ internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
 {
     private readonly IServiceCollection _services = new ServiceCollection();
 
-    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-    private IServiceProvider _serviceProvider = null!;
+    private IServiceProvider? _rootServiceProvider;
     private ServiceProvider? _internalServices;
 
+    [MemberNotNull(nameof(_rootServiceProvider))]
     internal void SetServiceProvider(IServiceProvider serviceProvider)
     {
-        _serviceProvider = serviceProvider;
+        _rootServiceProvider = serviceProvider;
     }
 
     internal object? GetService(Type type)
     {
         try
         {
-            return _internalServices?.GetService(type);
+            return _internalServices?.GetService(type) ?? _rootServiceProvider?.GetService(type);
         }
         catch (InvalidOperationException)
         {
@@ -41,7 +41,8 @@ internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
         #pragma warning restore IL2092
     )
     {
-        _services.AddSingleton(service, implementation);
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        _services.AddSingleton(service, _ => ActivatorUtilities.GetServiceOrCreateInstance(_rootServiceProvider!, implementation));
     }
 
     public void RegisterInstance(Type service, object implementation)
@@ -57,6 +58,8 @@ internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
     public ITypeResolver Build()
     {
         _internalServices = _services.BuildServiceProvider();
-        return new ConventionTypeResolver(_serviceProvider, this);
+        #pragma warning disable CS8604 // Possible null reference argument.
+        return new ConventionTypeResolver(_rootServiceProvider, _internalServices);
+        #pragma warning restore CS8604 // Possible null reference argument.
     }
 }
