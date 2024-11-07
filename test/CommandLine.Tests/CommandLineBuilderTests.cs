@@ -318,7 +318,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     {
         private readonly IService _service;
 
-        public InjectionConstructor(IService service)
+        public InjectionConstructor(IService service, ILogger<InjectionConstructor> logger)
         {
             _service = service;
         }
@@ -361,15 +361,18 @@ public class CommandLineBuilderTests : AutoFakeTest
     public class ServiceInjection : Command
     {
         private readonly IService2 _service2;
+        private readonly ILogger<ServiceInjection> _logger;
 
-        public ServiceInjection(IService2 service2)
+        public ServiceInjection(IService2 service2, ILogger<ServiceInjection> logger)
         {
             _service2 = service2;
+            _logger = logger;
         }
 
         [UsedImplicitly]
         public override int Execute(CommandContext context)
         {
+            _logger.LogInformation(nameof(ServiceInjection));
             return _service2.SomeValue == "Service2" ? 0 : 1;
         }
     }
@@ -405,18 +408,5 @@ public class CommandLineBuilderTests : AutoFakeTest
         {
             return _service2.SomeValue == "Service2" ? 0 : 1;
         }
-    }
-}
-
-internal sealed class TestServiceProviderFactory(IServiceProvider serviceProvider) : IServiceProviderFactory<IServiceCollection>
-{
-    public IServiceCollection CreateBuilder(IServiceCollection services)
-    {
-        return services;
-    }
-
-    public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
-    {
-        return serviceProvider;
     }
 }
