@@ -25,10 +25,10 @@ public class ConventionContextBuilder
         return new(properties ?? new PropertiesDictionary(), categories);
     }
 
-    private static string[] categoryEnvironmentVariables =
+    private static readonly string[] categoryEnvironmentVariables =
         ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES",];
 
-    private static string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE",];
+    private static readonly string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE",];
 
     // this null is used a marker to indicate where in the list is the middle
     // ReSharper disable once NullableWarningSuppressionIsUsed
@@ -57,10 +57,14 @@ public class ConventionContextBuilder
             }
         }
 
-        var categoriesBuilder = new List<ConventionCategory>();
+        List<ConventionCategory> categoriesBuilder = [.. categories,];
         foreach (var variable in categoryEnvironmentVariables)
         {
-            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } category) continue;
+            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } category)
+            {
+                continue;
+            }
+
             foreach (var item in category.Split(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 categoriesBuilder.Add(new(item));
