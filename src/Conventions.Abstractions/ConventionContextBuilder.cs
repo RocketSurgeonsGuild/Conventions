@@ -20,7 +20,10 @@ public class ConventionContextBuilder
     /// <param name="properties"></param>
     /// <param name="categories"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder Create(PropertiesType? properties = null, params ConventionCategory[] categories) => new(properties ?? new PropertiesDictionary(), categories);
+    public static ConventionContextBuilder Create(PropertiesType? properties = null, params ConventionCategory[] categories)
+    {
+        return new(properties ?? new PropertiesDictionary(), categories);
+    }
 
     private static readonly string[] categoryEnvironmentVariables =
         ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES",];
@@ -54,7 +57,7 @@ public class ConventionContextBuilder
             }
         }
 
-        List<ConventionCategory> categoriesBuilder = [.. categories];
+        List<ConventionCategory> categoriesBuilder = [.. categories,];
         foreach (var variable in categoryEnvironmentVariables)
         {
             if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } category)
