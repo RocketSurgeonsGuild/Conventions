@@ -9,29 +9,31 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies","")]
+[assembly: Rocket.Surgery.Conventions.AssemblyProviderAttribute(typeof(TestProject.Conventions.AssemblyProvider))]
 namespace TestProject.Conventions
 {
     internal sealed partial class Imports
     {
-        public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
-        [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        private class AssemblyProvider() : IAssemblyProvider
-        {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
-            {
-                switch (lineNumber)
-                {
-                    // FilePath: Input0.cs Expression: U9KM8hBPL7ik8fDNaBfbbQ==
-                    case 7:
-                        yield return typeof(global::TestConvention).Assembly;
-                        break;
-                }
-            }
+        public IAssemblyProvider CreateAssemblyProvider() => new AssemblyProvider();
+    }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
+    [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    file class AssemblyProvider() : IAssemblyProvider
+    {
+        IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
+        {
+            switch (lineNumber)
             {
-                yield break;
+                // FilePath: Input0.cs Expression: U9KM8hBPL7ik8fDNaBfbbQ==
+                case 7:
+                    yield return typeof(global::TestConvention).Assembly;
+                    break;
             }
+        }
+
+        IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
+        {
+            yield break;
         }
     }
 }

@@ -49,7 +49,8 @@ internal static class AssemblyCollection
                 privateAssemblies
             );
             if (privateAssemblies.Any()) cu = cu.AddUsings(UsingDirective(ParseName("System.Runtime.Loader")));
-            var members =
+            MemberDeclarationSyntax[] members =
+            [
                 ClassDeclaration(request.ImportConfiguration.ClassName)
                    .WithModifiers(
                         TokenList(
@@ -58,12 +59,36 @@ internal static class AssemblyCollection
                             Token(SyntaxKind.PartialKeyword)
                         )
                     )
-                   .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.MsBuildConfig.isTestProject), assemblyProvider);
+                   .AddMembers(GetAssembliesProviderMethod(privateAssemblies.Any(), request.MsBuildConfig.isTestProject)),
+                assemblyProvider
+            ];
+
+            if (request.ImportConfiguration is { Namespace: { Length: > 0, } relativeNamespace, }) { }
+            else
+            {
+                relativeNamespace = "";
+            }
+
             cu = cu
                 .AddSharedTrivia()
+                .AddAttributeLists(
+                     AttributeList(
+                             SingletonSeparatedList(
+                                 Attribute(
+                                     ParseName("Rocket.Surgery.Conventions.AssemblyProviderAttribute"),
+                                     AttributeArgumentList(
+                                         SingletonSeparatedList(
+                                             AttributeArgument(TypeOfExpression(ParseName(relativeNamespace + "." + assemblyProvider.Identifier.Text)))
+                                         )
+                                     )
+                                 )
+                             )
+                         )
+                        .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
+                 )
                 .AddMembers(
-                     request.ImportConfiguration is { Namespace: { Length: > 0, } relativeNamespace, }
-                         ? NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)
+                     relativeNamespace is { Length: > 0 }
+                         ? [NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members)]
                          : members
                  );
         }
@@ -243,7 +268,7 @@ internal static class AssemblyCollection
 
         return ClassDeclaration("AssemblyProvider")
               .AddAttributeLists(Helpers.CompilerGeneratedAttributes)
-              .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword)))
+              .WithModifiers(TokenList(Token(SyntaxKind.FileKeyword)))
               .WithParameterList(parameters)
               .WithBaseList(BaseList(SingletonSeparatedList<BaseTypeSyntax>(SimpleBaseType(IdentifierName("IAssemblyProvider")))))
               .AddMembers(getAssembliesMethod, getTypesMethod)
@@ -274,10 +299,7 @@ internal static class AssemblyCollection
             : [];
 
         var method = MethodDeclaration(IdentifierName("IAssemblyProvider"), Identifier("CreateAssemblyProvider"))
-                    .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                    .WithParameterList(
-                         ParameterList(SingletonSeparatedList(Parameter(Identifier("builder")).WithType(IdentifierName("ConventionContextBuilder"))))
-                     );
+                    .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)));
 
         if (!referencesXUnit)
             return method

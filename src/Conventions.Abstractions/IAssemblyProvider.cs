@@ -3,9 +3,48 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
+[assembly: AssemblyProvider(typeof(AP))]
+
 namespace Rocket.Surgery.Conventions;
+
+/// <summary>
+/// Attribute used to define the assembly provider for a given assembly
+/// </summary>
+[PublicAPI]
+[AttributeUsage(AttributeTargets.Assembly)]
+public class AssemblyProviderAttribute(Type type) : Attribute
+{
+    // ReSharper disable once NullableWarningSuppressionIsUsed
+    private Lazy<IAssemblyProvider> _assemblyProvider = new (() => (IAssemblyProvider)Activator.CreateInstance(type)!);
+
+    /// <summary>
+    /// The assembly provider
+    /// </summary>
+    public IAssemblyProvider AssemblyProvider => _assemblyProvider.Value;
+}
+
+file class AP : IAssemblyProvider {
+    public IEnumerable<Assembly> GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber = 0, string filePath = "", string argumentExpression = "") => throw new NotImplementedException();
+
+    public IEnumerable<Type> GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber = 0, string filePath = "", string argumentExpression = "") => throw new NotImplementedException();
+}
+
+/// <summary>
+/// Assembly provider extensions
+/// </summary>
+public static class AssemblyProviderExtensions
+{
+    /// <summary>
+    /// Get the assembly provider for the given assembly
+    /// </summary>
+    /// <param name="assembly"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static IAssemblyProvider GetAssemblyProvider(this Assembly? assembly) => assembly?.GetCustomAttribute<AssemblyProviderAttribute>()?.AssemblyProvider ?? throw new InvalidOperationException("No AssemblyProviderAttribute found on the assembly");
+}
 
 /// <summary>
 ///     A provider that gets a list of assemblies for a given context
@@ -25,6 +64,12 @@ public interface IAssemblyProvider
         expression = string.Join("", expression.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(z => z.Trim()));
         return Convert.ToBase64String(MD5.HashData(Encoding.UTF8.GetBytes(expression)));
     }
+
+    /// <summary>
+    /// The current assembly type provider
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static IAssemblyProvider Current => Assembly.GetEntryAssembly().GetAssemblyProvider();
 
     /// <summary>
     ///     Get the full list of assemblies

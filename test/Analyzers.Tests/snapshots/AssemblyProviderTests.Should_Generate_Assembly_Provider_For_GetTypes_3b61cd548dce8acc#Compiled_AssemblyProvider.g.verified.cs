@@ -9,32 +9,34 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetTypes","")]
+[assembly: Rocket.Surgery.Conventions.AssemblyProviderAttribute(typeof(TestProject.Conventions.AssemblyProvider))]
 namespace TestProject.Conventions
 {
     internal sealed partial class Imports
     {
-        public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
-        [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        private class AssemblyProvider() : IAssemblyProvider
-        {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
-            {
-                yield break;
-            }
+        public IAssemblyProvider CreateAssemblyProvider() => new AssemblyProvider();
+    }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
+    [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    file class AssemblyProvider() : IAssemblyProvider
+    {
+        IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
+        {
+            yield break;
+        }
+
+        IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
+        {
+            switch (lineNumber)
             {
-                switch (lineNumber)
-                {
-                    // FilePath: Input0.cs Expression: fnwbNgR40c+GEWxApouYJQ==
-                    case 18:
-                        yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationAsyncConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceAsyncConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention);
-                        yield return typeof(global::TestConvention);
-                        break;
-                }
+                // FilePath: Input0.cs Expression: fnwbNgR40c+GEWxApouYJQ==
+                case 18:
+                    yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationAsyncConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Configuration.IConfigurationConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceAsyncConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention);
+                    yield return typeof(global::TestConvention);
+                    break;
             }
         }
     }
