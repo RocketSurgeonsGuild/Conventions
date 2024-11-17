@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
-internal sealed class TestAssemblyProvider : IAssemblyProvider
+internal sealed class TestAssemblyProvider : ICompiledTypeProvider
 {
     public IEnumerable<Assembly> GetAssemblies()
     {
@@ -17,7 +19,7 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
     }
 
     public IEnumerable<Assembly> GetAssemblies(
-        Action<IAssemblyProviderAssemblySelector> action,
+        Action<IReflectionAssemblySelector> action,
         int lineNumber = 0,
         string filePath = "",
         string argumentExpression = ""
@@ -32,7 +34,7 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
     }
 
     public IEnumerable<Type> GetTypes(
-        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
+        Func<IReflectionTypeSelector, IEnumerable<Type>> selector,
         int lineNumber = 0,
         string filePath = "",
         string argumentExpression = ""
@@ -40,4 +42,6 @@ internal sealed class TestAssemblyProvider : IAssemblyProvider
     {
         return selector(new TypeProviderAssemblySelector());
     }
+
+    public IServiceCollection Scan(IServiceCollection services, Action<IServiceDescriptorAssemblySelector> selector, int lineNumber = 0, string filePath = "", string argumentExpression = "") => throw new NotImplementedException();
 }

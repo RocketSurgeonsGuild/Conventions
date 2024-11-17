@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
@@ -49,7 +50,7 @@ public abstract partial class ConventionFactoryBase : IConventionFactory
 
     private IEnumerable<IConvention> GetAssemblyConventions(ConventionContextBuilder builder)
     {
-        var assemblyProvider = builder.Properties.GetOrAdd(() => CreateAssemblyProvider(builder));
+        var assemblyProvider = builder.Properties.GetOrAdd(() => CreateTypeProvider(builder));
         var assemblies = assemblyProvider
                         .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConvention>())
                         .ToImmutableArray();
@@ -58,7 +59,7 @@ public abstract partial class ConventionFactoryBase : IConventionFactory
     }
 
     /// <inheritdoc />
-    public abstract IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder);
+    public abstract ICompiledTypeProvider CreateTypeProvider(ConventionContextBuilder builder);
 
     /// <inheritdoc />
     public IEnumerable<IConventionMetadata> LoadConventions(ConventionContextBuilder builder)

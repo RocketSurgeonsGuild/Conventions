@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -40,10 +41,10 @@ public interface IConventionContext
     ILogger Logger { get; }
 
     /// <summary>
-    ///     Gets the assembly provider.
+    ///     Gets the type provider.
     /// </summary>
-    /// <value>The assembly provider.</value>
-    IAssemblyProvider AssemblyProvider { get; }
+    /// <value>The type provider.</value>
+    ICompiledTypeProvider TypeProvider { get; }
 
     /// <summary>
     ///     Get the conventions from the context

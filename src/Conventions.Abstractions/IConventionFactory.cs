@@ -1,4 +1,6 @@
-﻿namespace Rocket.Surgery.Conventions;
+﻿using Rocket.Surgery.DependencyInjection.Compiled;
+
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     A factory that provides a list of conventions
@@ -9,7 +11,7 @@ public interface IConventionFactory
     ///     Attach this convention to the builder
     /// </summary>
     /// <param name="builder"></param>
-    IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder);
+    ICompiledTypeProvider CreateTypeProvider(ConventionContextBuilder builder);
 
     /// <summary>
     ///     A factory that provides a list of conventions

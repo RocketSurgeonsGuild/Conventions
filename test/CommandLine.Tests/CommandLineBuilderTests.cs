@@ -8,6 +8,7 @@ using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 using Spectre.Console.Cli;
@@ -35,7 +36,7 @@ public class CommandLineBuilderTests : AutoFakeTest
     [Fact]
     public void Constructs()
     {
-        var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
+        var assemblyProvider = AutoFake.Provide<ICompiledTypeProvider>(new TestAssemblyProvider());
         var builder = AutoFake.Resolve<ConventionContextBuilder>().UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
         var a = () => { builder.PrependConvention(A.Fake<ICommandLineConvention>()); };

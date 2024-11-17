@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -23,12 +24,13 @@ internal static class GeneratorTestContextBuilderExtensions
     public static GeneratorTestContextBuilder AddCommonReferences(this GeneratorTestContextBuilder builder)
     {
         return builder.AddReferences(
-            typeof(ActivatorUtilities).Assembly,
-            typeof(ConventionContext).Assembly,
-            typeof(IConventionContext).Assembly,
-            typeof(IServiceProvider).Assembly,
-            typeof(IConfiguration).Assembly,
-            typeof(IValidator).Assembly
+            typeof(ActivatorUtilities),
+            typeof(ConventionContext),
+            typeof(IConventionContext),
+            typeof(IServiceProvider),
+            typeof(IConfiguration),
+            typeof(IValidator),
+            typeof(ICompiledTypeProvider)
         );
     }
 

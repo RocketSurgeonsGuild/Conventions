@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -75,7 +76,7 @@ internal static partial class ConventionContextHelpers
     /// <returns></returns>
     internal static IConventionProvider CreateProvider(
         ConventionContextBuilder builder,
-        IAssemblyProvider assemblyProvider,
+        ICompiledTypeProvider typeProvider,
         ILogger? logger
     )
     {
@@ -98,7 +99,7 @@ internal static partial class ConventionContextHelpers
         }
         else if (builder._useAttributeConventions)
         {
-            builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null), GetAssemblyConventions(builder, assemblyProvider, logger));
+            builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null), GetAssemblyConventions(builder, typeProvider, logger));
         }
 
         return new ConventionProvider(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), builder._conventions);
@@ -147,12 +148,12 @@ internal static partial class ConventionContextHelpers
 
     private static IEnumerable<IConvention> GetAssemblyConventions(
         ConventionContextBuilder builder,
-        IAssemblyProvider assemblyProvider,
+        ICompiledTypeProvider typeProvider,
         ILogger? logger
     )
     {
         logger ??= NullLogger.Instance;
-        var assemblies = assemblyProvider
+        var assemblies = typeProvider
                         .GetAssemblies(z => z.FromAssemblyDependenciesOf<IConvention>())
                         .ToImmutableArray();
 

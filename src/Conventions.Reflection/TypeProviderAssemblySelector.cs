@@ -1,13 +1,14 @@
 ﻿using System.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
-internal record TypeProviderAssemblySelector : ITypeSelector
+internal record TypeProviderAssemblySelector : IReflectionTypeSelector
 {
     public bool PublicTypes { get; internal set; }
     public Action<ITypeFilter>? Filter { get; internal set; }
-    public IEnumerable<Assembly> Assemblies { get; init; } = Enumerable.Empty<Assembly>();
+    public IEnumerable<Assembly> Assemblies { get; init; } = [];
 
     internal IEnumerable<Type> GetTypesInternal()
     {
@@ -34,47 +35,47 @@ internal record TypeProviderAssemblySelector : ITypeSelector
         return filter.Filters.Aggregate(types, (current, f) => current.Where(f));
     }
 
-    public ITypeSelector FromAssembly()
+    public IReflectionTypeSelector FromAssembly()
     {
         return this;
     }
 
-    public ITypeSelector FromAssemblies()
+    public IReflectionTypeSelector FromAssemblies()
     {
         return this;
     }
 
-    public ITypeSelector IncludeSystemAssemblies()
+    public IReflectionTypeSelector IncludeSystemAssemblies()
     {
         return this;
     }
 
-    public ITypeSelector FromAssemblyOf<T>()
+    public IReflectionTypeSelector FromAssemblyOf<T>()
     {
         return this;
     }
 
-    public ITypeSelector FromAssemblyOf(Type type)
+    public IReflectionTypeSelector FromAssemblyOf(Type type)
     {
         return this;
     }
 
-    public ITypeSelector NotFromAssemblyOf<T>()
+    public IReflectionTypeSelector NotFromAssemblyOf<T>()
     {
         return this;
     }
 
-    public ITypeSelector NotFromAssemblyOf(Type type)
+    public IReflectionTypeSelector NotFromAssemblyOf(Type type)
     {
         return this;
     }
 
-    public ITypeSelector FromAssemblyDependenciesOf<T>()
+    public IReflectionTypeSelector FromAssemblyDependenciesOf<T>()
     {
         return this;
     }
 
-    public ITypeSelector FromAssemblyDependenciesOf(Type type)
+    public IReflectionTypeSelector FromAssemblyDependenciesOf(Type type)
     {
         return this;
     }

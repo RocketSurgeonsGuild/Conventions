@@ -7,6 +7,7 @@
         <IsTimmable>false</IsTimmable>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Rocket.Surgery.DependencyInjection.Extensions" />
         <ProjectReference
             Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
             IncludeAssets="analyzers"

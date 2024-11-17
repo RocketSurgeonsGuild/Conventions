@@ -4,7 +4,7 @@ using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
@@ -200,7 +200,7 @@ public static class GetTypesTestsData
         );
 
         static object[] TestMethod(
-            Func<ITypeProviderAssemblySelector, IEnumerable<Type>> func,
+            Func<IReflectionTypeSelector, IEnumerable<Type>> func,
             [CallerArgumentExpression(nameof(func))]
             string argument = null!
         )
@@ -216,7 +216,7 @@ public static class GetTypesTestsData
         }
     }
 
-    public record GetTypesItem(string Name, string Expression, Func<ITypeProviderAssemblySelector, IEnumerable<Type>> Selector)
+    public record GetTypesItem(string Name, string Expression, Func<IReflectionTypeSelector, IEnumerable<Type>> Selector)
     {
         public override string ToString()
         {

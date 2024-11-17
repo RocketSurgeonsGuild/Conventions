@@ -1,17 +1,19 @@
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
 /// <summary>
-///     Assembly provider that uses <see cref="AppDomain" />
+///     Type provider that uses <see cref="AppDomain" />
 /// </summary>
-/// <seealso cref="IAssemblyProvider" />
+/// <seealso cref="ICompiledTypeProvider" />
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
-internal class AppDomainAssemblyProvider : IAssemblyProvider
+internal class AppDomainAssemblyProvider : ICompiledTypeProvider
 {
     private readonly ILogger _logger;
     private readonly Lazy<ImmutableArray<Assembly>> _assembles;
@@ -71,7 +73,7 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
     /// <remarks>This method is normally used by the generated code however, for legacy support it is supported at runtime as well</remarks>
     /// <returns>IEnumerable{Assembly}.</returns>
     public IEnumerable<Assembly> GetAssemblies(
-        Action<IAssemblyProviderAssemblySelector> action,
+        Action<IReflectionAssemblySelector> action,
         [CallerLineNumber]
         int lineNumber = 0,
         [CallerFilePath]
@@ -92,12 +94,14 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
         return assemblies;
     }
 
+    public IEnumerable<Type> GetTypes(Func<IReflectionTypeSelector, IEnumerable<Type>> selector, int lineNumber = 0, string filePath = "", string argumentExpression = "") => throw new NotImplementedException();
+
     /// <summary>
     ///     Get the full list of types using the given selector
     /// </summary>
     /// <returns></returns>
     public IEnumerable<Type> GetTypes(
-        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
+        Func<IReflectionAssemblySelector, IEnumerable<Type>> selector,
         [CallerLineNumber]
         int lineNumber = 0,
         [CallerFilePath]
@@ -114,5 +118,16 @@ internal class AppDomainAssemblyProvider : IAssemblyProvider
                 ? GetCandidateLibraries(assemblySelector.AssemblyDependencies)
                 : assemblySelector.Assemblies;
         return selector(new TypeProviderAssemblySelector { Assemblies = assemblies, });
+    }
+
+    IServiceCollection ICompiledTypeProvider.Scan(
+        IServiceCollection services,
+        Action<IServiceDescriptorAssemblySelector> selector,
+        int lineNumber,
+        string filePath,
+        string argumentExpression
+    )
+    {
+        throw new NotImplementedException();
     }
 }

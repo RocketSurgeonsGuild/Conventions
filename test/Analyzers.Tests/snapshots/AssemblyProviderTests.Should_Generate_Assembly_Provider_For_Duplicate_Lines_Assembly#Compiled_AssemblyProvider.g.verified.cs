@@ -7,6 +7,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies","")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies","")]
@@ -17,13 +18,13 @@ namespace TestProject.Conventions
 {
     internal sealed partial class Imports
     {
-        public IAssemblyProvider CreateAssemblyProvider() => new AssemblyProvider();
+        public ICompiledTypeProvider CreateAssemblyProvider() => typeof(Imports).GetCompiledTypeProvider();
     }
 
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    file class AssemblyProvider() : IAssemblyProvider
+    file class AssemblyProvider() : ICompiledTypeProvider
     {
-        IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
+        IEnumerable<Assembly> ICompiledTypeProvider.GetAssemblies(Action<IReflectionAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
         {
             switch (lineNumber)
             {
@@ -33,7 +34,7 @@ namespace TestProject.Conventions
                     {
                         // FilePath: Input0.cs Expression: jvHL1AHMsGW7Xy4O6Iiu7w==
                         case "Input0.cs":
-                            switch (IAssemblyProvider.GetArgumentExpressionHash(argumentExpression))
+                            switch (ICompiledTypeProvider.GetArgumentExpressionHash(argumentExpression))
                             {
                                 // FilePath: Input0.cs Expression: jvHL1AHMsGW7Xy4O6Iiu7w==
                                 case "jvHL1AHMsGW7Xy4O6Iiu7w==":
@@ -57,7 +58,7 @@ namespace TestProject.Conventions
                             break;
                         // FilePath: Input1.cs Expression: AJD0wI+GHf59jfK+xhPQQg==
                         case "Input1.cs":
-                            switch (IAssemblyProvider.GetArgumentExpressionHash(argumentExpression))
+                            switch (ICompiledTypeProvider.GetArgumentExpressionHash(argumentExpression))
                             {
                                 // FilePath: Input1.cs Expression: AJD0wI+GHf59jfK+xhPQQg==
                                 case "AJD0wI+GHf59jfK+xhPQQg==":
@@ -85,7 +86,7 @@ namespace TestProject.Conventions
             }
         }
 
-        IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
+        IEnumerable<Type> ICompiledTypeProvider.GetTypes(Func<IReflectionTypeSelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
         {
             yield break;
         }

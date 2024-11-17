@@ -14,18 +14,18 @@ namespace TestProject.Conventions
 {
     internal sealed partial class Imports
     {
-        public IAssemblyProvider CreateAssemblyProvider() => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
+        public ICompiledTypeProvider CreateAssemblyProvider() => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
     }
 
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    file class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
+    file class AssemblyProvider(AssemblyLoadContext context) : ICompiledTypeProvider
     {
-        IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
+        IEnumerable<Assembly> ICompiledTypeProvider.GetAssemblies(Action<IReflectionAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
         {
             yield break;
         }
 
-        IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
+        IEnumerable<Type> ICompiledTypeProvider.GetTypes(Func<IReflectionTypeSelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
         {
             switch (lineNumber)
             {
@@ -37,7 +37,7 @@ namespace TestProject.Conventions
                     yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.IServiceConvention);
                     yield return typeof(global::Rocket.Surgery.Conventions.Hosting.IHostCreatedAsyncConvention<>);
                     yield return typeof(global::Rocket.Surgery.Conventions.Hosting.IHostCreatedConvention<>);
-                    yield return typeof(global::Rocket.Surgery.Conventions.IAssemblyProvider);
+                    yield return typeof(global::Rocket.Surgery.Conventions.ICompiledTypeProvider);
                     yield return typeof(global::Rocket.Surgery.Conventions.IConvention);
                     yield return typeof(global::Rocket.Surgery.Conventions.IConventionContext);
                     yield return typeof(global::Rocket.Surgery.Conventions.IConventionDependency);
@@ -49,9 +49,9 @@ namespace TestProject.Conventions
                     yield return typeof(global::Rocket.Surgery.Conventions.IServiceProviderDictionary);
                     yield return typeof(global::Rocket.Surgery.Conventions.Logging.ILoggingAsyncConvention);
                     yield return typeof(global::Rocket.Surgery.Conventions.Logging.ILoggingConvention);
-                    yield return typeof(global::Rocket.Surgery.Conventions.Reflection.IAssemblyProviderAssemblySelector);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Reflection.IReflectionAssemblySelector);
                     yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeFilter);
-                    yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeProviderAssemblySelector);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Reflection.IReflectionTypeSelector);
                     yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeSelector);
                     yield return typeof(global::Rocket.Surgery.Conventions.Setup.ISetupAsyncConvention);
                     yield return typeof(global::Rocket.Surgery.Conventions.Setup.ISetupConvention);

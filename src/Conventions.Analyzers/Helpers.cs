@@ -1,12 +1,9 @@
 using System.Collections.Immutable;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Rocket.Surgery.Conventions.Analyzers.Support.AssemblyProviders;
-using Rocket.Surgery.Conventions.Support;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Rocket.Surgery.Conventions;
@@ -73,6 +70,10 @@ internal static class Helpers
                );
     }
 
+    public static bool IsOpenGenericType(this INamedTypeSymbol type)
+    {
+        return type.IsGenericType && ( type.IsUnboundGenericType || type.TypeArguments.All(z => z.TypeKind == TypeKind.TypeParameter) );
+    }
 
     public static string GetGenericDisplayName(ISymbol? symbol)
     {
@@ -281,30 +282,6 @@ internal static class Helpers
                 )
             )
            .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)));
-    }
-
-    internal static SourceLocation CreateSourceLocation(InvocationExpressionSyntax methodCallSyntax, CancellationToken cancellationToken)
-    {
-        if (methodCallSyntax is not
-            { Expression: MemberAccessExpressionSyntax memberAccess, ArgumentList.Arguments: [{ Expression: { } argumentExpression, },], })
-            throw new InvalidOperationException("Expected a member access expression");
-
-        var hasher = MD5.Create();
-        var expression = argumentExpression.ToFullString().Replace("\r", "");
-        expression = string.Join("", expression.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(z => z.Trim()));
-        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(expression));
-
-        var source = new SourceLocation(
-            memberAccess
-               .Name
-               .SyntaxTree.GetText(cancellationToken)
-               .Lines.First(z => z.Span.IntersectsWith(memberAccess.Name.Span))
-               .LineNumber
-          + 1,
-            memberAccess.SyntaxTree.FilePath,
-            Convert.ToBase64String(hash)
-        );
-        return source;
     }
 
     internal static SyntaxTrivia GetXmlSummary(string text)
