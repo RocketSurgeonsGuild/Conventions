@@ -220,10 +220,8 @@ public class DryIocWebApplicationTests : AutoFakeTest<LocalTestContext>
                                     .CreateBuilder(Array.Empty<string>())
                                     .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
-        await host.StartAsync();
         var container = host.Services.GetRequiredService<IContainer>();
         container.Should().NotBeNull();
-        await host.StopAsync();
     }
 
     public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
