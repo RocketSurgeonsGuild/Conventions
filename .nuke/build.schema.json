@@ -27,6 +27,7 @@
         "Build",
         "Clean",
         "CleanWellKnownTemporaryFiles",
+        "CollectCodeCoverage",
         "Default",
         "Docs",
         "DotnetCoreBuild",
@@ -52,8 +53,7 @@
         "Prettier",
         "RegenerateBuildConfigurations",
         "Restore",
-        "Test",
-        "TriggerCodeCoverageReports"
+        "Test"
       ]
     },
     "Verbosity": {
