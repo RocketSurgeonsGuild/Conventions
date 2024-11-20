@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class DiagnosticLoggerTests : AutoFakeTest
+public class DiagnosticLoggerTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
 {
     [Fact]
     public void LogTrace()
@@ -140,9 +140,5 @@ public class DiagnosticLoggerTests : AutoFakeTest
                              )
           )
          .MustHaveHappenedOnceExactly();
-    }
-
-    public DiagnosticLoggerTests(ITestOutputHelper outputHelper) : base(outputHelper)
-    {
     }
 }

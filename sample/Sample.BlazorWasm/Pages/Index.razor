@@ -7,8 +7,4 @@
 
 Welcome to your new app.
 
-test
-@foreach (var item in Configuration.AsEnumerable().Reverse())
-{
-    <p>@item.Key = @item.Value</p>
-}
+test: @Configuration["Test"]

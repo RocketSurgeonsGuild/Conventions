@@ -22,7 +22,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="dependencyContext">The dependency context.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForDependencyContext(DependencyContext dependencyContext, params ConventionCategory[] categories)
+    public static AppDelegate ForDependencyContext(DependencyContext dependencyContext, params IEnumerable<ConventionCategory> categories)
     {
         return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties, categories).UseDependencyContext(dependencyContext));
     }
@@ -33,7 +33,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="appDomain">The application domain.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAppDomain(AppDomain appDomain, params ConventionCategory[] categories)
+    public static AppDelegate ForAppDomain(AppDomain appDomain, params IEnumerable<ConventionCategory> categories)
     {
         return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties, categories).UseAppDomain(appDomain));
     }
@@ -44,7 +44,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies, params ConventionCategory[] categories)
+    public static AppDelegate ForAssemblies(IEnumerable<Assembly> assemblies, IEnumerable<ConventionCategory> categories)
     {
         return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties, categories).UseAssemblies(assemblies));
     }
@@ -55,7 +55,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="dependencyContext">The dependency context.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(DependencyContext dependencyContext, params ConventionCategory[] categories)
+    public static AppDelegate For(DependencyContext dependencyContext, params IEnumerable<ConventionCategory> categories)
     {
         return ForDependencyContext(dependencyContext);
     }
@@ -66,7 +66,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="appDomain">The application domain.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(AppDomain appDomain, params ConventionCategory[] categories)
+    public static AppDelegate For(AppDomain appDomain, params IEnumerable<ConventionCategory> categories)
     {
         return ForAppDomain(appDomain);
     }
@@ -77,9 +77,9 @@ public static partial class ReflectionRocketBooster
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IEnumerable<Assembly> assemblies, params ConventionCategory[] categories)
+    public static AppDelegate For(IEnumerable<Assembly> assemblies, params IEnumerable<ConventionCategory> categories)
     {
-        return ForAssemblies(assemblies);
+        return ForAssemblies(assemblies, categories);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="getConventions">The generated method that contains all the referenced conventions</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForConventions(IConventionFactory getConventions, params ConventionCategory[] categories)
+    public static AppDelegate ForConventions(IConventionFactory getConventions, params IEnumerable<ConventionCategory> categories)
     {
         return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties, categories).UseConventionFactory(getConventions));
     }
@@ -99,7 +99,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="factory">The factory.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IConventionFactory factory, params ConventionCategory[] categories)
+    public static AppDelegate For(IConventionFactory factory, params IEnumerable<ConventionCategory> categories)
     {
         return ForConventions(factory);
     }

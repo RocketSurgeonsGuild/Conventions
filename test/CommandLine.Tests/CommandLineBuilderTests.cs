@@ -31,8 +31,11 @@ public interface IService2
     string SomeValue { get; }
 }
 
-public class CommandLineBuilderTests : AutoFakeTest
+public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
 {
+    [field: AllowNull, MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+
     [Fact]
     public void Constructs()
     {
@@ -204,8 +207,6 @@ public class CommandLineBuilderTests : AutoFakeTest
         var result = await host.RunConsoleAppAsync();
         result.Should().Be(0);
     }
-
-    public CommandLineBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 
     private sealed class Add : Command
     {

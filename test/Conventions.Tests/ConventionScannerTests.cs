@@ -1,6 +1,7 @@
 using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.DependencyInjection.Compiled;
@@ -12,8 +13,12 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
+public class ConventionScannerTests(ITestOutputHelper outputHelper)  : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
 {
+    [field: AllowNull, MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
+
     [Fact]
     public void ShouldConstruct()
     {

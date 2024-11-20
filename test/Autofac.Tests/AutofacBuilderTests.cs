@@ -13,7 +13,7 @@ using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
-public class AutofacBuilderTests : AutoFakeTest
+public class AutofacBuilderTests : AutoFakeTest<LocalTestContext>
 {
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -210,7 +210,7 @@ public class AutofacBuilderTests : AutoFakeTest
         host.Services.GetRequiredService<ILifetimeScope>().Should().NotBeNull();
     }
 
-    public AutofacBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
+    public AutofacBuilderTests(ITestOutputHelper outputHelper) : base(LocalTestContext.Create(outputHelper))
     {
         AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
     }

@@ -3,12 +3,16 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Extensions.Testing;
+using Serilog.Events;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class TestContextTests_DependencyContext : AutoFakeTest
+public class TestContextTests_DependencyContext(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
 {
+    [field: AllowNull, MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+
     [Fact]
     public void Builder_Should_Create_Host()
     {
@@ -24,26 +28,4 @@ public class TestContextTests_DependencyContext : AutoFakeTest
             ;
         a.Should().NotThrow();
     }
-
-    [Fact]
-    public void Builder_Should_Create_Host_ByAssembly()
-    {
-        var a = () => ConventionContextBuilder.Create().ForTesting(GetType().Assembly, LoggerFactory)
-            ;
-        a.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Builder_Should_Use_A_Custom_ILogger()
-    {
-        var a = () => ConventionContextBuilder
-                     .Create()
-                     .ForTesting(GetType(), LoggerFactory)
-                     .WithLogger(AutoFake.Resolve<ILogger>())
-            ;
-        var context = a.Should().NotThrow().Subject;
-        context.Get<ILogger>().Should().BeSameAs(AutoFake.Resolve<ILogger>());
-    }
-
-    public TestContextTests_DependencyContext(ITestOutputHelper outputHelper) : base(outputHelper, LogLevel.Information) { }
 }

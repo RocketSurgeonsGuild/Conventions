@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+using Serilog.Events;
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
@@ -13,7 +14,7 @@ using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocBuilderTests : AutoFakeTest
+public class DryIocBuilderTests : AutoFakeTest<LocalTestContext>
 {
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -228,7 +229,7 @@ public class DryIocBuilderTests : AutoFakeTest
         await host.StopAsync();
     }
 
-    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper)
+    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
     }
@@ -236,7 +237,6 @@ public class DryIocBuilderTests : AutoFakeTest
     protected override IContainer BuildContainer(IContainer container)
     {
         return container
-               .With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic)
-            ;
+               .With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic);
     }
 }
