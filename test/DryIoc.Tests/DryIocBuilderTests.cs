@@ -223,10 +223,8 @@ public class DryIocBuilderTests : AutoFakeTest<LocalTestContext>
                               .CreateApplicationBuilder(Array.Empty<string>())
                               .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
-        await host.StartAsync();
         var container = host.Services.GetRequiredService<IContainer>();
         container.Should().NotBeNull();
-        await host.StopAsync();
     }
 
     public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
@@ -234,9 +232,7 @@ public class DryIocBuilderTests : AutoFakeTest<LocalTestContext>
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
     }
 
-    protected override IContainer BuildContainer(IContainer container)
-    {
-        return container
-               .With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic);
-    }
+    protected override IContainer BuildContainer(IContainer container) =>
+        container
+           .With(FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic);
 }
