@@ -142,44 +142,5 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                 );
             }
         );
-
-        var getAssembliesSyntaxProvider = context
-                                         .SyntaxProvider.CreateSyntaxProvider(
-                                              (node, _) => AssemblyCollection.GetAssembliesMethod(node) is { method: { }, selector: { }, },
-                                              (syntaxContext, _) => AssemblyCollection.GetAssembliesMethod(syntaxContext)
-                                          )
-                                         .Combine(hasAssemblyLoadContext)
-                                         .Where(z => z is { Right: true, Left: { method: { }, selector: { }, }, })
-                                         .Select((z, _) => z.Left)
-                                         .Collect();
-        var getTypesSyntaxProvider = context
-                                    .SyntaxProvider.CreateSyntaxProvider(
-                                         (node, _) => TypeCollection.GetTypesMethod(node) is { method: { }, selector: { }, },
-                                         (syntaxContext, _) => TypeCollection.GetTypesMethod(syntaxContext)
-                                     )
-                                    .Combine(hasAssemblyLoadContext)
-                                    .Where(z => z is { Right: true, Left: { method: { }, selector: { }, }, })
-                                    .Select((tuple, _) => tuple.Left)
-                                    .Collect();
-        context.RegisterImplementationSourceOutput(
-            getAssembliesSyntaxProvider
-               .Combine(getTypesSyntaxProvider)
-               .Combine(importConfiguration)
-               .Combine(msBuildConfig)
-               .Combine(context.CompilationProvider),
-            static (context, results) =>
-            {
-                AssemblyCollection.Collect(
-                    context,
-                    new(
-                        results.Right,
-                        results.Left.Left.Right,
-                        results.Left.Left.Left.Left,
-                        results.Left.Left.Left.Right,
-                        results.Left.Right
-                    )
-                );
-            }
-        );
     }
 }

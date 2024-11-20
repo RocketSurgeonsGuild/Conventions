@@ -1,4 +1,5 @@
 ﻿using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Tests;
 

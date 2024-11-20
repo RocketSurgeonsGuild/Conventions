@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
@@ -7,7 +8,7 @@ namespace Rocket.Surgery.Conventions.Reflection;
 public class AssemblyConventionFactory(IEnumerable<Assembly> assemblies) : ConventionFactoryBase
 {
     /// <inheritdoc />
-    public override IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder)
+    public override ICompiledTypeProvider CreateTypeProvider(ConventionContextBuilder builder)
     {
         return new DefaultAssemblyProvider(assemblies);
     }

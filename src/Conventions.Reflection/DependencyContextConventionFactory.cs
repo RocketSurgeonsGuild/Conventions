@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyModel;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
@@ -6,7 +7,7 @@ namespace Rocket.Surgery.Conventions.Reflection;
 public class DependencyContextConventionFactory(DependencyContext dependencyContext) : ConventionFactoryBase
 {
     /// <inheritdoc />
-    public override IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder)
+    public override ICompiledTypeProvider CreateTypeProvider(ConventionContextBuilder builder)
     {
         return new DependencyContextAssemblyProvider(dependencyContext);
     }

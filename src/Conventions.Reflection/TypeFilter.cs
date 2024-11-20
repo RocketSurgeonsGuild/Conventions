@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 

@@ -23,7 +23,7 @@ Once the context is created you can use the context to find out all sorts of inf
 
 Useful properties:
 
--   [`AssemblyProvider`](xref:Rocket.Surgery.Conventions.IConventionContext#Rocket_Surgery_Conventions_ConventionContext_AssemblyProvider) - The assembly provider can be used to get a list of assemblies
+-   [`AssemblyProvider`](xref:Rocket.Surgery.Conventions.IConventionContext#Rocket_Surgery_Conventions_ConventionContext_AssemblyProvider) - The type provider can be used to get a list of assemblies
 -   [`Logger`](xref:Rocket.Surgery.Conventions.IConventionContext#Rocket_Surgery_Conventions_ConventionContext_Logger) - This is a diagnostic logger that can be used for logging details. If a logger is provided to the builder it will be used here.
 -   [`Properties`](xref:Rocket.Surgery.Conventions.IConventionContext#Rocket_Surgery_Conventions_ConventionContext_Properties) - Contains all the properties provided to the builder. This implements `IServiceProvider` and can be used with `ActivatorExtensions
 

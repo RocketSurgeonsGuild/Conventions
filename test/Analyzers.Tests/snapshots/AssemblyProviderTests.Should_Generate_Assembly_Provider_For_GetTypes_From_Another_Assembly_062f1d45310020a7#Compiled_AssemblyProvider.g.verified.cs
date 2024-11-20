@@ -8,37 +8,39 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Reflection;
 
+[assembly: Rocket.Surgery.Conventions.AssemblyProviderAttribute(typeof(TestProject.Conventions.AssemblyProvider))]
 namespace TestProject.Conventions
 {
     internal sealed partial class Imports
     {
-        public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider();
-        [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        private class AssemblyProvider() : IAssemblyProvider
-        {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
-            {
-                yield break;
-            }
+        public ICompiledTypeProvider CreateAssemblyProvider() => new AssemblyProvider();
+    }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
+    [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    file class AssemblyProvider() : ICompiledTypeProvider
+    {
+        IEnumerable<Assembly> ICompiledTypeProvider.GetAssemblies(Action<IReflectionAssemblySelector> action, int lineNumber, string filePath, string argumentExpression)
+        {
+            yield break;
+        }
+
+        IEnumerable<Type> ICompiledTypeProvider.GetTypes(Func<IReflectionTypeSelector, IEnumerable<Type>> selector, int lineNumber, string filePath, string argumentExpression)
+        {
+            switch (lineNumber)
             {
-                switch (lineNumber)
-                {
-                    // FilePath: Input0.cs Expression: OPoLUH8GfawO7mDCPPomow==
-                    case 18:
-                        yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Hosting.HostCreatedAsyncConvention<>);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Hosting.HostCreatedConvention<>);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingAsyncConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupAsyncConvention);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupConvention);
-                        break;
-                }
+                // FilePath: Input0.cs Expression: OPoLUH8GfawO7mDCPPomow==
+                case 18:
+                    yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationAsyncConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Configuration.ConfigurationConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceAsyncConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.DependencyInjection.ServiceConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Hosting.HostCreatedAsyncConvention<>);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Hosting.HostCreatedConvention<>);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingAsyncConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Logging.LoggingConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupAsyncConvention);
+                    yield return typeof(global::Rocket.Surgery.Conventions.Setup.SetupConvention);
+                    break;
             }
         }
     }

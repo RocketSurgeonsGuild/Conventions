@@ -6,11 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+using Serilog.Events;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocWebApplicationTests : AutoFakeTest
+public class DryIocWebApplicationTests : AutoFakeTest<LocalTestContext>
 {
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -225,7 +226,7 @@ public class DryIocWebApplicationTests : AutoFakeTest
         await host.StopAsync();
     }
 
-    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(outputHelper)
+    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
     }

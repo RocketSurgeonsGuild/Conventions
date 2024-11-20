@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
         <PackageDescription
         >Adds support for loading configuration, services, logging, command line and more via simple and easy to setup assembly attributes</PackageDescription>
         <PackageTags>$(PackageTags);reflection</PackageTags>
@@ -18,6 +18,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
         <PackageReference Include="Microsoft.Extensions.Configuration" />
+        <PackageReference Include="Rocket.Surgery.DependencyInjection.Extensions" />
         <PackageReference Include="System.Collections.Immutable" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Reflection" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.CommandLine" />

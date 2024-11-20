@@ -6,11 +6,12 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
+using Serilog.Events;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper, LogLevel.Information)
+public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
 {
     [Fact]
     public void Should_Throw_When_A_Cycle_Is_Detected()

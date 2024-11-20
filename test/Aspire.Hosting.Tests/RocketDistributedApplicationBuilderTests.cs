@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace Aspire.Hosting.Tests;
 
-public partial class RocketDistributedApplicationBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
+public partial class RocketDistributedApplicationBuilderTests(ITestOutputHelper outputHelper)  : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
 {
     [Fact]
     public async Task Should_UseRocketBooster()

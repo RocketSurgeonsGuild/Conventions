@@ -1,9 +1,10 @@
 using System.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
-internal record AssemblyProviderAssemblySelector : IAssemblyProviderAssemblySelector, ITypeSelector
+internal record AssemblyProviderAssemblySelector : IReflectionAssemblySelector, IReflectionTypeSelector
 {
     public HashSet<Assembly> Assemblies { get; } = new();
     public HashSet<Assembly> ExcludeAssemblies { get; } = new();
@@ -11,121 +12,121 @@ internal record AssemblyProviderAssemblySelector : IAssemblyProviderAssemblySele
     public bool AllAssemblies { get; private set; }
     public bool SystemAssemblies { get; private set; }
 
-    public IAssemblyProviderAssemblySelector FromAssembly()
+    public IReflectionTypeSelector FromAssembly()
     {
         Assemblies.Add(Assembly.GetCallingAssembly());
         return this;
     }
 
-    public IAssemblyProviderAssemblySelector FromAssemblies()
+    public IReflectionTypeSelector FromAssemblies()
     {
         AllAssemblies = true;
         return this;
     }
 
-    public IAssemblyProviderAssemblySelector IncludeSystemAssemblies()
+    public IReflectionTypeSelector IncludeSystemAssemblies()
     {
         SystemAssemblies = true;
         return this;
     }
 
-    public IAssemblyProviderAssemblySelector FromAssemblyOf<T>()
+    public IReflectionTypeSelector FromAssemblyOf<T>()
     {
         Assemblies.Add(typeof(T).Assembly);
         return this;
     }
 
-    public IAssemblyProviderAssemblySelector FromAssemblyOf(Type type)
+    public IReflectionTypeSelector FromAssemblyOf(Type type)
     {
         Assemblies.Add(type.Assembly);
         return this;
     }
 
-    public IAssemblyProviderAssemblySelector NotFromAssemblyOf<T>()
+    public IReflectionTypeSelector NotFromAssemblyOf<T>()
     {
         ExcludeAssemblies.Add(typeof(T).Assembly);
         return this;
     }
 
-    public IAssemblyProviderAssemblySelector NotFromAssemblyOf(Type type)
+    public IReflectionTypeSelector NotFromAssemblyOf(Type type)
     {
         ExcludeAssemblies.Add(type.Assembly);
         return this;
     }
 
-    public IAssemblyProviderAssemblySelector FromAssemblyDependenciesOf<T>()
+    public IReflectionTypeSelector FromAssemblyDependenciesOf<T>()
     {
         AssemblyDependencies.Add(typeof(T).Assembly);
         return this;
     }
 
-    public IAssemblyProviderAssemblySelector FromAssemblyDependenciesOf(Type type)
+    public IReflectionTypeSelector FromAssemblyDependenciesOf(Type type)
     {
         AssemblyDependencies.Add(type.Assembly);
         return this;
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.FromAssemblies()
+    IReflectionTypeSelector IReflectionAssemblySelector.FromAssemblies()
     {
-        return (ITypeSelector)FromAssemblies();
+        return (IReflectionTypeSelector)FromAssemblies();
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.FromAssemblyDependenciesOf<T>()
+    IReflectionTypeSelector IReflectionAssemblySelector.FromAssemblyDependenciesOf<T>()
     {
-        return (ITypeSelector)FromAssemblyDependenciesOf<T>();
+        return (IReflectionTypeSelector)FromAssemblyDependenciesOf<T>();
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.FromAssemblyDependenciesOf(Type type)
+    IReflectionTypeSelector IReflectionAssemblySelector.FromAssemblyDependenciesOf(Type type)
     {
-        return (ITypeSelector)FromAssemblyDependenciesOf(type);
+        return (IReflectionTypeSelector)FromAssemblyDependenciesOf(type);
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.FromAssemblyOf<T>()
+    IReflectionTypeSelector IReflectionAssemblySelector.FromAssemblyOf<T>()
     {
-        return (ITypeSelector)FromAssemblyOf<T>();
+        return (IReflectionTypeSelector)FromAssemblyOf<T>();
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.FromAssemblyOf(Type type)
+    IReflectionTypeSelector IReflectionAssemblySelector.FromAssemblyOf(Type type)
     {
-        return (ITypeSelector)FromAssemblyOf(type);
+        return (IReflectionTypeSelector)FromAssemblyOf(type);
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.NotFromAssemblyOf<T>()
+    IReflectionTypeSelector IReflectionAssemblySelector.NotFromAssemblyOf<T>()
     {
-        return (ITypeSelector)NotFromAssemblyOf<T>();
+        return (IReflectionTypeSelector)NotFromAssemblyOf<T>();
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.NotFromAssemblyOf(Type type)
+    IReflectionTypeSelector IReflectionAssemblySelector.NotFromAssemblyOf(Type type)
     {
-        return (ITypeSelector)NotFromAssemblyOf(type);
+        return (IReflectionTypeSelector)NotFromAssemblyOf(type);
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.FromAssembly()
+    IReflectionTypeSelector IReflectionAssemblySelector.FromAssembly()
     {
-        return (ITypeSelector)FromAssembly();
+        return (IReflectionTypeSelector)FromAssembly();
     }
 
-    ITypeSelector ITypeProviderAssemblySelector.IncludeSystemAssemblies()
+    IReflectionTypeSelector IReflectionAssemblySelector.IncludeSystemAssemblies()
     {
-        return (ITypeSelector)IncludeSystemAssemblies();
+        return (IReflectionTypeSelector)IncludeSystemAssemblies();
     }
 
-    IEnumerable<Type> ITypeSelector.GetTypes()
-    {
-        return Enumerable.Empty<Type>();
-    }
-
-    IEnumerable<Type> ITypeSelector.GetTypes(bool publicOnly)
+    IEnumerable<Type> IReflectionTypeSelector.GetTypes()
     {
         return Enumerable.Empty<Type>();
     }
 
-    IEnumerable<Type> ITypeSelector.GetTypes(Action<ITypeFilter> action)
+    IEnumerable<Type> IReflectionTypeSelector.GetTypes(bool publicOnly)
     {
         return Enumerable.Empty<Type>();
     }
 
-    IEnumerable<Type> ITypeSelector.GetTypes(bool publicOnly, Action<ITypeFilter> action)
+    IEnumerable<Type> IReflectionTypeSelector.GetTypes(Action<ITypeFilter> action)
+    {
+        return Enumerable.Empty<Type>();
+    }
+
+    IEnumerable<Type> IReflectionTypeSelector.GetTypes(bool publicOnly, Action<ITypeFilter> action)
     {
         return Enumerable.Empty<Type>();
     }

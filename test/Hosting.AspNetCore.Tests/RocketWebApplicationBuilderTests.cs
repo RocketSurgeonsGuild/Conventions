@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
-public class RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
+public class RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper)  : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
 {
     [Fact]
     public async Task Should_Build_The_Host_Correctly()

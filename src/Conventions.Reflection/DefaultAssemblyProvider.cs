@@ -1,18 +1,20 @@
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions.Reflection;
 
 /// <summary>
-///     Default assembly provider that uses a list of assemblies
-///     Implements the <see cref="IAssemblyProvider" />
+///     Default type provider that uses a list of assemblies
+///     Implements the <see cref="ICompiledTypeProvider" />
 /// </summary>
-/// <seealso cref="IAssemblyProvider" />
+/// <seealso cref="ICompiledTypeProvider" />
 [RequiresUnreferencedCode("TypeSelector.GetTypesInternal may remove members at compile time")]
-internal partial class DefaultAssemblyProvider : IAssemblyProvider
+internal partial class DefaultAssemblyProvider : ICompiledTypeProvider
 {
     [LoggerMessage("[{AssemblyProvider}] Found assembly {AssemblyName}", EventId = 1337, Level = LogLevel.Debug)]
     private static partial void LogFoundAssembly(ILogger logger, string assemblyProvider, string? assemblyName);
@@ -42,15 +44,6 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
         _logger = logger ?? NullLogger.Instance;
     }
 
-    private void LogValue(Assembly value)
-    {
-        LogFoundAssembly(
-            _logger,
-            nameof(DefaultAssemblyProvider),
-            value.GetName().Name
-        );
-    }
-
     private IEnumerable<Assembly> GetCandidateLibraries(HashSet<Assembly> candidates)
     {
         if (!candidates.Any()) return Enumerable.Empty<Assembly>();
@@ -75,7 +68,7 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
     /// <remarks>This method is normally used by the generated code however, for legacy support it is supported at runtime as well</remarks>
     /// <returns>IEnumerable{Assembly}.</returns>
     public IEnumerable<Assembly> GetAssemblies(
-        Action<IAssemblyProviderAssemblySelector> action,
+        Action<IReflectionAssemblySelector> action,
         [CallerLineNumber]
         int lineNumber = 0,
         [CallerFilePath]
@@ -101,7 +94,7 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
     /// </summary>
     /// <returns></returns>
     public IEnumerable<Type> GetTypes(
-        Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector,
+        Func<IReflectionTypeSelector, IEnumerable<Type>> selector,
         [CallerLineNumber]
         int lineNumber = 0,
         [CallerFilePath]
@@ -118,5 +111,16 @@ internal partial class DefaultAssemblyProvider : IAssemblyProvider
                 ? GetCandidateLibraries(assemblySelector.AssemblyDependencies)
                 : assemblySelector.Assemblies;
         return selector(new TypeProviderAssemblySelector { Assemblies = assemblies, });
+    }
+
+    IServiceCollection ICompiledTypeProvider.Scan(
+        IServiceCollection services,
+        Action<IServiceDescriptorAssemblySelector> selector,
+        int lineNumber,
+        string filePath,
+        string argumentExpression
+    )
+    {
+        throw new NotImplementedException();
     }
 }

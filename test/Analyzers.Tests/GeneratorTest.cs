@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
+using Serilog.Events;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public abstract class GeneratorTest(ITestOutputHelper outputHelper) : LoggerTest(outputHelper, LogLevel.Trace), IAsyncLifetime
+public abstract class GeneratorTest(ITestOutputHelper outputHelper) : LoggerTest<XUnitTestContext>(XUnitDefaults.CreateTestContext(outputHelper, LogEventLevel.Verbose)), IAsyncLifetime
 {
     protected GeneratorTestContextBuilder Builder { get; private set; } = null!;
 

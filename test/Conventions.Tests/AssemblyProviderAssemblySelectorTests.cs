@@ -4,7 +4,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class AssemblyProviderAssemblySelectorTests(ITestOutputHelper outputHelper) : LoggerTest(outputHelper)
+public class AssemblyProviderAssemblySelectorTests(ITestOutputHelper outputHelper) : LoggerTest<XUnitTestContext>(XUnitDefaults.CreateTestContext(outputHelper))
 {
     [Fact]
     public async Task FromAssembly_AddsCallingAssembly()

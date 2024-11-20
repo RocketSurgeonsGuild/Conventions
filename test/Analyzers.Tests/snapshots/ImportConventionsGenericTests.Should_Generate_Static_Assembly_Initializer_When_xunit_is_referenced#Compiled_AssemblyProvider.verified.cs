@@ -11,21 +11,21 @@ namespace TestProject.Conventions
     internal sealed partial class Imports
     {
 #pragma warning disable CA1822
-        public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder)
+        public ICompiledTypeProvider CreateAssemblyProvider(ConventionContextBuilder builder)
         {
             builder.Set(HostType.UnitTest);
             return new AssemblyProvider();
         }
 
         [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        private class AssemblyProvider() : IAssemblyProvider
+        private class AssemblyProvider() : ICompiledTypeProvider
         {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
+            IEnumerable<Assembly> ICompiledTypeProvider.GetAssemblies(Action<IReflectionAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 yield break;
             }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
+            IEnumerable<Type> ICompiledTypeProvider.GetTypes(Func<IReflectionTypeSelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
             {
                 yield break;
             }

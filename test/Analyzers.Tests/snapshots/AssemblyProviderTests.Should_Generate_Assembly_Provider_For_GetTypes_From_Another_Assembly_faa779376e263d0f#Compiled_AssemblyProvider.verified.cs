@@ -12,16 +12,16 @@ namespace TestProject.Conventions
     internal sealed partial class Imports
     {
 #pragma warning disable CA1822
-        public IAssemblyProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
+        public ICompiledTypeProvider CreateAssemblyProvider(ConventionContextBuilder builder) => new AssemblyProvider(builder.Properties.GetRequiredService<AssemblyLoadContext>());
         [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        private class AssemblyProvider(AssemblyLoadContext context) : IAssemblyProvider
+        private class AssemblyProvider(AssemblyLoadContext context) : ICompiledTypeProvider
         {
-            IEnumerable<Assembly> IAssemblyProvider.GetAssemblies(Action<IAssemblyProviderAssemblySelector> action, string filePath, string memberName, int lineNumber)
+            IEnumerable<Assembly> ICompiledTypeProvider.GetAssemblies(Action<IReflectionAssemblySelector> action, string filePath, string memberName, int lineNumber)
             {
                 yield break;
             }
 
-            IEnumerable<Type> IAssemblyProvider.GetTypes(Func<ITypeProviderAssemblySelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
+            IEnumerable<Type> ICompiledTypeProvider.GetTypes(Func<IReflectionTypeSelector, IEnumerable<Type>> selector, string filePath, string memberName, int lineNumber)
             {
                 switch (lineNumber)
                 {
@@ -80,7 +80,7 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.ExportedConventionsAttribute);
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Extensions.RocketSurgerySetupExtensions");
                         yield return typeof(global::Rocket.Surgery.Conventions.HostType);
-                        yield return typeof(global::Rocket.Surgery.Conventions.IAssemblyProvider);
+                        yield return typeof(global::Rocket.Surgery.Conventions.ICompiledTypeProvider);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConvention);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionContext);
                         yield return typeof(global::Rocket.Surgery.Conventions.IConventionDependency);
@@ -110,9 +110,9 @@ namespace TestProject.Conventions
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ConventionFactoryBase);
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.DefaultAssemblyProvider");
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.DependencyClassification");
-                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.IAssemblyProviderAssemblySelector);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.IReflectionAssemblySelector);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeFilter);
-                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeProviderAssemblySelector);
+                        yield return typeof(global::Rocket.Surgery.Conventions.Reflection.IReflectionTypeSelector);
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.ITypeSelector);
                         yield return RocketSurgeryConventions.GetType("Rocket.Surgery.Conventions.Reflection.TypeFilter");
                         yield return typeof(global::Rocket.Surgery.Conventions.Reflection.TypeInfoFilter);

@@ -19,7 +19,7 @@ public static partial class RocketBooster
     /// <param name="conventionFactory">The generated method that contains all the referenced conventions</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate ForConventions(IConventionFactory conventionFactory, params ConventionCategory[] categories)
+    public static AppDelegate ForConventions(IConventionFactory conventionFactory, params IEnumerable<ConventionCategory> categories)
     {
         return (_, _) => ValueTask.FromResult(
                    new ConventionContextBuilder(new Dictionary<object, object>(), categories).UseConventionFactory(conventionFactory)

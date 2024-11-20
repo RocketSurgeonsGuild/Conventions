@@ -6,8 +6,12 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class AppDomainAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : AutoFakeTest(outputHelper)
+public class AppDomainAssemblyCandidateFinderTests(ITestOutputHelper outputHelper)  : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
 {
+    [field: AllowNull, MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
+
     [Fact]
     public void FindsAssembliesInCandidates_Params()
     {

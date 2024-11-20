@@ -8,6 +8,7 @@ using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Reflection;
+using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 using Spectre.Console.Cli;
@@ -30,12 +31,15 @@ public interface IService2
     string SomeValue { get; }
 }
 
-public class CommandLineBuilderTests : AutoFakeTest
+public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
 {
+    [field: AllowNull, MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+
     [Fact]
     public void Constructs()
     {
-        var assemblyProvider = AutoFake.Provide<IAssemblyProvider>(new TestAssemblyProvider());
+        var assemblyProvider = AutoFake.Provide<ICompiledTypeProvider>(new TestAssemblyProvider());
         var builder = AutoFake.Resolve<ConventionContextBuilder>().UseAssemblies(new TestAssemblyProvider().GetAssemblies());
 
         var a = () => { builder.PrependConvention(A.Fake<ICommandLineConvention>()); };
@@ -203,8 +207,6 @@ public class CommandLineBuilderTests : AutoFakeTest
         var result = await host.RunConsoleAppAsync();
         result.Should().Be(0);
     }
-
-    public CommandLineBuilderTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
 
     private sealed class Add : Command
     {

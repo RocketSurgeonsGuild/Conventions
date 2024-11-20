@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions.Extensions;
+using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -40,7 +41,7 @@ public sealed class ConventionContext : IConventionContext
         if (builder._conventionProviderFactory is null) throw new InvalidOperationException("No convention provider factory was found");
 
         // ReSharper disable once NullableWarningSuppressionIsUsed
-        var assemblyProvider = builder._conventionProviderFactory!.CreateAssemblyProvider(builder);
+        var assemblyProvider = builder._conventionProviderFactory!.CreateTypeProvider(builder);
         var provider = ConventionContextHelpers.CreateProvider(builder, assemblyProvider, builder.Get<ILogger>());
         // ReSharper disable once NullableWarningSuppressionIsUsed
         builder.Properties.Set(builder._serviceProviderFactory!);
@@ -56,16 +57,16 @@ public sealed class ConventionContext : IConventionContext
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionProvider"></param>
-    /// <param name="assemblyProvider"></param>
+    /// <param name="typeProvider"></param>
     private ConventionContext(
         ConventionContextBuilder builder,
         IConventionProvider conventionProvider,
-        IAssemblyProvider assemblyProvider
+        ICompiledTypeProvider typeProvider
     )
     {
         _builder = builder;
         Conventions = conventionProvider;
-        AssemblyProvider = assemblyProvider;
+        TypeProvider = typeProvider;
         Properties = builder.Properties;
         Categories = builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer);
     }
@@ -112,10 +113,10 @@ public sealed class ConventionContext : IConventionContext
     public ILogger Logger => this.Get<ILogger>() ?? NullLogger.Instance;
 
     /// <summary>
-    ///     Gets the assembly provider.
+    ///     Gets the type provider.
     /// </summary>
-    /// <value>The assembly provider.</value>
-    public IAssemblyProvider AssemblyProvider { get; }
+    /// <value>The type provider.</value>
+    public ICompiledTypeProvider TypeProvider { get; }
 
     /// <summary>
     ///     Gets the configuration.
