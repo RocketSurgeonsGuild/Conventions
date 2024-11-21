@@ -25,6 +25,7 @@ public static partial class RocketBooster
     {
         return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties, categories).UseConventionFactory(conventionFactory));
     }
+
     /// <summary>
     ///     ForTesting the specified conventions
     /// </summary>
@@ -41,8 +42,5 @@ public static partial class RocketBooster
     /// </summary>
     /// <param name="factory">The factory.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IConventionFactory factory)
-    {
-        return ForConventions(factory);
-    }
+    public static AppDelegate For(IConventionFactory factory) => ForConventions(factory);
 }

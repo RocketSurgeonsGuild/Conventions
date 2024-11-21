@@ -28,6 +28,7 @@ public static partial class ReflectionRocketBooster
     {
         return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties, categories).UseDependencyContext(dependencyContext));
     }
+
     /// <summary>
     ///     Fors the dependency context.
     /// </summary>
@@ -92,10 +93,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     [OverloadResolutionPriority(-1)]
-    public static AppDelegate For(DependencyContext dependencyContext, params ConventionCategory[] categories)
-    {
-        return ForDependencyContext(dependencyContext);
-    }
+    public static AppDelegate For(DependencyContext dependencyContext, params ConventionCategory[] categories) => ForDependencyContext(dependencyContext);
 
     /// <summary>
     ///     Fors the specified dependency context.
@@ -103,10 +101,8 @@ public static partial class ReflectionRocketBooster
     /// <param name="dependencyContext">The dependency context.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(DependencyContext dependencyContext, params IEnumerable<ConventionCategory> categories)
-    {
-        return ForDependencyContext(dependencyContext);
-    }
+    public static AppDelegate For(DependencyContext dependencyContext, params IEnumerable<ConventionCategory> categories) =>
+        ForDependencyContext(dependencyContext);
 
     /// <summary>
     ///     Fors the specified application domain.
@@ -115,10 +111,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     [OverloadResolutionPriority(-1)]
-    public static AppDelegate For(AppDomain appDomain, params ConventionCategory[] categories)
-    {
-        return ForAppDomain(appDomain);
-    }
+    public static AppDelegate For(AppDomain appDomain, params ConventionCategory[] categories) => ForAppDomain(appDomain);
 
     /// <summary>
     ///     Fors the specified application domain.
@@ -126,10 +119,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="appDomain">The application domain.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(AppDomain appDomain, params IEnumerable<ConventionCategory> categories)
-    {
-        return ForAppDomain(appDomain);
-    }
+    public static AppDelegate For(AppDomain appDomain, params IEnumerable<ConventionCategory> categories) => ForAppDomain(appDomain);
 
     /// <summary>
     ///     Fors the specified assemblies.
@@ -138,10 +128,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     [OverloadResolutionPriority(-1)]
-    public static AppDelegate For(IEnumerable<Assembly> assemblies, params ConventionCategory[] categories)
-    {
-        return ForAssemblies(assemblies, categories);
-    }
+    public static AppDelegate For(IEnumerable<Assembly> assemblies, params ConventionCategory[] categories) => ForAssemblies(assemblies, categories);
 
     /// <summary>
     ///     Fors the specified assemblies.
@@ -149,10 +136,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="assemblies">The assemblies.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IEnumerable<Assembly> assemblies, params IEnumerable<ConventionCategory> categories)
-    {
-        return ForAssemblies(assemblies, categories);
-    }
+    public static AppDelegate For(IEnumerable<Assembly> assemblies, params IEnumerable<ConventionCategory> categories) => ForAssemblies(assemblies, categories);
 
     /// <summary>
     ///     ForTesting the specified conventions
@@ -184,10 +168,7 @@ public static partial class ReflectionRocketBooster
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     [OverloadResolutionPriority(-1)]
-    public static AppDelegate For(IConventionFactory factory, params ConventionCategory[] categories)
-    {
-        return ForConventions(factory);
-    }
+    public static AppDelegate For(IConventionFactory factory, params ConventionCategory[] categories) => ForConventions(factory);
 
     /// <summary>
     ///     Fors the specified factory.
@@ -195,8 +176,5 @@ public static partial class ReflectionRocketBooster
     /// <param name="factory">The factory.</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IConventionFactory factory, params IEnumerable<ConventionCategory> categories)
-    {
-        return ForConventions(factory);
-    }
+    public static AppDelegate For(IConventionFactory factory, params IEnumerable<ConventionCategory> categories) => ForConventions(factory);
 }

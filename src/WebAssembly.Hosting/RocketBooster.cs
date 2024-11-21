@@ -44,8 +44,5 @@ public static partial class RocketBooster
     /// </summary>
     /// <param name="conventionProvider">The conventions provider.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IConventionFactory conventionProvider)
-    {
-        return ForConventions(conventionProvider);
-    }
+    public static AppDelegate For(IConventionFactory conventionProvider) => ForConventions(conventionProvider);
 }

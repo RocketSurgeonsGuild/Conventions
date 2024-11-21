@@ -22,10 +22,8 @@ public class ConventionContextBuilder
     /// <param name="categories"></param>
     /// <returns></returns>
     [OverloadResolutionPriority(-1)]
-    public static ConventionContextBuilder Create(PropertiesType? properties = null, params ConventionCategory[] categories)
-    {
-        return new(properties ?? new PropertiesDictionary(), categories);
-    }
+    public static ConventionContextBuilder Create(PropertiesType? properties = null, params ConventionCategory[] categories) =>
+        new(properties ?? new PropertiesDictionary(), categories);
 
     /// <summary>
     ///     Create a default context builder
@@ -33,19 +31,17 @@ public class ConventionContextBuilder
     /// <param name="properties"></param>
     /// <param name="categories"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder Create(PropertiesType? properties = null, params IEnumerable<ConventionCategory> categories)
-    {
-        return new(properties ?? new PropertiesDictionary(), categories);
-    }
+    public static ConventionContextBuilder Create(PropertiesType? properties = null, params IEnumerable<ConventionCategory> categories) =>
+        new(properties ?? new PropertiesDictionary(), categories);
 
     private static readonly string[] categoryEnvironmentVariables =
-        ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES",];
+        ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES"];
 
-    private static readonly string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE",];
+    private static readonly string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE"];
 
     // this null is used a marker to indicate where in the list is the middle
     // ReSharper disable once NullableWarningSuppressionIsUsed
-    internal readonly List<object?> _conventions = [null!,];
+    internal readonly List<object?> _conventions = [null!];
     internal readonly List<Type> _exceptConventions = [];
     internal readonly List<Assembly> _exceptAssemblyConventions = [];
     internal readonly List<Assembly> _includeAssemblyConventions = [];
@@ -64,16 +60,16 @@ public class ConventionContextBuilder
 
         foreach (var variable in hostTypeEnvironmentVariables)
         {
-            if (Environment.GetEnvironmentVariable(variable) is { Length: > 0, } hostType && Enum.TryParse<HostType>(hostType, true, out var type))
+            if (Environment.GetEnvironmentVariable(variable) is { Length: > 0 } hostType && Enum.TryParse<HostType>(hostType, true, out var type))
             {
                 Properties[typeof(HostType)] = type;
             }
         }
 
-        List<ConventionCategory> categoriesBuilder = [.. categories,];
+        List<ConventionCategory> categoriesBuilder = [.. categories];
         foreach (var variable in categoryEnvironmentVariables)
         {
-            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0, } category)
+            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0 } category)
             {
                 continue;
             }
