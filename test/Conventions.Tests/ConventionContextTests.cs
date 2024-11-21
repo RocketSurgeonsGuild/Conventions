@@ -13,12 +13,9 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionContextTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
+public class ConventionContextTests
+    (ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
 {
-    [field: AllowNull, MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
-
     [Fact]
     public async Task ReturnsNullOfNoValue()
     {
@@ -243,6 +240,12 @@ public class ConventionContextTests(ITestOutputHelper outputHelper) : AutoFakeTe
         var a = () => new ServiceCollection().ApplyConventionsAsync(context).AsTask();
         await a.Should().NotThrowAsync<InvalidOperationException>();
     }
+
+    [field: AllowNull]
+    [field: MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+
+    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
     public interface IAbc;
 

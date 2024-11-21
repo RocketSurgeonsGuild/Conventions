@@ -12,10 +12,6 @@ namespace Rocket.Surgery.Conventions.Tests;
 
 public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
 {
-    [field: AllowNull, MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
-
     [Fact]
     public void FindsAssembliesInCandidates_Params()
     {
@@ -105,7 +101,7 @@ public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper)
     [Fact]
     public void FindsAssembliesInCandidates_Empty()
     {
-        var resolver = new DefaultAssemblyProvider(new[] { typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly, }, Logger);
+        var resolver = new DefaultAssemblyProvider(new[] { typeof(DefaultAssemblyCandidateFinderTests).GetTypeInfo().Assembly }, Logger);
         var items = resolver
                    .GetAssemblies(z => { })
                    .Select(x => x.GetName().Name)
@@ -119,11 +115,17 @@ public class DefaultAssemblyCandidateFinderTests(ITestOutputHelper outputHelper)
         items.Should().BeEmpty();
     }
 
+    [field: AllowNull]
+    [field: MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+
+    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
+
     [Theory(Skip = "verify results are inconsistent from different environments, unsure as to exactly why at the moment.")]
     [MemberData(nameof(GetTypesTestsData.GetTypesData), MemberType = typeof(GetTypesTestsData))]
     public async Task Should_Generate_Assembly_Provider_For_GetTypes(GetTypesTestsData.GetTypesItem getTypesItem)
     {
-        var finder = new DefaultAssemblyProvider(AssemblyLoadContext.Default.Assemblies.Except([GetType().Assembly,]));
+        var finder = new DefaultAssemblyProvider(AssemblyLoadContext.Default.Assemblies.Except([GetType().Assembly]));
         await Verify(
                   finder
                      .GetTypes(getTypesItem.Selector)

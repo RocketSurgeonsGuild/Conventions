@@ -11,23 +11,26 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
+public class ConventionProviderTests
+    (ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
 {
-    [field: AllowNull, MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
-
     [Fact]
     public void Should_Throw_When_A_Cycle_Is_Detected()
     {
         var c1 = new Cyclic1();
         var c2 = new Cyclic2();
 
-        var provider = new ConventionProvider(HostType.Undefined, [], [c1, c2,]);
+        var provider = new ConventionProvider(HostType.Undefined, [], [c1, c2]);
 
         Action a = () => provider.GetAll();
         a.Should().Throw<NotSupportedException>();
     }
+
+    [field: AllowNull]
+    [field: MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+
+    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
     [Theory]
     [MemberData(nameof(GetCategories), HostType.Undefined)]
@@ -41,8 +44,8 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories,],
-            [d, f, b, c, e,]
+            [..categories],
+            [d, f, b, c, e]
         );
 
         await VerifyWithParameters(provider, hostType, categories);
@@ -60,8 +63,8 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories,],
-            [d, b, c, e, f,]
+            [..categories],
+            [d, b, c, e, f]
         );
 
         await VerifyWithParameters(provider, hostType, categories);
@@ -82,8 +85,8 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories,],
-            [d1, d, d2, b, c, e, d3, f,]
+            [..categories],
+            [d1, d, d2, b, c, e, d3, f]
         );
 
         await VerifyWithParameters(provider, hostType, categories);
@@ -104,8 +107,8 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories,],
-            [d1, d, d2, b, c, e, d3, f,]
+            [..categories],
+            [d1, d, d2, b, c, e, d3, f]
         );
 
         await VerifyWithParameters(provider, hostType, categories);
@@ -123,7 +126,7 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories,],
+            [..categories],
             [
                 d,
                 f,
@@ -151,8 +154,8 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories,],
-            [d1, d, d2, b, c, e, d3, f,]
+            [..categories],
+            [d1, d, d2, b, c, e, d3, f]
         );
 
         await VerifyWithParameters(provider, hostType, categories);
@@ -173,8 +176,8 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories,],
-            [d1, d, d2, b, c, e, d3, f,]
+            [..categories],
+            [d1, d, d2, b, c, e, d3, f]
         );
 
         await VerifyWithParameters(provider, hostType, categories);
@@ -182,7 +185,7 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
     private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
-        return Verify(provider.GetAll().Select(z => z switch { Delegate d => d.Method.Name, IConvention c => c.GetType().Name, _ => z.ToString(), }))
+        return Verify(provider.GetAll().Select(z => z switch { Delegate d => d.Method.Name, IConvention c => c.GetType().Name, _ => z.ToString() }))
            .UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
     }
 
@@ -225,10 +228,10 @@ public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
     public static IEnumerable<object[]> GetCategories(HostType hostType)
     {
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application),];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom")),];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core),];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core, new("Custom")),];
-        yield return [hostType, ImmutableArray.Create(new ConventionCategory("Custom")),];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application)];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom"))];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core)];
+        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core, new("Custom"))];
+        yield return [hostType, ImmutableArray.Create(new ConventionCategory("Custom"))];
     }
 }
