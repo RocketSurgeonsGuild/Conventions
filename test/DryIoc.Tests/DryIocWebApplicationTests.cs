@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocWebApplicationTests : AutoFakeTest<LocalTestContext>
+public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
 {
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -224,7 +224,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<LocalTestContext>
         container.Should().NotBeNull();
     }
 
-    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
+    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
     }

@@ -9,12 +9,8 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
+public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
 {
-    [field: AllowNull, MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
-
     [Fact]
     public void ShouldConstruct()
     {
@@ -158,4 +154,10 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
            .Should()
            .Contain(x => x is Contrib);
     }
+
+    [field: AllowNull]
+    [field: MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+
+    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
 }

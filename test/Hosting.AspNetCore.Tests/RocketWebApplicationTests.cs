@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
-public class RocketWebApplicationTests(ITestOutputHelper outputHelper)  : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
+public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
 {
     [Fact]
     public async Task Should_Start_Application()
@@ -25,7 +25,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper)  : AutoFa
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
 
-        await using var host = await builder.ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebApplicationTests).Assembly, }));
+        await using var host = await builder.ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebApplicationTests).Assembly }));
 
         new SimpleStartup().Configure(host);
         await host.StartAsync();
@@ -53,7 +53,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper)  : AutoFa
     {
         await using var host = await WebApplication
                                     .CreateBuilder()
-                                    .LaunchWith(ReflectionRocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly, }));
+                                    .LaunchWith(ReflectionRocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly }));
         host.Should().BeAssignableTo<WebApplication>();
     }
 

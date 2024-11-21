@@ -6,6 +6,4 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
-{
-}
+public class ConventionTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper)) { }

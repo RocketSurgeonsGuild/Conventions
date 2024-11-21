@@ -3,7 +3,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing;
 using Sample.DependencyOne;
@@ -13,12 +12,8 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
+public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
 {
-    [field: AllowNull, MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
-
     [Fact]
     public void ShouldConstruct()
     {
@@ -229,4 +224,10 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
            .Should()
            .Contain(x => x is Contrib);
     }
+
+    [field: AllowNull]
+    [field: MaybeNull]
+    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
+
+    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
 }
