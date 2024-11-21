@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
+public class GenericTypedConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
 {
     [Fact]
     public void Should_Throw_When_A_Cycle_Is_Detected()

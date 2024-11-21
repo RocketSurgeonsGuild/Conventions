@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
+public class ConventionProviderTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
 {
     [field: AllowNull, MaybeNull]
     private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();

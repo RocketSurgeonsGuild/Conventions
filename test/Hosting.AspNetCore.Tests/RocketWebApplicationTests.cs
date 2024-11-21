@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
-public class RocketWebApplicationTests(ITestOutputHelper outputHelper)  : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
+public class RocketWebApplicationTests(ITestOutputHelper outputHelper)  : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
 {
     [Fact]
     public async Task Should_Start_Application()

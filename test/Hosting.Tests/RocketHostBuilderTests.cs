@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.Tests;
 
-public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper)  : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
+public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper)  : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
 {
     [Fact]
     public async Task Should_UseAppDomain()

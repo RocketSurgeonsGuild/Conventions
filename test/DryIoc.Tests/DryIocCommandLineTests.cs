@@ -13,7 +13,7 @@ using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocCommandLineTests : AutoFakeTest<LocalTestContext>
+public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
 {
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -207,7 +207,7 @@ public class DryIocCommandLineTests : AutoFakeTest<LocalTestContext>
         host.Services.GetRequiredService<IContainer>().Should().NotBeNull();
     }
 
-    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(LocalTestContext.Create(outputHelper, LogEventLevel.Information))
+    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
     {
         AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
     }

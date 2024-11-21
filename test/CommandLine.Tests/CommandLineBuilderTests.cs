@@ -31,7 +31,7 @@ public interface IService2
     string SomeValue { get; }
 }
 
-public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest<LocalTestContext>(LocalTestContext.Create(outputHelper))
+public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
 {
     [field: AllowNull, MaybeNull]
     private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
