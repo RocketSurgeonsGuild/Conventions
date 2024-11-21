@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Rocket.Surgery.Conventions;
 using AppDelegate =
     System.Func<Aspire.Hosting.IDistributedApplicationBuilder, System.Threading.CancellationToken,
@@ -19,10 +20,26 @@ public static partial class RocketBooster
     /// <param name="conventionFactory">The generated method that contains all the referenced conventions</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
+    [OverloadResolutionPriority(-1)]
+    public static AppDelegate ForConventions(IConventionFactory conventionFactory, params ConventionCategory[] categories)
+    {
+        return (_, _) => ValueTask.FromResult(
+                   new ConventionContextBuilder(new Dictionary<object, object>(), categories)
+                      .UseConventionFactory(conventionFactory)
+               );
+    }
+
+    /// <summary>
+    ///     ForTesting the specified conventions
+    /// </summary>
+    /// <param name="conventionFactory">The generated method that contains all the referenced conventions</param>
+    /// <param name="categories"></param>
+    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     public static AppDelegate ForConventions(IConventionFactory conventionFactory, params IEnumerable<ConventionCategory> categories)
     {
         return (_, _) => ValueTask.FromResult(
-                   new ConventionContextBuilder(new Dictionary<object, object>(), categories).UseConventionFactory(conventionFactory)
+                   new ConventionContextBuilder(new Dictionary<object, object>(), categories)
+                      .UseConventionFactory(conventionFactory)
                );
     }
 
@@ -31,8 +48,5 @@ public static partial class RocketBooster
     /// </summary>
     /// <param name="factory">The factory.</param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    public static AppDelegate For(IConventionFactory factory)
-    {
-        return ForConventions(factory);
-    }
+    public static AppDelegate For(IConventionFactory factory) => ForConventions(factory);
 }
