@@ -20,7 +20,20 @@ public static partial class RocketBooster
     /// <param name="conventionFactory">The generated method that contains all the referenced conventions</param>
     /// <param name="categories"></param>
     /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
-    [OverloadResolutionPriority(1)]
+    [OverloadResolutionPriority(-1)]
+    public static AppDelegate ForConventions(IConventionFactory conventionFactory, params ConventionCategory[] categories)
+    {
+        return (_, _) => ValueTask.FromResult(
+                   new ConventionContextBuilder(new Dictionary<object, object>(), categories).UseConventionFactory(conventionFactory)
+               );
+    }
+
+    /// <summary>
+    ///     ForTesting the specified conventions
+    /// </summary>
+    /// <param name="conventionFactory">The generated method that contains all the referenced conventions</param>
+    /// <param name="categories"></param>
+    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
     public static AppDelegate ForConventions(IConventionFactory conventionFactory, params IEnumerable<ConventionCategory> categories)
     {
         return (_, _) => ValueTask.FromResult(

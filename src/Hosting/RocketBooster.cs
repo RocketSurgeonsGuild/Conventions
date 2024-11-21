@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Rocket.Surgery.Conventions;
 using AppDelegate =
     System.Func<Microsoft.Extensions.Hosting.IHostApplicationBuilder, System.Threading.CancellationToken,
@@ -13,6 +14,17 @@ namespace Rocket.Surgery.Hosting;
 [PublicAPI]
 public static partial class RocketBooster
 {
+    /// <summary>
+    ///     ForTesting the specified conventions
+    /// </summary>
+    /// <param name="conventionFactory">The generated method that contains all the referenced conventions</param>
+    /// <param name="categories"></param>
+    /// <returns>Func&lt;WebApplicationBuilder, ConventionContextBuilder&gt;.</returns>
+    [OverloadResolutionPriority(-1)]
+    public static AppDelegate ForConventions(IConventionFactory conventionFactory, params ConventionCategory[] categories)
+    {
+        return (builder, _) => ValueTask.FromResult(new ConventionContextBuilder(builder.Properties, categories).UseConventionFactory(conventionFactory));
+    }
     /// <summary>
     ///     ForTesting the specified conventions
     /// </summary>

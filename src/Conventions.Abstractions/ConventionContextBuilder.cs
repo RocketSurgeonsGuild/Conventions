@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
@@ -14,6 +15,18 @@ namespace Rocket.Surgery.Conventions;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class ConventionContextBuilder
 {
+    /// <summary>
+    ///     Create a default context builder
+    /// </summary>
+    /// <param name="properties"></param>
+    /// <param name="categories"></param>
+    /// <returns></returns>
+    [OverloadResolutionPriority(-1)]
+    public static ConventionContextBuilder Create(PropertiesType? properties = null, params ConventionCategory[] categories)
+    {
+        return new(properties ?? new PropertiesDictionary(), categories);
+    }
+
     /// <summary>
     ///     Create a default context builder
     /// </summary>
@@ -155,7 +168,31 @@ public class ConventionContextBuilder
     /// </summary>
     /// <param name="conventions">The conventions.</param>
     /// <returns>IConventionScanner.</returns>
+    [OverloadResolutionPriority(-1)]
+    public ConventionContextBuilder AppendConvention(params IConvention[] conventions)
+    {
+        _conventions.AddRange(conventions);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds a set of conventions to the scanner
+    /// </summary>
+    /// <param name="conventions">The conventions.</param>
+    /// <returns>IConventionScanner.</returns>
     public ConventionContextBuilder AppendConvention(params IEnumerable<IConvention> conventions)
+    {
+        _conventions.AddRange(conventions);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds a set of conventions to the scanner
+    /// </summary>
+    /// <param name="conventions">The conventions.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    [OverloadResolutionPriority(-1)]
+    public ConventionContextBuilder AppendConvention(params Type[] conventions)
     {
         _conventions.AddRange(conventions);
         return this;
@@ -188,7 +225,31 @@ public class ConventionContextBuilder
     /// </summary>
     /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    [OverloadResolutionPriority(-1)]
+    public ConventionContextBuilder PrependConvention(params IConvention[] conventions)
+    {
+        _conventions.InsertRange(0, conventions);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds a set of conventions to the scanner
+    /// </summary>
+    /// <param name="conventions">The conventions.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependConvention(params IEnumerable<IConvention> conventions)
+    {
+        _conventions.InsertRange(0, conventions);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds a set of conventions to the scanner
+    /// </summary>
+    /// <param name="conventions">The conventions.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    [OverloadResolutionPriority(-1)]
+    public ConventionContextBuilder PrependConvention(params Type[] conventions)
     {
         _conventions.InsertRange(0, conventions);
         return this;
@@ -248,6 +309,19 @@ public class ConventionContextBuilder
     /// <param name="assembly">The assembly to exclude</param>
     /// <param name="assemblies">The additional types to exclude.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    [OverloadResolutionPriority(-1)]
+    public ConventionContextBuilder ExceptConvention(params Assembly[] assemblies)
+    {
+        _exceptAssemblyConventions.AddRange(assemblies);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an exception to the scanner to exclude a specific convention
+    /// </summary>
+    /// <param name="assembly">The assembly to exclude</param>
+    /// <param name="assemblies">The additional types to exclude.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder ExceptConvention(params IEnumerable<Assembly> assemblies)
     {
         _exceptAssemblyConventions.AddRange(assemblies);
@@ -260,9 +334,35 @@ public class ConventionContextBuilder
     /// <param name="assembly">The assembly to exclude</param>
     /// <param name="assemblies">The additional types to exclude.</param>
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    [OverloadResolutionPriority(-1)]
+    public ConventionContextBuilder ExceptConvention(params Type[] assemblies)
+    {
+        _exceptAssemblyConventions.AddRange(assemblies.Select(z => z.Assembly));
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an exception to the scanner to exclude a specific convention
+    /// </summary>
+    /// <param name="assembly">The assembly to exclude</param>
+    /// <param name="assemblies">The additional types to exclude.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder ExceptConvention(params IEnumerable<Type> assemblies)
     {
         _exceptAssemblyConventions.AddRange(assemblies.Select(z => z.Assembly));
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an exception to the scanner to exclude a specific convention
+    /// </summary>
+    /// <param name="assembly">The assembly to exclude</param>
+    /// <param name="assemblies">The additional types to exclude.</param>
+    /// <returns><see cref="ConventionContextBuilder" />.</returns>
+    [OverloadResolutionPriority(-1)]
+    public ConventionContextBuilder IncludeConvention(params Assembly[] assemblies)
+    {
+        _includeAssemblyConventions.AddRange(assemblies);
         return this;
     }
 
