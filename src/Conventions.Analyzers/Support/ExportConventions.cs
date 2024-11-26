@@ -207,35 +207,6 @@ internal static class ExportConventions
                 data is { Namespace.Length: > 0, } ? NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass) : helperClass
             );
 
-        if (exportedConventions.Length > 0)
-            cu = cu.AddAttributeLists(
-                exportedConventions
-                   .Select(
-                        candidate => AttributeList(
-                                SingletonSeparatedList(
-                                    Attribute(IdentifierName("Convention"))
-                                       .WithArgumentList(
-                                            AttributeArgumentList(
-                                                SingletonSeparatedList(
-                                                    AttributeArgument(
-                                                        TypeOfExpression(
-                                                            ParseName(candidate.ToDisplayString())
-                                                        )
-                                                    )
-                                                )
-                                            )
-                                        )
-                                )
-                            )
-                           .WithTarget(
-                                AttributeTargetSpecifier(
-                                    Token(SyntaxKind.AssemblyKeyword)
-                                )
-                            )
-                    )
-                   .ToArray()
-            );
-
         context.AddSource(
             "Exported_Conventions.g.cs",
             cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)

@@ -7,6 +7,7 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 using Serilog.Events;
+using Xunit;
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
@@ -24,7 +25,6 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
                               .ConfigureRocketSurgery(
                                    rb => rb
                                         .UseDryIoc()
-                                        .DisableConventionAttributes()
                                         .ConfigureDryIoc(
                                              (context, configuration, services, container) =>
                                              {
@@ -50,7 +50,6 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
                               .ConfigureRocketSurgery(
                                    rb => rb
                                         .UseDryIoc()
-                                        .DisableConventionAttributes()
                                         .ConfigureDryIoc(
                                              (context, configuration, services, container) =>
                                              {
@@ -77,7 +76,6 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
                               .ConfigureRocketSurgery(
                                    rb => rb
                                         .UseDryIoc()
-                                        .DisableConventionAttributes()
                                         .ConfigureDryIoc(
                                              (context, configuration, services, container) =>
                                              {
@@ -101,7 +99,6 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
                               .ConfigureRocketSurgery(
                                    rb => rb
                                         .UseDryIoc()
-                                        .DisableConventionAttributes()
                                         .ConfigureDryIoc(
                                              (context, configuration, services, container) =>
                                              {
@@ -129,7 +126,6 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
                               .ConfigureRocketSurgery(
                                    rb => rb
                                         .UseDryIoc()
-                                        .DisableConventionAttributes()
                                         .ConfigureDryIoc(
                                              (context, configuration, services, container) =>
                                              {
@@ -157,7 +153,6 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
                               .ConfigureRocketSurgery(
                                    rb => rb
                                         .UseDryIoc()
-                                        .DisableConventionAttributes()
                                         .ConfigureDryIoc(
                                              (context, configuration, services, container) =>
                                              {

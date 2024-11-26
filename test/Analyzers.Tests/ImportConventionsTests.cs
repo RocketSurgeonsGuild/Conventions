@@ -131,8 +131,6 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
     internal class Contrib : IConvention { }
@@ -143,6 +141,7 @@ using Rocket.Surgery.Conventions;
 
 namespace TestProject
 {
+    [ExportConvention]
     [ImportConventions]
     public partial class Program
     {

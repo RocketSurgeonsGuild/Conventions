@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8" ?>
 <Project>
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -35,16 +34,16 @@
         <PackageVersion Include="Polyfill" Version="7.5.0" />
         <PackageVersion Include="GitVersion.Tool" Version="6.0.5" />
         <PackageVersion Include="docfx.console" Version="2.59.4" />
-        <PackageVersion Include="Nuke.Common" Version="8.1.4" />
+        <PackageVersion Include="Nuke.Common" Version="9.0.1" />
         <PackageVersion Include="ReportGenerator" Version="5.4.1" />
-        <PackageVersion Include="Rocket.Surgery.DependencyInjection.Extensions" Version="13.0.0-beta.4" />
-        <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.8.119" />
+        <PackageVersion Include="Rocket.Surgery.DependencyInjection.Extensions" Version="13.0.0-beta.8" />
+        <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.9.0" />
         <PackageVersion Include="Autofac" Version="9.0.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="BenchMarkDotNet" Version="0.14.0" />
         <PackageVersion Include="bunit.web" Version="1.36.0" />
         <PackageVersion Include="DryIoc.dll" Version="6.0.0-preview-08" />
-        <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="8.0.0-preview-03" />
+        <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="8.0.0-preview-04" />
         <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
         <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
         <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" />
@@ -84,7 +83,7 @@
         <PackageVersion Include="FakeItEasy" Version="8.3.0" />
         <PackageVersion Include="FluentAssertions" Version="6.12.2" />
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-        <PackageVersion Include="Microsoft.Playwright" Version="1.48.0" />
+        <PackageVersion Include="Microsoft.Playwright" Version="1.49.0" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="9.0.0" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="9.0.0" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" Version="9.0.0" />
@@ -98,5 +97,6 @@
     </ItemGroup>
     <Import
         Project="$(MSBuildThisFileDirectory)/Directory.Packages.support.props"
-        Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')" />
+        Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')"
+    />
 </Project>

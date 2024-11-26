@@ -98,17 +98,6 @@ public class ConventionContextBuilder
     private string DebuggerDisplay => ToString();
 
     /// <summary>
-    ///     Enables convention attributes
-    /// </summary>
-    /// <returns></returns>
-    public ConventionContextBuilder EnableConventionAttributes()
-    {
-        _useAttributeConventions = true;
-        _conventionProviderFactory = null;
-        return this;
-    }
-
-    /// <summary>
     ///     Defines a callback that provides
     /// </summary>
     /// <param name="conventionFactory"></param>
@@ -116,16 +105,6 @@ public class ConventionContextBuilder
     public ConventionContextBuilder UseConventionFactory(IConventionFactory conventionFactory)
     {
         _conventionProviderFactory = conventionFactory;
-        return this;
-    }
-
-    /// <summary>
-    ///     Disables convention attributes
-    /// </summary>
-    /// <returns></returns>
-    public ConventionContextBuilder DisableConventionAttributes()
-    {
-        _useAttributeConventions = false;
         return this;
     }
 

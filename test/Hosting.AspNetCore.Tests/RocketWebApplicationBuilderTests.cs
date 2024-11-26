@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
-using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 using Xunit.Abstractions;
@@ -15,7 +14,7 @@ public class RocketWebApplicationBuilderTests(ITestOutputHelper outputHelper) : 
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
 
-        await using var host = await builder.ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebApplicationBuilderTests).Assembly }));
+        await using var host = await builder.ConfigureRocketSurgery();
 
         new TestStartup(builder.Environment, builder.Configuration).Configure(host);
         await host.StartAsync();

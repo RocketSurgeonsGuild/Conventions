@@ -34,10 +34,10 @@ using Sample.DependencyOne;
 using FluentValidation;
 
 [assembly: ExportConventions(Namespace = ""Dep1"", ClassName = ""Dep1Exports"")]
-[assembly: Convention(typeof(Class1))]
 
 namespace Sample.DependencyOne;
 
+[ExportConvention]
 public class Class1 : IConvention
 {
 }
@@ -110,10 +110,9 @@ using Sample.DependencyOne;
 using Sample.DependencyThree;
 using FluentValidation;
 
-[assembly: Convention(typeof(Class3))]
-
 namespace Sample.DependencyThree;
 
+[ExportConvention]
 public class Class3 : IConvention
 {
     public Class1? Class1 { get; set; }
@@ -148,10 +147,10 @@ public static class Example3
 using Sample.DependencyOne;
 
 [assembly: ExportConventions(Namespace = ""Dep1"", ClassName = ""Dep1Exports"")]
-[assembly: Convention<Class1>]
 
 namespace Sample.DependencyOne;
 
+[ExportConvention]
 public class Class1 : IConvention
 {
 }
@@ -170,10 +169,10 @@ public class Class1 : IConvention
 using Sample.DependencyTwo;
 
 [assembly: ExportConventions(Namespace = null, ClassName = ""Dep2Exports"")]
-[assembly: Convention<Class2>]
 
 namespace Sample.DependencyTwo;
 
+[ExportConvention]
 public class Class2 : IConvention
 {
 }"
@@ -192,10 +191,9 @@ public class Class2 : IConvention
 using Sample.DependencyOne;
 using Sample.DependencyThree;
 
-[assembly: Convention<Class3>]
-
 namespace Sample.DependencyThree;
 
+[ExportConvention]
 public class Class3 : IConvention
 {
     public Class1? Class1 { get; set; }

@@ -13,10 +13,9 @@ public class ExportedMsBuildConventionsTests(ITestOutputHelper testOutputHelper)
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     internal class Contrib : IConvention { }
 }
 "
@@ -37,8 +36,6 @@ namespace Rocket.Surgery.Conventions.Tests
                                @"
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
-
-[assembly: Convention(typeof(Contrib))]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
@@ -63,10 +60,9 @@ namespace Rocket.Surgery.Conventions.Tests
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     internal class Contrib : IConvention { }
 }
 "

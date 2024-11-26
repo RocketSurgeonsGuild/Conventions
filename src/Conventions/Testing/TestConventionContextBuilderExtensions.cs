@@ -108,28 +108,6 @@ public static class TestConventionContextBuilderExtensions
         return builder.Set("EnvironmentName", environmentName);
     }
 
-    /// <summary>
-    ///     Use to not automatically load conventions from attributes.
-    /// </summary>
-    /// <param name="builder">The convention context builder.</param>
-    /// <returns></returns>
-    public static ConventionContextBuilder ExcludeConventions(this ConventionContextBuilder builder)
-    {
-        EnsureConfigured(builder);
-        return builder.DisableConventionAttributes();
-    }
-
-    /// <summary>
-    ///     <para>Use to automatically load conventions from attributes.</para>
-    ///     <para>This is the default</para>
-    /// </summary>
-    /// <param name="builder">The convention context builder.</param>
-    public static ConventionContextBuilder IncludeConventions(this ConventionContextBuilder builder)
-    {
-        EnsureConfigured(builder);
-        return builder.EnableConventionAttributes();
-    }
-
     private static void EnsureConfigured(ConventionContextBuilder builder)
     {
         if (builder.Properties.ContainsKey("__EnsureConfigured__")) return;

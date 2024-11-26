@@ -4,10 +4,9 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Sample.Core;
 
-[assembly: Convention(typeof(TestConvention))]
-
 namespace Sample.Core;
 
+[ExportConvention]
 [UnitTestConvention]
 [AfterConvention(typeof(CoreConvention))]
 public class TestConvention : IServiceConvention

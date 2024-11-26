@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+using Xunit;
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
@@ -23,7 +24,6 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(
                                 rb => rb
                                      .UseAutofac()
-                                     .DisableConventionAttributes()
                                      .ConfigureAutofac(
                                           (context, configuration, services, container) =>
                                           {
@@ -48,7 +48,6 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(
                                 rb => rb
                                      .UseAutofac()
-                                     .DisableConventionAttributes()
                                      .ConfigureAutofac(
                                           (context, configuration, services, container) =>
                                           {
@@ -74,7 +73,6 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(
                                 rb => rb
                                      .UseAutofac()
-                                     .DisableConventionAttributes()
                                      .ConfigureAutofac(
                                           (context, configuration, services, container) =>
                                           {
@@ -97,7 +95,6 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(
                                 rb => rb
                                      .UseAutofac()
-                                     .DisableConventionAttributes()
                                      .ConfigureAutofac(
                                           (context, configuration, services, container) =>
                                           {
@@ -124,7 +121,6 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(
                                 rb => rb
                                      .UseAutofac()
-                                     .DisableConventionAttributes()
                                      .ConfigureAutofac(
                                           (context, configuration, services, container) =>
                                           {
@@ -151,7 +147,6 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(
                                 rb => rb
                                      .UseAutofac()
-                                     .DisableConventionAttributes()
                                      .ConfigureAutofac(
                                           (context, configuration, services, container) =>
                                           {

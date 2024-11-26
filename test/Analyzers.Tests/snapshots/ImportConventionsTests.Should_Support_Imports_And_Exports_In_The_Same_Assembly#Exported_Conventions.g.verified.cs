@@ -9,7 +9,7 @@ using Rocket.Surgery.Conventions;
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Exports.Namespace", "TestProject.Conventions")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Exports.ClassName", "Exports")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Exports.MethodName", "GetConventions")]
-[assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
+[assembly: ExportedConventions(typeof(TestProject.Program))]
 namespace TestProject.Conventions
 {
     /// <summary>
@@ -23,7 +23,7 @@ namespace TestProject.Conventions
         /// </summary>
         public static IEnumerable<IConventionMetadata> GetConventions(ConventionContextBuilder builder)
         {
-            yield return new ConventionMetadata(new Rocket.Surgery.Conventions.Tests.Contrib(), HostType.Undefined, ConventionCategory.Application);
+            yield return new ConventionMetadata(new TestProject.Program(), HostType.Undefined, ConventionCategory.Application);
         }
     }
 }

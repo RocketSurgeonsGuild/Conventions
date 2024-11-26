@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
 
 namespace TestProject.Conventions
 {

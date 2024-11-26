@@ -23,7 +23,7 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
     {
         var scanner = ConventionContextHelpers.CreateProvider(
             new ConventionContextBuilder(new Dictionary<object, object?>(), []).UseConventionFactory(Imports.Instance),
-            new TestAssemblyProvider(),
+            GetType().Assembly.GetCompiledTypeProvider(),
             Logger
         );
 
