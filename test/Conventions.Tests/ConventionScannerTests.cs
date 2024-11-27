@@ -24,7 +24,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
     [Fact]
     public void ShouldBuildAProvider()
     {
-        var scanner = ConventionContextHelpers.CreateProvider(new(new Dictionary<object, object?>(), []), new TestAssemblyProvider(), Logger);
+        var scanner = ConventionContextHelpers.CreateProvider(new ConventionContextBuilder(new Dictionary<object, object?>(), []).AppendConvention(new Contrib()), GetType().Assembly.GetCompiledTypeProvider(), Logger);
 
         scanner
            .Get<IServiceConvention, ServiceConvention>()

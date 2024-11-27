@@ -14,10 +14,9 @@ public class ExportedConventionsTests(ITestOutputHelper outputHelper) : Generato
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     internal class Contrib : IConvention { }
 }
 "
@@ -38,10 +37,10 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
 [assembly: ExportConventions(Namespace = ""Source.Space"", ClassName = ""SourceClass"")]
-[assembly: Convention(typeof(Contrib))]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     internal class Contrib : IConvention { }
 }
 "
@@ -62,10 +61,10 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
 [assembly: ExportConventions(Namespace = null)]
-[assembly: Convention(typeof(Contrib))]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     internal class Contrib : IConvention { }
 }
 "
@@ -87,10 +86,10 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
 [assembly: ExportConventions(MethodName = ""SourceMethod"")]
-[assembly: Convention(typeof(Contrib))]
 
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     internal class Contrib : IConvention { }
 }
 "
@@ -131,49 +130,23 @@ namespace Rocket.Surgery.Conventions.Tests
 using Rocket.Surgery.Conventions;
 
 [assembly: ExportConventions(Namespace = ""Source.Space"")]
-[assembly: Convention(typeof(Contrib1))]
 
+[ExportConvention]
 internal class Contrib1 : IConvention { }
 ",
                                @"
 using Rocket.Surgery.Conventions;
 
-[assembly: Convention(typeof(Contrib3))]
-
 [ExportConventionAttribute]
 internal class Contrib2 : IConvention { }
+[ExportConvention]
 internal class Contrib3 : IConvention { }
 ",
                                @"
 using Rocket.Surgery.Conventions;
 
-[assembly: Convention(typeof(Contrib4))]
-
+[ExportConvention]
 internal class Contrib4 : IConvention { }
-"
-                           )
-                          .Build()
-                          .GenerateAsync();
-
-        await Verify(result);
-    }
-
-    [Fact]
-    public async Task Should_Handle_Duplicate_Conventions()
-    {
-        var result = await WithSharedDeps()
-                          .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Tests;
-
-[assembly: Convention(typeof(Contrib))]
-[assembly: Convention(typeof(Contrib))]
-
-namespace Rocket.Surgery.Conventions.Tests
-{
-    internal class Contrib : IConvention { }
-}
 "
                            )
                           .Build()
@@ -191,14 +164,13 @@ namespace Rocket.Surgery.Conventions.Tests
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(ParentContrib.Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
     interface IService {}
     interface IServiceB {}
     interface IServiceC {}
     internal class ParentContrib {
+        [ExportConvention]
         internal class Contrib : IConvention { public Contrib(IService service, IServiceB serviceB, IServiceC? serviceC = null) {} }
     }
 }
@@ -219,12 +191,10 @@ namespace Rocket.Surgery.Conventions.Tests
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(ParentContrib.Contrib))]
-[assembly: Convention(typeof(ParentContrib.Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
     internal class ParentContrib {
+        [ExportConvention]
         internal class Contrib : IConvention { }
     }
 }
@@ -245,12 +215,10 @@ namespace Rocket.Surgery.Conventions.Tests
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(ParentContrib.Contrib))]
-[assembly: Convention(typeof(ParentContrib.Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
     internal static class ParentContrib {
+        [ExportConvention]
         internal class Contrib : IConvention { }
     }
 }
@@ -272,10 +240,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.LaunchPad.Mapping;
-
-[assembly: Convention(typeof(AutoMapperConvention))]
 
 namespace Rocket.Surgery.LaunchPad.Mapping;
 
@@ -284,6 +249,7 @@ namespace Rocket.Surgery.LaunchPad.Mapping;
 ///     Implements the <see cref=""IServiceConvention"" />
 /// </summary>
 /// <seealso cref=""IServiceConvention"" />
+[ExportConvention]
 public class AutoMapperConvention : IServiceConvention
 {
     private readonly AutoMapperOptions _options;
@@ -338,10 +304,9 @@ public class AutoMapperOptions
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     [{HostType}Convention]
     internal class Contrib : IConvention { }
 }
@@ -365,10 +330,9 @@ namespace Rocket.Surgery.Conventions.Tests
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     [ConventionCategory(""{Category}"")]
     internal class Contrib : IConvention { }
 }
@@ -393,10 +357,9 @@ namespace Rocket.Surgery.Conventions.Tests
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Tests;
 
-[assembly: Convention(typeof(Contrib))]
-
 namespace Rocket.Surgery.Conventions.Tests
 {
+    [ExportConvention]
     [{AttributeName}(typeof(D))]
     [LiveConvention, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     internal class Contrib : IConvention { }

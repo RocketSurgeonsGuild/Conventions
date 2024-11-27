@@ -10,7 +10,6 @@ using Rocket.Surgery.Conventions;
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Exports.ClassName", "Exports")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Exports.MethodName", "GetConventions")]
 [assembly: ExportedConventions(typeof(Contrib1), typeof(Contrib2), typeof(Contrib3), typeof(Contrib4))]
-[assembly: Convention(typeof(Contrib2))]
 namespace Source.Space
 {
     /// <summary>

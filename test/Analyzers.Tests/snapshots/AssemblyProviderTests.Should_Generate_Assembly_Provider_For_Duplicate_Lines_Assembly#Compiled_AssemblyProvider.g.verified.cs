@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.DependencyInjection.Compiled;
 
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.GetAssemblies","")]

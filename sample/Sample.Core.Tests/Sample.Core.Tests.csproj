@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Conventions.Reflection\Rocket.Surgery.Conventions.Reflection.csproj" />
+        <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
     </ItemGroup>
 </Project>

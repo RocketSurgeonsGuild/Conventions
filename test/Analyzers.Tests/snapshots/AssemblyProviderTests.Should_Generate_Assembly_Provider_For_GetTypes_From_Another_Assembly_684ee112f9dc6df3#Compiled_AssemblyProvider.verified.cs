@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Reflection;
 using System.Runtime.Loader;
 
 namespace TestProject.Conventions

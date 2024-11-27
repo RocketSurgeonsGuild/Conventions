@@ -8,51 +8,13 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
-using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting.Reflection;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.Tests;
 
 public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
 {
-    [Fact]
-    public async Task Should_UseAppDomain()
-    {
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(
-                                   rb => rb
-                                      .UseAppDomain(AppDomain.CurrentDomain)
-                               );
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseAssemblies()
-    {
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(
-                                   rb => rb
-                                      .UseAssemblies(AppDomain.CurrentDomain.GetAssemblies())
-                               );
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseRocketBooster()
-    {
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .UseRocketBooster(ReflectionRocketBooster.For(AppDomain.CurrentDomain));
-
-        host.Services.Should().NotBeNull();
-    }
-
     [Fact]
     public async Task Should_UseRocketBooster_With_Conventions()
     {
@@ -69,7 +31,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
         using var host = await Host
                               .CreateApplicationBuilder()
                               .UseRocketBooster(
-                                   ReflectionRocketBooster.For(AppDomain.CurrentDomain),
+                                   RocketBooster.For(Imports.Instance),
                                    x => x.UseDiagnosticLogging(c => c.AddConsole())
                                );
 

@@ -21,7 +21,6 @@ internal static partial class ConventionContextHelpers
         var types = assembly
                    .GetCustomAttributes<ExportedConventionsAttribute>()
                    .SelectMany(x => x.ExportedConventions)
-                   .Union(assembly.GetCustomAttributes<ConventionAttribute>().Select(z => z.Type))
                    .Distinct()
                    .Select(selector)
                    .Cast<IConvention>()
@@ -96,10 +95,6 @@ internal static partial class ConventionContextHelpers
         if (builder._conventionProviderFactory != null)
         {
             builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null), GetStaticConventions(builder, logger));
-        }
-        else if (builder._useAttributeConventions)
-        {
-            builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null), GetAssemblyConventions(builder, typeProvider, logger));
         }
 
         return new ConventionProvider(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), builder._conventions);

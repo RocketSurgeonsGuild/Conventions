@@ -5,28 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
-using Rocket.Surgery.Hosting.Reflection;
 
 namespace Rocket.Surgery.Hosting.Tests;
 
 public class RocketHostTests
 {
-    [Fact]
-    public async Task Creates_RocketHost_ForAppDomain()
-    {
-        using var host = await Host.CreateApplicationBuilder().LaunchWith(ReflectionRocketBooster.For(AppDomain.CurrentDomain));
-        host.Should().BeAssignableTo<IHost>();
-    }
-
-    [Fact]
-    public async Task Creates_RocketHost_ForAssemblies()
-    {
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .LaunchWith(ReflectionRocketBooster.For(new[] { typeof(RocketHostTests).Assembly, }));
-        host.Should().BeAssignableTo<IHost>();
-    }
-
     [Fact]
     public async Task Creates_RocketHost_WithConfiguration()
     {

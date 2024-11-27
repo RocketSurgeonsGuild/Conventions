@@ -3,13 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Sample.Core.Databases;
-
-[assembly: Convention(typeof(DatabaseServiceConvention))]
-
 namespace Sample.Core.Databases;
 
 #region codeblock
 
+[ExportConvention]
 public class DatabaseServiceConvention : IServiceConvention
 {
     public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)

@@ -10,7 +10,6 @@ using Rocket.Surgery.Conventions;
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Exports.ClassName", "Exports")]
 [assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ConventionConfigurationData.Exports.MethodName", "GetConventions")]
 [assembly: ExportedConventions(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
-[assembly: Convention(typeof(Rocket.Surgery.Conventions.Tests.Contrib))]
 namespace TestProject.Conventions
 {
     /// <summary>

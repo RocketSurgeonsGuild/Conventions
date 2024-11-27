@@ -9,10 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
-using Rocket.Surgery.Conventions.Reflection;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
-using Rocket.Surgery.Hosting.Reflection;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
@@ -25,7 +23,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
 
-        await using var host = await builder.ConfigureRocketSurgery(x => x.UseAssemblies(new[] { typeof(RocketWebApplicationTests).Assembly }));
+        await using var host = await builder.ConfigureRocketSurgery();
 
         new SimpleStartup().Configure(host);
         await host.StartAsync();
@@ -37,24 +35,6 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         var content = await response.Content.ReadAsStringAsync();
         content.Should().Be("SimpleStartup -> Configure");
         await host.StopAsync();
-    }
-
-    [Fact]
-    public async Task Creates_RocketHost_ForAppDomain()
-    {
-        await using var host = await WebApplication
-                                    .CreateBuilder()
-                                    .LaunchWith(ReflectionRocketBooster.For(AppDomain.CurrentDomain));
-        host.Should().BeAssignableTo<WebApplication>();
-    }
-
-    [Fact]
-    public async Task Creates_RocketHost_ForAssemblies()
-    {
-        await using var host = await WebApplication
-                                    .CreateBuilder()
-                                    .LaunchWith(ReflectionRocketBooster.For(new[] { typeof(RocketWebApplicationTests).Assembly }));
-        host.Should().BeAssignableTo<WebApplication>();
     }
 
     [Fact]

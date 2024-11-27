@@ -6,7 +6,6 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <ProjectReference Include="..\..\src\Conventions.Autofac\Rocket.Surgery.Conventions.Autofac.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
-        <ProjectReference Include="..\..\src\Conventions.Reflection\Rocket.Surgery.Conventions.Reflection.csproj" />
         <ProjectReference Include="..\..\src\CommandLine\Rocket.Surgery.CommandLine.csproj" />
         <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />

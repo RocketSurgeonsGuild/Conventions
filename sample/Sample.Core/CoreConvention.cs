@@ -4,10 +4,9 @@ using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Sample.Core;
 
-[assembly: Convention<CoreConvention>]
-
 namespace Sample.Core;
 
+[ExportConvention]
 public class CoreConvention : IServiceConvention
 {
     public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)

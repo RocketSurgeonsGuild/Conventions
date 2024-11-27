@@ -25,8 +25,8 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldBuildAProvider()
     {
         var scanner = ConventionContextHelpers.CreateProvider(
-            new(new Dictionary<object, object?>(), []),
-            new TestAssemblyProvider(),
+            new ConventionContextBuilder(new Dictionary<object, object?>(), []).AppendConvention(new Contrib()),
+            GetType().Assembly.GetCompiledTypeProvider(),
             Logger
         );
 
