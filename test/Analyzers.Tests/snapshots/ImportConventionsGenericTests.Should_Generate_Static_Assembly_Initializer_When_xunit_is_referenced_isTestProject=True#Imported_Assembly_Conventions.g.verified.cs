@@ -38,6 +38,7 @@ namespace TestProject.Conventions
         [System.Runtime.CompilerServices.ModuleInitializer, System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Init()
         {
+            Environment.SetEnvironmentVariable("RSG__HOSTTYPE", "UnitTest");
             ImportHelpers.ExternalConventions = Instance;
         }
     };

@@ -159,7 +159,25 @@ internal static class ImportConventions
                     )
                    .WithBody(
                         Block(
-                            SingletonList<StatementSyntax>(
+                            List<StatementSyntax>([
+                                ExpressionStatement(InvocationExpression(
+                                        MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            IdentifierName("Environment"),
+                                            IdentifierName("SetEnvironmentVariable")))
+                                   .WithArgumentList(
+                                        ArgumentList(
+                                            SeparatedList<ArgumentSyntax>(
+                                                new SyntaxNodeOrToken[]{
+                                                    Argument(
+                                                        LiteralExpression(
+                                                            SyntaxKind.StringLiteralExpression,
+                                                            Literal("RSG__HOSTTYPE"))),
+                                                    Token(SyntaxKind.CommaToken),
+                                                    Argument(
+                                                        LiteralExpression(
+                                                            SyntaxKind.StringLiteralExpression,
+                                                            Literal("UnitTest")))})))),
                                 ExpressionStatement(
                                     AssignmentExpression(
                                         SyntaxKind.SimpleAssignmentExpression,
@@ -171,7 +189,7 @@ internal static class ImportConventions
                                         IdentifierName(request.ImportConfiguration.MethodName)
                                     )
                                 )
-                            )
+                            ])
                         )
                     )
             );
