@@ -18,9 +18,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     {
         foreach (var attribute in context.Attributes)
         {
-            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta,], })
+            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta] })
                 yield return ta;
-            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv, },], })
+            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv }] })
                 yield return sv;
         }
     }
@@ -56,7 +56,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
 
         var importConfiguration = ConventionConfigurationData
                                  .Create(context, "ImportConventions", ConventionConfigurationData.ImportsDefaults)
-                                 .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true, } && z.Assembly, });
+                                 .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true } && z.Assembly });
 
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
