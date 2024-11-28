@@ -12,7 +12,7 @@ internal static class ExportConventions
 {
     public static void HandleConventionExports(SourceProductionContext context, Request request)
     {
-        ( var data, var conventions, var exportedConventions ) = request;
+        ( var data, var conventions ) = request;
         if (!conventions.Any()) return;
 
         var helperClassBody = Block();
@@ -287,5 +287,5 @@ internal static class ExportConventions
         IdentifierName("DependentOf")
     );
 
-    public record Request(ConventionAttributeData Data, ImmutableArray<INamedTypeSymbol> Conventions, ImmutableArray<INamedTypeSymbol> ExportedConventions);
+    public record Request(ConventionAttributeData Data, ImmutableArray<INamedTypeSymbol> ExportedConventions);
 }

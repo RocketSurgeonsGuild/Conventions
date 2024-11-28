@@ -30,25 +30,6 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     {
         var exportConfiguration = ConventionConfigurationData.Create(context, "ExportConventions", ConventionConfigurationData.ExportsDefaults);
 
-        var exportCandidates = context
-                              .SyntaxProvider
-                              .ForAttributeWithMetadataName(
-                                   "Rocket.Surgery.Conventions.ConventionAttribute",
-                                   (_, _) => true,
-                                   (syntaxContext, _) => GetExportedConventions(syntaxContext)
-                               )
-                              .SelectMany((z, _) => z)
-                              .WithComparer(SymbolEqualityComparer.Default);
-        var exportCandidates2 = context
-                               .SyntaxProvider
-                               .ForAttributeWithMetadataName(
-                                    "Rocket.Surgery.Conventions.ConventionAttribute`1",
-                                    (_, _) => true,
-                                    (syntaxContext, _) => GetExportedConventions(syntaxContext)
-                                )
-                               .SelectMany((z, _) => z)
-                               .WithComparer(SymbolEqualityComparer.Default);
-
         var exportedConventions = context
                                  .SyntaxProvider
                                  .ForAttributeWithMetadataName(
@@ -58,28 +39,17 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                   )
                                  .WithComparer(SymbolEqualityComparer.Default);
 
-        var combinedExports = exportCandidates
-                             .Collect()
-                             .Combine(exportCandidates2.Collect())
-                             .SelectMany((tuple, _) => tuple.Left.AddRange(tuple.Right))
-                             .Collect()
-                             .Combine(exportedConventions.Collect())
-                             .SelectMany((tuple, _) => tuple.Left.AddRange(tuple.Right))
-                             .WithComparer(SymbolEqualityComparer.Default);
-
         context.RegisterSourceOutput(
             context
                .CompilationProvider
                .Combine(exportConfiguration)
                .Select((z, _) => ConventionAttributeData.Create(z.Right, z.Left))
-               .Combine(combinedExports.Collect().Select(static (z, _) => z.Distinct(SymbolEqualityComparer.Default).OfType<INamedTypeSymbol>()))
                .Combine(exportedConventions.Collect()),
             static (productionContext, tuple) => ExportConventions.HandleConventionExports(
                 productionContext,
                 new(
-                    tuple.Left.Left,
-                    tuple.Left.Right.OrderBy(z => z.ToDisplayString()).ToImmutableArray(),
-                    tuple.Right.OrderBy(z => z.ToDisplayString()).ToImmutableArray()
+                    tuple.Left,
+                    tuple.Right.OrderBy(z => z.MetadataName).ToImmutableArray()
                 )
             )
         );
@@ -113,7 +83,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(
             context
                .CompilationProvider
-               .Combine(combinedExports.Collect())
+               .Combine(exportedConventions.Collect())
                .Combine(importConfiguration)
                .Combine(exportConfiguration)
                .Combine(hasAssemblyLoadContext)
