@@ -12,7 +12,7 @@ internal static class ExportConventions
 {
     public static void HandleConventionExports(SourceProductionContext context, Request request)
     {
-        ( var data, var conventions, var exportedConventions ) = request;
+        ( var data, var conventions ) = request;
         if (!conventions.Any()) return;
 
         var helperClassBody = Block();
@@ -50,7 +50,7 @@ internal static class ExportConventions
                         AttributeClass:
                         {
                             Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute",
-                            TypeArguments: [INamedTypeSymbol dependencyDirectionDependentOfSymbol,],
+                            TypeArguments: [INamedTypeSymbol dependencyDirectionDependentOfSymbol],
                         },
                     }:
                         dependencies.Add(( _dependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol.ToDisplayString()) ));
@@ -58,7 +58,7 @@ internal static class ExportConventions
                     case
                     {
                         AttributeClass.Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute",
-                        ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependentOfSymbol2, },],
+                        ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependentOfSymbol2 }],
                     }:
                         dependencies.Add(( _dependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol2.ToDisplayString()) ));
                         break;
@@ -67,7 +67,7 @@ internal static class ExportConventions
                         AttributeClass:
                         {
                             Name: "DependsOnConventionAttribute" or "AfterConventionAttribute",
-                            TypeArguments: [INamedTypeSymbol dependencyDirectionDependsOnSymbol,],
+                            TypeArguments: [INamedTypeSymbol dependencyDirectionDependsOnSymbol],
                         },
                     }:
                         dependencies.Add(( _dependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol.ToDisplayString()) ));
@@ -75,7 +75,7 @@ internal static class ExportConventions
                     case
                     {
                         AttributeClass.Name: "DependsOnConventionAttribute" or "AfterConventionAttribute",
-                        ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependsOnSymbol2, },],
+                        ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependsOnSymbol2 }],
                     }:
                         dependencies.Add(( _dependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol2.ToDisplayString()) ));
                         break;
@@ -91,7 +91,7 @@ internal static class ExportConventions
                 }
 
                 if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.ConventionCategoryAttribute)
-                 && attributeData.ConstructorArguments is [{ Value: string category, },])
+                 && attributeData.ConstructorArguments is [{ Value: string category }])
                 {
                     conventionCategory = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(category));
                 }
@@ -204,7 +204,7 @@ internal static class ExportConventions
 
         if (data.Configuration.Assembly)
             cu = cu.AddMembers(
-                data is { Namespace.Length: > 0, } ? NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass) : helperClass
+                data is { Namespace.Length: > 0 } ? NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass) : helperClass
             );
 
         context.AddSource(
@@ -287,5 +287,5 @@ internal static class ExportConventions
         IdentifierName("DependentOf")
     );
 
-    public record Request(ConventionAttributeData Data, ImmutableArray<INamedTypeSymbol> Conventions, ImmutableArray<INamedTypeSymbol> ExportedConventions);
+    public record Request(ConventionAttributeData Data, ImmutableArray<INamedTypeSymbol> ExportedConventions);
 }

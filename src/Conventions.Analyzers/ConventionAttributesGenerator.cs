@@ -18,9 +18,9 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     {
         foreach (var attribute in context.Attributes)
         {
-            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta,], })
+            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta] })
                 yield return ta;
-            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv, },], })
+            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv }] })
                 yield return sv;
         }
     }
@@ -29,25 +29,6 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var exportConfiguration = ConventionConfigurationData.Create(context, "ExportConventions", ConventionConfigurationData.ExportsDefaults);
-
-        var exportCandidates = context
-                              .SyntaxProvider
-                              .ForAttributeWithMetadataName(
-                                   "Rocket.Surgery.Conventions.ConventionAttribute",
-                                   (_, _) => true,
-                                   (syntaxContext, _) => GetExportedConventions(syntaxContext)
-                               )
-                              .SelectMany((z, _) => z)
-                              .WithComparer(SymbolEqualityComparer.Default);
-        var exportCandidates2 = context
-                               .SyntaxProvider
-                               .ForAttributeWithMetadataName(
-                                    "Rocket.Surgery.Conventions.ConventionAttribute`1",
-                                    (_, _) => true,
-                                    (syntaxContext, _) => GetExportedConventions(syntaxContext)
-                                )
-                               .SelectMany((z, _) => z)
-                               .WithComparer(SymbolEqualityComparer.Default);
 
         var exportedConventions = context
                                  .SyntaxProvider
@@ -58,35 +39,24 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
                                   )
                                  .WithComparer(SymbolEqualityComparer.Default);
 
-        var combinedExports = exportCandidates
-                             .Collect()
-                             .Combine(exportCandidates2.Collect())
-                             .SelectMany((tuple, _) => tuple.Left.AddRange(tuple.Right))
-                             .Collect()
-                             .Combine(exportedConventions.Collect())
-                             .SelectMany((tuple, _) => tuple.Left.AddRange(tuple.Right))
-                             .WithComparer(SymbolEqualityComparer.Default);
-
         context.RegisterSourceOutput(
             context
                .CompilationProvider
                .Combine(exportConfiguration)
                .Select((z, _) => ConventionAttributeData.Create(z.Right, z.Left))
-               .Combine(combinedExports.Collect().Select(static (z, _) => z.Distinct(SymbolEqualityComparer.Default).OfType<INamedTypeSymbol>()))
                .Combine(exportedConventions.Collect()),
             static (productionContext, tuple) => ExportConventions.HandleConventionExports(
                 productionContext,
                 new(
-                    tuple.Left.Left,
-                    tuple.Left.Right.OrderBy(z => z.ToDisplayString()).ToImmutableArray(),
-                    tuple.Right.OrderBy(z => z.ToDisplayString()).ToImmutableArray()
+                    tuple.Left,
+                    tuple.Right.OrderBy(z => z.MetadataName).ToImmutableArray()
                 )
             )
         );
 
         var importConfiguration = ConventionConfigurationData
                                  .Create(context, "ImportConventions", ConventionConfigurationData.ImportsDefaults)
-                                 .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true, } && z.Assembly, });
+                                 .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true } && z.Assembly });
 
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
@@ -113,7 +83,7 @@ public class ConventionAttributesGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(
             context
                .CompilationProvider
-               .Combine(combinedExports.Collect())
+               .Combine(exportedConventions.Collect())
                .Combine(importConfiguration)
                .Combine(exportConfiguration)
                .Combine(hasAssemblyLoadContext)
