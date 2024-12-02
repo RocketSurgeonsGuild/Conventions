@@ -42,7 +42,7 @@ public sealed class ConventionContext : IConventionContext
 
         // ReSharper disable once NullableWarningSuppressionIsUsed
         var assemblyProvider = builder._conventionProviderFactory!.CreateTypeProvider(builder);
-        var provider = ConventionContextHelpers.CreateProvider(builder, assemblyProvider, builder.Get<ILogger>());
+        var provider = ConventionContextHelpers.CreateProvider(builder, builder.Get<ILogger>());
         // ReSharper disable once NullableWarningSuppressionIsUsed
         builder.Properties.Set(builder._serviceProviderFactory!);
         return new(builder, provider, assemblyProvider);
@@ -128,8 +128,5 @@ public sealed class ConventionContext : IConventionContext
     ///     Avoid doing this unless you absolutely need to.
     /// </summary>
     /// <returns></returns>
-    public ConventionContextBuilder ToBuilder()
-    {
-        return _builder;
-    }
+    public ConventionContextBuilder ToBuilder() => _builder;
 }

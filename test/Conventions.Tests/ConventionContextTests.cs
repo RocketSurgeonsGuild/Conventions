@@ -1,4 +1,3 @@
-using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Setup;
-using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing;
 using Serilog.Events;
 using Xunit.Abstractions;
@@ -78,7 +76,7 @@ public class ConventionContextTests
         var convention = A.Fake<IServiceConvention>();
         contextBuilder.PrependConvention(convention);
 
-        ConventionContextHelpers.CreateProvider(contextBuilder, GetType().Assembly.GetCompiledTypeProvider(), Logger).GetAll().Should().Contain(convention);
+        ConventionContextHelpers.CreateProvider(contextBuilder, Logger).GetAll().Should().Contain(convention);
         return Task.CompletedTask;
     }
 
@@ -108,7 +106,7 @@ public class ConventionContextTests
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
-                            .Set<IConfiguration>(new ConfigurationBuilder().Build());
+           .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 
         var servicesCollection = await new ServiceCollection()
@@ -127,7 +125,7 @@ public class ConventionContextTests
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
-                            .Set<IConfiguration>(new ConfigurationBuilder().Build());
+           .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 
         var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
@@ -147,7 +145,7 @@ public class ConventionContextTests
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
-                            .Set<IConfiguration>(new ConfigurationBuilder().Build());
+           .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 
         var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
