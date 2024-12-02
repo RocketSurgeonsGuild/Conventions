@@ -1,4 +1,3 @@
-using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -107,7 +106,7 @@ public class ConventionContextTests
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
-                            .Set<IConfiguration>(new ConfigurationBuilder().Build());
+           .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 
         var servicesCollection = await new ServiceCollection()
@@ -126,7 +125,7 @@ public class ConventionContextTests
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
-                            .Set<IConfiguration>(new ConfigurationBuilder().Build());
+           .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 
         var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
@@ -146,7 +145,7 @@ public class ConventionContextTests
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
-                            .Set<IConfiguration>(new ConfigurationBuilder().Build());
+           .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 
         var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);

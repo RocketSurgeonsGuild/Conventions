@@ -20,7 +20,10 @@ internal static partial class ConventionContextHelpers
 
         if (builder._conventionProviderFactory != null)
         {
-            builder._conventions.InsertRange(builder._conventions.FindIndex(z => z is null), GetStaticConventions(builder, builder._conventionProviderFactory, logger));
+            builder._conventions.InsertRange(
+                builder._conventions.FindIndex(z => z is null),
+                GetStaticConventions(builder, builder._conventionProviderFactory, logger)
+            );
         }
 
         return new ConventionProvider(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), builder._conventions);

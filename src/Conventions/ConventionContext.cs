@@ -128,8 +128,5 @@ public sealed class ConventionContext : IConventionContext
     ///     Avoid doing this unless you absolutely need to.
     /// </summary>
     /// <returns></returns>
-    public ConventionContextBuilder ToBuilder()
-    {
-        return _builder;
-    }
+    public ConventionContextBuilder ToBuilder() => _builder;
 }
