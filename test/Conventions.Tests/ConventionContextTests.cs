@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Setup;
-using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing;
 using Serilog.Events;
 using Xunit.Abstractions;
@@ -78,7 +77,7 @@ public class ConventionContextTests
         var convention = A.Fake<IServiceConvention>();
         contextBuilder.PrependConvention(convention);
 
-        ConventionContextHelpers.CreateProvider(contextBuilder, GetType().Assembly.GetCompiledTypeProvider(), Logger).GetAll().Should().Contain(convention);
+        ConventionContextHelpers.CreateProvider(contextBuilder, Logger).GetAll().Should().Contain(convention);
         return Task.CompletedTask;
     }
 

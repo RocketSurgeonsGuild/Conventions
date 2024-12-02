@@ -3,7 +3,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit.Abstractions;
 
@@ -23,7 +22,6 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
     {
         var scanner = ConventionContextHelpers.CreateProvider(
             new ConventionContextBuilder(new Dictionary<object, object?>(), []).UseConventionFactory(Imports.Instance),
-            GetType().Assembly.GetCompiledTypeProvider(),
             Logger
         );
 
@@ -44,7 +42,7 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
         scanner.PrependConvention(contribution);
         scanner.AppendConvention(contribution2);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<ICompiledTypeProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
 
         provider
            .Get<IServiceConvention, ServiceConvention>()
@@ -63,7 +61,7 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
         scanner.PrependDelegate(delegate2, null, null);
         scanner.AppendDelegate(@delegate, null, null);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<ICompiledTypeProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
 
         provider
            .Get<IServiceConvention, ServiceConvention>()
@@ -83,7 +81,7 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
         scanner.PrependConvention(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<ICompiledTypeProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
 
         provider
            .Get<IServiceConvention, ServiceConvention>()
@@ -105,54 +103,12 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
         scanner.PrependConvention(contribution);
         scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<ICompiledTypeProvider>(), Logger);
+        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
 
         provider
            .Get<IServiceConvention, ServiceConvention>()
            .Should()
            .NotContain(x => x is Contrib);
-    }
-
-
-    [Fact]
-    public void ShouldScanIncludeContributionTypes()
-    {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
-
-        var contribution = A.Fake<IServiceConvention>();
-        var contribution2 = A.Fake<IServiceConvention>();
-
-        scanner.AppendConvention(contribution);
-        scanner.PrependConvention(contribution2);
-        scanner.IncludeConvention(typeof(Contrib).Assembly);
-
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<ICompiledTypeProvider>(), Logger);
-
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .Contain(x => x is Contrib);
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(contribution2, contribution);
-    }
-
-    [Fact]
-    public void ShouldScanIncludeContributionAssemblies()
-    {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>().UseConventionFactory(Imports.Instance);
-        var contribution = A.Fake<IServiceConvention>();
-
-        scanner.PrependConvention(contribution);
-        scanner.IncludeConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
-
-        var provider = ConventionContextHelpers.CreateProvider(scanner, A.Fake<ICompiledTypeProvider>(), Logger);
-
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .Contain(x => x is Contrib);
     }
 
     [field: AllowNull]
