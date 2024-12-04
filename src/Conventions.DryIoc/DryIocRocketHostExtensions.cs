@@ -46,7 +46,7 @@ public static class DryIocConventionRocketHostExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(@delegate, priority, category);
+        builder.AppendDelegate(@delegate, priority, category ?? ConventionCategory.Core);
         return builder;
     }
 
@@ -76,7 +76,7 @@ public static class DryIocConventionRocketHostExtensions
                 }
             ),
             priority,
-            category
+            category ?? ConventionCategory.Core
         );
         return builder;
     }
@@ -128,7 +128,7 @@ public static class DryIocConventionRocketHostExtensions
                 }
             ),
             priority,
-            category
+            category ?? ConventionCategory.Core
         );
         return builder;
     }
@@ -153,7 +153,7 @@ public static class DryIocConventionRocketHostExtensions
         builder.AppendDelegate(
             new DryIocConvention((_, configuration, services, container) => @delegate(configuration, services, container)),
             priority,
-            category
+            category ?? ConventionCategory.Core
         );
         return builder;
     }
@@ -184,7 +184,7 @@ public static class DryIocConventionRocketHostExtensions
                 }
             ),
             priority,
-            category
+            category ?? ConventionCategory.Core
         );
         return builder;
     }
@@ -206,7 +206,7 @@ public static class DryIocConventionRocketHostExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AppendDelegate(new DryIocConvention((_, _, _, container) => @delegate(container)), priority, category);
+        builder.AppendDelegate(new DryIocConvention((_, _, _, container) => @delegate(container)), priority, category ?? ConventionCategory.Core);
         return builder;
     }
 
@@ -236,7 +236,7 @@ public static class DryIocConventionRocketHostExtensions
                 }
             ),
             priority,
-            category
+            category ?? ConventionCategory.Core
         );
         return builder;
     }
