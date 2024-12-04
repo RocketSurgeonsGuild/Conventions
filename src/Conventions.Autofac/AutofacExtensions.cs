@@ -26,7 +26,7 @@ public static class AutofacExtensions
     )
     {
         var configuration = context.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
-        foreach (var item in context.Conventions.Get<IAutofacConvention, AutofacConvention>())
+        foreach (var item in context.Conventions.Get<IAutofacConvention, AutofacConvention, IAutofacAsyncConvention, AutofacAsyncConvention>())
         {
             switch (item)
             {

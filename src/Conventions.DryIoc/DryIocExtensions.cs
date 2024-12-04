@@ -27,7 +27,7 @@ public static class DryIocExtensions
     )
     {
         var configuration = context.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
-        foreach (var item in context.Conventions.Get<IDryIocConvention, DryIocConvention>())
+        foreach (var item in context.Conventions.Get<IDryIocConvention, DryIocConvention, IDryIocAsyncConvention, DryIocAsyncConvention>())
         {
             container = item switch
                         {
