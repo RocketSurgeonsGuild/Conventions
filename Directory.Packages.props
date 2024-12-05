@@ -34,7 +34,7 @@
         <PackageVersion Include="Polyfill" Version="7.5.0" />
         <PackageVersion Include="GitVersion.Tool" Version="6.0.5" />
         <PackageVersion Include="docfx.console" Version="2.59.4" />
-        <PackageVersion Include="Nuke.Common" Version="9.0.2" />
+        <PackageVersion Include="Nuke.Common" Version="9.0.3" />
         <PackageVersion Include="ReportGenerator" Version="5.4.1" />
         <PackageVersion Include="Rocket.Surgery.DependencyInjection.Extensions" Version="13.0.0-beta.19" />
         <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.9.2" />
