@@ -1,7 +1,7 @@
 using Nuke.Common.CI.GitHubActions;
 using Rocket.Surgery.Nuke.ContinuousIntegration;
-using Rocket.Surgery.Nuke.DotNetCore;
 using Rocket.Surgery.Nuke.GithubActions;
+using Rocket.Surgery.Nuke.Jobs;
 
 #pragma warning disable CA1050
 
@@ -33,20 +33,23 @@ using Rocket.Surgery.Nuke.GithubActions;
     OnPullRequestTargetBranches = ["master", "main", "next",],
     Enhancements = [nameof(LintStagedMiddleware),]
 )]
-[PrintBuildVersion]
+[CloseMilestoneJob]
+[DraftReleaseJob]
+[UpdateMilestoneJob]
+[PublishNugetPackagesJob("RSG_NUGET_API_KEY", "ci")]
 [PrintCIEnvironment]
 [UploadLogs]
 [TitleEvents]
 [ContinuousIntegrationConventions]
 [System.Diagnostics.DebuggerDisplay("{DebuggerDisplay,nq}")]
-public partial class Pipeline
+internal partial class Pipeline
 {
     [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
     private string DebuggerDisplay => ToString();
 
     public static RocketSurgeonGitHubActionsConfiguration CiIgnoreMiddleware(RocketSurgeonGitHubActionsConfiguration configuration)
     {
-        ((RocketSurgeonsGithubActionsJob)configuration.Jobs[0]).Steps =
+        ( (RocketSurgeonsGithubActionsJob)configuration.Jobs[0] ).Steps =
         [
             new RunStep("N/A")
             {
@@ -61,7 +64,6 @@ public partial class Pipeline
     {
         _ = configuration
            .ExcludeRepositoryConfigurationFiles()
-           .AddNugetPublish()
            .Jobs.OfType<RocketSurgeonsGithubActionsJob>()
            .First(z => z.Name.Equals("build", StringComparison.OrdinalIgnoreCase))
            .UseDotNetSdks("8.0", "9.0")
