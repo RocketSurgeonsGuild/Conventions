@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <Project>
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -37,7 +38,7 @@
         <PackageVersion Include="Nuke.Common" Version="9.0.3" />
         <PackageVersion Include="ReportGenerator" Version="5.4.1" />
         <PackageVersion Include="Rocket.Surgery.DependencyInjection.Extensions" Version="13.0.0-beta.23" />
-        <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.9.6" />
+        <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.9.7" />
         <PackageVersion Include="Autofac" Version="9.0.0" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageVersion Include="BenchMarkDotNet" Version="0.14.0" />
@@ -97,6 +98,5 @@
     </ItemGroup>
     <Import
         Project="$(MSBuildThisFileDirectory)/Directory.Packages.support.props"
-        Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')"
-    />
+        Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')" />
 </Project>
