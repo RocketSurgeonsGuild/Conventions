@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -122,6 +122,7 @@ internal static class ImportConventions
                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
         if (request.MsBuildConfig.isTestProject)
+        {
             importsClass = importsClass.AddMembers(
                 MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier("Init"))
                    .WithAttributeLists(
@@ -206,37 +207,40 @@ internal static class ImportConventions
                         )
                     )
             );
+        }
 
         var cu = CompilationUnit()
                 .WithAttributeLists(request.ImportConfiguration.ToAttributes("Imports"))
                 .AddSharedTrivia()
                 .WithUsings(
                      List(
-                         new[]
-                         {
+                         [
                              UsingDirective(ParseName("System")),
                              UsingDirective(ParseName("System.Collections.Generic")),
                              UsingDirective(ParseName("System.Runtime.Loader")),
                              UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
                              UsingDirective(ParseName("Rocket.Surgery.Conventions")),
                              UsingDirective(ParseName("Rocket.Surgery.DependencyInjection.Compiled")),
-                         }
+                         ]
                      )
                  );
-        var members = new List<MemberDeclarationSyntax>();
-        members.Add(importsClass);
+        var members = new List<MemberDeclarationSyntax>
+        {
+            importsClass,
+        };
         if (request.ImportConfiguration is { Assembly: true })
         {
             cu = cu
                .AddMembers(
                     request.ImportConfiguration is { Namespace: { Length: > 0 } relativeNamespace }
                         ? [NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members.ToArray())]
-                        : members.ToArray()
+                        : [.. members]
                 );
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.Hosting.RocketHostApplicationExtensions") is { })
             {
                 if (compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.WebApplicationBuilder") is { })
+                {
                     context.AddSource(
                         "Generated_WebApplicationBuilder_Extensions.g.cs",
                         _configurationMethods
@@ -248,8 +252,10 @@ internal static class ImportConventions
                            .Replace("{HostingUsing}", "Microsoft.Extensions.Hosting")
                            .Replace("{RocketUsing}", "Rocket.Surgery.Hosting")
                     );
+                }
 
                 if (compilation.GetTypeByMetadataName("Microsoft.Extensions.Hosting.HostApplicationBuilder") is { })
+                {
                     context.AddSource(
                         "Generated_HostApplicationBuilder_Extensions.g.cs",
                         _configurationMethods
@@ -260,6 +266,7 @@ internal static class ImportConventions
                            .Replace("{HostingUsing}", "Microsoft.Extensions.Hosting")
                            .Replace("{RocketUsing}", "Rocket.Surgery.Hosting")
                     );
+                }
             }
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions") is { }
@@ -317,7 +324,9 @@ internal static class ImportConventions
 
         static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ConventionConfigurationData configurationData)
         {
-            return compilation
+            return
+            [
+                .. compilation
                   .References
                   .Select(compilation.GetAssemblyOrModuleSymbol)
                   .OfType<IAssemblySymbol>()
@@ -352,17 +361,17 @@ internal static class ImportConventions
                   .Where(z => !string.IsNullOrWhiteSpace(z))
                   .Concat(
                        exports
-                           ? new[]
-                           {
+                           ?
+                           [
                                ( string.IsNullOrWhiteSpace(configurationData.Namespace) ? "" : configurationData.Namespace + "." )
                              + configurationData.ClassName
                              + "."
                              + configurationData.MethodName,
-                           }
-                           : Enumerable.Empty<string>()
+                           ]
+                           : []
                    )
-                  .OrderBy(z => z)
-                  .ToArray();
+                  .OrderBy(z => z),
+            ];
         }
 
         static BlockSyntax addEnumerateExportStatements(IReadOnlyCollection<string> references)
@@ -386,7 +395,7 @@ internal static class ImportConventions
         }
     }
 
-    private static readonly string _configurationMethods = """"
+    private const string _configurationMethods = """"
         #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
         using System.Threading.Tasks;
         using Microsoft.Extensions.Configuration;
@@ -814,6 +823,7 @@ internal static class ImportConventions
             /// </summary>
             /// <param name="builder">The builder.</param>
             /// <param name="contextBuilder">The convention context builder.</param>
+            /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
             public static ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ConventionContextBuilder contextBuilder, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
             {
@@ -829,6 +839,7 @@ internal static class ImportConventions
             /// </summary>
             /// <param name="builder">The builder.</param>
             /// <param name="contextBuilder">The convention context builder.</param>
+            /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ConventionContextBuilder contextBuilder, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, contextBuilder, action, cancellationToken);
         
