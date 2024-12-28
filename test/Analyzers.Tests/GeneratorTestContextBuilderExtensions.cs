@@ -4,7 +4,6 @@ using FluentValidation;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -29,8 +28,7 @@ internal static class GeneratorTestContextBuilderExtensions
             typeof(IConventionContext),
             typeof(IServiceProvider),
             typeof(IConfiguration),
-            typeof(IValidator),
-            typeof(ICompiledTypeProvider)
+            typeof(IValidator)
         );
     }
 

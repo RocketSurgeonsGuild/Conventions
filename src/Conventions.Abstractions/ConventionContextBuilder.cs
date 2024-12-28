@@ -13,70 +13,59 @@ namespace Rocket.Surgery.Conventions;
 /// </summary>
 [PublicAPI]
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class ConventionContextBuilder
+public sealed class ConventionContextBuilder
 {
-    /// <summary>
-    ///     Create a default context builder
-    /// </summary>
-    /// <param name="properties"></param>
-    /// <param name="categories"></param>
-    /// <returns></returns>
-    [OverloadResolutionPriority(-1)]
-    public static ConventionContextBuilder Create(PropertiesType? properties = null, params ConventionCategory[] categories) =>
-        new(properties ?? new PropertiesDictionary(), categories);
+    internal readonly ConventionContextState state;
 
     /// <summary>
     ///     Create a default context builder
     /// </summary>
+    /// <param name="conventionFactory"></param>
     /// <param name="properties"></param>
     /// <param name="categories"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder Create(PropertiesType? properties = null, params IEnumerable<ConventionCategory> categories) =>
-        new(properties ?? new PropertiesDictionary(), categories);
+    [OverloadResolutionPriority(-1)]
+    public static ConventionContextBuilder Create(IConventionFactory conventionFactory, PropertiesType? properties = null, params ConventionCategory[] categories) =>
+        new(conventionFactory, properties ?? new PropertiesDictionary(), categories);
+
+    /// <summary>
+    ///     Create a default context builder
+    /// </summary>
+    /// <param name="conventionFactory"></param>
+    /// <param name="properties"></param>
+    /// <param name="categories"></param>
+    /// <returns></returns>
+    public static ConventionContextBuilder Create(IConventionFactory conventionFactory, PropertiesType? properties = null, params IEnumerable<ConventionCategory> categories) =>
+        new(conventionFactory, properties ?? new PropertiesDictionary(), categories);
 
     private static readonly string[] categoryEnvironmentVariables =
         ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES"];
 
     private static readonly string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE"];
 
-    // this null is used a marker to indicate where in the list is the middle
-    // ReSharper disable once NullableWarningSuppressionIsUsed
-    internal readonly List<object?> _conventions = [null!];
-    internal readonly List<Type> _exceptConventions = [];
-    internal readonly List<Assembly> _exceptAssemblyConventions = [];
-    internal IConventionFactory? _conventionProviderFactory;
-    internal ServiceProviderFactoryAdapter? _serviceProviderFactory;
-    internal bool _useAttributeConventions = true;
-
     /// <summary>
     ///     Create a context builder with a set of properties
     /// </summary>
+    /// <param name="conventionFactory"></param>
     /// <param name="properties"></param>
     /// <param name="categories"></param>
-    public ConventionContextBuilder(PropertiesType? properties, IEnumerable<ConventionCategory> categories)
+    private ConventionContextBuilder(IConventionFactory conventionFactory, PropertiesType? properties, IEnumerable<ConventionCategory> categories)
     {
         Properties = new ServiceProviderDictionary(properties ?? new PropertiesDictionary());
+        Properties.Set(conventionFactory);
+        state = new();
+        Properties.Set(state);
 
         foreach (var variable in hostTypeEnvironmentVariables)
         {
-            if (Environment.GetEnvironmentVariable(variable) is { Length: > 0 } hostType && Enum.TryParse<HostType>(hostType, true, out var type))
-            {
-                Properties[typeof(HostType)] = type;
-            }
+            if (Environment.GetEnvironmentVariable(variable) is { Length: > 0 } hostType && Enum.TryParse<HostType>(hostType, true, out var type)) Properties[typeof(HostType)] = type;
         }
 
         List<ConventionCategory> categoriesBuilder = [.. categories];
         foreach (var variable in categoryEnvironmentVariables)
         {
-            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0 } category)
-            {
-                continue;
-            }
-
-            foreach (var item in category.Split(',', StringSplitOptions.RemoveEmptyEntries))
-            {
-                categoriesBuilder.Add(new(item));
-            }
+            if (Environment.GetEnvironmentVariable(variable) is not { Length: > 0 } category) continue;
+            categoriesBuilder.AddRange(category.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(item => new ConventionCategory(item)));
         }
 
         Categories = new(categoriesBuilder, ConventionCategory.ValueComparer);
@@ -95,17 +84,6 @@ public class ConventionContextBuilder
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private string DebuggerDisplay => ToString();
-
-    /// <summary>
-    ///     Defines a callback that provides
-    /// </summary>
-    /// <param name="conventionFactory"></param>
-    /// <returns></returns>
-    public ConventionContextBuilder UseConventionFactory(IConventionFactory conventionFactory)
-    {
-        _conventionProviderFactory = conventionFactory;
-        return this;
-    }
 
     /// <summary>
     ///     Provide a diagnostic logger
@@ -145,7 +123,7 @@ public class ConventionContextBuilder
     [OverloadResolutionPriority(-1)]
     public ConventionContextBuilder AppendConvention(params IConvention[] conventions)
     {
-        _conventions.AddRange(conventions);
+        state.AppendConventions(conventions);
         return this;
     }
 
@@ -156,7 +134,7 @@ public class ConventionContextBuilder
     /// <returns>IConventionScanner.</returns>
     public ConventionContextBuilder AppendConvention(params IEnumerable<IConvention> conventions)
     {
-        _conventions.AddRange(conventions);
+        state.AppendConventions(conventions);
         return this;
     }
 
@@ -168,7 +146,7 @@ public class ConventionContextBuilder
     [OverloadResolutionPriority(-1)]
     public ConventionContextBuilder AppendConvention(params Type[] conventions)
     {
-        _conventions.AddRange(conventions);
+        state.AppendConventions(conventions);
         return this;
     }
 
@@ -179,7 +157,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder AppendConvention(params IEnumerable<Type> conventions)
     {
-        _conventions.AddRange(conventions);
+        state.AppendConventions(conventions);
         return this;
     }
 
@@ -190,7 +168,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder AppendConvention<T>()
         where T : IConvention
     {
-        _conventions.Add(typeof(T));
+        state.AppendConventions(typeof(T));
         return this;
     }
 
@@ -202,7 +180,7 @@ public class ConventionContextBuilder
     [OverloadResolutionPriority(-1)]
     public ConventionContextBuilder PrependConvention(params IConvention[] conventions)
     {
-        _conventions.InsertRange(0, conventions);
+        state.PrependConventions(conventions);
         return this;
     }
 
@@ -213,7 +191,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependConvention(params IEnumerable<IConvention> conventions)
     {
-        _conventions.InsertRange(0, conventions);
+        state.PrependConventions(conventions);
         return this;
     }
 
@@ -225,7 +203,7 @@ public class ConventionContextBuilder
     [OverloadResolutionPriority(-1)]
     public ConventionContextBuilder PrependConvention(params Type[] conventions)
     {
-        _conventions.InsertRange(0, conventions);
+        state.PrependConventions(conventions);
         return this;
     }
 
@@ -236,7 +214,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependConvention(params IEnumerable<Type> conventions)
     {
-        _conventions.InsertRange(0, conventions);
+        state.PrependConventions(conventions);
         return this;
     }
 
@@ -247,7 +225,7 @@ public class ConventionContextBuilder
     public ConventionContextBuilder PrependConvention<T>()
         where T : IConvention
     {
-        _conventions.Insert(0, typeof(T));
+        state.PrependConventions(typeof(T));
         return this;
     }
 
@@ -260,7 +238,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder AppendDelegate(Delegate @delegate, int? priority, ConventionCategory? category)
     {
-        _conventions.Add(new ConventionOrDelegate(@delegate, priority ?? 0, category));
+        state.AppendConventions(new ConventionOrDelegate(@delegate, priority ?? 0, category));
         return this;
     }
 
@@ -273,7 +251,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder PrependDelegate(Delegate @delegate, int? priority, ConventionCategory? category)
     {
-        _conventions.Insert(0, new ConventionOrDelegate(@delegate, priority ?? 0, category));
+        state.PrependConventions(new ConventionOrDelegate(@delegate, priority ?? 0, category));
         return this;
     }
 
@@ -285,7 +263,7 @@ public class ConventionContextBuilder
     [OverloadResolutionPriority(-1)]
     public ConventionContextBuilder ExceptConvention(params Assembly[] assemblies)
     {
-        _exceptAssemblyConventions.AddRange(assemblies);
+        state.ExceptConventions(assemblies);
         return this;
     }
 
@@ -296,7 +274,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder ExceptConvention(params IEnumerable<Assembly> assemblies)
     {
-        _exceptAssemblyConventions.AddRange(assemblies);
+        state.ExceptConventions(assemblies);
         return this;
     }
 
@@ -308,7 +286,7 @@ public class ConventionContextBuilder
     [OverloadResolutionPriority(-1)]
     public ConventionContextBuilder ExceptConvention(params Type[] types)
     {
-        _exceptConventions.AddRange(types);
+        state.ExceptConventions(types);
         return this;
     }
 
@@ -319,7 +297,7 @@ public class ConventionContextBuilder
     /// <returns><see cref="ConventionContextBuilder" />.</returns>
     public ConventionContextBuilder ExceptConvention(params IEnumerable<Type> types)
     {
-        _exceptConventions.AddRange(types);
+        state.ExceptConventions(types);
         return this;
     }
 }

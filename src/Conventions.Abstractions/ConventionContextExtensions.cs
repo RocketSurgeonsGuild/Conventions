@@ -21,6 +21,22 @@ public static class ConventionContextExtensions
     }
 
     /// <summary>
+    ///     Get a value by type from the context or throw
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="context">The context</param>
+    /// <returns>T.</returns>
+    public static T Require<T>(this IConventionContext context)
+        where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        return context.Properties.TryGetValue(typeof(T), out var value) && value is T t
+            ? t
+            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} was not found in the context");
+    }
+
+    /// <summary>
     ///     Get a value by key from the context
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -31,6 +47,23 @@ public static class ConventionContextExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
         return (T?)context[key];
+    }
+
+    /// <summary>
+    ///     Get a value by type from the context or throw
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <returns>T.</returns>
+    public static T Require<T>(this IConventionContext context, string key)
+        where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        return context.Properties.TryGetValue(key, out var value) && value is T t
+            ? t
+            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} with the {key} was not found in the context");
     }
 
     /// <summary>

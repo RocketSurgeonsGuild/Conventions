@@ -19,25 +19,14 @@ namespace Rocket.Surgery.Aspire.Hosting.Testing;
 public static class RocketDistributedApplicationTestingExtensions
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static ConventionContextBuilder GetExisting(IDistributedApplicationTestingBuilder builder)
-    {
-        var contextBuilder = _weakTable.TryGetValue(builder, out var ccb)
-            ? ccb
-            : new(new Dictionary<object, object>(), []);
-        ccb = ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
-            ? contextBuilder.UseConventionFactory(impliedFactory)
-            : contextBuilder;
-        _weakTable.Add(builder, ccb);
-        return ccb;
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public static async ValueTask<DistributedApplication> Configure(
         IDistributedApplicationTestingBuilder builder,
         ConventionContextBuilder contextBuilder,
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(contextBuilder);
         if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
         contextBuilder.Properties["__configured__"] = true;
 
@@ -51,16 +40,14 @@ public static class RocketDistributedApplicationTestingExtensions
            .AddIfMissing(builder.Environment)
            .AddIfMissing(builder.Environment.GetType(), builder.Environment);
 
-        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
+        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
         builder.Configuration.AddInMemoryCollection(
             new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
         );
 
-        await builder.ApplyConventionsAsync(context, cancellationToken);
-        var host = await builder.BuildAsync(cancellationToken);
-        await context.ApplyHostCreatedConventionsAsync(host, cancellationToken);
+        await builder.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+        var host = await builder.BuildAsync(cancellationToken).ConfigureAwait(false);
+        await context.ApplyHostCreatedConventionsAsync(host, cancellationToken).ConfigureAwait(false);
         return host;
     }
-
-    private static readonly ConditionalWeakTable<IDistributedApplicationTestingBuilder, ConventionContextBuilder> _weakTable = new();
 }

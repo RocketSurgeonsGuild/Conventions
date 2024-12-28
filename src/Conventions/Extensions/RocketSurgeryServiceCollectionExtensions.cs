@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
 #pragma warning disable CA1848
@@ -31,8 +30,6 @@ public static class RocketSurgeryServiceCollectionExtensions
             configuration = new ConfigurationBuilder().Build();
             context.Logger.LogWarning("Configuration was not found in context");
         }
-
-        services.AddSingleton(context.TypeProvider);
 
         foreach (var item in context.Conventions.Get<IServiceConvention, ServiceConvention, IServiceAsyncConvention, ServiceAsyncConvention>())
         {

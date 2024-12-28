@@ -1,11 +1,10 @@
 using System.Collections.Immutable;
-using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Rocket.Surgery.Conventions.Extensions;
-using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -24,49 +23,59 @@ public sealed class ConventionContext : IConventionContext
     /// <returns></returns>
     public static async ValueTask<IConventionContext> FromAsync(ConventionContextBuilder builder, CancellationToken cancellationToken = default)
     {
-        var context = FromInitInternal(builder, Assembly.GetCallingAssembly());
+        ArgumentNullException.ThrowIfNull(builder);
+        var context = FromInitInternal(builder);
         if (context.Properties.ContainsKey(ConventionsSetup)) return context;
 
-        await context.ApplyConventionsAsync(cancellationToken);
+        await context.ApplyConventionsAsync(cancellationToken).ConfigureAwait(false);
         context.Properties.Add(ConventionsSetup, true);
         return context;
     }
 
     private const string ConventionsSetup = "__ConventionsSetup__" + nameof(ConventionContext);
 
-    private static ConventionContext FromInitInternal(ConventionContextBuilder builder, Assembly callerAssembly)
+    private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
     {
         builder.AddIfMissing(AssemblyLoadContext.Default);
-        builder._conventionProviderFactory ??= ImportHelpers.CallerConventions(callerAssembly);
-        if (builder._conventionProviderFactory is null) throw new InvalidOperationException("No convention provider factory was found");
+        var provider = CreateProvider(builder);
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        builder.Properties.Set(builder.state.ServiceProviderFactory);
+        return new(builder, provider);
+    }
 
-        // ReSharper disable once NullableWarningSuppressionIsUsed
-        var assemblyProvider = builder._conventionProviderFactory!.CreateTypeProvider(builder);
-        var provider = ConventionContextHelpers.CreateProvider(builder, builder.Get<ILogger>());
-        // ReSharper disable once NullableWarningSuppressionIsUsed
-        builder.Properties.Set(builder._serviceProviderFactory!);
-        return new(builder, provider, assemblyProvider);
+    /// <summary>
+    ///     Method used to create a convention provider
+    /// </summary>
+    /// <returns></returns>
+    internal static IConventionProvider CreateProvider(ConventionContextBuilder builder)
+    {
+        var conventions = builder.state.GetConventions();
+        for (var i = 0; i < conventions.Count; i++)
+        {
+            if (conventions[i] is Type type) conventions[i] = ActivatorUtilities.CreateInstance(builder.Properties, type);
+        }
+
+        conventions.InsertRange(
+            conventions.FindIndex(z => z is null),
+            builder.state.CalculateConventions(builder, builder.Require<IConventionFactory>(), builder.Get<ILogger>())
+        );
+
+        return new ConventionProvider(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), conventions);
     }
 
     private static readonly IConfiguration _emptyConfiguration = new ConfigurationBuilder().Build();
-
-    private readonly ConventionContextBuilder _builder;
 
     /// <summary>
     ///     Creates a base context
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="conventionProvider"></param>
-    /// <param name="typeProvider"></param>
     private ConventionContext(
         ConventionContextBuilder builder,
-        IConventionProvider conventionProvider,
-        ICompiledTypeProvider typeProvider
+        IConventionProvider conventionProvider
     )
     {
-        _builder = builder;
         Conventions = conventionProvider;
-        TypeProvider = typeProvider;
         Properties = builder.Properties;
         Categories = builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer);
     }
@@ -113,20 +122,7 @@ public sealed class ConventionContext : IConventionContext
     public ILogger Logger => this.Get<ILogger>() ?? NullLogger.Instance;
 
     /// <summary>
-    ///     Gets the type provider.
-    /// </summary>
-    /// <value>The type provider.</value>
-    public ICompiledTypeProvider TypeProvider { get; }
-
-    /// <summary>
     ///     Gets the configuration.
     /// </summary>
     public IConfiguration Configuration => this.Get<IConfiguration>() ?? _emptyConfiguration;
-
-    /// <summary>
-    ///     Return the source builder for this context (to create new contexts if required).
-    ///     Avoid doing this unless you absolutely need to.
-    /// </summary>
-    /// <returns></returns>
-    public ConventionContextBuilder ToBuilder() => _builder;
 }

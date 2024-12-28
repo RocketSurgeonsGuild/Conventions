@@ -28,13 +28,19 @@ public static class ConventionContextBuilderExtensions
         configuration ??= context.Get<IConfiguration>();
         if (configuration is { })
             cb.AddConfiguration(configuration);
-        configuration = ( await cb.ApplyConventionsAsync(context, configuration, cancellationToken) ).Build();
+        configuration = ( await cb.ApplyConventionsAsync(context, configuration, cancellationToken).ConfigureAwait(false) ).Build();
         context.Set(configuration);
         var services = new ServiceCollection();
         services.AddSingleton(configuration);
-        await services.ApplyConventionsAsync(context, cancellationToken);
-        await new LoggingBuilder(services).ApplyConventionsAsync(context, cancellationToken);
+        await services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+        await new LoggingBuilder(services).ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
+        if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
+        {
+            var adapter = await factory(context, services, cancellationToken).ConfigureAwait(false);
+            var builder = adapter.CreateBuilder(services);
+            return adapter.CreateServiceProvider(builder);
+        }
         return services.BuildServiceProvider(context.GetOrAdd(() => new ServiceProviderOptions()));
     }
 
@@ -51,6 +57,6 @@ public static class ConventionContextBuilderExtensions
         CancellationToken cancellationToken = default
     )
     {
-        return await CreateServiceProvider(await ConventionContext.FromAsync(builder, cancellationToken), configuration, cancellationToken);
+        return await CreateServiceProvider(await ConventionContext.FromAsync(builder, cancellationToken).ConfigureAwait(false), configuration, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -6,9 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.Extensions;
-using ServiceFactoryAdapter =
-    System.Func<Rocket.Surgery.Conventions.IConventionContext, Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Microsoft.Extensions.DependencyInjection.IServiceProviderFactory<object>>>;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace Rocket.Surgery.WebAssembly.Hosting;
@@ -18,19 +15,6 @@ namespace Rocket.Surgery.WebAssembly.Hosting;
 public static class RocketWebAssemblyExtensions
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static ConventionContextBuilder GetExisting(WebAssemblyHostBuilder builder)
-    {
-        var contextBuilder = _weakTable.TryGetValue(builder, out var ccb)
-            ? ccb
-            : new(new Dictionary<object, object>(), []);
-        ccb = ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
-            ? contextBuilder.UseConventionFactory(impliedFactory)
-            : contextBuilder;
-        _weakTable.Add(builder, ccb);
-        return ccb;
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public static async ValueTask<WebAssemblyHost> Configure(
         this WebAssemblyHostBuilder builder,
         Func<WebAssemblyHostBuilder, WebAssemblyHost> buildHost,
@@ -38,6 +22,8 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(buildHost);
+        ArgumentNullException.ThrowIfNull(contextBuilder);
         if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
         contextBuilder.Properties["__configured__"] = true;
 
@@ -50,18 +36,18 @@ public static class RocketWebAssemblyExtensions
            .AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
         contextBuilder.Properties.Add("BlazorWasm", true);
 
-        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
+        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
 
         await SharedHostConfigurationAsync(context, builder, cancellationToken).ConfigureAwait(false);
         await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
         await builder.Logging.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
-        if (context.Get<ServiceFactoryAdapter>() is { } factory)
-            builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken));
+        if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
+            builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken).ConfigureAwait(false));
 
-        await ApplyConventions(context, builder, contextBuilder, cancellationToken);
+        await ApplyConventions(context, builder, contextBuilder, cancellationToken).ConfigureAwait(false);
         var host = buildHost(builder);
-        await context.ApplyHostCreatedConventionsAsync(host, cancellationToken);
+        await context.ApplyHostCreatedConventionsAsync(host, cancellationToken).ConfigureAwait(false);
         return host;
     }
 
@@ -155,8 +141,6 @@ public static class RocketWebAssemblyExtensions
             return source;
         }
     }
-
-    private static readonly ConditionalWeakTable<WebAssemblyHostBuilder, ConventionContextBuilder> _weakTable = new();
 
     private static async Task<IConventionContext> ApplyConventions(
         IConventionContext conventionContext,

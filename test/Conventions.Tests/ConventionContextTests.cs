@@ -76,7 +76,7 @@ public class ConventionContextTests
         var convention = A.Fake<IServiceConvention>();
         contextBuilder.PrependConvention(convention);
 
-        ConventionContextHelpers.CreateProvider(contextBuilder, Logger).GetAll().Should().Contain(convention);
+        ConventionContextData.CreateProvider(contextBuilder).GetAll().Should().Contain(convention);
         return Task.CompletedTask;
     }
 

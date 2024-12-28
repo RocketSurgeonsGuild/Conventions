@@ -17,23 +17,14 @@ public static class ImportHelpers
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static IConventionFactory? ExternalConventions
     {
+        get => externalConventions;
         set => externalConventions = value;
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IConventionFactory? CallerConventions(Assembly callerAssembly)
-    {
-        return Assembly.GetEntryAssembly() is not { } entryAssembly || callerAssembly == entryAssembly || externalConventions == null
-            ? null
-            : entryAssembly.GetCustomAttribute<ImportsTypeAttribute>()?.Type is { } executingImportsType
-         && Activator.CreateInstance(executingImportsType) is IConventionFactory imports
-                ? imports
-                : externalConventions;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static IConventionFactory OrCallerConventions(this IConventionFactory conventionFactory)
     {
+        ArgumentNullException.ThrowIfNull(conventionFactory);
         return Assembly.GetEntryAssembly() is not { } entryAssembly || conventionFactory.GetType().Assembly == entryAssembly || externalConventions == null
             ? conventionFactory
             : entryAssembly.GetCustomAttribute<ImportsTypeAttribute>()?.Type is { } executingImportsType

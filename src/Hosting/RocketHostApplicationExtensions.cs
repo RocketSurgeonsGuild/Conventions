@@ -21,20 +21,6 @@ namespace Rocket.Surgery.Hosting;
 public static class RocketHostApplicationExtensions
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static ConventionContextBuilder GetExisting(IHostApplicationBuilder builder)
-    {
-        var contextBuilder = builder.Properties.TryGetValue(typeof(ConventionContextBuilder), out var conventionContextBuilder)
-         && conventionContextBuilder is ConventionContextBuilder b
-                ? b
-                : new(new Dictionary<object, object>(), []);
-        var ccb = ImportHelpers.CallerConventions(Assembly.GetCallingAssembly()) is { } impliedFactory
-            ? contextBuilder.UseConventionFactory(impliedFactory)
-            : contextBuilder;
-        builder.Properties[typeof(ConventionContextBuilder)] = ccb;
-        return ccb;
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public static async ValueTask<THost> Configure<T, THost>(
         T builder,
         Func<T, THost> buildHost,
@@ -44,6 +30,8 @@ public static class RocketHostApplicationExtensions
         where T : IHostApplicationBuilder
         where THost : IHost
     {
+        ArgumentNullException.ThrowIfNull(buildHost);
+        ArgumentNullException.ThrowIfNull(contextBuilder);
         if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
         contextBuilder.Properties["__configured__"] = true;
 
@@ -57,17 +45,17 @@ public static class RocketHostApplicationExtensions
            .AddIfMissing(builder.Environment)
            .AddIfMissing(builder.Environment.GetType(), builder.Environment);
 
-        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken);
+        var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
         await SharedHostConfigurationAsync(context, builder, cancellationToken).ConfigureAwait(false);
         await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
         await builder.Logging.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
         if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
-            builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken));
+            builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken).ConfigureAwait(false));
 
-        await builder.ApplyConventionsAsync(context, cancellationToken);
+        await builder.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
         var host = buildHost(builder);
-        await context.ApplyHostCreatedConventionsAsync(host, cancellationToken);
+        await context.ApplyHostCreatedConventionsAsync(host, cancellationToken).ConfigureAwait(false);
         return host;
     }
 

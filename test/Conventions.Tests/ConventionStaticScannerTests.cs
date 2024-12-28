@@ -20,9 +20,8 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
     [Fact]
     public void ShouldBuildAProvider()
     {
-        var scanner = ConventionContextHelpers.CreateProvider(
-            new ConventionContextBuilder(new Dictionary<object, object?>(), []).UseConventionFactory(Imports.Instance),
-            Logger
+        var scanner = ConventionContextData.CreateProvider(
+            new ConventionContextBuilder(new Dictionary<object, object?>(), []).UseConventionFactory(Imports.Instance)
         );
 
         scanner
@@ -42,7 +41,7 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
         scanner.PrependConvention(contribution);
         scanner.AppendConvention(contribution2);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
+        var provider = ConventionContextData.CreateProvider(scanner);
 
         provider
            .Get<IServiceConvention, ServiceConvention>()
@@ -61,7 +60,7 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
         scanner.PrependDelegate(delegate2, null, null);
         scanner.AppendDelegate(@delegate, null, null);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
+        var provider = ConventionContextData.CreateProvider(scanner);
 
         provider
            .Get<IServiceConvention, ServiceConvention>()
@@ -81,7 +80,7 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
         scanner.PrependConvention(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
+        var provider = ConventionContextData.CreateProvider(scanner);
 
         provider
            .Get<IServiceConvention, ServiceConvention>()
@@ -103,7 +102,7 @@ public class ConventionStaticScannerTests(ITestOutputHelper outputHelper) : Auto
         scanner.PrependConvention(contribution);
         scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
+        var provider = ConventionContextData.CreateProvider(scanner);
 
         provider
            .Get<IServiceConvention, ServiceConvention>()
