@@ -19,7 +19,6 @@ internal static class ImportConventions
         var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
 
         var compilation = request.Compilation;
-
         var importsClass =
             ClassDeclaration(request.ImportConfiguration.ClassName)
                .WithAttributeLists(
@@ -28,51 +27,18 @@ internal static class ImportConventions
                            .WithLeadingTrivia(GetXmlSummary("The class defined for importing conventions into this assembly"))
                     )
                 )
-               .AddBaseListTypes(SimpleBaseType(IdentifierName("IConventionFactory")))
-               .WithModifiers(
-                    TokenList(
-                        Token(SyntaxKind.InternalKeyword),
-                        Token(SyntaxKind.SealedKeyword),
-                        Token(SyntaxKind.PartialKeyword)
-                    )
-                )
+               .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
                .AddMembers(
-                    PropertyDeclaration(
-                            IdentifierName("IConventionFactory"),
-                            Identifier(request.ImportConfiguration.MethodName)
-                        )
-                       .WithModifiers(
-                            TokenList(
-                                Token(SyntaxKind.PublicKeyword),
-                                Token(SyntaxKind.StaticKeyword)
-                            )
-                        )
-                       .WithAccessorList(
-                            AccessorList(
-                                SingletonList(
-                                    AccessorDeclaration(
-                                            SyntaxKind.GetAccessorDeclaration
-                                        )
-                                       .WithSemicolonToken(
-                                            Token(SyntaxKind.SemicolonToken)
-                                        )
-                                )
-                            )
-                        )
-                       .WithInitializer(
-                            EqualsValueClause(
-                                InvocationExpression(
-                                        MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            ObjectCreationExpression(IdentifierName(request.ImportConfiguration.ClassName))
-                                               .WithArgumentList(ArgumentList()),
-                                            IdentifierName("OrCallerConventions")
-                                        )
+                    FieldDeclaration(
+                            VariableDeclaration(IdentifierName("LoadConventions"))
+                               .WithVariables(
+                                    SingletonSeparatedList(
+                                        VariableDeclarator(Identifier(request.ImportConfiguration.MethodName))
+                                           .WithInitializer(EqualsValueClause(IdentifierName("LoadConventionsMethod")))
                                     )
-                                   .WithArgumentList(ArgumentList())
-                            )
+                                )
                         )
-                       .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+                       .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword))),
                     MethodDeclaration(
                             GenericName(Identifier("IEnumerable"))
                                .WithTypeArgumentList(
@@ -80,9 +46,9 @@ internal static class ImportConventions
                                         SingletonSeparatedList<TypeSyntax>(IdentifierName("IConventionMetadata"))
                                     )
                                 ),
-                            Identifier("LoadConventions")
+                            Identifier("LoadConventionsMethod")
                         )
-                       .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                       .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)))
                        .WithParameterList(
                             ParameterList(
                                 SingletonSeparatedList(
@@ -124,12 +90,7 @@ internal static class ImportConventions
                             )
                         )
                     )
-                   .WithModifiers(
-                        TokenList(
-                            Token(SyntaxKind.PublicKeyword),
-                            Token(SyntaxKind.StaticKeyword)
-                        )
-                    )
+                   .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
                    .WithBody(
                         Block(
                             List<StatementSyntax>(
@@ -145,22 +106,10 @@ internal static class ImportConventions
                                            .WithArgumentList(
                                                 ArgumentList(
                                                     SeparatedList<ArgumentSyntax>(
-                                                        new SyntaxNodeOrToken[]
-                                                        {
-                                                            Argument(
-                                                                LiteralExpression(
-                                                                    SyntaxKind.StringLiteralExpression,
-                                                                    Literal("RSG__HOSTTYPE")
-                                                                )
-                                                            ),
-                                                            Token(SyntaxKind.CommaToken),
-                                                            Argument(
-                                                                LiteralExpression(
-                                                                    SyntaxKind.StringLiteralExpression,
-                                                                    Literal("UnitTest")
-                                                                )
-                                                            ),
-                                                        }
+                                                        [
+                                                            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("RSG__HOSTTYPE"))),
+                                                            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("UnitTest"))),
+                                                        ]
                                                     )
                                                 )
                                             )
@@ -194,7 +143,6 @@ internal static class ImportConventions
                              UsingDirective(ParseName("System.Runtime.Loader")),
                              UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
                              UsingDirective(ParseName("Rocket.Surgery.Conventions")),
-                             UsingDirective(ParseName("Rocket.Surgery.DependencyInjection.Compiled")),
                          ]
                      )
                  );
@@ -202,14 +150,24 @@ internal static class ImportConventions
         {
             importsClass,
         };
+
+        cu = cu
+           .AddMembers(
+                request.ImportConfiguration is { Namespace: { Length: > 0 } relativeNamespace }
+                    ? [NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members.ToArray())]
+                    : [.. members]
+            );
+
+        context.AddSource(
+            "Imported_Assembly_Conventions.g.cs",
+            cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
+        );
+
         if (request.ImportConfiguration is { Assembly: true })
         {
-            cu = cu
-               .AddMembers(
-                    request.ImportConfiguration is { Namespace: { Length: > 0 } relativeNamespace }
-                        ? [NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members.ToArray())]
-                        : [.. members]
-                );
+            var loadConventionsMethod = request.ImportConfiguration.Namespace is { Length: > 0 }
+                ? $"global::{request.ImportConfiguration.Namespace}.{request.ImportConfiguration.ClassName}.{request.ImportConfiguration.MethodName}"
+                : $"global::{request.ImportConfiguration.ClassName}.{request.ImportConfiguration.MethodName}";
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.Hosting.RocketHostApplicationExtensions") is { })
             {
@@ -219,11 +177,11 @@ internal static class ImportConventions
                         "Generated_WebApplicationBuilder_Extensions.g.cs",
                         _configurationMethods
                            .Replace("{BuilderName}", "WebApplicationBuilder")
-                           .Replace("{BuilderType}", "Microsoft.AspNetCore.Builder.WebApplicationBuilder")
-                           .Replace("{BuilderType}", "Microsoft.AspNetCore.Builder.WebApplicationBuilder")
-                           .Replace("{ReturnType}", "Microsoft.AspNetCore.Builder.WebApplication")
-                           .Replace("{ExtensionsType}", "Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
-                           .Replace("{HostingUsing}", "Microsoft.Extensions.Hosting")
+                           .Replace("{BuilderType}", "global::Microsoft.AspNetCore.Builder.WebApplicationBuilder")
+                           .Replace("{ReturnType}", "global::Microsoft.AspNetCore.Builder.WebApplication")
+                           .Replace("{ExtensionsType}", "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
+                           .Replace("{LoadConventions}", loadConventionsMethod)
+                           .Replace("{HostingUsing}", "global::Microsoft.Extensions.Hosting")
                            .Replace("{RocketUsing}", "Rocket.Surgery.Hosting")
                     );
                 }
@@ -234,10 +192,11 @@ internal static class ImportConventions
                         "Generated_HostApplicationBuilder_Extensions.g.cs",
                         _configurationMethods
                            .Replace("{BuilderName}", "HostApplicationBuilder")
-                           .Replace("{BuilderType}", "Microsoft.Extensions.Hosting.HostApplicationBuilder")
-                           .Replace("{ReturnType}", "Microsoft.Extensions.Hosting.IHost")
-                           .Replace("{ExtensionsType}", "Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
-                           .Replace("{HostingUsing}", "Microsoft.Extensions.Hosting")
+                           .Replace("{BuilderType}", "global::Microsoft.Extensions.Hosting.HostApplicationBuilder")
+                           .Replace("{ReturnType}", "global::Microsoft.Extensions.Hosting.IHost")
+                           .Replace("{ExtensionsType}", "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
+                           .Replace("{LoadConventions}", loadConventionsMethod)
+                           .Replace("{HostingUsing}", "global::Microsoft.Extensions.Hosting")
                            .Replace("{RocketUsing}", "Rocket.Surgery.Hosting")
                     );
                 }
@@ -250,10 +209,11 @@ internal static class ImportConventions
                     "Generated_WebAssemblyBuilder_Extensions.g.cs",
                     _configurationMethods
                        .Replace("{BuilderName}", "WebAssemblyHostBuilder")
-                       .Replace("{BuilderType}", "Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder")
-                       .Replace("{ReturnType}", "Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost")
-                       .Replace("{ExtensionsType}", "Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions")
-                       .Replace("{HostingUsing}", "Microsoft.AspNetCore.Components.WebAssembly.Hosting")
+                       .Replace("{BuilderType}", "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder")
+                       .Replace("{ReturnType}", "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost")
+                       .Replace("{ExtensionsType}", "global::Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions")
+                       .Replace("{LoadConventions}", loadConventionsMethod)
+                       .Replace("{HostingUsing}", "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting")
                        .Replace("{RocketUsing}", "Rocket.Surgery.WebAssembly.Hosting")
                 );
             }
@@ -267,7 +227,8 @@ internal static class ImportConventions
                        .Replace("{BuilderName}", "DistributedApplicationBuilder")
                        .Replace("{BuilderType}", "global::Aspire.Hosting.IDistributedApplicationBuilder")
                        .Replace("{ReturnType}", "global::Aspire.Hosting.DistributedApplication")
-                       .Replace("{ExtensionsType}", "Rocket.Surgery.Aspire.Hosting.RocketDistributedApplicationExtensions")
+                       .Replace("{ExtensionsType}", "global::Rocket.Surgery.Aspire.Hosting.RocketDistributedApplicationExtensions")
+                       .Replace("{LoadConventions}", loadConventionsMethod)
                        .Replace("{HostingUsing}", "global::Aspire.Hosting")
                        .Replace("{RocketUsing}", "Rocket.Surgery.Aspire.Hosting")
                        .Replace(", static b => b.Build()", "")
@@ -283,18 +244,14 @@ internal static class ImportConventions
                        .Replace("{BuilderName}", "DistributedApplicationTestingBuilder")
                        .Replace("{BuilderType}", "global::Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder")
                        .Replace("{ReturnType}", "global::Aspire.Hosting.DistributedApplication")
-                       .Replace("{ExtensionsType}", "Rocket.Surgery.Aspire.Hosting.Testing.RocketDistributedApplicationTestingExtensions")
+                       .Replace("{ExtensionsType}", "global::Rocket.Surgery.Aspire.Hosting.Testing.RocketDistributedApplicationTestingExtensions")
+                       .Replace("{LoadConventions}", loadConventionsMethod)
                        .Replace("{HostingUsing}", "global::Aspire.Hosting.Testing")
                        .Replace("{RocketUsing}", "Rocket.Surgery.Aspire.Hosting.Testing")
                        .Replace(", static b => b.Build()", "")
                 );
             }
         }
-
-        context.AddSource(
-            "Imported_Assembly_Conventions.g.cs",
-            cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
-        );
 
         static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ConventionConfigurationData configurationData)
         {
@@ -393,7 +350,7 @@ internal static class ImportConventions
             public static ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
-                var contextBuilder = ConventionContextBuilder.Create(Imports.Instance);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
 
@@ -402,7 +359,12 @@ internal static class ImportConventions
             /// </summary>
             /// <param name="builder">The builder.</param>
             /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, cancellationToken);
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
+                return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
+            }
 
             /// <summary>
             ///     Configures the rocket Surgery.
@@ -414,7 +376,7 @@ internal static class ImportConventions
             {
                 ArgumentNullException.ThrowIfNull(builder);
                 ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ConventionContextBuilder.Create(Imports.Instance);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
@@ -425,7 +387,14 @@ internal static class ImportConventions
             /// <param name="builder">The builder.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, action, cancellationToken);
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
+                await action(contextBuilder, cancellationToken);
+                return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
+            }
 
             /// <summary>
             ///     Configures the rocket Surgery.
@@ -437,7 +406,7 @@ internal static class ImportConventions
             {
                 ArgumentNullException.ThrowIfNull(builder);
                 ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ConventionContextBuilder.Create(Imports.Instance);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
@@ -448,7 +417,14 @@ internal static class ImportConventions
             /// <param name="builder">The builder.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, action, cancellationToken);
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
+                await action(contextBuilder);
+                return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
+            }
 
             /// <summary>
             ///     Configures the rocket Surgery.
@@ -460,7 +436,7 @@ internal static class ImportConventions
             {
                 ArgumentNullException.ThrowIfNull(builder);
                 ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ConventionContextBuilder.Create(Imports.Instance);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 action(contextBuilder);
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
@@ -471,107 +447,14 @@ internal static class ImportConventions
             /// <param name="builder">The builder.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, action, cancellationToken);
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="conventionFactory">The method to get the conventions.</param>
-            /// <param name="action">The configuration action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, IConventionFactory conventionFactory, Func<ConventionContextBuilder, CancellationToken, ValueTask> action ,CancellationToken cancellationToken = default)
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(conventionFactory);
                 ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ConventionContextBuilder.Create(conventionFactory);
-                await action(contextBuilder, cancellationToken);
-                return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="conventionFactory">The method to get the conventions.</param>
-            /// <param name="action">The configuration action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, IConventionFactory conventionFactory, Func<ConventionContextBuilder, CancellationToken, ValueTask> action ,CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, conventionFactory, action, cancellationToken);
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="conventionFactory">The method to get the conventions.</param>
-            /// <param name="action">The configuration action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, IConventionFactory conventionFactory, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(conventionFactory);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ConventionContextBuilder.Create(conventionFactory);
-                await action(contextBuilder);
-                return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="conventionFactory">The method to get the conventions.</param>
-            /// <param name="action">The configuration action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, IConventionFactory conventionFactory, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, conventionFactory, action, cancellationToken);
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="conventionFactory">The method to get the conventions.</param>
-            /// <param name="cancellationToken"></param>
-            public static ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, IConventionFactory conventionFactory, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(conventionFactory);
-                var contextBuilder = ConventionContextBuilder.Create(conventionFactory);
-                return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="conventionFactory">The method to get the conventions.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, IConventionFactory conventionFactory, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, conventionFactory, cancellationToken);
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="conventionFactory">The method to get the conventions.</param>
-            /// <param name="action">The configuration action.</param>
-            /// <param name="cancellationToken"></param>
-            public static ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, IConventionFactory conventionFactory, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(conventionFactory);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ConventionContextBuilder.Create(conventionFactory);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 action(contextBuilder);
-                return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
+                return await ConfigureRocketSurgery(await builder, action, cancellationToken);
             }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="conventionFactory">The method to get the conventions.</param>
-            /// <param name="action">The configuration action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, IConventionFactory conventionFactory, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, conventionFactory, action, cancellationToken);
 
             /// <summary>
             ///     Configures the rocket Surgery.
@@ -595,7 +478,6 @@ internal static class ImportConventions
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ConventionContextBuilder contextBuilder, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
         }
         """";
-
 
     public record Request
     (

@@ -15,23 +15,20 @@ public class ImportsTypeAttribute(Type type) : Attribute
 public static class ImportHelpers
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IConventionFactory? ExternalConventions
+    public static LoadConventions? ExternalConventions
     {
-        get => externalConventions;
-        set => externalConventions = value;
+        get => externalLoader;
+        set => externalLoader = value;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IConventionFactory OrCallerConventions(this IConventionFactory conventionFactory)
+    public static LoadConventions OrCallerConventions(this LoadConventions loader)
     {
-        ArgumentNullException.ThrowIfNull(conventionFactory);
-        return Assembly.GetEntryAssembly() is not { } entryAssembly || conventionFactory.GetType().Assembly == entryAssembly || externalConventions == null
-            ? conventionFactory
-            : entryAssembly.GetCustomAttribute<ImportsTypeAttribute>()?.Type is { } executingImportsType
-         && Activator.CreateInstance(executingImportsType) is IConventionFactory imports
-                ? imports
-                : externalConventions;
+        ArgumentNullException.ThrowIfNull(loader);
+        return Assembly.GetEntryAssembly() is not { } entryAssembly || loader.GetType().Assembly == entryAssembly || externalLoader == null
+            ? loader
+            : externalLoader;
     }
 
-    private static IConventionFactory? externalConventions;
+    private static LoadConventions? externalLoader;
 }

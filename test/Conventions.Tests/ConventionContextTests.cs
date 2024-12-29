@@ -17,7 +17,7 @@ public class ConventionContextTests
     [Fact]
     public async Task ReturnsNullOfNoValue()
     {
-        var builder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var context = await ConventionContext.FromAsync(builder);
         context[typeof(string)].Should().BeNull();
     }
@@ -25,7 +25,7 @@ public class ConventionContextTests
     [Fact]
     public async Task SetAValue()
     {
-        var builder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var container = await ConventionContext.FromAsync(builder);
         container[typeof(string)] = "abc";
         container[typeof(string)].Should().Be("abc");
@@ -34,7 +34,7 @@ public class ConventionContextTests
     [Fact]
     public async Task StoresAndReturnsItems()
     {
-        var builder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var context = await ConventionContext.FromAsync(builder);
 
         var value = new object();
@@ -45,7 +45,7 @@ public class ConventionContextTests
     [Fact]
     public async Task IgnoreNonExistentItems()
     {
-        var builder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var context = await ConventionContext.FromAsync(builder);
 
         context[string.Empty].Should().BeNull();
@@ -54,7 +54,7 @@ public class ConventionContextTests
     [Fact]
     public async Task GetAStronglyTypedValue()
     {
-        var builder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var container = await ConventionContext.FromAsync(builder);
         container[typeof(string)] = "abc";
         container.Get<string>().Should().Be("abc");
@@ -63,27 +63,26 @@ public class ConventionContextTests
     [Fact]
     public async Task SetAStronglyTypedValue()
     {
-        var builder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var container = await ConventionContext.FromAsync(builder);
         container.Set("abc");
         container.Get<string>().Should().Be("abc");
     }
 
     [Fact]
-    public Task AddConventions()
+    public async Task AddConventions()
     {
-        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var convention = A.Fake<IServiceConvention>();
         contextBuilder.PrependConvention(convention);
-
-        ConventionContextData.CreateProvider(contextBuilder).GetAll().Should().Contain(convention);
-        return Task.CompletedTask;
+        var conventions = await ConventionContext.FromAsync(contextBuilder);
+        conventions.Conventions.GetAll().Should().Contain(convention);
     }
 
     [Fact]
     public async Task Setups()
     {
-        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var convention = A.Fake<ISetupConvention>();
         contextBuilder.PrependConvention(convention);
 
@@ -94,7 +93,7 @@ public class ConventionContextTests
     [Fact]
     public async Task Setups_With_Delegate()
     {
-        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), []);
+        var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var convention = A.Fake<SetupConvention>();
         contextBuilder.SetupConvention(convention);
 
@@ -105,7 +104,7 @@ public class ConventionContextTests
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
-        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
+        var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), [])
            .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 
@@ -124,7 +123,7 @@ public class ConventionContextTests
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
-        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
+        var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), [])
            .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 
@@ -144,7 +143,7 @@ public class ConventionContextTests
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
-        var contextBuilder = new ConventionContextBuilder(new ServiceProviderDictionary(), [])
+        var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), [])
            .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(contextBuilder);
 

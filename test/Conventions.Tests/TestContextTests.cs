@@ -12,7 +12,7 @@ public class TestContextTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUn
     [Fact]
     public void Builder_Should_Create_Host()
     {
-        var a = () => ConventionContextBuilder.Create().ForTesting(LoggerFactory);
+        var a = () => ConventionContextBuilder.Create(_ => []).ForTesting(LoggerFactory);
         var context = a.Should().NotThrow().Subject;
         context.Get<ILoggerFactory>().Should().BeSameAs(LoggerFactory);
     }
@@ -20,14 +20,14 @@ public class TestContextTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUn
     [Fact]
     public void Builder_Should_Create_Host_ByType()
     {
-        var a = () => ConventionContextBuilder.Create().ForTesting(LoggerFactory);
+        var a = () => ConventionContextBuilder.Create(_ => []).ForTesting(LoggerFactory);
         a.Should().NotThrow();
     }
 
     [Fact]
     public void Builder_Should_Create_Host_ByAssembly()
     {
-        var a = () => ConventionContextBuilder.Create().ForTesting(LoggerFactory);
+        var a = () => ConventionContextBuilder.Create(_ => []).ForTesting(LoggerFactory);
         a.Should().NotThrow();
     }
 

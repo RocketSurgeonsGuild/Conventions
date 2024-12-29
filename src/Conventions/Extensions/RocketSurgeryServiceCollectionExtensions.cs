@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Conventions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
 #pragma warning disable CA1848
@@ -24,6 +25,7 @@ public static class RocketSurgeryServiceCollectionExtensions
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(context);
         var configuration = context.Get<IConfiguration>();
         if (configuration is null)
         {

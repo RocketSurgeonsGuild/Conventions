@@ -21,11 +21,19 @@ public sealed class ConventionContextBuilder
     ///     Create a default context builder
     /// </summary>
     /// <param name="conventionFactory"></param>
+    /// <returns></returns>
+    public static ConventionContextBuilder Create(LoadConventions conventionFactory) =>
+        new(conventionFactory, new PropertiesDictionary(), []);
+
+    /// <summary>
+    ///     Create a default context builder
+    /// </summary>
+    /// <param name="conventionFactory"></param>
     /// <param name="properties"></param>
     /// <param name="categories"></param>
     /// <returns></returns>
     [OverloadResolutionPriority(-1)]
-    public static ConventionContextBuilder Create(IConventionFactory conventionFactory, PropertiesType? properties = null, params ConventionCategory[] categories) =>
+    public static ConventionContextBuilder Create(LoadConventions conventionFactory, PropertiesType? properties, params ConventionCategory[] categories) =>
         new(conventionFactory, properties ?? new PropertiesDictionary(), categories);
 
     /// <summary>
@@ -35,7 +43,7 @@ public sealed class ConventionContextBuilder
     /// <param name="properties"></param>
     /// <param name="categories"></param>
     /// <returns></returns>
-    public static ConventionContextBuilder Create(IConventionFactory conventionFactory, PropertiesType? properties = null, params IEnumerable<ConventionCategory> categories) =>
+    public static ConventionContextBuilder Create(LoadConventions conventionFactory, PropertiesType? properties, params IEnumerable<ConventionCategory> categories) =>
         new(conventionFactory, properties ?? new PropertiesDictionary(), categories);
 
     private static readonly string[] categoryEnvironmentVariables =
@@ -49,7 +57,7 @@ public sealed class ConventionContextBuilder
     /// <param name="conventionFactory"></param>
     /// <param name="properties"></param>
     /// <param name="categories"></param>
-    private ConventionContextBuilder(IConventionFactory conventionFactory, PropertiesType? properties, IEnumerable<ConventionCategory> categories)
+    private ConventionContextBuilder(LoadConventions conventionFactory, PropertiesType? properties, IEnumerable<ConventionCategory> categories)
     {
         Properties = new ServiceProviderDictionary(properties ?? new PropertiesDictionary());
         Properties.Set(conventionFactory);

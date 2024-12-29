@@ -40,7 +40,7 @@ public class Benchmarks
     public async Task Default_Hosting()
     {
         using var host = Host
-                        .CreateDefaultBuilder(Array.Empty<string>())
+                        .CreateDefaultBuilder()
                         .ConfigureLogging(x => x.ClearProviders())
                         .Build();
         await host.StartAsync().ConfigureAwait(false);
@@ -50,7 +50,7 @@ public class Benchmarks
     [Benchmark(Baseline = true)]
     public async Task Default_Hosting_Application()
     {
-        var builder = Host.CreateApplicationBuilder(Array.Empty<string>());
+        var builder = Host.CreateApplicationBuilder();
         builder.Logging.ClearProviders();
         var host = builder.Build();
         await host.StartAsync().ConfigureAwait(false);
@@ -60,9 +60,9 @@ public class Benchmarks
     [Benchmark]
     public async Task Rocket_Surgery_Hosting_Application()
     {
-        var builder = Host.CreateApplicationBuilder(Array.Empty<string>());
+        var builder = Host.CreateApplicationBuilder();
         builder.Logging.ClearProviders();
-        var host = await builder.ConfigureRocketSurgery(Imports.Instance);
+        var host = await builder.ConfigureRocketSurgery();
         await host.StartAsync().ConfigureAwait(false);
         await host.StopAsync().ConfigureAwait(false);
     }
@@ -71,7 +71,7 @@ public class Benchmarks
     public async Task Default_Hosting_With_Service()
     {
         using var host = Host
-                        .CreateDefaultBuilder(Array.Empty<string>())
+                        .CreateDefaultBuilder()
                         .ConfigureLogging(x => x.ClearProviders())
                         .ConfigureServices(x => x.AddHostedService<HostedService>())
                         .Build();
@@ -82,10 +82,10 @@ public class Benchmarks
     [Benchmark]
     public async Task Rocket_Surgery_Hosting_Application_With_Service()
     {
-        var builder = Host.CreateApplicationBuilder(Array.Empty<string>());
+        var builder = Host.CreateApplicationBuilder();
         builder.Services.AddHostedService<HostedService>();
         builder.Logging.ClearProviders();
-        var host = await builder.ConfigureRocketSurgery(Imports.Instance);
+        var host = await builder.ConfigureRocketSurgery();
         await host.StartAsync().ConfigureAwait(false);
         await host.StopAsync().ConfigureAwait(false);
     }

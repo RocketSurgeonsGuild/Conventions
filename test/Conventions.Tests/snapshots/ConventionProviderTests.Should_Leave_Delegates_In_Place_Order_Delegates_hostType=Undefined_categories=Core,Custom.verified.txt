@@ -1,6 +1,0 @@
-﻿[
-  <Should_Leave_Delegates_In_Place_Order_Delegates>b__10_1,
-  <Should_Leave_Delegates_In_Place_Order_Delegates>b__10_0,
-  B,
-  E
-]

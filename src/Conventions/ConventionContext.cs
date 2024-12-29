@@ -47,7 +47,7 @@ public sealed class ConventionContext : IConventionContext
     ///     Method used to create a convention provider
     /// </summary>
     /// <returns></returns>
-    internal static IConventionProvider CreateProvider(ConventionContextBuilder builder)
+    static ConventionProvider CreateProvider(ConventionContextBuilder builder)
     {
         var conventions = builder.state.GetConventions();
         for (var i = 0; i < conventions.Count; i++)
@@ -57,10 +57,10 @@ public sealed class ConventionContext : IConventionContext
 
         conventions.InsertRange(
             conventions.FindIndex(z => z is null),
-            builder.state.CalculateConventions(builder, builder.Require<IConventionFactory>(), builder.Get<ILogger>())
+            builder.state.CalculateConventions(builder, builder.Require<LoadConventions>(), builder.Get<ILogger>())
         );
 
-        return new ConventionProvider(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), conventions);
+        return new(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), conventions);
     }
 
     private static readonly IConfiguration _emptyConfiguration = new ConfigurationBuilder().Build();

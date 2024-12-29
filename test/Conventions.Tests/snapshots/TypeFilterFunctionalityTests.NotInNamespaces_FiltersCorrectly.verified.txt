@@ -1,5 +1,0 @@
-﻿[
-  TypeFilterFunctionalityTests.MyClass,
-  TypeFilterFunctionalityTests.YourClass,
-  TypeFilterFunctionalityTests.OurClass
-]

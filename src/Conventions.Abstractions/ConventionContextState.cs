@@ -57,12 +57,12 @@ internal partial class ConventionContextState
 
     internal IEnumerable<IConventionMetadata> CalculateConventions(
         ConventionContextBuilder builder,
-        IConventionFactory factory,
+        LoadConventions factory,
         ILogger? logger
     )
     {
         logger ??= NullLogger.Instance;
-        var conventions = factory.LoadConventions(builder);
+        var conventions = factory(builder);
 
         if (_exceptAssemblyConventions.Count > 0)
             SkippingConventionsInAssemblies(logger, _exceptAssemblyConventions.Select(x => x.GetName().Name));
