@@ -26,16 +26,6 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
     }
 
     [Fact]
-    public async Task Should_UseDiagnosticLogging()
-    {
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(x => x.UseDiagnosticLogging(c => c.AddConsole()));
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task Should_ConfigureServices()
     {
         var convention = A.Fake<ServiceConvention>();

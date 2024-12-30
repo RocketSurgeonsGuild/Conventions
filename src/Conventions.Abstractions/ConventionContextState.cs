@@ -34,42 +34,9 @@ internal partial class ConventionContextState
 
     public List<object?> GetConventions() => _conventions;
 
-    [LoggerMessage(1337, LogLevel.Debug, "Scanning for conventions in assemblies: {Assemblies}")]
-    static partial void ScanningForConventionsInAssemblies(ILogger logger, IEnumerable<string?> assemblies);
-
-    [LoggerMessage(1337 + 1, LogLevel.Debug, "Skipping conventions in assemblies: {Assemblies}")]
-    static partial void SkippingConventionsInAssemblies(ILogger logger, IEnumerable<string?> assemblies);
-
-    [LoggerMessage(1337 + 2, LogLevel.Debug, "Skipping existing convention types: {Types}")]
-    static partial void SkippingExistingConventionTypes(ILogger logger, IEnumerable<string?> types);
-
-    [LoggerMessage(1337 + 3, LogLevel.Debug, "Skipping explicitly included convention types: {Types}")]
-    static partial void SkippingExplicitConventionTypes(ILogger logger, IEnumerable<string?> types);
-
-    [LoggerMessage(1337 + 4, LogLevel.Debug, "Found conventions in Assembly {Assembly} ({Conventions})")]
-    static partial void FoundConventionsInAssembly(ILogger logger, string? assembly, IEnumerable<string?> conventions);
-
-    [LoggerMessage(1337 + 5, LogLevel.Trace, "Scanning => Prefilter: {Assembly} / {Type}")]
-    static partial void TraceScanningPrefilter(ILogger logger, string? assembly, string? type);
-
-    [LoggerMessage(1337 + 6, LogLevel.Trace, "Scanning => Postfilter: {Assembly} / {Type}")]
-    static partial void TraceScanningPostFilter(ILogger logger, string? assembly, string? type);
-
-    internal IEnumerable<IConventionMetadata> CalculateConventions(
-        ConventionContextBuilder builder,
-        LoadConventions factory,
-        ILogger? logger
-    )
+    internal IEnumerable<IConventionMetadata> CalculateConventions(ConventionContextBuilder builder, LoadConventions factory)
     {
-        logger ??= NullLogger.Instance;
-        var conventions = factory(builder);
-
-        if (_exceptAssemblyConventions.Count > 0)
-            SkippingConventionsInAssemblies(logger, _exceptAssemblyConventions.Select(x => x.GetName().Name));
-
-        if (_exceptConventions.Count > 0) SkippingExplicitConventionTypes(logger, _exceptConventions.Select(x => x.FullName));
-
-        return conventions
+        return factory(builder)
               .Where(z => _exceptConventions.All(x => x != z.Convention.GetType()))
               .Where(z => _exceptAssemblyConventions.All(x => x != z.Convention.GetType().Assembly));
     }

@@ -25,16 +25,6 @@ public partial class RocketDistributedApplicationTestingBuilderTests
     }
 
     [Fact]
-    public async Task Should_UseDiagnosticLogging()
-    {
-        await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<AspireSample>()
-                                    .ConfigureRocketSurgery(x => x.UseDiagnosticLogging(c => c.AddConsole()));
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task Should_ConfigureHosting()
     {
         var convention = A.Fake<DistributedApplicationTestingConvention>();

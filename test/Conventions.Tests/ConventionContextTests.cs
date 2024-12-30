@@ -161,8 +161,7 @@ public class ConventionContextTests
     [Fact]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
+        var builder = ConventionContextBuilder.Create(_ => [])
                      .AppendConvention(new AbcConvention());
         builder.Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(builder);
@@ -180,8 +179,7 @@ public class ConventionContextTests
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
+        var builder = ConventionContextBuilder.Create(_ => [])
                      .AppendConvention<InjectableConvention>()
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
@@ -195,8 +193,7 @@ public class ConventionContextTests
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
+        var builder = ConventionContextBuilder.Create(_ => [])
                      .AppendConvention<OptionalInjectableConvention>()
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
@@ -208,8 +205,7 @@ public class ConventionContextTests
     [Fact]
     public async Task ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
     {
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
+        var builder = ConventionContextBuilder.Create(_ => [])
                      .AppendConvention<InjectableConvention>()
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var a = () => ConventionContext.FromAsync(builder).AsTask();
@@ -219,8 +215,7 @@ public class ConventionContextTests
     [Fact]
     public async Task ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
     {
-        var builder = AutoFake
-                     .Resolve<ConventionContextBuilder>()
+        var builder = ConventionContextBuilder.Create(_ => [])
                      .AppendConvention<OptionalInjectableConvention>()
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(builder);

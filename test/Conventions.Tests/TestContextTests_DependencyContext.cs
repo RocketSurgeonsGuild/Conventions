@@ -13,15 +13,15 @@ public class TestContextTests_DependencyContext
     [Fact]
     public void Builder_Should_Create_Host()
     {
-        var a = () => ConventionContextBuilder.Create(_ => []).ForTesting(LoggerFactory);
+        var a = () => ConventionContextBuilder.Create(_ => []).UseLogger(Logger);
         var context = a.Should().NotThrow().Subject;
-        context.Get<ILoggerFactory>().Should().BeSameAs(LoggerFactory);
+        context.Get<ILogger>().Should().BeSameAs(Logger);
     }
 
     [Fact]
     public void Builder_Should_Create_Host_ByType()
     {
-        var a = () => ConventionContextBuilder.Create(_ => []).ForTesting(LoggerFactory)
+        var a = () => ConventionContextBuilder.Create(_ => []).UseLogger(Logger)
             ;
         a.Should().NotThrow();
     }

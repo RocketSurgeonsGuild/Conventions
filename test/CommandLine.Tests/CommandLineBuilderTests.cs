@@ -52,7 +52,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory);
+                     .UseLogger(Logger);
 
         using var host = await Host
                               .CreateApplicationBuilder(new[] { "remote", "add", "-v" })
@@ -66,7 +66,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory);
+                     .UseLogger(Logger);
         builder.ConfigureCommandLine(
             (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -83,7 +83,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory);
+                     .UseLogger(Logger);
 
         var service = A.Fake<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -121,7 +121,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         A.CallTo(() => service.ReturnCode).Returns(1000);
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory)
+                     .UseLogger(Logger)
                      .ConfigureServices(
                           z => { z.AddSingleton(service); }
                       );
@@ -140,7 +140,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory);
+                     .UseLogger(Logger);
 
         builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
         using var host = await Host
@@ -168,7 +168,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory)
+                     .UseLogger(Logger)
                      .ConfigureCommandLine(
                           (context, lineContext) => lineContext.AddDelegate<AppSettings>(
                               "test",
@@ -186,7 +186,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory)
+                     .UseLogger(Logger)
                      .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"));
 
         using var host = await Host
@@ -219,7 +219,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory);
+                     .UseLogger(Logger);
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -242,7 +242,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory);
+                     .UseLogger(Logger);
         builder.ConfigureCommandLine(
             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
         );
@@ -278,7 +278,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder
                      .Create(_ => [])
-                     .ForTesting(LoggerFactory);
+                     .UseLogger(Logger);
         builder.ConfigureCommandLine(
             (context, builder) =>
             {

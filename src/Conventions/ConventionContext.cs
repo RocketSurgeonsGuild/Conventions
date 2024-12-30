@@ -57,7 +57,7 @@ public sealed class ConventionContext : IConventionContext
 
         conventions.InsertRange(
             conventions.FindIndex(z => z is null),
-            builder.state.CalculateConventions(builder, builder.Require<LoadConventions>(), builder.Get<ILogger>())
+            builder.state.CalculateConventions(builder, builder.Require<LoadConventions>())
         );
 
         return new(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), conventions);
@@ -119,7 +119,7 @@ public sealed class ConventionContext : IConventionContext
     ///     A logger that is configured to work with each convention item
     /// </summary>
     /// <value>The logger.</value>
-    public ILogger Logger => this.Get<ILogger>() ?? NullLogger.Instance;
+    public ILogger Logger => this.GetOrAdd<ILogger>(() => NullLogger.Instance);
 
     /// <summary>
     ///     Gets the configuration.

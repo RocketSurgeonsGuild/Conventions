@@ -23,16 +23,6 @@ public partial class RocketDistributedApplicationBuilderTests
     }
 
     [Fact]
-    public async Task Should_UseDiagnosticLogging()
-    {
-        await using var host = await DistributedApplication
-                                    .CreateBuilder()
-                                    .ConfigureRocketSurgery(x => x.UseDiagnosticLogging(c => c.AddConsole()));
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task Should_ConfigureHosting()
     {
         var convention = A.Fake<DistributedApplicationConvention>();

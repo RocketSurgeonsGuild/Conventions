@@ -1,0 +1,8 @@
+﻿[
+  <Should_Exclude_Unit_Test_Conventions>b__12_0,
+  E,
+  D,
+  <Should_Exclude_Unit_Test_Conventions>b__12_1,
+  <Should_Exclude_Unit_Test_Conventions>b__12_2,
+  F
+]

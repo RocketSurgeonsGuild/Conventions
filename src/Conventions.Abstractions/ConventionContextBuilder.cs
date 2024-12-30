@@ -94,36 +94,6 @@ public sealed class ConventionContextBuilder
     private string DebuggerDisplay => ToString();
 
     /// <summary>
-    ///     Provide a diagnostic logger
-    /// </summary>
-    /// <param name="logger"></param>
-    /// <returns></returns>
-    public ConventionContextBuilder UseDiagnosticLogger(ILogger logger)
-    {
-        Properties[typeof(ILogger)] = logger;
-        return this;
-    }
-
-    /// <summary>
-    ///     Uses the diagnostic logging.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    /// <returns>IConventionHostBuilder.</returns>
-    public ConventionContextBuilder UseDiagnosticLogging(Action<ILoggingBuilder> action)
-    {
-        ArgumentNullException.ThrowIfNull(action);
-        _ = UseDiagnosticLogger(
-            new ServiceCollection()
-               .AddLogging(action)
-               .BuildServiceProvider()
-               .GetRequiredService<ILoggerFactory>()
-               .CreateLogger("DiagnosticLogger")
-        );
-
-        return this;
-    }
-
-    /// <summary>
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <param name="conventions">The conventions.</param>
