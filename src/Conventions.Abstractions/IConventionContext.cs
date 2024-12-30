@@ -22,13 +22,6 @@ public interface IConventionContext
     ImmutableHashSet<ConventionCategory> Categories { get; }
 
     /// <summary>
-    ///     Allows a context to hold additional information for conventions to consume such as configuration objects
-    /// </summary>
-    /// <param name="item">The item.</param>
-    /// <returns>System.Object.</returns>
-    object this[object item] { get; set; }
-
-    /// <summary>
     ///     A central location for sharing state between components during the convention building process.
     /// </summary>
     /// <value>The properties.</value>

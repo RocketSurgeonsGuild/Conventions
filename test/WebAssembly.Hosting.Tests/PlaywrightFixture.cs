@@ -42,7 +42,7 @@ public sealed class PlaywrightFixture : IAsyncLifetime
     }
 
     public string Uri { get; set; } = null!;
-    public IBrowser Browser { get; set; } = null!;
+    public IBrowser? Browser { get; set; } = null!;
 
     public IHost Host { get; set; } = null!;
     public string ContentRoot { get; private set; } = null!;
@@ -90,7 +90,8 @@ public sealed class PlaywrightFixture : IAsyncLifetime
     {
         await Host.StopAsync();
         Host.Dispose();
-        await Browser.DisposeAsync();
+        if (Browser is { })
+            await Browser.DisposeAsync();
         PlaywrightInstance.Dispose();
     }
 

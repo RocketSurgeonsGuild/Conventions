@@ -13,11 +13,12 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <returns>T.</returns>
     public static T? Get<T>(this IReadOnlyServiceProviderDictionary serviceProviderDictionary)
-        where T : class
+        where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
-        return (T?)serviceProviderDictionary[typeof(T)];
+        return serviceProviderDictionary.TryGetValue(typeof(T), out var value) && value is T t
+            ? t
+            : default;
     }
 
     /// <summary>
@@ -30,7 +31,6 @@ public static class ServiceProviderDictionaryExtensions
         where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
         return serviceProviderDictionary.TryGetValue(typeof(T), out var value) && value is T t
             ? t
             : throw new KeyNotFoundException($"The value of type {typeof(T).Name} was not found in the context");
@@ -44,11 +44,12 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="key">The key where the value is saved</param>
     /// <returns>T.</returns>
     public static T? Get<T>(this IReadOnlyServiceProviderDictionary serviceProviderDictionary, string key)
-        where T : class
+        where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
-        return (T?)serviceProviderDictionary[key];
+        return serviceProviderDictionary.TryGetValue(typeof(T), out var value) && value is T t
+            ? t
+            : default;
     }
 
     /// <summary>
@@ -75,11 +76,12 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <returns>T.</returns>
     public static T? Get<T>(this IServiceProviderDictionary serviceProviderDictionary)
-        where T : class
+        where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
-        return (T?)serviceProviderDictionary[typeof(T)];
+        return serviceProviderDictionary.TryGetValue(typeof(T), out var value) && value is T t
+            ? t
+            : default;
     }
 
     /// <summary>
@@ -93,7 +95,6 @@ public static class ServiceProviderDictionaryExtensions
         where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
         return serviceProviderDictionary.TryGetValue(typeof(T), out var value) && value is T t
             ? t
             : throw new KeyNotFoundException($"The value of type {typeof(T).Name} was not found in the context");
@@ -107,11 +108,12 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="key">The key where the value is saved</param>
     /// <returns>T.</returns>
     public static T? Get<T>(this IServiceProviderDictionary serviceProviderDictionary, string key)
-        where T : class
+        where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
-        return (T?)serviceProviderDictionary[key];
+        return serviceProviderDictionary.TryGetValue(typeof(T), out var value) && value is T t
+            ? t
+            : default;
     }
 
     /// <summary>
@@ -125,70 +127,6 @@ public static class ServiceProviderDictionaryExtensions
         where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
-        return serviceProviderDictionary.TryGetValue(key, out var value) && value is T t
-            ? t
-            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} with the {key} was not found in the context");
-    }
-
-    /// <summary>
-    ///     Get a value by type from the context
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="serviceProviderDictionary">The properties</param>
-    /// <returns>T.</returns>
-    public static T? Get<T>(this ServiceProviderDictionary serviceProviderDictionary)
-        where T : class
-    {
-        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
-        return (T?)serviceProviderDictionary[typeof(T)];
-    }
-
-    /// <summary>
-    ///     Get a value by type from the context or throw
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="serviceProviderDictionary">The properties</param>
-    /// <param name="key">The key where the value is saved</param>
-    /// <returns>T.</returns>
-    public static T Require<T>(this ServiceProviderDictionary serviceProviderDictionary)
-        where T : notnull
-    {
-        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
-        return serviceProviderDictionary.TryGetValue(typeof(T), out var value) && value is T t
-            ? t
-            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} was not found in the context");
-    }
-
-    /// <summary>
-    ///     Get a value by key from the context
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="serviceProviderDictionary">The properties</param>
-    /// <param name="key">The key where the value is saved</param>
-    /// <returns>T.</returns>
-    public static T? Get<T>(this ServiceProviderDictionary serviceProviderDictionary, string key)
-        where T : class
-    {
-        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
-        return (T?)serviceProviderDictionary[key];
-    }
-
-    /// <summary>
-    ///     Get a value by type from the context or throw
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="serviceProviderDictionary">The properties</param>
-    /// <param name="key">The key where the value is saved</param>
-    /// <returns>T.</returns>
-    public static T Require<T>(this ServiceProviderDictionary serviceProviderDictionary, string key)
-        where T : notnull
-    {
-        ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
         return serviceProviderDictionary.TryGetValue(key, out var value) && value is T t
             ? t
             : throw new KeyNotFoundException($"The value of type {typeof(T).Name} with the {key} was not found in the context");
@@ -205,15 +143,12 @@ public static class ServiceProviderDictionaryExtensions
         where T : class
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
         ArgumentNullException.ThrowIfNull(factory);
 
-        if (serviceProviderDictionary[typeof(T)] is not T value)
-        {
-            value = factory();
-            serviceProviderDictionary.Set(value);
-        }
+        if (serviceProviderDictionary[typeof(T)] is T value) return value;
 
+        value = factory();
+        serviceProviderDictionary.Set(value);
         return value;
     }
 
@@ -226,18 +161,15 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="factory">The factory method in the event the type is not found</param>
     /// <returns>T.</returns>
     public static T GetOrAdd<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, Func<T> factory)
-        where T : class
+        where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
-
         ArgumentNullException.ThrowIfNull(factory);
 
-        if (serviceProviderDictionary[key] is not T value)
-        {
-            value = factory();
-            serviceProviderDictionary.Set(value);
-        }
+        if (serviceProviderDictionary[key] is T value) return value;
 
+        value = factory();
+        serviceProviderDictionary.Set(value);
         return value;
     }
 
@@ -247,7 +179,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <typeparam name="T">The type of the value</typeparam>
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <param name="value">The value to save</param>
-    public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, T value)
+    public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, T value) where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
 
@@ -276,7 +208,7 @@ public static class ServiceProviderDictionaryExtensions
     /// <param name="serviceProviderDictionary">The properties</param>
     /// <param name="key">The key where the value is saved</param>
     /// <param name="value">The value to save</param>
-    public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value)
+    public static IServiceProviderDictionary Set<T>(this IServiceProviderDictionary serviceProviderDictionary, string key, T value) where T : notnull
     {
         ArgumentNullException.ThrowIfNull(serviceProviderDictionary);
 

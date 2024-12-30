@@ -86,20 +86,6 @@ public sealed class ConventionContext : IConventionContext
     public ImmutableHashSet<ConventionCategory> Categories { get; set; }
 
     /// <summary>
-    ///     A central location for sharing state between components during the convention building process.
-    /// </summary>
-    /// <param name="item">The item.</param>
-    /// <returns>System.Object.</returns>
-    public object this[object item]
-    {
-        // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        #pragma warning disable CS8603 // Possible null reference return.
-        get => Properties.TryGetValue(item, out var value) ? value : null!;
-        #pragma warning restore CS8603 // Possible null reference return.
-        set => Properties[item] = value;
-    }
-
-    /// <summary>
     ///     Get the conventions from the context
     /// </summary>
     public IConventionProvider Conventions { get; }
@@ -114,10 +100,10 @@ public sealed class ConventionContext : IConventionContext
     ///     A logger that is configured to work with each convention item
     /// </summary>
     /// <value>The logger.</value>
-    public ILogger Logger => this.GetOrAdd<ILogger>(() => NullLogger.Instance);
+    public ILogger Logger => ((IConventionContext)this).GetOrAdd<ILogger>(() => NullLogger.Instance);
 
     /// <summary>
     ///     Gets the configuration.
     /// </summary>
-    public IConfiguration Configuration => this.Get<IConfiguration>() ?? _emptyConfiguration;
+    public IConfiguration Configuration => ((IConventionContext)this).Get<IConfiguration>() ?? _emptyConfiguration;
 }

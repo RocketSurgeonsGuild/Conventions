@@ -14,10 +14,10 @@ public static class ConventionContextExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="context">The context</param>
     /// <returns>T.</returns>
-    public static T? Get<T>(this IConventionContext context) where T : class
+    public static T? Get<T>(this IConventionContext context) where T : notnull
     {
         ArgumentNullException.ThrowIfNull(context);
-        return (T?)context[typeof(T)];
+        return context.Properties.Get<T>();
     }
 
     /// <summary>
@@ -43,10 +43,10 @@ public static class ConventionContextExtensions
     /// <param name="context">The context</param>
     /// <param name="key">The key where the value is saved</param>
     /// <returns>T.</returns>
-    public static T? Get<T>(this IConventionContext context, string key) where T : class
+    public static T? Get<T>(this IConventionContext context, string key) where T : notnull
     {
         ArgumentNullException.ThrowIfNull(context);
-        return (T?)context[key];
+        return context.Properties.Get<T>(key);
     }
 
     /// <summary>
@@ -78,14 +78,7 @@ public static class ConventionContextExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(factory);
-
-        if (context[typeof(T)] is not T value)
-        {
-            value = factory();
-            context.Set(value);
-        }
-
-        return value;
+        return context.Properties.GetOrAdd(factory);
     }
 
     /// <summary>
@@ -101,14 +94,7 @@ public static class ConventionContextExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(factory);
-
-        if (context[key] is not T value)
-        {
-            value = factory();
-            context.Set(value);
-        }
-
-        return value;
+        return context.Properties.GetOrAdd(key, factory);
     }
 
     /// <summary>
@@ -117,12 +103,12 @@ public static class ConventionContextExtensions
     /// <typeparam name="T">The type of the value</typeparam>
     /// <param name="context">The context</param>
     /// <param name="value">The value to save</param>
-    public static IConventionContext Set<T>(this IConventionContext context, T value)
+    public static IConventionContext Set<T>(this IConventionContext context, T value) where T : notnull
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(value);
 
-        context[typeof(T)] = value;
+        context.Properties.Set(value);
         return context;
     }
 
@@ -137,7 +123,7 @@ public static class ConventionContextExtensions
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(key);
 
-        context[key] = value;
+        context.Properties.Set(key, value);
         return context;
     }
 
@@ -148,12 +134,12 @@ public static class ConventionContextExtensions
     /// <param name="context">The context</param>
     /// <param name="key">The key where the value is saved</param>
     /// <param name="value">The value to save</param>
-    public static IConventionContext Set<T>(this IConventionContext context, string key, T value)
+    public static IConventionContext Set<T>(this IConventionContext context, string key, T value) where T : notnull
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
-        context[key] = value;
+        context.Properties.Set(key, value);
         return context;
     }
 

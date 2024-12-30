@@ -15,48 +15,11 @@ public class ConventionContextTests
     (ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
 {
     [Fact]
-    public async Task ReturnsNullOfNoValue()
-    {
-        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
-        var context = await ConventionContext.FromAsync(builder);
-        context[typeof(string)].Should().BeNull();
-    }
-
-    [Fact]
-    public async Task SetAValue()
-    {
-        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
-        var container = await ConventionContext.FromAsync(builder);
-        container[typeof(string)] = "abc";
-        container[typeof(string)].Should().Be("abc");
-    }
-
-    [Fact]
-    public async Task StoresAndReturnsItems()
-    {
-        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
-        var context = await ConventionContext.FromAsync(builder);
-
-        var value = new object();
-        context[string.Empty] = value;
-        context[string.Empty].Should().BeSameAs(value);
-    }
-
-    [Fact]
-    public async Task IgnoreNonExistentItems()
-    {
-        var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
-        var context = await ConventionContext.FromAsync(builder);
-
-        context[string.Empty].Should().BeNull();
-    }
-
-    [Fact]
     public async Task GetAStronglyTypedValue()
     {
         var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var container = await ConventionContext.FromAsync(builder);
-        container[typeof(string)] = "abc";
+        container.Set("abc");
         container.Get<string>().Should().Be("abc");
     }
 
