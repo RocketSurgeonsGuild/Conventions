@@ -24,8 +24,6 @@ public static class RocketWebAssemblyExtensions
     {
         ArgumentNullException.ThrowIfNull(buildHost);
         ArgumentNullException.ThrowIfNull(contextBuilder);
-        if (contextBuilder.Properties.ContainsKey("__configured__")) throw new NotSupportedException("Cannot configure conventions on the same builder twice");
-        contextBuilder.Properties["__configured__"] = true;
 
         contextBuilder
            .AddIfMissing(HostType.Live)

@@ -4,6 +4,7 @@ using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Extensions.Testing;
 using Serilog.Events;
 using Xunit.Abstractions;
+using ILogger = Serilog.ILogger;
 
 namespace Rocket.Surgery.Conventions.Tests;
 

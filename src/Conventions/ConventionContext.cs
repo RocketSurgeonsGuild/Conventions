@@ -25,14 +25,9 @@ public sealed class ConventionContext : IConventionContext
     {
         ArgumentNullException.ThrowIfNull(builder);
         var context = FromInitInternal(builder);
-        if (context.Properties.ContainsKey(ConventionsSetup)) return context;
-
         await context.ApplyConventionsAsync(cancellationToken).ConfigureAwait(false);
-        context.Properties.Add(ConventionsSetup, true);
         return context;
     }
-
-    private const string ConventionsSetup = "__ConventionsSetup__" + nameof(ConventionContext);
 
     private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
     {

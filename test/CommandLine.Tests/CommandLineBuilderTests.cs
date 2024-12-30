@@ -50,13 +50,9 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [Fact]
     public async Task ShouldNotBeEnabledIfNoCommandsAreConfigured()
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger);
-
         using var host = await Host
-                              .CreateApplicationBuilder(new[] { "remote", "add", "-v" })
-                              .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(["remote", "add", "-v"])
+                              .ConfigureRocketSurgery(b => b.UseLogger(Logger));
         await host.StartAsync();
         host.Services.GetService<ConsoleResult>().Should().BeNull();
     }
@@ -64,16 +60,15 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [Fact]
     public async Task ExecuteWorks()
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger);
-        builder.ConfigureCommandLine(
-            (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
-        );
-
         using var host = await Host
-                              .CreateApplicationBuilder(new[] { "test" })
-                              .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(["test"])
+                              .ConfigureRocketSurgery(
+                                   b => b
+                                       .UseLogger(Logger)
+                                       .ConfigureCommandLine(
+                                            (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                        )
+                               );
 
         ( await host.RunConsoleAppAsync() ).Should().Be((int)LogLevel.Information);
     }
@@ -81,10 +76,6 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [Fact]
     public async Task SupportsApplicationStateWithCustomDependencyInjection()
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger);
-
         var service = A.Fake<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
 
@@ -92,22 +83,25 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         A.CallTo(() => serviceProvider.GetService(A<Type>.Ignored)).Returns(null!);
         A.CallTo(() => serviceProvider.GetService(typeof(IService))).Returns(service).NumberOfTimes(2);
-        builder.ConfigureCommandLine(
-            (context, lineContext) =>
-            {
-                lineContext.AddDelegate<AppSettings>(
-                    "test",
-                    (context, state) =>
-                    {
-                        state.LogLevel.Should().Be(LogLevel.Error);
-                        return 1000;
-                    }
-                );
-            }
-        );
         using var host = await Host
-                              .CreateApplicationBuilder(new[] { "test", "--log", "error" })
-                              .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(["test", "--log", "error"])
+                              .ConfigureRocketSurgery(
+                                   b => b
+                                       .UseLogger(Logger)
+                                       .ConfigureCommandLine(
+                                            (context, lineContext) =>
+                                            {
+                                                lineContext.AddDelegate<AppSettings>(
+                                                    "test",
+                                                    (context, state) =>
+                                                    {
+                                                        state.LogLevel.Should().Be(LogLevel.Error);
+                                                        return 1000;
+                                                    }
+                                                );
+                                            }
+                                        )
+                               );
 
         var result = await host.RunConsoleAppAsync();
 
@@ -119,16 +113,17 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var service = AutoFake.Resolve<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger)
-                     .ConfigureServices(
-                          z => { z.AddSingleton(service); }
-                      );
 
-        builder.ConfigureCommandLine((context, builder) => { builder.AddCommand<InjectionConstructor>("constructor"); });
-
-        using var host = await Host.CreateApplicationBuilder(new[] { "constructor" }).ConfigureRocketSurgery(builder);
+        using var host = await Host
+                              .CreateApplicationBuilder(["constructor"])
+                              .ConfigureRocketSurgery(
+                                   b => b
+                                       .UseLogger(Logger)
+                                       .ConfigureServices(
+                                            z => { z.AddSingleton(service); }
+                                        )
+                                       .ConfigureCommandLine((context, builder) => { builder.AddCommand<InjectionConstructor>("constructor"); })
+                               );
 
         var result = await host.RunConsoleAppAsync();
         result.Should().Be(1000);
@@ -138,15 +133,9 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [Fact]
     public async Task Sets_Values_In_Commands()
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger);
-
-        builder.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv"));
         using var host = await Host
                               .CreateApplicationBuilder(
-                                   new[]
-                                   {
+                                   [
                                        "cwv",
                                        "--api-domain",
                                        "mydomain.com",
@@ -156,9 +145,9 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                        "origin2",
                                        "--client-name",
                                        "client1",
-                                   }
+                                   ]
                                )
-                              .ConfigureRocketSurgery(builder);
+                              .ConfigureRocketSurgery(b => b.UseLogger(Logger).ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv")));
         await host.RunAsync(
         );
     }
@@ -166,17 +155,18 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [Fact]
     public async Task Can_Add_A_Command_With_A_Name_Using_Context()
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger)
-                     .ConfigureCommandLine(
-                          (context, lineContext) => lineContext.AddDelegate<AppSettings>(
-                              "test",
-                              (context, state) => (int)( state.LogLevel ?? LogLevel.Information )
-                          )
-                      );
-
-        using var host = await Host.CreateApplicationBuilder(new[] { "test" }).ConfigureRocketSurgery(builder);
+        using var host = await Host
+                              .CreateApplicationBuilder(["test"])
+                              .ConfigureRocketSurgery(
+                                   b => b
+                                       .UseLogger(Logger)
+                                       .ConfigureCommandLine(
+                                            (context, lineContext) => lineContext.AddDelegate<AppSettings>(
+                                                "test",
+                                                (context, state) => (int)( state.LogLevel ?? LogLevel.Information )
+                                            )
+                                        )
+                               );
 
         ( await host.RunConsoleAppAsync() ).Should().Be((int)LogLevel.Information);
     }
@@ -184,14 +174,13 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [Fact]
     public async Task Should_Configure_Logging_Correctly()
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger)
-                     .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"));
-
         using var host = await Host
-                              .CreateApplicationBuilder(new[] { "logger" })
-                              .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(["logger"])
+                              .ConfigureRocketSurgery(
+                                   b => b
+                                       .UseLogger(Logger)
+                                       .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"))
+                               );
 
         var result = await host.RunConsoleAppAsync();
         result.Should().Be(0);
@@ -217,15 +206,15 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [InlineData("--trace", LogLevel.Trace)]
     public async Task ShouldAllVerbosity(string command, LogLevel level)
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger);
-        builder.ConfigureCommandLine(
-            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
-        );
         using var host = await Host
-                              .CreateApplicationBuilder(new[] { "test", command })
-                              .ConfigureRocketSurgery(builder);
+                              .CreateApplicationBuilder(["test", command])
+                              .ConfigureRocketSurgery(
+                                   b => b
+                                       .UseLogger(Logger)
+                                       .ConfigureCommandLine(
+                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                        )
+                               );
 
         var result = (LogLevel)await host.RunConsoleAppAsync();
         result.Should().Be(level);
@@ -240,16 +229,15 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [InlineData("-l critical", LogLevel.Critical)]
     public async Task ShouldAllowLogLevelIn(string command, LogLevel level)
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger);
-        builder.ConfigureCommandLine(
-            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
-        );
-
         using var host = await Host
                               .CreateApplicationBuilder(new[] { "test" }.Concat(command.Split(' ')).ToArray())
-                              .ConfigureRocketSurgery(builder);
+                              .ConfigureRocketSurgery(
+                                   b => b
+                                       .UseLogger(Logger)
+                                       .ConfigureCommandLine(
+                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                        )
+                               );
 
         var result = (LogLevel)await host.RunConsoleAppAsync();
         result.Should().Be(level);
@@ -276,23 +264,22 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     [InlineData("cmd5 a --help")]
     public async Task StopsForHelp(string command)
     {
-        var builder = ConventionContextBuilder
-                     .Create(_ => [])
-                     .UseLogger(Logger);
-        builder.ConfigureCommandLine(
-            (context, builder) =>
-            {
-                builder.AddBranch("cmd1", z => z.AddCommand<SubCmd>("a"));
-                builder.AddBranch("cmd2", z => z.AddCommand<SubCmd>("a"));
-                builder.AddBranch("cmd3", z => z.AddCommand<SubCmd>("a"));
-                builder.AddBranch("cmd4", z => z.AddCommand<SubCmd>("a"));
-                builder.AddBranch("cmd5", z => z.AddCommand<SubCmd>("a"));
-            }
-        );
-
         using var host = await Host
                               .CreateApplicationBuilder(command.Split(' ').ToArray())
-                              .ConfigureRocketSurgery(builder);
+                              .ConfigureRocketSurgery(
+                                   b => b
+                                       .UseLogger(Logger)
+                                       .ConfigureCommandLine(
+                                            (context, builder) =>
+                                            {
+                                                builder.AddBranch("cmd1", z => z.AddCommand<SubCmd>("a"));
+                                                builder.AddBranch("cmd2", z => z.AddCommand<SubCmd>("a"));
+                                                builder.AddBranch("cmd3", z => z.AddCommand<SubCmd>("a"));
+                                                builder.AddBranch("cmd4", z => z.AddCommand<SubCmd>("a"));
+                                                builder.AddBranch("cmd5", z => z.AddCommand<SubCmd>("a"));
+                                            }
+                                        )
+                               );
         var result = await host.RunConsoleAppAsync();
         result.Should().BeGreaterOrEqualTo(0);
     }
@@ -326,7 +313,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         [CommandOption("--origin")]
         [Description("The origins that are allowed to access the client")]
         [UsedImplicitly]
-        public IEnumerable<string> Origins { get; } = Enumerable.Empty<string>();
+        public IEnumerable<string> Origins { get; } = [];
 
         public override int Execute(CommandContext context)
         {
