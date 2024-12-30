@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.DependencyInjection.Compiled;
 
 namespace Rocket.Surgery.Conventions;
 
@@ -22,13 +22,6 @@ public interface IConventionContext
     ImmutableHashSet<ConventionCategory> Categories { get; }
 
     /// <summary>
-    ///     Allows a context to hold additional information for conventions to consume such as configuration objects
-    /// </summary>
-    /// <param name="item">The item.</param>
-    /// <returns>System.Object.</returns>
-    object this[object item] { get; set; }
-
-    /// <summary>
     ///     A central location for sharing state between components during the convention building process.
     /// </summary>
     /// <value>The properties.</value>
@@ -41,24 +34,18 @@ public interface IConventionContext
     ILogger Logger { get; }
 
     /// <summary>
-    ///     Gets the type provider.
-    /// </summary>
-    /// <value>The type provider.</value>
-    ICompiledTypeProvider TypeProvider { get; }
-
-    /// <summary>
     ///     Get the conventions from the context
     /// </summary>
     IConventionProvider Conventions { get; }
 
     /// <summary>
+    ///   The assembly that is executing the conventions
+    /// </summary>
+    // ReSharper disable once NullableWarningSuppressionIsUsed
+    public Assembly Assembly => this.Get<Assembly>("ExecutingAssembly") ?? Assembly.GetEntryAssembly()!;
+
+    /// <summary>
     ///     The underlying configuration
     /// </summary>
     IConfiguration Configuration { get; }
-
-    /// <summary>
-    ///     Returns the source builder for this context
-    /// </summary>
-    /// <returns></returns>
-    ConventionContextBuilder ToBuilder();
 }

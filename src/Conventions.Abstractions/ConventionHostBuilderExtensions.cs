@@ -72,8 +72,7 @@ public static class ConventionHostBuilderExtensions
     ) where TContainerBuilder : notnull
     {
         ArgumentNullException.ThrowIfNull(builder);
-        builder._serviceProviderFactory =
-            (_, _, _) => ValueTask.FromResult<IServiceProviderFactory<object>>(new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory));
+        builder.state.ServiceProviderFactory = (_, _, _) => ValueTask.FromResult<IServiceProviderFactory<object>>(new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory));
         return builder;
     }
 
@@ -91,10 +90,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder._serviceProviderFactory = async (context, collection, cancellationToken) =>
-                                              new ServiceProviderWrapper<TContainerBuilder>(
-                                                  await serviceProviderFactory(context, collection, cancellationToken)
-                                              );
+        builder.state.ServiceProviderFactory = async (context, collection, cancellationToken) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection, cancellationToken).ConfigureAwait(false));
         return builder;
     }
 
@@ -112,8 +108,7 @@ public static class ConventionHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder._serviceProviderFactory = async (context, collection, _) =>
-                                              new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection));
+        builder.state.ServiceProviderFactory = async (context, collection, _) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection).ConfigureAwait(false));
         return builder;
     }
 
@@ -760,6 +755,22 @@ public static class ConventionHostBuilderExtensions
     }
 
     /// <summary>
+    ///     Get a value by type from the context or throw
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="context">The context</param>
+    /// <returns>T.</returns>
+    public static T Require<T>(this ConventionContextBuilder context)
+        where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        return context.Properties.TryGetValue(typeof(T), out var value) && value is T t
+            ? t
+            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} was not found in the context");
+    }
+
+    /// <summary>
     ///     Get a value by key from the context
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -772,6 +783,23 @@ public static class ConventionHostBuilderExtensions
         ArgumentNullException.ThrowIfNull(context);
 
         return (T?)context.Properties[key];
+    }
+
+    /// <summary>
+    ///     Get a value by type from the context or throw
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <returns>T.</returns>
+    public static T Require<T>(this ConventionContextBuilder context, string key)
+        where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        return context.Properties.TryGetValue(key, out var value) && value is T t
+            ? t
+            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} with the {key} was not found in the context");
     }
 
     /// <summary>

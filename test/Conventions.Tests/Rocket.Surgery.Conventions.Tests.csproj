@@ -7,10 +7,8 @@
         <ProjectReference Include="..\..\sample\Sample.DependencyThree\Sample.DependencyThree.csproj" />
         <ProjectReference Include="..\..\sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj" />
+        <ProjectReference Include="..\..\src\Conventions.Serilog\Rocket.Surgery.Conventions.Serilog.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="../Analyzers.Tests/GetTypesTestsData.cs" />
     </ItemGroup>
 </Project>

@@ -269,7 +269,7 @@ public static partial class CommandAppHostBuilderExtensions
 
         await host.StartAsync(cancellationToken);
         await host.WaitForShutdownAsync(cancellationToken);
-        return result?.ExitCode ?? Environment.ExitCode;
+        return result.ExitCode ?? Environment.ExitCode;
     }
 
     [LoggerMessage(

@@ -20,32 +20,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
     {
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .UseRocketBooster(RocketBooster.For(Imports.Instance));
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseDiagnosticLogging()
-    {
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .UseRocketBooster(
-                                   RocketBooster.For(Imports.Instance),
-                                   x => x.UseDiagnosticLogging(c => c.AddConsole())
-                               );
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseDependencyContext()
-    {
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(
-                                   rb => rb.UseConventionFactory(Imports.Instance)
-                               );
+                              .ConfigureRocketSurgery();
 
         host.Services.Should().NotBeNull();
     }
@@ -56,11 +31,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
         var convention = A.Fake<ServiceConvention>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(
-                                   rb => rb
-                                        .UseConventionFactory(Imports.Instance)
-                                        .ConfigureServices(convention)
-                               );
+                              .ConfigureRocketSurgery(rb => rb.ConfigureServices(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IServiceCollection>._)).MustHaveHappened();
     }
@@ -71,11 +42,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
         var convention = A.Fake<ConfigurationConvention>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(
-                                   rb => rb
-                                        .UseConventionFactory(Imports.Instance)
-                                        .ConfigureConfiguration(convention)
-                               );
+                              .ConfigureRocketSurgery(rb => rb.ConfigureConfiguration(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<IConfigurationBuilder>._)).MustHaveHappened();
     }
@@ -86,11 +53,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
         var convention = A.Fake<HostApplicationConvention<IHostApplicationBuilder>>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(
-                                   rb => rb
-                                        .UseConventionFactory(Imports.Instance)
-                                        .ConfigureApplication(convention)
-                               );
+                              .ConfigureRocketSurgery(rb => rb                                                         .ConfigureApplication(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
     }
@@ -101,11 +64,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
         var convention = A.Fake<HostApplicationConvention<HostApplicationBuilder>>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(
-                                   rb => rb
-                                        .UseConventionFactory(Imports.Instance)
-                                        .ConfigureApplication(convention)
-                               );
+                              .ConfigureRocketSurgery(rb => rb.ConfigureApplication(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<HostApplicationBuilder>._)).MustHaveHappened();
     }
@@ -116,11 +75,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
         var convention = A.Fake<LoggingConvention>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(
-                                   rb => rb
-                                        .UseConventionFactory(Imports.Instance)
-                                        .ConfigureLogging(convention)
-                               );
+                              .ConfigureRocketSurgery(rb => rb.ConfigureLogging(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IConfiguration>._, A<ILoggingBuilder>._)).MustHaveHappened();
     }

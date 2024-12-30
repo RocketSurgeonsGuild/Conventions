@@ -28,29 +28,18 @@ public static class ConventionContextBuilderExtensions
         configuration ??= context.Get<IConfiguration>();
         if (configuration is { })
             cb.AddConfiguration(configuration);
-        configuration = ( await cb.ApplyConventionsAsync(context, configuration, cancellationToken) ).Build();
+        configuration = ( await cb.ApplyConventionsAsync(context, configuration, cancellationToken).ConfigureAwait(false) ).Build();
         context.Set(configuration);
         var services = new ServiceCollection();
         services.AddSingleton(configuration);
-        await services.ApplyConventionsAsync(context, cancellationToken);
-        await new LoggingBuilder(services).ApplyConventionsAsync(context, cancellationToken);
+        await services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+        await new LoggingBuilder(services).ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
 
-        return services.BuildServiceProvider(context.GetOrAdd(() => new ServiceProviderOptions()));
-    }
+        if (context.Get<ServiceProviderFactoryAdapter>() is not { } factory)
+            return services.BuildServiceProvider(context.GetOrAdd(() => new ServiceProviderOptions()));
 
-    /// <summary>
-    ///     Allows creation of a service provider from the convention builder.  This will apply configuration
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="configuration"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public static async ValueTask<IServiceProvider> CreateServiceProvider(
-        this ConventionContextBuilder builder,
-        IConfiguration? configuration = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return await CreateServiceProvider(await ConventionContext.FromAsync(builder, cancellationToken), configuration, cancellationToken);
+        var adapter = await factory(context, services, cancellationToken).ConfigureAwait(false);
+        var builder = adapter.CreateBuilder(services);
+        return adapter.CreateServiceProvider(builder);
     }
 }

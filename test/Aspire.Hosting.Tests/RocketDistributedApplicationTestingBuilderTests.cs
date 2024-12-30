@@ -8,7 +8,6 @@ using Rocket.Surgery.Aspire.Hosting.Testing;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Xunit.Abstractions;
-using RocketBooster = Rocket.Surgery.Aspire.Hosting.Testing.RocketBooster;
 
 namespace Aspire.Hosting.Tests;
 
@@ -20,30 +19,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests
     {
         await using var host = await DistributedApplicationTestingBuilder
                                     .CreateAsync<AspireSample>()
-                                    .LaunchWith(RocketBooster.For(Imports.Instance));
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseRocketBooster_With_Conventions()
-    {
-        await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<AspireSample>()
-                                    .UseRocketBooster(RocketBooster.For(Imports.Instance));
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseDiagnosticLogging()
-    {
-        await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<AspireSample>()
-                                    .UseRocketBooster(
-                                         RocketBooster.For(Imports.Instance),
-                                         x => x.UseDiagnosticLogging(c => c.AddConsole())
-                                     );
+                                    .ConfigureRocketSurgery();
 
         host.Services.Should().NotBeNull();
     }
@@ -54,11 +30,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests
         var convention = A.Fake<DistributedApplicationTestingConvention>();
         await using var host = await DistributedApplicationTestingBuilder
                                     .CreateAsync<AspireSample>()
-                                    .ConfigureRocketSurgery(
-                                         rb => rb
-                                              .UseConventionFactory(Imports.Instance)
-                                              .ConfigureDistributedTestingApplication(convention)
-                                     );
+                                    .ConfigureRocketSurgery(rb => rb.ConfigureDistributedTestingApplication(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IDistributedApplicationTestingBuilder>._)).MustHaveHappened();
     }

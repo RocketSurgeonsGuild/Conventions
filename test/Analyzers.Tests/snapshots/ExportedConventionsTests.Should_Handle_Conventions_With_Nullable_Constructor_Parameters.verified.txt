@@ -15,7 +15,6 @@
     netstandard.dll,
     Rocket.Surgery.Conventions.Abstractions.dll,
     Rocket.Surgery.Conventions.dll,
-    Rocket.Surgery.DependencyInjection.Extensions.dll,
     System.ComponentModel.dll,
     System.Core.dll,
     System.dll,

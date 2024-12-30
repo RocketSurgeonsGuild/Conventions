@@ -1,4 +1,0 @@
-﻿[
-  TypeFilterFunctionalityTests.MyClassWithAttribute,
-  TypeFilterFunctionalityTests.YourClassWithAttribute
-]

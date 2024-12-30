@@ -17,30 +17,7 @@ public partial class RocketDistributedApplicationBuilderTests
     {
         await using var host = await DistributedApplication
                                     .CreateBuilder()
-                                    .UseRocketBooster(RocketBooster.For(Imports.Instance));
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseRocketBooster_With_Conventions()
-    {
-        await using var host = await DistributedApplication
-                                    .CreateBuilder()
-                                    .UseRocketBooster(RocketBooster.For(Imports.Instance));
-
-        host.Services.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task Should_UseDiagnosticLogging()
-    {
-        await using var host = await DistributedApplication
-                                    .CreateBuilder()
-                                    .UseRocketBooster(
-                                         RocketBooster.For(Imports.Instance),
-                                         x => x.UseDiagnosticLogging(c => c.AddConsole())
-                                     );
+                                    .ConfigureRocketSurgery();
 
         host.Services.Should().NotBeNull();
     }
@@ -51,11 +28,7 @@ public partial class RocketDistributedApplicationBuilderTests
         var convention = A.Fake<DistributedApplicationConvention>();
         await using var host = await DistributedApplication
                                     .CreateBuilder()
-                                    .ConfigureRocketSurgery(
-                                         rb => rb
-                                              .UseConventionFactory(Imports.Instance)
-                                              .ConfigureDistributedApplication(convention)
-                                     );
+                                    .ConfigureRocketSurgery(rb => rb.ConfigureDistributedApplication(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IDistributedApplicationBuilder>._)).MustHaveHappened();
     }

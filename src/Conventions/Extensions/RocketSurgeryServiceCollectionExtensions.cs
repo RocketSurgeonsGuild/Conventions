@@ -25,14 +25,13 @@ public static class RocketSurgeryServiceCollectionExtensions
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(context);
         var configuration = context.Get<IConfiguration>();
         if (configuration is null)
         {
             configuration = new ConfigurationBuilder().Build();
             context.Logger.LogWarning("Configuration was not found in context");
         }
-
-        services.AddSingleton(context.TypeProvider);
 
         foreach (var item in context.Conventions.Get<IServiceConvention, ServiceConvention, IServiceAsyncConvention, ServiceAsyncConvention>())
         {

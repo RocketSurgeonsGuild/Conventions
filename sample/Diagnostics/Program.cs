@@ -21,7 +21,7 @@ public static partial class Program
 
     public static async Task<IHost> CreateHostBuilder(string[] args)
     {
-        return await Host.CreateApplicationBuilder(args).LaunchWith(RocketBooster.For(Imports.Instance));
+        return await Host.CreateApplicationBuilder(args).ConfigureRocketSurgery();
     }
 }
 

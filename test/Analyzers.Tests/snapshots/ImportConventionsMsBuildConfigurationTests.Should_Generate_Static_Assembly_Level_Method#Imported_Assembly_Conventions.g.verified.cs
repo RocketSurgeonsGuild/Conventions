@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
-using Rocket.Surgery.DependencyInjection.Compiled;
 
 #nullable enable
 #pragma warning disable CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669
@@ -17,14 +16,13 @@ namespace TestProject.Conventions
     /// The class defined for importing conventions into this assembly
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Conventions.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    internal sealed partial class Imports : IConventionFactory
+    internal static partial class Imports
     {
-        public static IConventionFactory Instance { get; } = new Imports().OrCallerConventions();
-
+        internal static LoadConventions Instance = LoadConventionsMethod;
         /// <summary>
         /// The conventions imported into this assembly
         /// </summary>
-        public IEnumerable<IConventionMetadata> LoadConventions(ConventionContextBuilder builder)
+        private static IEnumerable<IConventionMetadata> LoadConventionsMethod(ConventionContextBuilder builder)
         {
             foreach (var convention in Dep1.Dep1Exports.GetConventions(builder))
                 yield return convention;
@@ -33,8 +31,6 @@ namespace TestProject.Conventions
             foreach (var convention in SampleDependencyThree.Conventions.Exports.GetConventions(builder))
                 yield return convention;
         }
-
-        public ICompiledTypeProvider CreateTypeProvider(ConventionContextBuilder builder) => typeof(Imports).Assembly.GetCompiledTypeProvider();
     };
 }
 #pragma warning restore CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669

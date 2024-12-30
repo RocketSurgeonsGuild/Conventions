@@ -15,7 +15,7 @@ public class RocketHostTests
     {
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .LaunchWith(RocketBooster.For(Imports.Instance));
+                              .ConfigureRocketSurgery();
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
         configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
@@ -27,10 +27,7 @@ public class RocketHostTests
     {
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .LaunchWith(
-                                   RocketBooster.For(Imports.Instance),
-                                   z => z.ExceptConvention(typeof(YamlConvention))
-                               );
+                              .ConfigureRocketSurgery(z => z.ExceptConvention(typeof(YamlConvention)));
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
@@ -43,10 +40,7 @@ public class RocketHostTests
     {
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .LaunchWith(
-                                   RocketBooster.For(Imports.Instance),
-                                   z => z.ExceptConvention(typeof(JsonConvention))
-                               );
+                              .ConfigureRocketSurgery(z => z.ExceptConvention(typeof(JsonConvention)));
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 

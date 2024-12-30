@@ -3,7 +3,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing;
 using Sample.DependencyOne;
 using Sample.DependencyThree;
@@ -17,35 +16,26 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     [Fact]
     public void ShouldConstruct()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>();
+        var scanner = ConventionContextBuilder.Create(_ => []);
         scanner.Should().NotBeNull();
     }
 
     [Fact]
-    public void ShouldBuildAProvider()
+    public async Task ShouldBuildAProvider()
     {
-        var scanner = ConventionContextHelpers.CreateProvider(
-            new ConventionContextBuilder(new Dictionary<object, object?>(), []).AppendConvention(new Contrib()),
-            Logger
-        );
+        var scanner = ConventionContextBuilder.Create(_ => [], new Dictionary<object, object?>(), []).AppendConvention(new Contrib());
 
-        scanner
+        var context = await ConventionContext.FromAsync(scanner);
+        context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
            .Should()
            .Contain(x => x is Contrib);
     }
 
     [Fact]
-    public void ShouldScanAddedContributions()
+    public async Task ShouldScanAddedContributions()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<ICompiledTypeProvider>();
-
-        A
-            // ReSharper disable ExplicitCallerInfoArgument
-           .CallTo(() => finder.GetAssemblies(A<Action<IReflectionAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
-            // ReSharper restore ExplicitCallerInfoArgument
-           .Returns(Array.Empty<Assembly>());
+        var scanner = ConventionContextBuilder.Create(_ => []);
 
         var contribution = A.Fake<IServiceConvention>();
         var contribution2 = A.Fake<IServiceConvention>();
@@ -53,25 +43,17 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         scanner.PrependConvention(contribution);
         scanner.AppendConvention(contribution2);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
-
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(contribution, contribution2);
+        var context = await ConventionContext.FromAsync(scanner);
+        context.Conventions
+               .Get<IServiceConvention, ServiceConvention>()
+               .Should()
+               .ContainInOrder(contribution, contribution2);
     }
 
     [Fact]
-    public void ShouldIncludeAddedDelegates()
+    public async Task ShouldIncludeAddedDelegates()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<ICompiledTypeProvider>();
-
-        // ReSharper disable ExplicitCallerInfoArgument
-        A
-           .CallTo(() => finder.GetAssemblies(A<Action<IReflectionAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
-            // ReSharper restore ExplicitCallerInfoArgument
-           .Returns(Array.Empty<Assembly>());
+        var scanner = ConventionContextBuilder.Create(_ => []);
 
         var @delegate = new ServiceConvention((_, _, _) => { });
         var delegate2 = new ServiceConvention((_, _, _) => { });
@@ -79,80 +61,49 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         scanner.PrependDelegate(delegate2, null, null);
         scanner.AppendDelegate(@delegate, null, null);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
-
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(delegate2, @delegate);
+        var context = await ConventionContext.FromAsync(scanner);
+        context.Conventions
+               .Get<IServiceConvention, ServiceConvention>()
+               .Should()
+               .ContainInOrder(delegate2, @delegate);
     }
 
     [Fact]
-    public void ShouldScanExcludeContributionTypes()
+    public async Task ShouldScanExcludeContributionTypes()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<ICompiledTypeProvider>();
-
-        A
-            // ReSharper disable ExplicitCallerInfoArgument
-           .CallTo(() => finder.GetAssemblies(A<Action<IReflectionAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
-            // ReSharper restore ExplicitCallerInfoArgument
-           .Returns(
-                new[]
-                {
-                    typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
-                }
-            );
-
+        var scanner = ConventionContextBuilder.Create(_ => []);
         var contribution = A.Fake<IServiceConvention>();
         var contribution2 = A.Fake<IServiceConvention>();
 
         scanner.AppendConvention(contribution);
         scanner.PrependConvention(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
-
-        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
-
-        provider
+var context = await ConventionContext.FromAsync(scanner);
+        context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
            .Should()
            .NotContain(x => x! is Contrib);
-        provider
+        context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
            .Should()
            .ContainInOrder(contribution2, contribution);
     }
 
     [Fact]
-    public void ShouldScanExcludeContributionAssemblies()
+    public async Task ShouldScanExcludeContributionAssemblies()
     {
-        var scanner = AutoFake.Resolve<ConventionContextBuilder>();
-        var finder = AutoFake.Resolve<ICompiledTypeProvider>();
-
-        A
-            // ReSharper disable ExplicitCallerInfoArgument
-           .CallTo(() => finder.GetAssemblies(A<Action<IReflectionAssemblySelector>>._, A<int>._, A<string>._, A<string>._))
-            // ReSharper restore ExplicitCallerInfoArgument
-           .Returns(
-                new[]
-                {
-                    typeof(ConventionScannerTests).GetTypeInfo().Assembly, typeof(Class1).GetTypeInfo().Assembly,
-                    typeof(Nested.Class2).GetTypeInfo().Assembly, typeof(Class3).GetTypeInfo().Assembly,
-                }
-            );
+        var scanner = ConventionContextBuilder.Create(_ => []);
 
         var contribution = A.Fake<IServiceConvention>();
 
         scanner.PrependConvention(contribution);
         scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
-        var provider = ConventionContextHelpers.CreateProvider(scanner, Logger);
-
-        provider
-           .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .NotContain(x => x! is Contrib);
+        var context = await ConventionContext.FromAsync(scanner);
+        context.Conventions
+               .Get<IServiceConvention, ServiceConvention>()
+               .Should()
+               .NotContain(x => x! is Contrib);
     }
 
 

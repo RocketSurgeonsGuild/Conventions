@@ -21,7 +21,7 @@ public class SampleTests
 
     public SampleTests()
     {
-        _builder = new ConventionContextBuilder(new Dictionary<object, object>(), []).Set(HostType.UnitTest);
+        _builder = ConventionContextBuilder.Create(_ => [], new Dictionary<object, object>(), []).Set(HostType.UnitTest);
     }
 
     private readonly ConventionContextBuilder _builder;
