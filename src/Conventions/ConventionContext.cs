@@ -1,9 +1,11 @@
 using System.Collections.Immutable;
 using System.Runtime.Loader;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+
 using Rocket.Surgery.Conventions.Extensions;
 
 namespace Rocket.Surgery.Conventions;
@@ -31,18 +33,18 @@ public sealed class ConventionContext : IConventionContext
 
     private static ConventionContext FromInitInternal(ConventionContextBuilder builder)
     {
-        builder.AddIfMissing(AssemblyLoadContext.Default);
-        var provider = CreateProvider(builder);
+        var conventions = builder.Require<LoadConventions>();
+        builder
+           .AddIfMissing(AssemblyLoadContext.Default)
+           .AddIfMissing("ExecutingAssembly", conventions.Method.Module.Assembly);
+        var provider = CreateProvider(builder, conventions);
         // ReSharper disable once NullableWarningSuppressionIsUsed
-        builder.Properties.Set(builder.state.ServiceProviderFactory);
+        if (builder.state.ServiceProviderFactory is { })
+            builder.Properties.Set(builder.state.ServiceProviderFactory);
         return new(builder, provider);
     }
 
-    /// <summary>
-    ///     Method used to create a convention provider
-    /// </summary>
-    /// <returns></returns>
-    static ConventionProvider CreateProvider(ConventionContextBuilder builder)
+    private static ConventionProvider CreateProvider(ConventionContextBuilder builder, LoadConventions loadConventions)
     {
         var conventions = builder.state.GetConventions();
         for (var i = 0; i < conventions.Count; i++)
@@ -52,7 +54,7 @@ public sealed class ConventionContext : IConventionContext
 
         conventions.InsertRange(
             conventions.FindIndex(z => z is null),
-            builder.state.CalculateConventions(builder, builder.Require<LoadConventions>())
+            builder.state.CalculateConventions(builder, loadConventions)
         );
 
         return new(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ConventionCategory.ValueComparer), conventions);
@@ -100,10 +102,10 @@ public sealed class ConventionContext : IConventionContext
     ///     A logger that is configured to work with each convention item
     /// </summary>
     /// <value>The logger.</value>
-    public ILogger Logger => ((IConventionContext)this).GetOrAdd<ILogger>(() => NullLogger.Instance);
+    public ILogger Logger => this.GetOrAdd<ILogger>(() => NullLogger.Instance);
 
     /// <summary>
     ///     Gets the configuration.
     /// </summary>
-    public IConfiguration Configuration => ((IConventionContext)this).Get<IConfiguration>() ?? _emptyConfiguration;
+    public IConfiguration Configuration => this.Get<IConfiguration>() ?? _emptyConfiguration;
 }
