@@ -18,13 +18,15 @@ internal static class RocketSurgerySetupExtensions
         CancellationToken cancellationToken = default
     )
     {
-        await context.RegisterConventions(
-            e => e
-                .AddHandler<ISetupConvention>(convention => convention.Register(context))
-                .AddHandler<ISetupAsyncConvention>(convention => convention.Register(context, cancellationToken))
-                .AddHandler<SetupConvention>(convention => convention(context))
-                .AddHandler<SetupAsyncConvention>(convention => convention(context, cancellationToken))
-        ).ConfigureAwait(false);
+        await context
+             .RegisterConventions(
+                  e => e
+                      .AddHandler<ISetupConvention>(convention => convention.Register(context))
+                      .AddHandler<ISetupAsyncConvention>(convention => convention.Register(context, cancellationToken))
+                      .AddHandler<SetupConvention>(convention => convention(context))
+                      .AddHandler<SetupAsyncConvention>(convention => convention(context, cancellationToken))
+              )
+             .ConfigureAwait(false);
         return context;
     }
 }

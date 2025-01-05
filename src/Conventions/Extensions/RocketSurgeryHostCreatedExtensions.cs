@@ -22,14 +22,14 @@ internal static class RocketSurgeryHostCreatedExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
         await context
-           .RegisterConventions(
-                e => e
-                    .AddHandler<IHostCreatedConvention<THost>>(convention => convention.Register(context, host))
-                    .AddHandler<IHostCreatedAsyncConvention<THost>>(convention => convention.Register(context, host, cancellationToken))
-                    .AddHandler<HostCreatedConvention<THost>>(convention => convention(context, host))
-                    .AddHandler<HostCreatedAsyncConvention<THost>>(convention => convention(context, host, cancellationToken))
-            )
-           .ConfigureAwait(false);
+             .RegisterConventions(
+                  e => e
+                      .AddHandler<IHostCreatedConvention<THost>>(convention => convention.Register(context, host))
+                      .AddHandler<IHostCreatedAsyncConvention<THost>>(convention => convention.Register(context, host, cancellationToken))
+                      .AddHandler<HostCreatedConvention<THost>>(convention => convention(context, host))
+                      .AddHandler<HostCreatedAsyncConvention<THost>>(convention => convention(context, host, cancellationToken))
+              )
+             .ConfigureAwait(false);
         return context;
     }
 }

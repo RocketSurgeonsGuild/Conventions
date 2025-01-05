@@ -23,11 +23,11 @@ public static class RocketSurgeryDistributedApplicationTestingExtensions
         IConventionContext context,
         CancellationToken cancellationToken = default
     ) => context
-        .RegisterConventions(
-             e => e
-                 .AddHandler<IDistributedApplicationTestingConvention>(convention => convention.Register(context, hostBuilder))
-                 .AddHandler<IDistributedApplicationTestingAsyncConvention>(convention => convention.Register(context, hostBuilder, cancellationToken))
-                 .AddHandler<DistributedApplicationTestingConvention>(convention => convention(context, hostBuilder))
-                 .AddHandler<DistributedApplicationTestingAsyncConvention>(convention => convention(context, hostBuilder, cancellationToken))
-         );
+       .RegisterConventions(
+            e => e
+                .AddHandler<IDistributedApplicationTestingConvention>(convention => convention.Register(context, hostBuilder))
+                .AddHandler<IDistributedApplicationTestingAsyncConvention>(convention => convention.Register(context, hostBuilder, cancellationToken))
+                .AddHandler<DistributedApplicationTestingConvention>(convention => convention(context, hostBuilder))
+                .AddHandler<DistributedApplicationTestingAsyncConvention>(convention => convention(context, hostBuilder, cancellationToken))
+        );
 }

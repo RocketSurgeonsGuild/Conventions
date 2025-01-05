@@ -113,7 +113,7 @@ public static class RocketWebAssemblyExtensions
         }
 
         var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, builder.Configuration, cancellationToken).ConfigureAwait(false);
-        if (cb.Sources is { Count: > 0, })
+        if (cb.Sources is { Count: > 0 })
         {
             configurationBuilder.Add(
                 new ChainedConfigurationSource

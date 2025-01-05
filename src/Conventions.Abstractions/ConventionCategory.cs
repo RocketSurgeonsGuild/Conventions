@@ -3,13 +3,13 @@ using System.Diagnostics;
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
-/// A policy delegate that can be used to determine if a given exception should be ignored or not
+///     A policy delegate that can be used to determine if a given exception should be ignored or not
 /// </summary>
 public delegate bool ConventionExceptionPolicyDelegate(Exception exception);
 
 public static class ConventionExceptionPolicy
 {
-    public static ConventionExceptionPolicyDelegate IgnoreNotSupported { get; } = (exception) => exception is NotSupportedException;
+    public static ConventionExceptionPolicyDelegate IgnoreNotSupported { get; } = exception => exception is NotSupportedException;
 }
 
 /// <summary>
@@ -21,18 +21,18 @@ public static class ConventionExceptionPolicy
 [DebuggerDisplay("{_value}")]
 public sealed class ConventionCategory(string name)
 {
-    public static IEqualityComparer<ConventionCategory> ValueComparer { get; } = new ValueEqualityComparer();
+    /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        if (obj is null) return false;
+        return   ReferenceEquals(this, obj)  ||  obj.GetType() == GetType() && Equals((ConventionCategory)obj)  ;
+    }
 
-    /// <summary>
-    ///     This convention is loaded for any application that might be starting
-    /// </summary>
-    /// <remarks>Application is the default category for a convention</remarks>
-    public const string Application = nameof(Application);
+    /// <inheritdoc />
+    public override int GetHashCode() => _value.GetHashCode();
 
-    /// <summary>
-    ///     This convention is to load for any infrastructure bits (serializer, logging, etc)
-    /// </summary>
-    public const string Core = nameof(Core);
+    /// <inheritdoc />
+    public override string ToString() => _value;
 
     /// <summary>
     ///     Implicitly convert to a string
@@ -48,23 +48,18 @@ public sealed class ConventionCategory(string name)
     /// <returns></returns>
     public static implicit operator ConventionCategory(string category) => new(category);
 
-    private readonly string _value = name;
+    public static IEqualityComparer<ConventionCategory> ValueComparer { get; } = new ValueEqualityComparer();
 
-    private bool Equals(ConventionCategory other) => _value == other._value;
+    /// <summary>
+    ///     This convention is loaded for any application that might be starting
+    /// </summary>
+    /// <remarks>Application is the default category for a convention</remarks>
+    public const string Application = nameof(Application);
 
-    /// <inheritdoc />
-    public override bool Equals(object? obj)
-    {
-        if (obj is null) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        return   obj.GetType() == GetType()  &&  Equals((ConventionCategory)obj)  ;
-    }
-
-    /// <inheritdoc />
-    public override int GetHashCode() => _value.GetHashCode();
-
-    /// <inheritdoc />
-    public override string ToString() => _value;
+    /// <summary>
+    ///     This convention is to load for any infrastructure bits (serializer, logging, etc)
+    /// </summary>
+    public const string Core = nameof(Core);
 
     private sealed class ValueEqualityComparer : IEqualityComparer<ConventionCategory>
     {
@@ -72,10 +67,13 @@ public sealed class ConventionCategory(string name)
         {
             if (ReferenceEquals(x, y)) return true;
             if (x is null) return false;
-            if (y is null) return false;
-            return   x.GetType() == y.GetType()  &&  x._value == y._value  ;
+            return   y is not null  &&  x.GetType() == y.GetType() && x._value == y._value  ;
         }
 
         public int GetHashCode(ConventionCategory obj) => obj._value.GetHashCode();
     }
+
+    private bool Equals(ConventionCategory other) => _value == other._value;
+
+    private readonly string _value = name;
 }

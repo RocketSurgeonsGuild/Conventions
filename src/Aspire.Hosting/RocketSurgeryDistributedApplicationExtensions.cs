@@ -23,11 +23,11 @@ public static class RocketSurgeryDistributedApplicationExtensions
         IConventionContext context,
         CancellationToken cancellationToken = default
     ) => context
-        .RegisterConventions(
-             e => e
-                 .AddHandler<IDistributedApplicationConvention>(convention => convention.Register(context, hostBuilder))
-                 .AddHandler<IDistributedApplicationAsyncConvention>(convention => convention.Register(context, hostBuilder, cancellationToken))
-                 .AddHandler<DistributedApplicationConvention>(convention => convention(context, hostBuilder))
-                 .AddHandler<DistributedApplicationAsyncConvention>(convention => convention(context, hostBuilder, cancellationToken))
-         );
+       .RegisterConventions(
+            e => e
+                .AddHandler<IDistributedApplicationConvention>(convention => convention.Register(context, hostBuilder))
+                .AddHandler<IDistributedApplicationAsyncConvention>(convention => convention.Register(context, hostBuilder, cancellationToken))
+                .AddHandler<DistributedApplicationConvention>(convention => convention(context, hostBuilder))
+                .AddHandler<DistributedApplicationAsyncConvention>(convention => convention(context, hostBuilder, cancellationToken))
+        );
 }
