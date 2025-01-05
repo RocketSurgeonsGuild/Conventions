@@ -1,5 +1,5 @@
-﻿using Autofac;
-using Microsoft.Extensions.Configuration;
+using Autofac;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Rocket.Surgery.Conventions.Autofac;
@@ -25,26 +25,15 @@ public static class AutofacExtensions
         CancellationToken cancellationToken = default
     )
     {
-        var configuration = context.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
-        foreach (var item in context.Conventions.Get<IAutofacConvention, AutofacConvention, IAutofacAsyncConvention, AutofacAsyncConvention>())
-        {
-            switch (item)
-            {
-                case IAutofacConvention convention:
-                    convention.Register(context, configuration, services, containerBuilder);
-                    break;
-                case AutofacConvention @delegate:
-                    @delegate(context, configuration, services, containerBuilder);
-                    break;
-                case IAutofacAsyncConvention convention:
-                    await convention.Register(context, configuration, services, containerBuilder, cancellationToken);
-                    break;
-                case AutofacAsyncConvention @delegate:
-                    await @delegate(context, configuration, services, containerBuilder, cancellationToken);
-                    break;
-            }
-        }
-
+        await context
+             .RegisterConventions(
+                  e => e
+                      .AddHandler<IAutofacConvention>(convention => convention.Register(context, context.Configuration, services, containerBuilder))
+                      .AddHandler<IAutofacAsyncConvention>(convention => convention.Register(context, context.Configuration, services, containerBuilder, cancellationToken))
+                      .AddHandler<AutofacConvention>(convention => convention(context, context.Configuration, services, containerBuilder))
+                      .AddHandler<AutofacAsyncConvention>(convention => convention(context, context.Configuration, services, containerBuilder, cancellationToken))
+              )
+             .ConfigureAwait(false);
         return containerBuilder;
     }
 }

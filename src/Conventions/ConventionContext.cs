@@ -99,7 +99,8 @@ public sealed class ConventionContext : IConventionContext
         var conventions = builder.Require<LoadConventions>();
         builder
            .AddIfMissing(AssemblyLoadContext.Default)
-           .AddIfMissing("ExecutingAssembly", conventions.Method.Module.Assembly);
+           .AddIfMissing("ExecutingAssembly", conventions.Method.Module.Assembly)
+           .AddIfMissing(ConventionExceptionPolicy.IgnoreNotSupported);
         var provider = CreateProvider(builder, conventions);
         // ReSharper disable once NullableWarningSuppressionIsUsed
         if (builder.state.ServiceProviderFactory is { })

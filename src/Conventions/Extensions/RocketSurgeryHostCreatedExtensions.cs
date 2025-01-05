@@ -1,4 +1,4 @@
-﻿using Rocket.Surgery.Conventions.Hosting;
+using Rocket.Surgery.Conventions.Hosting;
 
 namespace Rocket.Surgery.Conventions.Extensions;
 
@@ -20,31 +20,16 @@ internal static class RocketSurgeryHostCreatedExtensions
         CancellationToken cancellationToken = default
     )
     {
-        foreach (var item in context.Conventions
-                                    .Get<
-                                         IHostCreatedConvention<THost>,
-                                         HostCreatedConvention<THost>,
-                                         IHostCreatedAsyncConvention<THost>,
-                                         HostCreatedAsyncConvention<THost>>()
-                )
-        {
-            switch (item)
-            {
-                case IHostCreatedConvention<THost> convention:
-                    convention.Register(context, host);
-                    break;
-                case HostCreatedConvention<THost> @delegate:
-                    @delegate(context, host);
-                    break;
-                case IHostCreatedAsyncConvention<THost> convention:
-                    await convention.Register(context, host, cancellationToken).ConfigureAwait(false);
-                    break;
-                case HostCreatedAsyncConvention<THost> @delegate:
-                    await @delegate(context, host, cancellationToken).ConfigureAwait(false);
-                    break;
-            }
-        }
-
+        ArgumentNullException.ThrowIfNull(context);
+        await context
+           .RegisterConventions(
+                e => e
+                    .AddHandler<IHostCreatedConvention<THost>>(convention => convention.Register(context, host))
+                    .AddHandler<IHostCreatedAsyncConvention<THost>>(convention => convention.Register(context, host, cancellationToken))
+                    .AddHandler<HostCreatedConvention<THost>>(convention => convention(context, host))
+                    .AddHandler<HostCreatedAsyncConvention<THost>>(convention => convention(context, host, cancellationToken))
+            )
+           .ConfigureAwait(false);
         return context;
     }
 }

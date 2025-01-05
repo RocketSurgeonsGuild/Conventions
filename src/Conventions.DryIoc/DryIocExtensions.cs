@@ -1,5 +1,5 @@
-﻿using DryIoc;
-using Microsoft.Extensions.Configuration;
+using DryIoc;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Rocket.Surgery.Conventions.DryIoc;
@@ -26,24 +26,17 @@ public static class DryIocExtensions
         CancellationToken cancellationToken = default
     )
     {
-        var configuration = context.Get<IConfiguration>() ?? throw new ArgumentException("Configuration was not found in context");
-        foreach (var item in context.Conventions.Get<IDryIocConvention, DryIocConvention, IDryIocAsyncConvention, DryIocAsyncConvention>())
-        {
-            container = item switch
-                        {
-                            IDryIocConvention convention => convention.Register(context, configuration, services, container),
-                            DryIocConvention @delegate   => @delegate(context, configuration, services, container),
-                            IDryIocAsyncConvention convention => await convention.Register(
-                                context,
-                                configuration,
-                                services,
-                                container,
-                                cancellationToken
-                            ),
-                            DryIocAsyncConvention @delegate => await @delegate(context, configuration, services, container, cancellationToken),
-                            _                               => container,
-                        };
-        }
+#pragma warning disable CA2012
+        await context
+             .RegisterConventions(
+                  e => e
+                      .AddHandler<IDryIocConvention>(convention => convention.Register(context, context.Configuration, services, container))
+                      .AddHandler<IDryIocAsyncConvention>(convention => convention.Register(context, context.Configuration, services, container, cancellationToken))
+                      .AddHandler<DryIocConvention>(convention => convention(context, context.Configuration, services, container))
+                      .AddHandler<DryIocAsyncConvention>(convention => convention(context, context.Configuration, services, container, cancellationToken))
+              )
+             .ConfigureAwait(false);
+#pragma warning restore CA2012
 
         return container;
     }

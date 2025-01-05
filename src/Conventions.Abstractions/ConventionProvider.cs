@@ -11,7 +11,7 @@ namespace Rocket.Surgery.Conventions;
 [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
 internal class ConventionProvider : IConventionProvider
 {
-    private static IEnumerable<T> TopographicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies)
+    private static List<T> TopographicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies)
     {
         var sorted = new List<T>();
         var visited = new HashSet<T>();
@@ -41,17 +41,14 @@ internal class ConventionProvider : IConventionProvider
         }
     }
 
-    private static ConventionOrDelegate FromConvention(object? value)
+    private static ConventionOrDelegate FromConvention(object? value) => value switch
     {
-        return value switch
-               {
-                   IConventionMetadata cwd => new(cwd),
-                   IConvention convention  => FromConvention(convention),
-                   Delegate d              => new(d, 0, default),
-                   ConventionOrDelegate d  => d,
-                   _                       => ConventionOrDelegate.None,
-               };
-    }
+        IConventionMetadata cwd => new(cwd),
+        IConvention convention => FromConvention(convention),
+        Delegate d => new(d, 0, default),
+        ConventionOrDelegate d => d,
+        _ => ConventionOrDelegate.None,
+    };
 
     private static ConventionOrDelegate FromConvention(IConvention convention)
     {
@@ -63,10 +60,7 @@ internal class ConventionProvider : IConventionProvider
         return new(convention, hostType, category, dependencies);
     }
 
-    private static object? ToObject(ConventionOrDelegate delegateOrConvention)
-    {
-        return (object?)delegateOrConvention.Delegate ?? delegateOrConvention.Convention;
-    }
+    private static object? ToObject(ConventionOrDelegate delegateOrConvention) => (object?)delegateOrConvention.Delegate ?? delegateOrConvention.Convention;
 
     private readonly HostType _hostType;
 
@@ -82,7 +76,8 @@ internal class ConventionProvider : IConventionProvider
         hostType,
         categories,
         contributions.Where(z => z is { }).Select(FromConvention)
-    ) { }
+    )
+    { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConventionProvider" /> class.
@@ -104,9 +99,9 @@ internal class ConventionProvider : IConventionProvider
                     c = c.Where(z => categories.Contains(z.Category));
                 }
 
-                if (!c.Any(z => z.Dependencies.Length > 0)) return [..c.OrderBy(z => z.Priority),];
+                if (!c.Any(z => z.Dependencies.Length > 0)) return [.. c.OrderBy(z => z.Priority),];
                 var conventions = c
-                                 .Where(x => x.Convention != null)
+                                 .Where(x => x.Convention is not null)
                                  .Select(
                                       convention =>
                                       {
@@ -132,7 +127,7 @@ internal class ConventionProvider : IConventionProvider
                                        data => data
                                               .dependentFor
                                               .SelectMany(z => lookup[z])
-                                              .Select(innerDependentFor => ( dependentFor: innerDependentFor, data.convention ))
+                                              .Select(innerDependentFor => (dependentFor: innerDependentFor, data.convention))
                                    )
                                   .ToLookup(z => z.dependentFor, z => z.convention);
 
@@ -141,19 +136,19 @@ internal class ConventionProvider : IConventionProvider
                                     data => data
                                            .dependsOn
                                            .SelectMany(z => lookup[z])
-                                           .Select(innerDependsOn => ( data.convention, dependsOn: innerDependsOn ))
+                                           .Select(innerDependsOn => (data.convention, dependsOn: innerDependsOn))
                                 )
                                .Concat(
                                     conventions
                                        .SelectMany(
                                             data =>
                                                 dependentFor[data.convention]
-                                                   .Select(innerDependsOn => ( data.convention, dependsOn: innerDependsOn ))
+                                                   .Select(innerDependsOn => (data.convention, dependsOn: innerDependsOn))
                                         )
                                 )
                                .ToLookup(x => x.convention.Convention, x => x.dependsOn);
 
-                return [..TopographicalSort(c.OrderBy(z => z.Priority), x => dependsOn[x.Convention]),];
+                return [.. TopographicalSort(c.OrderBy(z => z.Priority), x => dependsOn[x.Convention]),];
             }
         );
     }
@@ -163,42 +158,35 @@ internal class ConventionProvider : IConventionProvider
     /// </summary>
     /// <typeparam name="TContribution">The type of the contribution.</typeparam>
     /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
+    [Obsolete("Use ConventionExecutor or RegisterConventions instead.")]
     public IEnumerable<object> Get<TContribution, TDelegate>()
         where TContribution : IConvention
-        where TDelegate : Delegate
-    {
-        return GetAll().Where(x => x is TContribution or TDelegate);
-    }
+        where TDelegate : Delegate => GetAll().Where(x => x is TContribution or TDelegate);
 
     /// <summary>
     ///     Gets this instance.
     /// </summary>
     /// <typeparam name="TContribution">The type of the contribution.</typeparam>
-    /// <typeparam name="TAsyncContribution">The type of the async contribution.</typeparam>
     /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
+    /// <typeparam name="TAsyncContribution">The type of the async contribution.</typeparam>
     /// <typeparam name="TAsyncDelegate">The type of the async delegate.</typeparam>
+    [Obsolete("Use ConventionExecutor or RegisterConventions instead.")]
     public IEnumerable<object> Get<TContribution, TDelegate, TAsyncContribution, TAsyncDelegate>()
         where TContribution : IConvention
         where TDelegate : Delegate
         where TAsyncContribution : IConvention
-        where TAsyncDelegate : Delegate
-    {
-        return GetAll().Where(x => x is TContribution or TDelegate or TAsyncContribution or TAsyncDelegate);
-    }
+        where TAsyncDelegate : Delegate => GetAll().Where(x => x is TContribution or TDelegate or TAsyncContribution or TAsyncDelegate);
 
     /// <summary>
     ///     Gets a all the conventions from the provider
     /// </summary>
-    public IEnumerable<object> GetAll()
-    {
-        return _conventions
-              .Value
-              .Where(cod => cod.HostType == HostType.Undefined || cod.HostType == _hostType)
-              .Select(ToObject)
-              .Where(
-                   // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                   x => x != null!
-                   // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-               )!;
-    }
+    public IEnumerable<object> GetAll() => _conventions
+        .Value
+        .Where(cod => cod.HostType == HostType.Undefined || cod.HostType == _hostType)
+        .Select(ToObject)
+        .Where(
+             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+             x => x != null!
+             // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+         )!;
 }

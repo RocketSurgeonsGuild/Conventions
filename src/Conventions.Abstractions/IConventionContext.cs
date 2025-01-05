@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Reflection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -48,4 +49,6 @@ public interface IConventionContext
     ///     The underlying configuration
     /// </summary>
     IConfiguration Configuration { get; }
+
+    internal ConventionExceptionPolicyDelegate ExceptionPolicy => this.Require<ConventionExceptionPolicyDelegate>();
 }

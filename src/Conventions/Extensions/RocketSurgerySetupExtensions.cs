@@ -1,4 +1,4 @@
-﻿using Rocket.Surgery.Conventions.Setup;
+using Rocket.Surgery.Conventions.Setup;
 
 namespace Rocket.Surgery.Conventions.Extensions;
 
@@ -18,30 +18,13 @@ internal static class RocketSurgerySetupExtensions
         CancellationToken cancellationToken = default
     )
     {
-        foreach (var item in context.Conventions.Get<
-                     ISetupConvention,
-                     SetupConvention,
-                     ISetupAsyncConvention,
-                     SetupAsyncConvention
-                 >())
-        {
-            switch (item)
-            {
-                case ISetupConvention convention:
-                    convention.Register(context);
-                    break;
-                case SetupConvention @delegate:
-                    @delegate(context);
-                    break;
-                case ISetupAsyncConvention convention:
-                    await convention.Register(context, cancellationToken).ConfigureAwait(false);
-                    break;
-                case SetupAsyncConvention @delegate:
-                    await @delegate(context, cancellationToken).ConfigureAwait(false);
-                    break;
-            }
-        }
-
+        await context.RegisterConventions(
+            e => e
+                .AddHandler<ISetupConvention>(convention => convention.Register(context))
+                .AddHandler<ISetupAsyncConvention>(convention => convention.Register(context, cancellationToken))
+                .AddHandler<SetupConvention>(convention => convention(context))
+                .AddHandler<SetupAsyncConvention>(convention => convention(context, cancellationToken))
+        ).ConfigureAwait(false);
         return context;
     }
 }

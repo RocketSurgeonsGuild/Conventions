@@ -3,6 +3,16 @@ using System.Diagnostics;
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
+/// A policy delegate that can be used to determine if a given exception should be ignored or not
+/// </summary>
+public delegate bool ConventionExceptionPolicyDelegate(Exception exception);
+
+public static class ConventionExceptionPolicy
+{
+    public static ConventionExceptionPolicyDelegate IgnoreNotSupported { get; } = (exception) => exception is NotSupportedException;
+}
+
+/// <summary>
 ///     The category of a given convention
 /// </summary>
 /// <remarks>
@@ -29,48 +39,32 @@ public sealed class ConventionCategory(string name)
     /// </summary>
     /// <param name="category"></param>
     /// <returns></returns>
-    public static implicit operator string(ConventionCategory category)
-    {
-        return category._value;
-    }
+    public static implicit operator string(ConventionCategory category) => category._value;
 
     /// <summary>
     ///     Implicitly convert from a string
     /// </summary>
     /// <param name="category"></param>
     /// <returns></returns>
-    public static implicit operator ConventionCategory(string category)
-    {
-        return new(category);
-    }
+    public static implicit operator ConventionCategory(string category) => new(category);
 
     private readonly string _value = name;
 
-    private bool Equals(ConventionCategory other)
-    {
-        return _value == other._value;
-    }
+    private bool Equals(ConventionCategory other) => _value == other._value;
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
         if (obj is null) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != GetType()) return false;
-        return Equals((ConventionCategory)obj);
+        return   obj.GetType() == GetType()  &&  Equals((ConventionCategory)obj)  ;
     }
 
     /// <inheritdoc />
-    public override int GetHashCode()
-    {
-        return _value.GetHashCode();
-    }
+    public override int GetHashCode() => _value.GetHashCode();
 
     /// <inheritdoc />
-    public override string ToString()
-    {
-        return _value;
-    }
+    public override string ToString() => _value;
 
     private sealed class ValueEqualityComparer : IEqualityComparer<ConventionCategory>
     {
@@ -79,13 +73,9 @@ public sealed class ConventionCategory(string name)
             if (ReferenceEquals(x, y)) return true;
             if (x is null) return false;
             if (y is null) return false;
-            if (x.GetType() != y.GetType()) return false;
-            return x._value == y._value;
+            return   x.GetType() == y.GetType()  &&  x._value == y._value  ;
         }
 
-        public int GetHashCode(ConventionCategory obj)
-        {
-            return obj._value.GetHashCode();
-        }
+        public int GetHashCode(ConventionCategory obj) => obj._value.GetHashCode();
     }
 }

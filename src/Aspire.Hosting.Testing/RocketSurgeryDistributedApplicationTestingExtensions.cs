@@ -1,4 +1,5 @@
 using Aspire.Hosting.Testing;
+
 using Rocket.Surgery.Aspire.Hosting.Testing;
 
 // ReSharper disable once CheckNamespace
@@ -17,35 +18,16 @@ public static class RocketSurgeryDistributedApplicationTestingExtensions
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask ApplyConventionsAsync(
+    public static ValueTask ApplyConventionsAsync(
         this IDistributedApplicationTestingBuilder hostBuilder,
         IConventionContext context,
         CancellationToken cancellationToken = default
-    )
-    {
-        foreach (var item in context.Conventions
-                                    .Get<
-                                         IDistributedApplicationTestingConvention,
-                                         DistributedApplicationTestingConvention,
-                                         IDistributedApplicationTestingAsyncConvention,
-                                         DistributedApplicationTestingAsyncConvention
-                                     >())
-        {
-            switch (item)
-            {
-                case IDistributedApplicationTestingConvention convention:
-                    convention.Register(context, hostBuilder);
-                    break;
-                case DistributedApplicationTestingConvention @delegate:
-                    @delegate(context, hostBuilder);
-                    break;
-                case IDistributedApplicationTestingAsyncConvention convention:
-                    await convention.Register(context, hostBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-                case DistributedApplicationTestingAsyncConvention @delegate:
-                    await @delegate(context, hostBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-            }
-        }
-    }
+    ) => context
+        .RegisterConventions(
+             e => e
+                 .AddHandler<IDistributedApplicationTestingConvention>(convention => convention.Register(context, hostBuilder))
+                 .AddHandler<IDistributedApplicationTestingAsyncConvention>(convention => convention.Register(context, hostBuilder, cancellationToken))
+                 .AddHandler<DistributedApplicationTestingConvention>(convention => convention(context, hostBuilder))
+                 .AddHandler<DistributedApplicationTestingAsyncConvention>(convention => convention(context, hostBuilder, cancellationToken))
+         );
 }

@@ -1,4 +1,5 @@
 using Aspire.Hosting;
+
 using Rocket.Surgery.Aspire.Hosting;
 
 // ReSharper disable once CheckNamespace
@@ -17,35 +18,16 @@ public static class RocketSurgeryDistributedApplicationExtensions
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask ApplyConventionsAsync(
+    public static ValueTask ApplyConventionsAsync(
         this IDistributedApplicationBuilder hostBuilder,
         IConventionContext context,
         CancellationToken cancellationToken = default
-    )
-    {
-        foreach (var item in context.Conventions
-                                    .Get<
-                                         IDistributedApplicationConvention,
-                                         DistributedApplicationConvention,
-                                         IDistributedApplicationAsyncConvention,
-                                         DistributedApplicationAsyncConvention
-                                     >())
-        {
-            switch (item)
-            {
-                case IDistributedApplicationConvention convention:
-                    convention.Register(context, hostBuilder);
-                    break;
-                case DistributedApplicationConvention @delegate:
-                    @delegate(context, hostBuilder);
-                    break;
-                case IDistributedApplicationAsyncConvention convention:
-                    await convention.Register(context, hostBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-                case DistributedApplicationAsyncConvention @delegate:
-                    await @delegate(context, hostBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-            }
-        }
-    }
+    ) => context
+        .RegisterConventions(
+             e => e
+                 .AddHandler<IDistributedApplicationConvention>(convention => convention.Register(context, hostBuilder))
+                 .AddHandler<IDistributedApplicationAsyncConvention>(convention => convention.Register(context, hostBuilder, cancellationToken))
+                 .AddHandler<DistributedApplicationConvention>(convention => convention(context, hostBuilder))
+                 .AddHandler<DistributedApplicationAsyncConvention>(convention => convention(context, hostBuilder, cancellationToken))
+         );
 }

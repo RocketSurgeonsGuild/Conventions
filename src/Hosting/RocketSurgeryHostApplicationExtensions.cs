@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Hosting;
 
 // ReSharper disable once CheckNamespace
@@ -21,31 +22,13 @@ public static class RocketSurgeryHostApplicationExtensions
         this TBuilder hostBuilder,
         IConventionContext context,
         CancellationToken cancellationToken = default
-    ) where TBuilder : IHostApplicationBuilder
-    {
-        foreach (var item in context.Conventions
-                                    .Get<
-                                         IHostApplicationConvention<TBuilder>,
-                                         HostApplicationConvention<TBuilder>,
-                                         IHostApplicationAsyncConvention<TBuilder>,
-                                         HostApplicationAsyncConvention<TBuilder>
-                                     >())
-        {
-            switch (item)
-            {
-                case IHostApplicationConvention<TBuilder> convention:
-                    convention.Register(context, hostBuilder);
-                    break;
-                case HostApplicationConvention<TBuilder> @delegate:
-                    @delegate(context, hostBuilder);
-                    break;
-                case IHostApplicationAsyncConvention<TBuilder> convention:
-                    await convention.Register(context, hostBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-                case HostApplicationAsyncConvention<TBuilder> @delegate:
-                    await @delegate(context, hostBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-            }
-        }
-    }
+    ) where TBuilder : IHostApplicationBuilder => await context
+        .RegisterConventions(
+             e => e
+                 .AddHandler<IHostApplicationConvention<TBuilder>>(convention => convention.Register(context, hostBuilder))
+                 .AddHandler<IHostApplicationAsyncConvention<TBuilder>>(convention => convention.Register(context, hostBuilder, cancellationToken))
+                 .AddHandler<HostApplicationConvention<TBuilder>>(convention => convention(context, hostBuilder))
+                 .AddHandler<HostApplicationAsyncConvention<TBuilder>>(convention => convention(context, hostBuilder, cancellationToken))
+         )
+        .ConfigureAwait(false);
 }
