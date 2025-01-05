@@ -22,11 +22,7 @@ public static class ConventionExceptionPolicy
 public sealed class ConventionCategory(string name)
 {
     /// <inheritdoc />
-    public override bool Equals(object? obj)
-    {
-        if (obj is null) return false;
-        return   ReferenceEquals(this, obj)  ||  obj.GetType() == GetType() && Equals((ConventionCategory)obj)  ;
-    }
+    public override bool Equals(object? obj) =>   obj is not null  && ( ReferenceEquals(this, obj) || ( obj.GetType() == GetType() && Equals((ConventionCategory)obj) ) ) ;
 
     /// <inheritdoc />
     public override int GetHashCode() => _value.GetHashCode();
@@ -66,8 +62,7 @@ public sealed class ConventionCategory(string name)
         public bool Equals(ConventionCategory? x, ConventionCategory? y)
         {
             if (ReferenceEquals(x, y)) return true;
-            if (x is null) return false;
-            return   y is not null  &&  x.GetType() == y.GetType() && x._value == y._value  ;
+            return   x is not null  &&  y is { } && x.GetType() == y.GetType() && x._value == y._value  ;
         }
 
         public int GetHashCode(ConventionCategory obj) => obj._value.GetHashCode();
