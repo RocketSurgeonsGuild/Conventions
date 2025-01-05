@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Reflection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -12,9 +13,10 @@ namespace Rocket.Surgery.Conventions;
 public interface IConventionContext
 {
     /// <summary>
-    ///     The underlying host type
+    ///     The assembly that is executing the conventions
     /// </summary>
-    HostType HostType { get; }
+    // ReSharper disable once NullableWarningSuppressionIsUsed
+    public Assembly Assembly => this.Get<Assembly>("ExecutingAssembly") ?? Assembly.GetEntryAssembly()!;
 
     /// <summary>
     ///     The categories of the convention context
@@ -22,10 +24,19 @@ public interface IConventionContext
     ImmutableHashSet<ConventionCategory> Categories { get; }
 
     /// <summary>
-    ///     A central location for sharing state between components during the convention building process.
+    ///     The underlying configuration
     /// </summary>
-    /// <value>The properties.</value>
-    IServiceProviderDictionary Properties { get; }
+    IConfiguration Configuration { get; }
+
+    /// <summary>
+    ///     Get the conventions from the context
+    /// </summary>
+    IConventionProvider Conventions { get; }
+
+    /// <summary>
+    ///     The underlying host type
+    /// </summary>
+    HostType HostType { get; }
 
     /// <summary>
     ///     A logger that is configured to work with each convention item
@@ -34,18 +45,10 @@ public interface IConventionContext
     ILogger Logger { get; }
 
     /// <summary>
-    ///     Get the conventions from the context
+    ///     A central location for sharing state between components during the convention building process.
     /// </summary>
-    IConventionProvider Conventions { get; }
+    /// <value>The properties.</value>
+    IServiceProviderDictionary Properties { get; }
 
-    /// <summary>
-    ///   The assembly that is executing the conventions
-    /// </summary>
-    // ReSharper disable once NullableWarningSuppressionIsUsed
-    public Assembly Assembly => this.Get<Assembly>("ExecutingAssembly") ?? Assembly.GetEntryAssembly()!;
-
-    /// <summary>
-    ///     The underlying configuration
-    /// </summary>
-    IConfiguration Configuration { get; }
+    internal ConventionExceptionPolicyDelegate ExceptionPolicy => this.Require<ConventionExceptionPolicyDelegate>();
 }

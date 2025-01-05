@@ -1,6 +1,5 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+
 using Rocket.Surgery.Conventions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
@@ -26,42 +25,16 @@ public static class RocketSurgeryServiceCollectionExtensions
     )
     {
         ArgumentNullException.ThrowIfNull(context);
-        var configuration = context.Get<IConfiguration>();
-        if (configuration is null)
-        {
-            configuration = new ConfigurationBuilder().Build();
-            context.Logger.LogWarning("Configuration was not found in context");
-        }
 
-        foreach (var item in context.Conventions.Get<IServiceConvention, ServiceConvention, IServiceAsyncConvention, ServiceAsyncConvention>())
-        {
-            switch (item)
-            {
-                case IServiceConvention convention:
-                    convention.Register(context, configuration, services);
-                    break;
-                case ServiceConvention @delegate:
-                    @delegate(context, configuration, services);
-                    break;
-                case IServiceAsyncConvention convention:
-                    await convention.Register(context, configuration, services, cancellationToken).ConfigureAwait(false);
-                    break;
-                case ServiceAsyncConvention @delegate:
-                    await @delegate(context, configuration, services, cancellationToken).ConfigureAwait(false);
-                    break;
-            }
-        }
-
+        await context
+             .RegisterConventions(
+                  e => e
+                      .AddHandler<IServiceConvention>(convention => convention.Register(context, context.Configuration, services))
+                      .AddHandler<IServiceAsyncConvention>(convention => convention.Register(context, context.Configuration, services, cancellationToken))
+                      .AddHandler<ServiceConvention>(convention => convention(context, context.Configuration, services))
+                      .AddHandler<ServiceAsyncConvention>(convention => convention(context, context.Configuration, services, cancellationToken))
+              )
+             .ConfigureAwait(false);
         return services;
     }
-}
-
-internal class LoggingBuilder : ILoggingBuilder
-{
-    public LoggingBuilder(IServiceCollection services)
-    {
-        Services = services;
-    }
-
-    public IServiceCollection Services { get; }
 }

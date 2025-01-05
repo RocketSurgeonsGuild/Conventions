@@ -1,8 +1,9 @@
 using System.ComponentModel;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.Extensions;
@@ -59,15 +60,15 @@ public static class RocketWebAssemblyExtensions
                                      .GetEntryAssembly()
                                     ?.GetCustomAttributes<AssemblyMetadataAttribute>()
                                      .Where(z => z.Key == "BlazorConfigurationFile")
-                                      // ReSharper disable once NullableWarningSuppressionIsUsed
+                                     // ReSharper disable once NullableWarningSuppressionIsUsed
                                      .Select(z => z.Value!)
                                      .SelectMany(z => z.Split(';', StringSplitOptions.RemoveEmptyEntries))
                                      .ToHashSet(StringComparer.OrdinalIgnoreCase)
-         ?? new();
+         ?? [];
 
-        #pragma warning disable CA1859
+#pragma warning disable CA1859
         var configurationBuilder = (IConfigurationBuilder)builder.Configuration;
-        #pragma warning restore CA1859
+#pragma warning restore CA1859
         using var http = new HttpClient
         {
             BaseAddress = new(builder.HostEnvironment.BaseAddress),
@@ -83,15 +84,15 @@ public static class RocketWebAssemblyExtensions
         // However this case is fairly rare as I would not expect an application to maintain both kinds of configuration files.
 
         var appTasks = context
-                      .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
+                      .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => [])
                       .SelectMany(z => z.Invoke(configurationBuilder));
 
         var envTasks = context
-                      .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
+                      .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => [])
                       .SelectMany(z => z.Invoke(configurationBuilder, builder.HostEnvironment.Environment));
 
         var localTasks = context
-                        .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
+                        .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => [])
                         .SelectMany(z => z.Invoke(configurationBuilder, "local"))
                         .ToArray();
 
@@ -100,19 +101,20 @@ public static class RocketWebAssemblyExtensions
                    .Concat(localTasks)
                    .Where(z => foundConfigurationFiles.Contains(z.Path))
                    .Select(z => getConfigurationSource(http, z, cancellationToken))
-                    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+                   // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
                    .Where(z => z is { })
-                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                   // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
                    .Select(z => z!);
 
-        foreach (var task in await Task.WhenAll(tasks))
+        foreach (var task in await Task.WhenAll(tasks).ConfigureAwait(false))
         {
             if (task is null) continue;
             configurationBuilder.Add(task);
         }
 
         var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, builder.Configuration, cancellationToken).ConfigureAwait(false);
-        if (cb.Sources is { Count: > 0, })
+        if (cb.Sources is { Count: > 0 })
+        {
             configurationBuilder.Add(
                 new ChainedConfigurationSource
                 {
@@ -120,6 +122,7 @@ public static class RocketWebAssemblyExtensions
                     ShouldDisposeConfiguration = true,
                 }
             );
+        }
 
         static async Task<IConfigurationSource?> getConfigurationSource(
             HttpClient httpClient,
@@ -130,9 +133,9 @@ public static class RocketWebAssemblyExtensions
             IConfigurationSource? source = null;
             try
             {
-                #pragma warning disable CA2234
+#pragma warning disable CA2234
                 source = factory.Factory.Invoke(await httpClient.GetStreamAsync(factory.Path, cancellationToken).ConfigureAwait(false));
-                #pragma warning restore CA2234
+#pragma warning restore CA2234
             }
             catch (HttpRequestException) { }
 
@@ -141,36 +144,21 @@ public static class RocketWebAssemblyExtensions
     }
 
     private static async Task<IConventionContext> ApplyConventions(
-        IConventionContext conventionContext,
+        IConventionContext context,
         WebAssemblyHostBuilder builder,
         ConventionContextBuilder contextBuilder,
         CancellationToken cancellationToken
     )
     {
-        foreach (var item in conventionContext.Conventions
-                                              .Get<IWebAssemblyHostingConvention,
-                                                   WebAssemblyHostingConvention,
-                                                   IWebAssemblyHostingAsyncConvention,
-                                                   WebAssemblyHostingAsyncConvention
-                                               >())
-        {
-            switch (item)
-            {
-                case IWebAssemblyHostingConvention convention:
-                    convention.Register(conventionContext, builder);
-                    break;
-                case WebAssemblyHostingConvention @delegate:
-                    @delegate(conventionContext, builder);
-                    break;
-                case IWebAssemblyHostingAsyncConvention convention:
-                    await convention.Register(conventionContext, builder, cancellationToken);
-                    break;
-                case WebAssemblyHostingAsyncConvention @delegate:
-                    await @delegate(conventionContext, builder, cancellationToken);
-                    break;
-            }
-        }
-
-        return conventionContext;
+        await context
+             .RegisterConventions(
+                  e => e
+                      .AddHandler<IWebAssemblyHostingConvention>(convention => convention.Register(context, builder))
+                      .AddHandler<IWebAssemblyHostingAsyncConvention>(convention => convention.Register(context, builder, cancellationToken))
+                      .AddHandler<WebAssemblyHostingConvention>(convention => convention(context, builder))
+                      .AddHandler<WebAssemblyHostingAsyncConvention>(convention => convention(context, builder, cancellationToken))
+              )
+             .ConfigureAwait(false);
+        return context;
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+
 using Rocket.Surgery.Conventions.Configuration;
 
 // ReSharper disable once CheckNamespace
@@ -24,31 +25,18 @@ public static class RocketSurgeryConfigurationExtensions
         CancellationToken cancellationToken = default
     )
     {
+        ArgumentNullException.ThrowIfNull(context);
         outerConfiguration ??= new ConfigurationBuilder().Build();
-        foreach (var item in context.Conventions.Get<
-                     IConfigurationConvention,
-                     ConfigurationConvention,
-                     IConfigurationAsyncConvention,
-                     ConfigurationAsyncConvention
-                 >())
-        {
-            switch (item)
-            {
-                case IConfigurationConvention convention:
-                    convention.Register(context, outerConfiguration, configurationBuilder);
-                    break;
-                case ConfigurationConvention @delegate:
-                    @delegate(context, outerConfiguration, configurationBuilder);
-                    break;
-                case IConfigurationAsyncConvention convention:
-                    await convention.Register(context, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-                case ConfigurationAsyncConvention @delegate:
-                    await @delegate(context, outerConfiguration, configurationBuilder, cancellationToken).ConfigureAwait(false);
-                    break;
-            }
-        }
 
+        await context
+             .RegisterConventions(
+                  e => e
+                      .AddHandler<IConfigurationConvention>(convention => convention.Register(context, outerConfiguration, configurationBuilder))
+                      .AddHandler<IConfigurationAsyncConvention>(convention => convention.Register(context, outerConfiguration, configurationBuilder, cancellationToken))
+                      .AddHandler<ConfigurationConvention>(convention => convention(context, outerConfiguration, configurationBuilder))
+                      .AddHandler<ConfigurationAsyncConvention>(convention => convention(context, outerConfiguration, configurationBuilder, cancellationToken))
+              )
+             .ConfigureAwait(false);
         return configurationBuilder;
     }
 }

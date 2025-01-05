@@ -9,6 +9,46 @@ namespace Rocket.Surgery.Conventions;
 public static class ConventionContextExtensions
 {
     /// <summary>
+    ///     Set key to the value if the type is missing
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing<T>(this IConventionContext context, T value) where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Properties.AddIfMissing(value);
+        return context;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the key is missing
+    /// </summary>
+    /// <param name="context">The properties</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing(this IConventionContext context, Type key, object value)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Properties.AddIfMissing(key, value);
+        return context;
+    }
+
+    /// <summary>
+    ///     Set key to the value if the key is missing
+    /// </summary>
+    /// <typeparam name="T">The type of the value</typeparam>
+    /// <param name="context">The properties</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <param name="value">The value to save</param>
+    public static IConventionContext AddIfMissing<T>(this IConventionContext context, string key, T value) where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Properties.AddIfMissing(key, value);
+        return context;
+    }
+
+    /// <summary>
     ///     Get a value by type from the context
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -18,22 +58,6 @@ public static class ConventionContextExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
         return context.Properties.Get<T>();
-    }
-
-    /// <summary>
-    ///     Get a value by type from the context or throw
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="context">The context</param>
-    /// <returns>T.</returns>
-    public static T Require<T>(this IConventionContext context)
-        where T : notnull
-    {
-        ArgumentNullException.ThrowIfNull(context);
-
-        return context.Properties.TryGetValue(typeof(T), out var value) && value is T t
-            ? t
-            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} was not found in the context");
     }
 
     /// <summary>
@@ -50,20 +74,16 @@ public static class ConventionContextExtensions
     }
 
     /// <summary>
-    ///     Get a value by type from the context or throw
+    ///     Check if this is a test host (to allow conventions to behave differently during unit tests)
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="context">The context</param>
-    /// <param name="key">The key where the value is saved</param>
-    /// <returns>T.</returns>
-    public static T Require<T>(this IConventionContext context, string key)
-        where T : notnull
+    public static HostType GetHostType(this IConventionContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
-
-        return context.Properties.TryGetValue(key, out var value) && value is T t
-            ? t
-            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} with the {key} was not found in the context");
+        return context.Properties.TryGetValue(typeof(HostType), out var hostType)
+         && ( hostType is HostType ht || ( hostType is string str && Enum.TryParse(str, true, out ht) ) )
+                ? ht
+                : HostType.Undefined;
     }
 
     /// <summary>
@@ -95,6 +115,64 @@ public static class ConventionContextExtensions
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(factory);
         return context.Properties.GetOrAdd(key, factory);
+    }
+
+    /// <summary>
+    ///     Check if this is a test host (to allow conventions to behave differently during unit tests)
+    /// </summary>
+    /// <param name="context">The context</param>
+    public static bool IsUnitTestHost(this IConventionContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        return context.GetHostType() == HostType.UnitTest;
+    }
+
+    /// <summary>
+    ///     Register a set of conventions
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="configure"></param>
+    /// <returns></returns>
+    public static ValueTask RegisterConventions(this IConventionContext context, Action<ConventionExecutor> configure)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(configure);
+        var executor = new ConventionExecutor(context);
+        configure(executor);
+        return executor.ExecuteAsync();
+    }
+
+    /// <summary>
+    ///     Get a value by type from the context or throw
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="context">The context</param>
+    /// <returns>T.</returns>
+    public static T Require<T>(this IConventionContext context)
+        where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        return context.Properties.TryGetValue(typeof(T), out var value) && value is T t
+            ? t
+            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} was not found in the context");
+    }
+
+    /// <summary>
+    ///     Get a value by type from the context or throw
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="context">The context</param>
+    /// <param name="key">The key where the value is saved</param>
+    /// <returns>T.</returns>
+    public static T Require<T>(this IConventionContext context, string key)
+        where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        return context.Properties.TryGetValue(key, out var value) && value is T t
+            ? t
+            : throw new KeyNotFoundException($"The value of type {typeof(T).Name} with the {key} was not found in the context");
     }
 
     /// <summary>
@@ -142,67 +220,86 @@ public static class ConventionContextExtensions
         context.Properties.Set(key, value);
         return context;
     }
+}
 
+/// <summary>
+///     A class to help with executing conventions
+/// </summary>
+/// <remarks>
+///     This class uses <see cref="ConventionExceptionPolicyDelegate" /> to handle exceptions
+/// </remarks>
+/// <param name="context"></param>
+public class ConventionExecutor(IConventionContext context)
+{
     /// <summary>
-    ///     Set key to the value if the type is missing
+    ///     Add a synchronous convention
     /// </summary>
-    /// <typeparam name="T">The type of the value</typeparam>
-    /// <param name="context">The context</param>
-    /// <param name="value">The value to save</param>
-    public static IConventionContext AddIfMissing<T>(this IConventionContext context, T value) where T : notnull
+    /// <param name="action"></param>
+    /// <typeparam name="TConvention"></typeparam>
+    /// <returns></returns>
+    public ConventionExecutor AddHandler<TConvention>(Action<TConvention> action)
     {
-        ArgumentNullException.ThrowIfNull(context);
-        context.Properties.AddIfMissing(value);
-        return context;
+        _conventionHandlers.Add(
+            o =>
+            {
+                if (o is not TConvention convention) return;
+                try
+                {
+                    action(convention);
+                }
+                catch (Exception ex) when (!context.ExceptionPolicy(ex))
+                {
+                    throw;
+                }
+            }
+        );
+        return this;
     }
 
     /// <summary>
-    ///     Set key to the value if the key is missing
+    ///     Add an asynchronous convention
     /// </summary>
-    /// <param name="context">The properties</param>
-    /// <param name="key">The key where the value is saved</param>
-    /// <param name="value">The value to save</param>
-    public static IConventionContext AddIfMissing(this IConventionContext context, Type key, object value)
+    /// <param name="action"></param>
+    /// <typeparam name="TConvention"></typeparam>
+    /// <returns></returns>
+    public ConventionExecutor AddHandler<TConvention>(Func<TConvention, ValueTask> action)
     {
-        ArgumentNullException.ThrowIfNull(context);
-        context.Properties.AddIfMissing(key, value);
-        return context;
+        _asyncConventionHandlers.Add(
+            async o =>
+            {
+                if (o is not TConvention convention) return;
+                try
+                {
+                    await action(convention).ConfigureAwait(false);
+                }
+                catch (Exception ex) when (!context.ExceptionPolicy(ex))
+                {
+                    throw;
+                }
+            }
+        );
+        return this;
     }
 
     /// <summary>
-    ///     Set key to the value if the key is missing
+    ///     Run all the conventions
     /// </summary>
-    /// <typeparam name="T">The type of the value</typeparam>
-    /// <param name="context">The properties</param>
-    /// <param name="key">The key where the value is saved</param>
-    /// <param name="value">The value to save</param>
-    public static IConventionContext AddIfMissing<T>(this IConventionContext context, string key, T value) where T : notnull
+    public async ValueTask ExecuteAsync()
     {
-        ArgumentNullException.ThrowIfNull(context);
-        context.Properties.AddIfMissing(key, value);
-        return context;
+        foreach (var convention in context.Conventions.GetAll())
+        {
+            foreach (var handler in _conventionHandlers)
+            {
+                handler(convention);
+            }
+
+            foreach (var handler in _asyncConventionHandlers)
+            {
+                await handler(convention).ConfigureAwait(false);
+            }
+        }
     }
 
-    /// <summary>
-    ///     Check if this is a test host (to allow conventions to behave differently during unit tests)
-    /// </summary>
-    /// <param name="context">The context</param>
-    public static bool IsUnitTestHost(this IConventionContext context)
-    {
-        ArgumentNullException.ThrowIfNull(context);
-        return context.GetHostType() == HostType.UnitTest;
-    }
-
-    /// <summary>
-    ///     Check if this is a test host (to allow conventions to behave differently during unit tests)
-    /// </summary>
-    /// <param name="context">The context</param>
-    public static HostType GetHostType(this IConventionContext context)
-    {
-        ArgumentNullException.ThrowIfNull(context);
-        return context.Properties.TryGetValue(typeof(HostType), out var hostType)
-         && ( hostType is HostType ht || ( hostType is string str && Enum.TryParse(str, true, out ht) ) )
-                ? ht
-                : HostType.Undefined;
-    }
+    private readonly List<Func<object, ValueTask>> _asyncConventionHandlers = [];
+    private readonly List<Action<object>> _conventionHandlers = [];
 }
