@@ -59,7 +59,7 @@ public sealed class ConventionCategory(string name)
 
     private sealed class ValueEqualityComparer : IEqualityComparer<ConventionCategory>
     {
-        public bool Equals(ConventionCategory? x, ConventionCategory? y) =>   ReferenceEquals(x, y)  ||  x is { } && y is { } && x.GetType() == y.GetType() && x._value == y._value  ;
+        public bool Equals(ConventionCategory? x, ConventionCategory? y) => ReferenceEquals(x, y) || ( x is { } && y is { } && x.GetType() == y.GetType() && x._value == y._value );
 
         public int GetHashCode(ConventionCategory obj) => obj._value.GetHashCode();
     }
