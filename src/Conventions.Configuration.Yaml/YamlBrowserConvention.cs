@@ -1,5 +1,7 @@
-#if BROWSER
+using System.Runtime.InteropServices;
+
 using Microsoft.Extensions.Configuration;
+
 using Rocket.Surgery.Conventions.Setup;
 
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
@@ -10,16 +12,10 @@ namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 [ExportConvention]
 public class YamlBrowserConvention : ISetupConvention
 {
-    private static IConfigurationSource LoadBlazorWasmYamlFile(Stream? stream)
-    {
-        if (stream is null) throw new NotSupportedException("Yaml is not supported without a stream");
-
-        return YamlConfigurationExtensions.CreateYamlConfigurationSource(stream);
-    }
-
     /// <inheritdoc />
     public void Register(IConventionContext context)
     {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
         context.AppendApplicationConfiguration(
             configurationBuilder =>
             {
@@ -41,5 +37,8 @@ public class YamlBrowserConvention : ISetupConvention
             }
         );
     }
+
+    private static IConfigurationSource LoadBlazorWasmYamlFile(Stream? stream) => stream is null
+        ? throw new NotSupportedException("Yaml is not supported without a stream")
+        : YamlConfigurationExtensions.CreateYamlConfigurationSource(stream);
 }
-#endif

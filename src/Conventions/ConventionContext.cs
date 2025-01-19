@@ -55,7 +55,7 @@ public sealed class ConventionContext : IConventionContext
     ///     A logger that is configured to work with each convention item
     /// </summary>
     /// <value>The logger.</value>
-    public ILogger Logger => this.GetOrAdd<ILogger>(() => NullLogger.Instance);
+    public ILogger Logger => this.Get<ILogger>() ?? NullLogger.Instance;
 
     /// <summary>
     ///     A central location for sharing state between components during the convention building process.

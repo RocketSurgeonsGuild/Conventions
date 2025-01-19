@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Rocket.Surgery.Conventions;
+namespace Rocket.Surgery.Conventions.Extensions;
 
 internal class LoggingBuilder(IServiceCollection services) : ILoggingBuilder
 {

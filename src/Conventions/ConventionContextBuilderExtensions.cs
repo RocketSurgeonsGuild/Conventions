@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using Rocket.Surgery.Conventions.Extensions;
+
 #pragma warning disable CA2000
 
 namespace Rocket.Surgery.Conventions;

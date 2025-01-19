@@ -1,4 +1,3 @@
-#if !BROWSER
 using Microsoft.Extensions.Configuration;
 
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
@@ -15,4 +14,3 @@ public class YamlConfigurationSource : FileConfigurationSource
         return new YamlConfigurationProvider(this);
     }
 }
-#endif

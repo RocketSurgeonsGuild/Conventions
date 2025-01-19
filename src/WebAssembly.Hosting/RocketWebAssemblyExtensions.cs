@@ -23,6 +23,7 @@ public static class RocketWebAssemblyExtensions
         CancellationToken cancellationToken
     )
     {
+        ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(buildHost);
         ArgumentNullException.ThrowIfNull(contextBuilder);
 

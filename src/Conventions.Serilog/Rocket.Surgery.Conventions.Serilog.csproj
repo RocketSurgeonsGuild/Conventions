@@ -6,7 +6,13 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Serilog" />
-        <ProjectReference Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" IncludeAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <ProjectReference
+            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="all"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
         <ProjectReference Include="..\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
         <InternalsVisibleTo Include="Rocket.Surgery.Extensions.Tests" />
     </ItemGroup>

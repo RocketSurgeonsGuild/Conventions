@@ -1,3 +1,19 @@
+using System.Collections.Immutable;
+
+using Aspire.Hosting;
+using Aspire.Hosting.Testing;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Hosting;
+
+using Rocket.Surgery.Aspire.Hosting;
+using Rocket.Surgery.Aspire.Hosting.Testing;
+using Rocket.Surgery.Hosting;
+using Rocket.Surgery.WebAssembly.Hosting;
+
+using Serilog;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -40,29 +56,32 @@ using Rocket.Surgery.Conventions;
     {
         var result = await WithSharedDeps()
                           .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
+                               """
 
-[assembly: ImportConventions(Namespace = ""Test.My.Namespace"", ClassName = ""MyImports"")]
-"
+                               using Rocket.Surgery.Conventions;
+
+                               [assembly: ImportConventions(Namespace = "Test.My.Namespace", ClassName = "MyImports")]
+
+                               """
                            )
                           .Build()
                           .GenerateAsync();
 
         await Verify(result);
     }
-
 
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_No_Namespace()
     {
         var result = await WithSharedDeps()
                           .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
+                               """
 
-[assembly: ImportConventions(Namespace = """", ClassName = ""MyImports"")]
-"
+                               using Rocket.Surgery.Conventions;
+
+                               [assembly: ImportConventions(Namespace = "", ClassName = "MyImports")]
+
+                               """
                            )
                           .Build()
                           .GenerateAsync();
@@ -70,17 +89,18 @@ using Rocket.Surgery.Conventions;
         await Verify(result);
     }
 
-
     [Fact]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_MethodName()
     {
         var result = await WithSharedDeps()
                           .AddSources(
-                               @"
-using Rocket.Surgery.Conventions;
+                               """
 
-[assembly: ImportConventions(Namespace = ""Test.My.Namespace"", ClassName = ""MyImports"", MethodName = ""ImportConventions"")]
-"
+                               using Rocket.Surgery.Conventions;
+
+                               [assembly: ImportConventions(Namespace = "Test.My.Namespace", ClassName = "MyImports", MethodName = "ImportConventions")]
+
+                               """
                            )
                           .Build()
                           .GenerateAsync();
@@ -155,6 +175,25 @@ namespace TestProject
         await Verify(result);
     }
 
+    [Theory]
+    [MemberData(nameof(Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data))]
+    public async Task Should_Generate_Static_Assembly_Methods_For_Runnable_Projects(ImmutableArray<Type> referencedTypes)
+    {
+        var result = await WithGenericSharedDeps()
+                          .AddReferences(referencedTypes.ToArray())
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseParameters(string.Join("_", referencedTypes.Select(z => z.Name))).HashParameters();
+    }
+
     [Fact]
     public async Task Should_Support_Imports_And_Exports_In_The_Same_Assembly_If_Not_Exported()
     {
@@ -187,6 +226,65 @@ namespace TestProject
                           .GenerateAsync();
 
         await Verify(result);
+    }
+
+    public static IEnumerable<object[]> Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data()
+    {
+        yield return [ImmutableArray.CreateRange([typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder)])];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
     }
 
     public override async Task InitializeAsync()
