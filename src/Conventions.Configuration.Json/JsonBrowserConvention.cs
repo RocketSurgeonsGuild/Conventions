@@ -20,7 +20,7 @@ public class JsonBrowserConvention : ISetupConvention
             (configurationBuilder, environment) => environment == "local"
                 ?
                 [
-                    new ConfigurationBuilderDelegateResult(
+                    new(
                         "appsettings.local.json",
                         stream => new JsonStreamConfigurationSource { Stream = stream ?? throw new ArgumentNullException(nameof(stream)) }
                     ),
