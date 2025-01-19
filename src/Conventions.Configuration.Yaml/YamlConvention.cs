@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
+
 using Microsoft.Extensions.Configuration;
+
 using Rocket.Surgery.Conventions.Setup;
 
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
@@ -10,17 +12,6 @@ namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 [ExportConvention]
 public class YamlConvention : ISetupConvention
 {
-    private static Func<Stream?, IConfigurationSource> LoadYamlFile(IConfigurationBuilder configurationBuilder, string path)
-    {
-        return _ => new YamlConfigurationSource
-        {
-            Path = path,
-            FileProvider = configurationBuilder.GetFileProvider(),
-            ReloadOnChange = true,
-            Optional = true,
-        };
-    }
-
     /// <inheritdoc />
     public void Register(IConventionContext context)
     {
@@ -46,4 +37,12 @@ public class YamlConvention : ISetupConvention
             }
         );
     }
+
+    private static Func<Stream?, IConfigurationSource> LoadYamlFile(IConfigurationBuilder configurationBuilder, string path) => _ => new YamlConfigurationSource
+    {
+        Path = path,
+        FileProvider = configurationBuilder.GetFileProvider(),
+        ReloadOnChange = true,
+        Optional = true,
+    };
 }

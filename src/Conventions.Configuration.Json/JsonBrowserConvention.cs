@@ -1,11 +1,13 @@
 using System.Runtime.InteropServices;
+
 using Microsoft.Extensions.Configuration.Json;
+
 using Rocket.Surgery.Conventions.Setup;
 
 namespace Rocket.Surgery.Conventions.Configuration.Json;
 
 /// <summary>
-/// Json configuration conventions
+///     Json configuration conventions
 /// </summary>
 [ExportConvention]
 public class JsonBrowserConvention : ISetupConvention
@@ -21,7 +23,7 @@ public class JsonBrowserConvention : ISetupConvention
                     new ConfigurationBuilderDelegateResult(
                         "appsettings.local.json",
                         stream => new JsonStreamConfigurationSource { Stream = stream ?? throw new ArgumentNullException(nameof(stream)) }
-                    )
+                    ),
                 }
                 : Array.Empty<ConfigurationBuilderDelegateResult>()
         );

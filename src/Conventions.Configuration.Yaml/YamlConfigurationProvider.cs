@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+
 using YamlDotNet.Core;
 
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
@@ -6,14 +7,12 @@ namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 /// <summary>
 ///     A YAML file based <see cref="FileConfigurationProvider" />.
 /// </summary>
-public class YamlConfigurationProvider : FileConfigurationProvider
+/// <remarks>
+///     The yaml configuration provider
+/// </remarks>
+/// <param name="source"></param>
+public class YamlConfigurationProvider(YamlConfigurationSource source) : FileConfigurationProvider(source)
 {
-    /// <summary>
-    ///     The yaml configuration provider
-    /// </summary>
-    /// <param name="source"></param>
-    public YamlConfigurationProvider(YamlConfigurationSource source) : base(source) { }
-
     /// <inheritdoc />
     public override void Load(Stream stream)
     {

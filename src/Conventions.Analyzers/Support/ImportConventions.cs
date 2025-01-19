@@ -1,4 +1,5 @@
 using System.Text;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -105,7 +106,7 @@ internal static class ImportConventions
                                             )
                                            .WithArgumentList(
                                                 ArgumentList(
-                                                    SeparatedList<ArgumentSyntax>(
+                                                    SeparatedList(
                                                         [
                                                             Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("RSG__HOSTTYPE"))),
                                                             Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("UnitTest"))),
@@ -175,12 +176,12 @@ internal static class ImportConventions
             {
                 if (compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.WebApplicationBuilder") is { })
                 {
-                    var builderName = "WebApplicationBuilder";
-                    var builderType = "global::Microsoft.AspNetCore.Builder.WebApplicationBuilder";
-                    var returnType = "global::Microsoft.AspNetCore.Builder.WebApplication";
-                    var extensionsType = "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions";
-                    var hostingUsing = "global::Microsoft.Extensions.Hosting";
-                    var rocketUsing = "Rocket.Surgery.Hosting";
+                    const string builderName = "WebApplicationBuilder";
+                    const string builderType = "global::Microsoft.AspNetCore.Builder.WebApplicationBuilder";
+                    const string returnType = "global::Microsoft.AspNetCore.Builder.WebApplication";
+                    const string extensionsType = "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions";
+                    const string hostingUsing = "global::Microsoft.Extensions.Hosting";
+                    const string rocketUsing = "Rocket.Surgery.Hosting";
                     context.AddSource(
                         "Generated_WebApplicationBuilder_Extensions.g.cs",
                         transformTemplate(
@@ -195,6 +196,7 @@ internal static class ImportConventions
                         )
                     );
                     if (hasSerilog)
+                    {
                         context.AddSource(
                             "Generated_WebApplicationBuilder_Extensions_Serilog.g.cs",
                             transformTemplate(
@@ -208,16 +210,17 @@ internal static class ImportConventions
                                 rocketUsing
                             )
                         );
+                    }
                 }
 
                 if (compilation.GetTypeByMetadataName("Microsoft.Extensions.Hosting.HostApplicationBuilder") is { })
                 {
-                    var builderName = "HostApplicationBuilder";
-                    var builderType = "global::Microsoft.Extensions.Hosting.HostApplicationBuilder";
-                    var returnType = "global::Microsoft.Extensions.Hosting.IHost";
-                    var extensionsType = "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions";
-                    var hostingUsing = "global::Microsoft.Extensions.Hosting";
-                    var rocketUsing = "Rocket.Surgery.Hosting";
+                    const string builderName = "HostApplicationBuilder";
+                    const string builderType = "global::Microsoft.Extensions.Hosting.HostApplicationBuilder";
+                    const string returnType = "global::Microsoft.Extensions.Hosting.IHost";
+                    const string extensionsType = "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions";
+                    const string hostingUsing = "global::Microsoft.Extensions.Hosting";
+                    const string rocketUsing = "Rocket.Surgery.Hosting";
 
                     context.AddSource(
                         "Generated_HostApplicationBuilder_Extensions.g.cs",
@@ -234,6 +237,7 @@ internal static class ImportConventions
                     );
 
                     if (hasSerilog)
+                    {
                         context.AddSource(
                             "Generated_HostApplicationBuilder_Extensions_Serilog.g.cs",
                             transformTemplate(
@@ -247,18 +251,19 @@ internal static class ImportConventions
                                 rocketUsing
                             )
                         );
+                    }
                 }
             }
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions") is { }
              && compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder") is { })
             {
-                var builderName = "WebAssemblyHostBuilder";
-                var builderType = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder";
-                var returnType = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost";
-                var extensionsType = "global::Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions";
-                var hostingUsing = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting";
-                var rocketUsing = "Rocket.Surgery.WebAssembly.Hosting";
+                const string builderName = "WebAssemblyHostBuilder";
+                const string builderType = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder";
+                const string returnType = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost";
+                const string extensionsType = "global::Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions";
+                const string hostingUsing = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting";
+                const string rocketUsing = "Rocket.Surgery.WebAssembly.Hosting";
 
                 context.AddSource(
                     "Generated_WebAssemblyBuilder_Extensions.g.cs",
@@ -274,6 +279,7 @@ internal static class ImportConventions
                     )
                 );
                 if (hasSerilog)
+                {
                     context.AddSource(
                         "Generated_WebAssemblyBuilder_Extensions_Serilog.g.cs",
                         transformTemplate(
@@ -287,37 +293,23 @@ internal static class ImportConventions
                             rocketUsing
                         )
                     );
+                }
             }
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.Aspire.Hosting.RocketDistributedApplicationExtensions") is { }
-                && compilation.GetTypeByMetadataName("Aspire.Hosting.IDistributedApplicationBuilder") is { })
+             && compilation.GetTypeByMetadataName("Aspire.Hosting.IDistributedApplicationBuilder") is { })
             {
-                var builderName = "DistributedApplicationBuilder";
-                var builderType = "global::Aspire.Hosting.IDistributedApplicationBuilder";
-                var returnType = "global::Aspire.Hosting.DistributedApplication";
-                var extensionsType = "global::Rocket.Surgery.Aspire.Hosting.RocketDistributedApplicationExtensions";
-                var hostingUsing = "global::Aspire.Hosting";
-                var rocketUsing = "Rocket.Surgery.Aspire.Hosting";
+                const string builderName = "DistributedApplicationBuilder";
+                const string builderType = "global::Aspire.Hosting.IDistributedApplicationBuilder";
+                const string returnType = "global::Aspire.Hosting.DistributedApplication";
+                const string extensionsType = "global::Rocket.Surgery.Aspire.Hosting.RocketDistributedApplicationExtensions";
+                const string hostingUsing = "global::Aspire.Hosting";
+                const string rocketUsing = "Rocket.Surgery.Aspire.Hosting";
 
                 context.AddSource(
                     "Generated_DistributedApplicationBuilder_Extensions.g.cs",
                     transformTemplate(
-                        _configurationMethods,
-                        builderName,
-                        builderType,
-                        returnType,
-                        extensionsType,
-                        loadConventionsMethod,
-                        hostingUsing,
-                        rocketUsing
-                    )
-                   .Replace(", static b => b.Build()", "")
-                );
-                if (hasSerilog)
-                    context.AddSource(
-                        "Generated_DistributedApplicationBuilder_Extensions_Serilog.g.cs",
-                        transformTemplate(
-                            _serilogConfigurationMethods,
+                            _configurationMethods,
                             builderName,
                             builderType,
                             returnType,
@@ -327,37 +319,39 @@ internal static class ImportConventions
                             rocketUsing
                         )
                        .Replace(", static b => b.Build()", "")
+                );
+                if (hasSerilog)
+                {
+                    context.AddSource(
+                        "Generated_DistributedApplicationBuilder_Extensions_Serilog.g.cs",
+                        transformTemplate(
+                                _serilogConfigurationMethods,
+                                builderName,
+                                builderType,
+                                returnType,
+                                extensionsType,
+                                loadConventionsMethod,
+                                hostingUsing,
+                                rocketUsing
+                            )
+                           .Replace(", static b => b.Build()", "")
                     );
+                }
             }
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.Aspire.Hosting.Testing.RocketDistributedApplicationTestingExtensions") is { }
              && compilation.GetTypeByMetadataName("Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder") is { })
             {
-                var builderName = "DistributedApplicationTestingBuilder";
-                var builderType = "global::Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder";
-                var returnType = "global::Aspire.Hosting.DistributedApplication";
-                var extensionsType = "global::Rocket.Surgery.Aspire.Hosting.Testing.RocketDistributedApplicationTestingExtensions";
-                var hostingUsing = "global::Aspire.Hosting.Testing";
-                var rocketUsing = "Rocket.Surgery.Aspire.Hosting.Testing";
+                const string builderName = "DistributedApplicationTestingBuilder";
+                const string builderType = "global::Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder";
+                const string returnType = "global::Aspire.Hosting.DistributedApplication";
+                const string extensionsType = "global::Rocket.Surgery.Aspire.Hosting.Testing.RocketDistributedApplicationTestingExtensions";
+                const string hostingUsing = "global::Aspire.Hosting.Testing";
+                const string rocketUsing = "Rocket.Surgery.Aspire.Hosting.Testing";
                 context.AddSource(
                     "Generated_DistributedApplicationTestingBuilder_Extensions.g.cs",
                     transformTemplate(
-                        _configurationMethods,
-                        builderName,
-                        builderType,
-                        returnType,
-                        extensionsType,
-                        loadConventionsMethod,
-                        hostingUsing,
-                        rocketUsing
-                    )
-                   .Replace(", static b => b.Build()", "")
-                );
-                if (hasSerilog)
-                    context.AddSource(
-                        "Generated_DistributedApplicationTestingBuilder_Extensions_Serilog.g.cs",
-                        transformTemplate(
-                            _serilogConfigurationMethods,
+                            _configurationMethods,
                             builderName,
                             builderType,
                             returnType,
@@ -367,7 +361,24 @@ internal static class ImportConventions
                             rocketUsing
                         )
                        .Replace(", static b => b.Build()", "")
+                );
+                if (hasSerilog)
+                {
+                    context.AddSource(
+                        "Generated_DistributedApplicationTestingBuilder_Extensions_Serilog.g.cs",
+                        transformTemplate(
+                                _serilogConfigurationMethods,
+                                builderName,
+                                builderType,
+                                returnType,
+                                extensionsType,
+                                loadConventionsMethod,
+                                hostingUsing,
+                                rocketUsing
+                            )
+                           .Replace(", static b => b.Build()", "")
                     );
+                }
             }
         }
 
@@ -380,67 +391,59 @@ internal static class ImportConventions
             string loadConventionsMethod,
             string hostingUsing,
             string rocketUsing
-        )
-            => template
-              .Replace("{BuilderName}", builderName)
-              .Replace("{BuilderType}", builderType)
-              .Replace("{ReturnType}", returnType)
-              .Replace("{ExtensionsType}", extensionsType)
-              .Replace("{LoadConventions}", loadConventionsMethod)
-              .Replace("{HostingUsing}", hostingUsing)
-              .Replace("{RocketUsing}", rocketUsing);
+        ) => template
+            .Replace("{BuilderName}", builderName)
+            .Replace("{BuilderType}", builderType)
+            .Replace("{ReturnType}", returnType)
+            .Replace("{ExtensionsType}", extensionsType)
+            .Replace("{LoadConventions}", loadConventionsMethod)
+            .Replace("{HostingUsing}", hostingUsing)
+            .Replace("{RocketUsing}", rocketUsing);
 
-        static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ConventionConfigurationData configurationData)
-        {
-            return
-            [
-                .. compilation
-                  .References
-                  .Select(compilation.GetAssemblyOrModuleSymbol)
-                  .OfType<IAssemblySymbol>()
-                  .Select(
-                       symbol =>
+        static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ConventionConfigurationData configurationData) => [
+            .. compilation
+              .References
+              .Select(compilation.GetAssemblyOrModuleSymbol)
+              .OfType<IAssemblySymbol>()
+              .Select(
+                   symbol =>
+                   {
+                       try
                        {
-                           try
-                           {
-                               var config = ConventionConfigurationData.FromAssemblyAttributes(symbol, ConventionConfigurationData.ExportsDefaults);
-                               if (symbol.GetTypeByMetadataName(
-                                       config switch
-                                       {
-                                           { Namespace.Length: > 0, Postfix: true }  => $"{config.Namespace}.Conventions.{config.ClassName}",
-                                           { Postfix: true }                         => $"Conventions.{config.ClassName}",
-                                           { Namespace.Length: > 0, Postfix: false } => $"{config.Namespace}.{config.ClassName}",
-                                           _                                         => config.ClassName,
-                                       }
-                                   ) is { } configuredMetadata)
-                               {
-                                   return configuredMetadata.ToDisplayString() + $".{config.MethodName}";
-                               }
-                           }
-                           catch
-                           {
-                               //
-                           }
-
-                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                           return null!;
+                           var config = ConventionConfigurationData.FromAssemblyAttributes(symbol, ConventionConfigurationData.ExportsDefaults);
+                           if (symbol.GetTypeByMetadataName(
+                                   config switch
+                                   {
+                                       { Namespace.Length: > 0, Postfix: true }  => $"{config.Namespace}.Conventions.{config.ClassName}",
+                                       { Postfix: true }                         => $"Conventions.{config.ClassName}",
+                                       { Namespace.Length: > 0, Postfix: false } => $"{config.Namespace}.{config.ClassName}",
+                                       _                                         => config.ClassName,
+                                   }
+                               ) is { } configuredMetadata) { return configuredMetadata.ToDisplayString() + $".{config.MethodName}";
+} }
+                       catch
+                       {
+                           //
                        }
-                   )
-                  .Where(z => !string.IsNullOrWhiteSpace(z))
-                  .Concat(
-                       exports
-                           ?
-                           [
-                               ( string.IsNullOrWhiteSpace(configurationData.Namespace) ? "" : configurationData.Namespace + "." )
-                             + configurationData.ClassName
-                             + "."
-                             + configurationData.MethodName,
-                           ]
-                           : []
-                   )
-                  .OrderBy(z => z),
+
+                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                       return null!;
+                   }
+               )
+              .Where(z => !string.IsNullOrWhiteSpace(z))
+              .Concat(
+                   exports
+                       ?
+                       [
+                           ( string.IsNullOrWhiteSpace(configurationData.Namespace) ? "" : configurationData.Namespace + "." )
+                         + configurationData.ClassName
+                         + "."
+                         + configurationData.MethodName,
+                       ]
+                       : []
+               )
+              .OrderBy(z => z),
             ];
-        }
 
         static BlockSyntax addEnumerateExportStatements(IReadOnlyCollection<string> references)
         {
@@ -462,6 +465,15 @@ internal static class ImportConventions
             return block;
         }
     }
+
+    public record Request
+    (
+        Compilation Compilation,
+        bool HasExports,
+        (bool isTestProject, string? rootNamespace) MsBuildConfig,
+        ConventionConfigurationData ImportConfiguration,
+        ConventionConfigurationData ExportConfiguration
+    );
 
     private const string _configurationMethods = """"
         #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
@@ -490,7 +502,7 @@ internal static class ImportConventions
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -502,7 +514,7 @@ internal static class ImportConventions
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -517,7 +529,7 @@ internal static class ImportConventions
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -532,7 +544,7 @@ internal static class ImportConventions
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -547,7 +559,7 @@ internal static class ImportConventions
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -562,7 +574,7 @@ internal static class ImportConventions
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -577,7 +589,7 @@ internal static class ImportConventions
                 action(contextBuilder);
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -592,7 +604,7 @@ internal static class ImportConventions
                 action(contextBuilder);
                 return await ConfigureRocketSurgery(await builder, action, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -605,7 +617,7 @@ internal static class ImportConventions
                 ArgumentNullException.ThrowIfNull(contextBuilder);
                 return await {ExtensionsType}.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -644,7 +656,7 @@ internal static class ImportConventions
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -656,7 +668,7 @@ internal static class ImportConventions
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -671,7 +683,7 @@ internal static class ImportConventions
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -686,7 +698,7 @@ internal static class ImportConventions
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -701,7 +713,7 @@ internal static class ImportConventions
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -716,7 +728,7 @@ internal static class ImportConventions
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -731,7 +743,7 @@ internal static class ImportConventions
                 action(contextBuilder);
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-
+        
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -748,13 +760,4 @@ internal static class ImportConventions
             }
         }
         """";
-
-    public record Request
-    (
-        Compilation Compilation,
-        bool HasExports,
-        (bool isTestProject, string? rootNamespace) MsBuildConfig,
-        ConventionConfigurationData ImportConfiguration,
-        ConventionConfigurationData ExportConfiguration
-    );
 }
