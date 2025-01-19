@@ -420,7 +420,7 @@ internal static class ImportConventions
                                        _                                         => config.ClassName,
                                    }
                                ) is { } configuredMetadata) { return configuredMetadata.ToDisplayString() + $".{config.MethodName}";
-} }
+            } }
                        catch
                        {
                            //
