@@ -1,4 +1,4 @@
-#if BROWSER
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Configuration.Json;
 using Rocket.Surgery.Conventions.Setup;
 
@@ -13,6 +13,7 @@ public class JsonBrowserConvention : ISetupConvention
     /// <inheritdoc />
     public void Register(IConventionContext context)
     {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
         context.AppendEnvironmentConfiguration(
             (configurationBuilder, environment) => environment == "local"
                 ? new[]
@@ -26,4 +27,3 @@ public class JsonBrowserConvention : ISetupConvention
         );
     }
 }
-#endif

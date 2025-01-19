@@ -1,4 +1,4 @@
-#if BROWSER
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Configuration;
 using Rocket.Surgery.Conventions.Setup;
 
@@ -20,6 +20,7 @@ public class YamlBrowserConvention : ISetupConvention
     /// <inheritdoc />
     public void Register(IConventionContext context)
     {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
         context.AppendApplicationConfiguration(
             configurationBuilder =>
             {
@@ -42,4 +43,3 @@ public class YamlBrowserConvention : ISetupConvention
         );
     }
 }
-#endif

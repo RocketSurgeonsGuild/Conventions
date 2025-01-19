@@ -3,9 +3,7 @@
 
 using Microsoft.Extensions.Configuration;
 using YamlDotNet.Core;
-#if !BROWSER
 using Microsoft.Extensions.FileProviders;
-#endif
 
 namespace Rocket.Surgery.Conventions.Configuration.Yaml;
 
@@ -46,7 +44,7 @@ public static class YamlConfigurationExtensions
             }
         }
     }
-    #if !BROWSER
+
     /// <summary>
     ///     Adds the YAML configuration provider at <paramref name="path" /> to <paramref name="builder" />.
     /// </summary>
@@ -138,5 +136,4 @@ public static class YamlConfigurationExtensions
     {
         return builder.Add(configureSource);
     }
-    #endif
 }

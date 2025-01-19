@@ -1,3 +1,13 @@
+using System.Collections.Immutable;
+using Aspire.Hosting;
+using Aspire.Hosting.Testing;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Aspire.Hosting;
+using Rocket.Surgery.Aspire.Hosting.Testing;
+using Rocket.Surgery.Hosting;
+using Rocket.Surgery.WebAssembly.Hosting;
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -153,6 +163,49 @@ namespace TestProject
                           .GenerateAsync();
 
         await Verify(result);
+    }
+
+    public static IEnumerable<object[]> Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data()
+    {
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder),
+            typeof(global::Serilog.ILogger),
+            typeof(ConventionSerilogExtensions)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder),
+            typeof(global::Serilog.ILogger),
+            typeof(ConventionSerilogExtensions)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder),
+                                                                                                                                       typeof(global::Serilog.ILogger),
+                                                                                                                                       typeof(ConventionSerilogExtensions)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder),
+            typeof(global::Serilog.ILogger),
+            typeof(ConventionSerilogExtensions)])];
+        yield return [ImmutableArray.CreateRange<Type>([typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder),
+            typeof(global::Serilog.ILogger),
+            typeof(ConventionSerilogExtensions)])];
+    }
+
+    [Theory]
+    [MemberData(nameof(Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data))]
+    public async Task Should_Generate_Static_Assembly_Methods_For_Runnable_Projects(ImmutableArray<Type> referencedTypes)
+    {
+        var result = await WithGenericSharedDeps()
+                          .AddReferences(referencedTypes.ToArray())
+                          .AddSources(
+                               @"
+using Rocket.Surgery.Conventions;
+
+[assembly: ImportConventions]
+"
+                           )
+                          .Build()
+                          .GenerateAsync();
+
+        await Verify(result).UseParameters(string.Join("_", referencedTypes.Select(z => z.Name))).HashParameters();
     }
 
     [Fact]

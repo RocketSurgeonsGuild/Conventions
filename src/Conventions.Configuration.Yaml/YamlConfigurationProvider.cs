@@ -1,4 +1,3 @@
-#if !BROWSER
 using Microsoft.Extensions.Configuration;
 using YamlDotNet.Core;
 
@@ -29,4 +28,3 @@ public class YamlConfigurationProvider : FileConfigurationProvider
         }
     }
 }
-#endif

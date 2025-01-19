@@ -163,6 +163,8 @@ internal static class ImportConventions
             cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
         );
 
+        var hasSerilog = request.Compilation.GetTypeByMetadataName("Rocket.Surgery.Conventions.ConventionSerilogExtensions") is { };
+
         if (request.ImportConfiguration is { Assembly: true })
         {
             var loadConventionsMethod = request.ImportConfiguration.Namespace is { Length: > 0 }
@@ -173,85 +175,220 @@ internal static class ImportConventions
             {
                 if (compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.WebApplicationBuilder") is { })
                 {
+                    var builderName = "WebApplicationBuilder";
+                    var builderType = "global::Microsoft.AspNetCore.Builder.WebApplicationBuilder";
+                    var returnType = "global::Microsoft.AspNetCore.Builder.WebApplication";
+                    var extensionsType = "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions";
+                    var hostingUsing = "global::Microsoft.Extensions.Hosting";
+                    var rocketUsing = "Rocket.Surgery.Hosting";
                     context.AddSource(
                         "Generated_WebApplicationBuilder_Extensions.g.cs",
-                        _configurationMethods
-                           .Replace("{BuilderName}", "WebApplicationBuilder")
-                           .Replace("{BuilderType}", "global::Microsoft.AspNetCore.Builder.WebApplicationBuilder")
-                           .Replace("{ReturnType}", "global::Microsoft.AspNetCore.Builder.WebApplication")
-                           .Replace("{ExtensionsType}", "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
-                           .Replace("{LoadConventions}", loadConventionsMethod)
-                           .Replace("{HostingUsing}", "global::Microsoft.Extensions.Hosting")
-                           .Replace("{RocketUsing}", "Rocket.Surgery.Hosting")
+                        transformTemplate(
+                            _configurationMethods,
+                            builderName,
+                            builderType,
+                            returnType,
+                            extensionsType,
+                            loadConventionsMethod,
+                            hostingUsing,
+                            rocketUsing
+                        )
                     );
+                    if (hasSerilog)
+                        context.AddSource(
+                            "Generated_WebApplicationBuilder_Extensions_Serilog.g.cs",
+                            transformTemplate(
+                                _serilogConfigurationMethods,
+                                builderName,
+                                builderType,
+                                returnType,
+                                extensionsType,
+                                loadConventionsMethod,
+                                hostingUsing,
+                                rocketUsing
+                            )
+                        );
                 }
 
                 if (compilation.GetTypeByMetadataName("Microsoft.Extensions.Hosting.HostApplicationBuilder") is { })
                 {
+                    var builderName = "HostApplicationBuilder";
+                    var builderType = "global::Microsoft.Extensions.Hosting.HostApplicationBuilder";
+                    var returnType = "global::Microsoft.Extensions.Hosting.IHost";
+                    var extensionsType = "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions";
+                    var hostingUsing = "global::Microsoft.Extensions.Hosting";
+                    var rocketUsing = "Rocket.Surgery.Hosting";
+
                     context.AddSource(
                         "Generated_HostApplicationBuilder_Extensions.g.cs",
-                        _configurationMethods
-                           .Replace("{BuilderName}", "HostApplicationBuilder")
-                           .Replace("{BuilderType}", "global::Microsoft.Extensions.Hosting.HostApplicationBuilder")
-                           .Replace("{ReturnType}", "global::Microsoft.Extensions.Hosting.IHost")
-                           .Replace("{ExtensionsType}", "global::Rocket.Surgery.Hosting.RocketHostApplicationExtensions")
-                           .Replace("{LoadConventions}", loadConventionsMethod)
-                           .Replace("{HostingUsing}", "global::Microsoft.Extensions.Hosting")
-                           .Replace("{RocketUsing}", "Rocket.Surgery.Hosting")
+                        transformTemplate(
+                            _configurationMethods,
+                            builderName,
+                            builderType,
+                            returnType,
+                            extensionsType,
+                            loadConventionsMethod,
+                            hostingUsing,
+                            rocketUsing
+                        )
                     );
+
+                    if (hasSerilog)
+                        context.AddSource(
+                            "Generated_HostApplicationBuilder_Extensions_Serilog.g.cs",
+                            transformTemplate(
+                                _serilogConfigurationMethods,
+                                builderName,
+                                builderType,
+                                returnType,
+                                extensionsType,
+                                loadConventionsMethod,
+                                hostingUsing,
+                                rocketUsing
+                            )
+                        );
                 }
             }
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions") is { }
              && compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder") is { })
             {
+                var builderName = "WebAssemblyHostBuilder";
+                var builderType = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder";
+                var returnType = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost";
+                var extensionsType = "global::Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions";
+                var hostingUsing = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting";
+                var rocketUsing = "Rocket.Surgery.WebAssembly.Hosting";
+
                 context.AddSource(
                     "Generated_WebAssemblyBuilder_Extensions.g.cs",
-                    _configurationMethods
-                       .Replace("{BuilderName}", "WebAssemblyHostBuilder")
-                       .Replace("{BuilderType}", "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder")
-                       .Replace("{ReturnType}", "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost")
-                       .Replace("{ExtensionsType}", "global::Rocket.Surgery.WebAssembly.Hosting.RocketWebAssemblyExtensions")
-                       .Replace("{LoadConventions}", loadConventionsMethod)
-                       .Replace("{HostingUsing}", "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting")
-                       .Replace("{RocketUsing}", "Rocket.Surgery.WebAssembly.Hosting")
+                    transformTemplate(
+                        _configurationMethods,
+                        builderName,
+                        builderType,
+                        returnType,
+                        extensionsType,
+                        loadConventionsMethod,
+                        hostingUsing,
+                        rocketUsing
+                    )
                 );
+                if (hasSerilog)
+                    context.AddSource(
+                        "Generated_WebAssemblyBuilder_Extensions_Serilog.g.cs",
+                        transformTemplate(
+                            _serilogConfigurationMethods,
+                            builderName,
+                            builderType,
+                            returnType,
+                            extensionsType,
+                            loadConventionsMethod,
+                            hostingUsing,
+                            rocketUsing
+                        )
+                    );
             }
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.Aspire.Hosting.RocketDistributedApplicationExtensions") is { }
-             && compilation.GetTypeByMetadataName("Aspire.Hosting.IDistributedApplicationBuilder") is { })
+                && compilation.GetTypeByMetadataName("Aspire.Hosting.IDistributedApplicationBuilder") is { })
             {
+                var builderName = "DistributedApplicationBuilder";
+                var builderType = "global::Aspire.Hosting.IDistributedApplicationBuilder";
+                var returnType = "global::Aspire.Hosting.DistributedApplication";
+                var extensionsType = "global::Rocket.Surgery.Aspire.Hosting.RocketDistributedApplicationExtensions";
+                var hostingUsing = "global::Aspire.Hosting";
+                var rocketUsing = "Rocket.Surgery.Aspire.Hosting";
+
                 context.AddSource(
                     "Generated_DistributedApplicationBuilder_Extensions.g.cs",
-                    _configurationMethods
-                       .Replace("{BuilderName}", "DistributedApplicationBuilder")
-                       .Replace("{BuilderType}", "global::Aspire.Hosting.IDistributedApplicationBuilder")
-                       .Replace("{ReturnType}", "global::Aspire.Hosting.DistributedApplication")
-                       .Replace("{ExtensionsType}", "global::Rocket.Surgery.Aspire.Hosting.RocketDistributedApplicationExtensions")
-                       .Replace("{LoadConventions}", loadConventionsMethod)
-                       .Replace("{HostingUsing}", "global::Aspire.Hosting")
-                       .Replace("{RocketUsing}", "Rocket.Surgery.Aspire.Hosting")
-                       .Replace(", static b => b.Build()", "")
+                    transformTemplate(
+                        _configurationMethods,
+                        builderName,
+                        builderType,
+                        returnType,
+                        extensionsType,
+                        loadConventionsMethod,
+                        hostingUsing,
+                        rocketUsing
+                    )
+                   .Replace(", static b => b.Build()", "")
                 );
+                if (hasSerilog)
+                    context.AddSource(
+                        "Generated_DistributedApplicationBuilder_Extensions_Serilog.g.cs",
+                        transformTemplate(
+                            _serilogConfigurationMethods,
+                            builderName,
+                            builderType,
+                            returnType,
+                            extensionsType,
+                            loadConventionsMethod,
+                            hostingUsing,
+                            rocketUsing
+                        )
+                       .Replace(", static b => b.Build()", "")
+                    );
             }
 
             if (compilation.GetTypeByMetadataName("Rocket.Surgery.Aspire.Hosting.Testing.RocketDistributedApplicationTestingExtensions") is { }
              && compilation.GetTypeByMetadataName("Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder") is { })
             {
+                var builderName = "DistributedApplicationTestingBuilder";
+                var builderType = "global::Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder";
+                var returnType = "global::Aspire.Hosting.DistributedApplication";
+                var extensionsType = "global::Rocket.Surgery.Aspire.Hosting.Testing.RocketDistributedApplicationTestingExtensions";
+                var hostingUsing = "global::Aspire.Hosting.Testing";
+                var rocketUsing = "Rocket.Surgery.Aspire.Hosting.Testing";
                 context.AddSource(
                     "Generated_DistributedApplicationTestingBuilder_Extensions.g.cs",
-                    _configurationMethods
-                       .Replace("{BuilderName}", "DistributedApplicationTestingBuilder")
-                       .Replace("{BuilderType}", "global::Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder")
-                       .Replace("{ReturnType}", "global::Aspire.Hosting.DistributedApplication")
-                       .Replace("{ExtensionsType}", "global::Rocket.Surgery.Aspire.Hosting.Testing.RocketDistributedApplicationTestingExtensions")
-                       .Replace("{LoadConventions}", loadConventionsMethod)
-                       .Replace("{HostingUsing}", "global::Aspire.Hosting.Testing")
-                       .Replace("{RocketUsing}", "Rocket.Surgery.Aspire.Hosting.Testing")
-                       .Replace(", static b => b.Build()", "")
+                    transformTemplate(
+                        _configurationMethods,
+                        builderName,
+                        builderType,
+                        returnType,
+                        extensionsType,
+                        loadConventionsMethod,
+                        hostingUsing,
+                        rocketUsing
+                    )
+                   .Replace(", static b => b.Build()", "")
                 );
+                if (hasSerilog)
+                    context.AddSource(
+                        "Generated_DistributedApplicationTestingBuilder_Extensions_Serilog.g.cs",
+                        transformTemplate(
+                            _serilogConfigurationMethods,
+                            builderName,
+                            builderType,
+                            returnType,
+                            extensionsType,
+                            loadConventionsMethod,
+                            hostingUsing,
+                            rocketUsing
+                        )
+                       .Replace(", static b => b.Build()", "")
+                    );
             }
         }
+
+        static string transformTemplate(
+            string template,
+            string builderName,
+            string builderType,
+            string returnType,
+            string extensionsType,
+            string loadConventionsMethod,
+            string hostingUsing,
+            string rocketUsing
+        )
+            => template
+              .Replace("{BuilderName}", builderName)
+              .Replace("{BuilderType}", builderType)
+              .Replace("{ReturnType}", returnType)
+              .Replace("{ExtensionsType}", extensionsType)
+              .Replace("{LoadConventions}", loadConventionsMethod)
+              .Replace("{HostingUsing}", hostingUsing)
+              .Replace("{RocketUsing}", rocketUsing);
 
         static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ConventionConfigurationData configurationData)
         {
@@ -476,6 +613,139 @@ internal static class ImportConventions
             /// <param name="contextBuilder">The convention context builder.</param>
             /// <param name="cancellationToken"></param>
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ConventionContextBuilder contextBuilder, CancellationToken cancellationToken = default) => await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
+        }
+        """";
+
+    private const string _serilogConfigurationMethods = """"
+        #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
+        using System.Threading.Tasks;
+        using Microsoft.Extensions.Configuration;
+        using Microsoft.Extensions.DependencyInjection;
+        using {HostingUsing};
+        using Microsoft.Extensions.Logging;
+        using Rocket.Surgery.Conventions;
+        using AppDelegate =
+            System.Func<{BuilderType}, System.Threading.CancellationToken,
+                System.Threading.Tasks.ValueTask<Rocket.Surgery.Conventions.ConventionContextBuilder>>;
+        using ILogger = Serilog.ILogger;
+
+        namespace {RocketUsing};
+
+        internal static partial class GeneratedRocket{BuilderName}Extensions
+        {
+            /// <summary>
+            ///     Configures the rocket Surgery.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
+            /// <param name="cancellationToken"></param>
+            public static ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ILogger logger, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
+                return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
+            }
+
+            /// <summary>
+            ///     Configures the rocket Surgery.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
+            /// <param name="cancellationToken"></param>
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ILogger logger, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
+                return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
+            }
+
+            /// <summary>
+            ///     Configures the rocket Surgery.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
+            /// <param name="action">The action.</param>
+            /// <param name="cancellationToken"></param>
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ILogger logger, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
+                await action(contextBuilder, cancellationToken);
+                return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
+            }
+
+            /// <summary>
+            ///     Configures the rocket Surgery.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
+            /// <param name="action">The action.</param>
+            /// <param name="cancellationToken"></param>
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ILogger logger, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
+                await action(contextBuilder, cancellationToken);
+                return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
+            }
+
+            /// <summary>
+            ///     Configures the rocket Surgery.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
+            /// <param name="action">The action.</param>
+            /// <param name="cancellationToken"></param>
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ILogger logger, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
+                await action(contextBuilder);
+                return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
+            }
+
+            /// <summary>
+            ///     Configures the rocket Surgery.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
+            /// <param name="action">The action.</param>
+            /// <param name="cancellationToken"></param>
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ILogger logger, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
+                await action(contextBuilder);
+                return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
+            }
+
+            /// <summary>
+            ///     Configures the rocket Surgery.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
+            /// <param name="action">The action.</param>
+            /// <param name="cancellationToken"></param>
+            public static ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ILogger logger, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
+                action(contextBuilder);
+                return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
+            }
+
+            /// <summary>
+            ///     Configures the rocket Surgery.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
+            /// <param name="action">The action.</param>
+            /// <param name="cancellationToken"></param>
+            public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ILogger logger, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
+            {
+                ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(action);
+                var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
+                action(contextBuilder);
+                return await ConfigureRocketSurgery(await builder, action, cancellationToken);
+            }
         }
         """";
 

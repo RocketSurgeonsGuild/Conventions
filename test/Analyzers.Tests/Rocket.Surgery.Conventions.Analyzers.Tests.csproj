@@ -14,10 +14,14 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" />
+        <ProjectReference Include="..\..\src\Aspire.Hosting.Testing\Rocket.Surgery.Aspire.Hosting.Testing.csproj" />
+        <ProjectReference Include="..\..\src\Aspire.Hosting\Rocket.Surgery.Aspire.Hosting.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj" />
+        <ProjectReference Include="..\..\src\Conventions.Serilog\Rocket.Surgery.Conventions.Serilog.csproj" />
         <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Verify.SourceGenerators" />
