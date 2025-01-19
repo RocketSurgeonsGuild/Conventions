@@ -18,13 +18,13 @@ public class JsonBrowserConvention : ISetupConvention
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
         context.AppendEnvironmentConfiguration(
             (configurationBuilder, environment) => environment == "local"
-                ? new[]
-                {
+                ?
+                [
                     new ConfigurationBuilderDelegateResult(
                         "appsettings.local.json",
                         stream => new JsonStreamConfigurationSource { Stream = stream ?? throw new ArgumentNullException(nameof(stream)) }
                     ),
-                }
+                ]
                 : Array.Empty<ConfigurationBuilderDelegateResult>()
         );
     }

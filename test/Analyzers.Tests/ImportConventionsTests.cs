@@ -58,11 +58,11 @@ using Rocket.Surgery.Conventions;
                           .AddSources(
                                """
 
-using Rocket.Surgery.Conventions;
+                               using Rocket.Surgery.Conventions;
 
-[assembly: ImportConventions(Namespace = "Test.My.Namespace", ClassName = "MyImports")]
+                               [assembly: ImportConventions(Namespace = "Test.My.Namespace", ClassName = "MyImports")]
 
-"""
+                               """
                            )
                           .Build()
                           .GenerateAsync();
@@ -77,11 +77,11 @@ using Rocket.Surgery.Conventions;
                           .AddSources(
                                """
 
-using Rocket.Surgery.Conventions;
+                               using Rocket.Surgery.Conventions;
 
-[assembly: ImportConventions(Namespace = "", ClassName = "MyImports")]
+                               [assembly: ImportConventions(Namespace = "", ClassName = "MyImports")]
 
-"""
+                               """
                            )
                           .Build()
                           .GenerateAsync();
@@ -96,11 +96,11 @@ using Rocket.Surgery.Conventions;
                           .AddSources(
                                """
 
-using Rocket.Surgery.Conventions;
+                               using Rocket.Surgery.Conventions;
 
-[assembly: ImportConventions(Namespace = "Test.My.Namespace", ClassName = "MyImports", MethodName = "ImportConventions")]
+                               [assembly: ImportConventions(Namespace = "Test.My.Namespace", ClassName = "MyImports", MethodName = "ImportConventions")]
 
-"""
+                               """
                            )
                           .Build()
                           .GenerateAsync();

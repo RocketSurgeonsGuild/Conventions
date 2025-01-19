@@ -71,18 +71,18 @@ public static class YamlConfigurationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return  string.IsNullOrEmpty(path) 
+        return string.IsNullOrEmpty(path)
             ? throw new ArgumentException("File path must be a non-empty string.", nameof(path))
-            :  builder.AddYamlFile(
-            s =>
-            {
-                s.FileProvider = provider;
-                s.Path = path;
-                s.Optional = optional;
-                s.ReloadOnChange = reloadOnChange;
-                s.ResolveFileProvider();
-            }
-        );
+            : builder.AddYamlFile(
+                s =>
+                {
+                    s.FileProvider = provider;
+                    s.Path = path;
+                    s.Optional = optional;
+                    s.ReloadOnChange = reloadOnChange;
+                    s.ResolveFileProvider();
+                }
+            );
     }
 
     /// <summary>
