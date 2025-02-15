@@ -281,7 +281,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                         )
                                );
         var result = await host.RunConsoleAppAsync();
-        result.Should().BeGreaterOrEqualTo(0);
+        result.Should().BeGreaterThanOrEqualTo(0);
     }
 
     public class InjectionConstructor : AsyncCommand

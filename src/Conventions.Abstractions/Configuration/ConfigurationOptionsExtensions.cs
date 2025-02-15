@@ -93,23 +93,20 @@ public static class ConfigurationOptionsExtensions
     )
         where T : class, IConfigurationSource
     {
-        var iConfigurationSources = createSourceFrom as IConfigurationSource[] ?? createSourceFrom.ToArray();
-        if (iConfigurationSources.Length == 0)
-            return;
         var source = getSource(builder.Sources);
         if (source != null)
         {
             var index = builder.Sources.IndexOf(source);
             builder.Sources.RemoveAt(index);
             // We add in reverse order to keep the same order going in.
-            foreach (var newSource in iConfigurationSources.Reverse())
+            foreach (var newSource in createSourceFrom.Reverse())
             {
                 builder.Sources.Insert(index, newSource);
             }
         }
         else
         {
-            foreach (var newSource in iConfigurationSources)
+            foreach (var newSource in createSourceFrom)
             {
                 builder.Sources.Add(newSource);
             }

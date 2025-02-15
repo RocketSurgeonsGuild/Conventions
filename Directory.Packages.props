@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8" ?>
 <Project>
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -29,7 +28,7 @@
         <PackageVersion Include="Aspire.Hosting" Version="9.0.0" />
         <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.0.0" />
         <PackageVersion Include="Aspire.Hosting.Testing" Version="9.0.0" />
-        <PackageVersion Include="AutoMapper" Version="13.0.1" />
+        <PackageVersion Include="AutoMapper" Version="14.0.0" />
         <PackageVersion Include="FluentValidation" Version="11.11.0" />
         <PackageVersion Include="MediatR" Version="12.4.1" />
         <PackageVersion Include="Polyfill" Version="7.16.1" />
@@ -44,32 +43,32 @@
         <PackageVersion Include="bunit.web" Version="1.38.5" />
         <PackageVersion Include="DryIoc.dll" Version="6.0.0-preview-09" />
         <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="8.0.0-preview-04" />
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.2" />
+        <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.13" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.2" />
         <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.1" />
         <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.1" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.2" />
         <PackageVersion Include="Microsoft.Extensions.Configuration.Ini" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.1" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.2" />
         <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
         <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
+        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.2" />
         <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+        <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.2" />
         <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
-        <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.1" />
+        <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.2" />
         <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.1" />
         <PackageVersion Include="Serilog" Version="4.2.0" />
         <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0" />
-        <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.1" />
-        <PackageVersion Include="System.Collections.Immutable" Version="9.0.1" />
-        <PackageVersion Include="System.Text.Json" Version="9.0.1" />
+        <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.2" />
+        <PackageVersion Include="System.Collections.Immutable" Version="9.0.2" />
+        <PackageVersion Include="System.Text.Json" Version="9.0.2" />
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0" />
         <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
@@ -84,8 +83,8 @@
         <PackageVersion Include="Bogus" Version="35.6.1" />
         <PackageVersion Include="Microsoft.CodeCoverage" Version="17.13.0" />
         <PackageVersion Include="FakeItEasy" Version="8.3.0" />
-        <PackageVersion Include="FluentAssertions" Version="7.0.0" />
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+        <PackageVersion Include="FluentAssertions" Version="8.0.1" />
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
         <PackageVersion Include="Microsoft.Playwright" Version="1.50.0" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="9.0.4" />
         <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="9.0.4" />
@@ -94,11 +93,12 @@
         <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
         <PackageVersion Include="Verify.AngleSharp" Version="4.5.0" />
         <PackageVersion Include="Verify.ImageMagick" Version="3.6.0" />
-        <PackageVersion Include="Verify.Xunit" Version="28.10.1" />
+        <PackageVersion Include="Verify.Xunit" Version="28.11.0" />
         <PackageVersion Include="Verify.Playwright" Version="3.0.0" />
         <PackageVersion Include="Verify.SourceGenerators" Version="2.5.0" />
     </ItemGroup>
     <Import
         Project="$(MSBuildThisFileDirectory)/Directory.Packages.support.props"
-        Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')" />
+        Condition="Exists('$(MSBuildThisFileDirectory)/Directory.Packages.support.props')"
+    />
 </Project>
