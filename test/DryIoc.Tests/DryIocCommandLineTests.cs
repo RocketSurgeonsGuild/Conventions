@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 using DryIoc;
 
@@ -206,5 +206,6 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
         host.Services.GetRequiredService<IContainer>().ShouldNotBeNull();
     }
 
-    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
+    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
+        AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

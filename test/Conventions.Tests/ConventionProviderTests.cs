@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -180,12 +180,10 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [field: AllowNull]
-    [field: MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-
-    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories) => Verify(provider.GetAll().Select(z => z switch { Delegate d => d.Method.Name, IConvention c => c.GetType().Name, _ => z.ToString() }))
-        .UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
+    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories) => Verify(
+            provider.GetAll().Select(z => z switch { Delegate d => d.Method.Name, IConvention c => c.GetType().Name, _ => z.ToString() })
+        )
+       .UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
 
     [ConventionCategory(ConventionCategory.Core)]
     [DependentOfConvention(typeof(C))]

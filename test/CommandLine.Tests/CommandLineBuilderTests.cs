@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 using FakeItEasy;
 
@@ -280,7 +280,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         public override int Execute(CommandContext context) => -1;
     }
 
-    public class InjectionConstructor(IService service, ILogger<CommandLineBuilderTests.InjectionConstructor> logger) : AsyncCommand
+    public class InjectionConstructor(IService service, ILogger<InjectionConstructor> logger) : AsyncCommand
     {
         [UsedImplicitly]
         public override async Task<int> ExecuteAsync(CommandContext context)
@@ -319,7 +319,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         public IEnumerable<string> Origins { get; } = [];
     }
 
-    public class ServiceInjection(IService2 service2, ILogger<CommandLineBuilderTests.ServiceInjection> logger) : Command
+    public class ServiceInjection(IService2 service2, ILogger<ServiceInjection> logger) : Command
     {
         [UsedImplicitly]
         public override int Execute(CommandContext context)
@@ -332,7 +332,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         private readonly IService2 _service2 = service2;
     }
 
-    public class LoggerInjection(ILogger<CommandLineBuilderTests.LoggerInjection> logger) : Command
+    public class LoggerInjection(ILogger<LoggerInjection> logger) : Command
     {
         [UsedImplicitly]
         public override int Execute(CommandContext context)

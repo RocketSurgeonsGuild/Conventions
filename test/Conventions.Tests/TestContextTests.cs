@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-
 using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;

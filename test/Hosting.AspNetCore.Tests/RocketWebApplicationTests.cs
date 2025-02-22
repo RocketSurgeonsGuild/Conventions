@@ -57,8 +57,8 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         var @delegate = A.Fake<Func<WebApplication, CancellationToken, ValueTask>>();
         var delegate2 = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
         await using var host = await WebApplication
-                              .CreateBuilder()
-                              .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(delegate2));
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(delegate2));
 
         A.CallTo(() => @delegate.Invoke(A<WebApplication>._, A<CancellationToken>._)).MustHaveHappened();
         A.CallTo(() => delegate2.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();

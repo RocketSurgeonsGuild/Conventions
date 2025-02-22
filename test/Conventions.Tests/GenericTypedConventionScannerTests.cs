@@ -105,8 +105,4 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
            .Get<IServiceConvention, ServiceConvention>()
            .ShouldNotContain(x => x is Contrib);
     }
-
-    [field: AllowNull]
-    [field: MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
 }

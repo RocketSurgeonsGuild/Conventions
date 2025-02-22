@@ -197,10 +197,6 @@ public class ConventionContextTests
         await a.ShouldNotThrowAsync();
     }
 
-    [field: AllowNull]
-    [field: MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-
     public interface IAbc;
 
     public interface IAbc2;

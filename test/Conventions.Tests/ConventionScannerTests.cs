@@ -108,8 +108,4 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
            .Get<IServiceConvention, ServiceConvention>()
            .ShouldNotContain(x => x is Contrib);
     }
-
-    [field: AllowNull]
-    [field: MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
 }

@@ -1,4 +1,4 @@
-﻿using DryIoc;
+using DryIoc;
 
 using FakeItEasy;
 
@@ -222,5 +222,6 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         container.ShouldNotBeNull();
     }
 
-    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
+    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
+        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 }

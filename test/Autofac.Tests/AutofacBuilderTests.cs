@@ -1,4 +1,5 @@
 #pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021
+
 using System.Diagnostics;
 
 using Autofac;

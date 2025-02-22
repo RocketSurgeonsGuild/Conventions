@@ -225,7 +225,8 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         container.ShouldNotBeNull();
     }
 
-    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
+    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
+        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 
     protected override IContainer BuildContainer(IContainer container) =>
         container

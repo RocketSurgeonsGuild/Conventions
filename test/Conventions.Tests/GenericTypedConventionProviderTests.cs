@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -179,7 +179,8 @@ public class GenericTypedConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories) => Verify(provider.GetAll()).UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
+    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories) =>
+        Verify(provider.GetAll()).UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
 
     [ConventionCategory(ConventionCategory.Core)]
     [DependentOfConvention<C>]
