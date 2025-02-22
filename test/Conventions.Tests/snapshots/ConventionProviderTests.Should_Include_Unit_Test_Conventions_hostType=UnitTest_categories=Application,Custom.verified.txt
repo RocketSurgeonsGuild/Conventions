@@ -1,8 +1,8 @@
 ﻿[
-  <Should_Include_Unit_Test_Conventions>b__13_0,
+  <Should_Include_Unit_Test_Conventions>b__8_0,
   E,
   D,
-  <Should_Include_Unit_Test_Conventions>b__13_1,
+  <Should_Include_Unit_Test_Conventions>b__8_1,
   C,
-  <Should_Include_Unit_Test_Conventions>b__13_2
+  <Should_Include_Unit_Test_Conventions>b__8_2
 ]

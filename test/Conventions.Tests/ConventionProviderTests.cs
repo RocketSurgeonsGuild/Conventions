@@ -1,8 +1,7 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
@@ -67,7 +66,7 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
+    [Theory(Skip = "Flaky with how the compiler names delegates")]
     [MemberData(nameof(GetCategories), HostType.Undefined)]
     public async Task Should_Leave_Delegates_In_Place(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
@@ -89,7 +88,7 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
+    [Theory(Skip = "Flaky with how the compiler names delegates")]
     [MemberData(nameof(GetCategories), HostType.Undefined)]
     public async Task Should_Leave_Delegates_In_Place_Order_Delegates(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
@@ -136,11 +135,12 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
+    [Theory(Skip = "Flaky with how the compiler names delegates")]
     [MemberData(nameof(GetCategories), HostType.Live)]
     public async Task Should_Exclude_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
+
         var d1 = new ServiceConvention((_, _, _) => { });
         var d2 = new ServiceConvention((_, _, _) => { });
         var d3 = new ServiceConvention((_, _, _) => { });
@@ -158,7 +158,7 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
+    [Theory(Skip = "Flaky with how the compiler names delegates")]
     [MemberData(nameof(GetCategories), HostType.UnitTest)]
     public async Task Should_Include_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {

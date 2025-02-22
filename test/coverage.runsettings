@@ -38,50 +38,116 @@
             <ModulePaths>
               <Include>
                 <ModulePath>.*\.build\.dll</ModulePath>
-                <ModulePath>.*Rocket\.Surgery\.Nuke\.dll</ModulePath>
-                <ModulePath>.*Rocket\.Surgery\.Nuke\.Tests\.dll</ModulePath>
+                <ModulePath>.*Aspire\.Hosting\.Tests\.dll</ModulePath>
+                <ModulePath>.*AspireSample\.dll</ModulePath>
+                <ModulePath>.*Diagnostics\.dll</ModulePath>
+                <ModulePath>.*docs\.dll</ModulePath>
+                <ModulePath>.*Hosting\.Benchmarks\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Aspire\.Hosting\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Aspire\.Hosting\.Testing\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.CommandLine\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Abstractions\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Analyzers\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Analyzers\.roslyn4\.8\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Analyzers\.Tests\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Autofac\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Configuration\.Json\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Configuration\.Yaml\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Diagnostics\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.DryIoc\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Serilog\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Conventions\.Tests\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Extensions\.Autofac\.Tests\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Extensions\.CommandLine\.Tests\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Extensions\.DryIoc\.Tests\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Hosting\.AspNetCore\.Tests\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Hosting\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Hosting\.Tests\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.WebAssembly\.Hosting\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.WebAssembly\.Hosting\.Tests\.dll</ModulePath>
+                <ModulePath>.*Sample\.BlazorWasm\.dll</ModulePath>
+                <ModulePath>.*Sample\.Core\.dll</ModulePath>
+                <ModulePath>.*Sample\.Core\.Tests\.dll</ModulePath>
+                <ModulePath>.*Sample\.DependencyOne\.dll</ModulePath>
+                <ModulePath>.*Sample\.DependencyThree\.dll</ModulePath>
+                <ModulePath>.*Sample\.DependencyTwo\.dll</ModulePath>
+                <ModulePath>.*Sample\.dll</ModulePath>
+                <ModulePath>.*Sample\.Tests\.dll</ModulePath>
               </Include>
               <Exclude>
+                <ModulePath>.*Aspire\.Hosting\.AppHost\.dll</ModulePath>
+                <ModulePath>.*Aspire\.Hosting\.dll</ModulePath>
+                <ModulePath>.*Aspire\.Hosting\.Testing\.dll</ModulePath>
+                <ModulePath>.*Autofac\.Extensions\.DependencyInjection\.dll</ModulePath>
+                <ModulePath>.*AutoMapper\.dll</ModulePath>
+                <ModulePath>.*BenchMarkDotNet\.dll</ModulePath>
                 <ModulePath>.*Bogus\.dll</ModulePath>
-                <ModulePath>.*Buildalyzer\.dll</ModulePath>
+                <ModulePath>.*bunit\.web\.dll</ModulePath>
+                <ModulePath>.*DryIoc\.Microsoft\.DependencyInjection\.dll</ModulePath>
                 <ModulePath>.*FakeItEasy\.Analyzer\.CSharp\.dll</ModulePath>
                 <ModulePath>.*FakeItEasy\.dll</ModulePath>
-                <ModulePath>.*FluentAssertions\.Analyzers\.dll</ModulePath>
-                <ModulePath>.*FluentAssertions\.dll</ModulePath>
+                <ModulePath>.*FluentValidation\.dll</ModulePath>
                 <ModulePath>.*GitVersion\.Tool\.dll</ModulePath>
-                <ModulePath>.*Humanizer\.Core\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.Annotations\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.dotCover\.CommandLineTools\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.ExternalAnnotations\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.ReSharper\.GlobalTools\.dll</ModulePath>
-                <ModulePath>.*LibGit2Sharp\.dll</ModulePath>
-                <ModulePath>.*Microsoft\.Build\.dll</ModulePath>
-                <ModulePath>.*Microsoft\.Build\.Framework\.dll</ModulePath>
-                <ModulePath>.*Microsoft\.Build\.Locator\.dll</ModulePath>
-                <ModulePath>.*Microsoft\.Build\.Tasks\.Core\.dll</ModulePath>
-                <ModulePath>.*Microsoft\.Build\.Utilities\.Core\.dll</ModulePath>
+                <ModulePath>.*MediatR\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.AspNetCore\.Components\.WebAssembly\.DevServer\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.AspNetCore\.Components\.WebAssembly\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.AspNetCore\.Components\.WebAssembly\.Server\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.AspNetCore\.TestHost\.dll</ModulePath>
                 <ModulePath>.*Microsoft\.CodeAnalysis\.Analyzers\.dll</ModulePath>
                 <ModulePath>.*Microsoft\.CodeAnalysis\.BannedApiAnalyzers\.dll</ModulePath>
-                <ModulePath>.*Microsoft\.CodeAnalysis\.PublicApiAnalyzers\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.CodeAnalysis\.Common\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.CodeAnalysis\.CSharp\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.CodeAnalysis\.CSharp\.Workspaces\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.CodeAnalysis\.Features\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.CodeAnalysis\.Workspaces\.Common\.dll</ModulePath>
                 <ModulePath>.*Microsoft\.CodeCoverage\.dll</ModulePath>
-                <ModulePath>.*Microsoft\.Extensions\.FileSystemGlobbing\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.Configuration\.Abstractions\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.Configuration\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.Configuration\.FileExtensions\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.Configuration\.Json\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.DependencyInjection\.Abstractions\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.DependencyInjection\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.Hosting\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.Logging\.Configuration\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Extensions\.Logging\.dll</ModulePath>
                 <ModulePath>.*Microsoft\.NET\.Test\.Sdk\.dll</ModulePath>
+                <ModulePath>.*Microsoft\.Playwright\.dll</ModulePath>
                 <ModulePath>.*Microsoft\.SourceLink\.GitHub\.dll</ModulePath>
+                <ModulePath>.*NETStandard\.Library\.dll</ModulePath>
                 <ModulePath>.*Nuke\.Common\.dll</ModulePath>
+                <ModulePath>.*Polyfill\.dll</ModulePath>
                 <ModulePath>.*ReportGenerator\.dll</ModulePath>
                 <ModulePath>.*Rocket\.Surgery\.Extensions\.Testing\.FakeItEasy\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Extensions\.Testing\.SourceGenerators\.dll</ModulePath>
                 <ModulePath>.*Rocket\.Surgery\.Extensions\.Testing\.XUnit\.dll</ModulePath>
                 <ModulePath>.*Rocket\.Surgery\.MSBuild\.CI\.dll</ModulePath>
                 <ModulePath>.*Rocket\.Surgery\.MSBuild\.GitVersion\.dll</ModulePath>
                 <ModulePath>.*Rocket\.Surgery\.MSBuild\.SourceLink\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.Nuke\.dll</ModulePath>
                 <ModulePath>.*Roslynator\.Analyzers\.dll</ModulePath>
                 <ModulePath>.*Roslynator\.CodeAnalysis\.Analyzers\.dll</ModulePath>
                 <ModulePath>.*Roslynator\.CodeFixes\.dll</ModulePath>
                 <ModulePath>.*Roslynator\.Formatting\.Analyzers\.dll</ModulePath>
                 <ModulePath>.*Roslynator\.Refactorings\.dll</ModulePath>
+                <ModulePath>.*Serilog\.dll</ModulePath>
                 <ModulePath>.*Serilog\.Extensions\.Logging\.dll</ModulePath>
+                <ModulePath>.*Shouldly\.dll</ModulePath>
+                <ModulePath>.*Spectre\.Console\.Analyzer\.dll</ModulePath>
+                <ModulePath>.*Spectre\.Console\.Cli\.dll</ModulePath>
+                <ModulePath>.*Spectre\.Console\.dll</ModulePath>
                 <ModulePath>.*System\.Collections\.Immutable\.dll</ModulePath>
-                <ModulePath>.*System\.Interactive\.Async\.dll</ModulePath>
+                <ModulePath>.*System\.Diagnostics\.DiagnosticSource\.dll</ModulePath>
+                <ModulePath>.*System\.Text\.Json\.dll</ModulePath>
+                <ModulePath>.*Verify\.AngleSharp\.dll</ModulePath>
+                <ModulePath>.*Verify\.ImageMagick\.dll</ModulePath>
+                <ModulePath>.*Verify\.Playwright\.dll</ModulePath>
+                <ModulePath>.*Verify\.SourceGenerators\.dll</ModulePath>
+                <ModulePath>.*Verify\.Xunit\.dll</ModulePath>
                 <ModulePath>.*xunit\.analyzers\.dll</ModulePath>
                 <ModulePath>.*xunit\.dll</ModulePath>
                 <ModulePath>.*xunit\.runner\.visualstudio\.dll</ModulePath>

@@ -2,8 +2,6 @@ using System.Reflection;
 
 using FakeItEasy;
 
-using Microsoft.Extensions.Logging;
-
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 
