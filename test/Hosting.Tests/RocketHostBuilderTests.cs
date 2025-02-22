@@ -1,13 +1,16 @@
 using FakeItEasy;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
 using Rocket.Surgery.Extensions.Testing;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.Tests;

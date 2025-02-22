@@ -1,13 +1,18 @@
 ﻿using System.Diagnostics;
+
 using DryIoc;
+
 using FakeItEasy;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+
 using Serilog.Events;
-using Xunit;
+
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
@@ -195,14 +200,11 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
     public async Task Should_Integrate_With_DryIoc()
     {
         using var host = await Host
-                              .CreateApplicationBuilder(Array.Empty<string>())
+                              .CreateApplicationBuilder([])
                               .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         host.Services.GetRequiredService<IContainer>().ShouldNotBeNull();
     }
 
-    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
-    {
-        AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-    }
+    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

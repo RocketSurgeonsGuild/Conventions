@@ -1,8 +1,6 @@
 using FakeItEasy;
-using Xunit;
 
-#pragma warning disable CA1034
-#pragma warning disable CA1040
+#pragma warning disable CA1034, CA1040
 
 namespace Rocket.Surgery.Conventions.Tests;
 

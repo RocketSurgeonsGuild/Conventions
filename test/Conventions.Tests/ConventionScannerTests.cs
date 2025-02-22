@@ -1,11 +1,12 @@
 using System.Reflection;
+
 using FakeItEasy;
+
 using Microsoft.Extensions.Logging;
+
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
-using Sample.DependencyOne;
-using Sample.DependencyThree;
-using Sample.DependencyTwo;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -24,7 +25,8 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
     {
         var builder = ConventionContextBuilder.Create(_ => [], new Dictionary<object, object?>()).AppendConvention(new Contrib());
         var context = await ConventionContext.FromAsync(builder);
-        context.Conventions
+        context
+           .Conventions
            .Get<IServiceConvention, ServiceConvention>()
            .ShouldContain(x => x is Contrib);
     }
@@ -41,7 +43,8 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
         scanner.AppendConvention(contribution2);
 
         var context = await ConventionContext.FromAsync(scanner);
-        context.Conventions
+        context
+           .Conventions
            .Get<IServiceConvention, ServiceConvention>()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
@@ -58,7 +61,8 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         var context = await ConventionContext.FromAsync(scanner);
 
-        context.Conventions
+        context
+           .Conventions
            .Get<IServiceConvention, ServiceConvention>()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
@@ -77,12 +81,14 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         var context = await ConventionContext.FromAsync(scanner);
 
-        context.Conventions
-               .Get<IServiceConvention, ServiceConvention>()
-               .ShouldNotContain(x => x! is Contrib);
-        context.Conventions
-               .Get<IServiceConvention, ServiceConvention>()
-               .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
+        context
+           .Conventions
+           .Get<IServiceConvention, ServiceConvention>()
+           .ShouldNotContain(x => x is Contrib);
+        context
+           .Conventions
+           .Get<IServiceConvention, ServiceConvention>()
+           .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
     [Fact]
@@ -97,14 +103,13 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         var context = await ConventionContext.FromAsync(scanner);
 
-        context.Conventions
-               .Get<IServiceConvention, ServiceConvention>()
-               .ShouldNotContain(x => x! is Contrib);
+        context
+           .Conventions
+           .Get<IServiceConvention, ServiceConvention>()
+           .ShouldNotContain(x => x is Contrib);
     }
 
     [field: AllowNull]
     [field: MaybeNull]
     private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-
-    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
 }

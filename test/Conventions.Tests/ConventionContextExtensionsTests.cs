@@ -1,8 +1,6 @@
 using FakeItEasy;
-using Xunit;
 
-#pragma warning disable CA1040
-#pragma warning disable CA1034
+#pragma warning disable CA1040, CA1034
 
 namespace Rocket.Surgery.Conventions.Tests;
 
@@ -118,8 +116,6 @@ public class ConventionContextExtensionsTests
         context.GetOrAdd("value", () => myType2).ShouldBeSameAs(myType2);
     }
 
-    public interface IMyType;
-
     [Theory]
     [InlineData(HostType.Undefined)]
     [InlineData(HostType.Live)]
@@ -130,4 +126,6 @@ public class ConventionContextExtensionsTests
         context.Set(hostType);
         context.GetHostType().ShouldBe(hostType);
     }
+
+    public interface IMyType;
 }

@@ -1,12 +1,16 @@
 using DryIoc;
+
 using FakeItEasy;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+
 using Serilog.Events;
-using Xunit;
+
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
@@ -214,17 +218,14 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
     public async Task Should_Integrate_With_DryIoc()
     {
         using var host = await Host
-                              .CreateApplicationBuilder(Array.Empty<string>())
+                              .CreateApplicationBuilder([])
                               .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         var container = host.Services.GetRequiredService<IContainer>();
         container.ShouldNotBeNull();
     }
 
-    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
-    {
-        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
-    }
+    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 
     protected override IContainer BuildContainer(IContainer container) =>
         container

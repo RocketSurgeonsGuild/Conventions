@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Conventions.Testing;
+
 using Rocket.Surgery.Extensions.Testing;
+
 using Serilog.Events;
+
 using Xunit.Abstractions;
 using ILogger = Serilog.ILogger;
 
@@ -25,8 +27,4 @@ public class TestContextTests_DependencyContext
             ;
         a.ShouldNotThrow();
     }
-
-    [field: AllowNull]
-    [field: MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
 }

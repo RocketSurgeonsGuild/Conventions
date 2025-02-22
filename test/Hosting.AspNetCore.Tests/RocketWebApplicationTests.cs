@@ -1,15 +1,18 @@
-﻿using FakeItEasy;
+using FakeItEasy;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
@@ -53,7 +56,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     {
         var @delegate = A.Fake<Func<WebApplication, CancellationToken, ValueTask>>();
         var delegate2 = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
-        using var host = await WebApplication
+        await using var host = await WebApplication
                               .CreateBuilder()
                               .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(delegate2));
 
@@ -81,8 +84,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
                                     .CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
-
-                                              .ConfigureApplication(convention)
+                                            .ConfigureApplication(convention)
                                      );
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<WebApplicationBuilder>._)).MustHaveHappened();

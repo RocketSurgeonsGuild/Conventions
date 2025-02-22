@@ -1,10 +1,14 @@
 ﻿using System.Collections.Immutable;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
+
 using Serilog.Events;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -175,10 +179,7 @@ public class GenericTypedConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories)
-    {
-        return Verify(provider.GetAll()).UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
-    }
+    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories) => Verify(provider.GetAll()).UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
 
     [ConventionCategory(ConventionCategory.Core)]
     [DependentOfConvention<C>]
@@ -188,20 +189,14 @@ public class GenericTypedConventionProviderTests
     [UnitTestConvention]
     private sealed class C : IServiceConvention
     {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            throw new NotImplementedException();
-        }
+        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) => throw new NotImplementedException();
     }
 
     [ConventionCategory(ConventionCategory.Application)]
     [AfterConvention<E>]
     private sealed class D : ITestConvention
     {
-        public void Register(ITestConventionContext context)
-        {
-            throw new NotImplementedException();
-        }
+        public void Register(ITestConventionContext context) => throw new NotImplementedException();
     }
 
     [ConventionCategory("Custom")]

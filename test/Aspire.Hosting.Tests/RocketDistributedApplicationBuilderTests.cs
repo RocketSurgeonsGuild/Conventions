@@ -1,9 +1,11 @@
 using FakeItEasy;
+
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
 using Rocket.Surgery.Aspire.Hosting;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
+
 using Xunit.Abstractions;
 
 namespace Aspire.Hosting.Tests;

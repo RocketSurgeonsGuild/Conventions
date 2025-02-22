@@ -1,12 +1,16 @@
 ﻿using DryIoc;
+
 using FakeItEasy;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+
 using Serilog.Events;
-using Xunit;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
@@ -174,7 +178,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
                                          rb => rb
                                               .UseDryIoc()
                                               .ConfigureDryIoc(
-                                                   (context, configuration, services, container) => { return container; }
+                                                   (context, configuration, services, container) => container
                                                )
                                      );
 
@@ -194,7 +198,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
                                          rb => rb
                                               .UseDryIoc()
                                               .ConfigureDryIoc(
-                                                   (context, configuration, services, container) => { return container; }
+                                                   (context, configuration, services, container) => container
                                                )
                                      );
 
@@ -211,15 +215,12 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
     public async Task Should_Integrate_With_DryIoc()
     {
         await using var host = await WebApplication
-                                    .CreateBuilder(Array.Empty<string>())
+                                    .CreateBuilder([])
                                     .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         var container = host.Services.GetRequiredService<IContainer>();
         container.ShouldNotBeNull();
     }
 
-    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
-    {
-        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
-    }
+    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 }

@@ -1,13 +1,17 @@
 #pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021
 using System.Diagnostics;
+
 using Autofac;
+
 using FakeItEasy;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
-using Xunit;
+
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
@@ -198,14 +202,11 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
     public async Task Should_Integrate_With_Autofac()
     {
         using var host = await Host
-                              .CreateApplicationBuilder(Array.Empty<string>())
+                              .CreateApplicationBuilder([])
                               .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
         host.Services.GetRequiredService<ILifetimeScope>().ShouldNotBeNull();
     }
 
-    public AutofacBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper))
-    {
-        AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-    }
+    public AutofacBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper)) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

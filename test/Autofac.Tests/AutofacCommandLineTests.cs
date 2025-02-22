@@ -1,12 +1,16 @@
 ﻿using System.Diagnostics;
+
 using Autofac;
+
 using FakeItEasy;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
-using Xunit;
+
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
@@ -194,14 +198,11 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
     public async Task Should_Integrate_With_Autofac()
     {
         using var host = await Host
-                              .CreateApplicationBuilder(Array.Empty<string>())
+                              .CreateApplicationBuilder([])
                               .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
         host.Services.GetRequiredService<ILifetimeScope>().ShouldNotBeNull();
     }
 
-    public AutofacCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper))
-    {
-        AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-    }
+    public AutofacCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper)) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }
