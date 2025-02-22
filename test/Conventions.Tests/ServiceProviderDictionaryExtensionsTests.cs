@@ -1,5 +1,4 @@
 using FakeItEasy;
-using FluentAssertions;
 using Xunit;
 
 #pragma warning disable CA1034
@@ -16,7 +15,7 @@ public class ServiceProviderDictionaryExtensionsTests
         var myType = A.Fake<IMyType>();
         context[typeof(IMyType)] = myType;
 
-        context.Get<IMyType>().Should().BeSameAs(myType);
+        context.Get<IMyType>().ShouldBeSameAs(myType);
     }
 
     [Fact]
@@ -25,7 +24,7 @@ public class ServiceProviderDictionaryExtensionsTests
         IServiceProviderDictionary context = new ServiceProviderDictionary();
         var myType = A.Fake<IMyType>();
         context["value"] = myType;
-        context.Get<IMyType>("value").Should().BeSameAs(myType);
+        context.Get<IMyType>("value").ShouldBeSameAs(myType);
     }
 
     [Fact]
@@ -35,7 +34,7 @@ public class ServiceProviderDictionaryExtensionsTests
         var myType = A.Fake<IMyType>();
         context[typeof(IMyType)] = myType;
 
-        context.Require<IMyType>().Should().BeSameAs(myType);
+        context.Require<IMyType>().ShouldBeSameAs(myType);
     }
 
     [Fact]
@@ -45,7 +44,7 @@ public class ServiceProviderDictionaryExtensionsTests
         var myType = A.Fake<IMyType>();
         context["value"] = myType;
 
-        context.Require<IMyType>("value").Should().BeSameAs(myType);
+        context.Require<IMyType>("value").ShouldBeSameAs(myType);
     }
 
     [Fact]
@@ -53,7 +52,7 @@ public class ServiceProviderDictionaryExtensionsTests
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
         Action a = () => context.Require<IMyType>();
-        a.Should().Throw<KeyNotFoundException>();
+        a.ShouldThrow<KeyNotFoundException>();
     }
 
     [Fact]
@@ -61,7 +60,7 @@ public class ServiceProviderDictionaryExtensionsTests
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
         Action a = () => context.Require<IMyType>("value");
-        a.Should().Throw<KeyNotFoundException>();
+        a.ShouldThrow<KeyNotFoundException>();
     }
 
     [Fact]
@@ -88,7 +87,7 @@ public class ServiceProviderDictionaryExtensionsTests
         IServiceProviderDictionary context = new ServiceProviderDictionary();
         var myType1 = A.Fake<IMyType>();
         var myType2 = A.Fake<IMyType>();
-        context.GetOrAdd(() => myType2).Should().BeSameAs(myType2);
+        context.GetOrAdd(() => myType2).ShouldBeSameAs(myType2);
     }
 
     [Fact]
@@ -98,7 +97,7 @@ public class ServiceProviderDictionaryExtensionsTests
         var myType1 = A.Fake<IMyType>();
         var myType2 = A.Fake<IMyType>();
         context["value"] = myType1;
-        context.GetOrAdd("value", () => myType2).Should().NotBeSameAs(myType2);
+        context.GetOrAdd("value", () => myType2).ShouldNotBeSameAs(myType2);
     }
 
     [Fact]
@@ -106,7 +105,7 @@ public class ServiceProviderDictionaryExtensionsTests
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
         var myType2 = A.Fake<IMyType>();
-        context.GetOrAdd(() => myType2).Should().BeSameAs(myType2);
+        context.GetOrAdd(() => myType2).ShouldBeSameAs(myType2);
     }
 
     [Fact]
@@ -114,7 +113,7 @@ public class ServiceProviderDictionaryExtensionsTests
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
         var myType2 = A.Fake<IMyType>();
-        context.GetOrAdd("value", () => myType2).Should().BeSameAs(myType2);
+        context.GetOrAdd("value", () => myType2).ShouldBeSameAs(myType2);
     }
 
     public interface IMyType;

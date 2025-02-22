@@ -1,6 +1,5 @@
 ﻿using DryIoc;
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions;
@@ -33,10 +32,10 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
-        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefault).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefault).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefault).Should().BeNull();
-        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).Should().BeNull();
+        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefault).ShouldBeNull();
+        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).ShouldBeNull();
     }
 
     [Fact]
@@ -59,10 +58,10 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
-        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefault).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefault).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefault).Should().BeNull();
-        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).Should().NotBeNull();
+        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefault).ShouldBeNull();
+        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
     }
 
     [Fact]
@@ -84,8 +83,8 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
-        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefault).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).Should().NotBeNull();
+        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
     }
 
     [Fact]
@@ -109,10 +108,10 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         var items = host.Services.GetRequiredService<IResolverContext>();
 
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<DryIocFixtures.IAbc>().Should().NotBeNull();
-        sp.GetService<DryIocFixtures.IAbc2>().Should().NotBeNull();
-        sp.GetService<DryIocFixtures.IAbc3>().Should().BeNull();
-        sp.GetService<DryIocFixtures.IAbc4>().Should().BeNull();
+        sp.GetService<DryIocFixtures.IAbc>().ShouldNotBeNull();
+        sp.GetService<DryIocFixtures.IAbc2>().ShouldNotBeNull();
+        sp.GetService<DryIocFixtures.IAbc3>().ShouldBeNull();
+        sp.GetService<DryIocFixtures.IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -136,10 +135,10 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<DryIocFixtures.IAbc>().Should().NotBeNull();
-        sp.GetService<DryIocFixtures.IAbc2>().Should().NotBeNull();
-        sp.GetService<DryIocFixtures.IAbc3>().Should().BeNull();
-        sp.GetService<DryIocFixtures.IAbc4>().Should().NotBeNull();
+        sp.GetService<DryIocFixtures.IAbc>().ShouldNotBeNull();
+        sp.GetService<DryIocFixtures.IAbc2>().ShouldNotBeNull();
+        sp.GetService<DryIocFixtures.IAbc3>().ShouldBeNull();
+        sp.GetService<DryIocFixtures.IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -162,8 +161,8 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<DryIocFixtures.IAbc3>().Should().NotBeNull();
-        sp.GetService<DryIocFixtures.IAbc4>().Should().NotBeNull();
+        sp.GetService<DryIocFixtures.IAbc3>().ShouldNotBeNull();
+        sp.GetService<DryIocFixtures.IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -180,10 +179,10 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
-        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
+        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
+        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
     }
 
     [Fact]
@@ -200,12 +199,12 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
-        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<DryIocFixtures.IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<DryIocFixtures.IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
+        items.Resolve<DryIocFixtures.IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
+        items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
+        items.Resolve<DryIocFixtures.IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<DryIocFixtures.IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
     }
 
     [Fact]
@@ -216,7 +215,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
                                     .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         var container = host.Services.GetRequiredService<IContainer>();
-        container.Should().NotBeNull();
+        container.ShouldNotBeNull();
     }
 
     public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))

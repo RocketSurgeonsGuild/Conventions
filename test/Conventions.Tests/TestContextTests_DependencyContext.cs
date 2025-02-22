@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Extensions.Testing;
@@ -15,8 +14,8 @@ public class TestContextTests_DependencyContext
     public void Builder_Should_Create_Host()
     {
         var a = () => ConventionContextBuilder.Create(_ => []).UseLogger(Logger);
-        var context = a.Should().NotThrow().Subject;
-        context.Get<ILogger>().Should().BeSameAs(Logger);
+        var context = a.ShouldNotThrow();
+        context.Get<ILogger>().ShouldBeSameAs(Logger);
     }
 
     [Fact]
@@ -24,7 +23,7 @@ public class TestContextTests_DependencyContext
     {
         var a = () => ConventionContextBuilder.Create(_ => []).UseLogger(Logger)
             ;
-        a.Should().NotThrow();
+        a.ShouldNotThrow();
     }
 
     [field: AllowNull]

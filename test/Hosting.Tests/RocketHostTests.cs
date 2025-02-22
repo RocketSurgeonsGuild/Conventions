@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,8 +17,8 @@ public class RocketHostTests
                               .ConfigureRocketSurgery();
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(3);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(6);
     }
 
     [Fact]
@@ -31,8 +30,8 @@ public class RocketHostTests
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(0);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(3);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(0);
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public class RocketHostTests
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(0);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(0);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(6);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Conventions.DependencyInjection;
@@ -22,7 +21,7 @@ public class GenericTypedConventionProviderTests
         var provider = new ConventionProvider(HostType.Undefined, [], [c1, c2]);
 
         Action a = () => provider.GetAll();
-        a.Should().Throw<NotSupportedException>();
+        a.ShouldThrow<NotSupportedException>();
     }
 
     [Theory]
@@ -37,7 +36,7 @@ public class GenericTypedConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d, f, b, c, e]
         );
 
@@ -56,7 +55,7 @@ public class GenericTypedConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d, b, c, e, f]
         );
 
@@ -78,7 +77,7 @@ public class GenericTypedConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d1, d, d2, b, c, e, d3, f]
         );
 
@@ -100,7 +99,7 @@ public class GenericTypedConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d1, d, d2, b, c, e, d3, f]
         );
 
@@ -119,7 +118,7 @@ public class GenericTypedConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [
                 d,
                 f,
@@ -147,7 +146,7 @@ public class GenericTypedConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d1, d, d2, b, c, e, d3, f]
         );
 
@@ -169,7 +168,7 @@ public class GenericTypedConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d1, d, d2, b, c, e, d3, f]
         );
 

@@ -1,5 +1,4 @@
 using FakeItEasy;
-using FluentAssertions;
 using Xunit;
 
 #pragma warning disable CA1040
@@ -16,7 +15,7 @@ public class ConventionContextExtensionsTests
         var myType = A.Fake<IMyType>();
         context.Set(myType);
 
-        context.Get<IMyType>().Should().BeSameAs(myType);
+        context.Get<IMyType>().ShouldBeSameAs(myType);
     }
 
     [Fact]
@@ -25,7 +24,7 @@ public class ConventionContextExtensionsTests
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         var myType = A.Fake<IMyType>();
         context.Set("value", myType);
-        context.Get<IMyType>("value").Should().BeSameAs(myType);
+        context.Get<IMyType>("value").ShouldBeSameAs(myType);
     }
 
     [Fact]
@@ -35,7 +34,7 @@ public class ConventionContextExtensionsTests
         var myType = A.Fake<IMyType>();
         context.Set(myType);
 
-        context.Require<IMyType>().Should().BeSameAs(myType);
+        context.Require<IMyType>().ShouldBeSameAs(myType);
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public class ConventionContextExtensionsTests
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         var myType = A.Fake<IMyType>();
         context.Set("value", myType);
-        context.Require<IMyType>("value").Should().BeSameAs(myType);
+        context.Require<IMyType>("value").ShouldBeSameAs(myType);
     }
 
     [Fact]
@@ -53,7 +52,7 @@ public class ConventionContextExtensionsTests
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         var myType = A.Fake<IMyType>();
         Action a = () => context.Require<IMyType>();
-        a.Should().Throw<KeyNotFoundException>();
+        a.ShouldThrow<KeyNotFoundException>();
     }
 
     [Fact]
@@ -62,7 +61,7 @@ public class ConventionContextExtensionsTests
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         var myType = A.Fake<IMyType>();
         Action a = () => context.Require<IMyType>("value");
-        a.Should().Throw<KeyNotFoundException>();
+        a.ShouldThrow<KeyNotFoundException>();
     }
 
     [Fact]
@@ -71,7 +70,7 @@ public class ConventionContextExtensionsTests
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         context.Set(HostType.UnitTest);
 
-        context.IsUnitTestHost().Should().BeTrue();
+        context.IsUnitTestHost().ShouldBeTrue();
     }
 
     [Fact]
@@ -80,7 +79,7 @@ public class ConventionContextExtensionsTests
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         context.Set(HostType.Live);
 
-        context.IsUnitTestHost().Should().BeFalse();
+        context.IsUnitTestHost().ShouldBeFalse();
     }
 
     [Fact]
@@ -90,7 +89,7 @@ public class ConventionContextExtensionsTests
         var myType1 = A.Fake<IMyType>();
         var myType2 = A.Fake<IMyType>();
         context.Set(myType1);
-        context.GetOrAdd(() => myType2).Should().NotBeSameAs(myType2);
+        context.GetOrAdd(() => myType2).ShouldNotBeSameAs(myType2);
     }
 
     [Fact]
@@ -100,7 +99,7 @@ public class ConventionContextExtensionsTests
         var myType1 = A.Fake<IMyType>();
         var myType2 = A.Fake<IMyType>();
         context.Set("value", myType1);
-        context.GetOrAdd("value", () => myType2).Should().NotBeSameAs(myType2);
+        context.GetOrAdd("value", () => myType2).ShouldNotBeSameAs(myType2);
     }
 
     [Fact]
@@ -108,7 +107,7 @@ public class ConventionContextExtensionsTests
     {
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         var myType2 = A.Fake<IMyType>();
-        context.GetOrAdd(() => myType2).Should().BeSameAs(myType2);
+        context.GetOrAdd(() => myType2).ShouldBeSameAs(myType2);
     }
 
     [Fact]
@@ -116,7 +115,7 @@ public class ConventionContextExtensionsTests
     {
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         var myType2 = A.Fake<IMyType>();
-        context.GetOrAdd("value", () => myType2).Should().BeSameAs(myType2);
+        context.GetOrAdd("value", () => myType2).ShouldBeSameAs(myType2);
     }
 
     public interface IMyType;
@@ -129,6 +128,6 @@ public class ConventionContextExtensionsTests
     {
         var context = await ConventionContext.FromAsync(ConventionContextBuilder.Create(_ => []));
         context.Set(hostType);
-        context.GetHostType().Should().Be(hostType);
+        context.GetHostType().ShouldBe(hostType);
     }
 }

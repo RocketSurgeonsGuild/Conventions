@@ -1,5 +1,4 @@
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,7 +19,7 @@ public class ConventionContextTests
         var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var container = await ConventionContext.FromAsync(builder);
         container.Set("abc");
-        container.Get<string>().Should().Be("abc");
+        container.Get<string>().ShouldBe("abc");
     }
 
     [Fact]
@@ -29,7 +28,7 @@ public class ConventionContextTests
         var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary(), []);
         var container = await ConventionContext.FromAsync(builder);
         container.Set("abc");
-        container.Get<string>().Should().Be("abc");
+        container.Get<string>().ShouldBe("abc");
     }
 
     [Fact]
@@ -39,7 +38,7 @@ public class ConventionContextTests
         var convention = A.Fake<IServiceConvention>();
         contextBuilder.PrependConvention(convention);
         var conventions = await ConventionContext.FromAsync(contextBuilder);
-        conventions.Conventions.GetAll().Should().Contain(convention);
+        conventions.Conventions.GetAll().ShouldContain(convention);
     }
 
     [Fact]
@@ -77,10 +76,10 @@ public class ConventionContextTests
                                       .ApplyConventionsAsync(context);
 
         var sp = servicesCollection.BuildServiceProvider();
-        sp.GetService<IAbc>().Should().NotBeNull();
-        sp.GetService<IAbc2>().Should().NotBeNull();
-        sp.GetService<IAbc3>().Should().BeNull();
-        sp.GetService<IAbc4>().Should().BeNull();
+        sp.GetService<IAbc>().ShouldNotBeNull();
+        sp.GetService<IAbc2>().ShouldNotBeNull();
+        sp.GetService<IAbc3>().ShouldBeNull();
+        sp.GetService<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -97,10 +96,10 @@ public class ConventionContextTests
         servicesCollection.AddSingleton(A.Fake<IAbc4>());
 
         var sp = servicesCollection.BuildServiceProvider();
-        sp.GetService<IAbc>().Should().NotBeNull();
-        sp.GetService<IAbc2>().Should().NotBeNull();
-        sp.GetService<IAbc3>().Should().BeNull();
-        sp.GetService<IAbc4>().Should().NotBeNull();
+        sp.GetService<IAbc>().ShouldNotBeNull();
+        sp.GetService<IAbc2>().ShouldNotBeNull();
+        sp.GetService<IAbc3>().ShouldBeNull();
+        sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -115,10 +114,10 @@ public class ConventionContextTests
         servicesCollection.AddSingleton(A.Fake<IAbc4>());
 
         var sp = servicesCollection.BuildServiceProvider();
-        sp.GetService<IAbc>().Should().BeNull();
-        sp.GetService<IAbc2>().Should().BeNull();
-        sp.GetService<IAbc3>().Should().NotBeNull();
-        sp.GetService<IAbc4>().Should().NotBeNull();
+        sp.GetService<IAbc>().ShouldBeNull();
+        sp.GetService<IAbc2>().ShouldBeNull();
+        sp.GetService<IAbc3>().ShouldNotBeNull();
+        sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -131,10 +130,10 @@ public class ConventionContextTests
         var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
 
         var items = servicesCollection.BuildServiceProvider();
-        items.GetService<IAbc>().Should().NotBeNull();
-        items.GetService<IAbc2>().Should().NotBeNull();
-        items.GetService<IAbc3>().Should().BeNull();
-        items.GetService<IAbc4>().Should().BeNull();
+        items.GetService<IAbc>().ShouldNotBeNull();
+        items.GetService<IAbc2>().ShouldNotBeNull();
+        items.GetService<IAbc3>().ShouldBeNull();
+        items.GetService<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -148,7 +147,7 @@ public class ConventionContextTests
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(builder);
         var collection = await new ServiceCollection().ApplyConventionsAsync(context);
-        collection.Should().Contain(z => z.ServiceType == typeof(IInjectData));
+        collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
     [Fact]
@@ -160,9 +159,9 @@ public class ConventionContextTests
                      .AppendConvention<OptionalInjectableConvention>()
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
-        var context = ( await ConventionContext.FromAsync(builder) ).Set(data);
+        var context = (await ConventionContext.FromAsync(builder)).Set(data);
         var collection = await new ServiceCollection().ApplyConventionsAsync(context);
-        collection.Should().Contain(z => z.ServiceType == typeof(IInjectData));
+        collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
     [Fact]
@@ -172,7 +171,7 @@ public class ConventionContextTests
                      .AppendConvention<InjectableConvention>()
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var a = () => ConventionContext.FromAsync(builder).AsTask();
-        await a.Should().ThrowAsync<InvalidOperationException>();
+        await a.ShouldThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
@@ -183,7 +182,7 @@ public class ConventionContextTests
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ConventionContext.FromAsync(builder);
         var a = () => new ServiceCollection().ApplyConventionsAsync(context).AsTask();
-        await a.Should().NotThrowAsync<InvalidOperationException>();
+        await a.ShouldNotThrowAsync();
     }
 
     [field: AllowNull]

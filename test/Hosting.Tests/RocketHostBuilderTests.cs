@@ -1,5 +1,4 @@
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +21,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
                               .CreateApplicationBuilder()
                               .ConfigureRocketSurgery();
 
-        host.Services.Should().NotBeNull();
+        host.Services.ShouldNotBeNull();
     }
 
     [Fact]
@@ -53,7 +52,7 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
         var convention = A.Fake<HostApplicationConvention<IHostApplicationBuilder>>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureRocketSurgery(rb => rb                                                         .ConfigureApplication(convention));
+                              .ConfigureRocketSurgery(rb => rb.ConfigureApplication(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
     }
@@ -89,34 +88,34 @@ public partial class RocketHostBuilderTests(ITestOutputHelper outputHelper) : Au
                               .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate));
 
         A.CallTo(() => @delegate.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
-        host.Services.Should().NotBeNull();
+        host.Services.ShouldNotBeNull();
     }
 
-//    [Fact]
-//    public async Task Should_Run_Rocket_CommandLine()
-//    {
-//        using var host = Host.CreateApplicationBuilder(Array.Empty<string>())
-//                          .ConfigureRocketSurgery(
-//                               rb => rb
-//                                  .AppendDelegate(
-//                                       new CommandLineConvention((a, c) => c.OnRun(state => 1337)),
-//                                       new CommandLineConvention((a, c) => c.OnRun(state => 1337))
-//                                   )
-//                           );
-//
-//        ( await builder.RunCli() ).Should().Be(1337);
-//    }
-//
-//    [Fact]
-//    public async Task Should_Inject_WebHost_Into_Command()
-//    {
-//        using var host = Host.CreateApplicationBuilder(new[] { "myself" })
-//                          .ConfigureRocketSurgery(
-//                               rb => rb
-//                                    .AppendDelegate(new CommandLineConvention((a, c) => c.OnRun(state => 1337)))
-//                                    .AppendDelegate(new CommandLineConvention((a, context) => context.AddCommand<MyCommand>("myself")))
-//                           );
-//
-//        ( await builder.RunCli() ).Should().Be(1234);
-//    }
+    //    [Fact]
+    //    public async Task Should_Run_Rocket_CommandLine()
+    //    {
+    //        using var host = Host.CreateApplicationBuilder(Array.Empty<string>())
+    //                          .ConfigureRocketSurgery(
+    //                               rb => rb
+    //                                  .AppendDelegate(
+    //                                       new CommandLineConvention((a, c) => c.OnRun(state => 1337)),
+    //                                       new CommandLineConvention((a, c) => c.OnRun(state => 1337))
+    //                                   )
+    //                           );
+    //
+    //        ( await builder.RunCli() ).ShouldBe(1337);
+    //    }
+    //
+    //    [Fact]
+    //    public async Task Should_Inject_WebHost_Into_Command()
+    //    {
+    //        using var host = Host.CreateApplicationBuilder(new[] { "myself" })
+    //                          .ConfigureRocketSurgery(
+    //                               rb => rb
+    //                                    .AppendDelegate(new CommandLineConvention((a, c) => c.OnRun(state => 1337)))
+    //                                    .AppendDelegate(new CommandLineConvention((a, context) => context.AddCommand<MyCommand>("myself")))
+    //                           );
+    //
+    //        ( await builder.RunCli() ).ShouldBe(1234);
+    //    }
 }

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -38,13 +37,13 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         var builder = ConventionContextBuilder.Create(_ => []);
 
         var a = () => { builder.PrependConvention(A.Fake<ICommandLineConvention>()); };
-        a.Should().NotThrow();
+        a.ShouldNotThrow();
         a = () => { builder.AppendConvention(A.Fake<ICommandLineConvention>()); };
-        a.Should().NotThrow();
+        a.ShouldNotThrow();
         a = () => { builder.PrependDelegate(new ServiceConvention((context, configuration, services) => { }), null, null); };
-        a.Should().NotThrow();
+        a.ShouldNotThrow();
         a = () => { builder.AppendDelegate(new ServiceConvention((context, configuration, services) => { }), null, null); };
-        a.Should().NotThrow();
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -54,7 +53,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                               .CreateApplicationBuilder(["remote", "add", "-v"])
                               .ConfigureRocketSurgery(b => b.UseLogger(Logger));
         await host.StartAsync();
-        host.Services.GetService<ConsoleResult>().Should().BeNull();
+        host.Services.GetService<ConsoleResult>().ShouldBeNull();
     }
 
     [Fact]
@@ -66,11 +65,11 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                    b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
-                                            (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                            (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)(state.LogLevel ?? LogLevel.Information))
                                         )
                                );
 
-        ( await host.RunConsoleAppAsync() ).Should().Be((int)LogLevel.Information);
+        (await host.RunConsoleAppAsync()).ShouldBe((int)LogLevel.Information);
     }
 
     [Fact]
@@ -95,7 +94,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                                     "test",
                                                     (context, state) =>
                                                     {
-                                                        state.LogLevel.Should().Be(LogLevel.Error);
+                                                        state.LogLevel.ShouldBe(LogLevel.Error);
                                                         return 1000;
                                                     }
                                                 );
@@ -105,7 +104,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var result = await host.RunConsoleAppAsync();
 
-        result.Should().Be(1000);
+        result.ShouldBe(1000);
     }
 
     [Fact]
@@ -126,7 +125,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                );
 
         var result = await host.RunConsoleAppAsync();
-        result.Should().Be(1000);
+        result.ShouldBe(1000);
         A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
     }
 
@@ -163,12 +162,12 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                        .ConfigureCommandLine(
                                             (context, lineContext) => lineContext.AddDelegate<AppSettings>(
                                                 "test",
-                                                (context, state) => (int)( state.LogLevel ?? LogLevel.Information )
+                                                (context, state) => (int)(state.LogLevel ?? LogLevel.Information)
                                             )
                                         )
                                );
 
-        ( await host.RunConsoleAppAsync() ).Should().Be((int)LogLevel.Information);
+        (await host.RunConsoleAppAsync()).ShouldBe((int)LogLevel.Information);
     }
 
     [Fact]
@@ -183,7 +182,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                );
 
         var result = await host.RunConsoleAppAsync();
-        result.Should().Be(0);
+        result.ShouldBe(0);
     }
 
     [field: AllowNull]
@@ -200,7 +199,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         public override int Execute(CommandContext context) => 1;
     }
 
-//
+    //
     [Theory]
     [InlineData("--verbose", LogLevel.Debug)]
     [InlineData("--trace", LogLevel.Trace)]
@@ -212,12 +211,12 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                    b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
-                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)(state.LogLevel ?? LogLevel.Information))
                                         )
                                );
 
         var result = (LogLevel)await host.RunConsoleAppAsync();
-        result.Should().Be(level);
+        result.ShouldBe(level);
     }
 
     [Theory]
@@ -235,12 +234,12 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                    b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
-                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)(state.LogLevel ?? LogLevel.Information))
                                         )
                                );
 
         var result = (LogLevel)await host.RunConsoleAppAsync();
-        result.Should().Be(level);
+        result.ShouldBe(level);
     }
 
     private sealed class SubCmd : Command
@@ -250,7 +249,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     }
 
     [Theory]
-//    [InlineData("--version")]
+    //    [InlineData("--version")]
     [InlineData("--help")]
     [InlineData("cmd1 --help")]
     [InlineData("cmd1 a --help")]
@@ -281,7 +280,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                         )
                                );
         var result = await host.RunConsoleAppAsync();
-        result.Should().BeGreaterThanOrEqualTo(0);
+        result.ShouldBeGreaterThanOrEqualTo(0);
     }
 
     public class InjectionConstructor : AsyncCommand
@@ -317,10 +316,10 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         public override int Execute(CommandContext context)
         {
-            ApiDomain.Should().Be("mydomain.com");
-            ClientName.Should().Be("client1");
-            Origins.Should().Contain("origin1");
-            Origins.Should().Contain("origin2");
+            ApiDomain.ShouldBe("mydomain.com");
+            ClientName.ShouldBe("client1");
+            Origins.ShouldContain("origin1");
+            Origins.ShouldContain("origin2");
             return -1;
         }
     }

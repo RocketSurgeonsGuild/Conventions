@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Autofac;
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
@@ -33,10 +32,10 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().NotBeNull();
-        items.ResolveOptional<IAbc2>().Should().NotBeNull();
-        items.ResolveOptional<IAbc3>().Should().BeNull();
-        items.ResolveOptional<IAbc4>().Should().BeNull();
+        items.ResolveOptional<IAbc>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc2>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldBeNull();
+        items.ResolveOptional<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -58,10 +57,10 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().NotBeNull();
-        items.ResolveOptional<IAbc2>().Should().NotBeNull();
-        items.ResolveOptional<IAbc3>().Should().BeNull();
-        items.ResolveOptional<IAbc4>().Should().NotBeNull();
+        items.ResolveOptional<IAbc>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc2>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldBeNull();
+        items.ResolveOptional<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -82,8 +81,8 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc3>().Should().NotBeNull();
-        items.ResolveOptional<IAbc4>().Should().NotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -106,10 +105,10 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
         var items = builder.GetLifetimeScope();
 
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().NotBeNull();
-        sp.GetService<IAbc2>().Should().NotBeNull();
-        sp.GetService<IAbc3>().Should().BeNull();
-        sp.GetService<IAbc4>().Should().BeNull();
+        sp.GetService<IAbc>().ShouldNotBeNull();
+        sp.GetService<IAbc2>().ShouldNotBeNull();
+        sp.GetService<IAbc3>().ShouldBeNull();
+        sp.GetService<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -132,10 +131,10 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().NotBeNull();
-        sp.GetService<IAbc2>().Should().NotBeNull();
-        sp.GetService<IAbc3>().Should().BeNull();
-        sp.GetService<IAbc4>().Should().NotBeNull();
+        sp.GetService<IAbc>().ShouldNotBeNull();
+        sp.GetService<IAbc2>().ShouldNotBeNull();
+        sp.GetService<IAbc3>().ShouldBeNull();
+        sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -157,8 +156,8 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc3>().Should().NotBeNull();
-        sp.GetService<IAbc4>().Should().NotBeNull();
+        sp.GetService<IAbc3>().ShouldNotBeNull();
+        sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -169,10 +168,10 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().NotBeNull();
-        items.ResolveOptional<IAbc2>().Should().NotBeNull();
-        items.ResolveOptional<IAbc3>().Should().BeNull();
-        items.ResolveOptional<IAbc4>().Should().BeNull();
+        items.ResolveOptional<IAbc>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc2>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldBeNull();
+        items.ResolveOptional<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -183,12 +182,12 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().NotBeNull();
-        items.ResolveOptional<IAbc2>().Should().NotBeNull();
-        items.ResolveOptional<IAbc3>().Should().BeNull();
-        items.ResolveOptional<IAbc4>().Should().BeNull();
-        items.ResolveOptional<IOtherAbc3>().Should().NotBeNull();
-        items.ResolveOptional<IOtherAbc3>().Should().NotBeNull();
+        items.ResolveOptional<IAbc>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc2>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldBeNull();
+        items.ResolveOptional<IAbc4>().ShouldBeNull();
+        items.ResolveOptional<IOtherAbc3>().ShouldNotBeNull();
+        items.ResolveOptional<IOtherAbc3>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -198,7 +197,7 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
                               .CreateApplicationBuilder(Array.Empty<string>())
                               .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
-        host.Services.GetRequiredService<ILifetimeScope>().Should().NotBeNull();
+        host.Services.GetRequiredService<ILifetimeScope>().ShouldNotBeNull();
     }
 
     public AutofacCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper))

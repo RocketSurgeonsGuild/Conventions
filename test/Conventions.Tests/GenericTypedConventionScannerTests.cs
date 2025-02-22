@@ -1,6 +1,5 @@
 using System.Reflection;
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
@@ -17,7 +16,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldConstruct()
     {
         var scanner = ConventionContextBuilder.Create(_ => []);
-        scanner.Should().NotBeNull();
+        scanner.ShouldNotBeNull();
     }
 
     [Fact]
@@ -28,8 +27,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var context = await ConventionContext.FromAsync(scanner);
         context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .Contain(x => x is Contrib);
+           .ShouldContain(x => x is Contrib);
     }
 
     [Fact]
@@ -46,8 +44,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var context = await ConventionContext.FromAsync(scanner);
         context.Conventions
                .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .ContainInOrder(contribution, contribution2);
+               .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
     [Fact]
@@ -64,8 +61,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var context = await ConventionContext.FromAsync(scanner);
         context.Conventions
                .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .ContainInOrder(delegate2, @delegate);
+               .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
 
     [Fact]
@@ -78,15 +74,13 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         scanner.AppendConvention(contribution);
         scanner.PrependConvention(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
-var context = await ConventionContext.FromAsync(scanner);
+        var context = await ConventionContext.FromAsync(scanner);
         context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .NotContain(x => x! is Contrib);
+           .ShouldNotContain(x => x! is Contrib);
         context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(contribution2, contribution);
+           .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
     [Fact]
@@ -102,8 +96,7 @@ var context = await ConventionContext.FromAsync(scanner);
         var context = await ConventionContext.FromAsync(scanner);
         context.Conventions
                .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .NotContain(x => x! is Contrib);
+               .ShouldNotContain(x => x! is Contrib);
     }
 
 

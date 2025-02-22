@@ -1,5 +1,4 @@
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Aspire.Hosting;
@@ -19,7 +18,7 @@ public partial class RocketDistributedApplicationBuilderTests
                                     .CreateBuilder()
                                     .ConfigureRocketSurgery();
 
-        host.Services.Should().NotBeNull();
+        host.Services.ShouldNotBeNull();
     }
 
     [Fact]
@@ -44,6 +43,6 @@ public partial class RocketDistributedApplicationBuilderTests
 
         A.CallTo(() => @delegate.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
         A.CallTo(() => delegate2.Invoke(A<DistributedApplication>._, A<CancellationToken>._)).MustHaveHappened();
-        host.Services.Should().NotBeNull();
+        host.Services.ShouldNotBeNull();
     }
 }

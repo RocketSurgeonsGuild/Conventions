@@ -1,6 +1,5 @@
 using System.Reflection;
 using FakeItEasy;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
@@ -17,7 +16,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
     public void ShouldConstruct()
     {
         var scanner = ConventionContextBuilder.Create(_ => []);
-        scanner.Should().NotBeNull();
+        scanner.ShouldNotBeNull();
     }
 
     [Fact]
@@ -27,8 +26,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
         var context = await ConventionContext.FromAsync(builder);
         context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .Contain(x => x is Contrib);
+           .ShouldContain(x => x is Contrib);
     }
 
     [Fact]
@@ -45,8 +43,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
         var context = await ConventionContext.FromAsync(scanner);
         context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(contribution, contribution2);
+           .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
     [Fact]
@@ -63,8 +60,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         context.Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(delegate2, @delegate);
+           .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
 
     [Fact]
@@ -83,12 +79,10 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         context.Conventions
                .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .NotContain(x => x! is Contrib);
+               .ShouldNotContain(x => x! is Contrib);
         context.Conventions
                .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .ContainInOrder(contribution2, contribution);
+               .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
     [Fact]
@@ -105,8 +99,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         context.Conventions
                .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .NotContain(x => x! is Contrib);
+               .ShouldNotContain(x => x! is Contrib);
     }
 
     [field: AllowNull]
