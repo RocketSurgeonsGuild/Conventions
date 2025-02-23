@@ -1,12 +1,10 @@
 using System.Reflection;
+
 using FakeItEasy;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
+
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
-using Sample.DependencyOne;
-using Sample.DependencyThree;
-using Sample.DependencyTwo;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -17,19 +15,19 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
     public void ShouldConstruct()
     {
         var scanner = ConventionContextBuilder.Create(_ => []);
-        scanner.Should().NotBeNull();
+        scanner.ShouldNotBeNull();
     }
 
     [Fact]
     public async Task ShouldBuildAProvider()
     {
-        var scanner = ConventionContextBuilder.Create(_ => [], new Dictionary<object, object?>(), []).AppendConvention(new Contrib());
+        var scanner = ConventionContextBuilder.Create(_ => [], new Dictionary<object, object?>()).AppendConvention(new Contrib());
 
         var context = await ConventionContext.FromAsync(scanner);
-        context.Conventions
+        context
+           .Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .Contain(x => x is Contrib);
+           .ShouldContain(x => x is Contrib);
     }
 
     [Fact]
@@ -44,10 +42,10 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         scanner.AppendConvention(contribution2);
 
         var context = await ConventionContext.FromAsync(scanner);
-        context.Conventions
-               .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .ContainInOrder(contribution, contribution2);
+        context
+           .Conventions
+           .Get<IServiceConvention, ServiceConvention>()
+           .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
     [Fact]
@@ -62,10 +60,10 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         scanner.AppendDelegate(@delegate, null, null);
 
         var context = await ConventionContext.FromAsync(scanner);
-        context.Conventions
-               .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .ContainInOrder(delegate2, @delegate);
+        context
+           .Conventions
+           .Get<IServiceConvention, ServiceConvention>()
+           .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
 
     [Fact]
@@ -78,15 +76,15 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         scanner.AppendConvention(contribution);
         scanner.PrependConvention(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
-var context = await ConventionContext.FromAsync(scanner);
-        context.Conventions
+        var context = await ConventionContext.FromAsync(scanner);
+        context
+           .Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .NotContain(x => x! is Contrib);
-        context.Conventions
+           .ShouldNotContain(x => x is Contrib);
+        context
+           .Conventions
            .Get<IServiceConvention, ServiceConvention>()
-           .Should()
-           .ContainInOrder(contribution2, contribution);
+           .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
     [Fact]
@@ -100,16 +98,9 @@ var context = await ConventionContext.FromAsync(scanner);
         scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
         var context = await ConventionContext.FromAsync(scanner);
-        context.Conventions
-               .Get<IServiceConvention, ServiceConvention>()
-               .Should()
-               .NotContain(x => x! is Contrib);
+        context
+           .Conventions
+           .Get<IServiceConvention, ServiceConvention>()
+           .ShouldNotContain(x => x is Contrib);
     }
-
-
-    [field: AllowNull]
-    [field: MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-
-    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
 }

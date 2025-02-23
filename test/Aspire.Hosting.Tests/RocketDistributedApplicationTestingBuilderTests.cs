@@ -1,12 +1,15 @@
 using Aspire.Hosting.Testing;
+
 using FakeItEasy;
-using FluentAssertions;
+
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
 using Projects;
+
 using Rocket.Surgery.Aspire.Hosting.Testing;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
+
 using Xunit.Abstractions;
 
 namespace Aspire.Hosting.Tests;
@@ -21,7 +24,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests
                                     .CreateAsync<AspireSample>()
                                     .ConfigureRocketSurgery();
 
-        host.Services.Should().NotBeNull();
+        host.Services.ShouldNotBeNull();
     }
 
     [Fact]
@@ -46,6 +49,6 @@ public partial class RocketDistributedApplicationTestingBuilderTests
 
         A.CallTo(() => @delegate.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
         A.CallTo(() => delegate2.Invoke(A<DistributedApplication>._, A<CancellationToken>._)).MustHaveHappened();
-        host.Services.Should().NotBeNull();
+        host.Services.ShouldNotBeNull();
     }
 }

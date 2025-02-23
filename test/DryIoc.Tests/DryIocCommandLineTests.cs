@@ -1,14 +1,18 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
+
 using DryIoc;
+
 using FakeItEasy;
-using FluentAssertions;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+
 using Serilog.Events;
-using Xunit;
+
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
@@ -34,10 +38,10 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
+        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
+        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
     }
 
     [Fact]
@@ -59,10 +63,10 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
+        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
+        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
     }
 
     [Fact]
@@ -83,8 +87,8 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
+        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
     }
 
     [Fact]
@@ -107,10 +111,10 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
         var items = builder.GetLifetimeScope();
 
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().NotBeNull();
-        sp.GetService<IAbc2>().Should().NotBeNull();
-        sp.GetService<IAbc3>().Should().BeNull();
-        sp.GetService<IAbc4>().Should().BeNull();
+        sp.GetService<IAbc>().ShouldNotBeNull();
+        sp.GetService<IAbc2>().ShouldNotBeNull();
+        sp.GetService<IAbc3>().ShouldBeNull();
+        sp.GetService<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -133,10 +137,10 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().NotBeNull();
-        sp.GetService<IAbc2>().Should().NotBeNull();
-        sp.GetService<IAbc3>().Should().BeNull();
-        sp.GetService<IAbc4>().Should().NotBeNull();
+        sp.GetService<IAbc>().ShouldNotBeNull();
+        sp.GetService<IAbc2>().ShouldNotBeNull();
+        sp.GetService<IAbc3>().ShouldBeNull();
+        sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -158,8 +162,8 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc3>().Should().NotBeNull();
-        sp.GetService<IAbc4>().Should().NotBeNull();
+        sp.GetService<IAbc3>().ShouldNotBeNull();
+        sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -170,10 +174,10 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         var items = builder.GetLifetimeScope();
-        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
+        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
+        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
     }
 
     [Fact]
@@ -184,26 +188,24 @@ public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
         var items = builder.GetLifetimeScope();
-        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().BeNull();
-        items.Resolve<IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
-        items.Resolve<IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).Should().NotBeNull();
+        items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc2>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
+        items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
+        items.Resolve<IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
+        items.Resolve<IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
     }
 
     [Fact]
     public async Task Should_Integrate_With_DryIoc()
     {
         using var host = await Host
-                              .CreateApplicationBuilder(Array.Empty<string>())
+                              .CreateApplicationBuilder([])
                               .ConfigureRocketSurgery(rb => rb.UseDryIoc());
 
-        host.Services.GetRequiredService<IContainer>().Should().NotBeNull();
+        host.Services.GetRequiredService<IContainer>().ShouldNotBeNull();
     }
 
-    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
-    {
+    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
         AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-    }
 }

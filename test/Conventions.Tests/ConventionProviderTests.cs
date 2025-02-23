@@ -1,12 +1,14 @@
-﻿using System.Collections.Immutable;
-using FluentAssertions;
+using System.Collections.Immutable;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
+
 using Serilog.Events;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
@@ -23,14 +25,8 @@ public class ConventionProviderTests
         var provider = new ConventionProvider(HostType.Undefined, [], [c1, c2]);
 
         Action a = () => provider.GetAll();
-        a.Should().Throw<NotSupportedException>();
+        a.ShouldThrow<NotSupportedException>();
     }
-
-    [field: AllowNull]
-    [field: MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-
-    private ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
     [Theory]
     [MemberData(nameof(GetCategories), HostType.Undefined)]
@@ -44,7 +40,7 @@ public class ConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d, f, b, c, e]
         );
 
@@ -63,7 +59,7 @@ public class ConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d, b, c, e, f]
         );
 
@@ -85,7 +81,7 @@ public class ConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d1, d, d2, b, c, e, d3, f]
         );
 
@@ -107,7 +103,7 @@ public class ConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d1, d, d2, b, c, e, d3, f]
         );
 
@@ -126,7 +122,7 @@ public class ConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [
                 d,
                 f,
@@ -144,6 +140,7 @@ public class ConventionProviderTests
     public async Task Should_Exclude_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
+
         var d1 = new ServiceConvention((_, _, _) => { });
         var d2 = new ServiceConvention((_, _, _) => { });
         var d3 = new ServiceConvention((_, _, _) => { });
@@ -154,7 +151,7 @@ public class ConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d1, d, d2, b, c, e, d3, f]
         );
 
@@ -176,18 +173,17 @@ public class ConventionProviderTests
 
         var provider = new ConventionProvider(
             hostType,
-            [..categories],
+            [.. categories],
             [d1, d, d2, b, c, e, d3, f]
         );
 
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories)
-    {
-        return Verify(provider.GetAll().Select(z => z switch { Delegate d => d.Method.Name, IConvention c => c.GetType().Name, _ => z.ToString() }))
-           .UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
-    }
+    private SettingsTask VerifyWithParameters(ConventionProvider provider, HostType hostType, ImmutableArray<ConventionCategory> categories) => Verify(
+            provider.GetAll().Select(z => z switch { Delegate d => d.Method.Name, IConvention c => c.GetType().Name, _ => z.ToString() })
+        )
+       .UseParameters(hostType, string.Join(",", categories.Select(z => z.ToString())));
 
     [ConventionCategory(ConventionCategory.Core)]
     [DependentOfConvention(typeof(C))]
@@ -197,20 +193,14 @@ public class ConventionProviderTests
     [UnitTestConvention]
     private sealed class C : IServiceConvention
     {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            throw new NotImplementedException();
-        }
+        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) => throw new NotImplementedException();
     }
 
     [ConventionCategory(ConventionCategory.Application)]
     [AfterConvention(typeof(E))]
     private sealed class D : ITestConvention
     {
-        public void Register(ITestConventionContext context)
-        {
-            throw new NotImplementedException();
-        }
+        public void Register(ITestConventionContext context) => throw new NotImplementedException();
     }
 
     [ConventionCategory("Custom")]

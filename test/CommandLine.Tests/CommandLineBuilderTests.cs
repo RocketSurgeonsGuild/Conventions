@@ -1,22 +1,22 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
+
 using FakeItEasy;
-using FluentAssertions;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
+
 using Spectre.Console.Cli;
+
 using Xunit.Abstractions;
 
-#pragma warning disable CA1034
-#pragma warning disable CA1062
-#pragma warning disable CA1822
-#pragma warning disable CA2000
+#pragma warning disable CA1034, CA1062, CA1822, CA2000
 
 namespace Rocket.Surgery.Extensions.CommandLine.Tests;
 
@@ -37,14 +37,14 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     {
         var builder = ConventionContextBuilder.Create(_ => []);
 
-        var a = () => { builder.PrependConvention(A.Fake<ICommandLineConvention>()); };
-        a.Should().NotThrow();
-        a = () => { builder.AppendConvention(A.Fake<ICommandLineConvention>()); };
-        a.Should().NotThrow();
-        a = () => { builder.PrependDelegate(new ServiceConvention((context, configuration, services) => { }), null, null); };
-        a.Should().NotThrow();
-        a = () => { builder.AppendDelegate(new ServiceConvention((context, configuration, services) => { }), null, null); };
-        a.Should().NotThrow();
+        var a = () => builder.PrependConvention(A.Fake<ICommandLineConvention>());
+        a.ShouldNotThrow();
+        a = () => builder.AppendConvention(A.Fake<ICommandLineConvention>());
+        a.ShouldNotThrow();
+        a = () => builder.PrependDelegate(new ServiceConvention((context, configuration, services) => { }), null, null);
+        a.ShouldNotThrow();
+        a = () => builder.AppendDelegate(new ServiceConvention((context, configuration, services) => { }), null, null);
+        a.ShouldNotThrow();
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                               .CreateApplicationBuilder(["remote", "add", "-v"])
                               .ConfigureRocketSurgery(b => b.UseLogger(Logger));
         await host.StartAsync();
-        host.Services.GetService<ConsoleResult>().Should().BeNull();
+        host.Services.GetService<ConsoleResult>().ShouldBeNull();
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                         )
                                );
 
-        ( await host.RunConsoleAppAsync() ).Should().Be((int)LogLevel.Information);
+        ( await host.RunConsoleAppAsync() ).ShouldBe((int)LogLevel.Information);
     }
 
     [Fact]
@@ -81,7 +81,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var serviceProvider = A.Fake<IServiceProvider>();
 
-        A.CallTo(() => serviceProvider.GetService(A<Type>.Ignored)).Returns(null!);
+        A.CallTo(() => serviceProvider.GetService(A<Type>.Ignored)).Returns(null);
         A.CallTo(() => serviceProvider.GetService(typeof(IService))).Returns(service).NumberOfTimes(2);
         using var host = await Host
                               .CreateApplicationBuilder(["test", "--log", "error"])
@@ -95,7 +95,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                                     "test",
                                                     (context, state) =>
                                                     {
-                                                        state.LogLevel.Should().Be(LogLevel.Error);
+                                                        state.LogLevel.ShouldBe(LogLevel.Error);
                                                         return 1000;
                                                     }
                                                 );
@@ -105,7 +105,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
         var result = await host.RunConsoleAppAsync();
 
-        result.Should().Be(1000);
+        result.ShouldBe(1000);
     }
 
     [Fact]
@@ -120,13 +120,13 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                    b => b
                                        .UseLogger(Logger)
                                        .ConfigureServices(
-                                            z => { z.AddSingleton(service); }
+                                            z => z.AddSingleton(service)
                                         )
-                                       .ConfigureCommandLine((context, builder) => { builder.AddCommand<InjectionConstructor>("constructor"); })
+                                       .ConfigureCommandLine((context, builder) => builder.AddCommand<InjectionConstructor>("constructor"))
                                );
 
         var result = await host.RunConsoleAppAsync();
-        result.Should().Be(1000);
+        result.ShouldBe(1000);
         A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
     }
 
@@ -168,7 +168,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                         )
                                );
 
-        ( await host.RunConsoleAppAsync() ).Should().Be((int)LogLevel.Information);
+        ( await host.RunConsoleAppAsync() ).ShouldBe((int)LogLevel.Information);
     }
 
     [Fact]
@@ -183,24 +183,10 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                );
 
         var result = await host.RunConsoleAppAsync();
-        result.Should().Be(0);
+        result.ShouldBe(0);
     }
 
-    [field: AllowNull]
-    [field: MaybeNull]
-    private ILoggerFactory LoggerFactory => field ??= CreateLoggerFactory();
-
-    private sealed class Add : Command
-    {
-        public override int Execute(CommandContext context) => 1;
-    }
-
-    private sealed class Origin : Command
-    {
-        public override int Execute(CommandContext context) => 1;
-    }
-
-//
+    //
     [Theory]
     [InlineData("--verbose", LogLevel.Debug)]
     [InlineData("--trace", LogLevel.Trace)]
@@ -217,7 +203,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                );
 
         var result = (LogLevel)await host.RunConsoleAppAsync();
-        result.Should().Be(level);
+        result.ShouldBe(level);
     }
 
     [Theory]
@@ -230,7 +216,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     public async Task ShouldAllowLogLevelIn(string command, LogLevel level)
     {
         using var host = await Host
-                              .CreateApplicationBuilder(new[] { "test" }.Concat(command.Split(' ')).ToArray())
+                              .CreateApplicationBuilder(["test", .. command.Split(' ')])
                               .ConfigureRocketSurgery(
                                    b => b
                                        .UseLogger(Logger)
@@ -240,17 +226,11 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                );
 
         var result = (LogLevel)await host.RunConsoleAppAsync();
-        result.Should().Be(level);
-    }
-
-    private sealed class SubCmd : Command
-    {
-        [UsedImplicitly]
-        public override int Execute(CommandContext context) => -1;
+        result.ShouldBe(level);
     }
 
     [Theory]
-//    [InlineData("--version")]
+    //    [InlineData("--version")]
     [InlineData("--help")]
     [InlineData("cmd1 --help")]
     [InlineData("cmd1 a --help")]
@@ -265,7 +245,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     public async Task StopsForHelp(string command)
     {
         using var host = await Host
-                              .CreateApplicationBuilder(command.Split(' ').ToArray())
+                              .CreateApplicationBuilder([.. command.Split(' ')])
                               .ConfigureRocketSurgery(
                                    b => b
                                        .UseLogger(Logger)
@@ -281,25 +261,48 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                         )
                                );
         var result = await host.RunConsoleAppAsync();
-        result.Should().BeGreaterThanOrEqualTo(0);
+        result.ShouldBeGreaterThanOrEqualTo(0);
     }
 
-    public class InjectionConstructor : AsyncCommand
+    private sealed class Add : Command
     {
-        private readonly IService _service;
+        public override int Execute(CommandContext context) => 1;
+    }
 
-        public InjectionConstructor(IService service, ILogger<InjectionConstructor> logger) => _service = service;
+    private sealed class Origin : Command
+    {
+        public override int Execute(CommandContext context) => 1;
+    }
 
+    private sealed class SubCmd : Command
+    {
+        [UsedImplicitly]
+        public override int Execute(CommandContext context) => -1;
+    }
+
+    public class InjectionConstructor(IService service, ILogger<InjectionConstructor> logger) : AsyncCommand
+    {
         [UsedImplicitly]
         public override async Task<int> ExecuteAsync(CommandContext context)
         {
             await Task.Yield();
             return _service.ReturnCode;
         }
+
+        private readonly IService _service = service;
     }
 
     private sealed class CommandWithValues : Command
     {
+        public override int Execute(CommandContext context)
+        {
+            ApiDomain.ShouldBe("mydomain.com");
+            ClientName.ShouldBe("client1");
+            Origins.ShouldContain("origin1");
+            Origins.ShouldContain("origin2");
+            return -1;
+        }
+
         [CommandOption("--api-domain")]
         [Description("The auth0 Domain")]
         [UsedImplicitly]
@@ -314,57 +317,38 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         [Description("The origins that are allowed to access the client")]
         [UsedImplicitly]
         public IEnumerable<string> Origins { get; } = [];
-
-        public override int Execute(CommandContext context)
-        {
-            ApiDomain.Should().Be("mydomain.com");
-            ClientName.Should().Be("client1");
-            Origins.Should().Contain("origin1");
-            Origins.Should().Contain("origin2");
-            return -1;
-        }
     }
 
-    public class ServiceInjection : Command
+    public class ServiceInjection(IService2 service2, ILogger<ServiceInjection> logger) : Command
     {
-        private readonly IService2 _service2;
-        private readonly ILogger<ServiceInjection> _logger;
-
-        public ServiceInjection(IService2 service2, ILogger<ServiceInjection> logger)
-        {
-            _service2 = service2;
-            _logger = logger;
-        }
-
         [UsedImplicitly]
         public override int Execute(CommandContext context)
         {
             _logger.LogInformation(nameof(ServiceInjection));
             return _service2.SomeValue == "Service2" ? 0 : 1;
         }
+
+        private readonly ILogger<ServiceInjection> _logger = logger;
+        private readonly IService2 _service2 = service2;
     }
 
-    public class LoggerInjection : Command
+    public class LoggerInjection(ILogger<LoggerInjection> logger) : Command
     {
-        private readonly ILogger<LoggerInjection> _logger;
-
-        public LoggerInjection(ILogger<LoggerInjection> logger) => _logger = logger;
-
         [UsedImplicitly]
         public override int Execute(CommandContext context)
         {
             _logger.LogInformation(nameof(LoggerInjection));
             return 0;
         }
+
+        private readonly ILogger<LoggerInjection> _logger = logger;
     }
 
-    public class ServiceInjection2 : Command
+    public class ServiceInjection2(IService2 service2) : Command
     {
-        private readonly IService2 _service2;
-
-        public ServiceInjection2(IService2 service2) => _service2 = service2;
-
         [UsedImplicitly]
         public override int Execute(CommandContext context) => _service2.SomeValue == "Service2" ? 0 : 1;
+
+        private readonly IService2 _service2 = service2;
     }
 }

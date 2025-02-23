@@ -1,14 +1,17 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
+
 using Autofac;
+
 using FakeItEasy;
-using FluentAssertions;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
-using Xunit;
+
 using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
@@ -34,10 +37,10 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().NotBeNull();
-        items.ResolveOptional<IAbc2>().Should().NotBeNull();
-        items.ResolveOptional<IAbc3>().Should().BeNull();
-        items.ResolveOptional<IAbc4>().Should().BeNull();
+        items.ResolveOptional<IAbc>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc2>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldBeNull();
+        items.ResolveOptional<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -59,10 +62,10 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().NotBeNull();
-        items.ResolveOptional<IAbc2>().Should().NotBeNull();
-        items.ResolveOptional<IAbc3>().Should().BeNull();
-        items.ResolveOptional<IAbc4>().Should().NotBeNull();
+        items.ResolveOptional<IAbc>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc2>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldBeNull();
+        items.ResolveOptional<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -83,8 +86,8 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc3>().Should().NotBeNull();
-        items.ResolveOptional<IAbc4>().Should().NotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -107,10 +110,10 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
         var items = builder.GetLifetimeScope();
 
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().NotBeNull();
-        sp.GetService<IAbc2>().Should().NotBeNull();
-        sp.GetService<IAbc3>().Should().BeNull();
-        sp.GetService<IAbc4>().Should().BeNull();
+        sp.GetService<IAbc>().ShouldNotBeNull();
+        sp.GetService<IAbc2>().ShouldNotBeNull();
+        sp.GetService<IAbc3>().ShouldBeNull();
+        sp.GetService<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -133,10 +136,10 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc>().Should().NotBeNull();
-        sp.GetService<IAbc2>().Should().NotBeNull();
-        sp.GetService<IAbc3>().Should().BeNull();
-        sp.GetService<IAbc4>().Should().NotBeNull();
+        sp.GetService<IAbc>().ShouldNotBeNull();
+        sp.GetService<IAbc2>().ShouldNotBeNull();
+        sp.GetService<IAbc3>().ShouldBeNull();
+        sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -158,8 +161,8 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
 
         var items = builder.GetLifetimeScope();
         var sp = items.Resolve<IServiceProvider>();
-        sp.GetService<IAbc3>().Should().NotBeNull();
-        sp.GetService<IAbc4>().Should().NotBeNull();
+        sp.GetService<IAbc3>().ShouldNotBeNull();
+        sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -173,10 +176,10 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
                             );
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().NotBeNull();
-        items.ResolveOptional<IAbc2>().Should().NotBeNull();
-        items.ResolveOptional<IAbc3>().Should().BeNull();
-        items.ResolveOptional<IAbc4>().Should().BeNull();
+        items.ResolveOptional<IAbc>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc2>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldBeNull();
+        items.ResolveOptional<IAbc4>().ShouldBeNull();
     }
 
     [Fact]
@@ -187,26 +190,23 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
                            .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
         var items = builder.GetLifetimeScope();
-        items.ResolveOptional<IAbc>().Should().NotBeNull();
-        items.ResolveOptional<IAbc2>().Should().NotBeNull();
-        items.ResolveOptional<IAbc3>().Should().BeNull();
-        items.ResolveOptional<IAbc4>().Should().BeNull();
-        items.ResolveOptional<IOtherAbc3>().Should().NotBeNull();
-        items.ResolveOptional<IOtherAbc3>().Should().NotBeNull();
+        items.ResolveOptional<IAbc>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc2>().ShouldNotBeNull();
+        items.ResolveOptional<IAbc3>().ShouldBeNull();
+        items.ResolveOptional<IAbc4>().ShouldBeNull();
+        items.ResolveOptional<IOtherAbc3>().ShouldNotBeNull();
+        items.ResolveOptional<IOtherAbc3>().ShouldNotBeNull();
     }
 
     [Fact]
     public async Task Should_Integrate_With_Autofac()
     {
         var builder = await Host
-                           .CreateApplicationBuilder(Array.Empty<string>())
+                           .CreateApplicationBuilder([])
                            .ConfigureRocketSurgery(rb => rb.UseAutofac());
 
-        builder.GetLifetimeScope().Should().NotBeNull();
+        builder.GetLifetimeScope().ShouldNotBeNull();
     }
 
-    public AutofacWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper))
-    {
-        AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-    }
+    public AutofacWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper)) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

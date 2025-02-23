@@ -1,16 +1,18 @@
-﻿using FakeItEasy;
-using FluentAssertions;
+using FakeItEasy;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
+
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
@@ -33,7 +35,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
                             .GetAsync();
 
         var content = await response.Content.ReadAsStringAsync();
-        content.Should().Be("SimpleStartup -> Configure");
+        content.ShouldBe("SimpleStartup -> Configure");
         await host.StopAsync();
     }
 
@@ -45,8 +47,8 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
                                     .ConfigureRocketSurgery();
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(3);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(6);
     }
 
     [Fact]
@@ -54,13 +56,13 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
     {
         var @delegate = A.Fake<Func<WebApplication, CancellationToken, ValueTask>>();
         var delegate2 = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
-        using var host = await WebApplication
-                              .CreateBuilder()
-                              .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(delegate2));
+        await using var host = await WebApplication
+                                    .CreateBuilder()
+                                    .ConfigureRocketSurgery(z => z.OnHostCreated(@delegate).OnHostCreated(delegate2));
 
         A.CallTo(() => @delegate.Invoke(A<WebApplication>._, A<CancellationToken>._)).MustHaveHappened();
         A.CallTo(() => delegate2.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
-        host.Services.Should().NotBeNull();
+        host.Services.ShouldNotBeNull();
     }
 
     [Fact]
@@ -69,7 +71,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         var convention = A.Fake<HostApplicationConvention<IHostApplicationBuilder>>();
         await using var host = await WebApplication
                                     .CreateBuilder()
-                                    .ConfigureRocketSurgery(rb => rb                                                               .ConfigureApplication(convention));
+                                    .ConfigureRocketSurgery(rb => rb.ConfigureApplication(convention));
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
     }
@@ -82,8 +84,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
                                     .CreateBuilder()
                                     .ConfigureRocketSurgery(
                                          rb => rb
-
-                                              .ConfigureApplication(convention)
+                                            .ConfigureApplication(convention)
                                      );
 
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<WebApplicationBuilder>._)).MustHaveHappened();
@@ -97,8 +98,8 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
                                     .ConfigureRocketSurgery(z => z.ExceptConvention(typeof(YamlConvention)));
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(3);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(0);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(3);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(0);
     }
 
     [Fact]
@@ -110,7 +111,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        configuration.Providers.OfType<JsonConfigurationProvider>().Should().HaveCount(0);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Should().HaveCount(6);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(0);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(6);
     }
 }
