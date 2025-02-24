@@ -19,19 +19,19 @@ using Rocket.Surgery.Nuke.DotNetCore;
 [ShutdownDotNetAfterServerBuild]
 [LocalBuildConventions]
 internal partial class Pipeline : NukeBuild,
-                                ICanRestoreWithDotNetCore,
-                                ICanBuildWithDotNetCore,
-                                ICanTestWithDotNetCore,
-                                ICanPackWithDotNetCore,
-                                ICanClean,
-                                IHaveCommonLintTargets,
-                                IRemoveUnusedDependencies,
-                                // IHavePublicApis,
-                                IGenerateCodeCoverageReport,
-                                IGenerateCodeCoverageSummary,
-                                IGenerateCodeCoverageBadges,
-                                IHaveConfiguration<Configuration>,
-                                IGenerateDocFx
+    ICanRestoreWithDotNetCore,
+    ICanBuildWithDotNetCore,
+    ICanTestWithDotNetCore,
+    ICanPackWithDotNetCore,
+    ICanClean,
+    IHaveCommonLintTargets,
+    IRemoveUnusedDependencies,
+    // IHavePublicApis,
+    IGenerateCodeCoverageReport,
+    IGenerateCodeCoverageSummary,
+    IGenerateCodeCoverageBadges,
+    IHaveConfiguration<Configuration>,
+    IGenerateDocFx
 {
     /// <summary>
     ///     Support plugins are available for:
@@ -42,6 +42,32 @@ internal partial class Pipeline : NukeBuild,
     /// </summary>
     public static int Main() => Execute<Pipeline>(x => x.Default);
 
+    public Target Build => _ => _;
+    public Target Clean => _ => _;
+
+    [Parameter("Configuration to build")]
+    public Configuration Configuration { get; } = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+
+    public Target Docs => _ => _;
+
+    [OptionalGitRepository]
+    public GitRepository? GitRepository { get; }
+
+    [GitVersion(NoFetch = true, NoCache = false)]
+    public GitVersion GitVersion { get; } = null!;
+
+    /// <summary>
+    ///     Only run the JetBrains cleanup code when running on the server
+    /// </summary>
+    public Target JetBrainsCleanupCode => _ => _
+                                              .Inherit<ICanDotNetFormat>(x => x.JetBrainsCleanupCode)
+                                              .OnlyWhenStatic(() => IsServerBuild);
+
+    public Target Lint => _ => _;
+    public Target Pack => _ => _;
+    public Target Restore => _ => _;
+    public Target Test => _ => _;
+
     [NonEntryTarget]
     private Target Default => _ => _
                                   .DependsOn(Restore)
@@ -49,25 +75,8 @@ internal partial class Pipeline : NukeBuild,
                                   .DependsOn(Test)
                                   .DependsOn(Pack);
 
-    public Target Build => _ => _;
-    public Target Pack => _ => _;
-    public Target Clean => _ => _;
-    public Target Lint => _ => _;
-    public Target Restore => _ => _;
-    public Target Test => _ => _;
-    public Target Docs => _ => _;
+    [Solution(GenerateProjects = true)]
+    private Solution Solution { get; } = null!;
 
-    /// <summary>
-    /// Only run the JetBrains cleanup code when running on the server
-    /// </summary>
-    public Target JetBrainsCleanupCode => _ => _
-                                              .Inherit<ICanDotNetFormat>(x => x.JetBrainsCleanupCode)
-                                              .OnlyWhenStatic(() => IsServerBuild);
-
-    [Solution(GenerateProjects = true)] private Solution Solution { get; } = null!;
     Nuke.Common.ProjectModel.Solution IHaveSolution.Solution => Solution;
-
-    [OptionalGitRepository] public GitRepository? GitRepository { get; }
-    [GitVersion(NoFetch = true, NoCache = false)] public GitVersion GitVersion { get; } = null!;
-    [Parameter("Configuration to build")] public Configuration Configuration { get; } = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 }
