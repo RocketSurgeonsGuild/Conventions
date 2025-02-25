@@ -25,6 +25,7 @@ public sealed class ConventionContext : IConventionContext
     /// <returns></returns>
     public static async ValueTask<IConventionContext> FromAsync(ConventionContextBuilder builder, CancellationToken cancellationToken = default)
     {
+        var result = MyAssembly.Project.Version;
         ArgumentNullException.ThrowIfNull(builder);
         var context = FromInitInternal(builder);
         await context.ApplyConventionsAsync(cancellationToken).ConfigureAwait(false);
