@@ -502,7 +502,7 @@ internal static class ImportConventions
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -514,7 +514,7 @@ internal static class ImportConventions
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions());
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -529,7 +529,7 @@ internal static class ImportConventions
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -544,7 +544,7 @@ internal static class ImportConventions
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -559,7 +559,7 @@ internal static class ImportConventions
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -574,7 +574,7 @@ internal static class ImportConventions
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -589,7 +589,7 @@ internal static class ImportConventions
                 action(contextBuilder);
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -604,7 +604,7 @@ internal static class ImportConventions
                 action(contextBuilder);
                 return await ConfigureRocketSurgery(await builder, action, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -617,7 +617,7 @@ internal static class ImportConventions
                 ArgumentNullException.ThrowIfNull(contextBuilder);
                 return await {ExtensionsType}.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
@@ -649,110 +649,126 @@ internal static class ImportConventions
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
+            /// <param name="logger">The logger.</param>
             /// <param name="cancellationToken"></param>
             public static ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ILogger logger, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(logger);
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
+            /// <param name="logger">The logger.</param>
             /// <param name="cancellationToken"></param>
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ILogger logger, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(logger);
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
+            /// <param name="logger">The logger.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ILogger logger, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(logger);
                 ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
+            /// <param name="logger">The logger.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ILogger logger, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(logger);
                 ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 await action(contextBuilder, cancellationToken);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
+            /// <param name="logger">The logger.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ILogger logger, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(logger);
                 ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
+            /// <param name="logger">The logger.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ILogger logger, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(logger);
                 ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 await action(contextBuilder);
                 return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
+            /// <param name="logger">The logger.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
             public static ValueTask<{ReturnType}> ConfigureRocketSurgery(this {BuilderType} builder, ILogger logger, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(logger);
                 ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 action(contextBuilder);
                 return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
             }
-        
+
             /// <summary>
             ///     Configures the rocket Surgery.
             /// </summary>
             /// <param name="builder">The builder.</param>
+            /// <param name="logger">The logger.</param>
             /// <param name="action">The action.</param>
             /// <param name="cancellationToken"></param>
             public static async ValueTask<{ReturnType}> ConfigureRocketSurgery(this Task<{BuilderType}> builder, ILogger logger, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
             {
                 ArgumentNullException.ThrowIfNull(builder);
+                ArgumentNullException.ThrowIfNull(logger);
                 ArgumentNullException.ThrowIfNull(action);
                 var contextBuilder = ConventionContextBuilder.Create({LoadConventions}.OrCallerConventions()).UseLogger(logger);
                 action(contextBuilder);
