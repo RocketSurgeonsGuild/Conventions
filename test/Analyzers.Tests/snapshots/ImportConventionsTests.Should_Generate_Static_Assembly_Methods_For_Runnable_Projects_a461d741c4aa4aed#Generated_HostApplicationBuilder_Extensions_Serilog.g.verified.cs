@@ -19,10 +19,12 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="cancellationToken"></param>
     public static ValueTask<global::Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this global::Microsoft.Extensions.Hosting.HostApplicationBuilder builder, ILogger logger, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(logger);
         var contextBuilder = ConventionContextBuilder.Create(global::TestProject.Conventions.Imports.Instance.OrCallerConventions()).UseLogger(logger);
         return ConfigureRocketSurgery(builder, contextBuilder, cancellationToken);
     }
@@ -31,10 +33,12 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="cancellationToken"></param>
     public static async ValueTask<global::Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> builder, ILogger logger, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(logger);
         var contextBuilder = ConventionContextBuilder.Create(global::TestProject.Conventions.Imports.Instance.OrCallerConventions()).UseLogger(logger);
         return await ConfigureRocketSurgery(await builder, contextBuilder, cancellationToken);
     }
@@ -43,11 +47,13 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static async ValueTask<global::Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this global::Microsoft.Extensions.Hosting.HostApplicationBuilder builder, ILogger logger, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = ConventionContextBuilder.Create(global::TestProject.Conventions.Imports.Instance.OrCallerConventions()).UseLogger(logger);
         await action(contextBuilder, cancellationToken);
@@ -58,11 +64,13 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static async ValueTask<global::Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> builder, ILogger logger, Func<ConventionContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = ConventionContextBuilder.Create(global::TestProject.Conventions.Imports.Instance.OrCallerConventions()).UseLogger(logger);
         await action(contextBuilder, cancellationToken);
@@ -73,11 +81,13 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static async ValueTask<global::Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this global::Microsoft.Extensions.Hosting.HostApplicationBuilder builder, ILogger logger, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = ConventionContextBuilder.Create(global::TestProject.Conventions.Imports.Instance.OrCallerConventions()).UseLogger(logger);
         await action(contextBuilder);
@@ -88,11 +98,13 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static async ValueTask<global::Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> builder, ILogger logger, Func<ConventionContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = ConventionContextBuilder.Create(global::TestProject.Conventions.Imports.Instance.OrCallerConventions()).UseLogger(logger);
         await action(contextBuilder);
@@ -103,11 +115,13 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static ValueTask<global::Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this global::Microsoft.Extensions.Hosting.HostApplicationBuilder builder, ILogger logger, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = ConventionContextBuilder.Create(global::TestProject.Conventions.Imports.Instance.OrCallerConventions()).UseLogger(logger);
         action(contextBuilder);
@@ -118,11 +132,13 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     ///     Configures the rocket Surgery.
     /// </summary>
     /// <param name="builder">The builder.</param>
+    /// <param name="logger">The logger.</param>
     /// <param name="action">The action.</param>
     /// <param name="cancellationToken"></param>
     public static async ValueTask<global::Microsoft.Extensions.Hosting.IHost> ConfigureRocketSurgery(this Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> builder, ILogger logger, Action<ConventionContextBuilder> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(action);
         var contextBuilder = ConventionContextBuilder.Create(global::TestProject.Conventions.Imports.Instance.OrCallerConventions()).UseLogger(logger);
         action(contextBuilder);
