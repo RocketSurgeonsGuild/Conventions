@@ -101,16 +101,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.3.0
+        uses: actions/checkout@v5.0.0
         with:
           clean: 'false'
           fetch-depth: '0'
       - name: 🔨 Use .NET Core 8.0 SDK
-        uses: actions/setup-dotnet@v4.3.1
+        uses: actions/setup-dotnet@v5.0.0
         with:
           dotnet-version: '8.0.x'
       - name: 🔨 Use .NET Core 9.0 SDK
-        uses: actions/setup-dotnet@v4.3.1
+        uses: actions/setup-dotnet@v5.0.0
         with:
           dotnet-version: '9.0.x'
       - name: 🚒 dotnet workload restore
