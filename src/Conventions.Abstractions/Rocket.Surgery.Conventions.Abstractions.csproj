@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-        <PackageDescription
-        >Adds support for loading configuration, services, logging, command line and more via simple and easy to setup assembly attributes</PackageDescription>
+        <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+        <PackageDescription>Adds support for loading configuration, services, logging, command line
+            and more via simple and easy to setup assembly attributes</PackageDescription>
         <PackageTags>$(PackageTags);reflection</PackageTags>
         <IsTimmable>false</IsTimmable>
     </PropertyGroup>
