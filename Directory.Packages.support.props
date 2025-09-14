@@ -6,10 +6,4 @@
         <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.18" />
         <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="8.0.18" />
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0' or '$(TargetFramework)' == 'net9.0-browser'">
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.18" />
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.18" />
-        <PackageVersion Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.18" />
-        <PackageVersion Update="Microsoft.AspNetCore.TestHost" Version="8.0.18" />
-    </ItemGroup>
 </Project>

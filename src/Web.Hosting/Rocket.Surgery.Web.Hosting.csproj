@@ -14,7 +14,6 @@
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
-        <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>

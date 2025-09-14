@@ -89,7 +89,7 @@
                 <ModulePath>.*FakeItEasy\.dll</ModulePath>
                 <ModulePath>.*FluentValidation\.dll</ModulePath>
                 <ModulePath>.*GitVersion\.Tool\.dll</ModulePath>
-                <ModulePath>.*JetBrains\.Annotations\.dll</ModulePath>
+                <ModulePath>.*JetBrains\.Annotations\.Sources\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.dotCover\.CommandLineTools\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.ExternalAnnotations\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.ReSharper\.GlobalTools\.dll</ModulePath>
@@ -142,7 +142,6 @@
                 <ModulePath>.*Spectre\.Console\.Analyzer\.dll</ModulePath>
                 <ModulePath>.*Spectre\.Console\.Cli\.dll</ModulePath>
                 <ModulePath>.*Spectre\.Console\.dll</ModulePath>
-                <ModulePath>.*System\.Collections\.Immutable\.dll</ModulePath>
                 <ModulePath>.*System\.Diagnostics\.DiagnosticSource\.dll</ModulePath>
                 <ModulePath>.*System\.Text\.Json\.dll</ModulePath>
                 <ModulePath>.*Verify\.AngleSharp\.dll</ModulePath>
