@@ -1,0 +1,7 @@
+﻿[
+  <Should_Exclude_Unit_Test_Conventions>b__7_0,
+  D,
+  <Should_Exclude_Unit_Test_Conventions>b__7_1,
+  <Should_Exclude_Unit_Test_Conventions>b__7_2,
+  F
+]
