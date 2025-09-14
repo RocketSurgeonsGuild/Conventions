@@ -18,13 +18,13 @@ public class RocketHostTests
                               .ConfigureRocketSurgery();
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        #if NET10_0_OR_GREATER
+#if NET10_0_OR_GREATER
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(12);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(24);
+#else
         configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(6);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(12);
-        #else
-        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(6);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(12);
-        #endif
+#endif
     }
 
     [Fact]
@@ -36,13 +36,13 @@ public class RocketHostTests
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        #if NET10_0_OR_GREATER
+#if NET10_0_OR_GREATER
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(12);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(0);
+#else
         configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(6);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(0);
-        #else
-        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(6);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(0);
-        #endif
+#endif
     }
 
     [Fact]
@@ -54,12 +54,12 @@ public class RocketHostTests
 
         var configuration = (IConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
 
-        #if NET10_0_OR_GREATER
+#if NET10_0_OR_GREATER
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(2);
+        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(24);
+#else
         configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(0);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(12);
-        #else
-        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(0);
-        configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(12);
-        #endif
+#endif
     }
 }

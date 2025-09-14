@@ -17,13 +17,77 @@ public class JsonConvention : ISetupConvention
     public void Register(IConventionContext context)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
+        var applicationName = context.Get<string>("ApplicationName");
         context.AppendApplicationConfiguration(
-            configurationBuilder => new[] { new ConfigurationBuilderDelegateResult("appsettings.json", LoadJsonFile(configurationBuilder, "appsettings.json")) }
+            configurationBuilder =>
+            {
+                ConfigurationBuilderDelegateResult[] results =
+                [
+                    new ("appsettings.json", LoadJsonFile(configurationBuilder, "appsettings.json")),
+                ];
+
+
+<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Json(net10.0)', Before:
+                #if  NET10_0_OR_GREATER
+                return applicationName is {Length: > 0} ? [
+=======
+#if NET10_0_OR_GREATER
+                return applicationName is { Length: > 0 } ? [
+>>>>>>> After
+
+<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Json(net10.0)', Before:
+                #else
+                return results;
+                #endif
+=======
+#else
+                return results;
+#endif
+>>>>>>> After
+#if NET10_0_OR_GREATER
+                return applicationName is {Length: > 0} ? [
+                    ..results,
+                    new ($"{applicationName}.json", LoadJsonFile(configurationBuilder, $"{applicationName}.json")),
+                ] : results;
+#else
+                return results;
+#endif
+            }
         );
         context.AppendEnvironmentConfiguration(
-            (configurationBuilder, environment) => new[]
+            (configurationBuilder, environment) =>
             {
-                new ConfigurationBuilderDelegateResult($"appsettings.{environment}.json", LoadJsonFile(configurationBuilder, $"appsettings.{environment}.json")),
+                ConfigurationBuilderDelegateResult[] results =
+                [
+                    new ($"appsettings.{environment}.json", LoadJsonFile(configurationBuilder, $"appsettings.{environment}.json")),
+                ];
+
+
+<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Json(net10.0)', Before:
+                #if  NET10_0_OR_GREATER
+                return applicationName is {Length: > 0} ? [
+=======
+#if NET10_0_OR_GREATER
+                return applicationName is { Length: > 0 } ? [
+>>>>>>> After
+
+<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Json(net10.0)', Before:
+                #else
+                return results;
+                #endif
+=======
+#else
+                return results;
+#endif
+>>>>>>> After
+#if NET10_0_OR_GREATER
+                return applicationName is {Length: > 0} ? [
+                    ..results,
+                    new ($"{applicationName}.{environment}.json", LoadJsonFile(configurationBuilder, $"{applicationName}.{environment}.json")),
+                ] : results;
+#else
+                return results;
+#endif
             }
         );
     }
