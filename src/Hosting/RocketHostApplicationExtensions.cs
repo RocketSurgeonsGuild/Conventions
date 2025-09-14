@@ -1,17 +1,16 @@
 using System.ComponentModel;
-using System.Reflection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration;
 using Rocket.Surgery.Conventions.Extensions;
 
-#pragma warning disable CA1031
-#pragma warning disable CA2000
-#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+#pragma warning disable CA1031, CA2000, CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
 
 namespace Rocket.Surgery.Hosting;
 
@@ -41,6 +40,9 @@ public static class RocketHostApplicationExtensions
            .AddIfMissing<IConfiguration>(builder.Configuration)
            .AddIfMissing(builder.Configuration.GetType(), builder.Configuration)
            .AddIfMissing(builder.Environment)
+           .AddIfMissing(nameof(builder.Environment.ApplicationName), builder.Environment.ApplicationName)
+           .AddIfMissing(nameof(builder.Environment.ContentRootPath), builder.Environment.ContentRootPath)
+           .AddIfMissing(nameof(builder.Environment.EnvironmentName), builder.Environment.EnvironmentName)
            .AddIfMissing(builder.Environment.GetType(), builder.Environment);
 
         var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
@@ -69,12 +71,11 @@ public static class RocketHostApplicationExtensions
             hostApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
                 sources => sources
                           .OfType<FileConfigurationSource>()
-                          .FirstOrDefault(
-                               x => string.Equals(
-                                   x.Path,
-                                   $"{name}.{hostApplicationBuilder.Environment.EnvironmentName}.json",
-                                   StringComparison.OrdinalIgnoreCase
-                               )
+                          .FirstOrDefault(x => string.Equals(
+                                              x.Path,
+                                              $"{name}.{hostApplicationBuilder.Environment.EnvironmentName}.json",
+                                              StringComparison.OrdinalIgnoreCase
+                                          )
                            ),
                 new IConfigurationSource[]
                 {
@@ -91,38 +92,35 @@ public static class RocketHostApplicationExtensions
             hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
                 sources => sources
                           .OfType<FileConfigurationSource>()
-                          .FirstOrDefault(
-                               x => string.Equals(x.Path, $"{name}.json", StringComparison.OrdinalIgnoreCase)
+                          .FirstOrDefault(x => string.Equals(x.Path, $"{name}.json", StringComparison.OrdinalIgnoreCase)
                            ),
                 context
-                   .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
+                   .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => [])
                    .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration))
                    .Select(z => z.Factory(null))
             );
 
-            if (!string.IsNullOrEmpty(hostApplicationBuilder.Environment.EnvironmentName))
-                hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
-                    sources => sources
-                              .OfType<FileConfigurationSource>()
-                              .FirstOrDefault(
-                                   x => string.Equals(
-                                       x.Path,
-                                       $"{name}.{hostApplicationBuilder.Environment.EnvironmentName}.json",
-                                       StringComparison.OrdinalIgnoreCase
-                                   )
-                               ),
-                    context
-                       .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
-                       .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, hostApplicationBuilder.Environment.EnvironmentName))
-                       .Select(z => z.Factory(null))
-                );
+            hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
+                sources => sources
+                          .OfType<FileConfigurationSource>()
+                          .FirstOrDefault(x => string.Equals(
+                                              x.Path,
+                                              $"{name}.{hostApplicationBuilder.Environment.EnvironmentName}.json",
+                                              StringComparison.OrdinalIgnoreCase
+                                          )
+                           ),
+                context
+                   .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => [])
+                   .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, hostApplicationBuilder.Environment.EnvironmentName))
+                   .Select(z => z.Factory(null))
+            );
 
             hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
                 sources => sources
                           .OfType<FileConfigurationSource>()
                           .FirstOrDefault(x => string.Equals(x.Path, $"{name}.local.json", StringComparison.OrdinalIgnoreCase)),
                 context
-                   .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
+                   .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => [])
                    .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, "local"))
                    .Select(z => z.Factory(null))
             );
@@ -138,19 +136,22 @@ public static class RocketHostApplicationExtensions
              || ( item is EnvironmentVariablesConfigurationSource env
                  && ( string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) )
              || ( item is FileConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase) ))
+            {
                 continue;
+            }
 
             source = item;
             break;
         }
 
-        var index = source == null
+        var index = source is null
             ? hostApplicationBuilder.Configuration.Sources.Count - 1
             : hostApplicationBuilder.Configuration.Sources.IndexOf(source);
         // Insert after all the normal configuration but before the environment specific configuration
 
         var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, hostApplicationBuilder.Configuration, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0, })
+        {
             hostApplicationBuilder.Configuration.Sources.Insert(
                 index + 1,
                 new ChainedConfigurationSource
@@ -159,6 +160,7 @@ public static class RocketHostApplicationExtensions
                     ShouldDisposeConfiguration = true,
                 }
             );
+        }
 
         hostApplicationBuilder.Configuration.AddInMemoryCollection(
             new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }

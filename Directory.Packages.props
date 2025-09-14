@@ -44,31 +44,31 @@
         <PackageVersion Include="bunit.web" Version="1.40.0" />
 
         <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="8.0.0-preview-04" />
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.9" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0-rc.1.25451.107" />
         <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.20" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.9" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.0-rc.1.25451.107" />
 
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0-rc.1.25451.107" />
 
-        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0-rc.1.25451.107" />
 
-        <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.9" />
+        <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.0-rc.1.25451.107" />
 
-        <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.9" />
+        <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.0-rc.1.25451.107" />
 
         <PackageVersion Include="Serilog" Version="4.3.0" />
         <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
-        <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.9" />
-        <PackageVersion Include="System.Text.Json" Version="9.0.9" />
+        <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.0-rc.1.25451.107" />
+        <PackageVersion Include="System.Text.Json" Version="10.0.0-rc.1.25451.107" />
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
         <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
@@ -86,9 +86,9 @@
         <PackageVersion Include="Shouldly" Version="4.3.0" />
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
         <PackageVersion Include="Microsoft.Playwright" Version="1.55.0" />
-        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="9.0.5" />
-        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="9.0.5" />
-        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" Version="9.0.5" />
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="10.0.0-beta.1" />
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.XUnit" Version="10.0.0-beta.1" />
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" Version="10.0.0-beta.1" />
         <PackageVersion Include="xunit" Version="2.9.3" />
         <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
         <PackageVersion Include="Verify.AngleSharp" Version="4.7.0" />

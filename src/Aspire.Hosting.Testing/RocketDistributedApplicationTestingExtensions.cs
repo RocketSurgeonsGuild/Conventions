@@ -1,15 +1,14 @@
 using System.ComponentModel;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
+
 using Microsoft.Extensions.Configuration;
+
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Extensions;
 
-#pragma warning disable CA1031
-#pragma warning disable CA2000
-#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+#pragma warning disable CA1031, CA2000, CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
 
 namespace Rocket.Surgery.Aspire.Hosting.Testing;
 
@@ -36,6 +35,9 @@ public static class RocketDistributedApplicationTestingExtensions
            .AddIfMissing<IConfiguration>(builder.Configuration)
            .AddIfMissing(builder.Configuration.GetType(), builder.Configuration)
            .AddIfMissing(builder.Environment)
+           .AddIfMissing(nameof(builder.Environment.ApplicationName), builder.Environment.ApplicationName)
+           .AddIfMissing(nameof(builder.Environment.ContentRootPath), builder.Environment.ContentRootPath)
+           .AddIfMissing(nameof(builder.Environment.EnvironmentName), builder.Environment.EnvironmentName)
            .AddIfMissing(builder.Environment.GetType(), builder.Environment);
 
         var context = await ConventionContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
