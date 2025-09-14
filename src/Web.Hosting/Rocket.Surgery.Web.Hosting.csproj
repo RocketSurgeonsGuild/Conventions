@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+        <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
         <PackageDescription>Adds helpers to easily bootstrap an application using conventions by
             just using the correct extension method. This adds command line operations, additional
             configuration, logging and service injections by convention.</PackageDescription>
@@ -14,7 +14,6 @@
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
-        <ProjectReference Include="..\Conventions.DependencyModel\Rocket.Surgery.Conventions.DependencyModel.csproj" />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>

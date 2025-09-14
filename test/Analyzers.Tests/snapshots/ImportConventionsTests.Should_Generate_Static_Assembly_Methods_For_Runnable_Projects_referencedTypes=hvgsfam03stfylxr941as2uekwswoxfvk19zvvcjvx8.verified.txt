@@ -1,0 +1,25 @@
+﻿{
+  FinalDiagnostics: [],
+  GeneratorDiagnostics: {
+    Rocket.Surgery.Conventions.ConventionAttributesGenerator: []
+  },
+  References: [
+    <in-memory assembly>,
+    <in-memory assembly>,
+    <in-memory assembly>,
+    FluentValidation.dll,
+    Microsoft.AspNetCore.Components.WebAssembly.dll,
+    Microsoft.Extensions.Configuration.Abstractions.dll,
+    Microsoft.Extensions.DependencyInjection.Abstractions.dll,
+    mscorlib.dll,
+    netstandard.dll,
+    Rocket.Surgery.Conventions.Abstractions.dll,
+    Rocket.Surgery.Conventions.dll,
+    Rocket.Surgery.WebAssembly.Hosting.dll,
+    System.ComponentModel.dll,
+    System.Core.dll,
+    System.dll,
+    System.Private.CoreLib.dll,
+    System.Runtime.dll
+  ]
+}

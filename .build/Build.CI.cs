@@ -1,4 +1,5 @@
 using Nuke.Common.CI.GitHubActions;
+
 using Rocket.Surgery.Nuke.ContinuousIntegration;
 using Rocket.Surgery.Nuke.GithubActions;
 using Rocket.Surgery.Nuke.Jobs;
@@ -66,11 +67,10 @@ internal partial class Pipeline
            .ExcludeRepositoryConfigurationFiles()
            .Jobs.OfType<RocketSurgeonsGithubActionsJob>()
            .First(z => z.Name.Equals("build", StringComparison.OrdinalIgnoreCase))
-           .UseDotNetSdks("8.0", "9.0")
+           .UseDotNetSdks("8.0", "9.0", "10.0")
            // .ConfigureForGitVersion()
            .ConfigureStep<CheckoutStep>(step => step.FetchDepth = 0)
            .PublishLogs<Pipeline>();
-
 
         return configuration;
     }
@@ -80,7 +80,7 @@ internal partial class Pipeline
         _ = configuration
            .Jobs.OfType<RocketSurgeonsGithubActionsJob>()
            .First(z => z.Name.Equals("Build", StringComparison.OrdinalIgnoreCase))
-           .UseDotNetSdks("8.0", "9.0");
+           .UseDotNetSdks("8.0", "10.0");
 
         return configuration;
     }

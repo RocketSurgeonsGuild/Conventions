@@ -1,22 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-        <PackageDescription>Provides the ability to provide additional commands to the hosted application by convention.</PackageDescription>
+        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <PackageDescription>Provides the ability to provide additional commands to the hosted
+            application by convention.</PackageDescription>
         <PackageTags>$(PackageTags);command line;cli;command</PackageTags>
         <NoWarn>$(NoWarn);RCS1102;CA1812</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-         <ProjectReference
+        <ProjectReference
             Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
             IncludeAssets="all"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
-        <PackageReference
-            Include="Polyfill"
-            IncludeAssets="runtime;build;buildMultitargeting;buildTransitive;native;contentfiles;analyzers"
-            PrivateAssets="All"
-        />
+        <PackageReference Include="Polyfill" PrivateAssets="All" />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>
