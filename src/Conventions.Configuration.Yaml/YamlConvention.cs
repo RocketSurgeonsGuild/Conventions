@@ -26,25 +26,7 @@ public class YamlConvention : ISetupConvention
                     new ("appsettings.yml", LoadYamlFile(configurationBuilder, "appsettings.yml"))
                 ];
 
-
-<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Yaml(net10.0)', Before:
-                #if  NET10_0_OR_GREATER
-                return applicationName is {Length: > 0} ? [
-=======
-#if NET10_0_OR_GREATER
-                return applicationName is { Length: > 0 } ? [
->>>>>>> After
-
-<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Yaml(net10.0)', Before:
-                #else
-                return results;
-                #endif
-=======
-#else
-                return results;
-#endif
->>>>>>> After
-#if NET10_0_OR_GREATER
+#if  NET10_0_OR_GREATER
                 return applicationName is {Length: > 0} ? [
                     ..results,
                     new($"{applicationName}.yaml", LoadYamlFile(configurationBuilder, $"{applicationName}.yaml")),
@@ -64,25 +46,7 @@ public class YamlConvention : ISetupConvention
                     new($"appsettings.{environment}.yml", LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yml")),
                 ];
 
-
-<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Yaml(net10.0)', Before:
-                #if  NET10_0_OR_GREATER
-                return applicationName is {Length: > 0} ? [
-=======
-#if NET10_0_OR_GREATER
-                return applicationName is { Length: > 0 } ? [
->>>>>>> After
-
-<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Yaml(net10.0)', Before:
-                #else
-                return results;
-                #endif
-=======
-#else
-                return results;
-#endif
->>>>>>> After
-#if NET10_0_OR_GREATER
+#if  NET10_0_OR_GREATER
                 return applicationName is {Length: > 0} ? [
                     ..results,
                     new($"{applicationName}.{environment}.yaml", LoadYamlFile(configurationBuilder, $"{applicationName}.{environment}.yaml")),

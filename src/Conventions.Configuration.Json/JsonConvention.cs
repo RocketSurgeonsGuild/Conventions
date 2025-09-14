@@ -26,25 +26,7 @@ public class JsonConvention : ISetupConvention
                     new ("appsettings.json", LoadJsonFile(configurationBuilder, "appsettings.json")),
                 ];
 
-
-<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Json(net10.0)', Before:
-                #if  NET10_0_OR_GREATER
-                return applicationName is {Length: > 0} ? [
-=======
-#if NET10_0_OR_GREATER
-                return applicationName is { Length: > 0 } ? [
->>>>>>> After
-
-<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Json(net10.0)', Before:
-                #else
-                return results;
-                #endif
-=======
-#else
-                return results;
-#endif
->>>>>>> After
-#if NET10_0_OR_GREATER
+#if  NET10_0_OR_GREATER
                 return applicationName is {Length: > 0} ? [
                     ..results,
                     new ($"{applicationName}.json", LoadJsonFile(configurationBuilder, $"{applicationName}.json")),
@@ -62,25 +44,7 @@ public class JsonConvention : ISetupConvention
                     new ($"appsettings.{environment}.json", LoadJsonFile(configurationBuilder, $"appsettings.{environment}.json")),
                 ];
 
-
-<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Json(net10.0)', Before:
-                #if  NET10_0_OR_GREATER
-                return applicationName is {Length: > 0} ? [
-=======
-#if NET10_0_OR_GREATER
-                return applicationName is { Length: > 0 } ? [
->>>>>>> After
-
-<<<<<<< TODO: Unmerged change from project 'Rocket.Surgery.Conventions.Configuration.Json(net10.0)', Before:
-                #else
-                return results;
-                #endif
-=======
-#else
-                return results;
-#endif
->>>>>>> After
-#if NET10_0_OR_GREATER
+#if  NET10_0_OR_GREATER
                 return applicationName is {Length: > 0} ? [
                     ..results,
                     new ($"{applicationName}.{environment}.json", LoadJsonFile(configurationBuilder, $"{applicationName}.{environment}.json")),
