@@ -1,19 +1,17 @@
 using System.Collections.Immutable;
-
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Hosting;
-
 using Rocket.Surgery.Aspire.Hosting;
 using Rocket.Surgery.Aspire.Hosting.Testing;
 using Rocket.Surgery.Hosting;
 using Rocket.Surgery.WebAssembly.Hosting;
-
 using Serilog;
-
 using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -191,7 +189,7 @@ using Rocket.Surgery.Conventions;
                           .Build()
                           .GenerateAsync();
 
-        await Verify(result).UseParameters(string.Join("_", referencedTypes.Select(z => z.Name))).HashParameters();
+        await Verify(result).UseParameters(Regex.Replace(Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("_", referencedTypes.Select(z => z.Name))))), "[^\\d|\\w]", "").ToLowerInvariant());
     }
 
     [Fact]

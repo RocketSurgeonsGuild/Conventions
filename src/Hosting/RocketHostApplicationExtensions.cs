@@ -64,66 +64,72 @@ public static class RocketHostApplicationExtensions
     )
     {
         // This code is duplicated per host (web host, generic host, and wasm host)
-        hostApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
-            sources => sources
-                      .OfType<FileConfigurationSource>()
-                      .FirstOrDefault(
-                           x => string.Equals(
-                               x.Path,
-                               $"appsettings.{hostApplicationBuilder.Environment.EnvironmentName}.json",
-                               StringComparison.OrdinalIgnoreCase
-                           )
-                       ),
-            new IConfigurationSource[]
-            {
-                new JsonConfigurationSource
-                {
-                    FileProvider = hostApplicationBuilder.Configuration.GetFileProvider(),
-                    Path = "appsettings.local.json",
-                    Optional = true,
-                    ReloadOnChange = true,
-                },
-            }
-        );
-
-        hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
-            sources => sources
-                      .OfType<FileConfigurationSource>()
-                      .FirstOrDefault(
-                           x => string.Equals(x.Path, "appsettings.json", StringComparison.OrdinalIgnoreCase)
-                       ),
-            context
-               .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
-               .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration))
-               .Select(z => z.Factory(null))
-        );
-
-        if (!string.IsNullOrEmpty(hostApplicationBuilder.Environment.EnvironmentName))
-            hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
+        void insertNamedSource(string name)
+        {
+            hostApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
                 sources => sources
                           .OfType<FileConfigurationSource>()
                           .FirstOrDefault(
                                x => string.Equals(
                                    x.Path,
-                                   $"appsettings.{hostApplicationBuilder.Environment.EnvironmentName}.json",
+                                   $"{name}.{hostApplicationBuilder.Environment.EnvironmentName}.json",
                                    StringComparison.OrdinalIgnoreCase
                                )
                            ),
+                new IConfigurationSource[]
+                {
+                    new JsonConfigurationSource
+                    {
+                        FileProvider = hostApplicationBuilder.Configuration.GetFileProvider(),
+                        Path = $"{name}.local.json",
+                        Optional = true,
+                        ReloadOnChange = true,
+                    },
+                }
+            );
+
+            hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
+                sources => sources
+                          .OfType<FileConfigurationSource>()
+                          .FirstOrDefault(
+                               x => string.Equals(x.Path, $"{name}.json", StringComparison.OrdinalIgnoreCase)
+                           ),
                 context
-                   .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
-                   .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, hostApplicationBuilder.Environment.EnvironmentName))
+                   .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new())
+                   .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration))
                    .Select(z => z.Factory(null))
             );
 
-        hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
-            sources => sources
-                      .OfType<FileConfigurationSource>()
-                      .FirstOrDefault(x => string.Equals(x.Path, "appsettings.local.json", StringComparison.OrdinalIgnoreCase)),
-            context
-               .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
-               .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, "local"))
-               .Select(z => z.Factory(null))
-        );
+            if (!string.IsNullOrEmpty(hostApplicationBuilder.Environment.EnvironmentName))
+                hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
+                    sources => sources
+                              .OfType<FileConfigurationSource>()
+                              .FirstOrDefault(
+                                   x => string.Equals(
+                                       x.Path,
+                                       $"{name}.{hostApplicationBuilder.Environment.EnvironmentName}.json",
+                                       StringComparison.OrdinalIgnoreCase
+                                   )
+                               ),
+                    context
+                       .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
+                       .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, hostApplicationBuilder.Environment.EnvironmentName))
+                       .Select(z => z.Factory(null))
+                );
+
+            hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
+                sources => sources
+                          .OfType<FileConfigurationSource>()
+                          .FirstOrDefault(x => string.Equals(x.Path, $"{name}.local.json", StringComparison.OrdinalIgnoreCase)),
+                context
+                   .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new())
+                   .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, "local"))
+                   .Select(z => z.Factory(null))
+            );
+        }
+
+        insertNamedSource("appsettings");
+        insertNamedSource(hostApplicationBuilder.Environment.ApplicationName);
 
         IConfigurationSource? source = null;
         foreach (var item in hostApplicationBuilder.Configuration.Sources.Reverse())
