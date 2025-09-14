@@ -89,7 +89,7 @@
                 <ModulePath>.*FakeItEasy\.dll</ModulePath>
                 <ModulePath>.*FluentValidation\.dll</ModulePath>
                 <ModulePath>.*GitVersion\.Tool\.dll</ModulePath>
-                <ModulePath>.*JetBrains.Annotations.Sources\.dll</ModulePath>
+                <ModulePath>.*JetBrains\.Annotations\.Sources\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.dotCover\.CommandLineTools\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.ExternalAnnotations\.dll</ModulePath>
                 <ModulePath>.*JetBrains\.ReSharper\.GlobalTools\.dll</ModulePath>
