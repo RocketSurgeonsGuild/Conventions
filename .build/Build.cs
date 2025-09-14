@@ -61,7 +61,7 @@ internal partial class Pipeline : NukeBuild,
     /// </summary>
     public Target JetBrainsCleanupCode => _ => _
                                               .Inherit<ICanDotNetFormat>(x => x.JetBrainsCleanupCode)
-                                              .OnlyWhenStatic(() => IsServerBuild);
+                                              .OnlyWhenStatic(() => false);
 
     public Target Lint => _ => _;
     public Target Pack => _ => _;
