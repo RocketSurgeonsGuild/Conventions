@@ -10,7 +10,7 @@
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="4.8.0"
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="4.14.0"
       PrivateAssets="all" />
     <PackageReference Include="System.Text.Json" PrivateAssets="all" />
     <PackageReference Include="JetBrains.Annotations.Sources" PrivateAssets="all" />
