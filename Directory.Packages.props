@@ -33,7 +33,7 @@
         <PackageVersion Include="AutoMapper" Version="15.0.1" />
         <PackageVersion Include="FluentValidation" Version="12.0.0" />
         <PackageVersion Include="MediatR" Version="13.0.0" />
-        <PackageVersion Include="Polyfill" Version="8.8.1" />
+        <PackageVersion Include="Polyfill" Version="8.9.0" />
         <PackageVersion Include="GitVersion.Tool" Version="6.4.0" />
 
         <PackageVersion Include="Nuke.Common" Version="9.0.4" />
