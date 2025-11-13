@@ -41,7 +41,7 @@
         <PackageVersion Include="Rocket.Surgery.Nuke" Version="2.9.11" />
 
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
-        <PackageVersion Include="BenchMarkDotNet" Version="0.15.6" />
+        <PackageVersion Include="BenchMarkDotNet" Version="0.15.7" />
         <PackageVersion Include="bunit.web" Version="1.40.0" />
 
         <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="8.0.0-preview-04" />
