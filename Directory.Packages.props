@@ -77,8 +77,8 @@
         <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
         <PackageVersion Include="YamlDotNet" Version="16.3.0" />
 
-        <PackageVersion Include="Spectre.Console" Version="0.51.1" />
-        <PackageVersion Include="Spectre.Console.Cli" Version="0.51.1" />
+        <PackageVersion Include="Spectre.Console" Version="0.54.0" />
+        <PackageVersion Include="Spectre.Console.Cli" Version="0.53.1" />
 
 
         <PackageVersion Include="Bogus" Version="35.6.5" />
