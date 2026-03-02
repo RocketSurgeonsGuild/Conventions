@@ -66,7 +66,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                    b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
-                                            (context, lineContext) => lineContext.AddDelegate<AppSettings>("test", (context, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                            async (context, lineContext, ct) => lineContext.AddDelegate<AppSettings>("test", (context, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
                                );
 
@@ -93,7 +93,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                             {
                                                 lineContext.AddDelegate<AppSettings>(
                                                     "test",
-                                                    (context, state) =>
+                                                    (context, state, ct) =>
                                                     {
                                                         state.LogLevel.ShouldBe(LogLevel.Error);
                                                         return 1000;
@@ -163,7 +163,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                        .ConfigureCommandLine(
                                             (context, lineContext) => lineContext.AddDelegate<AppSettings>(
                                                 "test",
-                                                (context, state) => (int)( state.LogLevel ?? LogLevel.Information )
+                                                (context, state, ct) => (int)( state.LogLevel ?? LogLevel.Information )
                                             )
                                         )
                                );
@@ -198,7 +198,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                    b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
-                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
                                );
 
@@ -221,7 +221,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
                                    b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
-                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state) => (int)( state.LogLevel ?? LogLevel.Information ))
+                                            (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
                                );
 
@@ -266,24 +266,24 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
     private sealed class Add : Command
     {
-        public override int Execute(CommandContext context) => 1;
+        public override int Execute(CommandContext context, CancellationToken token) => 1;
     }
 
     private sealed class Origin : Command
     {
-        public override int Execute(CommandContext context) => 1;
+        public override int Execute(CommandContext context, CancellationToken token) => 1;
     }
 
     private sealed class SubCmd : Command
     {
         [UsedImplicitly]
-        public override int Execute(CommandContext context) => -1;
+        public override int Execute(CommandContext context, CancellationToken token) => -1;
     }
 
     public class InjectionConstructor(IService service, ILogger<InjectionConstructor> logger) : AsyncCommand
     {
         [UsedImplicitly]
-        public override async Task<int> ExecuteAsync(CommandContext context)
+        public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken token)
         {
             await Task.Yield();
             return _service.ReturnCode;
@@ -294,7 +294,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
 
     private sealed class CommandWithValues : Command
     {
-        public override int Execute(CommandContext context)
+        public override int Execute(CommandContext context, CancellationToken token)
         {
             ApiDomain.ShouldBe("mydomain.com");
             ClientName.ShouldBe("client1");
@@ -322,7 +322,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     public class ServiceInjection(IService2 service2, ILogger<ServiceInjection> logger) : Command
     {
         [UsedImplicitly]
-        public override int Execute(CommandContext context)
+        public override int Execute(CommandContext context, CancellationToken token)
         {
             _logger.LogInformation(nameof(ServiceInjection));
             return _service2.SomeValue == "Service2" ? 0 : 1;
@@ -335,7 +335,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     public class LoggerInjection(ILogger<LoggerInjection> logger) : Command
     {
         [UsedImplicitly]
-        public override int Execute(CommandContext context)
+        public override int Execute(CommandContext context, CancellationToken token)
         {
             _logger.LogInformation(nameof(LoggerInjection));
             return 0;
@@ -347,7 +347,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     public class ServiceInjection2(IService2 service2) : Command
     {
         [UsedImplicitly]
-        public override int Execute(CommandContext context) => _service2.SomeValue == "Service2" ? 0 : 1;
+        public override int Execute(CommandContext context, CancellationToken token) => _service2.SomeValue == "Service2" ? 0 : 1;
 
         private readonly IService2 _service2 = service2;
     }

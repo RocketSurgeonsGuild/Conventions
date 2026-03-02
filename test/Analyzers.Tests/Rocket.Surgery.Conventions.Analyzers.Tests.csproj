@@ -13,6 +13,8 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Features" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Rocket.Surgery.DependencyInjection.Analyzers" />
+        <PackageReference Include="Rocket.Surgery.DependencyInjection.Extensions" />
         <PackageReference Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" />
         <ProjectReference Include="..\..\src\Aspire.Hosting.Testing\Rocket.Surgery.Aspire.Hosting.Testing.csproj" />
         <ProjectReference Include="..\..\src\Aspire.Hosting\Rocket.Surgery.Aspire.Hosting.csproj" />

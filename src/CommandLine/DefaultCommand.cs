@@ -4,8 +4,5 @@ namespace Rocket.Surgery.CommandLine;
 
 internal class DefaultCommand : Command<AppSettings>
 {
-    public override int Execute(CommandContext context, AppSettings settings)
-    {
-        return CommandLineConstants.WaitCode;
-    }
+    public override int Execute(CommandContext context, AppSettings settings, CancellationToken token) => CommandLineConstants.WaitCode;
 }

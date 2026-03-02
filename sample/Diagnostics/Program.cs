@@ -1,10 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Hosting;
+
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -14,15 +16,9 @@ namespace Diagnostics;
 
 public static partial class Program
 {
-    public static async Task<int> Main(string[] args)
-    {
-        return await ( await CreateHostBuilder(args) ).RunConsoleAppAsync();
-    }
+    public static async Task<int> Main(string[] args) => await ( await CreateHostBuilder(args) ).RunConsoleAppAsync();
 
-    public static async Task<IHost> CreateHostBuilder(string[] args)
-    {
-        return await Host.CreateApplicationBuilder(args).ConfigureRocketSurgery();
-    }
+    public static async Task<IHost> CreateHostBuilder(string[] args) => await Host.CreateApplicationBuilder(args).ConfigureRocketSurgery();
 }
 
 [ExportConvention]
@@ -32,7 +28,7 @@ internal class Convention : ICommandLineConvention, IServiceConvention
     {
         app.AddDelegate(
             "test",
-            _ => 1
+            (_, _) => 1
         );
         app.AddCommand<MyCommand>("dump");
     }
@@ -40,21 +36,15 @@ internal class Convention : ICommandLineConvention, IServiceConvention
     public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) { }
 }
 
-internal class MyCommand : AsyncCommand<AppSettings>
+internal class MyCommand(IHostBuilder hostBuilder, IAnsiConsole console) : AsyncCommand<AppSettings>
 {
-    private readonly IHostBuilder _hostBuilder;
-    private readonly IAnsiConsole _console;
+    private readonly IHostBuilder _hostBuilder = hostBuilder;
+    private readonly IAnsiConsole _console = console;
 
-    public MyCommand(IHostBuilder hostBuilder, IAnsiConsole console)
-    {
-        _hostBuilder = hostBuilder;
-        _console = console;
-    }
-
-    public override async Task<int> ExecuteAsync(CommandContext context, AppSettings settings)
+    public override async Task<int> ExecuteAsync(CommandContext context, AppSettings settings, CancellationToken token)
     {
         using var host = _hostBuilder.Build();
-        await host.StartAsync();
+        await host.StartAsync(token);
         if (host.Services.GetRequiredService<IConfiguration>() is IConfigurationRoot root) _console.WriteLine(root.GetDebugView());
 
         return 0;
