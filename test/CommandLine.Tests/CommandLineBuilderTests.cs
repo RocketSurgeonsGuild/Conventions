@@ -10,7 +10,7 @@ using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
-
+using Rocket.Surgery.Hosting;
 using Spectre.Console.Cli;
 
 using Xunit.Abstractions;

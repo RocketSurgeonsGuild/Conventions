@@ -20,4 +20,9 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting.Tests" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
     </ItemGroup>
+    <ItemGroup>
+        <None Include="build/*.*" Pack="true" PackagePath="build" />
+        <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
+        <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
+    </ItemGroup>
 </Project>
