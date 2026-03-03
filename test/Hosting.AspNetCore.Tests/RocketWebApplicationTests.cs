@@ -51,7 +51,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(12);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(24);
 #else
-        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(6);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(8);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(12);
 #endif
     }
@@ -107,7 +107,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(12);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(0);
 #else
-        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(6);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(8);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(0);
 #endif
     }
@@ -125,7 +125,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(2);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(24);
 #else
-        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(0);
+        configuration.Providers.OfType<JsonConfigurationProvider>().Count().ShouldBe(2);
         configuration.Providers.OfType<YamlConfigurationProvider>().Count().ShouldBe(12);
 #endif
     }
