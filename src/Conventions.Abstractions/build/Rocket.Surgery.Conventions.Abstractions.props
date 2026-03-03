@@ -11,5 +11,7 @@
         <CompilerVisibleProperty Include="ExportConventionsMethodName" />
 
         <CompilerVisibleProperty Include="IsTestProject" />
+        
+        <Using Include="Rocket.Surgery.Conventions" />
     </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions;
 
 namespace Sample.Core.Databases;
 
@@ -6,17 +6,12 @@ namespace Sample.Core.Databases;
 
 public static class DatabaseConfiguratorExtensions
 {
-    public static IDatabaseConfigurator ApplyConventions(this IDatabaseConfigurator configurator, IConventionContext context)
-    {
-        foreach (var item in context.Conventions.Get<IDatabaseConvention, DatabaseConvention>())
-        {
-            if (item is IDatabaseConvention convention)
-                convention.Register(context, configurator);
-            else if (item is DatabaseConvention @delegate) @delegate(context, configurator);
-        }
-
-        return configurator;
-    }
+    public static ValueTask ApplyConventions(this IDatabaseConfigurator configurator, IConventionContext context, CancellationToken cancellationToken = default) => context.RegisterConventions(z => z
+                                                                                                                                                                         .AddHandler<IDatabaseConvention>(convention => convention.Register(context, configurator))
+                                                                                                                                                                         .AddHandler<IDatabaseAsyncConvention>((convention) => convention.Register(context, configurator, cancellationToken))
+                                                                                                                                                                         .AddHandler<DatabaseConvention>(convention => convention(context, configurator))
+                                                                                                                                                                         .AddHandler<DatabaseAsyncConvention>((convention) => convention(context, configurator, cancellationToken))
+        );
 }
 
 #endregion
