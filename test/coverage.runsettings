@@ -122,6 +122,8 @@
                 <ModulePath>.*Nuke\.Common\.dll</ModulePath>
                 <ModulePath>.*Polyfill\.dll</ModulePath>
                 <ModulePath>.*ReportGenerator\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.DependencyInjection\.Analyzers\.dll</ModulePath>
+                <ModulePath>.*Rocket\.Surgery\.DependencyInjection\.Extensions\.dll</ModulePath>
                 <ModulePath>.*Rocket\.Surgery\.Extensions\.Testing\.FakeItEasy\.dll</ModulePath>
                 <ModulePath>.*Rocket\.Surgery\.Extensions\.Testing\.SourceGenerators\.dll</ModulePath>
                 <ModulePath>.*Rocket\.Surgery\.Extensions\.Testing\.XUnit\.dll</ModulePath>
