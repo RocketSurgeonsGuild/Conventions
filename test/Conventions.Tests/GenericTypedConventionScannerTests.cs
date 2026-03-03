@@ -26,7 +26,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var context = await ConventionContext.FromAsync(scanner);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldContain(x => x is Contrib);
     }
 
@@ -44,7 +44,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var context = await ConventionContext.FromAsync(scanner);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
@@ -62,7 +62,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var context = await ConventionContext.FromAsync(scanner);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
 
@@ -79,11 +79,11 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var context = await ConventionContext.FromAsync(scanner);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldNotContain(x => x is Contrib);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
@@ -100,7 +100,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
         var context = await ConventionContext.FromAsync(scanner);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldNotContain(x => x is Contrib);
     }
 }

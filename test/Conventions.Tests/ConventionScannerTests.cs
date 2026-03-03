@@ -25,7 +25,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
         var context = await ConventionContext.FromAsync(builder);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldContain(x => x is Contrib);
     }
 
@@ -43,7 +43,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
         var context = await ConventionContext.FromAsync(scanner);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
@@ -61,7 +61,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
 
@@ -81,11 +81,11 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldNotContain(x => x is Contrib);
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
@@ -103,7 +103,7 @@ public class ConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTe
 
         context
            .Conventions
-           .Get<IServiceConvention, ServiceConvention>()
+           .GetAll()
            .ShouldNotContain(x => x is Contrib);
     }
 }
