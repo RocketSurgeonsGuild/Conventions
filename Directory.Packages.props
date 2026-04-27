@@ -34,7 +34,7 @@
     <PackageVersion Include="MediatR" Version="14.0.0" />
     <PackageVersion Include="Polyfill" Version="10.3.0" />
     <PackageVersion Include="GitVersion.Tool" Version="6.7.0" />
-    <PackageVersion Include="Nuke.Common" Version="9.0.4" />
+    <PackageVersion Include="Nuke.Common" Version="10.1.0" />
     <PackageVersion Include="ReportGenerator" Version="5.5.7" />
     <PackageVersion Include="Rocket.Surgery.DependencyInjection.Analyzers" Version="14.0.1" />
     <PackageVersion Include="Rocket.Surgery.DependencyInjection.Extensions" Version="14.0.1" />
