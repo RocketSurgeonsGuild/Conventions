@@ -9,14 +9,12 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
-using Xunit.Abstractions;
-
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionContextTests
-    (ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
+public class ConventionContextTests()
+    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
 {
-    [Fact]
+    [Test]
     public async Task GetAStronglyTypedValue()
     {
         var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary());
@@ -25,7 +23,7 @@ public class ConventionContextTests
         container.Get<string>().ShouldBe("abc");
     }
 
-    [Fact]
+    [Test]
     public async Task SetAStronglyTypedValue()
     {
         var builder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary());
@@ -34,7 +32,7 @@ public class ConventionContextTests
         container.Get<string>().ShouldBe("abc");
     }
 
-    [Fact]
+    [Test]
     public async Task AddConventions()
     {
         var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary());
@@ -44,7 +42,7 @@ public class ConventionContextTests
         conventions.Conventions.GetAll().ShouldContain(convention);
     }
 
-    [Fact]
+    [Test]
     public async Task Setups()
     {
         var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary());
@@ -55,7 +53,7 @@ public class ConventionContextTests
         A.CallTo(() => convention.Register(context)).MustHaveHappenedOnceExactly();
     }
 
-    [Fact]
+    [Test]
     public async Task Setups_With_Delegate()
     {
         var contextBuilder = ConventionContextBuilder.Create(b => [], new ServiceProviderDictionary());
@@ -66,7 +64,7 @@ public class ConventionContextTests
         A.CallTo(() => convention(context)).MustHaveHappenedOnceExactly();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         var contextBuilder = ConventionContextBuilder
@@ -86,7 +84,7 @@ public class ConventionContextTests
         sp.GetService<IAbc4>().ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         var contextBuilder = ConventionContextBuilder
@@ -107,7 +105,7 @@ public class ConventionContextTests
         sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         var contextBuilder = ConventionContextBuilder
@@ -126,7 +124,7 @@ public class ConventionContextTests
         sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
         var builder = ConventionContextBuilder
@@ -143,7 +141,7 @@ public class ConventionContextTests
         items.GetService<IAbc4>().ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldConstructTheConventionInjectingTheValues()
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
@@ -158,7 +156,7 @@ public class ConventionContextTests
         collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldConstructTheConventionInjectingTheValuesIfOptional()
     {
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
@@ -173,7 +171,7 @@ public class ConventionContextTests
         collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
     {
         var builder = ConventionContextBuilder
@@ -184,7 +182,7 @@ public class ConventionContextTests
         await a.ShouldThrowAsync<InvalidOperationException>();
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
     {
         var builder = ConventionContextBuilder

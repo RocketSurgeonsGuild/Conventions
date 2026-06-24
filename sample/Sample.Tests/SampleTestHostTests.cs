@@ -1,23 +1,18 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Conventions;
-using Rocket.Surgery.Conventions.Testing;
 using Rocket.Surgery.Hosting;
 using Sample.Core;
-using Xunit;
+using TUnit.Core.Interfaces;
 
 #pragma warning disable CA1707
 namespace Sample.Tests;
 
 #region codeblock
 
-public class SampleTestHostTests : IAsyncLifetime
+public class SampleTestHostTests : IAsyncInitializer, IAsyncDisposable
 {
-    [Fact]
-    public void Should_Register_Services()
-    {
-        Assert.Equal("TestService", _host.Services.GetRequiredService<IService>().GetString());
-    }
+    [Test]
+    public async Task Should_Register_Services() => await Assert.That(_host.Services.GetRequiredService<IService>().GetString()).IsEqualTo("TestService");
 
     private IHost _host = null!;
 
@@ -27,7 +22,7 @@ public class SampleTestHostTests : IAsyncLifetime
         await _host.StartAsync();
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await _host.StopAsync();
         _host.Dispose();

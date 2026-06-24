@@ -1,8 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
-        <PackageDescription>Provides the ability to provide additional commands to the hosted
-            application by convention.</PackageDescription>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>
+            Provides the ability to provide additional commands to the hosted
+            application by convention.
+        </PackageDescription>
         <PackageTags>$(PackageTags);command line;cli;command</PackageTags>
         <NoWarn>$(NoWarn);RCS1102;CA1812</NoWarn>
     </PropertyGroup>

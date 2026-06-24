@@ -7,13 +7,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Rocket.Surgery.CommandLine;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 using Spectre.Console.Cli;
-
-using Xunit.Abstractions;
 
 #pragma warning disable CA1034, CA1062, CA1822, CA2000
 
@@ -29,9 +26,9 @@ public interface IService2
     string SomeValue { get; }
 }
 
-public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
+public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
 {
-    [Fact]
+    [Test]
     public void Constructs()
     {
         var builder = ConventionContextBuilder.Create(_ => []);
@@ -46,7 +43,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         a.ShouldNotThrow();
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldNotBeEnabledIfNoCommandsAreConfigured()
     {
         using var host = await Host
@@ -56,7 +53,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         host.Services.GetService<ConsoleResult>().ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ExecuteWorks()
     {
         using var host = await Host
@@ -72,7 +69,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         ( await host.RunConsoleAppAsync() ).ShouldBe((int)LogLevel.Information);
     }
 
-    [Fact]
+    [Test]
     public async Task SupportsApplicationStateWithCustomDependencyInjection()
     {
         var service = A.Fake<IService>();
@@ -107,7 +104,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         result.ShouldBe(1000);
     }
 
-    [Fact]
+    [Test]
     public async Task SupportsInjection_Creating_On_Construction()
     {
         var service = AutoFake.Resolve<IService>();
@@ -129,7 +126,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
     }
 
-    [Fact]
+    [Test]
     public async Task Sets_Values_In_Commands()
     {
         using var host = await Host
@@ -151,7 +148,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         );
     }
 
-    [Fact]
+    [Test]
     public async Task Can_Add_A_Command_With_A_Name_Using_Context()
     {
         using var host = await Host
@@ -170,7 +167,7 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         ( await host.RunConsoleAppAsync() ).ShouldBe((int)LogLevel.Information);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Configure_Logging_Correctly()
     {
         using var host = await Host
@@ -186,9 +183,9 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
     }
 
     //
-    [Theory]
-    [InlineData("--verbose", LogLevel.Debug)]
-    [InlineData("--trace", LogLevel.Trace)]
+    [Test]
+    [Arguments("--verbose", LogLevel.Debug)]
+    [Arguments("--trace", LogLevel.Trace)]
     public async Task ShouldAllVerbosity(string command, LogLevel level)
     {
         using var host = await Host
@@ -205,13 +202,13 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         result.ShouldBe(level);
     }
 
-    [Theory]
-    [InlineData("-l debug", LogLevel.Debug)]
-    [InlineData("-l nonE", LogLevel.None)]
-    [InlineData("-l Information", LogLevel.Information)]
-    [InlineData("-l Error", LogLevel.Error)]
-    [InlineData("-l WARNING", LogLevel.Warning)]
-    [InlineData("-l critical", LogLevel.Critical)]
+    [Test]
+    [Arguments("-l debug", LogLevel.Debug)]
+    [Arguments("-l nonE", LogLevel.None)]
+    [Arguments("-l Information", LogLevel.Information)]
+    [Arguments("-l Error", LogLevel.Error)]
+    [Arguments("-l WARNING", LogLevel.Warning)]
+    [Arguments("-l critical", LogLevel.Critical)]
     public async Task ShouldAllowLogLevelIn(string command, LogLevel level)
     {
         using var host = await Host
@@ -228,19 +225,19 @@ public class CommandLineBuilderTests(ITestOutputHelper outputHelper) : AutoFakeT
         result.ShouldBe(level);
     }
 
-    [Theory]
-    //    [InlineData("--version")]
-    [InlineData("--help")]
-    [InlineData("cmd1 --help")]
-    [InlineData("cmd1 a --help")]
-    [InlineData("cmd2 --help")]
-    [InlineData("cmd2 a --help")]
-    [InlineData("cmd3 --help")]
-    [InlineData("cmd3 a --help")]
-    [InlineData("cmd4 --help")]
-    [InlineData("cmd4 a --help")]
-    [InlineData("cmd5 --help")]
-    [InlineData("cmd5 a --help")]
+    [Test]
+    //    [Arguments("--version")]
+    [Arguments("--help")]
+    [Arguments("cmd1 --help")]
+    [Arguments("cmd1 a --help")]
+    [Arguments("cmd2 --help")]
+    [Arguments("cmd2 a --help")]
+    [Arguments("cmd3 --help")]
+    [Arguments("cmd3 a --help")]
+    [Arguments("cmd4 --help")]
+    [Arguments("cmd4 a --help")]
+    [Arguments("cmd5 --help")]
+    [Arguments("cmd5 a --help")]
     public async Task StopsForHelp(string command)
     {
         using var host = await Host

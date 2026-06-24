@@ -1,9 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
-        <PackageDescription>Adds helpers to easily bootstrap an application using conventions by
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>
+            Adds helpers to easily bootstrap an application using conventions by
             just using the correct extension method. This adds command line operations, additional
-            configuration, logging and service injections by convention.</PackageDescription>
+            configuration, logging and service injections by convention.
+        </PackageDescription>
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>

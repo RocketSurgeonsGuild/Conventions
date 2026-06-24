@@ -1,10 +1,8 @@
-﻿using Xunit.Abstractions;
-
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public class ExportedMsBuildConventionsTests(ITestOutputHelper testOutputHelper) : GeneratorTest(testOutputHelper)
+public class ExportedMsBuildConventionsTests() : GeneratorTest()
 {
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_A_Convention_With_Custom_Namespace()
     {
         var result = await WithSharedDeps()
@@ -28,7 +26,7 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_A_Convention_With_No_Namespace()
     {
         var result = await WithSharedDeps()
@@ -51,7 +49,7 @@ namespace Rocket.Surgery.Conventions.Tests
     }
 
 
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_A_Convention_With_Custom_MethodName()
     {
         var result = await WithSharedDeps()
@@ -74,9 +72,10 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    public override async Task InitializeAsync()
+    [Before(Test)]
+    public override void InitializeAsync()
     {
-        await base.InitializeAsync();
+        base.InitializeAsync();
         Configure(
             b => b
                 .IgnoreOutputFile("Imported_Assembly_Conventions.cs")

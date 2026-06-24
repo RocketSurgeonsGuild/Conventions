@@ -4,7 +4,7 @@ namespace Rocket.Surgery.Conventions.Tests;
 
 public partial class StaticConventionTests
 {
-    [Fact]
+    [Test]
     public void Should_Have_Exports_Method_Defined()
     {
         var list = Exports

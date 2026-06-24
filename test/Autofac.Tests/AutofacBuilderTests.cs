@@ -8,19 +8,19 @@ using FakeItEasy;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 
-using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
-public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
+public class AutofacBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
 {
-    [Fact]
+    [Before(Test)]
+    public void Setup() => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
+
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
         var builder = await Host
@@ -44,7 +44,7 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         items.ResolveOptional<IAbc4>().ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithApplication()
     {
         var builder = await Host
@@ -69,7 +69,7 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         items.ResolveOptional<IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem()
     {
         var builder = await Host
@@ -91,7 +91,7 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         items.ResolveOptional<IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         var builder = await Host
@@ -117,7 +117,7 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<IAbc4>().ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         var builder = await Host
@@ -143,7 +143,7 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         var builder = await Host
@@ -166,7 +166,7 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
         var builder = await Host
@@ -183,7 +183,7 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         items.ResolveOptional<IAbc4>().ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
     {
         var builder = await Host
@@ -199,7 +199,7 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         items.ResolveOptional<IOtherAbc3>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Integrate_With_Autofac()
     {
         using var host = await Host
@@ -209,5 +209,4 @@ public class AutofacBuilderTests : AutoFakeTest<XUnitTestContext>
         host.Services.GetRequiredService<ILifetimeScope>().ShouldNotBeNull();
     }
 
-    public AutofacBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper)) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

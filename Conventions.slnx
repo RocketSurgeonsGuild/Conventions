@@ -1,0 +1,120 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/.build/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/benchmarks/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <Project Path="benchmarks/Hosting.Benchmarks/Hosting.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/config/">
+    <File Path=".build/.editorconfig" />
+    <File Path=".codecov.yml" />
+    <File Path=".config/dotnet-tools.json" />
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path=".gitmodules" />
+    <File Path=".prettierignore" />
+    <File Path=".prettierrc" />
+    <File Path="build.cmd" />
+    <File Path="build.ps1" />
+    <File Path="build.sh" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="Directory.Packages.support.props" />
+    <File Path="dotnet-tools.json" />
+    <File Path="GitReleaseManager.yaml" />
+    <File Path="GitVersion.yml" />
+    <File Path="LICENSE" />
+    <File Path="NuGet.config" />
+    <File Path="package.json" />
+    <File Path="Readme.md" />
+    <Project Path=".build/.build.csproj">
+      <Build Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/config/.github/">
+    <File Path="labels.yml" />
+    <File Path="release.yml" />
+    <File Path="renovate.json" />
+  </Folder>
+  <Folder Name="/config/.github/workflows/">
+    <File Path="ci-ignore.yml" />
+    <File Path="ci.yml" />
+    <File Path="close-milestone.yml" />
+    <File Path="dependabot-merge.yml" />
+    <File Path="draft-release.yml" />
+    <File Path="lint.yml" />
+    <File Path="publish-docs.yml" />
+    <File Path="publish-nuget.yml" />
+    <File Path="sync-labels.yml" />
+    <File Path="update-milestone.yml" />
+  </Folder>
+  <Folder Name="/config/.husky/">
+    <File Path="pre-commit" />
+    <File Path="task-runner.json" />
+  </Folder>
+  <Folder Name="/config/.vscode/">
+    <File Path="launch.json" />
+    <File Path="settings.json" />
+    <File Path="tasks.json" />
+  </Folder>
+  <Folder Name="/docs/">
+    <Project Path="docs/docs.csproj" />
+  </Folder>
+  <Folder Name="/sample/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <Project Path="sample/AspireSample/AspireSample.csproj" />
+    <Project Path="sample/Diagnostics/Diagnostics.csproj" />
+    <Project Path="sample/Sample.BlazorWasm/Sample.BlazorWasm.csproj" />
+    <Project Path="sample/Sample.Core.Tests/Sample.Core.Tests.csproj" />
+    <Project Path="sample/Sample.Core/Sample.Core.csproj" />
+    <Project Path="sample/Sample.DependencyOne/Sample.DependencyOne.csproj" />
+    <Project Path="sample/Sample.DependencyThree/Sample.DependencyThree.csproj" />
+    <Project Path="sample/Sample.DependencyTwo/Sample.DependencyTwo.csproj" />
+    <Project Path="sample/Sample.Tests/Sample.Tests.csproj" />
+    <Project Path="sample/Sample/Sample.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <Project Path="src/Aspire.Hosting.Testing/Rocket.Surgery.Aspire.Hosting.Testing.csproj" />
+    <Project Path="src/Aspire.Hosting/Rocket.Surgery.Aspire.Hosting.csproj" />
+    <Project Path="src/CommandLine/Rocket.Surgery.CommandLine.csproj" />
+    <Project Path="src/Conventions.Abstractions/Rocket.Surgery.Conventions.Abstractions.csproj" />
+    <Project Path="src/Conventions.Analyzers.roslyn4.8/Rocket.Surgery.Conventions.Analyzers.roslyn4.8.csproj" />
+    <Project Path="src/Conventions.Analyzers/Rocket.Surgery.Conventions.Analyzers.csproj" />
+    <Project Path="src/Conventions.Autofac/Rocket.Surgery.Conventions.Autofac.csproj" />
+    <Project Path="src/Conventions.Configuration.Json/Rocket.Surgery.Conventions.Configuration.Json.csproj" />
+    <Project Path="src/Conventions.Configuration.Yaml/Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
+    <Project Path="src/Conventions.Diagnostics/Rocket.Surgery.Conventions.Diagnostics.csproj" />
+    <Project Path="src/Conventions.DryIoc/Rocket.Surgery.Conventions.DryIoc.csproj" />
+    <Project Path="src/Conventions.Serilog/Rocket.Surgery.Conventions.Serilog.csproj" />
+    <Project Path="src/Conventions/Rocket.Surgery.Conventions.csproj" />
+    <Project Path="src/Hosting/Rocket.Surgery.Hosting.csproj" />
+    <Project Path="src/WebAssembly.Hosting/Rocket.Surgery.WebAssembly.Hosting.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <Project Path="test/Analyzers.Tests/Rocket.Surgery.Conventions.Analyzers.Tests.csproj" />
+    <Project Path="test/Aspire.Hosting.Tests/Aspire.Hosting.Tests.csproj" />
+    <Project Path="test/Autofac.Tests/Rocket.Surgery.Extensions.Autofac.Tests.csproj" />
+    <Project Path="test/CommandLine.Tests/Rocket.Surgery.Extensions.CommandLine.Tests.csproj" />
+    <Project Path="test/Conventions.Tests/Rocket.Surgery.Conventions.Tests.csproj" />
+    <Project Path="test/DryIoc.Tests/Rocket.Surgery.Extensions.DryIoc.Tests.csproj" />
+    <Project Path="test/Hosting.AspNetCore.Tests/Rocket.Surgery.Hosting.AspNetCore.Tests.csproj" />
+    <Project Path="test/Hosting.Tests/Rocket.Surgery.Hosting.Tests.csproj" />
+    <Project Path="test/WebAssembly.Hosting.Tests/Rocket.Surgery.WebAssembly.Hosting.Tests.csproj" />
+  </Folder>
+</Solution>

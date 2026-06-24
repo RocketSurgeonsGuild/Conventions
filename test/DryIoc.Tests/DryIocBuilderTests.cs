@@ -4,23 +4,23 @@ using FakeItEasy;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 
 using Serilog.Events;
 
-using Xunit.Abstractions;
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 #pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
+public class DryIocBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
 {
-    [Fact]
+    [Before(Test)]
+    public void Setup() => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
+
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
         using var host = await Host
@@ -45,7 +45,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<IAbc4>(IfUnresolved.ReturnDefault).ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithApplication()
     {
         using var host = await Host
@@ -71,7 +71,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<IAbc4>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem()
     {
         using var host = await Host
@@ -94,7 +94,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<IAbc4>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         using var host = await Host
@@ -121,7 +121,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<IAbc4>().ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         using var host = await Host
@@ -148,7 +148,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         using var host = await Host
@@ -172,7 +172,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
         using var host = await Host
@@ -192,7 +192,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
     {
         using var host = await Host
@@ -214,7 +214,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Integrate_With_DryIoc()
     {
         using var host = await Host
@@ -224,9 +224,6 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         var container = host.Services.GetRequiredService<IContainer>();
         container.ShouldNotBeNull();
     }
-
-    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
-        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 
     protected override IContainer BuildContainer(IContainer container) =>
         container
