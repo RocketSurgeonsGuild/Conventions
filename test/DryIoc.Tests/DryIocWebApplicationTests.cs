@@ -4,20 +4,19 @@ using FakeItEasy;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
 
 using Serilog.Events;
 
-using Xunit.Abstractions;
-
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
+public class DryIocWebApplicationTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
 {
-    [Fact]
+    [Before(Test)]
+    public void Setup() => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
+
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
         await using var host = await WebApplication
@@ -42,7 +41,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithApplication()
     {
         await using var host = await WebApplication
@@ -68,7 +67,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem()
     {
         await using var host = await WebApplication
@@ -91,7 +90,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefault).ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         await using var host = await WebApplication
@@ -118,7 +117,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<DryIocFixtures.IAbc4>().ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         await using var host = await WebApplication
@@ -145,7 +144,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<DryIocFixtures.IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         await using var host = await WebApplication
@@ -169,7 +168,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         sp.GetService<DryIocFixtures.IAbc4>().ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
         await using var host = await WebApplication
@@ -189,7 +188,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<DryIocFixtures.IAbc4>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention_IncludingOtherBits()
     {
         await using var host = await WebApplication
@@ -211,7 +210,7 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         items.Resolve<DryIocFixtures.IOtherAbc3>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Integrate_With_DryIoc()
     {
         await using var host = await WebApplication
@@ -222,6 +221,4 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         container.ShouldNotBeNull();
     }
 
-    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
-        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 }

@@ -9,11 +9,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Playwright;
 using Rocket.Surgery.WebAssembly.Hosting.Tests.DevServer;
 using Sample.BlazorWasm;
-using Xunit;
+using TUnit.Core.Interfaces;
 
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests;
 
-public sealed class PlaywrightFixture : IAsyncLifetime
+public sealed class PlaywrightFixture : IAsyncInitializer, IAsyncDisposable
 {
     private static void RunInBackgroundThread(Action action)
     {
@@ -57,10 +57,10 @@ public sealed class PlaywrightFixture : IAsyncLifetime
          ?? throw new InvalidOperationException("ContentRootPath not found");
 
         var host = "127.0.0.1";
-//        if (E2ETestOptions.Instance.SauceTest)
-//        {
-//            host = E2ETestOptions.Instance.Sauce.HostName;
-//        }
+        //        if (E2ETestOptions.Instance.SauceTest)
+        //        {
+        //            host = E2ETestOptions.Instance.Sauce.HostName;
+        //        }
 
         var args = new List<string>
         {
@@ -69,7 +69,7 @@ public sealed class PlaywrightFixture : IAsyncLifetime
             "--applicationpath", typeof(App).Assembly.Location,
         };
 
-        return DevHostServerProgram.BuildWebHost(args.ToArray());
+        return DevHostServerProgram.BuildWebHost([.. args]);
     }
 
     public async Task InitializeAsync()
@@ -86,7 +86,7 @@ public sealed class PlaywrightFixture : IAsyncLifetime
         Browser = await PlaywrightInstance.Chromium.LaunchAsync(new() { Headless = true, });
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await Host.StopAsync();
         Host.Dispose();
@@ -99,10 +99,7 @@ public sealed class PlaywrightFixture : IAsyncLifetime
     {
         public string PathBase { get; } = null!;
 
-        public void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddRouting();
-        }
+        public void ConfigureServices(IServiceCollection serviceCollection) => serviceCollection.AddRouting();
 
         public void Configure(IApplicationBuilder app)
         {

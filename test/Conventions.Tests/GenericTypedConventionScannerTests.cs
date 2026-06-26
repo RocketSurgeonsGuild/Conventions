@@ -5,20 +5,18 @@ using FakeItEasy;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 
-using Xunit.Abstractions;
-
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
+public class GenericTypedConventionScannerTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
 {
-    [Fact]
+    [Test]
     public void ShouldConstruct()
     {
         var scanner = ConventionContextBuilder.Create(_ => []);
         scanner.ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldBuildAProvider()
     {
         var scanner = ConventionContextBuilder.Create(_ => [], new Dictionary<object, object?>()).AppendConvention(new Contrib());
@@ -30,7 +28,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
            .ShouldContain(x => x is Contrib);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldScanAddedContributions()
     {
         var scanner = ConventionContextBuilder.Create(_ => []);
@@ -48,7 +46,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldIncludeAddedDelegates()
     {
         var scanner = ConventionContextBuilder.Create(_ => []);
@@ -66,7 +64,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
            .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldScanExcludeContributionTypes()
     {
         var scanner = ConventionContextBuilder.Create(_ => []);
@@ -87,7 +85,7 @@ public class GenericTypedConventionScannerTests(ITestOutputHelper outputHelper) 
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldScanExcludeContributionAssemblies()
     {
         var scanner = ConventionContextBuilder.Create(_ => []);

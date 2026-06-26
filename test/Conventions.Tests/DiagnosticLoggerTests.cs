@@ -1,15 +1,14 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Diagnostics;
 using Rocket.Surgery.Extensions.Testing;
-using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class DiagnosticLoggerTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
+public class DiagnosticLoggerTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
 {
-    [Fact]
+    [Test]
     public void LogTrace()
     {
         var logger = AutoFake.Resolve<DiagnosticLogger>();
@@ -33,7 +32,7 @@ public class DiagnosticLoggerTests(ITestOutputHelper outputHelper) : AutoFakeTes
            .MustHaveHappenedOnceExactly();
     }
 
-    [Fact]
+    [Test]
     public void LogDebug()
     {
         var logger = AutoFake.Resolve<DiagnosticLogger>();
@@ -57,7 +56,7 @@ public class DiagnosticLoggerTests(ITestOutputHelper outputHelper) : AutoFakeTes
            .MustHaveHappenedOnceExactly();
     }
 
-    [Fact]
+    [Test]
     public void LogInformation()
     {
         var logger = AutoFake.Resolve<DiagnosticLogger>();
@@ -81,7 +80,7 @@ public class DiagnosticLoggerTests(ITestOutputHelper outputHelper) : AutoFakeTes
            .MustHaveHappenedOnceExactly();
     }
 
-    [Fact]
+    [Test]
     public void LogCritical()
     {
         var logger = AutoFake.Resolve<DiagnosticLogger>();
@@ -105,7 +104,7 @@ public class DiagnosticLoggerTests(ITestOutputHelper outputHelper) : AutoFakeTes
            .MustHaveHappenedOnceExactly();
     }
 
-    [Fact]
+    [Test]
     public void LogError()
     {
         var logger = AutoFake.Resolve<DiagnosticLogger>();
@@ -129,7 +128,7 @@ public class DiagnosticLoggerTests(ITestOutputHelper outputHelper) : AutoFakeTes
            .MustHaveHappenedOnceExactly();
     }
 
-    [Fact]
+    [Test]
     public void LogWarning()
     {
         var logger = AutoFake.Resolve<DiagnosticLogger>();

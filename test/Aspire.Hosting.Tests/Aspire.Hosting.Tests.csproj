@@ -1,11 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\sample\AspireSample\AspireSample.csproj" />
-    <ProjectReference Include="..\..\src\Aspire.Hosting\Rocket.Surgery.Aspire.Hosting.csproj" />
-    <ProjectReference Include="..\..\src\Aspire.Hosting.Testing\Rocket.Surgery.Aspire.Hosting.Testing.csproj" />
-    <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
-  </ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\sample\AspireSample\AspireSample.csproj" />
+        <ProjectReference Include="..\..\src\Aspire.Hosting\Rocket.Surgery.Aspire.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Aspire.Hosting.Testing\Rocket.Surgery.Aspire.Hosting.Testing.csproj" />
+        <ProjectReference
+            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
+    </ItemGroup>
 </Project>

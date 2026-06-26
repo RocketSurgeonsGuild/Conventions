@@ -1,11 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public class ExportedConventionsGenericTests(ITestOutputHelper outputHelper) : GeneratorTest(outputHelper)
+public class ExportedConventionsGenericTests() : GeneratorTest()
 {
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_A_Convention()
     {
         var result = await WithGenericSharedDeps()
@@ -27,7 +26,7 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_A_Convention_With_Custom_Namespace()
     {
         var result = await WithGenericSharedDeps()
@@ -51,7 +50,7 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_A_Convention_With_No_Namespace()
     {
         var result = await WithGenericSharedDeps()
@@ -76,7 +75,7 @@ namespace Rocket.Surgery.Conventions.Tests
     }
 
 
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_A_Convention_With_Custom_MethodName()
     {
         var result = await WithGenericSharedDeps()
@@ -100,7 +99,7 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_A_Convention_With_ExportAttribute()
     {
         var result = await WithGenericSharedDeps()
@@ -121,7 +120,7 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Pull_Through_All_Conventions()
     {
         var result = await WithGenericSharedDeps()
@@ -155,7 +154,7 @@ internal class Contrib4 : IConvention { }
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Handle_Conventions_With_One_Constructor()
     {
         var result = await WithGenericSharedDeps()
@@ -182,7 +181,7 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Handle_Nested_Conventions()
     {
         var result = await WithGenericSharedDeps()
@@ -206,7 +205,7 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Handle_Nested_Static_Conventions()
     {
         var result = await WithGenericSharedDeps()
@@ -230,7 +229,7 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Handle_Conventions_With_Nullable_Constructor_Parameters()
     {
         var result = await WithGenericSharedDeps()
@@ -293,9 +292,9 @@ public class AutoMapperOptions
         await Verify(result);
     }
 
-    [Theory]
-    [InlineData(HostType.Live)]
-    [InlineData(HostType.UnitTest)]
+    [Test]
+    [Arguments(HostType.Live)]
+    [Arguments(HostType.UnitTest)]
     public async Task Should_Support_HostType_Conventions(HostType hostType)
     {
         var result = await WithGenericSharedDeps()
@@ -318,10 +317,10 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result).UseTextForParameters(hostType.ToString());
     }
 
-    [Theory]
-    [InlineData("Custom")]
-    [InlineData("Infrastructure")]
-    [InlineData("Application")]
+    [Test]
+    [Arguments("Custom")]
+    [Arguments("Infrastructure")]
+    [Arguments("Application")]
     public async Task Should_Support_Category_Conventions(string category)
     {
         var result = await WithGenericSharedDeps()
@@ -344,11 +343,11 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result).UseTextForParameters(category);
     }
 
-    [Theory]
-    [InlineData("AfterConventionAttribute")]
-    [InlineData("DependsOnConventionAttribute")]
-    [InlineData("BeforeConventionAttribute")]
-    [InlineData("DependentOfConventionAttribute")]
+    [Test]
+    [Arguments("AfterConventionAttribute")]
+    [Arguments("DependsOnConventionAttribute")]
+    [Arguments("BeforeConventionAttribute")]
+    [Arguments("DependentOfConventionAttribute")]
     public async Task Should_Support_DependencyDirection_Conventions(string attributeName)
     {
         var result = await WithGenericSharedDeps()
@@ -375,9 +374,10 @@ namespace Rocket.Surgery.Conventions.Tests
         await Verify(result).UseTextForParameters(attributeName);
     }
 
-    public override async Task InitializeAsync()
+    [Before(Test)]
+    public override void InitializeAsync()
     {
-        await base.InitializeAsync();
+        base.InitializeAsync();
         Configure(b => b.IgnoreOutputFile("Imported_Assembly_Conventions.cs"));
     }
 }

@@ -10,7 +10,7 @@ namespace Rocket.Surgery.Hosting.Tests;
 
 public class RocketHostTests
 {
-    [Fact]
+    [Test]
     public async Task Creates_RocketHost_WithConfiguration()
     {
         using var host = await Host
@@ -27,7 +27,7 @@ public class RocketHostTests
 #endif
     }
 
-    [Fact]
+    [Test]
     public async Task Creates_RocketHost_WithModifiedConfiguration_Json()
     {
         using var host = await Host
@@ -45,7 +45,7 @@ public class RocketHostTests
 #endif
     }
 
-    [Fact]
+    [Test]
     public async Task Creates_RocketHost_WithModifiedConfiguration_Yaml()
     {
         using var host = await Host

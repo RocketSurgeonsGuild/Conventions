@@ -1,10 +1,7 @@
 using FluentValidation;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-using Rocket.Surgery.DependencyInjection.Compiled;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
@@ -26,7 +23,7 @@ internal static class GeneratorTestContextBuilderExtensions
 
     public static GeneratorTestContextBuilder AddCommonGenerators(this GeneratorTestContextBuilder builder)
     {
-        foreach (var generator in GetAllGenerators(typeof(GeneratorTestContextBuilderExtensions).Assembly.GetCompiledTypeProvider()))
+        foreach (var generator in GetAllGenerators(typeof(GeneratorTestContextBuilderExtensions).Assembly.GetIndagoProvider()))
         {
             builder = builder.WithGenerator(generator);
         }
@@ -34,7 +31,7 @@ internal static class GeneratorTestContextBuilderExtensions
         return builder;
     }
 
-    private static IEnumerable<Type> GetAllGenerators(ICompiledTypeProvider provider) => provider.GetTypes(s => s
+    private static IEnumerable<Type> GetAllGenerators(IIndagoProvider provider) => provider.GetTypes(s => s
                                                                                               .FromAssemblyOf<ConventionAttributesGenerator>()
                                                                                               .GetTypes(f => f.WithAttribute<GeneratorAttribute>().AssignableTo<IIncrementalGenerator>())
         );

@@ -1,4 +1,4 @@
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests;
 
-[CollectionDefinition(nameof(PlaywrightFixture))]
-public class SharedPlaywrightCollection : ICollectionFixture<PlaywrightFixture> {}
+// ICollectionFixture is not needed in TUnit - fixture sharing is configured via [ClassDataSource] attributes.
+// public class SharedPlaywrightCollection : ICollectionFixture<PlaywrightFixture> {}

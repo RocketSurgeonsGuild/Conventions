@@ -6,7 +6,7 @@ namespace Rocket.Surgery.Conventions.Tests;
 
 public class ServiceProviderDictionaryExtensionsTests
 {
-    [Fact]
+    [Test]
     public void Should_Get_Item_By_Type()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -16,7 +16,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.Get<IMyType>().ShouldBeSameAs(myType);
     }
 
-    [Fact]
+    [Test]
     public void Should_Get_Item_By_Name()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -25,7 +25,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.Get<IMyType>("value").ShouldBeSameAs(myType);
     }
 
-    [Fact]
+    [Test]
     public void Should_Require_Item_By_Type()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -35,7 +35,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.Require<IMyType>().ShouldBeSameAs(myType);
     }
 
-    [Fact]
+    [Test]
     public void Should_Require_Item_By_Name()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -45,7 +45,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.Require<IMyType>("value").ShouldBeSameAs(myType);
     }
 
-    [Fact]
+    [Test]
     public void Should_Fail_To_Require_Item_By_Type()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -53,7 +53,7 @@ public class ServiceProviderDictionaryExtensionsTests
         a.ShouldThrow<KeyNotFoundException>();
     }
 
-    [Fact]
+    [Test]
     public void Should_Fail_To_Require_Item_By_Name()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -61,7 +61,7 @@ public class ServiceProviderDictionaryExtensionsTests
         a.ShouldThrow<KeyNotFoundException>();
     }
 
-    [Fact]
+    [Test]
     public void Should_Set_Item_By_Type()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -70,7 +70,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.Set(myType);
     }
 
-    [Fact]
+    [Test]
     public void Should_Set_Item_By_Name()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -79,7 +79,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.Set("value", myType);
     }
 
-    [Fact]
+    [Test]
     public void Should_GetOrAdd_Item_By_Type_Get()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -88,7 +88,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.GetOrAdd(() => myType2).ShouldBeSameAs(myType2);
     }
 
-    [Fact]
+    [Test]
     public void Should_GetOrAdd_Item_By_Name_Get()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -98,7 +98,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.GetOrAdd("value", () => myType2).ShouldNotBeSameAs(myType2);
     }
 
-    [Fact]
+    [Test]
     public void Should_GetOrAdd_Item_By_Type_Add()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();
@@ -106,7 +106,7 @@ public class ServiceProviderDictionaryExtensionsTests
         context.GetOrAdd(() => myType2).ShouldBeSameAs(myType2);
     }
 
-    [Fact]
+    [Test]
     public void Should_GetOrAdd_Item_By_Name_Add()
     {
         IServiceProviderDictionary context = new ServiceProviderDictionary();

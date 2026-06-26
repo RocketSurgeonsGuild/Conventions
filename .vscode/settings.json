@@ -3,5 +3,26 @@
     "coverage-gutters.coverageFileNames": ["coverage/coverage.info"],
     "coverage-gutters.showGutterCoverage": true,
     "coverage-gutters.showRulerCoverage": true,
-    "powermode.enabled": false
+    "powermode.enabled": false,
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#8e114a",
+        "activityBar.background": "#8e114a",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#4a8e11",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "editorGroup.border": "#8e114a",
+        "panel.border": "#8e114a",
+        "sash.hoverBorder": "#8e114a",
+        "sideBar.border": "#8e114a",
+        "statusBar.background": "#8e114a",
+        "statusBar.debuggingBackground": "#118e55",
+        "statusBar.debuggingForeground": "#e7e7e7",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#bc1662",
+        "statusBarItem.remoteBackground": "#8e114a",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "tab.activeBorder": "#8e114a"
+    },
+    "peacock.color": "#8e114a"
 }

@@ -2,15 +2,14 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
-using Xunit.Abstractions;
 using ILogger = Serilog.ILogger;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class TestContextTests_DependencyContext
-    (ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
+public class TestContextTests_DependencyContext()
+    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
 {
-    [Fact]
+    [Test]
     public void Builder_Should_Create_Host()
     {
         var a = () => ConventionContextBuilder.Create(_ => []).UseLogger(Logger);
@@ -18,7 +17,7 @@ public class TestContextTests_DependencyContext
         context.Get<ILogger>().ShouldBeSameAs(Logger);
     }
 
-    [Fact]
+    [Test]
     public void Builder_Should_Create_Host_ByType()
     {
         var a = () => ConventionContextBuilder.Create(_ => []).UseLogger(Logger)

@@ -6,20 +6,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Configuration.Json;
 using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 
-using Xunit.Abstractions;
-
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
-public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
+public class RocketWebApplicationTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
 {
-    [Fact]
+    [Test]
     public async Task Should_Start_Application()
     {
         var builder = WebApplication.CreateBuilder();
@@ -39,7 +35,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         await host.StopAsync();
     }
 
-    [Fact]
+    [Test]
     public async Task Creates_RocketHost_WithConfiguration()
     {
         await using var host = await WebApplication
@@ -56,7 +52,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
 #endif
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Build_The_Host_Correctly()
     {
         var @delegate = A.Fake<Func<WebApplication, CancellationToken, ValueTask>>();
@@ -70,7 +66,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         host.Services.ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task Should_ConfigureHosting()
     {
         var convention = A.Fake<HostApplicationConvention<IHostApplicationBuilder>>();
@@ -81,7 +77,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
     }
 
-    [Fact]
+    [Test]
     public async Task Should_ConfigureHosting_HostApplication()
     {
         var convention = A.Fake<HostApplicationConvention<WebApplicationBuilder>>();
@@ -95,7 +91,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<WebApplicationBuilder>._)).MustHaveHappened();
     }
 
-    [Fact]
+    [Test]
     public async Task Creates_RocketHost_WithModifiedConfiguration_Json()
     {
         await using var host = await WebApplication
@@ -112,7 +108,7 @@ public class RocketWebApplicationTests(ITestOutputHelper outputHelper) : AutoFak
 #endif
     }
 
-    [Fact]
+    [Test]
     public async Task Creates_RocketHost_WithModifiedConfiguration_Yaml()
     {
         await using var host = await WebApplication

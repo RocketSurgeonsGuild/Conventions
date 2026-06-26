@@ -9,14 +9,12 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
-using Xunit.Abstractions;
-
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionProviderTests
-    (ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper, LogEventLevel.Information))
+public class ConventionProviderTests()
+    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
 {
-    [Fact]
+    [Test]
     public void Should_Throw_When_A_Cycle_Is_Detected()
     {
         var c1 = new Cyclic1();
@@ -28,8 +26,8 @@ public class ConventionProviderTests
         a.ShouldThrow<NotSupportedException>();
     }
 
-    [Theory]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [Test]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Sort_Conventions_Correctly(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -47,8 +45,8 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [Test]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Not_Affect_Default_Sort_Order(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -66,8 +64,8 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [Test]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Leave_Delegates_In_Place(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -88,8 +86,8 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [Test]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Leave_Delegates_In_Place_Order_Delegates(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -110,8 +108,8 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [Test]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Sort_ConventionMetadata_Correctly(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -135,8 +133,8 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
-    [MemberData(nameof(GetCategories), HostType.Live)]
+    [Test]
+    [MethodDataSource(nameof(GetCategoriesLive))]
     public async Task Should_Exclude_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -158,8 +156,8 @@ public class ConventionProviderTests
         await VerifyWithParameters(provider, hostType, categories);
     }
 
-    [Theory]
-    [MemberData(nameof(GetCategories), HostType.UnitTest)]
+    [Test]
+    [MethodDataSource(nameof(GetCategoriesUnitTest))]
     public async Task Should_Include_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -216,12 +214,16 @@ public class ConventionProviderTests
     [DependsOnConvention(typeof(Cyclic1))]
     private sealed class Cyclic2 : IConvention;
 
-    public static IEnumerable<object[]> GetCategories(HostType hostType)
+    private static IEnumerable<(HostType, ImmutableArray<ConventionCategory>)> GetCategories(HostType hostType)
     {
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application)];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom"))];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core)];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core, new("Custom"))];
-        yield return [hostType, ImmutableArray.Create(new ConventionCategory("Custom"))];
+        yield return (hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application));
+        yield return (hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom")));
+        yield return (hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core));
+        yield return (hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core, new("Custom")));
+        yield return (hostType, ImmutableArray.Create(new ConventionCategory("Custom")));
     }
+
+    public static IEnumerable<(HostType, ImmutableArray<ConventionCategory>)> GetCategoriesUndefined() => GetCategories(HostType.Undefined);
+    public static IEnumerable<(HostType, ImmutableArray<ConventionCategory>)> GetCategoriesLive() => GetCategories(HostType.Live);
+    public static IEnumerable<(HostType, ImmutableArray<ConventionCategory>)> GetCategoriesUnitTest() => GetCategories(HostType.UnitTest);
 }

@@ -1,11 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\src\CommandLine\Rocket.Surgery.CommandLine.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Serilog\Rocket.Surgery.Conventions.Serilog.csproj" />
         <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
-        <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" OutputItemType="Analyzer" />
+        <ProjectReference
+            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
     </ItemGroup>
 </Project>

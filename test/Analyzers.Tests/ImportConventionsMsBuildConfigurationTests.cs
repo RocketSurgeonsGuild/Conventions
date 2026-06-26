@@ -1,10 +1,8 @@
-﻿using Xunit.Abstractions;
-
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOutputHelper) : GeneratorTest(testOutputHelper)
+public class ImportConventionsMsBuildConfigurationTests() : GeneratorTest()
 {
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method()
     {
         var result = await WithSharedDeps()
@@ -15,7 +13,7 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Not_Generate_Static_Assembly_Level_Method_By_Default()
     {
         var result = await WithSharedDeps()
@@ -26,7 +24,7 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_Namespace()
     {
         var result = await WithSharedDeps()
@@ -39,7 +37,7 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
     }
 
 
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method_No_Namespace()
     {
         var result = await WithSharedDeps()
@@ -51,7 +49,7 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_MethodName()
     {
         var result = await WithSharedDeps()
@@ -64,7 +62,7 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Use_Assembly_Configuration_If_Defined()
     {
         var result = await WithSharedDeps()
@@ -82,7 +80,7 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method_FullName()
     {
         var result = await WithSharedDeps()
@@ -93,7 +91,7 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Support_No_Exported_Convention_Assemblies()
     {
         var result = await Builder
@@ -104,9 +102,10 @@ public class ImportConventionsMsBuildConfigurationTests(ITestOutputHelper testOu
         await Verify(result);
     }
 
-    public override async Task InitializeAsync()
+    [Before(Test)]
+    public override void InitializeAsync()
     {
-        await base.InitializeAsync();
+        base.InitializeAsync();
         Configure(b => b.IgnoreOutputFile("Exported_Conventions.cs"));
     }
 }

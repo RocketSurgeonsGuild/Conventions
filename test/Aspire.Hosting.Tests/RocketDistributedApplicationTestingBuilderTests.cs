@@ -7,17 +7,14 @@ using Microsoft.Extensions.Hosting;
 using Projects;
 
 using Rocket.Surgery.Aspire.Hosting.Testing;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Extensions.Testing;
-
-using Xunit.Abstractions;
 
 namespace Aspire.Hosting.Tests;
 
-public partial class RocketDistributedApplicationTestingBuilderTests
-    (ITestOutputHelper outputHelper) : AutoFakeTest<XUnitTestContext>(XUnitTestContext.Create(outputHelper))
+public partial class RocketDistributedApplicationTestingBuilderTests()
+    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
 {
-    [Fact]
+    [Test]
     public async Task Should_UseRocketBooster()
     {
         await using var host = await DistributedApplicationTestingBuilder
@@ -27,7 +24,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests
         host.Services.ShouldNotBeNull();
     }
 
-    [Fact]
+    [Test]
     public async Task Should_ConfigureHosting()
     {
         var convention = A.Fake<DistributedApplicationTestingConvention>();
@@ -38,7 +35,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests
         A.CallTo(() => convention.Invoke(A<IConventionContext>._, A<IDistributedApplicationTestingBuilder>._)).MustHaveHappened();
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Build_The_Host_Correctly()
     {
         var @delegate = A.Fake<Func<IHost, CancellationToken, ValueTask>>();

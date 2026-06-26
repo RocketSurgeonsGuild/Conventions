@@ -16,13 +16,11 @@ using Rocket.Surgery.WebAssembly.Hosting;
 
 using Serilog;
 
-using Xunit.Abstractions;
-
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public class ImportConventionsGenericTests(ITestOutputHelper testOutputHelper) : GeneratorTest(testOutputHelper)
+public class ImportConventionsGenericTests() : GeneratorTest()
 {
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method()
     {
         var result = await WithGenericSharedDeps()
@@ -39,7 +37,7 @@ using Rocket.Surgery.Conventions;
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_Namespace()
     {
         var result = await WithGenericSharedDeps()
@@ -58,7 +56,7 @@ using Rocket.Surgery.Conventions;
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method_No_Namespace()
     {
         var result = await WithGenericSharedDeps()
@@ -77,7 +75,7 @@ using Rocket.Surgery.Conventions;
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method_Custom_MethodName()
     {
         var result = await WithGenericSharedDeps()
@@ -96,7 +94,7 @@ using Rocket.Surgery.Conventions;
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Generate_Static_Assembly_Level_Method_FullName()
     {
         var result = await WithGenericSharedDeps()
@@ -113,7 +111,7 @@ using Rocket.Surgery.Conventions;
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Support_No_Exported_Convention_Assemblies()
     {
         var result = await Builder
@@ -130,7 +128,7 @@ using Rocket.Surgery.Conventions;
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Support_Imports_And_Exports_In_The_Same_Assembly()
     {
         var result = await Builder
@@ -164,7 +162,7 @@ namespace TestProject
         await Verify(result);
     }
 
-    [Fact]
+    [Test]
     public async Task Should_Support_Imports_And_Exports_In_The_Same_Assembly_If_Not_Exported()
     {
         var result = await Builder
@@ -198,8 +196,8 @@ namespace TestProject
         await Verify(result);
     }
 
-    [Theory]
-    [MemberData(nameof(Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data))]
+    [Test]
+    [MethodDataSource(nameof(Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data))]
     public async Task Should_Generate_Static_Assembly_Methods_For_Runnable_Projects(ImmutableArray<Type> referencedTypes)
     {
         var result = await WithGenericSharedDeps()
@@ -217,9 +215,9 @@ using Rocket.Surgery.Conventions;
         await Verify(result).UseParameters(Regex.Replace(Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("_", referencedTypes.Select(z => z.Name))))), "[^\\d|\\w]", "").ToLowerInvariant());
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
+    [Test]
+    [Arguments(true)]
+    [Arguments(false)]
     public async Task Should_Generate_Static_Assembly_Initializer_When_xunit_is_referenced(bool isTestProject)
     {
         var result = await WithGenericSharedDeps()
@@ -237,68 +235,54 @@ using Rocket.Surgery.Conventions;
         await Verify(result).UseParameters(isTestProject);
     }
 
-    public static IEnumerable<object[]> Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data()
+    public static IEnumerable<ImmutableArray<Type>> Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data()
     {
-        yield return [ImmutableArray.CreateRange([typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder)])];
-        yield return [ImmutableArray.CreateRange([typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder)])];
-        yield return [ImmutableArray.CreateRange([typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder)])];
-        yield return [ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder)])];
-        yield return [ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder)])];
-        yield return
-        [
-            ImmutableArray.CreateRange(
-                [
-                    typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder),
-                    typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
-                ]
-            ),
-        ];
-        yield return
-        [
-            ImmutableArray.CreateRange(
-                [
-                    typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder),
-                    typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
-                ]
-            ),
-        ];
-        yield return
-        [
-            ImmutableArray.CreateRange(
-                [
-                    typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder),
-                    typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
-                ]
-            ),
-        ];
-        yield return
-        [
-            ImmutableArray.CreateRange(
-                [
-                    typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder),
-                    typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
-                ]
-            ),
-        ];
-        yield return
-        [
-            ImmutableArray.CreateRange(
-                [
-                    typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder),
-                    typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
-                ]
-            ),
-        ];
+        yield return ImmutableArray.CreateRange([typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder)]);
+        yield return ImmutableArray.CreateRange([typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder)]);
+        yield return ImmutableArray.CreateRange([typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder)]);
+        yield return ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder)]);
+        yield return ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder)]);
+        yield return ImmutableArray.CreateRange(
+            [
+                typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder),
+                typeof(ILogger),
+                typeof(ConventionSerilogExtensions),
+            ]
+        );
+        yield return ImmutableArray.CreateRange(
+            [
+                typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder),
+                typeof(ILogger),
+                typeof(ConventionSerilogExtensions),
+            ]
+        );
+        yield return ImmutableArray.CreateRange(
+            [
+                typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder),
+                typeof(ILogger),
+                typeof(ConventionSerilogExtensions),
+            ]
+        );
+        yield return ImmutableArray.CreateRange(
+            [
+                typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder),
+                typeof(ILogger),
+                typeof(ConventionSerilogExtensions),
+            ]
+        );
+        yield return ImmutableArray.CreateRange(
+            [
+                typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder),
+                typeof(ILogger),
+                typeof(ConventionSerilogExtensions),
+            ]
+        );
     }
 
-    public override async Task InitializeAsync()
+    [Before(Test)]
+    public override void InitializeAsync()
     {
-        await base.InitializeAsync();
+        base.InitializeAsync();
         Configure(b => b.IgnoreOutputFile("Exported_Conventions.cs"));
     }
 }
