@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: 2026-06-24T03:59:12.498255+00:00
+generated_at: 2026-06-24 03:59:12.498255+00:00
 apm_version: 0.20.0
 dependencies:
     - repo_url: antfu/skills
@@ -582,18 +582,6 @@ local_deployed_files:
     - .agents/skills/dotnet-gc-memory
     - .agents/skills/dotnet-gc-memory/SKILL.md
     - .agents/skills/dotnet-gc-memory/references/detailed-examples.md
-    - .agents/skills/dotnet-gha-build-test
-    - .agents/skills/dotnet-gha-build-test/SKILL.md
-    - .agents/skills/dotnet-gha-build-test/references/detailed-examples.md
-    - .agents/skills/dotnet-gha-deploy
-    - .agents/skills/dotnet-gha-deploy/SKILL.md
-    - .agents/skills/dotnet-gha-deploy/references/detailed-examples.md
-    - .agents/skills/dotnet-gha-patterns
-    - .agents/skills/dotnet-gha-patterns/SKILL.md
-    - .agents/skills/dotnet-gha-patterns/references/detailed-examples.md
-    - .agents/skills/dotnet-gha-publish
-    - .agents/skills/dotnet-gha-publish/SKILL.md
-    - .agents/skills/dotnet-gha-publish/references/detailed-examples.md
     - .agents/skills/dotnet-github-docs
     - .agents/skills/dotnet-github-docs/SKILL.md
     - .agents/skills/dotnet-github-docs/references/detailed-examples.md
@@ -835,7 +823,6 @@ local_deployed_files:
     - .claude/rules/context7.md
     - .claude/rules/dotnet-agent-harness-operating-modes.md
     - .claude/rules/dotnet-agent-harness-tooling.md
-    - .claude/rules/indago-onboarding.md
     - .claude/rules/neo4j-knowledgebase.md
     - .claude/skills/context7-mcp
     - .claude/skills/context7-mcp/SKILL.md
@@ -995,18 +982,6 @@ local_deployed_files:
     - .claude/skills/dotnet-gc-memory
     - .claude/skills/dotnet-gc-memory/SKILL.md
     - .claude/skills/dotnet-gc-memory/references/detailed-examples.md
-    - .claude/skills/dotnet-gha-build-test
-    - .claude/skills/dotnet-gha-build-test/SKILL.md
-    - .claude/skills/dotnet-gha-build-test/references/detailed-examples.md
-    - .claude/skills/dotnet-gha-deploy
-    - .claude/skills/dotnet-gha-deploy/SKILL.md
-    - .claude/skills/dotnet-gha-deploy/references/detailed-examples.md
-    - .claude/skills/dotnet-gha-patterns
-    - .claude/skills/dotnet-gha-patterns/SKILL.md
-    - .claude/skills/dotnet-gha-patterns/references/detailed-examples.md
-    - .claude/skills/dotnet-gha-publish
-    - .claude/skills/dotnet-gha-publish/SKILL.md
-    - .claude/skills/dotnet-gha-publish/references/detailed-examples.md
     - .claude/skills/dotnet-github-docs
     - .claude/skills/dotnet-github-docs/SKILL.md
     - .claude/skills/dotnet-github-docs/references/detailed-examples.md
@@ -1248,7 +1223,6 @@ local_deployed_files:
     - .github/instructions/context7.instructions.md
     - .github/instructions/dotnet-agent-harness-operating-modes.instructions.md
     - .github/instructions/dotnet-agent-harness-tooling.instructions.md
-    - .github/instructions/indago-onboarding.instructions.md
     - .github/instructions/neo4j-knowledgebase.instructions.md
 local_deployed_file_hashes:
     .agents/skills/context7-mcp/SKILL.md: sha256:6f07fd4d6cbf96c00c66ef859c2981efb0795315069f55af30c0ae4f28b77690
@@ -1351,14 +1325,6 @@ local_deployed_file_hashes:
     .agents/skills/dotnet-file-io/references/detailed-examples.md: sha256:136ca2f1c58f71b5cbbdc96c56cdd6cb9144fdb0ac39bf6acd1a93dd977548d3
     .agents/skills/dotnet-gc-memory/SKILL.md: sha256:7ac430abdd439d284b6fba8115064600a33e5b7e2bb0da8197ee3ed3ba7dd24a
     .agents/skills/dotnet-gc-memory/references/detailed-examples.md: sha256:bd5ceed1ae15cd3f8a5c99caacda5e25b97f61d4064b6e8978c57e40443957db
-    .agents/skills/dotnet-gha-build-test/SKILL.md: sha256:88e4baf76c532a276b0308c70557a9ccb30502fa39aa3e0bfdad164a3df40240
-    .agents/skills/dotnet-gha-build-test/references/detailed-examples.md: sha256:ef220e186b3189faacf8c8fbae1d955fcd30a479c03c7cf32c25526563173dd8
-    .agents/skills/dotnet-gha-deploy/SKILL.md: sha256:f86530910a4d5e4228b918b68e5648646bd375f5078623ae47f6887383ca66e8
-    .agents/skills/dotnet-gha-deploy/references/detailed-examples.md: sha256:847b3dd2b484f4044020a95079ecd3dfb22d9502f446142b8bb6c240b69b5bc0
-    .agents/skills/dotnet-gha-patterns/SKILL.md: sha256:4b51a9813ed9883696cebe3e9faff9d90f15ea1b705dcbd5ee66de0964afd0d8
-    .agents/skills/dotnet-gha-patterns/references/detailed-examples.md: sha256:13a5fa3fec088c0df17809c9a93e0641e4c56cb19f91c9082750cba2a05d288a
-    .agents/skills/dotnet-gha-publish/SKILL.md: sha256:04d666b8e7a1bd4029ebf0ceaca0fcd05ca6993aaf6192fa4a6ba010adf1b4af
-    .agents/skills/dotnet-gha-publish/references/detailed-examples.md: sha256:dc7077df78ee0486c3d0a1edee1d0f818c63b25bf60935d12d1ea782ce47c2e8
     .agents/skills/dotnet-github-docs/SKILL.md: sha256:f5c24025e0ceb22509f766bc342b1d0fab1aac4eb047b85f3b79171247068330
     .agents/skills/dotnet-github-docs/references/detailed-examples.md: sha256:ec77026c302534591f3ebe4799698226a92549b66dd9646c8240fba19f2c19cb
     .agents/skills/dotnet-github-releases/SKILL.md: sha256:9428810a5c9f60e2b7a67360ae176a83d2bd5f5738cb11fbfa73caa85ec5d218
@@ -1512,7 +1478,6 @@ local_deployed_file_hashes:
     .claude/rules/context7.md: sha256:0f66072fffde531a3b65ad1fca2a0a719b2c0a146f79a32230e1566aa917a792
     .claude/rules/dotnet-agent-harness-operating-modes.md: sha256:d5806c0788907396f2173b30e70ba200706d4cd2a4624ef952d51171a5ffb646
     .claude/rules/dotnet-agent-harness-tooling.md: sha256:c0171998f3ad5e20030b048e5e1a2a925bd6e4456c7c649b9950b2241fa92a21
-    .claude/rules/indago-onboarding.md: sha256:ba9529f667216e1b82544441b86572bb80bea0e6afb72a914280f40e6d6e22b1
     .claude/rules/neo4j-knowledgebase.md: sha256:416db8f43b40abd878578c0e11c3eb5531c646a5ac77d6df62e4f3ee0876088e
     .claude/skills/context7-mcp/SKILL.md: sha256:6f07fd4d6cbf96c00c66ef859c2981efb0795315069f55af30c0ae4f28b77690
     .claude/skills/dotnet-10-csharp-14/SKILL.md: sha256:ab23d93e2f09c77cbc4008cbdd5aff161f2f7af34ae9b4932479b03a2e777693
@@ -1614,14 +1579,6 @@ local_deployed_file_hashes:
     .claude/skills/dotnet-file-io/references/detailed-examples.md: sha256:136ca2f1c58f71b5cbbdc96c56cdd6cb9144fdb0ac39bf6acd1a93dd977548d3
     .claude/skills/dotnet-gc-memory/SKILL.md: sha256:7ac430abdd439d284b6fba8115064600a33e5b7e2bb0da8197ee3ed3ba7dd24a
     .claude/skills/dotnet-gc-memory/references/detailed-examples.md: sha256:bd5ceed1ae15cd3f8a5c99caacda5e25b97f61d4064b6e8978c57e40443957db
-    .claude/skills/dotnet-gha-build-test/SKILL.md: sha256:88e4baf76c532a276b0308c70557a9ccb30502fa39aa3e0bfdad164a3df40240
-    .claude/skills/dotnet-gha-build-test/references/detailed-examples.md: sha256:ef220e186b3189faacf8c8fbae1d955fcd30a479c03c7cf32c25526563173dd8
-    .claude/skills/dotnet-gha-deploy/SKILL.md: sha256:f86530910a4d5e4228b918b68e5648646bd375f5078623ae47f6887383ca66e8
-    .claude/skills/dotnet-gha-deploy/references/detailed-examples.md: sha256:847b3dd2b484f4044020a95079ecd3dfb22d9502f446142b8bb6c240b69b5bc0
-    .claude/skills/dotnet-gha-patterns/SKILL.md: sha256:4b51a9813ed9883696cebe3e9faff9d90f15ea1b705dcbd5ee66de0964afd0d8
-    .claude/skills/dotnet-gha-patterns/references/detailed-examples.md: sha256:13a5fa3fec088c0df17809c9a93e0641e4c56cb19f91c9082750cba2a05d288a
-    .claude/skills/dotnet-gha-publish/SKILL.md: sha256:04d666b8e7a1bd4029ebf0ceaca0fcd05ca6993aaf6192fa4a6ba010adf1b4af
-    .claude/skills/dotnet-gha-publish/references/detailed-examples.md: sha256:dc7077df78ee0486c3d0a1edee1d0f818c63b25bf60935d12d1ea782ce47c2e8
     .claude/skills/dotnet-github-docs/SKILL.md: sha256:f5c24025e0ceb22509f766bc342b1d0fab1aac4eb047b85f3b79171247068330
     .claude/skills/dotnet-github-docs/references/detailed-examples.md: sha256:ec77026c302534591f3ebe4799698226a92549b66dd9646c8240fba19f2c19cb
     .claude/skills/dotnet-github-releases/SKILL.md: sha256:9428810a5c9f60e2b7a67360ae176a83d2bd5f5738cb11fbfa73caa85ec5d218
@@ -1775,5 +1732,4 @@ local_deployed_file_hashes:
     .github/instructions/context7.instructions.md: sha256:c2faee057cf9de0bd7fcf511743479ab2755f09b0274d3ba69ad157ff5757d24
     .github/instructions/dotnet-agent-harness-operating-modes.instructions.md: sha256:ee9e0d05e62a8b5454d7f31c2a7c75fff521b78105913db047817673ad4b270f
     .github/instructions/dotnet-agent-harness-tooling.instructions.md: sha256:aeb3fce2d0efeacb9ebb7d7003744aea17dc727ae674990060771e803cd61c86
-    .github/instructions/indago-onboarding.instructions.md: sha256:1616b075953c247034d9d2f34e97f1d15aeb6982b1636890e91c5a3a25758fdb
     .github/instructions/neo4j-knowledgebase.instructions.md: sha256:1c54cb072667363a83ba46ba02b1d25d022f9a5b9256b5c9f17d63b22793c6db

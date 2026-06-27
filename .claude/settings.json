@@ -1,17 +1,10 @@
 {
   "hooks": {
     "PostToolUse": [
-    ],
-    "SessionStart": [
       {
-        "matcher": "startup|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\".claude/hooks/superpowers/hooks/run-hook.cmd\" session-start",
-            "async": false
-          }
-        ]
+        "type": "command",
+        "bash": "bash hooks/scripts/track-telemetry.sh",
+        "powershell": "powershell -File hooks/scripts/track-telemetry.ps1"
       }
     ]
   }
