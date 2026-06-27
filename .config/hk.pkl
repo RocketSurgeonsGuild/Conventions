@@ -2,7 +2,7 @@ amends "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Config.
 import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
 
 // Solution the .NET formatters operate against.
-local solution = "Conventions.slnx"
+local solution = "Indago.slnx"
 
 local excludeDiagnostics = new Listing<String> {
   "CA1869"
@@ -44,6 +44,8 @@ local excludes = new Listing<String> {
   ".apm/**/*"
   ".copilot/**/*"
   ".squad/**/*"
+  "**/*.verified.*"
+  "**/*.received.*"
 }
 
 local excludedDiagnosticsString = excludeDiagnostics.join(" ")
@@ -52,6 +54,7 @@ local excludedDiagnosticsString = excludeDiagnostics.join(" ")
 // Has a real verify mode, so it can run in `check` as well as `fix`.
 local dotnetFormat: Step = new Step {
   glob = "**/*.cs"
+  exclude = excludes
   check =
     "dotnet format \(solution) --exclude-diagnostics \(excludedDiagnosticsString) --verify-no-changes --include {{files}}"
   fix =
