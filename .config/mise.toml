@@ -21,6 +21,8 @@ dotnet = [{ version = "8.0.14", runtime = "dotnet" }, { version = "10.0.301" }]
 "dotnet:gitreleasemanager.tool" = "0.20.0"
 "dotnet:NuGet.Mcp.Server" = "1.4.3"
 "npm:vitepress" = "v2.0.0-alpha.17"
+"pipx:git+https://github.com/github/spec-kit.git" = "latest"
+"npm:@bradygaster/squad-cli" = "0.10.0"
 # dotnet
 
 [tasks]
