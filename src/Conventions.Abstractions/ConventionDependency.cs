@@ -1,51 +1,40 @@
-﻿namespace Rocket.Surgery.Conventions;
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     Ensures the convention runs after the given <see cref="IConvention" />
 /// </summary>
 /// <seealso cref="Attribute" />
-internal readonly struct ConventionDependency : IEquatable<ConventionDependency>, IConventionDependency
+/// <remarks>
+///     Default constructor
+/// </remarks>
+/// <param name="direction"></param>
+/// <param name="type"></param>
+internal readonly struct ConventionDependency(DependencyDirection direction, Type type) : IEquatable<ConventionDependency>, IConventionDependency
 {
-    /// <summary>
-    ///     Default constructor
-    /// </summary>
-    /// <param name="direction"></param>
-    /// <param name="type"></param>
-    public ConventionDependency(DependencyDirection direction, Type type)
-    {
-        Type = type;
-        Direction = direction;
-    }
 
     /// <summary>
     ///     The <see cref="IConvention" /> type to link to
     /// </summary>
-    public Type Type { get; }
+    public Type Type { get; } = type;
 
     /// <summary>
     ///     The <see cref="DependencyDirection" /> direction of this relationship
     /// </summary>
-    public DependencyDirection Direction { get; }
+    public DependencyDirection Direction { get; } = direction;
 
     /// <summary>
     ///     Equals
     /// </summary>
     /// <param name="other"></param>
     /// <returns></returns>
-    public bool Equals(ConventionDependency other)
-    {
-        return Type == other.Type && Direction == other.Direction;
-    }
+    public bool Equals(ConventionDependency other) => Type == other.Type && Direction == other.Direction;
 
     /// <summary>
     ///     Compare equality
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    public override bool Equals(object? obj)
-    {
-        return obj is ConventionDependency other && Equals(other);
-    }
+    public override bool Equals(object? obj) => obj is ConventionDependency other && Equals(other);
 
     /// <summary>
     ///     Get hashcode
@@ -65,10 +54,7 @@ internal readonly struct ConventionDependency : IEquatable<ConventionDependency>
     /// <param name="left"></param>
     /// <param name="right"></param>
     /// <returns></returns>
-    public static bool operator ==(ConventionDependency left, ConventionDependency right)
-    {
-        return left.Equals(right);
-    }
+    public static bool operator ==(ConventionDependency left, ConventionDependency right) => left.Equals(right);
 
     /// <summary>
     ///     Not Equals
@@ -76,8 +62,5 @@ internal readonly struct ConventionDependency : IEquatable<ConventionDependency>
     /// <param name="left"></param>
     /// <param name="right"></param>
     /// <returns></returns>
-    public static bool operator !=(ConventionDependency left, ConventionDependency right)
-    {
-        return !left.Equals(right);
-    }
+    public static bool operator !=(ConventionDependency left, ConventionDependency right) => !left.Equals(right);
 }

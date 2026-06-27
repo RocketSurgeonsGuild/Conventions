@@ -5,7 +5,6 @@ using FakeItEasy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting;
 
 using Serilog.Events;
 

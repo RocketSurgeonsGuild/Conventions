@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting;
 using Spectre.Console.Cli;
 
 #pragma warning disable CA1034, CA1062, CA1822, CA2000

@@ -30,9 +30,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
         Delegate = default;
         Priority = convention.Priority;
         HostType = hostType;
-        Dependencies = dependencies
-                      .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
-                      .ToArray();
+        Dependencies = [.. dependencies.Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))];
         Category = ConventionCategory.Application;
     }
 
@@ -49,9 +47,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
         Delegate = default;
         Priority = convention.Priority;
         HostType = hostType;
-        Dependencies = dependencies
-                      .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
-                      .ToArray();
+        Dependencies = [.. dependencies.Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))];
         Category = category;
     }
 
@@ -65,10 +61,9 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
         Delegate = default;
         Priority = convention.Convention.Priority;
         HostType = convention.HostType;
-        Dependencies = convention
+        Dependencies = [.. convention
                       .Dependencies
-                      .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))
-                      .ToArray();
+                      .Select(z => z is ConventionDependency cd ? cd : new(z.Direction, z.Type))];
         Category = convention.Category;
     }
 
@@ -128,10 +123,7 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     /// <param name="convention1">The convention1.</param>
     /// <param name="convention2">The convention2.</param>
     /// <returns>The result of the operator.</returns>
-    public static bool operator ==(ConventionOrDelegate convention1, ConventionOrDelegate convention2)
-    {
-        return convention1.Equals(convention2);
-    }
+    public static bool operator ==(ConventionOrDelegate convention1, ConventionOrDelegate convention2) => convention1.Equals(convention2);
 
     /// <summary>
     ///     Implements the operator !=.
@@ -139,20 +131,14 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     /// <param name="convention1">The convention1.</param>
     /// <param name="convention2">The convention2.</param>
     /// <returns>The result of the operator.</returns>
-    public static bool operator !=(ConventionOrDelegate convention1, ConventionOrDelegate convention2)
-    {
-        return !( convention1 == convention2 );
-    }
+    public static bool operator !=(ConventionOrDelegate convention1, ConventionOrDelegate convention2) => !( convention1 == convention2 );
 
     /// <summary>
     ///     Determines whether the specified <see cref="object" />, is equal to this instance.
     /// </summary>
     /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
     /// <returns><c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-    public override bool Equals(object? obj)
-    {
-        return obj is ConventionOrDelegate delegateOrConvention && Equals(delegateOrConvention);
-    }
+    public override bool Equals(object? obj) => obj is ConventionOrDelegate delegateOrConvention && Equals(delegateOrConvention);
 
     /// <summary>
     ///     Indicates whether the current object is equal to another object of the same type.
@@ -164,10 +150,10 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     /// </returns>
     public bool Equals(ConventionOrDelegate other)
     {
-        #pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
         return EqualityComparer<IConvention>.Default.Equals(Convention, other.Convention)
          && EqualityComparer<Delegate>.Default.Equals(Delegate, other.Delegate);
-        #pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 
 
@@ -190,9 +176,9 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     {
         if (Convention != null)
         {
-            if (HostType != HostType.Undefined) return $"{HostType}:{Convention.GetType().Name} | Priority:{Priority}";
-
-            return $"{Convention.GetType().Name} | Priority:{Priority}";
+            return HostType != HostType.Undefined
+                ? $"{HostType}:{Convention.GetType().Name} | Priority:{Priority}"
+                : $"{Convention.GetType().Name} | Priority:{Priority}";
         }
 
         if (Delegate != null)

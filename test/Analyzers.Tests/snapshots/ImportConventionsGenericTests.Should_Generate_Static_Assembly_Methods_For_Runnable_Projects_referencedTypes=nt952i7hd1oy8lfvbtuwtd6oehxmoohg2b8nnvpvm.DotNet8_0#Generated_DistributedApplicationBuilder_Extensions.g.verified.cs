@@ -1,4 +1,4 @@
-﻿//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Generated_DistributedApplicationBuilder_Extensions.g.cs
+//HintName: Rocket.Surgery.Conventions.Analyzers/Rocket.Surgery.Conventions.ConventionAttributesGenerator/Generated_DistributedApplicationBuilder_Extensions.g.cs
 #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;

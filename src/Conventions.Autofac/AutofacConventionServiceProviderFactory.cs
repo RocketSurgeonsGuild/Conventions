@@ -14,8 +14,5 @@ internal class AutofacConventionServiceProviderFactory(ContainerBuilder? contain
         return _container;
     }
 
-    public IServiceProvider CreateServiceProvider(ContainerBuilder containerBuilder)
-    {
-        return containerBuilder.Build().Resolve<IServiceProvider>();
-    }
+    public IServiceProvider CreateServiceProvider(ContainerBuilder containerBuilder) => containerBuilder.Build().Resolve<IServiceProvider>();
 }

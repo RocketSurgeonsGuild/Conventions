@@ -10,7 +10,7 @@ namespace Rocket.Surgery.WebAssembly.Hosting.Tests.DevServer;
 /// <summary>
 ///     Intended for framework test use only.
 /// </summary>
-public class DevHostServerProgram
+public static class DevHostServerProgram
 {
     /// <summary>
     ///     Intended for framework test use only.
@@ -51,6 +51,7 @@ public class DevHostServerProgram
         var applyCopHeaders = builder.Configuration.GetValue<bool>("ApplyCopHeaders");
 
         if (applyCopHeaders)
+        {
             app.Use(
                 async (ctx, next) =>
                 {
@@ -67,6 +68,7 @@ public class DevHostServerProgram
                     await next(ctx);
                 }
             );
+        }
 
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles(

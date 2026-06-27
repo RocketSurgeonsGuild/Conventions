@@ -1,4 +1,4 @@
-﻿[
+[
   <Should_Include_Unit_Test_Conventions>b__8_0,
   E,
   D,

@@ -27,7 +27,7 @@ public class YamlConvention : ISetupConvention
                 ];
 
 #if  NET10_0_OR_GREATER
-                return applicationName is {Length: > 0} ? [
+                return applicationName is { Length: > 0 } ? [
                     ..results,
                     new($"{applicationName}.yaml", LoadYamlFile(configurationBuilder, $"{applicationName}.yaml")),
                     new($"{applicationName}.yml", LoadYamlFile(configurationBuilder, $"{applicationName}.yml")),
@@ -47,7 +47,7 @@ public class YamlConvention : ISetupConvention
                 ];
 
 #if  NET10_0_OR_GREATER
-                return applicationName is {Length: > 0} ? [
+                return applicationName is { Length: > 0 } ? [
                     ..results,
                     new($"{applicationName}.{environment}.yaml", LoadYamlFile(configurationBuilder, $"{applicationName}.{environment}.yaml")),
                     new($"{applicationName}.{environment}.yml", LoadYamlFile(configurationBuilder, $"{applicationName}.{environment}.yml")),

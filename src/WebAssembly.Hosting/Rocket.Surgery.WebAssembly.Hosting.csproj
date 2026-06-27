@@ -8,12 +8,6 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference
-            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
-            IncludeAssets="all"
-            OutputItemType="Analyzer"
-            ReferenceOutputAssembly="false"
-        />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting.Tests" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />

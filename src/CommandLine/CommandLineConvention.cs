@@ -1,4 +1,4 @@
-﻿using Rocket.Surgery.Conventions;
+using Rocket.Surgery.Conventions;
 using Spectre.Console.Cli;
 
 namespace Rocket.Surgery.CommandLine;

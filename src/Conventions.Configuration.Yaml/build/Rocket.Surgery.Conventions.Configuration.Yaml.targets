@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
     <ItemGroup>
         <_BlazorYamlConfigurationFiles Include="wwwroot\appsettings*.yml" />
         <_BlazorYamlConfigurationFiles Include="wwwroot\appsettings*.yaml" />

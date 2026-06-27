@@ -1,5 +1,3 @@
-﻿using Rocket.Surgery.Conventions;
-
 // ReSharper disable UnusedParameter.Local
 namespace Sample.Core.Databases;
 

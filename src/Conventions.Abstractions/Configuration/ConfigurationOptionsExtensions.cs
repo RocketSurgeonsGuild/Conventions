@@ -16,7 +16,7 @@ public static class ConfigurationOptionsExtensions
     /// <returns></returns>
     public static IConventionContext AppendApplicationConfiguration(this IConventionContext context, ConfigurationBuilderApplicationDelegate @delegate)
     {
-        var delegates = context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new());
+        var delegates = context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => []);
         delegates.Add(@delegate);
         return context;
     }
@@ -29,7 +29,7 @@ public static class ConfigurationOptionsExtensions
     /// <returns></returns>
     public static IConventionContext AppendEnvironmentConfiguration(this IConventionContext context, ConfigurationBuilderEnvironmentDelegate @delegate)
     {
-        var delegates = context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new());
+        var delegates = context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => []);
         delegates.Add(@delegate);
         return context;
     }
@@ -42,7 +42,7 @@ public static class ConfigurationOptionsExtensions
     /// <returns></returns>
     public static IConventionContext PrependApplicationConfiguration(this IConventionContext context, ConfigurationBuilderApplicationDelegate @delegate)
     {
-        var delegates = context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => new());
+        var delegates = context.GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => []);
         delegates.Insert(0, @delegate);
         return context;
     }
@@ -55,7 +55,7 @@ public static class ConfigurationOptionsExtensions
     /// <returns></returns>
     public static IConventionContext PrependEnvironmentConfiguration(this IConventionContext context, ConfigurationBuilderEnvironmentDelegate @delegate)
     {
-        var delegates = context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => new());
+        var delegates = context.GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => []);
         delegates.Insert(0, @delegate);
         return context;
     }

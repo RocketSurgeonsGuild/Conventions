@@ -112,6 +112,8 @@ public class ConsoleConvention : IHostApplicationAsyncConvention<IHostApplicatio
                         await dtcs.Task;
                     }
                     break;
+                default:
+                    break;
             }
         }
 
@@ -127,9 +129,9 @@ public class ConsoleConvention : IHostApplicationAsyncConvention<IHostApplicatio
         if (!found) return;
 
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        builder.Services.AddSingleton<IAnsiConsole>(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);
+        builder.Services.AddSingleton(_ => (IAnsiConsole)registry.GetService(typeof(IAnsiConsole))!);
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        builder.Services.AddSingleton<IRemainingArguments>(_ => (IRemainingArguments)registry.GetService(typeof(IRemainingArguments))!);
+        builder.Services.AddSingleton(_ => (IRemainingArguments)registry.GetService(typeof(IRemainingArguments))!);
         builder.Services.AddSingleton(consoleResult);
         builder.Services.AddHostedService<ConsoleWorker>();
         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression

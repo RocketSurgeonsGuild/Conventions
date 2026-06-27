@@ -5,7 +5,6 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting;
 
 using Serilog.Events;
 

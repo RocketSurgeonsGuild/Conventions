@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Rocket.Surgery.Conventions;
+using FluentValidation;
 
 [assembly: ExportConventions(Namespace = null, ClassName = "Dep2Exports")]
 

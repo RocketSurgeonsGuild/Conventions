@@ -1,4 +1,4 @@
-﻿namespace Rocket.Surgery.Conventions.Setup;
+namespace Rocket.Surgery.Conventions.Setup;
 
 /// <summary>
 ///     IInitConvention

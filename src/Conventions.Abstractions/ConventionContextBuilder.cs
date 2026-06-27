@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 

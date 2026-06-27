@@ -1,4 +1,4 @@
-﻿[
+[
   <Should_Leave_Delegates_In_Place>b__4_0,
   D,
   <Should_Leave_Delegates_In_Place>b__4_1,

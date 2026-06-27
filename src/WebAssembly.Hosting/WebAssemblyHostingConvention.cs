@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.WebAssembly.Hosting;

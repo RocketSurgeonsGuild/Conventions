@@ -1,5 +1,4 @@
-﻿using Aspire.Hosting;
-using Microsoft.Extensions.Hosting;
+using Aspire.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Aspire.Hosting;

@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Hosting;
 
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 

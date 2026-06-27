@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 
-internal sealed  class SimpleStartup
+internal sealed class SimpleStartup
 {
     public void ConfigureServices(IServiceCollection services)
     {

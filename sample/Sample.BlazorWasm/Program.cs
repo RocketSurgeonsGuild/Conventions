@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Rocket.Surgery.WebAssembly.Hosting;
 using Sample.BlazorWasm;
 
 var builder = WebAssemblyHostBuilder

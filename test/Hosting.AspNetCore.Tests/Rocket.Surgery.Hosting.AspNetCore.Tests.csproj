@@ -9,10 +9,5 @@
         <ProjectReference Include="..\..\src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.TestHost" />
-        <ProjectReference
-            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
-            OutputItemType="Analyzer"
-            ReferenceOutputAssembly="false"
-        />
     </ItemGroup>
 </Project>

@@ -1,14 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <ItemGroup>
         <ProjectReference Include="..\..\src\CommandLine\Rocket.Surgery.CommandLine.csproj" />
         <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
-        <ProjectReference
-            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
-            IncludeAssets="all"
-            OutputItemType="Analyzer"
-            ReferenceOutputAssembly="false"
-        />
         <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
     </ItemGroup>
 
@@ -16,5 +9,4 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
-
 </Project>

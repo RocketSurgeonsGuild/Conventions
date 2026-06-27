@@ -1,5 +1,3 @@
-using Rocket.Surgery.Conventions.Tests.Conventions;
-
 namespace Rocket.Surgery.Conventions.Tests;
 
 public partial class StaticConventionTests

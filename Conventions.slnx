@@ -88,8 +88,6 @@
     <Project Path="src/Aspire.Hosting/Rocket.Surgery.Aspire.Hosting.csproj" />
     <Project Path="src/CommandLine/Rocket.Surgery.CommandLine.csproj" />
     <Project Path="src/Conventions.Abstractions/Rocket.Surgery.Conventions.Abstractions.csproj" />
-    <Project Path="src/Conventions.Analyzers.roslyn4.8/Rocket.Surgery.Conventions.Analyzers.roslyn4.8.csproj" />
-    <Project Path="src/Conventions.Analyzers/Rocket.Surgery.Conventions.Analyzers.csproj" />
     <Project Path="src/Conventions.Autofac/Rocket.Surgery.Conventions.Autofac.csproj" />
     <Project Path="src/Conventions.Configuration.Json/Rocket.Surgery.Conventions.Configuration.Json.csproj" />
     <Project Path="src/Conventions.Configuration.Yaml/Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />

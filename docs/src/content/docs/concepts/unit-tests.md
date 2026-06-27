@@ -1,4 +1,4 @@
-﻿---
+---
 title: Unit Tests
 description: How to write unit tests for your conventions using ConventionContextBuilder and TestHost.
 ---

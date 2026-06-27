@@ -1,4 +1,4 @@
-﻿namespace Rocket.Surgery.Conventions;
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     Base class to be used for both imports and exports for configuration

@@ -1,4 +1,4 @@
-﻿---
+---
 title: Source Generation
 description: How the Roslyn source generator resolves and exports conventions at build time.
 tags: [source-generator, aot]

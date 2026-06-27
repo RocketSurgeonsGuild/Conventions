@@ -1,4 +1,4 @@
-﻿namespace Rocket.Surgery.Conventions;
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     A factory that provides a list of conventions

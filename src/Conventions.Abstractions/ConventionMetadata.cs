@@ -17,7 +17,7 @@ public sealed class ConventionMetadata : IConventionMetadata
     {
         Convention = convention;
         HostType = hostType;
-        _dependencies = new();
+        _dependencies = [];
         Category = ConventionCategory.Application;
     }
 
@@ -32,7 +32,7 @@ public sealed class ConventionMetadata : IConventionMetadata
         Convention = convention;
         HostType = hostType;
         Category = category;
-        _dependencies = new();
+        _dependencies = [];
     }
 
     /// <summary>

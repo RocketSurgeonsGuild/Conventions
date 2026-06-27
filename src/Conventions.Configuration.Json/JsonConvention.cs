@@ -27,7 +27,7 @@ public class JsonConvention : ISetupConvention
                 ];
 
 #if  NET10_0_OR_GREATER
-                return applicationName is {Length: > 0} ? [
+                return applicationName is { Length: > 0 } ? [
                     ..results,
                     new ($"{applicationName}.json", LoadJsonFile(configurationBuilder, $"{applicationName}.json")),
                 ] : results;
@@ -45,7 +45,7 @@ public class JsonConvention : ISetupConvention
                 ];
 
 #if  NET10_0_OR_GREATER
-                return applicationName is {Length: > 0} ? [
+                return applicationName is { Length: > 0 } ? [
                     ..results,
                     new ($"{applicationName}.{environment}.json", LoadJsonFile(configurationBuilder, $"{applicationName}.{environment}.json")),
                 ] : results;

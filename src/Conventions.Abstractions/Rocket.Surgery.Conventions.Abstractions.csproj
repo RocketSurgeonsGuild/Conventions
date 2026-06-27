@@ -9,13 +9,6 @@
         <IsTimmable>false</IsTimmable>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference
-            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
-            IncludeAssets="analyzers"
-            ExcludeAssets="compile;runtime;native"
-            PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
-            OutputItemType="Analyzer"
-        />
         <PackageReference Include="Polyfill" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Extensions.Logging" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />

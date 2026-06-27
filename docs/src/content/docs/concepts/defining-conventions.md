@@ -1,4 +1,4 @@
-﻿---
+---
 title: Defining Conventions
 description: How to create and register your own conventions, including ordering and host type filtering.
 ---
