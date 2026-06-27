@@ -3,5 +3,11 @@ azure-pipelines.nuke.yml
 .github/workflows/ci-ignore.yml
 .nuke/build.schema.json
 package-lock.json
+pnpm-lock.yaml
+yarn.lock
+node_modules/
+dist/
+build/
+coverage/
 *.verified.*
 *.received.*

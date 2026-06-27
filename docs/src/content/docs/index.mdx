@@ -1,0 +1,42 @@
+---
+title: Conventions — Convention-Driven Wiring for .NET
+description: Convention-driven application wiring for .NET. AOT-safe, zero runtime reflection. Replaces assembly scanning with compile-time source generation.
+template: splash
+hero:
+    title: Conventions
+    tagline: Convention-driven application wiring for .NET. AOT-safe, zero runtime reflection.
+    actions:
+        - text: Get Started
+          link: guides/
+          icon: right-arrow
+          variant: primary
+        - text: View on GitHub
+          link: https://github.com/RocketSurgeonsGuild/Conventions
+          icon: external
+          variant: minimal
+    banner:
+        content: |
+            Conventions supports .NET 8 and .NET 10.
+            <a href="https://github.com/RocketSurgeonsGuild/Conventions/releases">See releases →</a>
+---
+
+import { CardGrid, Card, Icon } from '@astrojs/starlight/components';
+
+<p>
+    <Icon name="github" /> Follow development on GitHub.
+</p>
+
+<CardGrid stagger>
+    <Card title="AOT & Trim Safe" icon="rocket">
+        Generated code requires zero runtime reflection — fully compatible with .NET Native AOT and IL trimming.
+    </Card>
+    <Card title="Convention-Driven Wiring" icon="setting">
+        Express services, configuration, logging, and hosting as assembly-level conventions resolved at build time by a Roslyn incremental source generator.
+    </Card>
+    <Card title="Composable Integrations" icon="puzzle">
+        First-class support for Generic Host, ASP.NET Core, Autofac, DryIoc, Serilog, and .NET Aspire — all wired via conventions.
+    </Card>
+    <Card title="Zero Runtime Reflection" icon="document">
+        Convention resolution serialized at compile time — every scan is AOT and IL-trimming safe with no runtime discovery cost.
+    </Card>
+</CardGrid>

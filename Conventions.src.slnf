@@ -1,0 +1,22 @@
+{
+  "solution": {
+    "path": "Conventions.slnx",
+    "projects": [
+      "src/Aspire.Hosting.Testing/Rocket.Surgery.Aspire.Hosting.Testing.csproj",
+      "src/Aspire.Hosting/Rocket.Surgery.Aspire.Hosting.csproj",
+      "src/CommandLine/Rocket.Surgery.CommandLine.csproj",
+      "src/Conventions.Abstractions/Rocket.Surgery.Conventions.Abstractions.csproj",
+      "src/Conventions.Analyzers/Rocket.Surgery.Conventions.Analyzers.csproj",
+      "src/Conventions.Autofac/Rocket.Surgery.Conventions.Autofac.csproj",
+      "src/Conventions.Configuration.Json/Rocket.Surgery.Conventions.Configuration.Json.csproj",
+      "src/Conventions.Configuration.Yaml/Rocket.Surgery.Conventions.Configuration.Yaml.csproj",
+      "src/Conventions.Diagnostics/Rocket.Surgery.Conventions.Diagnostics.csproj",
+      "src/Conventions.DryIoc/Rocket.Surgery.Conventions.DryIoc.csproj",
+      "src/Conventions.Serilog/Rocket.Surgery.Conventions.Serilog.csproj",
+      "src/Conventions/Rocket.Surgery.Conventions.csproj",
+      "src/Hosting/Rocket.Surgery.Hosting.csproj",
+      "src/Web.Hosting/Rocket.Surgery.Web.Hosting.csproj",
+      "src/WebAssembly.Hosting/Rocket.Surgery.WebAssembly.Hosting.csproj"
+    ]
+  }
+}
