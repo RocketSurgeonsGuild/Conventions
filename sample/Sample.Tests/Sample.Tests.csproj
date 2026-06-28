@@ -10,6 +10,12 @@
         <PackageReference Include="Microsoft.Testing.Extensions.CrashDump" />
         <PackageReference Include="Microsoft.Testing.Extensions.HangDump" />
         <PackageReference Include="TUnit" />
+        <ProjectReference
+            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="all"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
     </ItemGroup>
 
     <ItemGroup>

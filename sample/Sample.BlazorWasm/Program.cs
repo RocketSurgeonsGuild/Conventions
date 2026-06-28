@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Rocket.Surgery.WebAssembly.Hosting;
 using Sample.BlazorWasm;
 
 var builder = WebAssemblyHostBuilder
@@ -10,5 +11,5 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new(builder.HostEnvironment.BaseAddress), });
 
-var host = await builder.ConfigureRocketSurgery();
+var host = await builder.ConfigureRocketSurgery(Imports.Instance);
 await host.RunAsync();

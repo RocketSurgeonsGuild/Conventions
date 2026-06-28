@@ -9,15 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 
+
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
-public class AutofacWebApplicationTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
 {
-    [Before(Test)]
-    public void Setup() => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
@@ -207,4 +205,5 @@ public class AutofacWebApplicationTests() : AutoFakeTest<TUnitTestRecord>(TUnitD
         builder.GetLifetimeScope().ShouldNotBeNull();
     }
 
+    public AutofacWebApplicationTests() : base(TUnitDefaults.Create()) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

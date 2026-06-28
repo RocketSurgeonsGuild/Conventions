@@ -176,9 +176,9 @@ internal readonly struct ConventionOrDelegate : IEquatable<ConventionOrDelegate>
     {
         if (Convention != null)
         {
-            return HostType != HostType.Undefined
-                ? $"{HostType}:{Convention.GetType().Name} | Priority:{Priority}"
-                : $"{Convention.GetType().Name} | Priority:{Priority}";
+            return  HostType != HostType.Undefined 
+                ?  $"{HostType}:{Convention.GetType().Name} | Priority:{Priority}" 
+                :  $"{Convention.GetType().Name} | Priority:{Priority}";
         }
 
         if (Delegate != null)

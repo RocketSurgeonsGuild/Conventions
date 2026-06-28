@@ -9,6 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference
+            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="all"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />

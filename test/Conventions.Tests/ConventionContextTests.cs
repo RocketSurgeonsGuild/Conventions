@@ -9,10 +9,12 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
+
+
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionContextTests()
-    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
+public class ConventionContextTests
+    () : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create(LogEventLevel.Information))
 {
     [Test]
     public async Task GetAStronglyTypedValue()

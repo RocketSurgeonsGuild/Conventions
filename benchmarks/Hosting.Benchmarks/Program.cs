@@ -7,6 +7,7 @@ using Hosting.Benchmarks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Rocket.Surgery.Hosting;
 
 var config = ManualConfig
            .Create(DefaultConfig.Instance);

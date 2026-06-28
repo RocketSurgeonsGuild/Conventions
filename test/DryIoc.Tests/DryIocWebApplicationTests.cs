@@ -8,13 +8,12 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
+
+
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocWebApplicationTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
+public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
 {
-    [Before(Test)]
-    public void Setup() => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
-
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
@@ -220,4 +219,6 @@ public class DryIocWebApplicationTests() : AutoFakeTest<TUnitTestRecord>(TUnitDe
         container.ShouldNotBeNull();
     }
 
+    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
+        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 }

@@ -1,9 +1,7 @@
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests;
 
-public class PlaywrightSampleTest()
+public class PlaywrightSampleTest(PlaywrightFixture playwrightFixture) : IClassFixture<PlaywrightFixture>
 {
-    [Test]
-    public async Task Dummy_Test() => await Assert.That(true).IsTrue();
     // [Fact(Skip = "sometimes fails")]
     // public async Task LetsGo()
     // {

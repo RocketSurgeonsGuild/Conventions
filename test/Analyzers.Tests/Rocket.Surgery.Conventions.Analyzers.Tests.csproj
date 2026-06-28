@@ -16,6 +16,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Indago" />
         <PackageReference Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" />
+        <ProjectReference Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj" />
         <ProjectReference Include="..\..\src\Aspire.Hosting.Testing\Rocket.Surgery.Aspire.Hosting.Testing.csproj" />
         <ProjectReference Include="..\..\src\Aspire.Hosting\Rocket.Surgery.Aspire.Hosting.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Diagnostics\Rocket.Surgery.Conventions.Diagnostics.csproj" />

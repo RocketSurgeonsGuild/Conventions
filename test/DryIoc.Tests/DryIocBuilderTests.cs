@@ -8,17 +8,15 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
+
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 #pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
+public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
 {
-    [Before(Test)]
-    public void Setup() => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
-
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
@@ -223,6 +221,9 @@ public class DryIocBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.
         var container = host.Services.GetRequiredService<IContainer>();
         container.ShouldNotBeNull();
     }
+
+    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
+        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 
     protected override IContainer BuildContainer(IContainer container) =>
         container

@@ -4,9 +4,10 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Conventions.Diagnostics;
 using Rocket.Surgery.Extensions.Testing;
 
+
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class DiagnosticLoggerTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public class DiagnosticLoggerTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
 {
     [Test]
     public void LogTrace()

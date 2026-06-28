@@ -11,6 +11,8 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 using Spectre.Console.Cli;
 
+
+
 #pragma warning disable CA1034, CA1062, CA1822, CA2000
 
 namespace Rocket.Surgery.Extensions.CommandLine.Tests;
@@ -25,7 +27,7 @@ public interface IService2
     string SomeValue { get; }
 }
 
-public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
 {
     [Test]
     public void Constructs()
@@ -261,24 +263,24 @@ public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefa
 
     private sealed class Add : Command
     {
-        public override int Execute(CommandContext context, CancellationToken token) => 1;
+        protected override int Execute(CommandContext context, CancellationToken token) => 1;
     }
 
     private sealed class Origin : Command
     {
-        public override int Execute(CommandContext context, CancellationToken token) => 1;
+        protected override int Execute(CommandContext context, CancellationToken token) => 1;
     }
 
     private sealed class SubCmd : Command
     {
         [UsedImplicitly]
-        public override int Execute(CommandContext context, CancellationToken token) => -1;
+        protected override int Execute(CommandContext context, CancellationToken token) => -1;
     }
 
     public class InjectionConstructor(IService service, ILogger<InjectionConstructor> logger) : AsyncCommand
     {
         [UsedImplicitly]
-        public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken token)
+        protected override async Task<int> ExecuteAsync(CommandContext context, CancellationToken token)
         {
             await Task.Yield();
             return _service.ReturnCode;
@@ -289,7 +291,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefa
 
     private sealed class CommandWithValues : Command
     {
-        public override int Execute(CommandContext context, CancellationToken token)
+        protected override int Execute(CommandContext context, CancellationToken token)
         {
             ApiDomain.ShouldBe("mydomain.com");
             ClientName.ShouldBe("client1");
@@ -317,7 +319,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefa
     public class ServiceInjection(IService2 service2, ILogger<ServiceInjection> logger) : Command
     {
         [UsedImplicitly]
-        public override int Execute(CommandContext context, CancellationToken token)
+        protected override int Execute(CommandContext context, CancellationToken token)
         {
             _logger.LogInformation(nameof(ServiceInjection));
             return _service2.SomeValue == "Service2" ? 0 : 1;
@@ -330,7 +332,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefa
     public class LoggerInjection(ILogger<LoggerInjection> logger) : Command
     {
         [UsedImplicitly]
-        public override int Execute(CommandContext context, CancellationToken token)
+        protected override int Execute(CommandContext context, CancellationToken token)
         {
             _logger.LogInformation(nameof(LoggerInjection));
             return 0;
@@ -342,7 +344,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefa
     public class ServiceInjection2(IService2 service2) : Command
     {
         [UsedImplicitly]
-        public override int Execute(CommandContext context, CancellationToken token) => _service2.SomeValue == "Service2" ? 0 : 1;
+        protected override int Execute(CommandContext context, CancellationToken token) => _service2.SomeValue == "Service2" ? 0 : 1;
 
         private readonly IService2 _service2 = service2;
     }

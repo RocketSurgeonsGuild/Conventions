@@ -33,11 +33,11 @@ public static class ModuleInitializer
         VerifierSettings.ScrubLinesWithReplace(
             s =>
             {
-                return s.Contains(
+                return  s.Contains(
                         "Rocket.Surgery.ConventionConfigurationData.AssemblyProvider.",
                         StringComparison.OrdinalIgnoreCase
-                    )
-                    ? s[..( s.IndexOf('"', s.IndexOf('"') + 1) + 2 )] + "\"\")]"
+                    ) 
+                    ?  s[..( s.IndexOf('"', s.IndexOf('"') + 1) + 2 )] + "\"\")]" 
                     : s;
             }
         );

@@ -5,10 +5,12 @@ using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Aspire.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 
+
+
 namespace Aspire.Hosting.Tests;
 
-public partial class RocketDistributedApplicationBuilderTests()
-    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public partial class RocketDistributedApplicationBuilderTests
+    () : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create(outputHelper))
 {
     [Test]
     public async Task Should_UseRocketBooster()

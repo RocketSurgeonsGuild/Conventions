@@ -68,29 +68,30 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                             var syntax = (LiteralExpressionSyntax)arg.Expression;
 
                             data = arg.NameEquals.Name.Identifier.Text switch
-                                   {
-                                       nameof(InnerConventionConfigurationData.Namespace) => data with
-                                       {
-                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           Namespace = (string)syntax.Token.Value!, DefinedNamespace = true,
-                                       },
-                                       nameof(InnerConventionConfigurationData.ClassName) => data with
-                                       {
-                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           ClassName = (string)syntax.Token.Value!,
-                                       },
-                                       nameof(InnerConventionConfigurationData.MethodName) => data with
-                                       {
-                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           MethodName = (string)syntax.Token.Value!,
-                                       },
-                                       nameof(InnerConventionConfigurationData.Assembly) => data with
-                                       {
-                                           // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           Assembly = (bool)syntax.Token.Value!,
-                                       },
-                                       _ => data,
-                                   };
+                            {
+                                nameof(InnerConventionConfigurationData.Namespace) => data with
+                                {
+                                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                    Namespace = (string)syntax.Token.Value!,
+                                    DefinedNamespace = true,
+                                },
+                                nameof(InnerConventionConfigurationData.ClassName) => data with
+                                {
+                                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                    ClassName = (string)syntax.Token.Value!,
+                                },
+                                nameof(InnerConventionConfigurationData.MethodName) => data with
+                                {
+                                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                    MethodName = (string)syntax.Token.Value!,
+                                },
+                                nameof(InnerConventionConfigurationData.Assembly) => data with
+                                {
+                                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                    Assembly = (bool)syntax.Token.Value!,
+                                },
+                                _ => data,
+                            };
                         }
 
                         return data;
@@ -118,20 +119,24 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
     {
         var data = InnerConventionConfigurationData.FromDefaults(defaults);
         var prefix = $"Rocket.Surgery.ConventionConfigurationData.{defaults.ClassName}";
-        foreach (var attribute in assemblySymbol.GetAttributes().Where(z => z is { AttributeClass.MetadataName : "AssemblyMetadataAttribute", }))
+        foreach (var attribute in assemblySymbol.GetAttributes().Where(z => z is { AttributeClass.MetadataName: "AssemblyMetadataAttribute", }))
         {
             if (attribute is not
                 {
                     ConstructorArguments: [{ Value: string { Length: > 0, } key, }, var value,],
                 }
-             || !key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
+             || !key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
             data = key.Split('.').Last() switch
-                   {
-                       nameof(Namespace)  => data with { Namespace = (string?)value.Value, },
-                       nameof(ClassName)  => data with { ClassName = (string)value.Value!, },
-                       nameof(MethodName) => data with { MethodName = (string)value.Value!, },
-                       _                  => data,
-                   };
+            {
+                nameof(Namespace) => data with { Namespace = (string?)value.Value, },
+                nameof(ClassName) => data with { ClassName = (string)value.Value!, },
+                nameof(MethodName) => data with { MethodName = (string)value.Value!, },
+                _ => data,
+            };
         }
 
         return new(false, data.Assembly, data.Namespace, data.ClassName, data.MethodName);
@@ -148,9 +153,9 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
     private static string GetNamespaceForCompilation(Compilation compilation, bool postfix = false)
     {
         var @namespace = compilation.AssemblyName ?? "";
-        if (postfix) return ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.');
-
-        return @namespace;
+        return postfix
+            ?  ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.') 
+            : @namespace;
     }
 
     public bool Postfix { get; init; }
@@ -166,6 +171,7 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
             }
         );
         if (type == "Import")
+        {
             list = list.Add(
                 AttributeList(
                         SingletonSeparatedList(
@@ -183,16 +189,14 @@ internal record ConventionConfigurationData(bool WasConfigured, bool Assembly, s
                     )
                    .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
             );
+        }
 
         return list;
     }
 
     private record InnerConventionConfigurationData(bool Assembly, string? Namespace, string ClassName, string MethodName)
     {
-        public static InnerConventionConfigurationData FromDefaults(ConventionConfigurationData configurationData)
-        {
-            return new(configurationData.Assembly, null, configurationData.ClassName, configurationData.MethodName);
-        }
+        public static InnerConventionConfigurationData FromDefaults(ConventionConfigurationData configurationData) => new(configurationData.Assembly, null, configurationData.ClassName, configurationData.MethodName);
 
         public bool DefinedNamespace { get; init; }
         public bool WasConfigured { get; init; }

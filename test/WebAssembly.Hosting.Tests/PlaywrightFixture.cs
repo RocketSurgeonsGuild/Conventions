@@ -9,11 +9,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Playwright;
 using Rocket.Surgery.WebAssembly.Hosting.Tests.DevServer;
 using Sample.BlazorWasm;
-using TUnit.Core.Interfaces;
 
 namespace Rocket.Surgery.WebAssembly.Hosting.Tests;
 
-public sealed class PlaywrightFixture : IAsyncInitializer, IAsyncDisposable
+public sealed class PlaywrightFixture : IAsyncLifetime
 {
     private static void RunInBackgroundThread(Action action)
     {
@@ -86,7 +85,7 @@ public sealed class PlaywrightFixture : IAsyncInitializer, IAsyncDisposable
         Browser = await PlaywrightInstance.Chromium.LaunchAsync(new() { Headless = true, });
     }
 
-    public async ValueTask DisposeAsync()
+    public async Task DisposeAsync()
     {
         await Host.StopAsync();
         Host.Dispose();

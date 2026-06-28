@@ -36,9 +36,6 @@
     <File Path="NuGet.config" />
     <File Path="package.json" />
     <File Path="Readme.md" />
-    <Project Path=".build/.build.csproj">
-      <Build Project="false" />
-    </Project>
   </Folder>
   <Folder Name="/config/.github/">
     <File Path="labels.yml" />
@@ -67,8 +64,8 @@
     <File Path="tasks.json" />
   </Folder>
   <Folder Name="/sample/">
-    <File Path="Directory.Build.props" />
-    <File Path="Directory.Build.targets" />
+    <File Path="sample/Directory.Build.props" />
+    <File Path="sample/Directory.Build.targets" />
     <Project Path="sample/AspireSample/AspireSample.csproj" />
     <Project Path="sample/Diagnostics/Diagnostics.csproj" />
     <Project Path="sample/Sample.BlazorWasm/Sample.BlazorWasm.csproj" />
@@ -81,13 +78,14 @@
     <Project Path="sample/Sample/Sample.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <File Path=".editorconfig" />
-    <File Path="Directory.Build.props" />
-    <File Path="Directory.Build.targets" />
+    <File Path="src/.editorconfig" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Build.targets" />
     <Project Path="src/Aspire.Hosting.Testing/Rocket.Surgery.Aspire.Hosting.Testing.csproj" />
     <Project Path="src/Aspire.Hosting/Rocket.Surgery.Aspire.Hosting.csproj" />
     <Project Path="src/CommandLine/Rocket.Surgery.CommandLine.csproj" />
     <Project Path="src/Conventions.Abstractions/Rocket.Surgery.Conventions.Abstractions.csproj" />
+    <Project Path="src/Conventions.Analyzers/Rocket.Surgery.Conventions.Analyzers.csproj" />
     <Project Path="src/Conventions.Autofac/Rocket.Surgery.Conventions.Autofac.csproj" />
     <Project Path="src/Conventions.Configuration.Json/Rocket.Surgery.Conventions.Configuration.Json.csproj" />
     <Project Path="src/Conventions.Configuration.Yaml/Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
@@ -99,10 +97,14 @@
     <Project Path="src/Web.Hosting/Rocket.Surgery.Web.Hosting.csproj" />
     <Project Path="src/WebAssembly.Hosting/Rocket.Surgery.WebAssembly.Hosting.csproj" />
   </Folder>
+  <Folder Name="/src/Conventions.Analyzers.supports/">
+    <Project Path="src/Conventions.Analyzers.supports/Rocket.Surgery.Conventions.Analyzers.roslyn4.14.csproj" />
+    <Project Path="src/Conventions.Analyzers.supports/Rocket.Surgery.Conventions.Analyzers.roslyn5.0.csproj" />
+  </Folder>
   <Folder Name="/test/">
-    <File Path=".editorconfig" />
-    <File Path="Directory.Build.props" />
-    <File Path="Directory.Build.targets" />
+    <File Path="test/.editorconfig" />
+    <File Path="test/Directory.Build.props" />
+    <File Path="test/Directory.Build.targets" />
     <Project Path="test/Analyzers.Tests/Rocket.Surgery.Conventions.Analyzers.Tests.csproj" />
     <Project Path="test/Aspire.Hosting.Tests/Aspire.Hosting.Tests.csproj" />
     <Project Path="test/Autofac.Tests/Rocket.Surgery.Extensions.Autofac.Tests.csproj" />

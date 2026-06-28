@@ -10,15 +10,13 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
+
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocCommandLineTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
+public class DryIocCommandLineTests : AutoFakeTest<XUnitTestContext>
 {
-    [Before(Test)]
-    public void Setup() => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
-
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
@@ -205,4 +203,6 @@ public class DryIocCommandLineTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefau
         host.Services.GetRequiredService<IContainer>().ShouldNotBeNull();
     }
 
+    public DryIocCommandLineTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
+        AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

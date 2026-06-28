@@ -1,0 +1,6 @@
+[*]
+# For the analyzer project
+dotnet_diagnostic.IDE0301.severity = none
+dotnet_diagnostic.IDE0303.severity = none
+dotnet_diagnostic.IDE0305.severity = none
+resharper_use_collection_expression_highlighting = none

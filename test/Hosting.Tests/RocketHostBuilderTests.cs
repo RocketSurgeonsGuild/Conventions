@@ -9,9 +9,11 @@ using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.Logging;
 using Rocket.Surgery.Extensions.Testing;
 
+
+
 namespace Rocket.Surgery.Hosting.Tests;
 
-public partial class RocketHostBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public partial class RocketHostBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
 {
     [Test]
     public async Task Should_UseRocketBooster_With_Conventions()

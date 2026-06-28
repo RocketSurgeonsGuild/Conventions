@@ -5,9 +5,11 @@ using FakeItEasy;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 
+
+
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionScannerTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public class ConventionScannerTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
 {
     [Test]
     public void ShouldConstruct()

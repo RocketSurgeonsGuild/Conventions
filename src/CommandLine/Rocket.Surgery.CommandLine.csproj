@@ -9,7 +9,6 @@
         <NoWarn>$(NoWarn);RCS1102;CA1812</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Polyfill" PrivateAssets="All" />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>

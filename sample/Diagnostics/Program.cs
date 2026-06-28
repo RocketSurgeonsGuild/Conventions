@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Spectre.Console;
@@ -15,7 +14,7 @@ public static partial class Program
 {
     public static async Task<int> Main(string[] args) => await ( await CreateHostBuilder(args) ).RunConsoleAppAsync();
 
-    public static async Task<IHost> CreateHostBuilder(string[] args) => await Host.CreateApplicationBuilder(args).ConfigureRocketSurgery();
+    public static async Task<IHost> CreateHostBuilder(string[] args) => await Host.CreateApplicationBuilder(args).LaunchWith(RocketBooster.For(Imports.Instance));
 }
 
 [ExportConvention]
@@ -25,7 +24,7 @@ internal class Convention : ICommandLineConvention, IServiceConvention
     {
         app.AddDelegate(
             "test",
-            (_, _) => 1
+            _ => 1
         );
         app.AddCommand<MyCommand>("dump");
     }
@@ -38,10 +37,10 @@ internal class MyCommand(IHostBuilder hostBuilder, IAnsiConsole console) : Async
     private readonly IHostBuilder _hostBuilder = hostBuilder;
     private readonly IAnsiConsole _console = console;
 
-    public override async Task<int> ExecuteAsync(CommandContext context, AppSettings settings, CancellationToken token)
+    public async Task<int> ExecuteAsync(CommandContext context, AppSettings settings)
     {
         using var host = _hostBuilder.Build();
-        await host.StartAsync(token);
+        await host.StartAsync();
         if (host.Services.GetRequiredService<IConfiguration>() is IConfigurationRoot root) _console.WriteLine(root.GetDebugView());
 
         return 0;

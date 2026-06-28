@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.TestHost;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 
+
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
-public class RocketWebApplicationBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public class RocketWebApplicationBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
 {
     [Test]
     public async Task Should_Build_The_Host_Correctly()

@@ -9,10 +9,12 @@ using Projects;
 using Rocket.Surgery.Aspire.Hosting.Testing;
 using Rocket.Surgery.Extensions.Testing;
 
+
+
 namespace Aspire.Hosting.Tests;
 
-public partial class RocketDistributedApplicationTestingBuilderTests()
-    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public partial class RocketDistributedApplicationTestingBuilderTests
+    () : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
 {
     [Test]
     public async Task Should_UseRocketBooster()
