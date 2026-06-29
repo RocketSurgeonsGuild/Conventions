@@ -7,13 +7,12 @@ using FakeItEasy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-
-
+using Rocket.Surgery.Hosting;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
-public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
+public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
 {
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -201,5 +200,5 @@ public class AutofacCommandLineTests : AutoFakeTest<XUnitTestContext>
         host.Services.GetRequiredService<ILifetimeScope>().ShouldNotBeNull();
     }
 
-    public AutofacCommandLineTests() : base(TUnitDefaults.Create()) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
+    public AutofacCommandLineTests() : base(TestRecord.Create()) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

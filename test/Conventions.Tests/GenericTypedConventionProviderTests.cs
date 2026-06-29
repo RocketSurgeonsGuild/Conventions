@@ -9,12 +9,10 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
-
-
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class GenericTypedConventionProviderTests
-    () : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create(LogEventLevel.Information))
+public class GenericTypedConventionProviderTests()
+    : AutoFakeTest<TestRecord>(TestRecord.Create(LogEventLevel.Information))
 {
     [Test]
     public void Should_Throw_When_A_Cycle_Is_Detected()
@@ -29,7 +27,7 @@ public class GenericTypedConventionProviderTests
     }
 
     [Test]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Sort_Conventions_Correctly(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -48,7 +46,7 @@ public class GenericTypedConventionProviderTests
     }
 
     [Test]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Not_Affect_Default_Sort_Order(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -67,7 +65,7 @@ public class GenericTypedConventionProviderTests
     }
 
     [Test]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Leave_Delegates_In_Place(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -89,7 +87,7 @@ public class GenericTypedConventionProviderTests
     }
 
     [Test]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Leave_Delegates_In_Place_Order_Delegates(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -111,7 +109,7 @@ public class GenericTypedConventionProviderTests
     }
 
     [Test]
-    [MemberData(nameof(GetCategories), HostType.Undefined)]
+    [MethodDataSource(nameof(GetCategoriesUndefined))]
     public async Task Should_Sort_ConventionMetadata_Correctly(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -136,7 +134,7 @@ public class GenericTypedConventionProviderTests
     }
 
     [Test]
-    [MemberData(nameof(GetCategories), HostType.Live)]
+    [MethodDataSource(nameof(GetCategoriesLive))]
     public async Task Should_Exclude_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -158,7 +156,7 @@ public class GenericTypedConventionProviderTests
     }
 
     [Test]
-    [MemberData(nameof(GetCategories), HostType.UnitTest)]
+    [MethodDataSource(nameof(GetCategoriesUnitTest))]
     public async Task Should_Include_Unit_Test_Conventions(HostType hostType, ImmutableArray<ConventionCategory> categories)
     {
         var b = new B();
@@ -213,12 +211,16 @@ public class GenericTypedConventionProviderTests
     [DependsOnConvention<Cyclic1>]
     private sealed class Cyclic2 : IConvention;
 
-    public static IEnumerable<object[]> GetCategories(HostType hostType)
+    private static IEnumerable<(HostType, ImmutableArray<ConventionCategory>)> GetCategories(HostType hostType)
     {
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application)];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom"))];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core)];
-        yield return [hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core, new("Custom"))];
-        yield return [hostType, ImmutableArray.Create(new ConventionCategory("Custom"))];
+        yield return (hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application));
+        yield return (hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Application, new("Custom")));
+        yield return (hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core));
+        yield return (hostType, ImmutableArray.Create<ConventionCategory>(ConventionCategory.Core, new("Custom")));
+        yield return (hostType, ImmutableArray.Create(new ConventionCategory("Custom")));
     }
+
+    public static IEnumerable<(HostType, ImmutableArray<ConventionCategory>)> GetCategoriesUndefined() => GetCategories(HostType.Undefined);
+    public static IEnumerable<(HostType, ImmutableArray<ConventionCategory>)> GetCategoriesLive() => GetCategories(HostType.Live);
+    public static IEnumerable<(HostType, ImmutableArray<ConventionCategory>)> GetCategoriesUnitTest() => GetCategories(HostType.UnitTest);
 }

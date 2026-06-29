@@ -14,12 +14,12 @@
         <PackageReference Include="System.Collections.Immutable" VersionOverride="9.0.0" />
         <PackageReference Include="System.Text.Json" PrivateAssets="all" GeneratePathProperty="true" />
         <ProjectReference
-            Include="../Conventions.Analyzers.supports/Conventions.Analyzers.roslyn4.14.csproj"
+            Include="../Conventions.Analyzers.supports/Rocket.Surgery.Conventions.Analyzers.roslyn4.14.csproj"
             PrivateAssets="all"
             ReferenceOutputAssembly="false"
         />
         <ProjectReference
-            Include="../Conventions.Analyzers.supports/Conventions.Analyzers.roslyn5.0.csproj"
+            Include="../Conventions.Analyzers.supports/Rocket.Surgery.Conventions.Analyzers.roslyn5.0.csproj"
             PrivateAssets="all"
             ReferenceOutputAssembly="false"
         />

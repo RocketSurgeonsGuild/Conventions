@@ -8,13 +8,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-
-
+using Rocket.Surgery.Hosting;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 
-public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
+public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
 {
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -205,5 +204,5 @@ public class AutofacWebApplicationTests : AutoFakeTest<XUnitTestContext>
         builder.GetLifetimeScope().ShouldNotBeNull();
     }
 
-    public AutofacWebApplicationTests() : base(TUnitDefaults.Create()) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
+    public AutofacWebApplicationTests() : base(TestRecord.Create()) => AutoFake.Provide<DiagnosticSource>(new DiagnosticListener("Test"));
 }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
+using Rocket.Surgery.Hosting;
 using Spectre.Console.Cli;
 
 
@@ -27,7 +28,7 @@ public interface IService2
     string SomeValue { get; }
 }
 
-public class CommandLineBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
+public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
     public void Constructs()

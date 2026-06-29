@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rocket.Surgery.Hosting;
 using Sample.Core;
 using TUnit.Core.Interfaces;
 

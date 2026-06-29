@@ -5,7 +5,7 @@ using FakeItEasy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-
+using Rocket.Surgery.Hosting;
 using Serilog.Events;
 
 
@@ -15,7 +15,7 @@ using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
+public class DryIocBuilderTests : AutoFakeTest<TestRecord>
 {
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -222,7 +222,7 @@ public class DryIocBuilderTests : AutoFakeTest<XUnitTestContext>
         container.ShouldNotBeNull();
     }
 
-    public DryIocBuilderTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
+    public DryIocBuilderTests() : base(TestRecord.Create(LogEventLevel.Information)) =>
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 
     protected override IContainer BuildContainer(IContainer container) =>

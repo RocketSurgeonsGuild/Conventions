@@ -22,8 +22,6 @@ public static class ModuleInitializer
                 }
             }
         );
-        VerifyImageMagick.Initialize();
-        VerifyImageMagick.RegisterComparers(.05);
         DiffRunner.Disabled = true;
         DerivePathInfo(
             (sourceFile, projectDirectory, type, method) =>

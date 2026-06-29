@@ -14,7 +14,7 @@ using Serilog.Events;
 namespace Rocket.Surgery.Conventions.Tests;
 
 public class ConventionContextTests
-    () : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create(LogEventLevel.Information))
+    () : AutoFakeTest<TestRecord>(TestRecord.Create(LogEventLevel.Information))
 {
     [Test]
     public async Task GetAStronglyTypedValue()

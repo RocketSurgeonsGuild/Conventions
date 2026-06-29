@@ -13,7 +13,7 @@ using Rocket.Surgery.Extensions.Testing;
 
 namespace Rocket.Surgery.Hosting.Tests;
 
-public partial class RocketHostBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
+public partial class RocketHostBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
     public async Task Should_UseRocketBooster_With_Conventions()

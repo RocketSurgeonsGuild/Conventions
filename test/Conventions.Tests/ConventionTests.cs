@@ -6,4 +6,4 @@ using Rocket.Surgery.Extensions.Testing;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class ConventionTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create()) { }
+public class ConventionTests() : AutoFakeTest<TestRecord>(TestRecord.Create()) { }

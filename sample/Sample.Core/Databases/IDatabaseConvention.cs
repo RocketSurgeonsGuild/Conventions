@@ -10,7 +10,7 @@ public interface IDatabaseConvention : IConvention
 public interface IDatabaseAsyncConvention : IConvention
 {
     /// <summary>
-    ///
+    /// 
     /// </summary>
     /// <param name="context">The context.</param>
     /// <param name="configurator"></param>

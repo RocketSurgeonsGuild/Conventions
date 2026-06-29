@@ -8,7 +8,7 @@ using ILogger = Serilog.ILogger;
 namespace Rocket.Surgery.Conventions.Tests;
 
 public class TestContextTests_DependencyContext
-    () : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create(LogEventLevel.Information))
+    () : AutoFakeTest<TestRecord>(TestRecord.Create(LogEventLevel.Information))
 {
     [Test]
     public void Builder_Should_Create_Host()

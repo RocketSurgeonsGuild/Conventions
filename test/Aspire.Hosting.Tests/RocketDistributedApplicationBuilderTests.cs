@@ -10,7 +10,7 @@ using Rocket.Surgery.Extensions.Testing;
 namespace Aspire.Hosting.Tests;
 
 public partial class RocketDistributedApplicationBuilderTests
-    () : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create(outputHelper))
+    () : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
     public async Task Should_UseRocketBooster()

@@ -6,7 +6,7 @@ using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
-public class RocketWebApplicationBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
+public class RocketWebApplicationBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
     public async Task Should_Build_The_Host_Correctly()

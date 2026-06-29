@@ -3,7 +3,7 @@ using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
-public abstract class GeneratorTest() : LoggerTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public abstract class GeneratorTest() : LoggerTest<TestRecord>(TestRecord.Create())
 {
     protected GeneratorTestContextBuilder Builder { get; } = GeneratorTestContextBuilder
                                                                          .Create()

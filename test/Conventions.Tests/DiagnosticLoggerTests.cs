@@ -7,7 +7,7 @@ using Rocket.Surgery.Extensions.Testing;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class DiagnosticLoggerTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
+public class DiagnosticLoggerTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
     public void LogTrace()

@@ -5,14 +5,14 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
-
+using Rocket.Surgery.Hosting;
 using Serilog.Events;
 
 
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
+public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
 {
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
@@ -219,6 +219,6 @@ public class DryIocWebApplicationTests : AutoFakeTest<XUnitTestContext>
         container.ShouldNotBeNull();
     }
 
-    public DryIocWebApplicationTests(ITestOutputHelper outputHelper) : base(XUnitTestContext.Create(outputHelper, LogEventLevel.Information)) =>
+    public DryIocWebApplicationTests() : base(TestRecord.Create(LogEventLevel.Information)) =>
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 }

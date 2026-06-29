@@ -9,7 +9,7 @@ using Rocket.Surgery.Extensions.Testing;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class GenericTypedConventionScannerTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
+public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
     public void ShouldConstruct()

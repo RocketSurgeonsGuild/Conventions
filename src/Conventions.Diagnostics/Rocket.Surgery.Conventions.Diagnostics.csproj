@@ -11,7 +11,4 @@
     <ItemGroup>
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
     </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="System.Diagnostics.DiagnosticSource" />
-    </ItemGroup>
 </Project>

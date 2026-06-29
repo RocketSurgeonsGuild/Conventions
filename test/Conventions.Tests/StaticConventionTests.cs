@@ -1,3 +1,5 @@
+using Sample.DependencyThree.Conventions;
+
 namespace Rocket.Surgery.Conventions.Tests;
 
 public partial class StaticConventionTests

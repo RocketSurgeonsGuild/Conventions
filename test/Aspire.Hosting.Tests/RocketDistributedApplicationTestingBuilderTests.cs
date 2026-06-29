@@ -14,7 +14,7 @@ using Rocket.Surgery.Extensions.Testing;
 namespace Aspire.Hosting.Tests;
 
 public partial class RocketDistributedApplicationTestingBuilderTests
-    () : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.Create())
+    () : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
     public async Task Should_UseRocketBooster()
