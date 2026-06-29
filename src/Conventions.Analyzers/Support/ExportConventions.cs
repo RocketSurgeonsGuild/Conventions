@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -12,7 +12,7 @@ internal static class ExportConventions
 {
     public static void HandleConventionExports(SourceProductionContext context, Request request)
     {
-        ( var data, var conventions ) = request;
+        (var data, var conventions) = request;
         if (!conventions.Any()) return;
 
         var helperClassBody = Block();
@@ -53,14 +53,14 @@ internal static class ExportConventions
                             TypeArguments: [INamedTypeSymbol dependencyDirectionDependentOfSymbol],
                         },
                     }:
-                        dependencies.Add(( _dependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol.ToDisplayString()) ));
+                        dependencies.Add((_dependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol.ToDisplayString())));
                         break;
                     case
                     {
                         AttributeClass.Name: "DependentOfConventionAttribute" or "BeforeConventionAttribute",
                         ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependentOfSymbol2 }],
                     }:
-                        dependencies.Add(( _dependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol2.ToDisplayString()) ));
+                        dependencies.Add((_dependencyDirectionDependentOf, ParseName(dependencyDirectionDependentOfSymbol2.ToDisplayString())));
                         break;
                     case
                     {
@@ -70,14 +70,16 @@ internal static class ExportConventions
                             TypeArguments: [INamedTypeSymbol dependencyDirectionDependsOnSymbol],
                         },
                     }:
-                        dependencies.Add(( _dependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol.ToDisplayString()) ));
+                        dependencies.Add((_dependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol.ToDisplayString())));
                         break;
                     case
                     {
                         AttributeClass.Name: "DependsOnConventionAttribute" or "AfterConventionAttribute",
                         ConstructorArguments: [{ Kind: TypedConstantKind.Type, Value: INamedTypeSymbol dependencyDirectionDependsOnSymbol2 }],
                     }:
-                        dependencies.Add(( _dependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol2.ToDisplayString()) ));
+                        dependencies.Add((_dependencyDirectionDependsOn, ParseName(dependencyDirectionDependsOnSymbol2.ToDisplayString())));
+                        break;
+                    default:
                         break;
                 }
 
@@ -109,7 +111,7 @@ internal static class ExportConventions
                     )
                 );
 
-            foreach (( var direction, var type ) in dependencies)
+            foreach ((var direction, var type) in dependencies)
             {
                 withDependencies = InvocationExpression(
                         MemberAccessExpression(
@@ -203,9 +205,11 @@ internal static class ExportConventions
                  );
 
         if (data.Configuration.Assembly)
+        {
             cu = cu.AddMembers(
                 data is { Namespace.Length: > 0 } ? NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass) : helperClass
             );
+        }
 
         context.AddSource(
             "Exported_Conventions.g.cs",

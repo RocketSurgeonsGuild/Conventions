@@ -10,19 +10,7 @@
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <ProjectReference
-            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
-            IncludeAssets="all"
-            OutputItemType="Analyzer"
-            ReferenceOutputAssembly="false"
-        />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     </ItemGroup>
 </Project>

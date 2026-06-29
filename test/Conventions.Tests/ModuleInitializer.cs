@@ -13,10 +13,7 @@ public static class ModuleInitializer
         DerivePathInfo(
             (sourceFile, projectDirectory, type, method) =>
             {
-                static string GetTypeName(Type type)
-                {
-                    return type.IsNested ? $"{type.ReflectedType!.Name}.{type.Name}" : type.Name;
-                }
+                static string GetTypeName(Type type) => type.IsNested ? $"{type.ReflectedType!.Name}.{type.Name}" : type.Name;
 
                 var typeName = GetTypeName(type);
 
@@ -38,10 +35,7 @@ public static class ModuleInitializer
 
     private class AssemblyConverter : WriteOnlyJsonConverter<Assembly>
     {
-        public override void Write(VerifyJsonWriter writer, Assembly value)
-        {
-            writer.WriteValue(value.GetName().Name);
-        }
+        public override void Write(VerifyJsonWriter writer, Assembly value) => writer.WriteValue(value.GetName().Name);
     }
 
     private class TypeConverter : WriteOnlyJsonConverter<Type>

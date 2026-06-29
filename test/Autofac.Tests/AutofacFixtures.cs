@@ -1,8 +1,7 @@
-﻿using Autofac;
+using Autofac;
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.Autofac;
 using Rocket.Surgery.Conventions.DependencyInjection;
 
@@ -35,9 +34,6 @@ public static class AutofacFixtures
     [ExportConvention]
     public class OtherConvention : IServiceConvention
     {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            services.AddSingleton(A.Fake<IOtherAbc3>());
-        }
+        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) => services.AddSingleton(A.Fake<IOtherAbc3>());
     }
 }

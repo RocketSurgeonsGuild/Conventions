@@ -1,4 +1,4 @@
-using Rocket.Surgery.Conventions.Tests.Conventions;
+using Sample.DependencyThree.Conventions;
 
 namespace Rocket.Surgery.Conventions.Tests;
 

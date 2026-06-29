@@ -1,5 +1,3 @@
-using Rocket.Surgery.Conventions;
-
 namespace Sample.Core.Databases;
 
 #region codeblock

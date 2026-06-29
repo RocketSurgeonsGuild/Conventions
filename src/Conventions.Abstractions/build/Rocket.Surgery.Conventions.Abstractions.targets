@@ -1,4 +1,4 @@
-﻿<Project>    
+<Project>    
     <PropertyGroup>
         <_ConventionApplicationDetected
             Condition="'$(_ConventionApplicationDetected)' == '' and ('$(OutputType)' != 'Library' or '$(OutputType)' != 'library')"

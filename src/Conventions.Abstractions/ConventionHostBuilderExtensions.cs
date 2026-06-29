@@ -958,14 +958,8 @@ public static class ConventionHostBuilderExtensions
         (IServiceProviderFactory<TContainerBuilder> serviceProviderFactoryImplementation) : IServiceProviderFactory<object>
         where TContainerBuilder : notnull
     {
-        public object CreateBuilder(IServiceCollection services)
-        {
-            return serviceProviderFactoryImplementation.CreateBuilder(services);
-        }
+        public object CreateBuilder(IServiceCollection services) => serviceProviderFactoryImplementation.CreateBuilder(services);
 
-        public IServiceProvider CreateServiceProvider(object containerBuilder)
-        {
-            return serviceProviderFactoryImplementation.CreateServiceProvider((TContainerBuilder)containerBuilder);
-        }
+        public IServiceProvider CreateServiceProvider(object containerBuilder) => serviceProviderFactoryImplementation.CreateServiceProvider((TContainerBuilder)containerBuilder);
     }
 }

@@ -12,18 +12,12 @@ internal class AppSettingsConfigurationSource(IEnumerable<string> args) : IConfi
 
     public IEnumerable<string> Args { get; } = args;
 
-    public void Update(CommandContext commandContext, AppSettings appSettings)
-    {
-        _provider.Update(commandContext, appSettings);
-    }
+    public void Update(CommandContext commandContext, AppSettings appSettings) => _provider.Update(commandContext, appSettings);
 
     /// <summary>
     ///     Builds the <see cref="AppSettingsConfigurationSource" /> for this source.
     /// </summary>
     /// <param name="builder">The <see cref="IConfigurationBuilder" />.</param>
     /// <returns>A <see cref="AppSettingsConfigurationSource" /></returns>
-    public IConfigurationProvider Build(IConfigurationBuilder builder)
-    {
-        return _provider;
-    }
+    public IConfigurationProvider Build(IConfigurationBuilder builder) => _provider;
 }

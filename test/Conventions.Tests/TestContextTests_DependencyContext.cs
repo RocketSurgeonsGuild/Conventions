@@ -2,12 +2,13 @@ using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
+
 using ILogger = Serilog.ILogger;
 
 namespace Rocket.Surgery.Conventions.Tests;
 
-public class TestContextTests_DependencyContext()
-    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
+public class TestContextTests_DependencyContext
+    () : AutoFakeTest<TestRecord>(TestRecord.Create(LogEventLevel.Information))
 {
     [Test]
     public void Builder_Should_Create_Host()

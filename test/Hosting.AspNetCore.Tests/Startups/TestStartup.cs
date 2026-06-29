@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -11,8 +11,5 @@ internal sealed class TestStartup(IWebHostEnvironment environment, IConfiguratio
     public IWebHostEnvironment Environment { get; } = environment;
     public IConfiguration Configuration { get; } = configuration;
 
-    public void Configure(IApplicationBuilder app)
-    {
-        app.Run(context => context.Response.WriteAsync("TestStartup -> Compose"));
-    }
+    public void Configure(IApplicationBuilder app) => app.Run(context => context.Response.WriteAsync("TestStartup -> Compose"));
 }

@@ -15,20 +15,14 @@ public class ImportsTypeAttribute(Type type) : Attribute
 public static class ImportHelpers
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static LoadConventions? ExternalConventions
-    {
-        get => externalLoader;
-        set => externalLoader = value;
-    }
+    public static LoadConventions? ExternalConventions { get; set; }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static LoadConventions OrCallerConventions(this LoadConventions loader)
     {
         ArgumentNullException.ThrowIfNull(loader);
-        return Assembly.GetEntryAssembly() is not { } entryAssembly || loader.GetType().Assembly == entryAssembly || externalLoader == null
+        return Assembly.GetEntryAssembly() is not { } entryAssembly || loader.GetType().Assembly == entryAssembly || ExternalConventions == null
             ? loader
-            : externalLoader;
+            : ExternalConventions;
     }
-
-    private static LoadConventions? externalLoader;
 }

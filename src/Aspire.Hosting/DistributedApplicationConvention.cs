@@ -1,4 +1,4 @@
-﻿using Aspire.Hosting;
+using Aspire.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Aspire.Hosting;

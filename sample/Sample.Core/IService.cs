@@ -1,4 +1,4 @@
-﻿namespace Sample.Core;
+namespace Sample.Core;
 
 public interface IService
 {

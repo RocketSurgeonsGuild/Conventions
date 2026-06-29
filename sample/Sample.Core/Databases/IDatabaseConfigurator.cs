@@ -1,4 +1,4 @@
-﻿namespace Sample.Core.Databases;
+namespace Sample.Core.Databases;
 
 #region codeblock
 

@@ -1,0 +1,203 @@
+installed:
+    - agent-context
+    - data-model-diagram
+    - memory-loader
+    - memory-md
+    - security-review
+    - squad
+    - superb
+settings:
+    auto_execute_hooks: true
+hooks:
+    after_specify:
+        - extension: agent-context
+          command: speckit.agent-context.update
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.agent-context.update?
+          description: Refresh agent context after specification
+          condition: null
+        - extension: superb
+          command: speckit.superb.brainstorm
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Refine the new spec.md with Superpowers brainstorming before clarification or planning?
+          description: |
+              Optional spec refinement gate. Uses an installed superpowers brainstorming skill to strengthen the active Spec Kit spec.md while preserving Spec Kit ownership of specification creation.
+          condition: null
+        - extension: squad
+          command: speckit.squad.generate
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Spec updated — regenerate Squad agent definitions?
+          description: Keeps Squad agents aligned as the spec evolves
+          condition: null
+    after_plan:
+        - extension: agent-context
+          command: speckit.agent-context.update
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.agent-context.update?
+          description: Refresh agent context after planning
+          condition: null
+        - extension: data-model-diagram
+          command: speckit.data-model-diagram.generate
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Generate a Mermaid ER diagram after planning?
+          description: Generate a Mermaid ER diagram from the active feature data model
+          condition: null
+        - extension: superb
+          command: speckit.superb.plan-gate
+          enabled: false
+          optional: false
+          priority: 10
+          prompt: Execute speckit.superb.plan-gate?
+          description: |
+              Mandatory Plan gate. Verifies plan completeness and injects SDD directives into plan.md for agentic workers.
+          condition: null
+        - extension: security-review
+          command: speckit.security-review.plan
+          enabled: true
+          optional: true
+          priority: 10
+          prompt: Would you like to perform a security review on the proposed technical plan?
+          description: ''
+          condition: null
+    before_specify:
+        - extension: memory-loader
+          command: speckit.memory-loader.load
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.memory-loader.load?
+          description: Load project memory files before specification
+          condition: null
+    before_plan:
+        - extension: memory-loader
+          command: speckit.memory-loader.load
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.memory-loader.load?
+          description: Load project memory files before planning
+          condition: null
+        - extension: memory-md
+          command: speckit.memory-md.plan-with-memory
+          enabled: true
+          optional: true
+          priority: 10
+          prompt: Would you like to synthesize project memory before planning?
+          description: ''
+          condition: null
+    before_tasks:
+        - extension: memory-loader
+          command: speckit.memory-loader.load
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.memory-loader.load?
+          description: Load project memory files before task generation
+          condition: null
+    before_implement:
+        - extension: memory-loader
+          command: speckit.memory-loader.load
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.memory-loader.load?
+          description: Load project memory files before implementation
+          condition: null
+        - extension: superb
+          command: speckit.superb.controller
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.superb.controller?
+          description: |
+              Mandatory Controller gate. Bridges installed execution and quality skills to orchestrate task implementation.
+          condition: null
+    before_clarify:
+        - extension: memory-loader
+          command: speckit.memory-loader.load
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.memory-loader.load?
+          description: Load project memory files before clarification
+          condition: null
+    before_checklist:
+        - extension: memory-loader
+          command: speckit.memory-loader.load
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.memory-loader.load?
+          description: Load project memory files before checklist generation
+          condition: null
+    before_analyze:
+        - extension: memory-loader
+          command: speckit.memory-loader.load
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.memory-loader.load?
+          description: Load project memory files before analysis
+          condition: null
+    after_implement:
+        - extension: memory-md
+          command: speckit.memory-md.capture-from-diff
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Would you like to capture durable lessons from this implementation to project memory?
+          description: ''
+          condition: null
+        - extension: superb
+          command: speckit.superb.verify
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Execute speckit.superb.verify?
+          description: |
+              Mandatory completion gate. Bridges an installed superpowers verification-before-completion skill and extends it with spec-kit spec-coverage checks. Prevents false completions.
+          condition: null
+        - extension: security-review
+          command: speckit.security-review.branch
+          enabled: true
+          optional: true
+          priority: 10
+          prompt: Would you like to scan the new implementation for security vulnerabilities?
+          description: ''
+          condition: null
+    after_tasks:
+        - extension: superb
+          command: speckit.superb.review
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Review tasks.md for coverage and TDD-readiness before implementation?
+          description: |
+              Catches missing or under-specified tasks at planning time. Produces a requirement coverage and TDD-readiness report. Bridge-native logic.
+          condition: null
+        - extension: squad
+          command: speckit.squad.route
+          enabled: true
+          optional: false
+          priority: 10
+          prompt: Tasks generated — route them to Squad agents?
+          description: Distributes new tasks to the right agents automatically
+          condition: null
+        - extension: security-review
+          command: speckit.security-review.tasks
+          enabled: true
+          optional: true
+          priority: 10
+          prompt: Would you like to verify that security boundaries are represented in the tasks?
+          description: ''
+          condition: null

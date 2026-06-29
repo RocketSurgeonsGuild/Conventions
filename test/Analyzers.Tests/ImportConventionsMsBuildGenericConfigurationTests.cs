@@ -1,3 +1,5 @@
+
+
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
 public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest()
@@ -103,9 +105,9 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
     }
 
     [Before(Test)]
-    public override void InitializeAsync()
+    public Task InitializeAsync()
     {
-        base.InitializeAsync();
         Configure(b => b.IgnoreOutputFile("Exported_Conventions.cs"));
+        return Task.CompletedTask;
     }
 }

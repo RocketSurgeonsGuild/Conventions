@@ -1,4 +1,4 @@
-﻿//using McMaster.Extensions.CommandLineUtils;
+//using McMaster.Extensions.CommandLineUtils;
 //using Microsoft.AspNetCore.Builder;
 //using Microsoft.Extensions.Configuration;
 //using Microsoft.Extensions.DependencyInjection;

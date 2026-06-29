@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using Rocket.Surgery.Conventions;
-using Sample.DependencyOne;
+using FluentValidation;
 
 [assembly: ExportConventions(Namespace = "Dep1", ClassName = "Dep1Exports")]
 

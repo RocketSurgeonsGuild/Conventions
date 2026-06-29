@@ -240,10 +240,7 @@ public static partial class CommandAppHostBuilderExtensions
     /// <param name="host"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<int> RunConsoleAppAsync(this ValueTask<IHost> host, CancellationToken cancellationToken = default)
-    {
-        return await RunConsoleAppAsync(await host, cancellationToken);
-    }
+    public static async Task<int> RunConsoleAppAsync(this ValueTask<IHost> host, CancellationToken cancellationToken = default) => await RunConsoleAppAsync(await host, cancellationToken);
 
     /// <summary>
     ///     Run the host as a commandline application and return the result
@@ -251,10 +248,7 @@ public static partial class CommandAppHostBuilderExtensions
     /// <param name="host"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async Task<int> RunConsoleAppAsync(this Task<IHost> host, CancellationToken cancellationToken = default)
-    {
-        return await RunConsoleAppAsync(await host, cancellationToken);
-    }
+    public static async Task<int> RunConsoleAppAsync(this Task<IHost> host, CancellationToken cancellationToken = default) => await RunConsoleAppAsync(await host, cancellationToken);
 
     /// <summary>
     ///     Run the host as a commandline application and return the result

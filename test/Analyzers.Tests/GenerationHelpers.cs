@@ -12,7 +12,7 @@ public static class GenerationHelpers
         var c1 = await Class1(baseBuilder);
         var c2 = await Class2(baseBuilder);
         var c3 = await Class3(baseBuilder, c1);
-        return new[] { c1, c2, c3, };
+        return [c1, c2, c3,];
     }
 
     public static async Task<GeneratorTestResults[]> CreateGenericDeps(GeneratorTestContextBuilder rootBuilder)
@@ -21,7 +21,7 @@ public static class GenerationHelpers
         var c1 = await GenericClass1(baseBuilder);
         var c2 = await GenericClass2(baseBuilder);
         var c3 = await GenericClass3(baseBuilder, c1);
-        return new[] { c1, c2, c3, };
+        return [c1, c2, c3,];
     }
 
     public static Task<GeneratorTestResults> Class1(GeneratorTestContextBuilder builder)

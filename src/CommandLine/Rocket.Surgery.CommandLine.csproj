@@ -9,13 +9,6 @@
         <NoWarn>$(NoWarn);RCS1102;CA1812</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference
-            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
-            IncludeAssets="all"
-            OutputItemType="Analyzer"
-            ReferenceOutputAssembly="false"
-        />
-        <PackageReference Include="Polyfill" PrivateAssets="All" />
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
     </ItemGroup>
@@ -26,7 +19,6 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
         <InternalsVisibleTo Include="Rocket.Surgery.Extensions.CommandLine.Tests" />
-        <InternalsVisibleTo Include="Rocket.Surgery.Conventions.DependencyModel" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Diagnostics" />
         <InternalsVisibleTo Include="Rocket.Surgery.Conventions.Tests" />
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />

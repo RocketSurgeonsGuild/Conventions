@@ -23,7 +23,6 @@ public interface IServiceProviderDictionary : IDictionary<object, object>, IServ
     ///     Get a value by type from the context or throw
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="key">The key where the value is saved</param>
     /// <returns>T.</returns>
     T Require<T>()
         where T : notnull => TryGetValue(typeof(T), out var value) && value is T t

@@ -13,26 +13,17 @@ internal class ConsoleWorker
     AppSettingsConfigurationSource appSettingsConfigurationSource)
     : IHostedLifecycleService
 {
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+    public Task StartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-    public Task StartingAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+    public Task StartingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     public async Task StartedAsync(CancellationToken cancellationToken)
     {
         try
         {
-            consoleResult.ExitCode = await commandApp.RunAsync(appSettingsConfigurationSource.Args);
+            consoleResult.ExitCode = await commandApp.RunAsync(appSettingsConfigurationSource.Args, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -45,14 +36,11 @@ internal class ConsoleWorker
         }
     }
 
-    public Task StoppingAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+    public Task StoppingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     public Task StoppedAsync(CancellationToken cancellationToken)
     {
-        Environment.ExitCode = consoleResult switch { { ExitCode: CommandLineConstants.WaitCode, } => 0, { ExitCode: { } i, } => i, { ExitCode: null, } => 0, };
+        Environment.ExitCode = consoleResult switch { { ExitCode: CommandLineConstants.WaitCode, } => 0, { ExitCode: { } i, } => i, { ExitCode: null, } => 0, _ => throw new NotImplementedException(), };
         return Task.CompletedTask;
     }
 }

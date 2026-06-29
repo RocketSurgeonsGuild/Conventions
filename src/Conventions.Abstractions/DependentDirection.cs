@@ -1,4 +1,4 @@
-﻿namespace Rocket.Surgery.Conventions;
+namespace Rocket.Surgery.Conventions;
 
 /// <summary>
 ///     Defines the dependency direction of the given type

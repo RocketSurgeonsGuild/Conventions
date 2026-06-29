@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <ItemGroup>
         <ProjectReference Include="..\..\src\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
         <ProjectReference
@@ -13,5 +12,4 @@
     <PropertyGroup>
         <TargetFrameworks>net10.0</TargetFrameworks>
     </PropertyGroup>
-
 </Project>

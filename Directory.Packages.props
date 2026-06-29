@@ -23,22 +23,20 @@
         <GlobalPackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.169" />
     </ItemGroup>
     <ItemGroup>
-        <PackageVersion Include="Rocket.Surgery.ModularPipelines.Extensions" Version="0.1.6" />
+        <PackageVersion Include="Rocket.Surgery.ModularPipelines.Extensions" Version="0.1.8" />
         <PackageVersion Include="Sourcy.DotNet" Version="1.1.1" />
         <PackageVersion Include="Sourcy.Git" Version="1.1.1" />
         <PackageVersion Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
-
         <PackageVersion Include="JetBrains.Annotations.Sources" Version="2026.2.0" />
-
-        <PackageVersion Include="Aspire.Hosting" Version="13.1.2" />
-        <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.1.2" />
-        <PackageVersion Include="Aspire.Hosting.Testing" Version="13.1.2" />
-        <PackageVersion Include="AutoMapper" Version="16.0.0" />
+        <PackageVersion Include="Aspire.Hosting" Version="13.4.6" />
+        <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.4.6" />
+        <PackageVersion Include="Aspire.Hosting.Testing" Version="13.4.6" />
+        <PackageVersion Include="AutoMapper" Version="16.1.1" />
         <PackageVersion Include="FluentValidation" Version="12.1.1" />
-        <PackageVersion Include="MediatR" Version="14.0.0" />
-        <PackageVersion Include="Polyfill" Version="10.10.0" />
+        <PackageVersion Include="MediatR" Version="14.1.0" />
+        <PackageVersion Include="Polyfill" Version="10.11.0" />
         <PackageVersion Include="Indago" Version="0.0.2" />
-        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
+        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="11.0.1" />
         <PackageVersion Include="BenchMarkDotNet" Version="0.15.8" />
         <PackageVersion Include="bunit.web" Version="1.40.0" />
         <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="8.0.0-preview-04" />
@@ -67,28 +65,22 @@
         <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.3.0" />
         <PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="5.3.0" />
         <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.3.0" />
-        <PackageVersion Include="YamlDotNet" Version="16.3.0" />
-        <PackageVersion Include="Spectre.Console" Version="0.54.0" />
-        <PackageVersion Include="Spectre.Console.Cli" Version="0.53.1" />
+        <PackageVersion Include="YamlDotNet" Version="18.1.0" />
+        <PackageVersion Include="Spectre.Console" Version="0.57.1" />
+        <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
         <PackageVersion Include="Bogus" Version="35.6.5" />
-
         <PackageVersion Include="FakeItEasy" Version="9.0.1" />
         <PackageVersion Include="Shouldly" Version="4.3.0" />
-
-        <PackageVersion Include="Microsoft.Playwright" Version="1.58.0" />
-        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="10.0.1" />
-        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.TUnit" Version="10.0.1" />
-        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" Version="10.0.1" />
-        <PackageVersion Include="TUnit" Version="1.18.0" />
-
-        <PackageVersion Include="Verify.TUnit" Version="31.13.2" />
-
+        <PackageVersion Include="Microsoft.Playwright" Version="1.61.0" />
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.FakeItEasy" Version="10.0.5" />
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.TUnit" Version="10.0.5" />
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" Version="10.0.5" />
+        <PackageVersion Include="TUnit" Version="1.56.35" />
+        <PackageVersion Include="Verify.TUnit" Version="31.20.0" />
         <PackageVersion Include="Microsoft.Testing.Extensions.CrashDump" Version="2.2.3" />
         <PackageVersion Include="Microsoft.Testing.Extensions.HangDump" Version="2.2.3" />
-
         <PackageVersion Include="Verify.AngleSharp" Version="4.7.0" />
         <PackageVersion Include="Verify.ImageMagick" Version="3.8.8" />
-
         <PackageVersion Include="Verify.Playwright" Version="3.1.0" />
         <PackageVersion Include="Verify.SourceGenerators" Version="2.5.0" />
     </ItemGroup>

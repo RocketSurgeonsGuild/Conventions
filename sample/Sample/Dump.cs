@@ -10,7 +10,7 @@ public class Dump(IConfiguration configuration, ILogger<Dump> logger) : AsyncCom
     private readonly IConfiguration _configuration = configuration;
     private readonly ILogger<Dump> _logger = logger;
 
-    public override Task<int> ExecuteAsync(CommandContext context, AppSettings settings, CancellationToken token)
+    protected override Task<int> ExecuteAsync(CommandContext context, AppSettings settings, CancellationToken token)
     {
         foreach (var item in _configuration.AsEnumerable().Reverse())
         {

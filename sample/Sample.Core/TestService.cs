@@ -1,10 +1,7 @@
-﻿namespace Sample.Core;
+namespace Sample.Core;
 
 [UsedImplicitly]
 internal sealed class TestService : IService
 {
-    public string GetString()
-    {
-        return nameof(TestService);
-    }
+    public string GetString() => nameof(TestService);
 }

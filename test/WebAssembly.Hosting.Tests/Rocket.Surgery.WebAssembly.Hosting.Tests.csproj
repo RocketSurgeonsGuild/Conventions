@@ -7,15 +7,9 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Microsoft.Playwright" />
         <PackageReference Include="Verify.AngleSharp" />
-        <PackageReference Include="Verify.ImageMagick" />
         <PackageReference Include="Verify.Playwright" />
         <ProjectReference Include="..\..\sample\Sample.BlazorWasm\Sample.BlazorWasm.csproj" />
         <ProjectReference Include="..\..\src\WebAssembly.Hosting\Rocket.Surgery.WebAssembly.Hosting.csproj" />
-        <ProjectReference
-            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
-            OutputItemType="Analyzer"
-            ReferenceOutputAssembly="false"
-        />
         <ProjectReference Include="..\..\src\Conventions.Configuration.Json\Rocket.Surgery.Conventions.Configuration.Json.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Configuration.Yaml\Rocket.Surgery.Conventions.Configuration.Yaml.csproj" />
         <PackageReference Include="bunit.web" />

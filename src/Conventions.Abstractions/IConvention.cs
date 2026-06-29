@@ -1,4 +1,4 @@
-﻿#pragma warning disable CA1040
+#pragma warning disable CA1040
 namespace Rocket.Surgery.Conventions;
 
 /// <summary>
@@ -16,7 +16,7 @@ public interface IConvention
     ///     it is possible for a given convention to move front of a
     ///     convention using int.MinValue.
     /// </summary>
-    public int Priority => 0;
+    int Priority => 0;
 }
 
 #pragma warning restore CA1040

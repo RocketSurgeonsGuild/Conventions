@@ -22,16 +22,11 @@ public static class ModuleInitializer
                 }
             }
         );
-        VerifyImageMagick.Initialize();
-        VerifyImageMagick.RegisterComparers(.05);
         DiffRunner.Disabled = true;
         DerivePathInfo(
             (sourceFile, projectDirectory, type, method) =>
             {
-                static string GetTypeName(Type type)
-                {
-                    return type.IsNested ? $"{type.ReflectedType!.Name}.{type.Name}" : type.Name;
-                }
+                static string GetTypeName(Type type) => type.IsNested ? $"{type.ReflectedType!.Name}.{type.Name}" : type.Name;
 
                 var typeName = GetTypeName(type);
 

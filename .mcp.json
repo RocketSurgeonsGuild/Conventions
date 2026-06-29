@@ -1,26 +1,32 @@
 {
-  "mcpServers": {
-    "context7": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ]
-    },
-    "mcp": {
-      "type": "http",
-      "url": "https://learn.microsoft.com/api/mcp"
-    },
-    "github-mcp-server": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {}
-    },
-    "nuget": {
-      "type": "stdio",
-      "command": "nuget-mcp-server",
-      "args": []
+    "mcpServers": {
+        "context7": {
+            "type": "stdio",
+            "command": "npx",
+            "args": ["-y", "@upstash/context7-mcp"],
+            "env": {
+                "CONTEXT7_API_KEY": "ctx7sk-9994b87c-0256-4fc1-9271-04bad67cfb5b"
+            }
+        },
+        "mcp": {
+            "type": "http",
+            "url": "https://learn.microsoft.com/api/mcp"
+        },
+        "github-mcp-server": {
+            "type": "http",
+            "url": "https://api.githubcopilot.com/mcp/",
+            "headers": {}
+        },
+        "nuget": {
+            "type": "stdio",
+            "command": "nuget-mcp-server",
+            "args": []
+        },
+        "squad_state": {
+            "command": "npx",
+            "args": ["-y", "@bradygaster/squad-cli@0.10.0", "state-mcp"],
+            "env": {},
+            "tools": ["*"]
+        }
     }
-  }
 }

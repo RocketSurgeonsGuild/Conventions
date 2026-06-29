@@ -89,7 +89,6 @@ public static class ServiceProviderDictionaryExtensions
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="serviceProviderDictionary">The properties</param>
-    /// <param name="key">The key where the value is saved</param>
     /// <returns>T.</returns>
     public static T Require<T>(this IServiceProviderDictionary serviceProviderDictionary)
         where T : notnull

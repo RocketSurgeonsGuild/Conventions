@@ -13,6 +13,7 @@ using Rocket.Surgery.Hosting;
 using Rocket.Surgery.WebAssembly.Hosting;
 using Serilog;
 
+
 namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
 public class ImportConventionsTests() : GeneratorTest()
@@ -225,54 +226,69 @@ namespace TestProject
         await Verify(result);
     }
 
-    public static IEnumerable<ImmutableArray<Type>> Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data()
+    public static IEnumerable<object[]> Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data()
     {
-        yield return ImmutableArray.CreateRange([typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder)]);
-        yield return ImmutableArray.CreateRange([typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder)]);
-        yield return ImmutableArray.CreateRange([typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder)]);
-        yield return ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder)]);
-        yield return ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder)]);
-        yield return ImmutableArray.CreateRange(
-            [
-                typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder),
-                typeof(ILogger),
-                typeof(ConventionSerilogExtensions),
-            ]
-        );
-        yield return ImmutableArray.CreateRange(
-            [
-                typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder),
-                typeof(ILogger),
-                typeof(ConventionSerilogExtensions),
-            ]
-        );
-        yield return ImmutableArray.CreateRange(
-            [
-                typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder),
-                typeof(ILogger),
-                typeof(ConventionSerilogExtensions),
-            ]
-        );
-        yield return ImmutableArray.CreateRange(
-            [
-                typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder),
-                typeof(ILogger),
-                typeof(ConventionSerilogExtensions),
-            ]
-        );
-        yield return ImmutableArray.CreateRange(
-            [
-                typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder),
-                typeof(ILogger),
-                typeof(ConventionSerilogExtensions),
-            ]
-        );
+        yield return [ImmutableArray.CreateRange([typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder)])];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
+        yield return
+        [
+            ImmutableArray.CreateRange(
+                [
+                    typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder),
+                    typeof(ILogger),
+                    typeof(ConventionSerilogExtensions),
+                ]
+            ),
+        ];
     }
 
     [Before(Test)]
-    public override void InitializeAsync()
+    public Task InitializeAsync()
     {
-        base.InitializeAsync();
         Configure(b => b.IgnoreOutputFile("Exported_Conventions.cs"));
+        return Task.CompletedTask;
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Rocket.Surgery.CommandLine;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Hosting;
 using Spectre.Console;
@@ -40,7 +39,7 @@ internal class MyCommand(IHostBuilder hostBuilder, IAnsiConsole console) : Async
     private readonly IHostBuilder _hostBuilder = hostBuilder;
     private readonly IAnsiConsole _console = console;
 
-    public override async Task<int> ExecuteAsync(CommandContext context, AppSettings settings, CancellationToken token)
+    protected override async Task<int> ExecuteAsync(CommandContext context, AppSettings settings, CancellationToken token)
     {
         using var host = _hostBuilder.Build();
         await host.StartAsync(token);

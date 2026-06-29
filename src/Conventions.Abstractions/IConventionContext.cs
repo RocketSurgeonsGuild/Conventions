@@ -16,7 +16,7 @@ public interface IConventionContext
     ///     The assembly that is executing the conventions
     /// </summary>
     // ReSharper disable once NullableWarningSuppressionIsUsed
-    public Assembly Assembly => this.Get<Assembly>("ExecutingAssembly") ?? Assembly.GetEntryAssembly()!;
+    Assembly Assembly => this.Get<Assembly>("ExecutingAssembly") ?? Assembly.GetEntryAssembly()!;
 
     /// <summary>
     ///     The categories of the convention context

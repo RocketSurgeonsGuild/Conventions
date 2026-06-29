@@ -7,7 +7,7 @@
     <ItemGroup>
         <ProjectReference
             Include="../../src/Conventions.Analyzers/Rocket.Surgery.Conventions.Analyzers.csproj"
-            PrivateAssets="all"
+            PrivateAssets="none"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />

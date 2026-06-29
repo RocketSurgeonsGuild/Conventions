@@ -11,9 +11,11 @@ using Rocket.Surgery.Conventions.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting.AspNetCore.Tests.Startups;
 
+
+
 namespace Rocket.Surgery.Hosting.AspNetCore.Tests;
 
-public class RocketWebApplicationTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!))
+public class RocketWebApplicationTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
     public async Task Should_Start_Application()

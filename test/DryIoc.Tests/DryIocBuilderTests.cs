@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Hosting;
-
 using Serilog.Events;
+
 
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
@@ -15,11 +15,8 @@ using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 
-public class DryIocBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
+public class DryIocBuilderTests : AutoFakeTest<TestRecord>
 {
-    [Before(Test)]
-    public void Setup() => AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
-
     [Test]
     public async Task ConstructTheContainerAndRegisterWithCore()
     {
@@ -224,6 +221,9 @@ public class DryIocBuilderTests() : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.
         var container = host.Services.GetRequiredService<IContainer>();
         container.ShouldNotBeNull();
     }
+
+    public DryIocBuilderTests() : base(TestRecord.Create(LogEventLevel.Information)) =>
+        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
 
     protected override IContainer BuildContainer(IContainer container) =>
         container

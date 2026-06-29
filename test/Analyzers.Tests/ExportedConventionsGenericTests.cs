@@ -375,9 +375,9 @@ namespace Rocket.Surgery.Conventions.Tests
     }
 
     [Before(Test)]
-    public override void InitializeAsync()
+    public Task InitializeAsync()
     {
-        base.InitializeAsync();
         Configure(b => b.IgnoreOutputFile("Imported_Assembly_Conventions.cs"));
+        return Task.CompletedTask;
     }
 }

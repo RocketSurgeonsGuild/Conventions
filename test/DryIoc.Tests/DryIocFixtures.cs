@@ -1,8 +1,7 @@
-﻿using DryIoc;
+using DryIoc;
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Conventions;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Conventions.DryIoc;
 
@@ -36,9 +35,6 @@ public static class DryIocFixtures
     [ExportConvention]
     public class OtherConvention : IServiceConvention
     {
-        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
-        {
-            services.AddSingleton(A.Fake<IOtherAbc3>());
-        }
+        public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) => services.AddSingleton(A.Fake<IOtherAbc3>());
     }
 }

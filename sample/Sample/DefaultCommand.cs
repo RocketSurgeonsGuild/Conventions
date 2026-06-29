@@ -7,7 +7,7 @@ namespace Sample;
 
 public class DefaultCommand(IService service) : Command<AppSettings>
 {
-    public override int Execute(CommandContext context, AppSettings settings, CancellationToken token)
+    protected override int Execute(CommandContext context, AppSettings settings, CancellationToken token)
     {
         AnsiConsole.WriteLine(service.GetString());
         return 1;

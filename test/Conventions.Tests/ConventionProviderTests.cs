@@ -12,7 +12,7 @@ using Serilog.Events;
 namespace Rocket.Surgery.Conventions.Tests;
 
 public class ConventionProviderTests()
-    : AutoFakeTest<TUnitTestRecord>(TUnitDefaults.CreateTestContext(TUnit.Core.TestContext.Current!, LogEventLevel.Information))
+    : AutoFakeTest<TestRecord>(TestRecord.Create(LogEventLevel.Information))
 {
     [Test]
     public void Should_Throw_When_A_Cycle_Is_Detected()

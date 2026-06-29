@@ -1,4 +1,4 @@
-﻿namespace Rocket.Surgery.Conventions.Setup;
+namespace Rocket.Surgery.Conventions.Setup;
 
 /// <summary>
 ///     Initialize or configure a convention before any other convention has run against the context.

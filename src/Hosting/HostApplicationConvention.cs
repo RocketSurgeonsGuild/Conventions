@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Conventions;
 
 namespace Rocket.Surgery.Hosting;
