@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Rocket.Surgery.CommandLine;
 using Rocket.Surgery.Conventions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
+using Rocket.Surgery.Hosting;
 using Spectre.Console.Cli;
 
 
@@ -50,7 +51,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         using var host = await Host
                               .CreateApplicationBuilder(["remote", "add", "-v"])
-                              .ConfigureRocketSurgery(b => b.UseLogger(Logger));
+                              .ConfigureRocketSurgery(b => b.UseLogger(Logger), cancellationToken: cancellationToken);
         await host.StartAsync(TestContext.CancellationToken);
         host.Services.GetService<ConsoleResult>().ShouldBeNull();
     }
@@ -60,13 +61,12 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         using var host = await Host
                               .CreateApplicationBuilder(["test"])
-                              .ConfigureRocketSurgery(
-                                   b => b
+                              .ConfigureRocketSurgery(b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             async (context, lineContext, ct) => lineContext.AddDelegate<AppSettings>("test", (context, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
-                               );
+, cancellationToken: cancellationToken);
 
         ( await host.RunConsoleAppAsync(TestContext.CancellationToken) ).ShouldBe((int)LogLevel.Information);
     }
@@ -83,8 +83,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         A.CallTo(() => serviceProvider.GetService(typeof(IService))).Returns(service).NumberOfTimes(2);
         using var host = await Host
                               .CreateApplicationBuilder(["test", "--log", "error"])
-                              .ConfigureRocketSurgery(
-                                   b => b
+                              .ConfigureRocketSurgery(b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, lineContext) =>
@@ -99,7 +98,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                                 );
                                             }
                                         )
-                               );
+, cancellationToken: cancellationToken);
 
         var result = await host.RunConsoleAppAsync(TestContext.CancellationToken);
 
@@ -114,14 +113,13 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
 
         using var host = await Host
                               .CreateApplicationBuilder(["constructor"])
-                              .ConfigureRocketSurgery(
-                                   b => b
+                              .ConfigureRocketSurgery(b => b
                                        .UseLogger(Logger)
                                        .ConfigureServices(
                                             z => z.AddSingleton(service)
                                         )
                                        .ConfigureCommandLine((context, builder) => builder.AddCommand<InjectionConstructor>("constructor"))
-                               );
+, cancellationToken: cancellationToken);
 
         var result = await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBe(1000);
@@ -145,7 +143,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                        "client1",
                                    ]
                                )
-                              .ConfigureRocketSurgery(b => b.UseLogger(Logger).ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv")));
+                              .ConfigureRocketSurgery(b => b.UseLogger(Logger).ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv")), cancellationToken: cancellationToken);
         await host.RunAsync(TestContext.CancellationToken);
     }
 
@@ -154,8 +152,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         using var host = await Host
                               .CreateApplicationBuilder(["test"])
-                              .ConfigureRocketSurgery(
-                                   b => b
+                              .ConfigureRocketSurgery(b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, lineContext) => lineContext.AddDelegate<AppSettings>(
@@ -163,7 +160,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                                 (context, state, ct) => (int)( state.LogLevel ?? LogLevel.Information )
                                             )
                                         )
-                               );
+, cancellationToken: cancellationToken);
 
         ( await host.RunConsoleAppAsync(TestContext.CancellationToken) ).ShouldBe((int)LogLevel.Information);
     }
@@ -173,11 +170,10 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         using var host = await Host
                               .CreateApplicationBuilder(["logger"])
-                              .ConfigureRocketSurgery(
-                                   b => b
+                              .ConfigureRocketSurgery(b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"))
-                               );
+, cancellationToken: cancellationToken);
 
         var result = await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBe(0);
@@ -191,13 +187,12 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         using var host = await Host
                               .CreateApplicationBuilder(["test", command])
-                              .ConfigureRocketSurgery(
-                                   b => b
+                              .ConfigureRocketSurgery(b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
-                               );
+, cancellationToken: cancellationToken);
 
         var result = (LogLevel)await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBe(level);
@@ -214,13 +209,12 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         using var host = await Host
                               .CreateApplicationBuilder(["test", .. command.Split(' ')])
-                              .ConfigureRocketSurgery(
-                                   b => b
+                              .ConfigureRocketSurgery(b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
-                               );
+, cancellationToken: cancellationToken);
 
         var result = (LogLevel)await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBe(level);
@@ -243,8 +237,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         using var host = await Host
                               .CreateApplicationBuilder([.. command.Split(' ')])
-                              .ConfigureRocketSurgery(
-                                   b => b
+                              .ConfigureRocketSurgery(b => b
                                        .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, builder) =>
@@ -256,7 +249,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                                 builder.AddBranch("cmd5", z => z.AddCommand<SubCmd>("a"));
                                             }
                                         )
-                               );
+, cancellationToken: cancellationToken);
         var result = await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBeGreaterThanOrEqualTo(0);
     }
