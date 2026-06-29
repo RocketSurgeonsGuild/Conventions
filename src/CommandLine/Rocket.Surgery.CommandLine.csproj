@@ -11,6 +11,15 @@
     <ItemGroup>
         <ProjectReference Include="..\Conventions\Rocket.Surgery.Conventions.csproj" />
         <ProjectReference Include="..\Hosting\Rocket.Surgery.Hosting.csproj" />
+
+        <ProjectReference
+            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="analyzers;build;buildMultitargeting;buildTransitive"
+            ExcludeAssets="compile;runtime;native"
+            PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Spectre.Console" />

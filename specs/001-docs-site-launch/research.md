@@ -67,12 +67,12 @@ node docs/scripts/add-api-frontmatter.mjs
 
 **Decision**: Match the Indago task names exactly for consistency across RSG repos.
 
-| Task           | Command                                         | Description                                                          |
-| -------------- | ----------------------------------------------- | -------------------------------------------------------------------- |
-| `docs`         | `cd docs && npm run dev`                        | Start Astro dev server                                               |
-| `docs:build`   | `mise run docs:api && cd docs && npm run build` | Generate API reference then build                                    |
-| `docs:api`     | _(see contracts/mise-tasks.md)_                 | Build Conventions, run xmldocmd for all packages, inject frontmatter |
-| `docs:preview` | `cd docs && npm run preview`                    | Preview production build                                             |
+| Task           | Command                                               | Description                                                          |
+| -------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
+| `docs`         | `npm run dev --workspace docs`                        | Start Astro dev server                                               |
+| `docs:build`   | `mise run docs:api && npm run build --workspace docs` | Generate API reference then build                                    |
+| `docs:api`     | _(see contracts/mise-tasks.md)_                       | Build Conventions, run xmldocmd for all packages, inject frontmatter |
+| `docs:preview` | `npm run preview --workspace docs`                    | Preview production build                                             |
 
 **Current state**: `docs = { run = "vitepress dev docs" }` and `docs-preview = { run = "vitepress preview docs" }` need replacement. `docs:api` and `docs:build` are new additions.
 

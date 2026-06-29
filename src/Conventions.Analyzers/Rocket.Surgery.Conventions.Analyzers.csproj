@@ -33,7 +33,7 @@
             Visible="false"
         />
         <None
-            Include="$(_AnalyzersLocation)roslyn5.0/$(Configuration)/netstandard2.0/Conventions.Analyzers.dll"
+            Include="$(_AnalyzersLocation)roslyn5.0/$(Configuration)/netstandard2.0/Rocket.Surgery.Conventions.Analyzers.dll"
             Pack="true"
             PackagePath="analyzers/dotnet/roslyn5.0/cs"
             Visible="false"
@@ -45,7 +45,7 @@
             Visible="false"
         />
         <None
-            Include="$(_AnalyzersLocation)roslyn4.14/$(Configuration)/netstandard2.0/Conventions.Analyzers.dll"
+            Include="$(_AnalyzersLocation)roslyn4.14/$(Configuration)/netstandard2.0/Rocket.Surgery.Conventions.Analyzers.dll"
             Pack="true"
             PackagePath="analyzers/dotnet/roslyn4.14/cs"
             Visible="false"

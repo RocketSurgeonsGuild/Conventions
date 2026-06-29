@@ -12,7 +12,7 @@ These are the canonical task definitions for the Conventions docs workflow. They
 ### `docs` — Start dev server
 
 ```toml
-docs = { run = "cd docs && npm run dev", description = "Start Astro/Starlight dev server" }
+docs = { run = "npm run dev --workspace docs", description = "Start Astro/Starlight dev server" }
 ```
 
 **Replaces**: `docs = { run = "vitepress dev docs" }`
@@ -23,7 +23,7 @@ docs = { run = "cd docs && npm run dev", description = "Start Astro/Starlight de
 ### `docs:preview` — Preview production build
 
 ```toml
-"docs:preview" = { run = "cd docs && npm run preview", description = "Preview built Starlight site" }
+"docs:preview" = { run = "npm run preview --workspace docs", description = "Preview built Starlight site" }
 ```
 
 **Replaces**: `docs-preview = { run = "vitepress preview docs" }`
@@ -107,13 +107,13 @@ node docs/scripts/add-api-frontmatter.mjs
 ### `docs:build` — Full production build
 
 ```toml
-"docs:build" = { run = "mise run docs:api && cd docs && npm run build", description = "Generate API reference then build Starlight site" }
+"docs:build" = { run = "mise run docs:api && npm run build --workspace docs", description = "Generate API reference then build Starlight site" }
 ```
 
 **Sequence**:
 
 1. `mise run docs:api` — builds dotnet, generates API reference markdown
-2. `cd docs && npm run build` — runs Astro production build (includes link validation)
+2. `npm run build --workspace docs` — runs Astro production build (includes link validation)
 
 ---
 

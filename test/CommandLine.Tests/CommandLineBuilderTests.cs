@@ -28,10 +28,11 @@ public interface IService2
     string SomeValue { get; }
 }
 
+[Timeout(10000)]
 public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
     [Test]
-    public void Constructs()
+    public void Constructs(CancellationToken cancellationToken)
     {
         var builder = ConventionContextBuilder.Create(_ => []);
 
@@ -46,17 +47,17 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     }
 
     [Test]
-    public async Task ShouldNotBeEnabledIfNoCommandsAreConfigured()
+    public async Task ShouldNotBeEnabledIfNoCommandsAreConfigured(CancellationToken cancellationToken)
     {
         using var host = await Host
                               .CreateApplicationBuilder(["remote", "add", "-v"])
                               .ConfigureRocketSurgery(b => b.UseLogger(Logger));
-        await host.StartAsync();
+        await host.StartAsync(TestContext.CancellationToken);
         host.Services.GetService<ConsoleResult>().ShouldBeNull();
     }
 
     [Test]
-    public async Task ExecuteWorks()
+    public async Task ExecuteWorks(CancellationToken cancellationToken)
     {
         using var host = await Host
                               .CreateApplicationBuilder(["test"])
@@ -68,11 +69,11 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                         )
                                );
 
-        ( await host.RunConsoleAppAsync() ).ShouldBe((int)LogLevel.Information);
+        ( await host.RunConsoleAppAsync(TestContext.CancellationToken) ).ShouldBe((int)LogLevel.Information);
     }
 
     [Test]
-    public async Task SupportsApplicationStateWithCustomDependencyInjection()
+    public async Task SupportsApplicationStateWithCustomDependencyInjection(CancellationToken cancellationToken)
     {
         var service = A.Fake<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -101,13 +102,13 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                         )
                                );
 
-        var result = await host.RunConsoleAppAsync();
+        var result = await host.RunConsoleAppAsync(TestContext.CancellationToken);
 
         result.ShouldBe(1000);
     }
 
     [Test]
-    public async Task SupportsInjection_Creating_On_Construction()
+    public async Task SupportsInjection_Creating_On_Construction(CancellationToken cancellationToken)
     {
         var service = AutoFake.Resolve<IService>();
         A.CallTo(() => service.ReturnCode).Returns(1000);
@@ -123,13 +124,13 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                        .ConfigureCommandLine((context, builder) => builder.AddCommand<InjectionConstructor>("constructor"))
                                );
 
-        var result = await host.RunConsoleAppAsync();
+        var result = await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBe(1000);
         A.CallTo(() => service.ReturnCode).MustHaveHappened(1, Times.Exactly);
     }
 
     [Test]
-    public async Task Sets_Values_In_Commands()
+    public async Task Sets_Values_In_Commands(CancellationToken cancellationToken)
     {
         using var host = await Host
                               .CreateApplicationBuilder(
@@ -146,12 +147,11 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                    ]
                                )
                               .ConfigureRocketSurgery(b => b.UseLogger(Logger).ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv")));
-        await host.RunAsync(
-        );
+        await host.RunAsync(TestContext.CancellationToken);
     }
 
     [Test]
-    public async Task Can_Add_A_Command_With_A_Name_Using_Context()
+    public async Task Can_Add_A_Command_With_A_Name_Using_Context(CancellationToken cancellationToken)
     {
         using var host = await Host
                               .CreateApplicationBuilder(["test"])
@@ -166,11 +166,11 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                         )
                                );
 
-        ( await host.RunConsoleAppAsync() ).ShouldBe((int)LogLevel.Information);
+        ( await host.RunConsoleAppAsync(TestContext.CancellationToken) ).ShouldBe((int)LogLevel.Information);
     }
 
     [Test]
-    public async Task Should_Configure_Logging_Correctly()
+    public async Task Should_Configure_Logging_Correctly(CancellationToken cancellationToken)
     {
         using var host = await Host
                               .CreateApplicationBuilder(["logger"])
@@ -180,7 +180,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                        .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"))
                                );
 
-        var result = await host.RunConsoleAppAsync();
+        var result = await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBe(0);
     }
 
@@ -188,7 +188,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     [Test]
     [Arguments("--verbose", LogLevel.Debug)]
     [Arguments("--trace", LogLevel.Trace)]
-    public async Task ShouldAllVerbosity(string command, LogLevel level)
+    public async Task ShouldAllVerbosity(string command, LogLevel level, CancellationToken cancellationToken)
     {
         using var host = await Host
                               .CreateApplicationBuilder(["test", command])
@@ -200,7 +200,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                         )
                                );
 
-        var result = (LogLevel)await host.RunConsoleAppAsync();
+        var result = (LogLevel)await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBe(level);
     }
 
@@ -211,7 +211,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     [Arguments("-l Error", LogLevel.Error)]
     [Arguments("-l WARNING", LogLevel.Warning)]
     [Arguments("-l critical", LogLevel.Critical)]
-    public async Task ShouldAllowLogLevelIn(string command, LogLevel level)
+    public async Task ShouldAllowLogLevelIn(string command, LogLevel level, CancellationToken cancellationToken)
     {
         using var host = await Host
                               .CreateApplicationBuilder(["test", .. command.Split(' ')])
@@ -223,7 +223,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                         )
                                );
 
-        var result = (LogLevel)await host.RunConsoleAppAsync();
+        var result = (LogLevel)await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBe(level);
     }
 
@@ -240,7 +240,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     [Arguments("cmd4 a --help")]
     [Arguments("cmd5 --help")]
     [Arguments("cmd5 a --help")]
-    public async Task StopsForHelp(string command)
+    public async Task StopsForHelp(string command, CancellationToken cancellationToken)
     {
         using var host = await Host
                               .CreateApplicationBuilder([.. command.Split(' ')])
@@ -258,7 +258,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                             }
                                         )
                                );
-        var result = await host.RunConsoleAppAsync();
+        var result = await host.RunConsoleAppAsync(TestContext.CancellationToken);
         result.ShouldBeGreaterThanOrEqualTo(0);
     }
 

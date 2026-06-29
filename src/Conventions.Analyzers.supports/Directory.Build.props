@@ -1,12 +1,11 @@
 <Project>
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
     <PropertyGroup>
-        <_Analyzer_Roslyn_Version_>$(MSBuildProjectName.Replace('Indago.Analyzers.', ''))</_Analyzer_Roslyn_Version_>
+        <_Analyzer_Roslyn_Version_>$(MSBuildProjectName.Replace('Rocket.Surgery.Conventions.Analyzers.', ''))</_Analyzer_Roslyn_Version_>
         <DefineConstants>$(DefineConstants);$(_Analyzer_Roslyn_Version_.Replace('.', '_').ToUpper())</DefineConstants>
         <BaseOutputPath>bin/$(_Analyzer_Roslyn_Version_)/</BaseOutputPath>
         <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj/$(_Analyzer_Roslyn_Version_)/</BaseIntermediateOutputPath>
         <NoWarn>NU5105;$(NoWarn)</NoWarn>
-        <AssemblyName>Rocket.Surgery.Conventions.Analyzers</AssemblyName>
         <AssemblyName>Rocket.Surgery.Conventions.Analyzers</AssemblyName>
         <IsPackable>false</IsPackable>
         <NoPackageAnalysis>true</NoPackageAnalysis>

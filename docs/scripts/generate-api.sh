@@ -38,10 +38,6 @@ declare -A PACKAGES=(
   ["Aspire.Hosting.Testing"]="aspire-hosting-testing"
 )
 
-# Build all src/ packages first (uses Conventions.src.slnf to avoid the full solution)
-echo "==> Building all src/ packages in Release configuration..."
-dotnet build "$REPO_ROOT/Conventions.src.slnf" -c Release --nologo
-
 echo ""
 echo "==> Generating API reference docs..."
 

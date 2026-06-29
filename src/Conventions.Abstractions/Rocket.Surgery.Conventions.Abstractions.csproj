@@ -31,6 +31,7 @@
             ExcludeAssets="compile;runtime;native"
             PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
             OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
         />
     </ItemGroup>
     <ItemGroup>

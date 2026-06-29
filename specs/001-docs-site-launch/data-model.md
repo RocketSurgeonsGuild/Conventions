@@ -119,10 +119,10 @@ Each entry in `starlightSidebarTopics([...])`:
 
 ```toml
 [tasks]
-docs           = { run = "cd docs && npm run dev", description = "Start Astro/Starlight dev server" }
-"docs:build"   = { run = "mise run docs:api && cd docs && npm run build", description = "Generate API reference then build Starlight site" }
+docs           = { run = "npm run dev --workspace docs", description = "Start Astro/Starlight dev server" }
+"docs:build"   = { run = "mise run docs:api && npm run build --workspace docs", description = "Generate API reference then build Starlight site" }
 "docs:api"     = { run = "...", description = "Build Conventions, generate API reference, inject frontmatter" }
-"docs:preview" = { run = "cd docs && npm run preview", description = "Preview built Starlight site" }
+"docs:preview" = { run = "npm run preview --workspace docs", description = "Preview built Starlight site" }
 ```
 
 **Old tasks to replace**:
@@ -190,12 +190,12 @@ jobs:
     steps:
       - checkout
       - setup .NET (10.0.x)
-      - setup Node.js 22 (cache: npm, cache-dependency-path: docs/package-lock.json)
+      - setup Node.js 22 (cache: npm, cache-dependency-path: package-lock.json)
       - dotnet build -c Release (to produce DLLs + XML docs for all packages)
       - Install xmldocmd: dotnet tool install -g xmldocmd --version 2.9.0
       - Generate API reference: bash docs/scripts/generate-api.sh (new script)
-      - Install docs deps: npm ci (in docs/)
-      - Build docs: npm run build (in docs/, with GH_API_TOKEN secret)
+      - Install docs deps: npm ci (workspace root)
+      - Build docs: npm run build --workspace docs (with GH_API_TOKEN secret)
       - Upload Pages artifact (path: docs/dist)
   deploy:
     needs: build

@@ -10,9 +10,9 @@ public abstract class GeneratorTest() : LoggerTest<TestRecord>(TestRecord.Create
                                                                          .AddCommonReferences()
                                                                          .AddCommonGenerators();
 
-    protected GeneratorTestContextBuilder WithSharedDeps() => Builder.AddSharedDeps();
+    protected GeneratorTestContextBuilder WithSharedDeps() => Builder.AddSharedDeps(TestContext.CancellationToken);
 
-    protected GeneratorTestContextBuilder WithGenericSharedDeps() => Builder.AddSharedGenericDeps();
+    protected GeneratorTestContextBuilder WithGenericSharedDeps() => Builder.AddSharedGenericDeps(TestContext.CancellationToken);
 
     protected GeneratorTestContextBuilder Configure(Func<GeneratorTestContextBuilder, GeneratorTestContextBuilder> builder) => builder(Builder);
 }

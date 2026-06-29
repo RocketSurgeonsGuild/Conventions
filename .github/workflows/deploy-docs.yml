@@ -35,7 +35,7 @@ jobs:
               with:
                   node-version: '22'
                   cache: npm
-                  cache-dependency-path: docs/package-lock.json
+                  cache-dependency-path: package-lock.json
 
             - name: Build src packages
               run: dotnet build src/ -c Release --nologo
@@ -45,14 +45,12 @@ jobs:
 
             - name: Install docs dependencies
               run: npm ci
-              working-directory: docs
 
             - name: Generate API reference
               run: bash docs/scripts/generate-api.sh
 
             - name: Build docs
-              run: npm run build
-              working-directory: docs
+              run: npm run build --workspace docs
               env:
                   GH_API_TOKEN: ${{ secrets.GH_API_TOKEN }}
                   GITHUB_ACTIONS: 'true'

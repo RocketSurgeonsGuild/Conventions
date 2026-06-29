@@ -130,3 +130,10 @@ Generated code is verified against committed snapshots in `test/Analyzers.Tests/
 This constitution supersedes all other practices in this repository. Amendments require updating this file and the corresponding `CLAUDE.md` (auto-synced from here by speckit). All PRs should verify compliance with the public API tracking file, snapshot tests, and formatting checks before merge. Complexity must be justified — prefer extending existing abstractions over adding new ones.
 
 **Version**: 1.0.0 | **Ratified**: 2026-06-26 | **Last Amended**: 2026-06-26
+
+<!-- SPECKIT START -->
+
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+
+<!-- SPECKIT END -->

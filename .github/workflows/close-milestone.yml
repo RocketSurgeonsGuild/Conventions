@@ -31,9 +31,6 @@ jobs:
               with:
                   clean: 'false'
                   fetch-depth: '0'
-            - name: Fetch all history for all tags and branches
-              run: |
-                  git fetch --prune
             - name: 🛠️ Setup mise
               uses: jdx/mise-action@v4
               with:

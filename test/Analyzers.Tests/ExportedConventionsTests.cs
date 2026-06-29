@@ -21,7 +21,7 @@ namespace Rocket.Surgery.Conventions.Tests
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Conventions.Tests
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -69,7 +69,7 @@ namespace Rocket.Surgery.Conventions.Tests
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -94,7 +94,7 @@ namespace Rocket.Surgery.Conventions.Tests
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -115,7 +115,7 @@ namespace Rocket.Surgery.Conventions.Tests
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -149,7 +149,7 @@ internal class Contrib4 : IConvention { }
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -176,7 +176,7 @@ namespace Rocket.Surgery.Conventions.Tests
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -200,7 +200,7 @@ namespace Rocket.Surgery.Conventions.Tests
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -224,7 +224,7 @@ namespace Rocket.Surgery.Conventions.Tests
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -288,7 +288,7 @@ public class AutoMapperOptions
                            )
                           .AddReferences(typeof(ServiceLifetime))
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
         await Verify(result);
     }
 
@@ -312,7 +312,7 @@ namespace Rocket.Surgery.Conventions.Tests
 ".Replace("{HostType}", hostType.ToString(), StringComparison.OrdinalIgnoreCase)
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result).UseTextForParameters(hostType.ToString());
     }
@@ -338,7 +338,7 @@ namespace Rocket.Surgery.Conventions.Tests
 ".Replace("{Category}", category, StringComparison.OrdinalIgnoreCase)
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result).UseTextForParameters(category);
     }
@@ -368,7 +368,7 @@ namespace Rocket.Surgery.Conventions.Tests
 ".Replace("{AttributeName}", attributeName, StringComparison.OrdinalIgnoreCase)
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result).UseTextForParameters(attributeName);
     }

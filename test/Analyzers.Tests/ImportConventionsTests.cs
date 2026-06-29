@@ -30,7 +30,7 @@ using Rocket.Surgery.Conventions;
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -44,7 +44,7 @@ using Rocket.Surgery.Conventions;
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -63,7 +63,7 @@ using Rocket.Surgery.Conventions;
                                """
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -82,7 +82,7 @@ using Rocket.Surgery.Conventions;
                                """
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -101,7 +101,7 @@ using Rocket.Surgery.Conventions;
                                """
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -118,7 +118,7 @@ using Rocket.Surgery.Conventions;
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -135,7 +135,7 @@ using Rocket.Surgery.Conventions;
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -168,7 +168,7 @@ namespace TestProject
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -187,7 +187,7 @@ using Rocket.Surgery.Conventions;
 "
                            )
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result).UseParameters(Regex.Replace(Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("_", referencedTypes.Select(z => z.Name))))), "[^\\d|\\w]", "").ToLowerInvariant());
     }
@@ -221,7 +221,7 @@ namespace TestProject
                            )
                           .AddGlobalOption("build_property.ExportConventionsAssembly", "false")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
