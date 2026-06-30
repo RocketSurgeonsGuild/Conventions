@@ -34,7 +34,7 @@
         <PackageVersion Include="AutoMapper" Version="16.1.1" />
         <PackageVersion Include="FluentValidation" Version="12.1.1" />
         <PackageVersion Include="MediatR" Version="14.1.0" />
-        <PackageVersion Include="Polyfill" Version="10.11.0" />
+        <PackageVersion Include="Polyfill" Version="10.11.2" />
         <PackageVersion Include="Indago" Version="0.0.2" />
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="11.0.1" />
         <PackageVersion Include="BenchMarkDotNet" Version="0.15.8" />
