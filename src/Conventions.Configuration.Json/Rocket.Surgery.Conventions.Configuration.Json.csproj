@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
-        <PackageDescription>Adds support for loading yaml configuration files</PackageDescription>
+        <PackageDescription>Adds support for loading json configuration files</PackageDescription>
         <PackageTags>$(PackageTags);reflection</PackageTags>
+        <RootNamespace>Rocket.Surgery.Conventions.Configuration.Json</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
@@ -13,6 +14,15 @@
         <InternalsVisibleTo Include="Rocket.Surgery.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.Web.Hosting" />
         <InternalsVisibleTo Include="Rocket.Surgery.WebAssembly.Hosting" />
+
+        <ProjectReference
+            Include="..\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            IncludeAssets="analyzers;build;buildMultitargeting;buildTransitive"
+            ExcludeAssets="compile;runtime;native"
+            PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
     </ItemGroup>
     <ItemGroup>
         <None Include="build/*.*" Pack="true" PackagePath="build" />

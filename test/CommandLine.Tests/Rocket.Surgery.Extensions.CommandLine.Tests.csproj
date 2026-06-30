@@ -4,6 +4,7 @@
         <OutputType>Exe</OutputType>
     </PropertyGroup>
     <ItemGroup>
+        <Using Include="Rocket.Surgery.Hosting" />
         <ProjectReference Include="..\..\src\CommandLine\Rocket.Surgery.CommandLine.csproj" />
         <ProjectReference Include="..\..\src\Conventions.Serilog\Rocket.Surgery.Conventions.Serilog.csproj" />
         <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />

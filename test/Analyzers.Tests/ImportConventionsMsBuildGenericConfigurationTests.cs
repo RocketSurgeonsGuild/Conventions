@@ -10,7 +10,7 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
         var result = await WithGenericSharedDeps()
                           .AddGlobalOption("build_property.ImportConventionsAssembly", "true")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -21,7 +21,7 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
         var result = await WithGenericSharedDeps()
                           .AddGlobalOption("build_property.ImportConventionsAssembly", "false")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -33,7 +33,7 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
                           .AddGlobalOption("build_property.ImportConventionsNamespace", "Test.My.Namespace")
                           .AddGlobalOption("build_property.ImportConventionsClassName", "MyImports")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -46,7 +46,7 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
                           .AddGlobalOption("build_property.ImportConventionsNamespace", "")
                           .AddGlobalOption("build_property.ImportConventionsClassName", "MyImports")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -59,7 +59,7 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
                           .AddGlobalOption("build_property.ImportConventionsClassName", "MyImports")
                           .AddGlobalOption("build_property.ImportConventionsMethodName", "ImportConventions")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -77,7 +77,7 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
                           .AddGlobalOption("build_property.ImportConventionsNamespace", "Test.Other.Namespace")
                           .AddGlobalOption("build_property.ImportConventionsMethodName", "ImportsConventions")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -88,7 +88,7 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
         var result = await WithGenericSharedDeps()
                           .AddGlobalOption("build_property.ImportConventionsAssembly", "true")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -99,7 +99,7 @@ public class ImportConventionsMsBuildGenericConfigurationTests() : GeneratorTest
         var result = await Builder
                           .AddGlobalOption("build_property.ImportConventionsAssembly", "true")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }

@@ -6,25 +6,25 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
 public static class GenerationHelpers
 {
-    public static async Task<GeneratorTestResults[]> CreateDeps(GeneratorTestContextBuilder rootBuilder)
+    public static async Task<GeneratorTestResults[]> CreateDeps(GeneratorTestContextBuilder rootBuilder, CancellationToken cancellationToken)
     {
         var baseBuilder = rootBuilder.AddReferences(typeof(IValidator).Assembly, typeof(Expression<>).Assembly);
-        var c1 = await Class1(baseBuilder);
-        var c2 = await Class2(baseBuilder);
-        var c3 = await Class3(baseBuilder, c1);
+        var c1 = await Class1(baseBuilder, cancellationToken);
+        var c2 = await Class2(baseBuilder, cancellationToken);
+        var c3 = await Class3(baseBuilder, c1, cancellationToken);
         return [c1, c2, c3,];
     }
 
-    public static async Task<GeneratorTestResults[]> CreateGenericDeps(GeneratorTestContextBuilder rootBuilder)
+    public static async Task<GeneratorTestResults[]> CreateGenericDeps(GeneratorTestContextBuilder rootBuilder, CancellationToken cancellationToken)
     {
         var baseBuilder = rootBuilder;
-        var c1 = await GenericClass1(baseBuilder);
-        var c2 = await GenericClass2(baseBuilder);
-        var c3 = await GenericClass3(baseBuilder, c1);
+        var c1 = await GenericClass1(baseBuilder, cancellationToken);
+        var c2 = await GenericClass2(baseBuilder, cancellationToken);
+        var c3 = await GenericClass3(baseBuilder, c1, cancellationToken);
         return [c1, c2, c3,];
     }
 
-    public static Task<GeneratorTestResults> Class1(GeneratorTestContextBuilder builder)
+    public static Task<GeneratorTestResults> Class1(GeneratorTestContextBuilder builder, CancellationToken cancellationToken)
     {
         return builder
               .WithProjectName("SampleDependencyOne")
@@ -59,10 +59,10 @@ public static class Example1
 "
                )
               .Build()
-              .GenerateAsync();
+              .GenerateAsync(cancellationToken);
     }
 
-    public static Task<GeneratorTestResults> Class2(GeneratorTestContextBuilder builder)
+    public static Task<GeneratorTestResults> Class2(GeneratorTestContextBuilder builder, CancellationToken cancellationToken)
     {
         return builder
               .WithProjectName("SampleDependencyTwo")
@@ -96,10 +96,10 @@ public static class Example2
 "
                )
               .Build()
-              .GenerateAsync();
+              .GenerateAsync(cancellationToken);
     }
 
-    public static Task<GeneratorTestResults> Class3(GeneratorTestContextBuilder builder, GeneratorTestResults class1)
+    public static Task<GeneratorTestResults> Class3(GeneratorTestContextBuilder builder, GeneratorTestResults class1, CancellationToken cancellationToken)
     {
         return builder
               .WithProjectName("SampleDependencyThree")
@@ -135,10 +135,10 @@ public static class Example3
 "
                )
               .Build()
-              .GenerateAsync();
+              .GenerateAsync(cancellationToken);
     }
 
-    public static Task<GeneratorTestResults> GenericClass1(GeneratorTestContextBuilder builder)
+    public static Task<GeneratorTestResults> GenericClass1(GeneratorTestContextBuilder builder, CancellationToken cancellationToken)
     {
         return builder
               .WithProjectName("SampleDependencyOne")
@@ -157,10 +157,10 @@ public class Class1 : IConvention
 "
                )
               .Build()
-              .GenerateAsync();
+              .GenerateAsync(cancellationToken);
     }
 
-    public static Task<GeneratorTestResults> GenericClass2(GeneratorTestContextBuilder builder)
+    public static Task<GeneratorTestResults> GenericClass2(GeneratorTestContextBuilder builder, CancellationToken cancellationToken)
     {
         return builder
               .WithProjectName("SampleDependencyTwo")
@@ -178,10 +178,10 @@ public class Class2 : IConvention
 }"
                )
               .Build()
-              .GenerateAsync();
+              .GenerateAsync(cancellationToken);
     }
 
-    public static Task<GeneratorTestResults> GenericClass3(GeneratorTestContextBuilder builder, GeneratorTestResults class1)
+    public static Task<GeneratorTestResults> GenericClass3(GeneratorTestContextBuilder builder, GeneratorTestResults class1, CancellationToken cancellationToken)
     {
         return builder
               .WithProjectName("SampleDependencyThree")
@@ -201,6 +201,6 @@ public class Class3 : IConvention
 "
                )
               .Build()
-              .GenerateAsync();
+              .GenerateAsync(cancellationToken);
     }
 }

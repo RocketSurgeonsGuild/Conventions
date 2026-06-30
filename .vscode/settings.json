@@ -1,6 +1,8 @@
 {
     "coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
-    "coverage-gutters.coverageFileNames": ["coverage/coverage.info"],
+    "coverage-gutters.coverageFileNames": [
+        "coverage/coverage.info"
+    ],
     "coverage-gutters.showGutterCoverage": true,
     "coverage-gutters.showRulerCoverage": true,
     "powermode.enabled": false,
@@ -24,5 +26,16 @@
         "statusBarItem.remoteForeground": "#15202b",
         "tab.activeBorder": "#23d9ac"
     },
-    "peacock.color": "#23d9ac"
+    "peacock.color": "#23d9ac",
+    "chat.promptFilesRecommendations": {
+        "speckit.constitution": true,
+        "speckit.specify": true,
+        "speckit.plan": true,
+        "speckit.tasks": true,
+        "speckit.implement": true
+    },
+    "chat.tools.terminal.autoApprove": {
+        ".specify/scripts/bash/": true,
+        ".specify/scripts/powershell/": true
+    }
 }

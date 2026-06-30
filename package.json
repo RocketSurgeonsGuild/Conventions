@@ -5,6 +5,9 @@
     "author": "",
     "type": "commonjs",
     "main": "index.js",
+    "workspaces": [
+        "docs"
+    ],
     "directories": {
         "test": "tests"
     },

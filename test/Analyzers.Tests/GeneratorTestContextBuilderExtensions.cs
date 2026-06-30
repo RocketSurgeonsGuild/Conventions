@@ -10,9 +10,9 @@ namespace Rocket.Surgery.Conventions.Analyzers.Tests;
 
 internal static class GeneratorTestContextBuilderExtensions
 {
-    public static GeneratorTestContextBuilder AddSharedDeps(this GeneratorTestContextBuilder builder) => builder.AddCompilationReferences(GenerationHelpers.CreateDeps(builder).GetAwaiter().GetResult());
+    public static GeneratorTestContextBuilder AddSharedDeps(this GeneratorTestContextBuilder builder, CancellationToken cancellationToken) => builder.AddCompilationReferences(GenerationHelpers.CreateDeps(builder, cancellationToken).GetAwaiter().GetResult());
 
-    public static GeneratorTestContextBuilder AddSharedGenericDeps(this GeneratorTestContextBuilder builder) => builder.AddCompilationReferences(GenerationHelpers.CreateGenericDeps(builder).GetAwaiter().GetResult());
+    public static GeneratorTestContextBuilder AddSharedGenericDeps(this GeneratorTestContextBuilder builder, CancellationToken cancellationToken) => builder.AddCompilationReferences(GenerationHelpers.CreateGenericDeps(builder, cancellationToken).GetAwaiter().GetResult());
 
     public static GeneratorTestContextBuilder AddCommonReferences(this GeneratorTestContextBuilder builder) => builder.AddReferences(
         typeof(ActivatorUtilities),

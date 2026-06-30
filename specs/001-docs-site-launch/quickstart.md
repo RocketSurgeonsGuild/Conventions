@@ -12,14 +12,15 @@
 # All tools managed by mise — install once:
 mise install
 
-# Node dependencies for docs:
-cd docs && npm install && cd ..
+# Node dependencies (npm workspaces; legacy-peer-deps is set in root .npmrc:
+# @astrojs/starlight pulls astro 7 while starlight-llms-txt declares an astro 6 peer):
+npm install
 
 # Verify xmldocmd is available:
 xmldocmd --version   # should print 2.9.0
 
 # Verify Astro is available:
-cd docs && npm run astro -- --version && cd ..
+npm run astro --workspace docs -- --version
 ```
 
 ---

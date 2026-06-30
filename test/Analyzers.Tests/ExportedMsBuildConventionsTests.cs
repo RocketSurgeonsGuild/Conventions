@@ -23,7 +23,7 @@ namespace Rocket.Surgery.Conventions.Tests
                           .AddGlobalOption("build_property.ExportConventionsNamespace", "Source.Space")
                           .AddGlobalOption("build_property.ExportConventionsClassName", "SourceClass")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -45,7 +45,7 @@ namespace Rocket.Surgery.Conventions.Tests
                            )
                           .AddGlobalOption("build_property.ExportConventionsNamespace", "")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
@@ -69,7 +69,7 @@ namespace Rocket.Surgery.Conventions.Tests
                            )
                           .AddGlobalOption("build_property.ExportConventionsMethodName", "SourceMethod")
                           .Build()
-                          .GenerateAsync();
+                          .GenerateAsync(TestContext.CancellationToken);
 
         await Verify(result);
     }
