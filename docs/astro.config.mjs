@@ -42,21 +42,15 @@ export default defineConfig({
                     [
                         {
                             label: 'Getting Started',
-                            link: '/guide/',
+                            link: '/guides/',
                             icon: 'open-book',
-                            items: [{ autogenerate: { directory: 'guide' } }],
+                            items: [{ autogenerate: { directory: 'guides' } }],
                         },
                         {
-                            label: 'Reference',
-                            link: '/reference/',
+                            label: 'Concepts',
+                            link: '/concepts/',
                             icon: 'information',
-                            items: [{ autogenerate: { directory: 'reference' } }],
-                        },
-                        {
-                            label: 'Architecture',
-                            link: '/architecture/',
-                            icon: 'puzzle',
-                            items: [{ autogenerate: { directory: 'architecture' } }],
+                            items: [{ autogenerate: { directory: 'concepts' } }],
                         },
                         {
                             label: 'API Reference',
