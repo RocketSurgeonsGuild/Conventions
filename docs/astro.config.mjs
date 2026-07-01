@@ -26,7 +26,7 @@ export default defineConfig({
     integrations: [
         starlight({
             title: 'Conventions',
-            description: 'Convention-driven application wiring for .NET. AOT-safe, zero runtime reflection.',
+            description: 'Convention-based configuration and composition for .NET applications.',
             social: [
                 {
                     icon: 'github',
@@ -34,6 +34,7 @@ export default defineConfig({
                     href: 'https://github.com/RocketSurgeonsGuild/Conventions',
                 },
             ],
+            customCss: ['./src/styles/api.css'],
             plugins: [
                 starlightAutoDrafts(),
                 starlightGithubAlerts(),
@@ -54,7 +55,7 @@ export default defineConfig({
                         {
                             label: 'API Reference',
                             link: '/api/',
-                            icon: 'seti:brackets',
+                            icon: 'code-branch',
                             items: [{ autogenerate: { directory: 'api' } }],
                         },
                         {
@@ -71,15 +72,14 @@ export default defineConfig({
                 starlightHeadingBadges(),
                 starlightImageZoom(),
                 starlightScrollToTop(),
-                starlightPageActions(),
+                starlightPageActions({
+                    editLink: 'https://github.com/RocketSurgeonsGuild/Conventions/edit/main/docs/src/content/docs/',
+                }),
                 starlightIconsPlugin(),
                 starlightTags(),
                 starlightChangelogs(),
                 starlightLlmsTxt(),
             ],
-            editLink: {
-                baseUrl: 'https://github.com/RocketSurgeonsGuild/Conventions/edit/main/docs/',
-            },
         }),
     ],
 });

@@ -54,7 +54,6 @@ local excludedDiagnosticsString = excludeDiagnostics.join(" ")
 // Has a real verify mode, so it can run in `check` as well as `fix`.
 local dotnetFormat: Step = new Step {
   glob = "**/*.cs"
-  exclude = excludes
   check =
     "dotnet format \(solution) --exclude-diagnostics \(excludedDiagnosticsString) --verify-no-changes --include {{files}}"
   fix =
@@ -81,23 +80,20 @@ local linters = new Mapping<String, Step> {
   ["symlinks"] = Builtins.check_symlinks
   ["hk-test"] = Builtins.hk_test
   ["pkl-format"] = Builtins.pkl_format
-  ["prettier"] = (Builtins.prettier) {
-    exclude = excludes
-  }
+  ["prettier"] = Builtins.prettier
   ["prettier-extended"] = (Builtins.prettier) {
     glob = List("*.*proj", "*.props", "*.targets", "*.xml")
   }
   // Validate the hand-authored GitHub Actions workflows (.github/workflows/*.yml).
   ["actionlint"] = Builtins.actionlint
   // Safety nets (no external binaries required).
-  ["detect-private-key"] = (Builtins.detect_private_key) {
-    exclude = excludes
-  }
+  ["detect-private-key"] = Builtins.detect_private_key
   ["large-files"] = Builtins.check_added_large_files
   ["dotnet-format"] = dotnetFormat
   // ["jb-cleanupcode"] = jbCleanupCode
 }
 
+exclude = excludes
 hooks {
   ["pre-commit"] {
     fix = true

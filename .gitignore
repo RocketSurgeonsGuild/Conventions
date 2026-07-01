@@ -235,10 +235,10 @@ apm_modules/
 dist/
 .astro/
 *.local.toml
-.env*
 
 # Docs: auto-generated API reference (regenerated in CI via xmldocmd --clean).
 # Keep the hand-written section landing page (api/index.md); ignore the generated tree.
 docs/src/content/docs/api/**
 !docs/src/content/docs/api/index.md
 .playwright-mcp/
+docs/api/

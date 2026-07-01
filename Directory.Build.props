@@ -35,8 +35,8 @@
     </PropertyGroup>
     <ItemGroup>
         <None
-            Include="$(MSBuildThisFileDirectory)/.temp/packageicon.png"
-            Condition="Exists('$(MSBuildThisFileDirectory)/.temp/packageicon.png')"
+            Include="$(MSBuildThisFileDirectory).temp/packageicon.png"
+            Condition="Exists('$(MSBuildThisFileDirectory).temp/packageicon.png')"
             Pack="true"
             PackagePath="/images/"
             Visible="false"
