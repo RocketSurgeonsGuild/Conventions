@@ -13,7 +13,7 @@ The API reference pages are generated at build time. If you don't see package li
 
 <CardGrid>
 	<LinkCard title="Conventions" href="/api/conventions/" description="Core conventions and runtime wiring contracts." />
-	<LinkCard title="Abstractions" href="/api/abstractions/" description="Public abstraction interfaces such as IConvention and IConventionContext." />
+	<LinkCard title="Abstractions" href="/api/abstractions/" description="Public abstraction interfaces such as IClavusPart and IClavusContext." />
 	<LinkCard title="CommandLine" href="/api/commandline/" description="Command-line specific conventions and helpers." />
 	<LinkCard title="Hosting" href="/api/hosting/" description="Generic host integration APIs." />
 	<LinkCard title="Web.Hosting" href="/api/web-hosting/" description="ASP.NET Core hosting integrations." />

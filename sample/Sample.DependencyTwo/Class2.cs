@@ -1,13 +1,13 @@
 using FluentValidation;
 
-[assembly: ExportConventions(Namespace = null, ClassName = "Dep2Exports")]
+[assembly: ExportClavusParts(Namespace = null, ClassName = "Dep2Exports")]
 
 namespace Sample.DependencyTwo;
 
 public static class Nested
 {
-    [ExportConvention]
-    public class Class2 : IConvention;
+    [ExportClavusPart]
+    public class Class2 : IClavusPart;
 }
 
 public static class Example2

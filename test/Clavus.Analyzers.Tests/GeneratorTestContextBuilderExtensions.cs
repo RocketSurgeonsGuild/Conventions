@@ -1,0 +1,40 @@
+using FluentValidation;
+
+using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+using Rocket.Surgery.Extensions.Testing.SourceGenerators;
+
+namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+
+internal static class GeneratorTestContextBuilderExtensions
+{
+    public static GeneratorTestContextBuilder AddSharedDeps(this GeneratorTestContextBuilder builder, CancellationToken cancellationToken) => builder.AddCompilationReferences(GenerationHelpers.CreateDeps(builder, cancellationToken).GetAwaiter().GetResult());
+
+    public static GeneratorTestContextBuilder AddSharedGenericDeps(this GeneratorTestContextBuilder builder, CancellationToken cancellationToken) => builder.AddCompilationReferences(GenerationHelpers.CreateGenericDeps(builder, cancellationToken).GetAwaiter().GetResult());
+
+    public static GeneratorTestContextBuilder AddCommonReferences(this GeneratorTestContextBuilder builder) => builder.AddReferences(
+        typeof(ActivatorUtilities),
+        typeof(ClavusContext),
+        typeof(IClavusContext),
+        typeof(IServiceProvider),
+        typeof(IConfiguration),
+        typeof(IValidator)
+        );
+
+    public static GeneratorTestContextBuilder AddCommonGenerators(this GeneratorTestContextBuilder builder)
+    {
+        foreach (var generator in GetAllGenerators(typeof(GeneratorTestContextBuilderExtensions).Assembly.GetIndagoProvider()))
+        {
+            builder = builder.WithGenerator(generator);
+        }
+
+        return builder;
+    }
+
+    private static IEnumerable<Type> GetAllGenerators(IIndagoProvider provider) => provider.GetTypes(s => s
+                                                                                              .FromAssemblyOf<ClavusAttributesGenerator>()
+                                                                                              .GetTypes(f => f.WithAttribute<GeneratorAttribute>().AssignableTo<IIncrementalGenerator>())
+        );
+}

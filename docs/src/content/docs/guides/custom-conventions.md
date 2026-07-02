@@ -21,7 +21,7 @@ Now we will define our interface and delegate. The delegate and extenison method
 
 [!code-c#[IDatabaseConfigurator](../../sample/Sample.Core/Databases/DatabaseConvention.cs?name=codeblock)]
 [!code-c#[IDatabaseConfigurator](../../sample/Sample.Core/Databases/IDatabaseConvention.cs?name=codeblock)]
-[!code-c#[IDatabaseConfigurator](../../sample/Sample.Core/Databases/DatabaseConventionContextBuilderExtensions.cs?name=codeblock)]
+[!code-c#[IDatabaseConfigurator](../../sample/Sample.Core/Databases/DatabaseClavusContextBuilderExtensions.cs?name=codeblock)]
 
 ## Create your application method
 
@@ -33,4 +33,4 @@ a convention that will run during the services convention. The other way additio
 In this example we'll support both. The manual way using an extension method and a convention that will do it "automagically".
 
 [!code-c#[IDatabaseConfigurator](../../sample/Sample.Core/Databases/DatabaseConfiguratorExtensions.cs?name=codeblock)]
-[!code-c#[IDatabaseConfigurator](../../sample/Sample.Core/Databases/DatabaseServiceConvention.cs?name=codeblock)]
+[!code-c#[IDatabaseConfigurator](../../sample/Sample.Core/Databases/DatabaseServicePart.cs?name=codeblock)]

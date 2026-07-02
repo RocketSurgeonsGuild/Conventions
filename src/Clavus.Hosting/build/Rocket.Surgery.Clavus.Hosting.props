@@ -1,0 +1,5 @@
+<Project>
+    <ItemGroup>
+        <Using Include="Rocket.Surgery.Clavus.Hosting" />
+    </ItemGroup>
+</Project>

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Hosting;
+using Rocket.Surgery.Clavus.Hosting;
 using Sample.Core;
 using TUnit.Core.Interfaces;
 
@@ -18,7 +18,7 @@ public class SampleTestHostTests : IAsyncInitializer, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
-        _host = await Host.CreateApplicationBuilder().ConfigureRocketSurgery();
+        _host = await Host.CreateApplicationBuilder().ConfigureClavus();
         await _host.StartAsync();
     }
 

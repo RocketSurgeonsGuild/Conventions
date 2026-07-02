@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../src/Conventions.Abstractions/build/Rocket.Surgery.Conventions.Abstractions.props" />
+    <Import Project="../../src/Clavus.Abstractions/build/Rocket.Surgery.Clavus.Abstractions.props" />
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>false</IsPackable>
@@ -14,9 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Conventions\Rocket.Surgery.Conventions.csproj" />
+        <ProjectReference Include="..\..\src\Clavus\Rocket.Surgery.Clavus.csproj" />
         <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
     </ItemGroup>
 
-    <Import Project="../../src/Conventions.Abstractions/build/Rocket.Surgery.Conventions.Abstractions.targets" />
+    <Import Project="../../src/Clavus.Abstractions/build/Rocket.Surgery.Clavus.Abstractions.targets" />
 </Project>

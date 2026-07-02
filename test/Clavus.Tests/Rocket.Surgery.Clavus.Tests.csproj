@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\sample\Sample.DependencyOne\Sample.DependencyOne.csproj" />
+        <ProjectReference Include="..\..\sample\Sample.DependencyThree\Sample.DependencyThree.csproj" />
+        <ProjectReference Include="..\..\sample\Sample.DependencyTwo\Sample.DependencyTwo.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Serilog\Rocket.Surgery.Clavus.Serilog.csproj" />
+        <ProjectReference Include="..\..\src\Clavus\Rocket.Surgery.Clavus.csproj" />
+    </ItemGroup>
+</Project>

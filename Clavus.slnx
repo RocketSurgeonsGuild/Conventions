@@ -1,0 +1,116 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/.build/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/benchmarks/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <Project Path="benchmarks/Hosting.Benchmarks/Hosting.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/config/">
+    <File Path=".build/.editorconfig" />
+    <File Path=".codecov.yml" />
+    <File Path=".config/dotnet-tools.json" />
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path=".gitmodules" />
+    <File Path=".prettierignore" />
+    <File Path=".prettierrc" />
+    <File Path="build.cmd" />
+    <File Path="build.ps1" />
+    <File Path="build.sh" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="Directory.Packages.support.props" />
+    <File Path="dotnet-tools.json" />
+    <File Path="GitReleaseManager.yaml" />
+    <File Path="GitVersion.yml" />
+    <File Path="LICENSE" />
+    <File Path="NuGet.config" />
+    <File Path="package.json" />
+    <File Path="Readme.md" />
+  </Folder>
+  <Folder Name="/config/.github/">
+    <File Path="labels.yml" />
+    <File Path="release.yml" />
+    <File Path="renovate.json" />
+  </Folder>
+  <Folder Name="/config/.github/workflows/">
+    <File Path="ci-ignore.yml" />
+    <File Path="ci.yml" />
+    <File Path="close-milestone.yml" />
+    <File Path="dependabot-merge.yml" />
+    <File Path="draft-release.yml" />
+    <File Path="lint.yml" />
+    <File Path="publish-docs.yml" />
+    <File Path="publish-nuget.yml" />
+    <File Path="sync-labels.yml" />
+    <File Path="update-milestone.yml" />
+  </Folder>
+  <Folder Name="/config/.husky/">
+    <File Path="pre-commit" />
+    <File Path="task-runner.json" />
+  </Folder>
+  <Folder Name="/config/.vscode/">
+    <File Path="launch.json" />
+    <File Path="settings.json" />
+    <File Path="tasks.json" />
+  </Folder>
+  <Folder Name="/sample/">
+    <File Path="sample/Directory.Build.props" />
+    <File Path="sample/Directory.Build.targets" />
+    <Project Path="sample/AspireSample/AspireSample.csproj" />
+    <Project Path="sample/Sample.BlazorWasm/Sample.BlazorWasm.csproj" />
+    <Project Path="sample/Sample.Core.Tests/Sample.Core.Tests.csproj" />
+    <Project Path="sample/Sample.Core/Sample.Core.csproj" />
+    <Project Path="sample/Sample.DependencyOne/Sample.DependencyOne.csproj" />
+    <Project Path="sample/Sample.DependencyThree/Sample.DependencyThree.csproj" />
+    <Project Path="sample/Sample.DependencyTwo/Sample.DependencyTwo.csproj" />
+    <Project Path="sample/Sample.Tests/Sample.Tests.csproj" />
+    <Project Path="sample/Sample/Sample.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path="src/.editorconfig" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Build.targets" />
+    <Project Path="src/Clavus.Aspire.Testing/Rocket.Surgery.Clavus.Aspire.Testing.csproj" />
+    <Project Path="src/Clavus.Aspire/Rocket.Surgery.Clavus.Aspire.csproj" />
+    <Project Path="src/Clavus.CommandLine/Rocket.Surgery.Clavus.CommandLine.csproj" />
+    <Project Path="src/Clavus.Abstractions/Rocket.Surgery.Clavus.Abstractions.csproj" />
+    <Project Path="src/Clavus.Analyzers/Rocket.Surgery.Clavus.Analyzers.csproj" />
+    <Project Path="src/Clavus.Autofac/Rocket.Surgery.Clavus.Autofac.csproj" />
+    <Project Path="src/Clavus.Configuration.Json/Rocket.Surgery.Clavus.Configuration.Json.csproj" />
+    <Project Path="src/Clavus.Configuration.Yaml/Rocket.Surgery.Clavus.Configuration.Yaml.csproj" />
+    <Project Path="src/Clavus.DryIoc/Rocket.Surgery.Clavus.DryIoc.csproj" />
+    <Project Path="src/Clavus.Serilog/Rocket.Surgery.Clavus.Serilog.csproj" />
+    <Project Path="src/Clavus/Rocket.Surgery.Clavus.csproj" />
+    <Project Path="src/Clavus.Hosting/Rocket.Surgery.Clavus.Hosting.csproj" />
+    <Project Path="src/Clavus.Web.Hosting/Rocket.Surgery.Clavus.Web.Hosting.csproj" />
+    <Project Path="src/Clavus.WebAssembly.Hosting/Rocket.Surgery.Clavus.WebAssembly.Hosting.csproj" />
+  </Folder>
+  <Folder Name="/src/Clavus.Analyzers.supports/">
+    <Project Path="src/Clavus.Analyzers.supports/Rocket.Surgery.Clavus.Analyzers.roslyn4.14.csproj" />
+    <Project Path="src/Clavus.Analyzers.supports/Rocket.Surgery.Clavus.Analyzers.roslyn5.0.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <File Path="test/.editorconfig" />
+    <File Path="test/Directory.Build.props" />
+    <File Path="test/Directory.Build.targets" />
+    <Project Path="test/Clavus.Analyzers.Tests/Rocket.Surgery.Clavus.Analyzers.Tests.csproj" />
+    <Project Path="test/Clavus.Aspire.Tests/Rocket.Surgery.Clavus.Aspire.Tests.csproj" />
+    <Project Path="test/Clavus.Autofac.Tests/Rocket.Surgery.Clavus.Autofac.Tests.csproj" />
+    <Project Path="test/Clavus.CommandLine.Tests/Rocket.Surgery.Clavus.CommandLine.Tests.csproj" />
+    <Project Path="test/Clavus.Tests/Rocket.Surgery.Clavus.Tests.csproj" />
+    <Project Path="test/Clavus.DryIoc.Tests/Rocket.Surgery.Clavus.DryIoc.Tests.csproj" />
+    <Project Path="test/Clavus.Hosting.AspNetCore.Tests/Rocket.Surgery.Clavus.Hosting.AspNetCore.Tests.csproj" />
+    <Project Path="test/Clavus.Hosting.Tests/Rocket.Surgery.Clavus.Hosting.Tests.csproj" />
+    <Project Path="test/Clavus.WebAssembly.Hosting.Tests/Rocket.Surgery.Clavus.WebAssembly.Hosting.Tests.csproj" />
+  </Folder>
+</Solution>

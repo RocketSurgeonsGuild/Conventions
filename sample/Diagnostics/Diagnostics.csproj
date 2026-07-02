@@ -6,13 +6,13 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference
-            Include="../../src/Conventions.Analyzers/Rocket.Surgery.Conventions.Analyzers.csproj"
+            Include="../../src/Conventions.Analyzers/Rocket.Surgery.Clavus.Analyzers.csproj"
             PrivateAssets="none"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
-        <ProjectReference Include="../../src/Conventions.Diagnostics/Rocket.Surgery.Conventions.Diagnostics.csproj" />
-        <ProjectReference Include="../../src/Hosting/Rocket.Surgery.Hosting.csproj" />
-        <ProjectReference Include="..\..\src\CommandLine\Rocket.Surgery.CommandLine.csproj" />
+        <ProjectReference Include="../../src/Conventions.Diagnostics/Rocket.Surgery.Clavus.Diagnostics.csproj" />
+        <ProjectReference Include="../../src/Hosting/Rocket.Surgery.Clavus.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.CommandLine\Rocket.Surgery.Clavus.CommandLine.csproj" />
     </ItemGroup>
 </Project>

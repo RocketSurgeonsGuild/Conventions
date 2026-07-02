@@ -2,12 +2,12 @@ namespace Sample.Core.Databases;
 
 #region codeblock
 
-public interface IDatabaseConvention : IConvention
+public interface IDatabaseConvention : IClavusPart
 {
-    void Register(IConventionContext context, IDatabaseConfigurator configurator);
+    void Register(IClavusContext context, IDatabaseConfigurator configurator);
 }
 
-public interface IDatabaseAsyncConvention : IConvention
+public interface IDatabaseAsyncConvention : IClavusPart
 {
     /// <summary>
     /// 
@@ -15,7 +15,7 @@ public interface IDatabaseAsyncConvention : IConvention
     /// <param name="context">The context.</param>
     /// <param name="configurator"></param>
     /// <param name="cancellationToken"></param>
-    ValueTask Register(IConventionContext context, IDatabaseConfigurator configurator, CancellationToken cancellationToken);
+    ValueTask Register(IClavusContext context, IDatabaseConfigurator configurator, CancellationToken cancellationToken);
 }
 
 #endregion

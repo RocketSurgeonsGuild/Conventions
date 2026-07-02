@@ -11,11 +11,11 @@
         <PackageReference Include="Verify.TUnit" />
         <Using Include="Shouldly" />
         <ProjectReference
-            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            Include="..\..\src\Clavus.Analyzers\Rocket.Surgery.Clavus.Analyzers.csproj"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
     </ItemGroup>
-    <Import Project="$(MSBuildThisFileDirectory)../src/Conventions.Abstractions/build/Rocket.Surgery.Conventions.Abstractions.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)../src/Clavus.Abstractions/build/Rocket.Surgery.Clavus.Abstractions.targets" />
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 </Project>

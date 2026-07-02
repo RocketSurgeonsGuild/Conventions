@@ -11,6 +11,6 @@ using ModularPipelines.Plugins;
 using Rocket.Surgery.ModularPipelines.Extensions;
 
 var pipelineBuilder = Pipeline.CreateBuilder(args);
-PluginRegistry.Register(new ConventionsPlugin(ConventionContextBuilder.Create(Imports.Instance)
+PluginRegistry.Register(new ConventionsPlugin(ClavusContextBuilder.Create(Imports.Instance)
 .AddIfMissing(nameof(MyAssembly.Project.BuildScriptsRoot), MyAssembly.Project.BuildScriptsRoot)));
 await pipelineBuilder.Build().RunAsync();

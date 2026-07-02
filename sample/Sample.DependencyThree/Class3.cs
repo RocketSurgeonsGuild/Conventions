@@ -3,8 +3,8 @@ using Sample.DependencyOne;
 
 namespace Sample.DependencyThree;
 
-[ExportConvention]
-public class Class3 : IConvention
+[ExportClavusPart]
+public class Class3 : IClavusPart
 {
     public Class1? Class1 { get; set; }
 }

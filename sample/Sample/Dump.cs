@@ -22,9 +22,9 @@ public class Dump(IConfiguration configuration, ILogger<Dump> logger) : AsyncCom
         return Task.FromResult(1);
     }
 
-    [ExportConvention]
+    [ExportClavusPart]
     internal class DumpConvention : ICommandLineConvention
     {
-        public void Register(IConventionContext context, IConfigurator app) => app.AddCommand<Dump>("dump");
+        public void Register(IClavusContext context, IConfigurator app) => app.AddCommand<Dump>("dump");
     }
 }

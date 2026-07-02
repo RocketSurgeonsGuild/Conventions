@@ -3,17 +3,17 @@ namespace Sample.Core.Databases;
 
 #region codeblock
 
-public static class DatabaseConventionContextBuilderExtensions
+public static class DatabaseClavusContextBuilderExtensions
 {
-    public static ConventionContextBuilder ConfigureDatabase(this ConventionContextBuilder container, DatabaseConvention @delegate)
+    public static ClavusContextBuilder ConfigureDatabase(this ClavusContextBuilder container, DatabaseConvention @delegate)
     {
-        container.AppendDelegate(@delegate, 0, ConventionCategory.Application);
+        container.AppendDelegate(@delegate, 0, ClavusCategory.Application);
         return container;
     }
 
-    public static ConventionContextBuilder ConfigureDatabase(this ConventionContextBuilder container, Action<IDatabaseConfigurator> @delegate)
+    public static ClavusContextBuilder ConfigureDatabase(this ClavusContextBuilder container, Action<IDatabaseConfigurator> @delegate)
     {
-        container.AppendDelegate(new DatabaseConvention((context, configurator) => @delegate(configurator)), 0, ConventionCategory.Application);
+        container.AppendDelegate(new DatabaseConvention((context, configurator) => @delegate(configurator)), 0, ClavusCategory.Application);
         return container;
     }
 }

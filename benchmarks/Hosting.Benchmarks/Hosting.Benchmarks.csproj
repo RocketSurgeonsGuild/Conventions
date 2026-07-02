@@ -9,11 +9,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Hosting\Rocket.Surgery.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Hosting\Rocket.Surgery.Clavus.Hosting.csproj" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference
-            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            Include="..\..\src\Clavus.Analyzers\Rocket.Surgery.Clavus.Analyzers.csproj"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />

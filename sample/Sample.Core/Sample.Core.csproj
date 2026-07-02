@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Conventions.Abstractions\Rocket.Surgery.Conventions.Abstractions.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Abstractions\Rocket.Surgery.Clavus.Abstractions.csproj" />
         <ProjectReference
-            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            Include="..\..\src\Clavus.Analyzers\Rocket.Surgery.Clavus.Analyzers.csproj"
             IncludeAssets="all"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"

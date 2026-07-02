@@ -83,16 +83,16 @@ mise run docs:api
 
 ```sh
 # Verify frontmatter on one generated file:
-head -5 docs/src/content/docs/api/abstractions/IConventionContext.md
+head -5 docs/src/content/docs/api/abstractions/IClavusContext.md
 # Should start with:
 # ---
-# title: "IConventionContext"
+# title: "IClavusContext"
 # ---
 ```
 
 Then start the dev server and navigate to `http://localhost:4321/api/` — generated pages should appear in the sidebar.
 
-**Pass condition**: API pages appear in dev server sidebar; at least `IConvention` and `IConventionContext` pages are present with correct titles.
+**Pass condition**: API pages appear in dev server sidebar; at least `IClavusPart` and `IClavusContext` pages are present with correct titles.
 
 ---
 

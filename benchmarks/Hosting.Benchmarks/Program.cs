@@ -7,7 +7,7 @@ using Hosting.Benchmarks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Hosting;
+using Rocket.Surgery.Clavus.Hosting;
 
 var config = ManualConfig
            .Create(DefaultConfig.Instance);
@@ -57,7 +57,7 @@ namespace Hosting.Benchmarks
         {
             var builder = Host.CreateApplicationBuilder();
             builder.Logging.ClearProviders();
-            var host = await builder.ConfigureRocketSurgery();
+            var host = await builder.ConfigureClavus();
             await host.StartAsync().ConfigureAwait(false);
             await host.StopAsync().ConfigureAwait(false);
         }
@@ -80,7 +80,7 @@ namespace Hosting.Benchmarks
             var builder = Host.CreateApplicationBuilder();
             builder.Services.AddHostedService<HostedService>();
             builder.Logging.ClearProviders();
-            var host = await builder.ConfigureRocketSurgery();
+            var host = await builder.ConfigureClavus();
             await host.StartAsync().ConfigureAwait(false);
             await host.StopAsync().ConfigureAwait(false);
         }

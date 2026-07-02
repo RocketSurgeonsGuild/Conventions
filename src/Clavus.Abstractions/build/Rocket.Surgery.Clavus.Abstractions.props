@@ -1,0 +1,17 @@
+<Project>
+    <ItemGroup>        
+        <CompilerVisibleProperty Include="ImportClavusAssembly" />
+        <CompilerVisibleProperty Include="ImportClavusNamespace" />
+        <CompilerVisibleProperty Include="ImportClavusClassName" />
+        <CompilerVisibleProperty Include="ImportClavusMethodName" />
+
+        <CompilerVisibleProperty Include="ExportClavusAssembly" />
+        <CompilerVisibleProperty Include="ExportClavusNamespace" />
+        <CompilerVisibleProperty Include="ExportClavusClassName" />
+        <CompilerVisibleProperty Include="ExportClavusMethodName" />
+
+        <CompilerVisibleProperty Include="IsTestProject" />
+        
+        <Using Include="Rocket.Surgery.Clavus" />
+    </ItemGroup>
+</Project>

@@ -4,7 +4,7 @@ namespace Sample.Core.Databases;
 
 public static class DatabaseConfiguratorExtensions
 {
-    public static ValueTask ApplyConventions(this IDatabaseConfigurator configurator, IConventionContext context, CancellationToken cancellationToken = default) => context.RegisterConventions(z => z
+    public static ValueTask ApplyConventions(this IDatabaseConfigurator configurator, IClavusContext context, CancellationToken cancellationToken = default) => context.RegisterConventions(z => z
                                                                                                                                                                          .AddHandler<IDatabaseConvention>(convention => convention.Register(context, configurator))
                                                                                                                                                                          .AddHandler<IDatabaseAsyncConvention>((convention) => convention.Register(context, configurator, cancellationToken))
                                                                                                                                                                          .AddHandler<DatabaseConvention>(convention => convention(context, configurator))

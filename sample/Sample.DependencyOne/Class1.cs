@@ -1,11 +1,11 @@
 using FluentValidation;
 
-[assembly: ExportConventions(Namespace = "Dep1", ClassName = "Dep1Exports")]
+[assembly: ExportClavusParts(Namespace = "Dep1", ClassName = "Dep1Exports")]
 
 namespace Sample.DependencyOne;
 
-[ExportConvention]
-public class Class1 : IConvention;
+[ExportClavusPart]
+public class Class1 : IClavusPart;
 
 public static class Example1
 {

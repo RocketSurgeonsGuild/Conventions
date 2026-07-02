@@ -67,7 +67,7 @@
 
 **Goal**: All public Conventions types auto-generated into browsable API reference pages. Zero manual steps after `dotnet build`.
 
-**Independent Test**: Run `dotnet build src/ -c Release --nologo` then `mise run docs:api`. Open `http://localhost:4321/api/` — generated package subdirectories appear in sidebar and at least `IConvention` and `IConventionContext` pages render with summaries.
+**Independent Test**: Run `dotnet build src/ -c Release --nologo` then `mise run docs:api`. Open `http://localhost:4321/api/` — generated package subdirectories appear in sidebar and at least `IClavusPart` and `IClavusContext` pages render with summaries.
 
 - [x] T020 [US2] Create `docs/scripts/generate-api.sh` — bash script that builds all src/ packages, runs xmldocmd for each of the 15 packages (all except `Conventions.Analyzers.roslyn4.8` variant), and invokes `node docs/scripts/add-api-frontmatter.mjs` (see `contracts/mise-tasks.md` for full script body)
 - [x] T021 [US2] Make `docs/scripts/generate-api.sh` executable: `chmod +x docs/scripts/generate-api.sh`
@@ -77,7 +77,7 @@
 - [x] T025 [US2] Run `mise run docs:api` and confirm: `docs/src/content/docs/api/` subdirectories created, `.md` files present, each file starts with `---` (frontmatter injected)
 - [x] T026 [US2] Update `docs/src/content/docs/api/index.md` with actual package links for each generated subdirectory (replacing the placeholder from T014)
 - [x] T027 [US2] Start dev server (`mise run docs`) and navigate to `http://localhost:4321/api/` — confirm generated package subdirectories appear in "API Reference" sidebar group
-- [x] T028 [P] [US2] Navigate to `http://localhost:4321/api/abstractions/` (or equivalent) and confirm `IConvention` and `IConventionContext` pages render with type summaries
+- [x] T028 [P] [US2] Navigate to `http://localhost:4321/api/abstractions/` (or equivalent) and confirm `IClavusPart` and `IClavusContext` pages render with type summaries
 - [x] T029 [P] [US2] Navigate to a generated method page and confirm parameter names, types, and descriptions display correctly
 
 **Checkpoint**: US2 complete — API reference auto-generates and appears in the live site.

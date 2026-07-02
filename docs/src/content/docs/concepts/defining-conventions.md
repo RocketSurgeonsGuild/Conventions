@@ -5,17 +5,17 @@ description: How to create and register your own conventions, including ordering
 
 # Defining Conventions
 
-As stated [previously](./defining-conventions.md) conventions are nothing more than a class that implements <xref:Rocket.Surgery.Conventions.IConvention>.
+As stated [previously](./defining-conventions.md) conventions are nothing more than a class that implements <xref:Rocket.Surgery.Clavus.IClavusPart>.
 
 ## Implementing Multiple Conventions
 
 A defined convention can implement as many conventions as you want. Configuration, Services, Command Line, Custom Conventions can all be be handled by one convention.
 
 ```c#
-public class MultipleConvention : IServiceConvention, IConfigurationConvention
+public class MultipleConvention : IServicePart, IConfigurationPart
 {
-    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) { }
-    public void Register(IConventionContext context, IConfiguration configuration, IConfigurationBuilder builder) { }
+    public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services) { }
+    public void Register(IClavusContext context, IConfiguration configuration, IConfigurationBuilder builder) { }
 }
 ```
 
@@ -30,7 +30,7 @@ conventions _cannot_ be ordered in this manner and must be sorted manually.
 > Sorting is done using a [Topological sort](https://en.wikipedia.org/wiki/Topological_sorting) and if you define a cycle (A requires B, B requires A)
 > then a `NotSupportedException` will be thrown.
 
-### [[BeforeConvention]](xref:Rocket.Surgery.Conventions.BeforeConventionAttribute) / [[DependentOfConvention]](xref:Rocket.Surgery.Conventions.DependentOfConventionAttribute)
+### [[BeforeConvention]](xref:Rocket.Surgery.Clavus.BeforePartAttribute) / [[DependentOfConvention]](xref:Rocket.Surgery.Clavus.DependentOfPartAttribute)
 
 This attribute can be used to ensure that your convention is called before another convention. The order is still non-deterministic but
 Conventions will ensure that the defined convention is run before the convention type defined by the attribute.
@@ -50,7 +50,7 @@ public class ConventionB
 }
 ```
 
-### [[AfterConvention]](xref:Rocket.Surgery.Conventions.AfterConventionAttribute) / [[DependsOnConvention]](xref:Rocket.Surgery.Conventions.DependsOnConventionAttribute)
+### [[AfterConvention]](xref:Rocket.Surgery.Clavus.AfterPartAttribute) / [[DependsOnConvention]](xref:Rocket.Surgery.Clavus.DependsOnPartAttribute)
 
 This attribute can be used to ensure that your convention is called after another convention. The order is still non-deterministic but
 Conventions will ensure that the defined convention is run after the convention type defined by the attribute.
@@ -72,17 +72,17 @@ public class ConventionB
 
 ### Custom Attributes
 
-If you want you can define your own custom attribute for use with convention ordering. Your attribute must implement <xref:Rocket.Surgery.Conventions.IConventionDependency>
-and specify the <xref:Rocket.Surgery.Conventions.DependencyDirection>.
+If you want you can define your own custom attribute for use with convention ordering. Your attribute must implement <xref:Rocket.Surgery.Clavus.IClavusDependency>
+and specify the <xref:Rocket.Surgery.Clavus.DependencyDirection>.
 
 ## Convention Host Type
 
-You can define a convention that only runs for a given <xref:Rocket.Surgery.Conventions.HostType>. The HostType can be defined on the
-<xref:Rocket.Surgery.Conventions.ConventionContextBuilder> using `Set<HostType>(HostType.UnitTest)`. Using the `HostType` an assembly
+You can define a convention that only runs for a given <xref:Rocket.Surgery.Clavus.HostType>. The HostType can be defined on the
+<xref:Rocket.Surgery.Clavus.ClavusContextBuilder> using `Set<HostType>(HostType.UnitTest)`. Using the `HostType` an assembly
 can define different behaviors given the context.
 
-A good example of this is designing a system that uses [NodaTime](https://nodatime.org/). You can have a [[LiveConvention]](xref:Rocket.Surgery.Conventions.LiveConventionAttribute) that registers
-`IClock` using the expected calendar system, and another [[UnitTestConvention]](xref:Rocket.Surgery.Conventions.UnitTestConventionAttribute) that registers a `FakeClock`
+A good example of this is designing a system that uses [NodaTime](https://nodatime.org/). You can have a [[LiveConvention]](xref:Rocket.Surgery.Clavus.LivePartAttribute) that registers
+`IClock` using the expected calendar system, and another [[UnitTestConvention]](xref:Rocket.Surgery.Clavus.UnitTestPartAttribute) that registers a `FakeClock`
 with a predefined starting date and time.
 
 > [!NOTE]
@@ -95,7 +95,7 @@ with a predefined starting date and time.
 > [!NOTE]
 > There is no attribute for the `HostType.Undefined`.
 
-### [[LiveConvention]](xref:Rocket.Surgery.Conventions.LiveConventionAttribute)
+### [[LiveConvention]](xref:Rocket.Surgery.Clavus.LivePartAttribute)
 
 This attribute ensures a convention that only runs when the `HostType` is `Live`.
 
@@ -106,7 +106,7 @@ public class ConventionA
 }
 ```
 
-### [[UnitTestConvention]](xref:Rocket.Surgery.Conventions.UnitTestConventionAttribute)
+### [[UnitTestConvention]](xref:Rocket.Surgery.Clavus.UnitTestPartAttribute)
 
 This attribute ensures a convention that only runs when the `HostType` is `UnitTest`.
 
@@ -120,41 +120,41 @@ public class ConventionA
 ## Injecting dependencies
 
 By default conventions are a simple class that can be created using `Activator.CreateInstance` however the goal of conventions was to allow "bootstrap time"
-configuration to be provided. The <xref:Rocket.Surgery.Conventions.ConventionContextBuilder> acts as a bag of properties using [`indexer`](xref:Rocket.Surgery.Conventions.ConventionContextBuilder#Rocket_Surgery_Conventions_ConventionContextBuilder_Item_System_Object_) or [`Properties`](xref:Rocket.Surgery.Conventions.ConventionContextBuilder#Rocket_Surgery_Conventions_ConventionContextBuilder_Properties).
+configuration to be provided. The <xref:Rocket.Surgery.Clavus.ClavusContextBuilder> acts as a bag of properties using [`indexer`](xref:Rocket.Surgery.Clavus.ClavusContextBuilder#Rocket_Surgery_Conventions_ClavusContextBuilder_Item_System_Object_) or [`Properties`](xref:Rocket.Surgery.Clavus.ClavusContextBuilder#Rocket_Surgery_Conventions_ClavusContextBuilder_Properties).
 
 Any type defined in the context is injectable into any defined convention. This can be used for any number of purposes such as...
 
 - allow consumers to provide configuration to your convention
 - allow conventions to communicate or share common state
 
-Under the covers the [`Properties`](xref:Rocket.Surgery.Conventions.ConventionContextBuilder#Rocket_Surgery_Conventions_ConventionContextBuilder_Properties) implements `IServiceProvider`
+Under the covers the [`Properties`](xref:Rocket.Surgery.Clavus.ClavusContextBuilder#Rocket_Surgery_Conventions_ClavusContextBuilder_Properties) implements `IServiceProvider`
 and we simply activate conventions using `ActivatorUtilities.CreateInstance`.
 
 > [!NOTE]
-> All dependencies must be registered into the builder, as activation happens while <xref:Rocket.Surgery.Conventions.IConventionContext> is built.
+> All dependencies must be registered into the builder, as activation happens while <xref:Rocket.Surgery.Clavus.IClavusContext> is built.
 
 ---
 
 ```c#
-public class InjectableConvention : IServiceConvention
+public class InjectableConvention : IServicePart
 {
     private readonly IInjectData _convention;
 
     public InjectableConvention(IInjectData convention) => _convention = convention;
 
-    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
+    public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services)
     {
         //...
     }
 }
 
-public class OptionalInjectableConvention : IServiceConvention
+public class OptionalInjectableConvention : IServicePart
 {
     private readonly IInjectData? _convention;
 
     public OptionalInjectableConvention(IInjectData? convention = null) => _convention = convention;
 
-    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services)
+    public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services)
     {
         if (_convention is { })
         {

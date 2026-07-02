@@ -2,9 +2,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Rocket.Surgery.CommandLine;
-using Rocket.Surgery.Conventions.DependencyInjection;
-using Rocket.Surgery.Hosting;
+using Rocket.Surgery.Clavus.CommandLine;
+using Rocket.Surgery.Clavus.DependencyInjection;
+using Rocket.Surgery.Clavus.Hosting;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -16,13 +16,13 @@ public static partial class Program
 {
     public static async Task<int> Main(string[] args) => await ( await CreateHostBuilder(args) ).RunConsoleAppAsync();
 
-    public static async Task<IHost> CreateHostBuilder(string[] args) => await Host.CreateApplicationBuilder(args).ConfigureRocketSurgery();
+    public static async Task<IHost> CreateHostBuilder(string[] args) => await Host.CreateApplicationBuilder(args).ConfigureClavus();
 }
 
-[ExportConvention]
-internal class Convention : ICommandLineConvention, IServiceConvention
+[ExportClavusPart]
+internal class Convention : ICommandLineConvention, IServicePart
 {
-    public void Register(IConventionContext context, IConfigurator app)
+    public void Register(IClavusContext context, IConfigurator app)
     {
         app.AddDelegate(
             "test",
@@ -31,7 +31,7 @@ internal class Convention : ICommandLineConvention, IServiceConvention
         app.AddCommand<MyCommand>("dump");
     }
 
-    public void Register(IConventionContext context, IConfiguration configuration, IServiceCollection services) { }
+    public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services) { }
 }
 
 internal class MyCommand(IHostBuilder hostBuilder, IAnsiConsole console) : AsyncCommand<AppSettings>

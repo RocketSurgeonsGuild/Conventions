@@ -1,0 +1,18 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Rocket.Surgery.Clavus.Autofac;
+
+internal class AutofacConventionServiceProviderFactory(ContainerBuilder? container = null) : IServiceProviderFactory<ContainerBuilder>
+{
+    private readonly ContainerBuilder _container = container ?? new ContainerBuilder();
+
+    public ContainerBuilder CreateBuilder(IServiceCollection services)
+    {
+        _container.Populate(services);
+        return _container;
+    }
+
+    public IServiceProvider CreateServiceProvider(ContainerBuilder containerBuilder) => containerBuilder.Build().Resolve<IServiceProvider>();
+}

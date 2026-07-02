@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <ImportConventionsAssembly>true</ImportConventionsAssembly>
+        <ImportClavusAssembly>true</ImportClavusAssembly>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
 
@@ -11,7 +11,7 @@
         <PackageReference Include="Microsoft.Testing.Extensions.HangDump" />
         <PackageReference Include="TUnit" />
         <ProjectReference
-            Include="..\..\src\Conventions.Analyzers\Rocket.Surgery.Conventions.Analyzers.csproj"
+            Include="..\..\src\Clavus.Analyzers\Rocket.Surgery.Clavus.Analyzers.csproj"
             IncludeAssets="all"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
