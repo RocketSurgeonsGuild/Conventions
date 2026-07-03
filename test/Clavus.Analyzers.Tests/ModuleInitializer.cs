@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using DiffEngine;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
-namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+namespace Clavus.Analyzers.Tests;
 
 public static class ModuleInitializer
 {
@@ -33,11 +33,11 @@ public static class ModuleInitializer
         VerifierSettings.ScrubLinesWithReplace(
             s =>
             {
-                return  s.Contains(
-                        "Rocket.Surgery.ClavusConfigurationData.AssemblyProvider.",
+                return s.Contains(
+                        "ClavusConfigurationData.AssemblyProvider.",
                         StringComparison.OrdinalIgnoreCase
-                    ) 
-                    ?  s[..( s.IndexOf('"', s.IndexOf('"') + 1) + 2 )] + "\"\")]" 
+                    )
+                    ? s[..( s.IndexOf('"', s.IndexOf('"') + 1) + 2 )] + "\"\")]"
                     : s;
             }
         );

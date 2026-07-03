@@ -2,12 +2,11 @@ using System.Reflection;
 
 using FakeItEasy;
 
-using Rocket.Surgery.Clavus.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 
 
 
-namespace Rocket.Surgery.Clavus.Tests;
+namespace Clavus.Tests;
 
 public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
@@ -53,8 +52,8 @@ public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(Tes
     {
         var scanner = ClavusContextBuilder.Create(_ => []);
 
-        var @delegate = new ServicePart((_, _, _) => { });
-        var delegate2 = new ServicePart((_, _, _) => { });
+        var @delegate = new ServicePart((_, _) => { });
+        var delegate2 = new ServicePart((_, _) => { });
 
         scanner.PrependDelegate(delegate2, null, null);
         scanner.AppendDelegate(@delegate, null, null);

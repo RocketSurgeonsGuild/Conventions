@@ -1,7 +1,7 @@
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
-namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+namespace Clavus.Analyzers.Tests;
 
 public abstract class GeneratorTest() : LoggerTest<TestRecord>(TestRecord.Create())
 {

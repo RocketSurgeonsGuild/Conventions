@@ -3,10 +3,10 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Clavus.Helpers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Rocket.Surgery.Clavus.Helpers;
 
-namespace Rocket.Surgery.Clavus.Support;
+namespace Clavus.Support;
 
 internal static class ExportConventions
 {
@@ -181,7 +181,8 @@ internal static class ExportConventions
                              UsingDirective(ParseName("System")),
                              UsingDirective(ParseName("System.Collections.Generic")),
                              UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
-                             UsingDirective(ParseName("Rocket.Surgery.Clavus")),
+                             UsingDirective(ParseName("Clavus")),
+                             UsingDirective(ParseName("Clavus.Infrastructure")),
                          }
                      )
                  )

@@ -1,6 +1,6 @@
 //using McMaster.Extensions.CommandLineUtils;
 //
-//namespace Rocket.Surgery.Clavus.Hosting.Tests;
+//namespace Clavus.Hosting.Tests;
 //
 //[Command]
 //[UsedImplicitly]

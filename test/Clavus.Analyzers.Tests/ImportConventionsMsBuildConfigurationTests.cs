@@ -1,6 +1,6 @@
 
 
-namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+namespace Clavus.Analyzers.Tests;
 
 public class ImportConventionsMsBuildConfigurationTests() : GeneratorTest()
 {
@@ -69,9 +69,9 @@ public class ImportConventionsMsBuildConfigurationTests() : GeneratorTest()
     {
         var result = await WithSharedDeps()
                           .AddSources(
-                               @"using Rocket.Surgery.Clavus;
+                               @"using Clavus;
 
-[assembly: ImportConventions(Namespace = ""Test.My.Namespace"", ClassName = ""MyImports"", MethodName = ""ImportConventions"")]
+[assembly: ImportClavusParts(Namespace = ""Test.My.Namespace"", ClassName = ""MyImports"", MethodName = ""ImportConventions"")]
 "
                            )
                           .AddGlobalOption("build_property.ImportClavusNamespace", "Test.Other.Namespace")

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Clavus.CommandLine;
+namespace Clavus.CommandLine;
 
 internal class ConventionTypeRegistrar : ITypeRegistrar, IServiceProvider
 {

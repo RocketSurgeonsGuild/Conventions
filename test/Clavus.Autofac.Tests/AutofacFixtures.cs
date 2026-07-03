@@ -2,8 +2,6 @@ using Autofac;
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Clavus.Autofac;
-using Rocket.Surgery.Clavus.DependencyInjection;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;
 

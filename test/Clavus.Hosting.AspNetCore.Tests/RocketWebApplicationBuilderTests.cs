@@ -1,10 +1,10 @@
+using Clavus.Hosting.AspNetCore.Tests.Startups;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
-using Rocket.Surgery.Clavus.Hosting.AspNetCore.Tests.Startups;
 using Rocket.Surgery.Extensions.Testing;
 
 
-namespace Rocket.Surgery.Clavus.Hosting.AspNetCore.Tests;
+namespace Clavus.Hosting.AspNetCore.Tests;
 
 public class RocketWebApplicationBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {

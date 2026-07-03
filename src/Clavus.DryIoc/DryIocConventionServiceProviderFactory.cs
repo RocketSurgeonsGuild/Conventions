@@ -2,7 +2,7 @@ using DryIoc;
 using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rocket.Surgery.Clavus.DryIoc;
+namespace Clavus.DryIoc;
 
 internal class DryIocConventionServiceProviderFactory(IClavusContext context, IContainer container) : IServiceProviderFactory<IContainer>
 {

@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Clavus.CommandLine;
+namespace Clavus.CommandLine;
 
 /// <summary>
 ///     Default class used for application settings

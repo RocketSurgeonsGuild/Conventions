@@ -1,17 +1,16 @@
+using Clavus.Infrastructure;
 using FakeItEasy;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using Rocket.Surgery.Clavus.DependencyInjection;
-using Rocket.Surgery.Clavus.Setup;
 using Rocket.Surgery.Extensions.Testing;
 
 using Serilog.Events;
 
 
 
-namespace Rocket.Surgery.Clavus.Tests;
+namespace Clavus.Tests;
 
 public class ClavusContextTests
     () : AutoFakeTest<TestRecord>(TestRecord.Create(LogEventLevel.Information))
@@ -77,7 +76,7 @@ public class ClavusContextTests
         var servicesCollection = await new ServiceCollection()
                                       .AddSingleton(A.Fake<IAbc>())
                                       .AddSingleton(A.Fake<IAbc2>())
-                                      .ApplyConventionsAsync(context);
+                                      .ApplyPartsAsync(context);
 
         var sp = servicesCollection.BuildServiceProvider();
         sp.GetService<IAbc>().ShouldNotBeNull();
@@ -94,7 +93,7 @@ public class ClavusContextTests
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var servicesCollection = await new ServiceCollection().ApplyPartsAsync(context);
 
         servicesCollection.AddSingleton(A.Fake<IAbc>());
         servicesCollection.AddSingleton(A.Fake<IAbc2>());
@@ -115,7 +114,7 @@ public class ClavusContextTests
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var servicesCollection = await new ServiceCollection().ApplyPartsAsync(context);
         servicesCollection.AddSingleton(A.Fake<IAbc3>());
         servicesCollection.AddSingleton(A.Fake<IAbc4>());
 
@@ -134,7 +133,7 @@ public class ClavusContextTests
                      .AppendConvention(new AbcConvention());
         builder.Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(builder);
-        var servicesCollection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var servicesCollection = await new ServiceCollection().ApplyPartsAsync(context);
 
         var items = servicesCollection.BuildServiceProvider();
         items.GetService<IAbc>().ShouldNotBeNull();
@@ -154,7 +153,7 @@ public class ClavusContextTests
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(builder);
-        var collection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var collection = await new ServiceCollection().ApplyPartsAsync(context);
         collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
@@ -169,7 +168,7 @@ public class ClavusContextTests
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = ( await ClavusContext.FromAsync(builder) ).Set(data);
-        var collection = await new ServiceCollection().ApplyConventionsAsync(context);
+        var collection = await new ServiceCollection().ApplyPartsAsync(context);
         collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
@@ -192,7 +191,7 @@ public class ClavusContextTests
                      .AppendConvention<OptionalInjectableConvention>()
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(builder);
-        var a = () => new ServiceCollection().ApplyConventionsAsync(context).AsTask();
+        var a = () => new ServiceCollection().ApplyPartsAsync(context).AsTask();
         await a.ShouldNotThrowAsync();
     }
 

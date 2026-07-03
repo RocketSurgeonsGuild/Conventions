@@ -1,6 +1,6 @@
+using Clavus.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Rocket.Surgery.Clavus.WebAssembly.Hosting;
 using Sample.BlazorWasm;
 
 var builder = WebAssemblyHostBuilder

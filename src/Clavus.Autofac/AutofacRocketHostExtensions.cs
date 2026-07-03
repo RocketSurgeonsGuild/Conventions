@@ -1,10 +1,8 @@
 using Autofac;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Clavus.Autofac;
+using Clavus.Autofac;
 
 // ReSharper disable once CheckNamespace
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 /// <summary>
 ///     Class AutofacRocketHostExtensions.
@@ -24,97 +22,10 @@ public static class AutofacConventionRocketHostExtensions
             async (context, services, ct) =>
             {
                 var c = containerBuilder ?? new ContainerBuilder();
-                await c.ApplyConventionsAsync(context, services, ct);
+                await c.ApplyPartsAsync(context, services, ct);
                 return new AutofacConventionServiceProviderFactory(c);
             }
         );
     }
 
-    /// <summary>
-    ///     Uses the Autofac.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns>IHostBuilder.</returns>
-    public static ClavusContextBuilder ConfigureAutofac(
-        this ClavusContextBuilder builder,
-        AutofacConvention @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        builder.AppendDelegate(@delegate, priority, category ?? ClavusCategory.Core);
-        return builder;
-    }
-
-    /// <summary>
-    ///     Uses the Autofac.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns>IHostBuilder.</returns>
-    public static ClavusContextBuilder ConfigureAutofac(
-        this ClavusContextBuilder builder,
-        Action<IConfiguration, IServiceCollection, ContainerBuilder> @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        builder.AppendDelegate(
-            new AutofacConvention((_, configuration, services, container) => @delegate(configuration, services, container)),
-            priority,
-            category ?? ClavusCategory.Core
-        );
-        return builder;
-    }
-
-    /// <summary>
-    ///     Uses the Autofac.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns>IHostBuilder.</returns>
-    public static ClavusContextBuilder ConfigureAutofac(
-        this ClavusContextBuilder builder,
-        Action<IServiceCollection, ContainerBuilder> @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        builder.AppendDelegate(new AutofacConvention((_, _, services, container) => @delegate(services, container)), priority, category ?? ClavusCategory.Core);
-        return builder;
-    }
-
-    /// <summary>
-    ///     Uses the Autofac.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns>IHostBuilder.</returns>
-    public static ClavusContextBuilder ConfigureAutofac(
-        this ClavusContextBuilder builder,
-        Action<ContainerBuilder> @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        builder.AppendDelegate(new AutofacConvention((_, _, _, container) => @delegate(container)), priority, category ?? ClavusCategory.Core);
-        return builder;
-    }
 }

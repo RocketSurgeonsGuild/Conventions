@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>
+            Adds helpers to easily bootstrap an application using conventions by
+            just using the correct extension method. This adds command line operations, additional
+            configuration, logging and service injections by convention.
+        </PackageDescription>
+        <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Clavus\Clavus.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="Clavus.Hosting.AspNetCore.Tests" />
+        <InternalsVisibleTo Include="Clavus.Hosting.Tests" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="build/*.*" Pack="true" PackagePath="build" />
+        <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
+        <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
+    </ItemGroup>
+</Project>

@@ -1,12 +1,11 @@
 using System.Text;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Clavus.Helpers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Rocket.Surgery.Clavus.Helpers;
 
-namespace Rocket.Surgery.Clavus.Support;
+namespace Clavus.Support;
 
 internal static class ImportConventions
 {
@@ -25,7 +24,7 @@ internal static class ImportConventions
                .WithAttributeLists(
                     SingletonList(
                         CompilerGeneratedAttributes
-                           .WithLeadingTrivia(GetXmlSummary("The class defined for importing conventions into this assembly"))
+                           .WithLeadingTrivia(GetXmlSummary("The class defined for importing Clavus parts into this assembly"))
                     )
                 )
                .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
@@ -35,7 +34,7 @@ internal static class ImportConventions
                                .WithVariables(
                                     SingletonSeparatedList(
                                         VariableDeclarator(Identifier(request.ImportConfiguration.MethodName))
-                                           .WithInitializer(EqualsValueClause(IdentifierName("LoadConventionsMethod")))
+                                           .WithInitializer(EqualsValueClause(IdentifierName("LoadClavusPartsMethod")))
                                     )
                                 )
                         )
@@ -47,7 +46,7 @@ internal static class ImportConventions
                                         SingletonSeparatedList<TypeSyntax>(IdentifierName("IClavusPartMetadata"))
                                     )
                                 ),
-                            Identifier("LoadConventionsMethod")
+                            Identifier("LoadClavusPartsMethod")
                         )
                        .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)))
                        .WithParameterList(
@@ -58,7 +57,7 @@ internal static class ImportConventions
                             )
                         )
                        .WithBody(functionBody)
-                       .WithLeadingTrivia(GetXmlSummary("The conventions imported into this assembly"))
+                       .WithLeadingTrivia(GetXmlSummary("The Clavus parts imported into this assembly"))
                 )
                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
@@ -143,7 +142,8 @@ internal static class ImportConventions
                              UsingDirective(ParseName("System.Collections.Generic")),
                              UsingDirective(ParseName("System.Runtime.Loader")),
                              UsingDirective(ParseName("Microsoft.Extensions.DependencyInjection")),
-                             UsingDirective(ParseName("Rocket.Surgery.Clavus")),
+                             UsingDirective(ParseName("Clavus")),
+                             UsingDirective(ParseName("Clavus.Infrastructure")),
                          ]
                      )
                  );
@@ -163,242 +163,6 @@ internal static class ImportConventions
             "Imported_Assembly_Conventions.g.cs",
             cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
         );
-
-        var hasSerilog = request.Compilation.GetTypeByMetadataName("Rocket.Surgery.Clavus.ConventionSerilogExtensions") is { };
-
-        if (request.ImportConfiguration is { Assembly: true })
-        {
-            var loadConventionsMethod = request.ImportConfiguration.Namespace is { Length: > 0 }
-                ? $"global::{request.ImportConfiguration.Namespace}.{request.ImportConfiguration.ClassName}.{request.ImportConfiguration.MethodName}"
-                : $"global::{request.ImportConfiguration.ClassName}.{request.ImportConfiguration.MethodName}";
-
-            if (compilation.GetTypeByMetadataName("Rocket.Surgery.Clavus.Hosting.RocketHostApplicationExtensions") is { })
-            {
-                if (compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.WebApplicationBuilder") is { })
-                {
-                    const string builderName = "WebApplicationBuilder";
-                    const string builderType = "global::Microsoft.AspNetCore.Builder.WebApplicationBuilder";
-                    const string returnType = "global::Microsoft.AspNetCore.Builder.WebApplication";
-                    const string extensionsType = "global::Rocket.Surgery.Clavus.Hosting.RocketHostApplicationExtensions";
-                    const string hostingUsing = "global::Microsoft.Extensions.Hosting";
-                    const string rocketUsing = "Rocket.Surgery.Clavus.Hosting";
-                    context.AddSource(
-                        "Generated_WebApplicationBuilder_Extensions.g.cs",
-                        transformTemplate(
-                            _configurationMethods,
-                            builderName,
-                            builderType,
-                            returnType,
-                            extensionsType,
-                            loadConventionsMethod,
-                            hostingUsing,
-                            rocketUsing
-                        )
-                    );
-                    if (hasSerilog)
-                    {
-                        context.AddSource(
-                            "Generated_WebApplicationBuilder_Extensions_Serilog.g.cs",
-                            transformTemplate(
-                                _serilogConfigurationMethods,
-                                builderName,
-                                builderType,
-                                returnType,
-                                extensionsType,
-                                loadConventionsMethod,
-                                hostingUsing,
-                                rocketUsing
-                            )
-                        );
-                    }
-                }
-
-                if (compilation.GetTypeByMetadataName("Microsoft.Extensions.Hosting.HostApplicationBuilder") is { })
-                {
-                    const string builderName = "HostApplicationBuilder";
-                    const string builderType = "global::Microsoft.Extensions.Hosting.HostApplicationBuilder";
-                    const string returnType = "global::Microsoft.Extensions.Hosting.IHost";
-                    const string extensionsType = "global::Rocket.Surgery.Clavus.Hosting.RocketHostApplicationExtensions";
-                    const string hostingUsing = "global::Microsoft.Extensions.Hosting";
-                    const string rocketUsing = "Rocket.Surgery.Clavus.Hosting";
-
-                    context.AddSource(
-                        "Generated_HostApplicationBuilder_Extensions.g.cs",
-                        transformTemplate(
-                            _configurationMethods,
-                            builderName,
-                            builderType,
-                            returnType,
-                            extensionsType,
-                            loadConventionsMethod,
-                            hostingUsing,
-                            rocketUsing
-                        )
-                    );
-
-                    if (hasSerilog)
-                    {
-                        context.AddSource(
-                            "Generated_HostApplicationBuilder_Extensions_Serilog.g.cs",
-                            transformTemplate(
-                                _serilogConfigurationMethods,
-                                builderName,
-                                builderType,
-                                returnType,
-                                extensionsType,
-                                loadConventionsMethod,
-                                hostingUsing,
-                                rocketUsing
-                            )
-                        );
-                    }
-                }
-            }
-
-            if (compilation.GetTypeByMetadataName("Rocket.Surgery.Clavus.WebAssembly.Hosting.RocketWebAssemblyExtensions") is { }
-             && compilation.GetTypeByMetadataName("Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder") is { })
-            {
-                const string builderName = "WebAssemblyHostBuilder";
-                const string builderType = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder";
-                const string returnType = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost";
-                const string extensionsType = "global::Rocket.Surgery.Clavus.WebAssembly.Hosting.RocketWebAssemblyExtensions";
-                const string hostingUsing = "global::Microsoft.AspNetCore.Components.WebAssembly.Hosting";
-                const string rocketUsing = "Rocket.Surgery.Clavus.WebAssembly.Hosting";
-
-                context.AddSource(
-                    "Generated_WebAssemblyBuilder_Extensions.g.cs",
-                    transformTemplate(
-                        _configurationMethods,
-                        builderName,
-                        builderType,
-                        returnType,
-                        extensionsType,
-                        loadConventionsMethod,
-                        hostingUsing,
-                        rocketUsing
-                    )
-                );
-                if (hasSerilog)
-                {
-                    context.AddSource(
-                        "Generated_WebAssemblyBuilder_Extensions_Serilog.g.cs",
-                        transformTemplate(
-                            _serilogConfigurationMethods,
-                            builderName,
-                            builderType,
-                            returnType,
-                            extensionsType,
-                            loadConventionsMethod,
-                            hostingUsing,
-                            rocketUsing
-                        )
-                    );
-                }
-            }
-
-            if (compilation.GetTypeByMetadataName("Rocket.Surgery.Clavus.Aspire.RocketDistributedApplicationExtensions") is { }
-             && compilation.GetTypeByMetadataName("Aspire.Hosting.IDistributedApplicationBuilder") is { })
-            {
-                const string builderName = "DistributedApplicationBuilder";
-                const string builderType = "global::Aspire.Hosting.IDistributedApplicationBuilder";
-                const string returnType = "global::Aspire.Hosting.DistributedApplication";
-                const string extensionsType = "global::Rocket.Surgery.Clavus.Aspire.RocketDistributedApplicationExtensions";
-                const string hostingUsing = "global::Aspire.Hosting";
-                const string rocketUsing = "Rocket.Surgery.Clavus.Aspire";
-
-                context.AddSource(
-                    "Generated_DistributedApplicationBuilder_Extensions.g.cs",
-                    transformTemplate(
-                            _configurationMethods,
-                            builderName,
-                            builderType,
-                            returnType,
-                            extensionsType,
-                            loadConventionsMethod,
-                            hostingUsing,
-                            rocketUsing
-                        )
-                       .Replace(", static b => b.Build()", "")
-                );
-                if (hasSerilog)
-                {
-                    context.AddSource(
-                        "Generated_DistributedApplicationBuilder_Extensions_Serilog.g.cs",
-                        transformTemplate(
-                                _serilogConfigurationMethods,
-                                builderName,
-                                builderType,
-                                returnType,
-                                extensionsType,
-                                loadConventionsMethod,
-                                hostingUsing,
-                                rocketUsing
-                            )
-                           .Replace(", static b => b.Build()", "")
-                    );
-                }
-            }
-
-            if (compilation.GetTypeByMetadataName("Rocket.Surgery.Clavus.Aspire.Testing.RocketDistributedApplicationTestingExtensions") is { }
-             && compilation.GetTypeByMetadataName("Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder") is { })
-            {
-                const string builderName = "DistributedApplicationTestingBuilder";
-                const string builderType = "global::Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder";
-                const string returnType = "global::Aspire.Hosting.DistributedApplication";
-                const string extensionsType = "global::Rocket.Surgery.Clavus.Aspire.Testing.RocketDistributedApplicationTestingExtensions";
-                const string hostingUsing = "global::Aspire.Hosting.Testing";
-                const string rocketUsing = "Rocket.Surgery.Clavus.Aspire.Testing";
-                context.AddSource(
-                    "Generated_DistributedApplicationTestingBuilder_Extensions.g.cs",
-                    transformTemplate(
-                            _configurationMethods,
-                            builderName,
-                            builderType,
-                            returnType,
-                            extensionsType,
-                            loadConventionsMethod,
-                            hostingUsing,
-                            rocketUsing
-                        )
-                       .Replace(", static b => b.Build()", "")
-                );
-                if (hasSerilog)
-                {
-                    context.AddSource(
-                        "Generated_DistributedApplicationTestingBuilder_Extensions_Serilog.g.cs",
-                        transformTemplate(
-                                _serilogConfigurationMethods,
-                                builderName,
-                                builderType,
-                                returnType,
-                                extensionsType,
-                                loadConventionsMethod,
-                                hostingUsing,
-                                rocketUsing
-                            )
-                           .Replace(", static b => b.Build()", "")
-                    );
-                }
-            }
-        }
-
-        static string transformTemplate(
-            string template,
-            string builderName,
-            string builderType,
-            string returnType,
-            string extensionsType,
-            string loadConventionsMethod,
-            string hostingUsing,
-            string rocketUsing
-        ) => template
-            .Replace("{BuilderName}", builderName)
-            .Replace("{BuilderType}", builderType)
-            .Replace("{ReturnType}", returnType)
-            .Replace("{ExtensionsType}", extensionsType)
-            .Replace("{LoadClavusParts}", loadConventionsMethod)
-            .Replace("{HostingUsing}", hostingUsing)
-            .Replace("{RocketUsing}", rocketUsing);
 
         static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ClavusConfigurationData configurationData) => [
             .. compilation
@@ -420,7 +184,7 @@ internal static class ImportConventions
                                        _                                         => config.ClassName,
                                    }
                                ) is { } configuredMetadata) { return configuredMetadata.ToDisplayString() + $".{config.MethodName}";
-            } }
+                           } }
                        catch
                        {
                            //
@@ -453,10 +217,10 @@ internal static class ImportConventions
                 block = block.AddStatements(
                     ForEachStatement(
                             IdentifierName("var"),
-                            Identifier("convention"),
+                            Identifier("part"),
                             InvocationExpression(ParseExpression(reference))
                                .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("builder"))))),
-                            YieldStatement(SyntaxKind.YieldReturnStatement, IdentifierName("convention"))
+                            YieldStatement(SyntaxKind.YieldReturnStatement, IdentifierName("part"))
                         )
                        .NormalizeWhitespace()
                 );
@@ -470,310 +234,8 @@ internal static class ImportConventions
     (
         Compilation Compilation,
         bool HasExports,
-        (bool isTestProject, string? rootNamespace) MsBuildConfig,
+        (bool isTestProject, string? rootNamespace, string clavusHostSdk) MsBuildConfig,
         ClavusConfigurationData ImportConfiguration,
         ClavusConfigurationData ExportConfiguration
     );
-
-    private const string _configurationMethods = """"
-        #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
-        using System.Threading.Tasks;
-        using Microsoft.Extensions.Configuration;
-        using Microsoft.Extensions.DependencyInjection;
-        using {HostingUsing};
-        using Microsoft.Extensions.Logging;
-        using Rocket.Surgery.Clavus;
-        using AppDelegate =
-            System.Func<{BuilderType}, System.Threading.CancellationToken,
-                System.Threading.Tasks.ValueTask<Rocket.Surgery.Clavus.ClavusContextBuilder>>;
-
-        namespace {RocketUsing};
-
-        internal static partial class GeneratedRocket{BuilderName}Extensions
-        {
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="cancellationToken"></param>
-            public static ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions());
-                return ConfigureClavus(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions());
-                return await ConfigureClavus(await builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, Func<ClavusContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions());
-                await action(contextBuilder, cancellationToken);
-                return await ConfigureClavus(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, Func<ClavusContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions());
-                await action(contextBuilder, cancellationToken);
-                return await ConfigureClavus(await builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, Func<ClavusContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions());
-                await action(contextBuilder);
-                return await ConfigureClavus(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, Func<ClavusContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions());
-                await action(contextBuilder);
-                return await ConfigureClavus(await builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, Action<ClavusContextBuilder> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions());
-                action(contextBuilder);
-                return ConfigureClavus(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, Action<ClavusContextBuilder> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions());
-                action(contextBuilder);
-                return await ConfigureClavus(await builder, action, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="contextBuilder">The convention context builder.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, ClavusContextBuilder contextBuilder, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(contextBuilder);
-                return await {ExtensionsType}.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="contextBuilder">The convention context builder.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, ClavusContextBuilder contextBuilder, CancellationToken cancellationToken = default) => await ConfigureClavus(await builder, contextBuilder, cancellationToken);
-        }
-        """";
-
-    private const string _serilogConfigurationMethods = """"
-        #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
-        using System.Threading.Tasks;
-        using Microsoft.Extensions.Configuration;
-        using Microsoft.Extensions.DependencyInjection;
-        using {HostingUsing};
-        using Microsoft.Extensions.Logging;
-        using Rocket.Surgery.Clavus;
-        using AppDelegate =
-            System.Func<{BuilderType}, System.Threading.CancellationToken,
-                System.Threading.Tasks.ValueTask<Rocket.Surgery.Clavus.ClavusContextBuilder>>;
-        using ILogger = Serilog.ILogger;
-
-        namespace {RocketUsing};
-
-        internal static partial class GeneratedRocket{BuilderName}Extensions
-        {
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="logger">The logger.</param>
-            /// <param name="cancellationToken"></param>
-            public static ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, ILogger logger, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(logger);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions()).UseLogger(logger);
-                return ConfigureClavus(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="logger">The logger.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, ILogger logger, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(logger);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions()).UseLogger(logger);
-                return await ConfigureClavus(await builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="logger">The logger.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, ILogger logger, Func<ClavusContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(logger);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions()).UseLogger(logger);
-                await action(contextBuilder, cancellationToken);
-                return await ConfigureClavus(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="logger">The logger.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, ILogger logger, Func<ClavusContextBuilder, CancellationToken, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(logger);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions()).UseLogger(logger);
-                await action(contextBuilder, cancellationToken);
-                return await ConfigureClavus(await builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="logger">The logger.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, ILogger logger, Func<ClavusContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(logger);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions()).UseLogger(logger);
-                await action(contextBuilder);
-                return await ConfigureClavus(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="logger">The logger.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, ILogger logger, Func<ClavusContextBuilder, ValueTask> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(logger);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions()).UseLogger(logger);
-                await action(contextBuilder);
-                return await ConfigureClavus(await builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="logger">The logger.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static ValueTask<{ReturnType}> ConfigureClavus(this {BuilderType} builder, ILogger logger, Action<ClavusContextBuilder> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(logger);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions()).UseLogger(logger);
-                action(contextBuilder);
-                return ConfigureClavus(builder, contextBuilder, cancellationToken);
-            }
-
-            /// <summary>
-            ///     Configures the rocket Surgery.
-            /// </summary>
-            /// <param name="builder">The builder.</param>
-            /// <param name="logger">The logger.</param>
-            /// <param name="action">The action.</param>
-            /// <param name="cancellationToken"></param>
-            public static async ValueTask<{ReturnType}> ConfigureClavus(this Task<{BuilderType}> builder, ILogger logger, Action<ClavusContextBuilder> action, CancellationToken cancellationToken = default)
-            {
-                ArgumentNullException.ThrowIfNull(builder);
-                ArgumentNullException.ThrowIfNull(logger);
-                ArgumentNullException.ThrowIfNull(action);
-                var contextBuilder = ClavusContextBuilder.Create({LoadClavusParts}.OrCallerConventions()).UseLogger(logger);
-                action(contextBuilder);
-                return await ConfigureClavus(await builder, action, cancellationToken);
-            }
-        }
-        """";
 }

@@ -1,19 +1,18 @@
+using Clavus.Configuration.Json;
+using Clavus.Configuration.Yaml;
+using Clavus.Hosting.AspNetCore.Tests.Startups;
 using FakeItEasy;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Clavus.Configuration.Json;
-using Rocket.Surgery.Clavus.Configuration.Yaml;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Clavus.Hosting.AspNetCore.Tests.Startups;
 
 
 
-namespace Rocket.Surgery.Clavus.Hosting.AspNetCore.Tests;
+namespace Clavus.Hosting.AspNetCore.Tests;
 
 public class RocketWebApplicationTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {

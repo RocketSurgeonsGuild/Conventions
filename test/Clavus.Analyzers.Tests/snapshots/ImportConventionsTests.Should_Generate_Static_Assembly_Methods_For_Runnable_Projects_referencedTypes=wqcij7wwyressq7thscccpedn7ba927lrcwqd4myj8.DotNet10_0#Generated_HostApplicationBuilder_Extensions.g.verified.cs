@@ -1,16 +1,16 @@
-//HintName: Rocket.Surgery.Clavus.Analyzers/Rocket.Surgery.Clavus.ClavusAttributesGenerator/Generated_HostApplicationBuilder_Extensions.g.cs
+//HintName: Clavus.Analyzers/Clavus.ClavusAttributesGenerator/Generated_HostApplicationBuilder_Extensions.g.cs
 #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using global::Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Clavus;
+using Clavus;
 using AppDelegate =
     System.Func<global::Microsoft.Extensions.Hosting.HostApplicationBuilder, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Rocket.Surgery.Clavus.ClavusContextBuilder>>;
+        System.Threading.Tasks.ValueTask<Clavus.ClavusContextBuilder>>;
 
-namespace Rocket.Surgery.Clavus.Hosting;
+namespace Clavus.Hosting;
 
 internal static partial class GeneratedRocketHostApplicationBuilderExtensions
 {
@@ -138,7 +138,7 @@ internal static partial class GeneratedRocketHostApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(contextBuilder);
-        return await global::Rocket.Surgery.Clavus.Hosting.RocketHostApplicationExtensions.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
+        return await global::Clavus.Hosting.RocketHostApplicationExtensions.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
     }
 
     /// <summary>

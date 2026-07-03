@@ -15,6 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Clavus.Aspire\Rocket.Surgery.Clavus.Aspire.csproj" IsAspireProjectResource="false" />
+        <ProjectReference Include="..\..\src\Clavus.Aspire\Clavus.Aspire.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 </Project>

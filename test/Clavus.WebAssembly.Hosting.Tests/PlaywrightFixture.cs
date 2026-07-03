@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using Clavus.WebAssembly.Hosting.Tests.DevServer;
 using DryIoc.ImTools;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -7,11 +8,10 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Playwright;
-using Rocket.Surgery.Clavus.WebAssembly.Hosting.Tests.DevServer;
 using Sample.BlazorWasm;
 using TUnit.Core.Interfaces;
 
-namespace Rocket.Surgery.Clavus.WebAssembly.Hosting.Tests;
+namespace Clavus.WebAssembly.Hosting.Tests;
 
 public sealed class PlaywrightFixture : IAsyncInitializer, IAsyncDisposable
 {

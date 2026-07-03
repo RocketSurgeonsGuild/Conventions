@@ -1,0 +1,75 @@
+<Project>
+    <!--
+        Sdk.targets — runs after project evaluation.
+        Detects host SDK, declares built-in ClavusPart items
+        (expanded by the Clavus.Abstractions build targets),
+        and expands the per-host bootstrap template.
+    -->
+
+    <!-- Detect host SDK -->
+    <PropertyGroup>
+        <_ClavusHostSdk Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">BlazorWebAssembly</_ClavusHostSdk>
+        <_ClavusHostSdk Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true' And '$(_ClavusHostSdk)' == ''">Web</_ClavusHostSdk>
+        <_ClavusHostSdk Condition="'$(ClavusIsAspire)' == 'true' And '$(_ClavusHostSdk)' == ''">Aspire</_ClavusHostSdk>
+        <_ClavusHostSdk Condition="'$(_ClavusHostSdk)' == ''">Generic</_ClavusHostSdk>
+    </PropertyGroup>
+
+    <!-- Expose properties to the source generator via CompilerVisibleProperty -->
+    <ItemGroup>
+        <CompilerVisibleProperty Include="_ClavusHostSdk" />
+        <CompilerVisibleProperty Include="IsTestProject" />
+        <CompilerVisibleProperty Include="RootNamespace" />
+    </ItemGroup>
+
+    <!-- Web host parts -->
+    <ItemGroup Condition="'$(_ClavusHostSdk)' == 'Web'">
+        <ClavusPart Include="HostApplication" ParameterType="Microsoft.Extensions.Hosting.IHostApplicationBuilder" ParameterName="builder" />
+        <ClavusPart Include="WebApplication" ParameterType="Microsoft.AspNetCore.Builder.WebApplicationBuilder" ParameterName="builder" />
+        <ClavusPart Include="HostCreated" ParameterType="Microsoft.Extensions.Hosting.IHost" ParameterName="host" />
+    </ItemGroup>
+
+    <!-- BlazorWebAssembly host parts -->
+    <ItemGroup Condition="'$(_ClavusHostSdk)' == 'BlazorWebAssembly'">
+        <ClavusPart
+            Include="WebAssemblyHost"
+            ParameterType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder"
+            ParameterName="builder"
+        />
+    </ItemGroup>
+
+    <!-- Aspire host parts -->
+    <ItemGroup Condition="'$(_ClavusHostSdk)' == 'Aspire'">
+        <ClavusPart Include="HostApplication" ParameterType="Microsoft.Extensions.Hosting.IHostApplicationBuilder" ParameterName="builder" />
+        <ClavusPart Include="HostCreated" ParameterType="Microsoft.Extensions.Hosting.IHost" ParameterName="host" />
+    </ItemGroup>
+
+    <!-- Generic host parts (non-web) -->
+    <ItemGroup Condition="'$(_ClavusHostSdk)' == 'Generic'">
+        <ClavusPart Include="HostApplication" ParameterType="Microsoft.Extensions.Hosting.IHostApplicationBuilder" ParameterName="builder" />
+        <ClavusPart Include="HostCreated" ParameterType="Microsoft.Extensions.Hosting.IHost" ParameterName="host" />
+    </ItemGroup>
+
+    <!-- Flag-gated optional package references -->
+    <ItemGroup>
+        <PackageReference Include="Clavus.Configuration.Json" Condition="'$(ClavusEnableJsonConfiguration)' == 'true'" />
+        <PackageReference Include="Clavus.Configuration.Yaml" Condition="'$(ClavusEnableYamlConfiguration)' == 'true'" />
+        <PackageReference Include="Clavus.Autofac" Condition="'$(ClavusEnableAutofac)' == 'true'" />
+        <PackageReference Include="Clavus.DryIoc" Condition="'$(ClavusEnableDryIoc)' == 'true'" />
+        <PackageReference Include="Clavus.Serilog" Condition="'$(ClavusEnableSerilog)' == 'true'" />
+    </ItemGroup>
+
+    <!-- Expand and include the per-host bootstrap template -->
+    <Target Name="_AddClavusBootstrapTemplate" BeforeTargets="CoreCompile" Condition="'$(RootNamespace)' != ''">
+        <ReadLinesFromFile File="$(MSBuildThisFileDirectory)templates/GeneratedClavus.$(_ClavusHostSdk).cs">
+            <Output TaskParameter="Lines" ItemName="_ClavusTemplateLines" />
+        </ReadLinesFromFile>
+        <WriteLinesToFile
+            File="$(IntermediateOutputPath)GeneratedClavus.$(_ClavusHostSdk).cs"
+            Lines="@(_ClavusTemplateLines->Replace('{RocketUsing}','$(RootNamespace)'))"
+            Overwrite="true"
+        />
+        <ItemGroup>
+            <Compile Include="$(IntermediateOutputPath)GeneratedClavus.$(_ClavusHostSdk).cs" />
+        </ItemGroup>
+    </Target>
+</Project>

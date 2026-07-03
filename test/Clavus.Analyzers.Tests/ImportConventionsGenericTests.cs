@@ -4,21 +4,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
-
+using Clavus.Aspire;
+using Clavus.Aspire.Testing;
+using Clavus.Hosting;
+using Clavus.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Hosting;
-
-using Rocket.Surgery.Clavus.Aspire;
-using Rocket.Surgery.Clavus.Aspire.Testing;
-using Rocket.Surgery.Clavus.Hosting;
-using Rocket.Surgery.Clavus.WebAssembly.Hosting;
-
 using Serilog;
 
 
 
-namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+namespace Clavus.Analyzers.Tests;
 
 public class ImportConventionsGenericTests() : GeneratorTest()
 {
@@ -28,9 +25,9 @@ public class ImportConventionsGenericTests() : GeneratorTest()
         var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
-[assembly: ImportConventions]
+[assembly: ImportClavusParts]
 "
                            )
                           .Build()
@@ -46,9 +43,9 @@ using Rocket.Surgery.Clavus;
                           .AddSources(
                                """
 
-                               using Rocket.Surgery.Clavus;
+                               using Clavus;
 
-                               [assembly: ImportConventions(Namespace = "Test.My.Namespace", ClassName = "MyImports")]
+                               [assembly: ImportClavusParts(Namespace = "Test.My.Namespace", ClassName = "MyImports")]
 
                                """
                            )
@@ -65,9 +62,9 @@ using Rocket.Surgery.Clavus;
                           .AddSources(
                                """
 
-                               using Rocket.Surgery.Clavus;
+                               using Clavus;
 
-                               [assembly: ImportConventions(Namespace = "", ClassName = "MyImports")]
+                               [assembly: ImportClavusParts(Namespace = "", ClassName = "MyImports")]
 
                                """
                            )
@@ -84,9 +81,9 @@ using Rocket.Surgery.Clavus;
                           .AddSources(
                                """
 
-                               using Rocket.Surgery.Clavus;
+                               using Clavus;
 
-                               [assembly: ImportConventions(Namespace = "Test.My.Namespace", ClassName = "MyImports", MethodName = "ImportConventions")]
+                               [assembly: ImportClavusParts(Namespace = "Test.My.Namespace", ClassName = "MyImports", MethodName = "ImportConventions")]
 
                                """
                            )
@@ -102,7 +99,7 @@ using Rocket.Surgery.Clavus;
         var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
 [assembly: ImportClavusPartsAttribute]
 "
@@ -119,9 +116,9 @@ using Rocket.Surgery.Clavus;
         var result = await Builder
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
-[assembly: ImportConventions]
+[assembly: ImportClavusParts]
 "
                            )
                           .Build()
@@ -136,19 +133,19 @@ using Rocket.Surgery.Clavus;
         var result = await Builder
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-[assembly: ImportConventions]
+[assembly: ImportClavusParts]
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     internal class Contrib : IClavusPart { }
 }
 ",
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
 namespace TestProject
 {
@@ -170,18 +167,18 @@ namespace TestProject
         var result = await Builder
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
-[assembly: ImportConventions]
+using Clavus;
+using Clavus.Tests;
+[assembly: ImportClavusParts]
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     internal class Contrib : IClavusPart { }
 }
 ",
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
 namespace TestProject
 {
@@ -206,9 +203,9 @@ namespace TestProject
                           .AddReferences(referencedTypes.ToArray())
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
-[assembly: ImportConventions]
+[assembly: ImportClavusParts]
 "
                            )
                           .Build()
@@ -225,9 +222,9 @@ using Rocket.Surgery.Clavus;
         var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
-[assembly: ImportConventions]
+[assembly: ImportClavusParts]
 "
                            )
                           .AddGlobalOption("build_property.IsTestProject", isTestProject ? "true" : "false")
@@ -250,7 +247,7 @@ using Rocket.Surgery.Clavus;
                 [
                     typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder),
                     typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
+                    typeof(ClavusContext),
                 ]
             ),
         ];
@@ -260,7 +257,7 @@ using Rocket.Surgery.Clavus;
                 [
                     typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder),
                     typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
+                    typeof(ClavusContext),
                 ]
             ),
         ];
@@ -270,7 +267,7 @@ using Rocket.Surgery.Clavus;
                 [
                     typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder),
                     typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
+                    typeof(ClavusContext),
                 ]
             ),
         ];
@@ -280,7 +277,7 @@ using Rocket.Surgery.Clavus;
                 [
                     typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder),
                     typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
+                    typeof(ClavusContext),
                 ]
             ),
         ];
@@ -290,7 +287,7 @@ using Rocket.Surgery.Clavus;
                 [
                     typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder),
                     typeof(ILogger),
-                    typeof(ConventionSerilogExtensions),
+                    typeof(ClavusContext),
                 ]
             ),
         ];

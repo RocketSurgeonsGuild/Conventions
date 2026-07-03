@@ -1,16 +1,16 @@
-//HintName: Rocket.Surgery.Clavus.Analyzers/Rocket.Surgery.Clavus.ClavusAttributesGenerator/Generated_DistributedApplicationBuilder_Extensions.g.cs
+//HintName: Clavus.Analyzers/Clavus.ClavusAttributesGenerator/Generated_DistributedApplicationBuilder_Extensions.g.cs
 #pragma warning disable CS0105, CA1002, CA1034, CA1822, CS8603, CS8602, CS8618
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using global::Aspire.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Clavus;
+using Clavus;
 using AppDelegate =
     System.Func<global::Aspire.Hosting.IDistributedApplicationBuilder, System.Threading.CancellationToken,
-        System.Threading.Tasks.ValueTask<Rocket.Surgery.Clavus.ClavusContextBuilder>>;
+        System.Threading.Tasks.ValueTask<Clavus.ClavusContextBuilder>>;
 
-namespace Rocket.Surgery.Clavus.Aspire;
+namespace Clavus.Aspire;
 
 internal static partial class GeneratedRocketDistributedApplicationBuilderExtensions
 {
@@ -138,7 +138,7 @@ internal static partial class GeneratedRocketDistributedApplicationBuilderExtens
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(contextBuilder);
-        return await global::Rocket.Surgery.Clavus.Aspire.RocketDistributedApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
+        return await global::Clavus.Aspire.RocketDistributedApplicationExtensions.Configure(builder, contextBuilder, cancellationToken);
     }
 
     /// <summary>

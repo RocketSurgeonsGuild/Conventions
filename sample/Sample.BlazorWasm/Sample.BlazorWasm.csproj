@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-    <Import Project="../../src/Clavus.Configuration.Json/build/Rocket.Surgery.Clavus.Configuration.Json.props" />
-    <Import Project="../../src/Clavus.Configuration.Yaml/build/Rocket.Surgery.Clavus.Configuration.Yaml.props" />
+    <Import Project="../../src/Clavus.Configuration.Json/build/Clavus.Configuration.Json.props" />
+    <Import Project="../../src/Clavus.Configuration.Yaml/build/Clavus.Configuration.Yaml.props" />
 
     <PropertyGroup>
         <TargetFrameworks>net10.0;net10.0-browser</TargetFrameworks>
@@ -11,20 +11,20 @@
 
     <ItemGroup>
         <ProjectReference
-            Include="..\..\src\Clavus.Analyzers\Rocket.Surgery.Clavus.Analyzers.csproj"
+            Include="..\..\src\Clavus.Analyzers\Clavus.Analyzers.csproj"
             IncludeAssets="all"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
-        <ProjectReference Include="..\..\src\Clavus.Configuration.Yaml\Rocket.Surgery.Clavus.Configuration.Yaml.csproj" />
-        <ProjectReference Include="..\..\src\Clavus.Configuration.Json\Rocket.Surgery.Clavus.Configuration.Json.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Configuration.Yaml\Clavus.Configuration.Yaml.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Configuration.Json\Clavus.Configuration.Json.csproj" />
         <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Clavus.WebAssembly.Hosting\Rocket.Surgery.Clavus.WebAssembly.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.WebAssembly.Hosting\Clavus.WebAssembly.Hosting.csproj" />
     </ItemGroup>
     <ItemGroup>
         <AssemblyMetadata Include="ContentRootPath" Value="$([System.IO.Path]::GetDirectoryName($(MSBuildThisFileDirectory)))" />
@@ -40,6 +40,6 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
-    <Import Project="../../src/Clavus.Configuration.Yaml/build/Rocket.Surgery.Clavus.Configuration.Yaml.targets" />
-    <Import Project="../../src/Clavus.Configuration.Json/build/Rocket.Surgery.Clavus.Configuration.Json.targets" />
+    <Import Project="../../src/Clavus.Configuration.Yaml/build/Clavus.Configuration.Yaml.targets" />
+    <Import Project="../../src/Clavus.Configuration.Json/build/Clavus.Configuration.Json.targets" />
 </Project>

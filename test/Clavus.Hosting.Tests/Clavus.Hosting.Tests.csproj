@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Configuration.Json\Clavus.Configuration.Json.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Configuration.Yaml\Clavus.Configuration.Yaml.csproj" />
+    </ItemGroup>
+</Project>

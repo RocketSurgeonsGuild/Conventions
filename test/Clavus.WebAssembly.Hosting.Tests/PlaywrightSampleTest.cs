@@ -1,4 +1,4 @@
-namespace Rocket.Surgery.Clavus.WebAssembly.Hosting.Tests;
+namespace Clavus.WebAssembly.Hosting.Tests;
 
 public class PlaywrightSampleTest()
 {

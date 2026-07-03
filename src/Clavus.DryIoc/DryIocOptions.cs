@@ -1,4 +1,4 @@
-namespace Rocket.Surgery.Clavus.DryIoc;
+namespace Clavus.DryIoc;
 
 /// <summary>
 ///     Options for building the DryIoc Container

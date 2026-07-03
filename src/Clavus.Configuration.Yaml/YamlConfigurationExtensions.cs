@@ -6,7 +6,7 @@ using Microsoft.Extensions.FileProviders;
 
 using YamlDotNet.Core;
 
-namespace Rocket.Surgery.Clavus.Configuration.Yaml;
+namespace Clavus.Configuration.Yaml;
 
 /// <summary>
 ///     Extension methods for adding <see cref="YamlConfigurationExtensions" />.

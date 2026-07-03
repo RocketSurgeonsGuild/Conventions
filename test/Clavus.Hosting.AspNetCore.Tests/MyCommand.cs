@@ -2,10 +2,9 @@
 //using Microsoft.AspNetCore.Builder;
 //using Microsoft.Extensions.Configuration;
 //using Microsoft.Extensions.DependencyInjection;
-//using Rocket.Surgery.Clavus;
-//using Rocket.Surgery.Clavus.DependencyInjection;
-//
-//namespace Rocket.Surgery.Clavus.Hosting.AspNetCore.Tests;
+//using Clavus;
+////
+//namespace Clavus.Hosting.AspNetCore.Tests;
 //
 //[Command]
 //internal class MyCommand

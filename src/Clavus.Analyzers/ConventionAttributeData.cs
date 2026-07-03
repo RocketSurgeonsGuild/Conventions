@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 internal record ConventionAttributeData
 (
@@ -13,9 +13,9 @@ internal record ConventionAttributeData
     public static ConventionAttributeData Create(ClavusConfigurationData data, Compilation compilation)
     {
         // ReSharper disable NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-        var liveConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Clavus.LivePartAttribute")!;
-        var unitTestConventionAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Clavus.UnitTestPartAttribute")!;
-        var conventionCategoryAttribute = compilation.GetTypeByMetadataName("Rocket.Surgery.Clavus.ClavusCategoryAttribute")!;
+        var liveConventionAttribute = compilation.GetTypeByMetadataName("Clavus.LivePartAttribute")!;
+        var unitTestConventionAttribute = compilation.GetTypeByMetadataName("Clavus.UnitTestPartAttribute")!;
+        var conventionCategoryAttribute = compilation.GetTypeByMetadataName("Clavus.ClavusCategoryAttribute")!;
         // ReSharper enable NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
         return new(liveConventionAttribute, unitTestConventionAttribute, conventionCategoryAttribute, data);
     }

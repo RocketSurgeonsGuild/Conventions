@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Clavus.DependencyInjection;
 
-namespace Rocket.Surgery.Clavus.Tests;
+namespace Clavus.Tests;
 
 [ExportClavusPart]
 internal sealed class Contrib : IServicePart

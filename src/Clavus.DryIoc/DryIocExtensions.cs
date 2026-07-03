@@ -2,7 +2,7 @@ using DryIoc;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rocket.Surgery.Clavus.DryIoc;
+namespace Clavus.DryIoc;
 
 /// <summary>
 ///     Extension methods for dryioc
@@ -19,7 +19,7 @@ public static class DryIocExtensions
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public static async ValueTask<IContainer> ApplyConventionsAsync(
+    public static async ValueTask<IContainer> ApplyPartsAsync(
         this IContainer container,
         IClavusContext context,
         IServiceCollection services,

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Rocket.Surgery.Clavus.Extensions;
+namespace Clavus.Extensions;
 
 internal class LoggingBuilder(IServiceCollection services) : ILoggingBuilder
 {

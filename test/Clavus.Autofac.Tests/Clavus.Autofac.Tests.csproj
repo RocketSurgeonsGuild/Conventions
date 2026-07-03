@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <ProjectReference Include="..\..\src\Clavus.Autofac\Clavus.Autofac.csproj" />
+        <ProjectReference Include="..\..\src\Clavus\Clavus.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.CommandLine\Clavus.CommandLine.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
+    </ItemGroup>
+</Project>

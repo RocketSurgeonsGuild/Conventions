@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>Provides Serilog support for a Rocket Surgery Application</PackageDescription>
+        <PackageTags>$(PackageTags);Serilog</PackageTags>
+    </PropertyGroup>
+    <ItemGroup>
+        <ClavusPart Include="Serilog"
+            Namespace="Clavus"
+            ParameterType="Serilog.LoggerConfiguration"
+            ParameterName="loggerConfiguration" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <ProjectReference Include="..\Clavus\Clavus.csproj" />
+    </ItemGroup>
+</Project>

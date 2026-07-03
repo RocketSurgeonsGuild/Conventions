@@ -9,13 +9,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Clavus.Hosting\Rocket.Surgery.Clavus.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference
-            Include="..\..\src\Clavus.Analyzers\Rocket.Surgery.Clavus.Analyzers.csproj"
-            OutputItemType="Analyzer"
-            ReferenceOutputAssembly="false"
-        />
+        <ProjectReference Include="..\..\src\Clavus.Analyzers\Clavus.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 </Project>

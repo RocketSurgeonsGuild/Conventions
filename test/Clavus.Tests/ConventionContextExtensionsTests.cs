@@ -2,7 +2,7 @@ using FakeItEasy;
 
 #pragma warning disable CA1040, CA1034
 
-namespace Rocket.Surgery.Clavus.Tests;
+namespace Clavus.Tests;
 
 public class ClavusContextExtensionsTests
 {

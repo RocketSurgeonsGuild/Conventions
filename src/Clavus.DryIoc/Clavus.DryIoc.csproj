@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>Provides DryIoc support for a Rocket Surgery Application</PackageDescription>
+        <PackageTags>$(PackageTags);DryIoc</PackageTags>
+    </PropertyGroup>
+    <ItemGroup>
+        <ClavusPart Include="DryIoc"
+            Namespace="Clavus"
+            ProvideConfiguration="true"
+            ParameterType="DryIoc.IContainer"
+            ParameterName="container" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Clavus\Clavus.csproj" />
+        <PackageReference Include="DryIoc.Microsoft.DependencyInjection" />
+        <InternalsVisibleTo Include="Rocket.Surgery.Extensions.DryIoc.Tests" />
+    </ItemGroup>
+</Project>

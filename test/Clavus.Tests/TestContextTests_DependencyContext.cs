@@ -5,7 +5,7 @@ using Serilog.Events;
 
 using ILogger = Serilog.ILogger;
 
-namespace Rocket.Surgery.Clavus.Tests;
+namespace Clavus.Tests;
 
 public class TestContextTests_DependencyContext
     () : AutoFakeTest<TestRecord>(TestRecord.Create(LogEventLevel.Information))
@@ -13,7 +13,7 @@ public class TestContextTests_DependencyContext
     [Test]
     public void Builder_Should_Create_Host()
     {
-        var a = () => ClavusContextBuilder.Create(_ => []).UseLogger(Logger);
+        var a = () => ClavusContextBuilder.Create(_ => []).Set(Logger);
         var context = a.ShouldNotThrow();
         context.Get<ILogger>().ShouldBeSameAs(Logger);
     }
@@ -21,7 +21,7 @@ public class TestContextTests_DependencyContext
     [Test]
     public void Builder_Should_Create_Host_ByType()
     {
-        var a = () => ClavusContextBuilder.Create(_ => []).UseLogger(Logger)
+        var a = () => ClavusContextBuilder.Create(_ => []).Set(Logger)
             ;
         a.ShouldNotThrow();
     }

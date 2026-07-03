@@ -2,7 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Clavus.CommandLine;
+namespace Clavus.CommandLine;
 
 internal class ConsoleWorker
 (

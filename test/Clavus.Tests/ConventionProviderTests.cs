@@ -1,15 +1,12 @@
 using System.Collections.Immutable;
-
+using Clavus.Infrastructure;
+using Clavus.Tests.Fixtures;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-using Rocket.Surgery.Clavus.DependencyInjection;
-using Rocket.Surgery.Clavus.Tests.Fixtures;
 using Rocket.Surgery.Extensions.Testing;
-
 using Serilog.Events;
 
-namespace Rocket.Surgery.Clavus.Tests;
+namespace Clavus.Tests;
 
 public class ClavusProviderTests()
     : AutoFakeTest<TestRecord>(TestRecord.Create(LogEventLevel.Information))
@@ -69,9 +66,9 @@ public class ClavusProviderTests()
     public async Task Should_Leave_Delegates_In_Place(HostType hostType, ImmutableArray<ClavusCategory> categories)
     {
         var b = new B();
-        var d1 = new ServicePart((_, _, _) => { });
-        var d2 = new ServicePart((_, _, _) => { });
-        var d3 = new ServicePart((_, _, _) => { });
+        var d1 = new ServicePart((_, _) => { });
+        var d2 = new ServicePart((_, _) => { });
+        var d3 = new ServicePart((_, _) => { });
         var c = new C();
         var d = new D();
         var e = new E();
@@ -91,9 +88,9 @@ public class ClavusProviderTests()
     public async Task Should_Leave_Delegates_In_Place_Order_Delegates(HostType hostType, ImmutableArray<ClavusCategory> categories)
     {
         var b = new B();
-        var d1 = new ClavusOrDelegate(new ServicePart((_, _, _) => { }), 0, new("Custom"));
-        var d2 = new ClavusOrDelegate(new ServicePart((_, _, _) => { }), int.MinValue, ClavusCategory.Core);
-        var d3 = new ClavusOrDelegate(new ServicePart((_, _, _) => { }), int.MaxValue, ClavusCategory.Application);
+        var d1 = new ClavusOrDelegate(new ServicePart((_, _) => { }), 0, new("Custom"));
+        var d2 = new ClavusOrDelegate(new ServicePart((_, _) => { }), int.MinValue, ClavusCategory.Core);
+        var d3 = new ClavusOrDelegate(new ServicePart((_, _) => { }), int.MaxValue, ClavusCategory.Application);
         var c = new C();
         var d = new D();
         var e = new E();
@@ -139,9 +136,9 @@ public class ClavusProviderTests()
     {
         var b = new B();
 
-        var d1 = new ServicePart((_, _, _) => { });
-        var d2 = new ServicePart((_, _, _) => { });
-        var d3 = new ServicePart((_, _, _) => { });
+        var d1 = new ServicePart((_, _) => { });
+        var d2 = new ServicePart((_, _) => { });
+        var d3 = new ServicePart((_, _) => { });
         var c = new C();
         var d = new D();
         var e = new E();
@@ -161,9 +158,9 @@ public class ClavusProviderTests()
     public async Task Should_Include_Unit_Test_Conventions(HostType hostType, ImmutableArray<ClavusCategory> categories)
     {
         var b = new B();
-        var d1 = new ServicePart((_, _, _) => { });
-        var d2 = new ServicePart((_, _, _) => { });
-        var d3 = new ServicePart((_, _, _) => { });
+        var d1 = new ServicePart((_, _) => { });
+        var d2 = new ServicePart((_, _) => { });
+        var d3 = new ServicePart((_, _) => { });
         var c = new C();
         var d = new D();
         var e = new E();

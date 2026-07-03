@@ -1,6 +1,6 @@
-using Rocket.Surgery.Clavus.Hosting;
+using Clavus.Hosting;
 
-namespace Rocket.Surgery.Clavus.Extensions;
+namespace Clavus.Extensions;
 
 /// <summary>
 ///     Extension method to apply configuration conventions

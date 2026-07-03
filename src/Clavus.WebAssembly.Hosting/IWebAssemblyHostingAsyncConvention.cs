@@ -1,7 +1,7 @@
+using Clavus;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Rocket.Surgery.Clavus;
 
-namespace Rocket.Surgery.Clavus.WebAssembly.Hosting;
+namespace Clavus.WebAssembly.Hosting;
 
 /// <summary>
 ///     IWebAssemblyHostingAsyncConvention

@@ -1,5 +1,5 @@
 <Project>
     <ItemGroup>
-        <Using Include="Rocket.Surgery.Clavus.Hosting" />
+        <Using Include="Clavus.Hosting" />
     </ItemGroup>
 </Project>

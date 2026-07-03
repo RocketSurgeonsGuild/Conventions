@@ -1,4 +1,4 @@
-namespace Rocket.Surgery.Clavus.CommandLine;
+namespace Clavus.CommandLine;
 
 internal class ConsoleResult
 {

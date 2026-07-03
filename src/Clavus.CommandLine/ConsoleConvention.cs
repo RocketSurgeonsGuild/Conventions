@@ -1,12 +1,11 @@
+using Clavus.Hosting;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Hosting;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Clavus.CommandLine;
+namespace Clavus.CommandLine;
 
 /// <summary>
 ///     Convention for console applications

@@ -1,8 +1,8 @@
+using Clavus.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Rocket.Surgery.Clavus.WebAssembly.Hosting;
 
 // ReSharper disable once CheckNamespace
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 /// <summary>
 ///     Helper method for working with <see cref="ClavusContextBuilder" />

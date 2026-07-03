@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>Adds support for loading json configuration files</PackageDescription>
+        <PackageTags>$(PackageTags);reflection</PackageTags>
+        <RootNamespace>Clavus.Configuration.Json</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Clavus\Clavus.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+        <InternalsVisibleTo Include="Clavus.CommandLine" />
+        <InternalsVisibleTo Include="Clavus.Hosting" />
+        <InternalsVisibleTo Include="Clavus.Web.Hosting" />
+        <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting" />
+
+        <ProjectReference
+            Include="..\Clavus.Analyzers\Clavus.Analyzers.csproj"
+            IncludeAssets="analyzers;build;buildMultitargeting;buildTransitive"
+            ExcludeAssets="compile;runtime;native"
+            PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="build/*.*" Pack="true" PackagePath="build" />
+        <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
+        <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
+    </ItemGroup>
+</Project>

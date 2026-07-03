@@ -1,10 +1,10 @@
+using Clavus.DryIoc;
 using DryIoc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Clavus.DryIoc;
 
 // ReSharper disable once CheckNamespace
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 /// <summary>
 ///     Class DryIocRocketHostExtensions.
@@ -24,7 +24,7 @@ public static class DryIocConventionRocketHostExtensions
             async (context, services, ct) =>
             {
                 var c = ( container ?? new Container() ).With(r => r.WithBaseMicrosoftDependencyInjectionRules(null));
-                return new DryIocConventionServiceProviderFactory(context, await c.ApplyConventionsAsync(context, services, ct));
+                return new DryIocConventionServiceProviderFactory(context, await c.ApplyPartsAsync(context, services, ct));
             }
         );
     }

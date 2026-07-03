@@ -1,17 +1,15 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Clavus.DependencyInjection;
 namespace Sample.Core.Databases;
 
 #region codeblock
 
 [ExportClavusPart]
-public class DatabaseServicePart : IServicePart
+public class DatabaseServicePart : IServiceAsyncPart
 {
-    public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services)
+    public async ValueTask Register(IClavusContext context, IServiceCollection services, CancellationToken cancellationToken = default)
     {
         var configurator = new DatabaseConfigurator();
-        configurator.ApplyConventions(context);
+        await configurator.ApplyPartsAsync(context, cancellationToken: cancellationToken);
     }
 }
 

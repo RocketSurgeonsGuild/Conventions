@@ -12,7 +12,7 @@ public class SampleTests
     {
         var context = await ClavusContext.FromAsync(_builder);
 
-        // var services = ( await new ServiceCollection().ApplyConventionsAsync(context) ).BuildServiceProvider();
+        // var services = ( await new ServiceCollection().ApplyPartsAsync(context) ).BuildServiceProvider();
         // await Assert.That(services.GetRequiredService<IService>().GetString()).IsEqualTo("TestService");
     }
 

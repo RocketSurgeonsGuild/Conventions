@@ -1,4 +1,4 @@
-namespace Rocket.Surgery.Clavus.CommandLine;
+namespace Clavus.CommandLine;
 
 /// <summary>
 ///     Constants for use with the commandline interface

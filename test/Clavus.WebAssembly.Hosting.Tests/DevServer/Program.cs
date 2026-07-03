@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Rocket.Surgery.Clavus.WebAssembly.Hosting.Tests.DevServer;
+namespace Clavus.WebAssembly.Hosting.Tests.DevServer;
 
 /// <summary>
 ///     Intended for framework test use only.

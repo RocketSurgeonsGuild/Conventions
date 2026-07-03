@@ -1,8 +1,9 @@
+using Clavus.Infrastructure;
 using FakeItEasy;
 
 #pragma warning disable CA1034, CA1040
 
-namespace Rocket.Surgery.Clavus.Tests;
+namespace Clavus.Tests;
 
 public class ServiceProviderDictionaryExtensionsTests
 {

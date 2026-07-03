@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Hosting;
-using Rocket.Surgery.Clavus;
 
-namespace Rocket.Surgery.Clavus.Hosting;
+namespace Clavus.Hosting;
 
 /// <summary>
 ///     IHostApplicationPart

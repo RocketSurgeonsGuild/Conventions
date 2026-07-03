@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+namespace Clavus.Analyzers.Tests;
 
 public class ExportedConventionsTests() : GeneratorTest()
 {
@@ -10,10 +10,10 @@ public class ExportedConventionsTests() : GeneratorTest()
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     internal class Contrib : IClavusPart { }
@@ -32,12 +32,12 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-[assembly: ExportConventions(Namespace = ""Source.Space"", ClassName = ""SourceClass"")]
+[assembly: ExportClavusParts(Namespace = ""Source.Space"", ClassName = ""SourceClass"")]
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     internal class Contrib : IClavusPart { }
@@ -56,12 +56,12 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-[assembly: ExportConventions(Namespace = null)]
+[assembly: ExportClavusParts(Namespace = null)]
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     internal class Contrib : IClavusPart { }
@@ -81,12 +81,12 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-[assembly: ExportConventions(MethodName = ""SourceMethod"")]
+[assembly: ExportClavusParts(MethodName = ""SourceMethod"")]
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     internal class Contrib : IClavusPart { }
@@ -105,9 +105,9 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPartAttribute]
     internal class Contrib : IClavusPart { }
@@ -126,15 +126,15 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
-[assembly: ExportConventions(Namespace = ""Source.Space"")]
+[assembly: ExportClavusParts(Namespace = ""Source.Space"")]
 
 [ExportClavusPart]
 internal class Contrib1 : IClavusPart { }
 ",
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
 [ExportClavusPartAttribute]
 internal class Contrib2 : IClavusPart { }
@@ -142,7 +142,7 @@ internal class Contrib2 : IClavusPart { }
 internal class Contrib3 : IClavusPart { }
 ",
                                @"
-using Rocket.Surgery.Clavus;
+using Clavus;
 
 [ExportClavusPart]
 internal class Contrib4 : IClavusPart { }
@@ -160,10 +160,10 @@ internal class Contrib4 : IClavusPart { }
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     interface IService {}
     interface IServiceB {}
@@ -187,10 +187,10 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     internal class ParentContrib {
         [ExportClavusPart]
@@ -211,10 +211,10 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     internal static class ParentContrib {
         [ExportClavusPart]
@@ -237,8 +237,7 @@ namespace Rocket.Surgery.Clavus.Tests
                                @"
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.DependencyInjection;
+using Clavus;
 using Rocket.Surgery.LaunchPad.Mapping;
 
 namespace Rocket.Surgery.LaunchPad.Mapping;
@@ -300,10 +299,10 @@ public class AutoMapperOptions
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     [{HostType}Convention]
@@ -326,10 +325,10 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithGenericSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     [ClavusCategory(""{Category}"")]
@@ -353,10 +352,10 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     [{AttributeName}(typeof(D))]

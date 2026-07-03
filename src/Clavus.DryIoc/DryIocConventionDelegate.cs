@@ -2,7 +2,7 @@ using DryIoc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rocket.Surgery.Clavus.DryIoc;
+namespace Clavus.DryIoc;
 
 /// <summary>
 ///     Delegate ServicePartAction

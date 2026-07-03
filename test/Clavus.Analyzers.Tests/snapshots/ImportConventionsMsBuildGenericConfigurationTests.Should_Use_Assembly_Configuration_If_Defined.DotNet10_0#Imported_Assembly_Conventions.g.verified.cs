@@ -1,21 +1,22 @@
-//HintName: Rocket.Surgery.Clavus.Analyzers/Rocket.Surgery.Clavus.ClavusAttributesGenerator/Imported_Assembly_Conventions.g.cs
+//HintName: Clavus.Analyzers/Clavus.ClavusAttributesGenerator/Imported_Assembly_Conventions.g.cs
 using System;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Clavus;
+using Clavus;
+using Clavus.Infrastructure;
 
 #nullable enable
 #pragma warning disable CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ClavusConfigurationData.Imports.Namespace", "Test.My.Namespace")]
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ClavusConfigurationData.Imports.ClassName", "MyImports")]
-[assembly: System.Reflection.AssemblyMetadata("Rocket.Surgery.ClavusConfigurationData.Imports.MethodName", "ImportConventions")]
+[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Imports.Namespace", "Test.My.Namespace")]
+[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Imports.ClassName", "MyImports")]
+[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Imports.MethodName", "ImportConventions")]
 namespace Test.My.Namespace
 {
     /// <summary>
     /// The class defined for importing conventions into this assembly
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("Rocket.Surgery.Clavus.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    [System.CodeDom.Compiler.GeneratedCode("Clavus.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     internal static partial class MyImports
     {
         internal static LoadClavusParts ImportConventions = LoadConventionsMethod;

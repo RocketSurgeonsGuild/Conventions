@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 internal static class Helpers
 {
@@ -70,10 +70,7 @@ internal static class Helpers
                );
     }
 
-    public static bool IsOpenGenericType(this INamedTypeSymbol type)
-    {
-        return type.IsGenericType && ( type.IsUnboundGenericType || type.TypeArguments.All(z => z.TypeKind == TypeKind.TypeParameter) );
-    }
+    public static bool IsOpenGenericType(this INamedTypeSymbol type) => type.IsGenericType && ( type.IsUnboundGenericType || type.TypeArguments.All(z => z.TypeKind == TypeKind.TypeParameter) );
 
     public static string GetGenericDisplayName(ISymbol? symbol)
     {
@@ -196,11 +193,11 @@ internal static class Helpers
     public static INamedTypeSymbol? GetUnboundGenericType(INamedTypeSymbol symbol)
     {
         return symbol switch
-               {
-                   { IsGenericType: true, IsUnboundGenericType: true, } => symbol,
-                   { IsGenericType: true, }                             => symbol.ConstructUnboundGenericType(),
-                   _                                                    => default,
-               };
+        {
+            { IsGenericType: true, IsUnboundGenericType: true, } => symbol,
+            { IsGenericType: true, } => symbol.ConstructUnboundGenericType(),
+            _ => default,
+        };
     }
 
     public static bool HasImplicitGenericConversion(
@@ -342,9 +339,7 @@ internal static class Helpers
     ];
 
     private static readonly Lazy<ImmutableArray<ExpressionSyntax>> DisabledWarnings = new(
-        () => _disabledWarnings
-             .Select(z => (ExpressionSyntax)IdentifierName(z))
-             .ToImmutableArray()
+        () => [.. _disabledWarnings.Select(z => (ExpressionSyntax)IdentifierName(z))]
     );
 
     private static readonly SyntaxToken XmlNewLine = XmlTextNewLine(TriviaList(), "\n", "\n", TriviaList());

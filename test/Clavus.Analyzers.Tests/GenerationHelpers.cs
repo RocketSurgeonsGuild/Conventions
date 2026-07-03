@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using FluentValidation;
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
-namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+namespace Clavus.Analyzers.Tests;
 
 public static class GenerationHelpers
 {
@@ -29,11 +29,11 @@ public static class GenerationHelpers
         return builder
               .WithProjectName("SampleDependencyOne")
               .AddSources(
-                   @"using Rocket.Surgery.Clavus;
+                   @"using Clavus;
 using Sample.DependencyOne;
 using FluentValidation;
 
-[assembly: ExportConventions(Namespace = ""Dep1"", ClassName = ""Dep1Exports"")]
+[assembly: ExportClavusParts(Namespace = ""Dep1"", ClassName = ""Dep1Exports"")]
 
 namespace Sample.DependencyOne;
 
@@ -67,10 +67,10 @@ public static class Example1
         return builder
               .WithProjectName("SampleDependencyTwo")
               .AddSources(
-                   @"using Rocket.Surgery.Clavus;
+                   @"using Clavus;
 using FluentValidation;
 
-[assembly: ExportConventions(Namespace = null, ClassName = ""Dep2Exports"")]
+[assembly: ExportClavusParts(Namespace = null, ClassName = ""Dep2Exports"")]
 namespace Sample.DependencyTwo;
 
 public static class Nested
@@ -105,7 +105,7 @@ public static class Example2
               .WithProjectName("SampleDependencyThree")
               .AddCompilationReferences(class1)
               .AddSources(
-                   @"using Rocket.Surgery.Clavus;
+                   @"using Clavus;
 using Sample.DependencyOne;
 using Sample.DependencyThree;
 using FluentValidation;
@@ -143,10 +143,10 @@ public static class Example3
         return builder
               .WithProjectName("SampleDependencyOne")
               .AddSources(
-                   @"using Rocket.Surgery.Clavus;
+                   @"using Clavus;
 using Sample.DependencyOne;
 
-[assembly: ExportConventions(Namespace = ""Dep1"", ClassName = ""Dep1Exports"")]
+[assembly: ExportClavusParts(Namespace = ""Dep1"", ClassName = ""Dep1Exports"")]
 
 namespace Sample.DependencyOne;
 
@@ -165,10 +165,10 @@ public class Class1 : IClavusPart
         return builder
               .WithProjectName("SampleDependencyTwo")
               .AddSources(
-                   @"using Rocket.Surgery.Clavus;
+                   @"using Clavus;
 using Sample.DependencyTwo;
 
-[assembly: ExportConventions(Namespace = null, ClassName = ""Dep2Exports"")]
+[assembly: ExportClavusParts(Namespace = null, ClassName = ""Dep2Exports"")]
 
 namespace Sample.DependencyTwo;
 
@@ -187,7 +187,7 @@ public class Class2 : IClavusPart
               .WithProjectName("SampleDependencyThree")
               .AddCompilationReferences(class1)
               .AddSources(
-                   @"using Rocket.Surgery.Clavus;
+                   @"using Clavus;
 using Sample.DependencyOne;
 using Sample.DependencyThree;
 

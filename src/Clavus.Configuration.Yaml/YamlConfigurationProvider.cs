@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using YamlDotNet.Core;
 
-namespace Rocket.Surgery.Clavus.Configuration.Yaml;
+namespace Clavus.Configuration.Yaml;
 
 /// <summary>
 ///     A YAML file based <see cref="FileConfigurationProvider" />.

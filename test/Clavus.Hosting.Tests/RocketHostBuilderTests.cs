@@ -4,14 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Clavus.Configuration;
-using Rocket.Surgery.Clavus.DependencyInjection;
-using Rocket.Surgery.Clavus.Logging;
 using Rocket.Surgery.Extensions.Testing;
 
 
 
-namespace Rocket.Surgery.Clavus.Hosting.Tests;
+namespace Clavus.Hosting.Tests;
 
 public partial class RocketHostBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {

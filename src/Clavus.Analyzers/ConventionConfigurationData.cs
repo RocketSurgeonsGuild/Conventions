@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 internal record ClavusConfigurationData(bool WasConfigured, bool Assembly, string? Namespace, string ClassName, string MethodName)
 {
@@ -12,6 +12,7 @@ internal record ClavusConfigurationData(bool WasConfigured, bool Assembly, strin
 
     public static IncrementalValueProvider<ClavusConfigurationData> Create(
         IncrementalGeneratorInitializationContext context,
+        string propertyPrefix,
         string attributeName,
         ClavusConfigurationData defaults
     )
@@ -21,18 +22,18 @@ internal record ClavusConfigurationData(bool WasConfigured, bool Assembly, strin
                 (config, _) =>
                 {
                     var data = InnerClavusConfigurationData.FromDefaults(defaults);
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerClavusConfigurationData.Namespace)}", out var value))
+                    if (config.GlobalOptions.TryGetValue($"build_property.{propertyPrefix}{nameof(InnerClavusConfigurationData.Namespace)}", out var value))
                         data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
                     else if (config.GlobalOptions.TryGetValue("build_property.RootNamespace", out value))
                         data = data with { Namespace = value, DefinedNamespace = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerClavusConfigurationData.ClassName)}", out value))
+                    if (config.GlobalOptions.TryGetValue($"build_property.{propertyPrefix}{nameof(InnerClavusConfigurationData.ClassName)}", out value))
                         data = data with { ClassName = value, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerClavusConfigurationData.MethodName)}", out value))
+                    if (config.GlobalOptions.TryGetValue($"build_property.{propertyPrefix}{nameof(InnerClavusConfigurationData.MethodName)}", out value))
                         data = data with { MethodName = value, WasConfigured = true, };
 
-                    if (config.GlobalOptions.TryGetValue($"build_property.{attributeName}{nameof(InnerClavusConfigurationData.Assembly)}", out value))
+                    if (config.GlobalOptions.TryGetValue($"build_property.{propertyPrefix}{nameof(InnerClavusConfigurationData.Assembly)}", out value))
                         data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
 
                     return data;
@@ -118,7 +119,7 @@ internal record ClavusConfigurationData(bool WasConfigured, bool Assembly, strin
     public static ClavusConfigurationData FromAssemblyAttributes(IAssemblySymbol assemblySymbol, ClavusConfigurationData defaults)
     {
         var data = InnerClavusConfigurationData.FromDefaults(defaults);
-        var prefix = $"Rocket.Surgery.ClavusConfigurationData.{defaults.ClassName}";
+        var prefix = $"ClavusConfigurationData.{defaults.ClassName}";
         foreach (var attribute in assemblySymbol.GetAttributes().Where(z => z is { AttributeClass.MetadataName: "AssemblyMetadataAttribute", }))
         {
             if (attribute is not
@@ -154,7 +155,7 @@ internal record ClavusConfigurationData(bool WasConfigured, bool Assembly, strin
     {
         var @namespace = compilation.AssemblyName ?? "";
         return postfix
-            ?  ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.') 
+            ? ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.')
             : @namespace;
     }
 
@@ -165,9 +166,9 @@ internal record ClavusConfigurationData(bool WasConfigured, bool Assembly, strin
         var list = List(
             new[]
             {
-                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ClavusConfigurationData.{type}.{nameof(Namespace)}", Namespace),
-                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ClavusConfigurationData.{type}.{nameof(ClassName)}", ClassName),
-                Helpers.AddAssemblyAttribute($"Rocket.Surgery.ClavusConfigurationData.{type}.{nameof(MethodName)}", MethodName),
+                Helpers.AddAssemblyAttribute($"ClavusConfigurationData.{type}.{nameof(Namespace)}", Namespace),
+                Helpers.AddAssemblyAttribute($"ClavusConfigurationData.{type}.{nameof(ClassName)}", ClassName),
+                Helpers.AddAssemblyAttribute($"ClavusConfigurationData.{type}.{nameof(MethodName)}", MethodName),
             }
         );
         if (type == "Import")
@@ -175,7 +176,7 @@ internal record ClavusConfigurationData(bool WasConfigured, bool Assembly, strin
             list = list.Add(
                 AttributeList(
                         SingletonSeparatedList(
-                            Attribute(ParseName("Rocket.Surgery.Clavus.ImportsType"))
+                            Attribute(ParseName("Clavus.ImportsType"))
                                .WithArgumentList(
                                     AttributeArgumentList(
                                         SingletonSeparatedList(

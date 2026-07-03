@@ -2,9 +2,8 @@ using System.Runtime.InteropServices;
 
 using Microsoft.Extensions.Configuration.Json;
 
-using Rocket.Surgery.Clavus.Setup;
 
-namespace Rocket.Surgery.Clavus.Configuration.Json;
+namespace Clavus.Configuration.Json;
 
 /// <summary>
 ///     Json configuration conventions

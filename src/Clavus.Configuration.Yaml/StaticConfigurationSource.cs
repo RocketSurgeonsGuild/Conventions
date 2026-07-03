@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace Rocket.Surgery.Clavus.Configuration.Yaml;
+namespace Clavus.Configuration.Yaml;
 
 internal class StaticConfigurationSource : IConfigurationSource
 {

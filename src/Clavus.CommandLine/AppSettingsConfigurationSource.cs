@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Clavus.CommandLine;
+namespace Clavus.CommandLine;
 
 /// <summary>
 ///     Represents in-memory data as an <see cref="IConfigurationSource" />.

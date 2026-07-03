@@ -7,6 +7,9 @@
       "src/Clavus.CommandLine/Rocket.Surgery.Clavus.CommandLine.csproj",
       "src/Clavus.Abstractions/Rocket.Surgery.Clavus.Abstractions.csproj",
       "src/Clavus.Analyzers/Rocket.Surgery.Clavus.Analyzers.csproj",
+      "src/Clavus.Extensions.Configuration/Rocket.Surgery.Clavus.Extensions.Configuration.csproj",
+      "src/Clavus.Extensions.DependencyInjection/Rocket.Surgery.Clavus.Extensions.DependencyInjection.csproj",
+      "src/Clavus.Extensions.Logging/Rocket.Surgery.Clavus.Extensions.Logging.csproj",
       "src/Clavus.Autofac/Rocket.Surgery.Clavus.Autofac.csproj",
       "src/Clavus.Configuration.Json/Rocket.Surgery.Clavus.Configuration.Json.csproj",
       "src/Clavus.Configuration.Yaml/Rocket.Surgery.Clavus.Configuration.Yaml.csproj",
@@ -15,7 +18,8 @@
       "src/Clavus/Rocket.Surgery.Clavus.csproj",
       "src/Clavus.Hosting/Rocket.Surgery.Clavus.Hosting.csproj",
       "src/Clavus.Web.Hosting/Rocket.Surgery.Clavus.Web.Hosting.csproj",
-      "src/Clavus.WebAssembly.Hosting/Rocket.Surgery.Clavus.WebAssembly.Hosting.csproj"
+      "src/Clavus.WebAssembly.Hosting/Rocket.Surgery.Clavus.WebAssembly.Hosting.csproj",
+      "src/Clavus.Sdk/Rocket.Surgery.Clavus.Sdk.csproj"
     ]
   }
 }

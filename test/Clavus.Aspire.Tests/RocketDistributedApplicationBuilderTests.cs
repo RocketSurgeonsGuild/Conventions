@@ -1,8 +1,5 @@
 using FakeItEasy;
-
 using Microsoft.Extensions.Hosting;
-
-using Rocket.Surgery.Clavus.Aspire;
 using Rocket.Surgery.Extensions.Testing;
 
 

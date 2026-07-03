@@ -1,4 +1,4 @@
-namespace Rocket.Surgery.Clavus.Tests.Fixtures;
+namespace Clavus.Tests.Fixtures;
 
 public interface ITestConvention : IClavusPart
 {

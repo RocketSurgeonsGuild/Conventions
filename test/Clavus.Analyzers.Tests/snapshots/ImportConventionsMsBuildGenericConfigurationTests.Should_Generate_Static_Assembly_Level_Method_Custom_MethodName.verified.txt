@@ -1,24 +1,23 @@
-{
+﻿{
   FinalDiagnostics: [],
   GeneratorDiagnostics: {
-    Rocket.Surgery.Conventions.ConventionAttributesGenerator: []
+    Clavus.ClavusAttributesGenerator: []
   },
   GlobalOptions: {
-    build_property.ImportConventionsClassName: MyImports,
-    build_property.ImportConventionsMethodName: ImportConventions,
-    build_property.ImportConventionsNamespace: Test.My.Namespace
+    build_property.ImportClavusClassName: MyImports,
+    build_property.ImportClavusMethodName: ImportConventions,
+    build_property.ImportClavusNamespace: Test.My.Namespace
   },
   References: [
     <in-memory assembly>,
     <in-memory assembly>,
     <in-memory assembly>,
+    Clavus.dll,
     FluentValidation.dll,
     Microsoft.Extensions.Configuration.Abstractions.dll,
     Microsoft.Extensions.DependencyInjection.Abstractions.dll,
     mscorlib.dll,
     netstandard.dll,
-    Rocket.Surgery.Conventions.Abstractions.dll,
-    Rocket.Surgery.Conventions.dll,
     System.ComponentModel.dll,
     System.Core.dll,
     System.dll,

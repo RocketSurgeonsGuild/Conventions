@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 
-namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+namespace Clavus.Analyzers.Tests;
 
 internal static class GeneratorTestContextBuilderExtensions
 {
@@ -17,7 +17,6 @@ internal static class GeneratorTestContextBuilderExtensions
     public static GeneratorTestContextBuilder AddCommonReferences(this GeneratorTestContextBuilder builder) => builder.AddReferences(
         typeof(ActivatorUtilities),
         typeof(ClavusContext),
-        typeof(IClavusContext),
         typeof(IServiceProvider),
         typeof(IConfiguration),
         typeof(IValidator)

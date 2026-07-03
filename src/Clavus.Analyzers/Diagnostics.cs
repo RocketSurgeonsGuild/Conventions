@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 internal static class Diagnostics
 {

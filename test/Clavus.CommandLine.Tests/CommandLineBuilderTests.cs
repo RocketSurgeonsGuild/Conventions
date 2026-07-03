@@ -1,13 +1,9 @@
 using System.ComponentModel;
-
+using Clavus.CommandLine;
 using FakeItEasy;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using Rocket.Surgery.Clavus.CommandLine;
-using Rocket.Surgery.Clavus.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 using Spectre.Console.Cli;
 
@@ -39,9 +35,9 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         a.ShouldNotThrow();
         a = () => builder.AppendConvention(A.Fake<ICommandLineConvention>());
         a.ShouldNotThrow();
-        a = () => builder.PrependDelegate(new ServicePart((context, configuration, services) => { }), null, null);
+        a = () => builder.PrependDelegate(new ServicePart((context, services) => { }), null, null);
         a.ShouldNotThrow();
-        a = () => builder.AppendDelegate(new ServicePart((context, configuration, services) => { }), null, null);
+        a = () => builder.AppendDelegate(new ServicePart((context, services) => { }), null, null);
         a.ShouldNotThrow();
     }
 
@@ -50,7 +46,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         using var host = await Host
                               .CreateApplicationBuilder(["remote", "add", "-v"])
-                              .ConfigureClavus(b => b.UseLogger(Logger), cancellationToken: cancellationToken);
+                              .ConfigureClavus(_ => { }, cancellationToken: cancellationToken);
         await host.StartAsync(TestContext.CancellationToken);
         host.Services.GetService<ConsoleResult>().ShouldBeNull();
     }
@@ -61,7 +57,6 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         using var host = await Host
                               .CreateApplicationBuilder(["test"])
                               .ConfigureClavus(b => b
-                                       .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             async (context, lineContext, ct) => lineContext.AddDelegate<AppSettings>("test", (context, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
@@ -83,7 +78,6 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         using var host = await Host
                               .CreateApplicationBuilder(["test", "--log", "error"])
                               .ConfigureClavus(b => b
-                                       .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, lineContext) =>
                                             {
@@ -113,7 +107,6 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         using var host = await Host
                               .CreateApplicationBuilder(["constructor"])
                               .ConfigureClavus(b => b
-                                       .UseLogger(Logger)
                                        .ConfigureServices(
                                             z => z.AddSingleton(service)
                                         )
@@ -142,7 +135,7 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
                                        "client1",
                                    ]
                                )
-                              .ConfigureClavus(b => b.UseLogger(Logger).ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv")), cancellationToken: cancellationToken);
+                              .ConfigureClavus(b => b.ConfigureCommandLine((context, builder) => builder.AddCommand<CommandWithValues>("cwv")), cancellationToken: cancellationToken);
         await host.RunAsync(TestContext.CancellationToken);
     }
 
@@ -152,7 +145,6 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         using var host = await Host
                               .CreateApplicationBuilder(["test"])
                               .ConfigureClavus(b => b
-                                       .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, lineContext) => lineContext.AddDelegate<AppSettings>(
                                                 "test",
@@ -170,7 +162,6 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         using var host = await Host
                               .CreateApplicationBuilder(["logger"])
                               .ConfigureClavus(b => b
-                                       .UseLogger(Logger)
                                        .ConfigureCommandLine((context, builder) => builder.AddCommand<LoggerInjection>("logger"))
 , cancellationToken: cancellationToken);
 
@@ -187,7 +178,6 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         using var host = await Host
                               .CreateApplicationBuilder(["test", command])
                               .ConfigureClavus(b => b
-                                       .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
@@ -209,7 +199,6 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         using var host = await Host
                               .CreateApplicationBuilder(["test", .. command.Split(' ')])
                               .ConfigureClavus(b => b
-                                       .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, builder) => builder.AddDelegate<AppSettings>("test", (c, state, ct) => (int)( state.LogLevel ?? LogLevel.Information ))
                                         )
@@ -237,7 +226,6 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
         using var host = await Host
                               .CreateApplicationBuilder([.. command.Split(' ')])
                               .ConfigureClavus(b => b
-                                       .UseLogger(Logger)
                                        .ConfigureCommandLine(
                                             (context, builder) =>
                                             {

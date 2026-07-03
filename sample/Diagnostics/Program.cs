@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Rocket.Surgery.Clavus.CommandLine;
-using Rocket.Surgery.Clavus.DependencyInjection;
 using Rocket.Surgery.Clavus.Hosting;
 using Spectre.Console;
 using Spectre.Console.Cli;

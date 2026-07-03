@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0-browser</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <DefineConstants>$(DefineConstants);ROSLYN_CURRENT</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="MediatR" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Features" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Indago" />
+        <PackageReference Include="Rocket.Surgery.Extensions.Testing.SourceGenerators" />
+        <ProjectReference Include="..\..\src\Clavus.Analyzers\Clavus.Analyzers.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Aspire.Testing\Clavus.Aspire.Testing.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Aspire\Clavus.Aspire.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Serilog\Clavus.Serilog.csproj" />
+        <ProjectReference Include="..\..\src\Clavus\Clavus.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.WebAssembly.Hosting\Clavus.WebAssembly.Hosting.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Verify.SourceGenerators" />
+    </ItemGroup>
+</Project>

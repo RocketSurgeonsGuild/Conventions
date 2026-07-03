@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace Rocket.Surgery.Clavus.Configuration.Yaml;
+namespace Clavus.Configuration.Yaml;
 
 /// <summary>
 ///     A YAML file based <see cref="FileConfigurationSource" />.

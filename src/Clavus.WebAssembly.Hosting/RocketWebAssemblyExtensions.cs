@@ -1,15 +1,14 @@
 using System.ComponentModel;
 using System.Reflection;
-
+using Clavus;
+using Clavus.Configuration;
+using Clavus.Extensions;
+using Clavus.Infrastructure;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Configuration;
-using Rocket.Surgery.Clavus.Extensions;
-
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-namespace Rocket.Surgery.Clavus.WebAssembly.Hosting;
+namespace Clavus.WebAssembly.Hosting;
 
 [PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
@@ -39,8 +38,8 @@ public static class RocketWebAssemblyExtensions
         var context = await ClavusContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
 
         await SharedHostConfigurationAsync(context, builder, cancellationToken).ConfigureAwait(false);
-        await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
-        await builder.Logging.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.Services.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.Logging.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
 
         if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
             builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken).ConfigureAwait(false));
@@ -113,7 +112,7 @@ public static class RocketWebAssemblyExtensions
             configurationBuilder.Add(task);
         }
 
-        var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, builder.Configuration, cancellationToken).ConfigureAwait(false);
+        var cb = await new ConfigurationBuilder().ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0 })
         {
             configurationBuilder.Add(

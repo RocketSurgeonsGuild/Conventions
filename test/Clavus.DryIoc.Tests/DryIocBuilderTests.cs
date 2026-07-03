@@ -1,14 +1,10 @@
+using Clavus.Infrastructure;
 using DryIoc;
-
 using FakeItEasy;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Clavus.Hosting;
 using Serilog.Events;
-
-
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 #pragma warning disable CA1040, CA1034, CA2000, IDE0058, RCS1021

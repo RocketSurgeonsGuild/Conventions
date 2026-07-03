@@ -2,7 +2,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rocket.Surgery.Clavus.Autofac;
+namespace Clavus.Autofac;
 
 internal class AutofacConventionServiceProviderFactory(ContainerBuilder? container = null) : IServiceProviderFactory<ContainerBuilder>
 {

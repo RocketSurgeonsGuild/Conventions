@@ -2,9 +2,8 @@ using System.Runtime.InteropServices;
 
 using Microsoft.Extensions.Configuration;
 
-using Rocket.Surgery.Clavus.Setup;
 
-namespace Rocket.Surgery.Clavus.Configuration.Yaml;
+namespace Clavus.Configuration.Yaml;
 
 /// <summary>
 ///     Default yaml convention

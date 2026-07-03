@@ -1,11 +1,9 @@
+using Clavus.Infrastructure;
 using DryIoc;
-
 using FakeItEasy;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Clavus.Hosting;
 using Serilog.Events;
 
 

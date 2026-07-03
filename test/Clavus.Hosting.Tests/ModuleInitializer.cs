@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using DiffEngine;
 
-namespace Rocket.Surgery.Clavus.Hosting.Tests;
+namespace Clavus.Hosting.Tests;
 
 public static class ModuleInitializer
 {

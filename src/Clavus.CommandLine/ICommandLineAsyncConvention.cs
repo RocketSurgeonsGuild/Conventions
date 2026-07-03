@@ -1,7 +1,6 @@
-using Rocket.Surgery.Clavus;
 using Spectre.Console.Cli;
 
-namespace Rocket.Surgery.Clavus.CommandLine;
+namespace Clavus.CommandLine;
 
 /// <summary>
 ///     ICommandLineConvention

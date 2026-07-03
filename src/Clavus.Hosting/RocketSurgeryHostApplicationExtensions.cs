@@ -1,9 +1,8 @@
+using Clavus.Hosting;
 using Microsoft.Extensions.Hosting;
 
-using Rocket.Surgery.Clavus.Hosting;
-
 // ReSharper disable once CheckNamespace
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 /// <summary>
 ///     Extension method to apply logging conventions
@@ -18,7 +17,7 @@ public static class RocketSurgeryHostApplicationExtensions
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public static async ValueTask ApplyConventionsAsync<TBuilder>(
+    public static async ValueTask ApplyPartsAsync<TBuilder>(
         this TBuilder hostBuilder,
         IClavusContext context,
         CancellationToken cancellationToken = default

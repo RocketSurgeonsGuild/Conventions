@@ -1,10 +1,10 @@
 using System.Collections.Immutable;
+using Clavus.Support;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Rocket.Surgery.Clavus.Support;
 
 // ReSharper disable UnusedVariable
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 // TODO: analyzers
 //
 
@@ -14,26 +14,15 @@ namespace Rocket.Surgery.Clavus;
 [Generator]
 public class ClavusAttributesGenerator : IIncrementalGenerator
 {
-    private static IEnumerable<INamedTypeSymbol> GetExportedConventions(GeneratorAttributeSyntaxContext context)
-    {
-        foreach (var attribute in context.Attributes)
-        {
-            if (attribute is { AttributeClass.TypeArguments: [INamedTypeSymbol ta] })
-                yield return ta;
-            if (attribute is { ConstructorArguments: [{ Value: INamedTypeSymbol sv }] })
-                yield return sv;
-        }
-    }
-
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var exportConfiguration = ClavusConfigurationData.Create(context, "ExportClavus", ClavusConfigurationData.ExportsDefaults);
+        var exportConfiguration = ClavusConfigurationData.Create(context, "ExportClavus", "ExportClavusParts", ClavusConfigurationData.ExportsDefaults);
 
         var exportedConventions = context
                                  .SyntaxProvider
                                  .ForAttributeWithMetadataName(
-                                      "Rocket.Surgery.Clavus.ExportClavusPartAttribute",
+                                      "Clavus.ExportClavusPartAttribute",
                                       (node, _) => node is TypeDeclarationSyntax,
                                       (syntaxContext, _) => (INamedTypeSymbol)syntaxContext.TargetSymbol
                                   )
@@ -49,35 +38,39 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
                 productionContext,
                 new(
                     tuple.Left,
-                    tuple.Right.OrderBy(z => z.MetadataName).ToImmutableArray()
+                    [.. tuple.Right.OrderBy(z => z.MetadataName)]
                 )
             )
         );
 
         var importConfiguration = ClavusConfigurationData
-                                 .Create(context, "ImportClavus", ClavusConfigurationData.ImportsDefaults)
+                                 .Create(context, "ImportClavus", "ImportClavusParts", ClavusConfigurationData.ImportsDefaults)
                                  .Select((z, _) => z with { Assembly = z is not { WasConfigured: false, Assembly: true } && z.Assembly });
 
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
         var msBuildConfig = context.AnalyzerConfigOptionsProvider
                                    .Select(
-                                        (provider, _) => ( isTestProject: provider.GlobalOptions.TryGetValue(
+                                        (provider, _) => (
+                                            isTestProject: provider.GlobalOptions.TryGetValue(
                                                                "build_property.IsTestProject",
                                                                out var isTestProjectString
                                                            )
                                                         && bool.TryParse(isTestProjectString, out var isTestProject)
                                                         && isTestProject,
-                                                           rootNamespace: provider.GlobalOptions.TryGetValue(
+                                            rootNamespace: provider.GlobalOptions.TryGetValue(
                                                                "build_property.RootNamespace",
                                                                out var rootNamespace
                                                            )
-                                                               ? rootNamespace
-                                                               : null )
-                                    );
-        var rootNamespace = context.AnalyzerConfigOptionsProvider
-                                   .Select(
-                                        (provider, _) => provider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var value) ? value : ""
+                                                           ? rootNamespace
+                                                           : null,
+                                            clavusHostSdk: provider.GlobalOptions.TryGetValue(
+                                                               "build_property._ClavusHostSdk",
+                                                               out var clavusHostSdk
+                                                           )
+                                                           ? clavusHostSdk ?? ""
+                                                           : ""
+                                        )
                                     );
 
         context.RegisterSourceOutput(

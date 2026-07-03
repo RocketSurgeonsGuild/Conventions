@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using DiffEngine;
 
-namespace Rocket.Surgery.Clavus.Hosting.AspNetCore.Tests;
+namespace Clavus.Hosting.AspNetCore.Tests;
 
 public static class ModuleInitializer
 {

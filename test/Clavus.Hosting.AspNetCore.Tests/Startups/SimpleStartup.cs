@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 #pragma warning disable CA1801
 
-namespace Rocket.Surgery.Clavus.Hosting.AspNetCore.Tests.Startups;
+namespace Clavus.Hosting.AspNetCore.Tests.Startups;
 
 internal sealed class SimpleStartup
 {

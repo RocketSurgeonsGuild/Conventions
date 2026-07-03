@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Clavus.Abstractions\Rocket.Surgery.Clavus.Abstractions.csproj" />
+        <ProjectReference Include="..\..\src\Clavus\Clavus.csproj" />
         <ProjectReference
-            Include="..\..\src\Clavus.Analyzers\Rocket.Surgery.Clavus.Analyzers.csproj"
+            Include="..\..\src\Clavus.Analyzers\Clavus.Analyzers.csproj"
             IncludeAssets="all"
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
+        <ClavusPart Include="DatabaseConfigurator" Namespace="Clavus" ParameterType="Sample.Core.Databases.IDatabaseConfigurator" ParameterName="builder" />
     </ItemGroup>
 
     <PropertyGroup>
-        <TargetFrameworks>net10.0</TargetFrameworks>
+        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 </Project>

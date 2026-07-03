@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
-namespace Rocket.Surgery.Clavus.Configuration.Yaml;
+namespace Clavus.Configuration.Yaml;
 
 internal class YamlConfigurationStreamParser
 {

@@ -1,6 +1,6 @@
 
 
-namespace Rocket.Surgery.Clavus.Analyzers.Tests;
+namespace Clavus.Analyzers.Tests;
 
 public class ExportedMsBuildConventionsTests() : GeneratorTest()
 {
@@ -10,10 +10,10 @@ public class ExportedMsBuildConventionsTests() : GeneratorTest()
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     internal class Contrib : IClavusPart { }
@@ -34,10 +34,10 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     internal class Contrib : IClavusPart { }
 }
@@ -57,10 +57,10 @@ namespace Rocket.Surgery.Clavus.Tests
         var result = await WithSharedDeps()
                           .AddSources(
                                @"
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Tests;
+using Clavus;
+using Clavus.Tests;
 
-namespace Rocket.Surgery.Clavus.Tests
+namespace Clavus.Tests
 {
     [ExportClavusPart]
     internal class Contrib : IClavusPart { }

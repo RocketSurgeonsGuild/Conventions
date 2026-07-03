@@ -1,16 +1,10 @@
 using System.Diagnostics;
-
 using DryIoc;
-
 using FakeItEasy;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Clavus.Hosting;
 using Serilog.Events;
-
-
 using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;

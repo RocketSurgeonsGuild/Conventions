@@ -1,0 +1,35 @@
+<Project>
+    <PropertyGroup>
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and ('$(OutputType)' != 'Library' or '$(OutputType)' != 'library')"
+        >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected
+            Condition="'$(_ConventionApplicationDetected)' == '' and ('$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true')"
+        >true</_ConventionApplicationDetected>
+        <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == ''">false</_ConventionApplicationDetected>
+
+        <ImportClavusNamespace Condition="'$(ImportClavusNamespace)' == ''">$(RootNamespace)</ImportClavusNamespace>
+    <ImportClavusClassName Condition="'$(ImportClavusClassName)' == ''">Imports</ImportClavusClassName>
+    <ImportClavusMethodName Condition="'$(ImportClavusMethodName)' == ''">Instance</ImportClavusMethodName>
+
+        <ExportClavusNamespace Condition="'$(ExportClavusNamespace)' == ''">$(RootNamespace).Clavus</ExportClavusNamespace>
+    <ExportClavusClassName Condition="'$(ExportClavusClassName)' == ''">Exports</ExportClavusClassName>
+    <ExportClavusMethodName Condition="'$(ExportClavusMethodName)' == ''">GetConventions</ExportClavusMethodName>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">true</ImportClavusAssembly>
+        <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
+    <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">true</ImportClavusAssembly>
+    <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' != 'true'">
+    <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">false</ImportClavusAssembly>
+        <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
+    </PropertyGroup>
+
+  <Import
+    Project="$(MSBuildThisFileDirectory)Clavus.Parts.targets"
+    Condition="'$(_ClavusPartsTargetsImported)' != 'true'" />
+</Project>

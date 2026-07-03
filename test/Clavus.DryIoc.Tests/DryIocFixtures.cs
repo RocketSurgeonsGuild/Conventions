@@ -1,9 +1,8 @@
+using Clavus.DryIoc;
 using DryIoc;
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rocket.Surgery.Clavus.DependencyInjection;
-using Rocket.Surgery.Clavus.DryIoc;
 
 namespace Rocket.Surgery.Extensions.DryIoc.Tests;
 

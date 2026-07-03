@@ -3,7 +3,7 @@ using AngleSharp.Dom;
 using DiffEngine;
 using VerifyTests.AngleSharp;
 
-namespace Rocket.Surgery.Clavus.WebAssembly.Hosting.Tests;
+namespace Clavus.WebAssembly.Hosting.Tests;
 
 public static class ModuleInitializer
 {

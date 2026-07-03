@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>
+            Provides the ability to provide additional commands to the hosted
+            application by convention.
+        </PackageDescription>
+        <PackageTags>$(PackageTags);command line;cli;command</PackageTags>
+        <NoWarn>$(NoWarn);RCS1102;CA1812</NoWarn>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Clavus\Clavus.csproj" />
+        <ProjectReference Include="..\Clavus.Hosting/Clavus.Hosting.csproj" />
+
+        <ProjectReference
+            Include="..\Clavus.Analyzers\Clavus.Analyzers.csproj"
+            IncludeAssets="analyzers;build;buildMultitargeting;buildTransitive"
+            ExcludeAssets="compile;runtime;native"
+            PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
+            OutputItemType="Analyzer"
+            ReferenceOutputAssembly="false"
+        />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Spectre.Console" />
+        <PackageReference Include="Spectre.Console.Cli" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+        <InternalsVisibleTo Include="Clavus.CommandLine.Tests" />
+        <InternalsVisibleTo Include="Clavus.Diagnostics" />
+        <InternalsVisibleTo Include="Clavus.Tests" />
+        <InternalsVisibleTo Include="Clavus.Hosting" />
+        <InternalsVisibleTo Include="Clavus.Hosting.Abstractions" />
+        <InternalsVisibleTo Include="Clavus.Web.Hosting" />
+        <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting" />
+        <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting.Abstractions" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Temp\*.cs" />
+        <None Include="CommandLineHostBuilderExtensions.cs" />
+        <None Include="Temp\*.cs" />
+    </ItemGroup>
+</Project>

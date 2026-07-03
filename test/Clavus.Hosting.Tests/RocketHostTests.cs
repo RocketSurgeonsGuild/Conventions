@@ -1,12 +1,11 @@
+using Clavus.Configuration.Json;
+using Clavus.Configuration.Yaml;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Rocket.Surgery.Clavus.Configuration.Json;
-using Rocket.Surgery.Clavus.Configuration.Yaml;
-
-namespace Rocket.Surgery.Clavus.Hosting.Tests;
+namespace Clavus.Hosting.Tests;
 
 public class RocketHostTests
 {

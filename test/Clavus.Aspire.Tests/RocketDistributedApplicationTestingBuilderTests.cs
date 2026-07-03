@@ -1,12 +1,7 @@
 using Aspire.Hosting.Testing;
-
 using FakeItEasy;
-
 using Microsoft.Extensions.Hosting;
-
 using Projects;
-
-using Rocket.Surgery.Clavus.Aspire.Testing;
 using Rocket.Surgery.Extensions.Testing;
 
 

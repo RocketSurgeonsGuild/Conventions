@@ -1,13 +1,9 @@
 using System.Diagnostics;
-
 using Autofac;
-
 using FakeItEasy;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-using Rocket.Surgery.Clavus.Hosting;
 using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
 
 namespace Rocket.Surgery.Extensions.Autofac.Tests;

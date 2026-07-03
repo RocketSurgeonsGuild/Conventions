@@ -1,18 +1,16 @@
 using System.ComponentModel;
-
+using Clavus.Configuration;
+using Clavus.Extensions;
+using Clavus.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 
-using Rocket.Surgery.Clavus;
-using Rocket.Surgery.Clavus.Configuration;
-using Rocket.Surgery.Clavus.Extensions;
-
 #pragma warning disable CA1031, CA2000, CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
 
-namespace Rocket.Surgery.Clavus.Hosting;
+namespace Clavus.Hosting;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 [PublicAPI]
@@ -47,13 +45,13 @@ public static class RocketHostApplicationExtensions
 
         var context = await ClavusContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
         await SharedHostConfigurationAsync(context, builder, cancellationToken).ConfigureAwait(false);
-        await builder.Services.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
-        await builder.Logging.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.Services.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.Logging.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
 
         if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
             builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken).ConfigureAwait(false));
 
-        await builder.ApplyConventionsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
         var host = buildHost(builder);
         await context.ApplyHostCreatedPartsAsync(host, cancellationToken).ConfigureAwait(false);
         return host;
@@ -149,7 +147,7 @@ public static class RocketHostApplicationExtensions
             : hostApplicationBuilder.Configuration.Sources.IndexOf(source);
         // Insert after all the normal configuration but before the environment specific configuration
 
-        var cb = await new ConfigurationBuilder().ApplyConventionsAsync(context, hostApplicationBuilder.Configuration, cancellationToken).ConfigureAwait(false);
+        var cb = await new ConfigurationBuilder().ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0, })
         {
             hostApplicationBuilder.Configuration.Sources.Insert(

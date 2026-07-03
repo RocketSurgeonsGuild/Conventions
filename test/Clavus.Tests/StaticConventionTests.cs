@@ -1,6 +1,6 @@
 using Sample.DependencyThree.Clavus;
 
-namespace Rocket.Surgery.Clavus.Tests;
+namespace Clavus.Tests;
 
 public partial class StaticConventionTests
 {

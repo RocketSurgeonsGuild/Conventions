@@ -1,11 +1,11 @@
+using Clavus.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rocket.Surgery.Clavus.CommandLine;
 using Spectre.Console.Cli;
 
 // ReSharper disable once CheckNamespace
-namespace Rocket.Surgery.Clavus;
+namespace Clavus;
 
 /// <summary>
 ///     Helper method for working with <see cref="ClavusContextBuilder" />

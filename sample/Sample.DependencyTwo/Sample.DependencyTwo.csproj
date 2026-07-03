@@ -6,12 +6,12 @@
     <!-- Used to simulate anaylzer getting added by package reference -->
     <ItemGroup>
         <Analyzer
-            Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)\..\..))\src\Clavus.Analyzers\bin\$(Configuration)\netstandard2.0\Rocket.Surgery.Clavus.Analyzers.dll"
+            Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)\..\..))\src\Clavus.Analyzers\bin\$(Configuration)\netstandard2.0\Clavus.Analyzers.dll"
             Condition="'$(Language)'=='C#'"
         />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Clavus.Abstractions\Rocket.Surgery.Clavus.Abstractions.csproj" />
+        <ProjectReference Include="..\..\src\Clavus\Clavus.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="FluentValidation" />
