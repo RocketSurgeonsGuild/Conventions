@@ -30,7 +30,7 @@ public partial class RocketHostBuilderTests() : AutoFakeTest<TestRecord>(TestRec
                               .CreateApplicationBuilder()
                               .ConfigureClavus(rb => rb.ConfigureServices(convention));
 
-        A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IConfiguration>._, A<IServiceCollection>._)).MustHaveHappened();
+        A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IServiceCollection>._)).MustHaveHappened();
     }
 
     [Test]
@@ -41,7 +41,7 @@ public partial class RocketHostBuilderTests() : AutoFakeTest<TestRecord>(TestRec
                               .CreateApplicationBuilder()
                               .ConfigureClavus(rb => rb.ConfigureConfiguration(convention));
 
-        A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IConfiguration>._, A<IConfigurationBuilder>._)).MustHaveHappened();
+        A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IConfigurationBuilder>._)).MustHaveHappened();
     }
 
     [Test]
@@ -74,7 +74,7 @@ public partial class RocketHostBuilderTests() : AutoFakeTest<TestRecord>(TestRec
                               .CreateApplicationBuilder()
                               .ConfigureClavus(rb => rb.ConfigureLogging(convention));
 
-        A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IConfiguration>._, A<ILoggingBuilder>._)).MustHaveHappened();
+        A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<ILoggingBuilder>._)).MustHaveHappened();
     }
 
     [Test]

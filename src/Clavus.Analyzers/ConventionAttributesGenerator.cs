@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Clavus.Support;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -49,29 +48,6 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
 
         var hasAssemblyLoadContext = context.CompilationProvider
                                             .Select((compilation, _) => compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is { });
-        var msBuildConfig = context.AnalyzerConfigOptionsProvider
-                                   .Select(
-                                        (provider, _) => (
-                                            isTestProject: provider.GlobalOptions.TryGetValue(
-                                                               "build_property.IsTestProject",
-                                                               out var isTestProjectString
-                                                           )
-                                                        && bool.TryParse(isTestProjectString, out var isTestProject)
-                                                        && isTestProject,
-                                            rootNamespace: provider.GlobalOptions.TryGetValue(
-                                                               "build_property.RootNamespace",
-                                                               out var rootNamespace
-                                                           )
-                                                           ? rootNamespace
-                                                           : null,
-                                            clavusHostSdk: provider.GlobalOptions.TryGetValue(
-                                                               "build_property._ClavusHostSdk",
-                                                               out var clavusHostSdk
-                                                           )
-                                                           ? clavusHostSdk ?? ""
-                                                           : ""
-                                        )
-                                    );
 
         context.RegisterSourceOutput(
             context
@@ -80,13 +56,14 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
                .Combine(importConfiguration)
                .Combine(exportConfiguration)
                .Combine(hasAssemblyLoadContext)
-               .Combine(msBuildConfig)
                .Select(
                     (z, _) => (
-                        compilation: z.Left.Left.Left.Left.Left,
-                        hasExports: z.Left.Left.Left.Left.Right.Any(),
-                        exportedCandidates: z.Left.Left.Left.Left.Right,
-                        importConfiguration: z.Left.Left.Left.Right, exportConfiguration: z.Left.Left.Right, hasAssemblyLoadContext: z.Left.Right,
+                        compilation: z.Left.Left.Left.Left,
+                        hasExports: z.Left.Left.Left.Right.Any(),
+                        exportedCandidates: z.Left.Left.Left.Right,
+                        importConfiguration: z.Left.Left.Right,
+                        exportConfiguration: z.Left.Right,
+                        hasAssemblyLoadContext: z.Right,
                         msBuildConfig: z.Right
                     )
                 ),
@@ -98,7 +75,6 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
                     new(
                         tuple.compilation,
                         tuple.hasExports,
-                        tuple.msBuildConfig,
                         tuple.importConfiguration,
                         tuple.exportConfiguration
                     )

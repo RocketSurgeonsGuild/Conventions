@@ -32,7 +32,7 @@
         <ItemGroup>
             <ClavusPart>
                 <Visible>false</Visible>
-                <Namespace Condition="'%(ClavusPart.Namespace)' == ''">Clavus</Namespace>
+                <Namespace Condition="'%(ClavusPart.Namespace)' == ''">$(RootNamespace)</Namespace>
                 <ParameterName Condition="'%(ClavusPart.ParameterType)' != '' and '%(ClavusPart.ParameterName)' == ''">parameter</ParameterName>
             </ClavusPart>
             <ClavusPart>

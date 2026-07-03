@@ -209,7 +209,7 @@ public class ClavusContextTests
 
     public class AbcConvention : IServicePart
     {
-        public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services)
+        public void Register(IClavusContext context, IServiceCollection services)
         {
             ArgumentNullException.ThrowIfNull(context);
 
@@ -220,7 +220,7 @@ public class ClavusContextTests
 
     public class InjectableConvention(IInjectData convention) : IServicePart
     {
-        public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services)
+        public void Register(IClavusContext context, IServiceCollection services)
         {
             ArgumentNullException.ThrowIfNull(context);
 
@@ -230,7 +230,7 @@ public class ClavusContextTests
 
     public class OptionalInjectableConvention(IInjectData? convention = null) : IServiceAsyncPart
     {
-        public ValueTask Register(IClavusContext context, IConfiguration configuration, IServiceCollection services, CancellationToken cancellationToken)
+        public ValueTask Register(IClavusContext context, IServiceCollection services, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(context);
 

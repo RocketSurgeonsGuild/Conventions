@@ -138,7 +138,7 @@ internal static partial class GeneratedRocketWebAssemblyHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(contextBuilder);
-        return await global::Clavus.WebAssembly.Hosting.RocketWebAssemblyExtensions.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
+        return await global::Clavus.Hosting.WebAssembly.RocketWebAssemblyExtensions.Configure(builder, static b => b.Build(), contextBuilder, cancellationToken);
     }
 
     /// <summary>

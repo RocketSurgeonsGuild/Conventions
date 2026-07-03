@@ -22,7 +22,7 @@
         <ProjectReference Include="..\..\src\Clavus.Serilog\Clavus.Serilog.csproj" />
         <ProjectReference Include="..\..\src\Clavus\Clavus.csproj" />
         <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
-        <ProjectReference Include="..\..\src\Clavus.WebAssembly.Hosting\Clavus.WebAssembly.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Hosting.WebAssembly\Clavus.Hosting.WebAssembly.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Verify.SourceGenerators" />

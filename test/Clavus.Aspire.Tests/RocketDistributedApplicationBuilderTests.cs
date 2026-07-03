@@ -1,10 +1,9 @@
+using Aspire.Hosting;
 using FakeItEasy;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 
-
-
-namespace Aspire.Hosting.Tests;
+namespace Clavus.Aspire.Tests;
 
 public partial class RocketDistributedApplicationBuilderTests
     () : AutoFakeTest<TestRecord>(TestRecord.Create())

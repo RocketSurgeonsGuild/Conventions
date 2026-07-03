@@ -6,6 +6,7 @@
         <BaseOutputPath>bin/$(_Analyzer_Roslyn_Version_)/</BaseOutputPath>
         <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj/$(_Analyzer_Roslyn_Version_)/</BaseIntermediateOutputPath>
         <NoWarn>NU5105;$(NoWarn)</NoWarn>
+        <RootNamespace>Clavus.Analyzers</RootNamespace>
         <AssemblyName>Clavus.Analyzers</AssemblyName>
         <IsPackable>false</IsPackable>
         <NoPackageAnalysis>true</NoPackageAnalysis>

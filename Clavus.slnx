@@ -90,9 +90,9 @@
     <Project Path="src/Clavus.DryIoc/Clavus.DryIoc.csproj" />
     <Project Path="src/Clavus.Serilog/Clavus.Serilog.csproj" />
     <Project Path="src/Clavus/Clavus.csproj" />
+    <Project Path="src/Clavus.Hosting.Web/Clavus.Hosting.Web.csproj" />
+    <Project Path="src/Clavus.Hosting.WebAssembly/Clavus.Hosting.WebAssembly.csproj" />
     <Project Path="src/Clavus.Hosting/Clavus.Hosting.csproj" />
-    <Project Path="src/Clavus.Web.Hosting/Clavus.Web.Hosting.csproj" />
-    <Project Path="src/Clavus.WebAssembly.Hosting/Clavus.WebAssembly.Hosting.csproj" />
     <Project Path="src/Clavus.Sdk/Clavus.Sdk.csproj" />
   </Folder>
   <Folder Name="/src/Clavus.Analyzers.supports/">

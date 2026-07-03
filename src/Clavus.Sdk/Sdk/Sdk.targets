@@ -1,75 +1,169 @@
 <Project>
-    <!--
-        Sdk.targets — runs after project evaluation.
-        Detects host SDK, declares built-in ClavusPart items
-        (expanded by the Clavus.Abstractions build targets),
-        and expands the per-host bootstrap template.
-    -->
+    <Choose>
+        <When Condition=" '$(UsingMicrosoftNETSdkBlazorWebAssembly)'=='true' or '$(UsingMicrosoftNETSdkWebAssembly)'=='true' ">
+            <PropertyGroup>
+                <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
+            </PropertyGroup>
+            <ItemGroup>
+                <ClavusHost
+                    Include="WebAssembly"
+                    HostBuilderType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder"
+                    HostBuilderName="builder"
+                    HostType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost"
+                />
+                <PackageReference
+                    Include="Clavus.Hosting.WebAssembly"
+                    Version="TODO"
+                    Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.WebAssembly')) != 'true'"
+                    IsImplicitlyDefined="true"
+                    PrivateAssets="all"
+                    IncludeAssets="runtime; build; native; contentfiles; analyzers"
+                />
+            </ItemGroup>
+        </When>
+        <When Condition=" '$(UsingMicrosoftNETSdkRazor)'=='true' or '$(UsingMicrosoftNETSdkWeb)'=='true' ">
+            <PropertyGroup>
+                <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
+            </PropertyGroup>
+            <ItemGroup>
+                <ClavusHost
+                    Include="WebApplication"
+                    HostBuilderType="Microsoft.AspNetCore.Builder.WebApplicationBuilder"
+                    HostBuilderName="builder"
+                    HostType="Microsoft.AspNetCore.Builder.WebApplication"
+                />
+                <PackageReference
+                    Include="Clavus.Hosting.Web"
+                    Version="TODO"
+                    Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.Web')) != 'true'"
+                    IsImplicitlyDefined="true"
+                    PrivateAssets="all"
+                    IncludeAssets="runtime; build; native; contentfiles; analyzers"
+                />
+            </ItemGroup>
+        </When>
+        <When Condition=" '$(UsingMicrosoftNETSdkWorker)'=='true' or ('$(OutputType)' == 'Exe' or '$(OutputType)' == 'exe') ">
+            <PropertyGroup>
+                <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
+            </PropertyGroup>
+            <ItemGroup>
+                <ClavusHost
+                    Include="Application"
+                    HostBuilderType="Microsoft.Extensions.Hosting.HostApplicationBuilder"
+                    HostBuilderName="builder"
+                    HostType="Microsoft.Extensions.Hosting.IHost"
+                />
+                <PackageReference
+                    Include="Clavus.Hosting"
+                    Version="TODO"
+                    Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting')) != 'true'"
+                    IsImplicitlyDefined="true"
+                    PrivateAssets="all"
+                    IncludeAssets="runtime; build; native; contentfiles; analyzers"
+                />
+            </ItemGroup>
+        </When>
+        <When Condition=" '$(UsingMicrosoftMauiSdk)'=='true' ">
+            <PropertyGroup>
+                <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
+            </PropertyGroup>
+            <ItemGroup>
+                <ClavusHost
+                    Include="Maui"
+                    HostBuilderType="Microsoft.Maui.Hosting.MauiAppBuilder"
+                    HostBuilderName="builder"
+                    HostType="Microsoft.Maui.Hosting.MauiApp"
+                />
+                <PackageReference
+                    Include="Clavus.Hosting.Maui"
+                    Version="TODO"
+                    Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.Maui')) != 'true'"
+                    IsImplicitlyDefined="true"
+                    PrivateAssets="all"
+                    IncludeAssets="runtime; build; native; contentfiles; analyzers"
+                />
+            </ItemGroup>
+        </When>
+        <When Condition=" '$(UsingUnoSdk)'=='true' ">
+            <PropertyGroup>
+                <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
+            </PropertyGroup>
+            <ItemGroup>
+                <ClavusHost
+                    Include="Uno"
+                    HostBuilderType="Uno.UI.Hosting.IUnoPlatformHostBuilder"
+                    HostBuilderName="builder"
+                    HostType="Uno.UI.Hosting.UnoPlatformHost"
+                />
+                <PackageReference
+                    Include="Clavus.Hosting.Uno"
+                    Version="TODO"
+                    Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.Uno')) != 'true'"
+                    IsImplicitlyDefined="true"
+                    PrivateAssets="all"
+                    IncludeAssets="runtime; build; native; contentfiles; analyzers"
+                />
+            </ItemGroup>
+        </When>
+        <Otherwise>
+            <PropertyGroup>
+                <_ClavusApplicationDetected>false</_ClavusApplicationDetected>
+            </PropertyGroup>
+        </Otherwise>
+        <!-- leaving aspire out for the moment -->
+        <!-- <When Condition=" '$(IsAspireHost)'=='true' ">
+            <ItemGroup>
+                <ClavusHost Include="Aspire" HostBuilderType="Aspire.Hosting.IDistributedApplicationBuilder" HostBuilderName="builder" HostType="Aspire.Hosting.DistributedApplication" />
+            </ItemGroup>
+        </When> -->
+    </Choose>
 
-    <!-- Detect host SDK -->
-    <PropertyGroup>
-        <_ClavusHostSdk Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">BlazorWebAssembly</_ClavusHostSdk>
-        <_ClavusHostSdk Condition="'$(UsingMicrosoftNETSdkWeb)' == 'true' And '$(_ClavusHostSdk)' == ''">Web</_ClavusHostSdk>
-        <_ClavusHostSdk Condition="'$(ClavusIsAspire)' == 'true' And '$(_ClavusHostSdk)' == ''">Aspire</_ClavusHostSdk>
-        <_ClavusHostSdk Condition="'$(_ClavusHostSdk)' == ''">Generic</_ClavusHostSdk>
+    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+        <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">true</ImportClavusAssembly>
+        <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">false</ExportClavusAssembly>
     </PropertyGroup>
 
-    <!-- Expose properties to the source generator via CompilerVisibleProperty -->
-    <ItemGroup>
-        <CompilerVisibleProperty Include="_ClavusHostSdk" />
-        <CompilerVisibleProperty Include="IsTestProject" />
-        <CompilerVisibleProperty Include="RootNamespace" />
-    </ItemGroup>
+    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
+        <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">true</ImportClavusAssembly>
+        <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
+    </PropertyGroup>
 
-    <!-- Web host parts -->
-    <ItemGroup Condition="'$(_ClavusHostSdk)' == 'Web'">
-        <ClavusPart Include="HostApplication" ParameterType="Microsoft.Extensions.Hosting.IHostApplicationBuilder" ParameterName="builder" />
-        <ClavusPart Include="WebApplication" ParameterType="Microsoft.AspNetCore.Builder.WebApplicationBuilder" ParameterName="builder" />
-        <ClavusPart Include="HostCreated" ParameterType="Microsoft.Extensions.Hosting.IHost" ParameterName="host" />
-    </ItemGroup>
-
-    <!-- BlazorWebAssembly host parts -->
-    <ItemGroup Condition="'$(_ClavusHostSdk)' == 'BlazorWebAssembly'">
-        <ClavusPart
-            Include="WebAssemblyHost"
-            ParameterType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder"
-            ParameterName="builder"
-        />
-    </ItemGroup>
-
-    <!-- Aspire host parts -->
-    <ItemGroup Condition="'$(_ClavusHostSdk)' == 'Aspire'">
-        <ClavusPart Include="HostApplication" ParameterType="Microsoft.Extensions.Hosting.IHostApplicationBuilder" ParameterName="builder" />
-        <ClavusPart Include="HostCreated" ParameterType="Microsoft.Extensions.Hosting.IHost" ParameterName="host" />
-    </ItemGroup>
-
-    <!-- Generic host parts (non-web) -->
-    <ItemGroup Condition="'$(_ClavusHostSdk)' == 'Generic'">
-        <ClavusPart Include="HostApplication" ParameterType="Microsoft.Extensions.Hosting.IHostApplicationBuilder" ParameterName="builder" />
-        <ClavusPart Include="HostCreated" ParameterType="Microsoft.Extensions.Hosting.IHost" ParameterName="host" />
-    </ItemGroup>
+    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' != 'true'">
+        <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">false</ImportClavusAssembly>
+        <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
+    </PropertyGroup>
 
     <!-- Flag-gated optional package references -->
     <ItemGroup>
-        <PackageReference Include="Clavus.Configuration.Json" Condition="'$(ClavusEnableJsonConfiguration)' == 'true'" />
-        <PackageReference Include="Clavus.Configuration.Yaml" Condition="'$(ClavusEnableYamlConfiguration)' == 'true'" />
-        <PackageReference Include="Clavus.Autofac" Condition="'$(ClavusEnableAutofac)' == 'true'" />
-        <PackageReference Include="Clavus.DryIoc" Condition="'$(ClavusEnableDryIoc)' == 'true'" />
-        <PackageReference Include="Clavus.Serilog" Condition="'$(ClavusEnableSerilog)' == 'true'" />
-    </ItemGroup>
-
-    <!-- Expand and include the per-host bootstrap template -->
-    <Target Name="_AddClavusBootstrapTemplate" BeforeTargets="CoreCompile" Condition="'$(RootNamespace)' != ''">
-        <ReadLinesFromFile File="$(MSBuildThisFileDirectory)templates/GeneratedClavus.$(_ClavusHostSdk).cs">
-            <Output TaskParameter="Lines" ItemName="_ClavusTemplateLines" />
-        </ReadLinesFromFile>
-        <WriteLinesToFile
-            File="$(IntermediateOutputPath)GeneratedClavus.$(_ClavusHostSdk).cs"
-            Lines="@(_ClavusTemplateLines->Replace('{RocketUsing}','$(RootNamespace)'))"
-            Overwrite="true"
+        <PackageReference
+            Include="Clavus.Configuration.Json"
+            Version="TODO"
+            Condition="'$(ClavusEnableJsonConfiguration)' == 'true' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Configuration.Json')) != 'true'"
+            IsImplicitlyDefined="true"
         />
-        <ItemGroup>
-            <Compile Include="$(IntermediateOutputPath)GeneratedClavus.$(_ClavusHostSdk).cs" />
-        </ItemGroup>
-    </Target>
+        <PackageReference
+            Include="Clavus.Configuration.Yaml"
+            Version="TODO"
+            Condition="'$(ClavusEnableYamlConfiguration)' == 'true' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Configuration.Yaml')) != 'true'"
+            IsImplicitlyDefined="true"
+        />
+        <PackageReference
+            Include="Clavus.Autofac"
+            Version="TODO"
+            Condition="'$(ClavusEnableAutofac)' == 'true' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Autofac')) != 'true'"
+            IsImplicitlyDefined="true"
+        />
+        <PackageReference
+            Include="Clavus.DryIoc"
+            Version="TODO"
+            Condition="'$(ClavusEnableDryIoc)' == 'true' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.DryIoc')) != 'true'"
+            IsImplicitlyDefined="true"
+        />
+        <PackageReference
+            Include="Clavus.Serilog"
+            Version="TODO"
+            Condition="'$(ClavusEnableSerilog)' == 'true' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Serilog')) != 'true'"
+            IsImplicitlyDefined="true"
+        />
+    </ItemGroup>
 </Project>

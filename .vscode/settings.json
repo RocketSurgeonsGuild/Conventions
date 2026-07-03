@@ -41,5 +41,6 @@
         "awk": true,
         "uniq": true,
         "dotnet run": true
-    }
+    },
+    "xml.format.maxLineWidth": 0
 }

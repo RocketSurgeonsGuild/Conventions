@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using Clavus.Infrastructure;
 using Clavus.Tests.Fixtures;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 using Serilog.Events;
@@ -188,7 +187,7 @@ public class ClavusProviderTests()
     [UnitTestPart]
     private sealed class C : IServicePart
     {
-        public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services) => throw new NotImplementedException();
+        public void Register(IClavusContext context, IServiceCollection services) => throw new NotImplementedException();
     }
 
     [ClavusCategory(ClavusCategory.Application)]

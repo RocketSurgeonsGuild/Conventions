@@ -1,0 +1,61 @@
+<Project>
+  <!--
+        Clavus.Abstractions.Host.targets
+        Expands ClavusHost.cs.template once per declared <ClavusHost> item and adds the
+        result to the compilation. Replaces the generator-based part stamping — no source
+        generator is required for part interfaces/delegates.
+
+        ClavusHost metadata:
+          Namespace             — namespace for the generated types (default: Clavus)
+          HostBuilderType       - The type of the host builder
+          HostBuilderName       - The name of the host builder
+          HostType              - The type of the host
+
+        Each part generates: The extension methods for the given hostbuilder type, for bootstrapping
+          and will wire in Clavus.
+    -->
+  <PropertyGroup>
+    <_ClavusHostsTargetsImported>true</_ClavusHostsTargetsImported>
+    <_ClavusHostTemplateFile>$(MSBuildThisFileDirectory)ClavusHost.cs.template</_ClavusHostTemplateFile>
+  </PropertyGroup>
+
+  <Target Name="_ClavusPrepareHostItems" Condition="'@(ClavusHost)' != ''">
+    <ItemGroup>
+      <ClavusHost>
+        <Visible>false</Visible>
+        <Namespace Condition="'%(ClavusHost.Namespace)' == ''">$(RootNamespace)</Namespace>
+      </ClavusHost>
+    </ItemGroup>
+  </Target>
+
+  <!-- Batched once per ClavusHost item via Outputs -->
+  <Target Name="_ClavusGenerateHostSources"
+    BeforeTargets="CoreCompile"
+    DependsOnTargets="_ClavusPrepareHostItems"
+    Condition="'@(ClavusHost)' != ''"
+    Outputs="%(ClavusHost.Identity)">
+    <PropertyGroup>
+      <_ClavusHostName>%(ClavusHost.Identity)</_ClavusHostName>
+      <_ClavusHostNamespace>%(ClavusHost.Namespace)</_ClavusHostNamespace>
+      <_ClavusHostBuilderType>%(ClavusHost.HostBuilderType)</_ClavusHostBuilderType>
+      <_ClavusHostBuilderName>%(ClavusHost.HostBuilderName)</_ClavusHostBuilderName>
+      <_ClavusHostType>%(ClavusHost.HostType)</_ClavusHostType>
+      <_ClavusHostContent>$([System.IO.File]::ReadAllText('$(_ClavusHostTemplateFile)'))</_ClavusHostContent>
+      <_ClavusHostContent>$(_ClavusHostContent.Replace('{HostName}', '$(_ClavusHostName)'))</_ClavusHostContent>
+      <_ClavusHostContent>$(_ClavusHostContent.Replace('{Namespace}','$(_ClavusHostNamespace)'))</_ClavusHostContent>
+      <_ClavusHostContent>$(_ClavusHostContent.Replace('{HostBuilderType}', '$(_ClavusHostBuilderType)'))</_ClavusHostContent>
+      <_ClavusHostContent>$(_ClavusHostContent.Replace('{HostBuilderName}', '$(_ClavusHostBuilderName)'))</_ClavusHostContent>
+      <_ClavusHostContent>$(_ClavusHostContent.Replace('{HostType}', '$(_ClavusHostType)'))</_ClavusHostContent>
+      <_ClavusHostOutputFile>$(IntermediateOutputPath)ClavusHost.$(_ClavusHostName).g.cs</_ClavusHostOutputFile>
+    </PropertyGroup>
+    <WriteLinesToFile
+      File="$(_ClavusHostOutputFile)"
+      Lines="$([MSBuild]::Escape($(_ClavusHostContent)))"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(_ClavusHostOutputFile)" />
+      <FileWrites Include="$(_ClavusHostOutputFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

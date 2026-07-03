@@ -9,7 +9,7 @@
         <PackageReference Include="Verify.AngleSharp" />
         <PackageReference Include="Verify.Playwright" />
         <ProjectReference Include="..\..\sample\Sample.BlazorWasm\Sample.BlazorWasm.csproj" />
-        <ProjectReference Include="..\..\src\Clavus.WebAssembly.Hosting\Clavus.WebAssembly.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Hosting.WebAssembly\Clavus.Hosting.WebAssembly.csproj" />
         <ProjectReference Include="..\..\src\Clavus.Configuration.Json\Clavus.Configuration.Json.csproj" />
         <ProjectReference Include="..\..\src\Clavus.Configuration.Yaml\Clavus.Configuration.Yaml.csproj" />
         <PackageReference Include="bunit.web" />

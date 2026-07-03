@@ -1,10 +1,7 @@
 <Project>
     <ItemGroup>
         <PackageReference Include="Polyfill" PrivateAssets="all" />
-        <Compile
-            Include="$(MSBuildThisFileDirectory)..\Conventions.Analyzers\**\*.cs"
-            Exclude="$(MSBuildThisFileDirectory)..\Conventions.Analyzers\obj\**\*.cs"
-        />
+        <Compile Include="$(MSBuildThisFileDirectory)..\Clavus.Analyzers\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Clavus.Analyzers\obj\**\*.cs" />
         <None Include="$(PkgSystem_Text_Json)\lib\netstandard2.0\System.Text.Json.dll" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />

@@ -1,4 +1,4 @@
-using Clavus.WebAssembly.Hosting;
+using Clavus.Hosting.WebAssembly;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 // ReSharper disable once CheckNamespace

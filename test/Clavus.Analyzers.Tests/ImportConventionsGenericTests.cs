@@ -7,7 +7,7 @@ using Aspire.Hosting.Testing;
 using Clavus.Aspire;
 using Clavus.Aspire.Testing;
 using Clavus.Hosting;
-using Clavus.WebAssembly.Hosting;
+using Clavus.Hosting.WebAssembly;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Hosting;

@@ -1,29 +1,2 @@
 <Project>
-  <ItemGroup>
-    <CompilerVisibleProperty Include="ImportClavusAssembly" />
-    <CompilerVisibleProperty Include="ImportClavusNamespace" />
-    <CompilerVisibleProperty Include="ImportClavusClassName" />
-    <CompilerVisibleProperty Include="ImportClavusMethodName" />
-
-    <CompilerVisibleProperty Include="ExportClavusAssembly" />
-    <CompilerVisibleProperty Include="ExportClavusNamespace" />
-    <CompilerVisibleProperty Include="ExportClavusClassName" />
-    <CompilerVisibleProperty Include="ExportClavusMethodName" />
-
-    <CompilerVisibleProperty Include="IsTestProject" />
-
-    <Using Include="Clavus" />
-  </ItemGroup>
-
-  <!-- ClavusPart item metadata schema -->
-  <ItemDefinitionGroup>
-    <ClavusPart>
-      <Namespace></Namespace>
-      <ProvideConfiguration></ProvideConfiguration>
-      <ProvideServices></ProvideServices>
-      <ParameterType></ParameterType>
-      <ParameterName></ParameterName>
-      <BuilderMethodName></BuilderMethodName>
-    </ClavusPart>
-  </ItemDefinitionGroup>
 </Project>

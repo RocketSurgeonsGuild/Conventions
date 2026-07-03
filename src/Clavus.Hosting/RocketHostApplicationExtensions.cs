@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using Clavus.Configuration;
-using Clavus.Extensions;
 using Clavus.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;

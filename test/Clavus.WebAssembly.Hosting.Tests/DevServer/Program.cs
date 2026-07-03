@@ -17,7 +17,7 @@ public static class DevHostServerProgram
     /// </summary>
     public static IHost BuildWebHost(string[] args)
     {
-        var builder = WebApplication.CreateBuilder();
+        var builder = WebApp    lication.CreateBuilder();
 
         {
             var applicationPath = args.SkipWhile(a => a != "--applicationpath").Skip(1).First();

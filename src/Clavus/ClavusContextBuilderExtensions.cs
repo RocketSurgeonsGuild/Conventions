@@ -1,8 +1,6 @@
+using Clavus.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-using Clavus.Extensions;
-using Clavus.Infrastructure;
 
 #pragma warning disable CA2000
 
@@ -18,7 +16,6 @@ public static class ClavusContextBuilderExtensions
     ///     Allows creation of a service provider from the convention context.  This will apply configuration
     /// </summary>
     /// <param name="context"></param>
-    /// <param name="configuration"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async ValueTask<IServiceProvider> CreateServiceProvider(this IClavusContext context, CancellationToken cancellationToken = default)

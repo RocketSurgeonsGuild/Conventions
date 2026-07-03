@@ -1,7 +1,6 @@
-using Clavus;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-namespace Clavus.WebAssembly.Hosting;
+namespace Clavus.Hosting.WebAssembly;
 
 /// <summary>
 ///     Delegate HostingConventionAction

@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <_ClavusContextBuilderTargetsImported>true</_ClavusContextBuilderTargetsImported>
+    <_ClavusContextBuilderTemplateFile>$(MSBuildThisFileDirectory)ClavusContextBuilder.cs.template</_ClavusContextBuilderTemplateFile>
+  </PropertyGroup>
+
+  <!-- Batched once per ClavusContextBuilder item via Outputs -->
+  <Target Name="_ClavusGenerateContextBuilderSources"
+    BeforeTargets="CoreCompile"
+    DependsOnTargets="_ClavusPrepareHostItems"
+    Condition="'@(ClavusHost)' != ''"
+    Outputs="$(_ClavusContextBuilderOutputFile)">
+    <PropertyGroup>
+      <_ClavusContextBuilderImportExpression>$(ImportClavusNamespace).$(ImportClavusClassName).$(ImportClavusMethodName)</_ClavusContextBuilderImportExpression>
+      <_ClavusContextBuilderContent>$([System.IO.File]::ReadAllText('$(_ClavusContextBuilderTemplateFile)'))</_ClavusContextBuilderContent>
+      <_ClavusContextBuilderContent>$(_ClavusContextBuilderContent.Replace('{ImportsExpression}', '$(_ClavusContextBuilderImportExpression)'))</_ClavusContextBuilderContent>
+      <_ClavusContextBuilderContent>$(_ClavusContextBuilderContent.Replace('{Namespace}','$(RootNamespace)'))</_ClavusContextBuilderContent>
+      <_ClavusContextBuilderOutputFile>$(IntermediateOutputPath)ClavusContextBuilder.g.cs</_ClavusContextBuilderOutputFile>
+    </PropertyGroup>
+    <WriteLinesToFile
+      File="$(_ClavusContextBuilderOutputFile)"
+      Lines="$([MSBuild]::Escape($(_ClavusContextBuilderContent)))"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(_ClavusContextBuilderOutputFile)" />
+      <FileWrites Include="$(_ClavusContextBuilderOutputFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

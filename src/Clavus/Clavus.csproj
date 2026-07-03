@@ -38,16 +38,19 @@
         <None Include="build/*.*" Pack="true" PackagePath="build" />
         <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
         <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
+        <None Update="build\Clavus.Imports.targets">
+            <Pack>true</Pack>
+            <PackagePath>build</PackagePath>
+        </None>
+        <None Update="build\ClavusContextBuilder.cs.template">
+            <Pack>true</Pack>
+            <PackagePath>build</PackagePath>
+        </None>
     </ItemGroup>
     <ItemGroup>
-        <ClavusPart Include="Setup" Namespace="Clavus" />
-        <ClavusPart Include="Service" Namespace="Clavus" ProvideServices="true" BuilderMethodName="ConfigureServices" />
-        <ClavusPart
-            Include="Configuration"
-            Namespace="Clavus"
-            ParameterType="Microsoft.Extensions.Configuration.IConfigurationBuilder"
-            ParameterName="builder"
-        />
-        <ClavusPart Include="Logging" Namespace="Clavus" ParameterType="Microsoft.Extensions.Logging.ILoggingBuilder" ParameterName="builder" />
+        <ClavusPart Include="Setup" />
+        <ClavusPart Include="Service" ProvideServices="true" BuilderMethodName="ConfigureServices" />
+        <ClavusPart Include="Configuration" ParameterType="Microsoft.Extensions.Configuration.IConfigurationBuilder" ParameterName="builder" />
+        <ClavusPart Include="Logging" ParameterType="Microsoft.Extensions.Logging.ILoggingBuilder" ParameterName="builder" />
     </ItemGroup>
 </Project>

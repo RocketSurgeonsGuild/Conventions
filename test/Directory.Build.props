@@ -6,5 +6,6 @@
         <IsTestProject>true</IsTestProject>
         <MergeCoverage>true</MergeCoverage>
         <IncludeTestAssembly>true</IncludeTestAssembly>
+        <ImportClavusAssembly>true</ImportClavusAssembly>
     </PropertyGroup>
 </Project>

@@ -1,17 +1,13 @@
 using System.ComponentModel;
-using Clavus.CommandLine;
 using FakeItEasy;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Extensions.Testing;
 using Spectre.Console.Cli;
 
-
-
 #pragma warning disable CA1034, CA1062, CA1822, CA2000
 
-namespace Rocket.Surgery.Extensions.CommandLine.Tests;
+namespace Clavus.CommandLine.Tests;
 
 public interface IService
 {

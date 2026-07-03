@@ -8,9 +8,11 @@
         <Nullable>disable</Nullable>
         <PackageDescription>MSBuild SDK for Clavus — auto-selects packages and emits bootstrapping based on host SDK</PackageDescription>
         <PackageTags>$(PackageTags);sdk;msbuild</PackageTags>
+        <ImplicitUsings>false</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
         <Compile Remove="Sdk/**" />
         <None Include="Sdk/**" Pack="true" PackagePath="Sdk/" />
+        <Using Remove="Clavus" />
     </ItemGroup>
 </Project>

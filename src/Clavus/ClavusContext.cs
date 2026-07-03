@@ -1,10 +1,6 @@
 using System.Collections.Immutable;
-using System.Runtime.Loader;
-
-using Microsoft.Extensions.DependencyInjection;
-
-using Clavus.Extensions;
 using Clavus.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Clavus;
 
@@ -83,12 +79,9 @@ public sealed class ClavusContext : IClavusContext
 
     private static ClavusContext FromInitInternal(ClavusContextBuilder builder)
     {
-        var conventions = builder.Require<LoadClavusParts>();
-        builder
-           .AddIfMissing(AssemblyLoadContext.Default)
-           .AddIfMissing("ExecutingAssembly", conventions.Method.Module.Assembly)
-           .AddIfMissing(ConventionExceptionPolicy.IgnoreNotSupported);
-        var provider = CreateProvider(builder, conventions);
+        var parts = builder.Require<LoadClavusParts>();
+        builder.AddIfMissing(ConventionExceptionPolicy.IgnoreNotSupported);
+        var provider = CreateProvider(builder, parts);
         // ReSharper disable once NullableWarningSuppressionIsUsed
         if (builder.state.ServiceProviderFactory is { })
             builder.Properties.Set(builder.state.ServiceProviderFactory);

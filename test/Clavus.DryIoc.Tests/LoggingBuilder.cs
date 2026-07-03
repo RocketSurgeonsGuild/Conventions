@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Rocket.Surgery.Extensions.DryIoc.Tests;
+namespace Clavus.DryIoc.Tests;
 
 internal sealed class LoggingBuilder(IServiceCollection services) : ILoggingBuilder
 {

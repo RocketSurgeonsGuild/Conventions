@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <PackageDescription>
@@ -9,8 +9,7 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <ProjectReference Include="..\Clavus\Clavus.csproj" />
-        <ProjectReference Include="..\Clavus.Hosting/Clavus.Hosting.csproj" />
+        <ProjectReference Include="../Clavus/Clavus.csproj" />
+        <ProjectReference Include="../Clavus.Hosting/Clavus.Hosting.csproj" />
     </ItemGroup>
 </Project>

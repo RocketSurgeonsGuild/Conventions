@@ -1,10 +1,9 @@
-using Clavus.DryIoc;
 using DryIoc;
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rocket.Surgery.Extensions.DryIoc.Tests;
+namespace Clavus.DryIoc.Tests;
 
 public static class DryIocFixtures
 {
@@ -34,6 +33,6 @@ public static class DryIocFixtures
     [ExportClavusPart]
     public class OtherConvention : IServicePart
     {
-        public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services) => services.AddSingleton(A.Fake<IOtherAbc3>());
+        public void Register(IClavusContext context, IServiceCollection services) => services.AddSingleton(A.Fake<IOtherAbc3>());
     }
 }

@@ -3,12 +3,11 @@
 using System.Diagnostics;
 using Autofac;
 using FakeItEasy;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
-using static Rocket.Surgery.Extensions.Autofac.Tests.AutofacFixtures;
+using static Clavus.Autofac.Tests.AutofacFixtures;
 
-namespace Rocket.Surgery.Extensions.Autofac.Tests;
+namespace Clavus.Autofac.Tests;
 
 public class AutofacBuilderTests : AutoFakeTest<TestRecord>
 {

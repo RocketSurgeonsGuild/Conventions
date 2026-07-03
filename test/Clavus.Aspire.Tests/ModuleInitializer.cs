@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using DiffEngine;
 
-namespace Aspire.Hosting.Tests;
+namespace Clavus.Aspire.Tests;
 
 internal static class ModuleInitializer
 {

@@ -61,77 +61,6 @@ internal static class ImportConventions
                 )
                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-        if (request.MsBuildConfig.isTestProject)
-        {
-            importsClass = importsClass.AddMembers(
-                MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier("Init"))
-                   .WithAttributeLists(
-                        SingletonList(
-                            AttributeList(
-                                SeparatedList(
-                                    [
-                                        Attribute(ParseName("System.Runtime.CompilerServices.ModuleInitializer")),
-                                        Attribute(ParseName("System.ComponentModel.EditorBrowsable"))
-                                           .WithArgumentList(
-                                                AttributeArgumentList(
-                                                    SingletonSeparatedList(
-                                                        AttributeArgument(
-                                                            MemberAccessExpression(
-                                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                                ParseName("System.ComponentModel.EditorBrowsableState"),
-                                                                IdentifierName("Never")
-                                                            )
-                                                        )
-                                                    )
-                                                )
-                                            ),
-                                    ]
-                                )
-                            )
-                        )
-                    )
-                   .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
-                   .WithBody(
-                        Block(
-                            List<StatementSyntax>(
-                                [
-                                    ExpressionStatement(
-                                        InvocationExpression(
-                                                MemberAccessExpression(
-                                                    SyntaxKind.SimpleMemberAccessExpression,
-                                                    IdentifierName("Environment"),
-                                                    IdentifierName("SetEnvironmentVariable")
-                                                )
-                                            )
-                                           .WithArgumentList(
-                                                ArgumentList(
-                                                    SeparatedList(
-                                                        [
-                                                            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("RSG__HOSTTYPE"))),
-                                                            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("UnitTest"))),
-                                                        ]
-                                                    )
-                                                )
-                                            )
-                                    ),
-                                    ExpressionStatement(
-                                        AssignmentExpression(
-                                            SyntaxKind.SimpleAssignmentExpression,
-                                            MemberAccessExpression(
-                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                IdentifierName("ImportHelpers"),
-                                                IdentifierName("ExternalConventions")
-                                            ),
-                                            IdentifierName(request.ImportConfiguration.MethodName)
-                                        )
-                                    ),
-                                ]
-                            )
-                        )
-                    )
-            );
-        }
-
         var cu = CompilationUnit()
                 .WithAttributeLists(request.ImportConfiguration.ToAttributes("Imports"))
                 .AddSharedTrivia()
@@ -234,7 +163,6 @@ internal static class ImportConventions
     (
         Compilation Compilation,
         bool HasExports,
-        (bool isTestProject, string? rootNamespace, string clavusHostSdk) MsBuildConfig,
         ClavusConfigurationData ImportConfiguration,
         ClavusConfigurationData ExportConfiguration
     );

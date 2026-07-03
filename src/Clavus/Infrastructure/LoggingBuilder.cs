@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Clavus.Extensions;
+namespace Clavus.Infrastructure;
 
 internal class LoggingBuilder(IServiceCollection services) : ILoggingBuilder
 {

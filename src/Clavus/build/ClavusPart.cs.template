@@ -14,8 +14,8 @@ namespace {Namespace};
 ///     Implements the <see cref="global::Clavus.IClavusPart" />
 /// </summary>
 /// <seealso cref="global::Clavus.IClavusPart" />
-[global::System.CodeDom.Compiler.GeneratedCode("Clavus.Abstractions", "generated")]
-public interface I{PartName}Part : global::Clavus.IClavusPart
+[global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
+public interface I{PartName}Part{GenericArg} : global::Clavus.IClavusPart
 {
     /// <summary>
     ///     Register the {PartName} part.
@@ -26,16 +26,16 @@ public interface I{PartName}Part : global::Clavus.IClavusPart
 /// <summary>
 ///     Delegate for the {PartName} part.
 /// </summary>
-[global::System.CodeDom.Compiler.GeneratedCode("Clavus.Abstractions", "generated")]
-public delegate void {PartName}Part({SyncParams});
+[global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
+public delegate void {PartName}Part{GenericArg}({SyncParams});
 
 /// <summary>
 ///     Async part interface for {PartName}.
 ///     Implements the <see cref="global::Clavus.IClavusPart" />
 /// </summary>
 /// <seealso cref="global::Clavus.IClavusPart" />
-[global::System.CodeDom.Compiler.GeneratedCode("Clavus.Abstractions", "generated")]
-public interface I{PartName}AsyncPart : global::Clavus.IClavusPart
+[global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
+public interface I{PartName}AsyncPart{GenericArg} : global::Clavus.IClavusPart
 {
     /// <summary>
     ///     Register the {PartName} part asynchronously.
@@ -46,30 +46,30 @@ public interface I{PartName}AsyncPart : global::Clavus.IClavusPart
 /// <summary>
 ///     Async delegate for the {PartName} part.
 /// </summary>
-[global::System.CodeDom.Compiler.GeneratedCode("Clavus.Abstractions", "generated")]
-public delegate global::System.Threading.Tasks.ValueTask {PartName}AsyncPart({AsyncParams});
+[global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
+public delegate global::System.Threading.Tasks.ValueTask {PartName}AsyncPart{GenericArg}({AsyncParams});
 
 /// <summary>
 ///     Extension methods for applying {PartName} parts.
 /// </summary>
-[global::System.CodeDom.Compiler.GeneratedCode("Clavus.Abstractions", "generated")]
+[global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
 public static class {PartName}PartExtensions
 {
     /// <summary>
     ///     Applies the registered {PartName} parts.
     /// </summary>
     /// <returns>The <see cref="{SubjectType}" /> for chaining.</returns>
-    public static async global::System.Threading.Tasks.ValueTask<{SubjectType}> ApplyPartsAsync({ExtensionParams})
+    public static async global::System.Threading.Tasks.ValueTask<{SubjectType}> ApplyPartsAsync{GenericArg}({ExtensionParams})
     {
         global::System.ArgumentNullException.ThrowIfNull(context);
         await global::Clavus.ClavusContextExtensions
              .RegisterConventions(
                   context,
                   e => e
-                      .AddHandler<I{PartName}Part>(part => part.Register({SyncArgs}))
-                      .AddHandler<I{PartName}AsyncPart>(part => part.Register({AsyncArgs}))
-                      .AddHandler<{PartName}Part>(part => part({SyncArgs}))
-                      .AddHandler<{PartName}AsyncPart>(part => part({AsyncArgs}))
+                      .AddHandler<I{PartName}Part{GenericArg}>(part => part.Register({SyncArgs}))
+                      .AddHandler<I{PartName}AsyncPart{GenericArg}>(part => part.Register({AsyncArgs}))
+                      .AddHandler<{PartName}Part{GenericArg}>(part => part({SyncArgs}))
+                      .AddHandler<{PartName}AsyncPart{GenericArg}>(part => part({AsyncArgs}))
               )
              .ConfigureAwait(false);
         return {SubjectName};
@@ -80,7 +80,7 @@ public static class {PartName}PartExtensions
 /// <summary>
 ///     Builder-method extensions for applying {PartName} parts to a <see cref="global::Clavus.ClavusContextBuilder" />.
 /// </summary>
-[global::System.CodeDom.Compiler.GeneratedCode("Clavus.Abstractions", "generated")]
+[global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
 public static class {PartName}HostBuilderExtensions
 {
     /// <summary>
@@ -91,12 +91,12 @@ public static class {PartName}HostBuilderExtensions
     /// <param name="priority">The priority.</param>
     /// <param name="category">The category.</param>
     /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}(
+    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
         this global::Clavus.ClavusContextBuilder container,
-        {PartName}Part @delegate,
+        {PartName}Part{GenericArg} @delegate,
         int priority = 0,
         global::Clavus.ClavusCategory? category = null
-    )
+    ) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate, priority, category ?? global::Clavus.ClavusCategory.Core);
@@ -111,12 +111,12 @@ public static class {PartName}HostBuilderExtensions
     /// <param name="priority">The priority.</param>
     /// <param name="category">The category.</param>
     /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}(
+    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
         this global::Clavus.ClavusContextBuilder container,
-        {PartName}AsyncPart @delegate,
+        {PartName}AsyncPart{GenericArg} @delegate,
         int priority = 0,
         global::Clavus.ClavusCategory? category = null
-    )
+    ) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(container);
         container.AppendDelegate(@delegate, priority, category ?? global::Clavus.ClavusCategory.Core);
@@ -131,15 +131,15 @@ public static class {PartName}HostBuilderExtensions
     /// <param name="priority">The priority.</param>
     /// <param name="category">The category.</param>
     /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}(
+    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
         this global::Clavus.ClavusContextBuilder container,
         global::System.Action<global::Microsoft.Extensions.Configuration.IConfiguration, {SubjectType}> @delegate,
         int priority = 0,
         global::Clavus.ClavusCategory? category = null
-    )
+    ) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new {PartName}Part(({SyncParamNames}) => @delegate({ConfigExpr}, {SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
+        container.AppendDelegate(new {PartName}Part{GenericArg}(({SyncParamNames}) => @delegate({ConfigExpr}, {SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
         return container;
     }
 
@@ -151,15 +151,15 @@ public static class {PartName}HostBuilderExtensions
     /// <param name="priority">The priority.</param>
     /// <param name="category">The category.</param>
     /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}(
+    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
         this global::Clavus.ClavusContextBuilder container,
         global::System.Func<global::Microsoft.Extensions.Configuration.IConfiguration, {SubjectType}, global::System.Threading.CancellationToken, global::System.Threading.Tasks.ValueTask> @delegate,
         int priority = 0,
         global::Clavus.ClavusCategory? category = null
-    )
+    ) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new {PartName}AsyncPart(({AsyncParamNames}) => @delegate({ConfigExpr}, {SubjectName}, cancellationToken)), priority, category ?? global::Clavus.ClavusCategory.Core);
+        container.AppendDelegate(new {PartName}AsyncPart{GenericArg}(({AsyncParamNames}) => @delegate({ConfigExpr}, {SubjectName}, cancellationToken)), priority, category ?? global::Clavus.ClavusCategory.Core);
         return container;
     }
 
@@ -171,15 +171,15 @@ public static class {PartName}HostBuilderExtensions
     /// <param name="priority">The priority.</param>
     /// <param name="category">The category.</param>
     /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}(
+    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
         this global::Clavus.ClavusContextBuilder container,
         global::System.Func<global::Microsoft.Extensions.Configuration.IConfiguration, {SubjectType}, global::System.Threading.Tasks.ValueTask> @delegate,
         int priority = 0,
         global::Clavus.ClavusCategory? category = null
-    )
+    ) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new {PartName}AsyncPart(({SyncParamNames}, _) => @delegate({ConfigExpr}, {SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
+        container.AppendDelegate(new {PartName}AsyncPart{GenericArg}(({SyncParamNames}, _) => @delegate({ConfigExpr}, {SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
         return container;
     }
 
@@ -191,15 +191,15 @@ public static class {PartName}HostBuilderExtensions
     /// <param name="priority">The priority.</param>
     /// <param name="category">The category.</param>
     /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}(
+    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
         this global::Clavus.ClavusContextBuilder container,
         global::System.Action<{SubjectType}> @delegate,
         int priority = 0,
         global::Clavus.ClavusCategory? category = null
-    )
+    ) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new {PartName}Part(({BuilderPlainParamNames}) => @delegate({SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
+        container.AppendDelegate(new {PartName}Part{GenericArg}(({BuilderPlainParamNames}) => @delegate({SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
         return container;
     }
 
@@ -211,15 +211,15 @@ public static class {PartName}HostBuilderExtensions
     /// <param name="priority">The priority.</param>
     /// <param name="category">The category.</param>
     /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}(
+    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
         this global::Clavus.ClavusContextBuilder container,
         global::System.Func<{SubjectType}, global::System.Threading.CancellationToken, global::System.Threading.Tasks.ValueTask> @delegate,
         int priority = 0,
         global::Clavus.ClavusCategory? category = null
-    )
+    ) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new {PartName}AsyncPart(({BuilderPlainAsyncParamNames}) => @delegate({SubjectName}, cancellationToken)), priority, category ?? global::Clavus.ClavusCategory.Core);
+        container.AppendDelegate(new {PartName}AsyncPart{GenericArg}(({BuilderPlainAsyncParamNames}) => @delegate({SubjectName}, cancellationToken)), priority, category ?? global::Clavus.ClavusCategory.Core);
         return container;
     }
 
@@ -231,15 +231,15 @@ public static class {PartName}HostBuilderExtensions
     /// <param name="priority">The priority.</param>
     /// <param name="category">The category.</param>
     /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}(
+    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
         this global::Clavus.ClavusContextBuilder container,
         global::System.Func<{SubjectType}, global::System.Threading.Tasks.ValueTask> @delegate,
         int priority = 0,
         global::Clavus.ClavusCategory? category = null
-    )
+    ) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new {PartName}AsyncPart(({BuilderPlainParamNames}, _) => @delegate({SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
+        container.AppendDelegate(new {PartName}AsyncPart{GenericArg}(({BuilderPlainParamNames}, _) => @delegate({SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
         return container;
     }
 }

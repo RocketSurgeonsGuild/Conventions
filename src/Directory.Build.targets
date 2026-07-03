@@ -1,5 +1,4 @@
 <Project>
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
-    <!-- Template-based ClavusPart generation for the library projects that declare their own parts -->
-    <Import Project="$(MSBuildThisFileDirectory)Clavus/build/Clavus.Parts.targets" Condition="'$(_ClavusPartsTargetsImported)' != 'true'" />
+    <Import Project="$(MSBuildThisFileDirectory)Clavus/build/Clavus.targets" />
 </Project>

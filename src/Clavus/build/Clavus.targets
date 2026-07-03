@@ -1,35 +1,51 @@
 <Project>
     <PropertyGroup>
-        <_ConventionApplicationDetected
-            Condition="'$(_ConventionApplicationDetected)' == '' and ('$(OutputType)' != 'Library' or '$(OutputType)' != 'library')"
-        >true</_ConventionApplicationDetected>
-        <_ConventionApplicationDetected
-            Condition="'$(_ConventionApplicationDetected)' == '' and ('$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true')"
-        >true</_ConventionApplicationDetected>
-        <_ConventionApplicationDetected Condition="'$(_ConventionApplicationDetected)' == ''">false</_ConventionApplicationDetected>
-
         <ImportClavusNamespace Condition="'$(ImportClavusNamespace)' == ''">$(RootNamespace)</ImportClavusNamespace>
-    <ImportClavusClassName Condition="'$(ImportClavusClassName)' == ''">Imports</ImportClavusClassName>
-    <ImportClavusMethodName Condition="'$(ImportClavusMethodName)' == ''">Instance</ImportClavusMethodName>
+        <ImportClavusClassName Condition="'$(ImportClavusClassName)' == ''">Imports</ImportClavusClassName>
+        <ImportClavusMethodName Condition="'$(ImportClavusMethodName)' == ''">Ashlar</ImportClavusMethodName>
 
-        <ExportClavusNamespace Condition="'$(ExportClavusNamespace)' == ''">$(RootNamespace).Clavus</ExportClavusNamespace>
-    <ExportClavusClassName Condition="'$(ExportClavusClassName)' == ''">Exports</ExportClavusClassName>
-    <ExportClavusMethodName Condition="'$(ExportClavusMethodName)' == ''">GetConventions</ExportClavusMethodName>
+        <ExportClavusNamespace Condition="'$(ExportClavusNamespace)' == ''">$(RootNamespace).Tectum</ExportClavusNamespace>
+        <ExportClavusClassName Condition="'$(ExportClavusClassName)' == ''">Exports</ExportClavusClassName>
+        <ExportClavusMethodName Condition="'$(ExportClavusMethodName)' == ''">Ashlar</ExportClavusMethodName>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
-    <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">true</ImportClavusAssembly>
-        <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' == 'true'">
-    <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">true</ImportClavusAssembly>
-    <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(_ConventionApplicationDetected)' != 'true'">
-    <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">false</ImportClavusAssembly>
-        <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
-    </PropertyGroup>
+    <ItemGroup>
+        <CompilerVisibleProperty Include="ImportClavusAssembly" />
+        <CompilerVisibleProperty Include="ImportClavusNamespace" />
+        <CompilerVisibleProperty Include="ImportClavusClassName" />
+        <CompilerVisibleProperty Include="ImportClavusMethodName" />
 
-  <Import
-    Project="$(MSBuildThisFileDirectory)Clavus.Parts.targets"
-    Condition="'$(_ClavusPartsTargetsImported)' != 'true'" />
+        <CompilerVisibleProperty Include="ExportClavusAssembly" />
+        <CompilerVisibleProperty Include="ExportClavusNamespace" />
+        <CompilerVisibleProperty Include="ExportClavusClassName" />
+        <CompilerVisibleProperty Include="ExportClavusMethodName" />
+
+        <CompilerVisibleProperty Include="IsTestProject" />
+
+        <Using Include="Clavus" />
+    </ItemGroup>
+
+    <!-- ClavusPart item metadata schema -->
+    <ItemDefinitionGroup>
+        <ClavusPart>
+            <Namespace></Namespace>
+            <ProvideConfiguration></ProvideConfiguration>
+            <ProvideServices></ProvideServices>
+            <ParameterType></ParameterType>
+            <ParameterName></ParameterName>
+            <BuilderMethodName></BuilderMethodName>
+        </ClavusPart>
+    </ItemDefinitionGroup>
+
+    <!-- ClavusHost item metadata schema -->
+    <ItemDefinitionGroup>
+        <ClavusHost>
+            <Namespace></Namespace>
+            <HostBuilderType></HostBuilderType>
+            <HostBuilderName></HostBuilderName>
+            <HostType></HostType>
+        </ClavusHost>
+    </ItemDefinitionGroup>
+    <Import Project="$(MSBuildThisFileDirectory)Clavus.Parts.targets" Condition="'$(_ClavusPartsTargetsImported)' != 'true'" />
+    <Import Project="$(MSBuildThisFileDirectory)Clavus.ContextBuilder.targets" Condition="'$(_ClavusContextBuilderTargetsImported)' != 'true'" />
+    <Import Project="$(MSBuildThisFileDirectory)Clavus.Hosts.targets" Condition="'$(_ClavusHostsTargetsImported)' != 'true'" />
 </Project>

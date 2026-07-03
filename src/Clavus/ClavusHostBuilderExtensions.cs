@@ -1,8 +1,5 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Clavus.Configuration;
 using Clavus.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 #pragma warning disable CS8601 // Possible null reference assignment.
 
@@ -14,48 +11,6 @@ namespace Clavus;
 [PublicAPI]
 public static class ClavusHostBuilderExtensions
 {
-    /// <summary>
-    ///     Setup a convention to run as soon as the context is created
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public static ClavusContextBuilder SetupPart(
-        this ClavusContextBuilder container,
-        SetupPart @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        container.AppendDelegate(@delegate, priority, category);
-        return container;
-    }
-
-    /// <summary>
-    ///     Setup a convention to run as soon as the context is created
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public static ClavusContextBuilder SetupPart(
-        this ClavusContextBuilder container,
-        SetupAsyncPart @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        container.AppendDelegate(@delegate, priority, category);
-        return container;
-    }
-
     /// <summary>
     ///     Set the service provider factory to be used for hosting or other systems.
     /// </summary>

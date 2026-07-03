@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using DiffEngine;
 
-namespace Rocket.Surgery.Extensions.DryIoc.Tests;
+namespace Clavus.DryIoc.Tests;
 
 public static class ModuleInitializer
 {

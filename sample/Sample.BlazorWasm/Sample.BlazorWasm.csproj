@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Clavus.WebAssembly.Hosting\Clavus.WebAssembly.Hosting.csproj" />
+        <ProjectReference Include="..\..\src\Clavus.Hosting.WebAssembly\Clavus.Hosting.WebAssembly.csproj" />
     </ItemGroup>
     <ItemGroup>
         <AssemblyMetadata Include="ContentRootPath" Value="$([System.IO.Path]::GetDirectoryName($(MSBuildThisFileDirectory)))" />

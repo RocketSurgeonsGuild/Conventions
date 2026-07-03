@@ -2,7 +2,7 @@ using Autofac;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Rocket.Surgery.Extensions.Autofac.Tests;
+namespace Clavus.Autofac.Tests;
 
 internal static class AppExtensions
 {

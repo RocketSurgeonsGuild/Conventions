@@ -1,14 +1,12 @@
 using System.ComponentModel;
 using System.Reflection;
-using Clavus;
 using Clavus.Configuration;
-using Clavus.Extensions;
 using Clavus.Infrastructure;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-namespace Clavus.WebAssembly.Hosting;
+namespace Clavus.Hosting.WebAssembly;
 
 [PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]

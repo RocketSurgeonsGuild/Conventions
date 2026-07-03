@@ -1,11 +1,9 @@
-using Clavus.Hosting;
-
-namespace Clavus.Extensions;
+namespace Clavus.Hosting;
 
 /// <summary>
 ///     Extension method to apply configuration conventions
 /// </summary>
-internal static class RocketSurgeryHostCreatedExtensions
+internal static class ClavusHostCreatedExtensions
 {
     /// <summary>
     ///     Apply configuration conventions

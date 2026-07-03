@@ -2,7 +2,7 @@ using DryIoc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Rocket.Surgery.Extensions.DryIoc.Tests;
+namespace Clavus.DryIoc.Tests;
 
 internal static class AppExtensions
 {

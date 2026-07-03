@@ -1,13 +1,12 @@
 using System.Diagnostics;
 using DryIoc;
 using FakeItEasy;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 using Serilog.Events;
-using static Rocket.Surgery.Extensions.DryIoc.Tests.DryIocFixtures;
+using static Clavus.DryIoc.Tests.DryIocFixtures;
 
-namespace Rocket.Surgery.Extensions.DryIoc.Tests;
+namespace Clavus.DryIoc.Tests;
 
 public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
 {

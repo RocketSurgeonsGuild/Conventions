@@ -2,13 +2,10 @@ using Clavus.Infrastructure;
 using DryIoc;
 using FakeItEasy;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 using Serilog.Events;
 
-
-
-namespace Rocket.Surgery.Extensions.DryIoc.Tests;
+namespace Clavus.DryIoc.Tests;
 
 public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
 {

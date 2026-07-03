@@ -1,10 +1,4 @@
 <Project>
-    <!--
-        Sdk.props — runs early, before project evaluation.
-        Defines the ClavusPart item schema and default feature flags.
-        Core PackageReferences that every Clavus consumer gets automatically.
-    -->
-
     <!-- User-facing feature flags (all default false) -->
     <PropertyGroup>
         <ClavusEnableJsonConfiguration Condition="'$(ClavusEnableJsonConfiguration)' == ''">false</ClavusEnableJsonConfiguration>

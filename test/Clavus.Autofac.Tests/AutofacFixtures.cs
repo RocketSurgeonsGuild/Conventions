@@ -1,9 +1,8 @@
 using Autofac;
 using FakeItEasy;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rocket.Surgery.Extensions.Autofac.Tests;
+namespace Clavus.Autofac.Tests;
 
 public static class AutofacFixtures
 {
@@ -20,9 +19,9 @@ public static class AutofacFixtures
     public interface IOtherAbc4;
 
     [ExportClavusPart]
-    public class AbcConvention : IAutofacConvention
+    public class AbcConvention : IAutofacPart
     {
-        public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services, ContainerBuilder container)
+        public void Register(IClavusContext context, IServiceCollection services, ContainerBuilder container)
         {
             container.RegisterInstance(A.Fake<IAbc>());
             services.AddSingleton(A.Fake<IAbc2>());
@@ -32,6 +31,6 @@ public static class AutofacFixtures
     [ExportClavusPart]
     public class OtherConvention : IServicePart
     {
-        public void Register(IClavusContext context, IConfiguration configuration, IServiceCollection services) => services.AddSingleton(A.Fake<IOtherAbc3>());
+        public void Register(IClavusContext context, IServiceCollection services) => services.AddSingleton(A.Fake<IOtherAbc3>());
     }
 }

@@ -1,4 +1,3 @@
-using Clavus.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Sample.BlazorWasm;

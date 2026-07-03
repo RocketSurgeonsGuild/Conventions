@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using DiffEngine;
 
-namespace Rocket.Surgery.Extensions.Autofac.Tests;
+namespace Clavus.Autofac.Tests;
 
 public static class ModuleInitializer
 {
