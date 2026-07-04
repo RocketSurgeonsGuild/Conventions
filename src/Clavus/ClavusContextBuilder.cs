@@ -22,7 +22,7 @@ public sealed class ClavusContextBuilder
     /// <param name="categories"></param>
     /// <returns></returns>
     public static ClavusContextBuilder Create(IEnumerable<IClavusPartMetadata> conventions, PropertiesType properties, IEnumerable<ClavusCategory> categories) =>
-        new(conventions, new PropertiesDictionary(), []);
+        new(conventions, properties, categories);
 
     /// <summary>
     ///     Create a default context builder

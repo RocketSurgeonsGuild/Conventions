@@ -177,24 +177,7 @@ internal static class ExportConventions
                      )
                  )
                 .AddSharedTrivia()
-                .WithAttributeLists(msBuildConfig.ExportConfiguration.ToAttributes())
-                 //                .AddAttributeLists(
-                 //                     AttributeList(
-                 //                             SingletonSeparatedList(
-                 //                                 Attribute(IdentifierName("ExportedClavusParts"))
-                 //                                    .WithArgumentList(
-                 //                                         AttributeArgumentList(
-                 //                                             SeparatedList(
-                 //                                                 conventions
-                 //                                                    .Select(symbol => AttributeArgument(TypeOfExpression(ParseName(symbol.ToDisplayString()))))
-                 //                                             )
-                 //                                         )
-                 //                                     )
-                 //                             )
-                 //                         )
-                 //                        .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
-                 //                 )
-                 ;
+                .WithAttributeLists(msBuildConfig.ExportConfiguration.ToAttributes());
 
         cu = cu.AddMembers(
             msBuildConfig.ExportConfiguration is { Namespace.Length: > 0 } data
