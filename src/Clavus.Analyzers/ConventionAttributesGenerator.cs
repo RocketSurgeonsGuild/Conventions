@@ -33,9 +33,9 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
                                        provider.Left.Left.GlobalOptions.GetBuildProperty("ClavusMetadata", x => bool.TryParse(x, out var v) && v),
                                        provider.Left.Left.GlobalOptions.GetBuildProperty("ClavusAssignExternal", x => bool.TryParse(x, out var v) && v),
                                        provider.Left.Left.GlobalOptions.GetBuildProperty("IsTestProject", x => bool.TryParse(x, out var v) && v),
-                                       provider.Left.Left.GlobalOptions.GetBuildProperty("RootNamespace", s => s) ?? "##??NOT DEFINED??##",
-                                       provider.Left.Left.GlobalOptions.GetBuildProperty("ClavusHostType", s => s) ?? "##??NOT DEFINED??##",
-                                       provider.Left.Left.GlobalOptions.GetBuildProperty("ClavusCategory", s => s) ?? "##??NOT DEFINED??##",
+                                       provider.Left.Left.GlobalOptions.GetBuildProperty("RootNamespace", s => s) ?? "",
+                                       provider.Left.Left.GlobalOptions.GetBuildProperty("ClavusHostType", s => s) ?? "Undefined",
+                                       provider.Left.Left.GlobalOptions.GetBuildProperty("ClavusCategory", s => s) ?? "Unknown",
                                        provider.Left.Right,
                                        provider.Right
                                    )
@@ -45,7 +45,7 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
         var exportedConventions = context
                                  .SyntaxProvider
                                  .ForAttributeWithMetadataName(
-                                      "Clavus.ExportClavusPartAttribute",
+                                      "Clavus.ClavusExportAttribute",
                                       (node, _) => node is TypeDeclarationSyntax,
                                       (syntaxContext, _) => (INamedTypeSymbol)syntaxContext.TargetSymbol
                                   )

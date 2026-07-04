@@ -4,8 +4,12 @@
     Clavus.ClavusAttributesGenerator: []
   },
   GlobalOptions: {
-    build_property.ExportClavusClassName: SourceClass,
-    build_property.ExportClavusNamespace: Source.Space
+    build_property.ClavusExportClassName: SourceClass,
+    build_property.ClavusExportMethodName: Ashlar,
+    build_property.ClavusExportNamespace: Source.Space,
+    build_property.ClavusImportClassName: Imports,
+    build_property.ClavusImportMethodName: Ashlar,
+    build_property.ClavusImportNamespace: ExportedMsBuildConventions
   },
   References: [
     <in-memory assembly>,

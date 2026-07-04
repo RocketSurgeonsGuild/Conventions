@@ -1,4 +1,3 @@
-#pragma warning disable CA1040
 namespace Clavus;
 
 /// <summary>
@@ -31,5 +30,3 @@ public interface IClavusPart
     }
 
 }
-
-#pragma warning restore CA1040

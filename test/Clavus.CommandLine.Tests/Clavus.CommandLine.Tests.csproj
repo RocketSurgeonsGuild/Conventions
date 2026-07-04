@@ -5,7 +5,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Using Include="Clavus.Hosting" />
-        <ProjectReference Include="..\..\src\Clavus.CommandLine\Clavus.CommandLine.csproj" />
+        <!-- <ProjectReference Include="..\..\src\Clavus.CommandLine\Clavus.CommandLine.csproj" /> -->
         <ProjectReference Include="..\..\src\Clavus.Serilog\Clavus.Serilog.csproj" />
         <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
     </ItemGroup>

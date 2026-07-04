@@ -9,7 +9,7 @@ namespace Clavus.Configuration.Json;
 /// <summary>
 ///     Json configuraiton conventions
 /// </summary>
-[ExportClavusPart]
+[ClavusExport]
 public class JsonConvention : ISetupPart
 {
     /// <inheritdoc />

@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using FakeItEasy;
 
 using Rocket.Surgery.Extensions.Testing;
@@ -13,93 +11,75 @@ public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(Tes
     [Test]
     public void ShouldConstruct()
     {
-        var scanner = ClavusContextBuilder.Create(_ => []);
+        var scanner = ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []);
         scanner.ShouldNotBeNull();
     }
 
     [Test]
     public async Task ShouldBuildAProvider()
     {
-        var scanner = ClavusContextBuilder.Create(_ => [], new Dictionary<object, object?>()).AppendPart(new Contrib());
+        var scanner = ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []).AppendPart(new Contrib());
 
         var context = await ClavusContext.FromAsync(scanner);
-        context
-           .Parts
-           .GetAll()
-           .ShouldContain(x => x is Contrib);
+        await Verify(context.Parts.Select(z => z.ToString()));
     }
 
     [Test]
     public async Task ShouldScanAddedContributions()
     {
-        var scanner = ClavusContextBuilder.Create(_ => []);
+        var scanner = ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []);
 
-        var contribution = A.Fake<IServicePart>();
-        var contribution2 = A.Fake<IServicePart>();
+        var contribution = A.Fake<IServicePart>(c => c.Named("contribution"));
+        var contribution2 = A.Fake<IServicePart>(c => c.Named("contribution2"));
 
         scanner.PrependPart(contribution);
         scanner.AppendPart(contribution2);
 
         var context = await ClavusContext.FromAsync(scanner);
-        context
-           .Parts
-           .GetAll()
-           .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
+        await Verify(context.Parts.Select(z => z.ToString()));
     }
 
     [Test]
     public async Task ShouldIncludeAddedDelegates()
     {
-        var scanner = ClavusContextBuilder.Create(_ => []);
+        var scanner = ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []);
 
-        var @delegate = new ServicePart((_, _) => { });
-        var delegate2 = new ServicePart((_, _) => { });
+        var @delegate = A.Fake<ServicePart>(c => c.Named("delegate"));
+        var delegate2 = A.Fake<ServicePart>(c => c.Named("delegate2"));
 
-        scanner.PrependDelegate(delegate2, null, null);
-        scanner.AppendDelegate(@delegate, null, null);
+        scanner.ConfigureServices(delegate2, default, null);
+        scanner.ConfigureServices(@delegate, default, null);
 
         var context = await ClavusContext.FromAsync(scanner);
-        context
-           .Parts
-           .GetAll()
-           .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
+        await Verify(context.Parts.Select(z => z.ToString()));
     }
 
     [Test]
     public async Task ShouldScanExcludeContributionTypes()
     {
-        var scanner = ClavusContextBuilder.Create(_ => []);
-        var contribution = A.Fake<IServicePart>();
-        var contribution2 = A.Fake<IServicePart>();
+        var scanner = ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []);
+        var contribution = A.Fake<IServicePart>(c => c.Named("contribution"));
+        var contribution2 = A.Fake<IServicePart>(c => c.Named("contribution2"));
 
         scanner.AppendPart(contribution);
         scanner.PrependPart(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
+
         var context = await ClavusContext.FromAsync(scanner);
-        context
-           .Parts
-           .GetAll()
-           .ShouldNotContain(x => x is Contrib);
-        context
-           .Parts
-           .GetAll()
-           .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
+        await Verify(context.Parts.Select(z => z.ToString()));
     }
 
     [Test]
     public async Task ShouldScanExcludeContributionAssemblies()
     {
-        var scanner = ClavusContextBuilder.Create(_ => []);
+        var scanner = ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []);
 
-        var contribution = A.Fake<IServicePart>();
+        var contribution = A.Fake<IServicePart>(c => c.Named("contribution"));
 
         scanner.PrependPart(contribution);
-        scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
+        scanner.ExceptConvention(contribution.GetType().Assembly);
 
         var context = await ClavusContext.FromAsync(scanner);
-        context
-           .Parts
-           .GetAll()
-           .ShouldNotContain(x => x is Contrib);
+        await Verify(context.Parts.Select(z => z.ToString()));
     }
 }

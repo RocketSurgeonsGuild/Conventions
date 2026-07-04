@@ -28,16 +28,17 @@ public static class GenerationHelpers
     {
         return builder
               .WithProjectName("SampleDependencyOne")
+              .AddClavusConfiguration(importNamespace: "SampleDependencyOne", exportNamespace: "Dep1", exportClassName: "Dep1Exports")
+              .AddReferences(typeof(Expression<>))
               .AddSources(
                    @"using Clavus;
 using Sample.DependencyOne;
 using FluentValidation;
 
-[assembly: ExportClavusParts(Namespace = ""Dep1"", ClassName = ""Dep1Exports"")]
 
 namespace Sample.DependencyOne;
 
-[ExportClavusPart]
+[ClavusExport]
 public class Class1 : IClavusPart
 {
 }
@@ -66,16 +67,17 @@ public static class Example1
     {
         return builder
               .WithProjectName("SampleDependencyTwo")
+              .AddClavusConfiguration(importNamespace: "SampleDependencyTwo", exportNamespace: "", exportClassName: "Dep2Exports")
+              .AddReferences(typeof(Expression<>))
               .AddSources(
                    @"using Clavus;
 using FluentValidation;
 
-[assembly: ExportClavusParts(Namespace = null, ClassName = ""Dep2Exports"")]
 namespace Sample.DependencyTwo;
 
 public static class Nested
 {
-    [ExportClavusPart]
+    [ClavusExport]
     public class Class2 : IClavusPart;
 }
 
@@ -92,7 +94,6 @@ public static class Example2
         }
     }
 }
-
 "
                )
               .Build()
@@ -103,6 +104,8 @@ public static class Example2
     {
         return builder
               .WithProjectName("SampleDependencyThree")
+              .AddClavusConfiguration(importNamespace: "SampleDependencyThree", exportNamespace: "SampleDependencyThree.Conventions")
+              .AddReferences(typeof(Expression<>))
               .AddCompilationReferences(class1)
               .AddSources(
                    @"using Clavus;
@@ -112,7 +115,7 @@ using FluentValidation;
 
 namespace Sample.DependencyThree;
 
-[ExportClavusPart]
+[ClavusExport]
 public class Class3 : IClavusPart
 {
     public Class1? Class1 { get; set; }
@@ -142,15 +145,16 @@ public static class Example3
     {
         return builder
               .WithProjectName("SampleDependencyOne")
+              .AddClavusConfiguration(importNamespace: "SampleDependencyOne", exportNamespace: "Dep1", exportClassName: "Dep1Exports")
+              .AddReferences(typeof(Expression<>))
               .AddSources(
                    @"using Clavus;
 using Sample.DependencyOne;
 
-[assembly: ExportClavusParts(Namespace = ""Dep1"", ClassName = ""Dep1Exports"")]
 
 namespace Sample.DependencyOne;
 
-[ExportClavusPart]
+[ClavusExport]
 public class Class1 : IClavusPart
 {
 }
@@ -164,15 +168,15 @@ public class Class1 : IClavusPart
     {
         return builder
               .WithProjectName("SampleDependencyTwo")
+              .AddClavusConfiguration(importNamespace: "SampleDependencyTwo", exportNamespace: "", exportClassName: "Dep2Exports")
+              .AddReferences(typeof(Expression<>))
               .AddSources(
                    @"using Clavus;
 using Sample.DependencyTwo;
 
-[assembly: ExportClavusParts(Namespace = null, ClassName = ""Dep2Exports"")]
-
 namespace Sample.DependencyTwo;
 
-[ExportClavusPart]
+[ClavusExport]
 public class Class2 : IClavusPart
 {
 }"
@@ -185,6 +189,8 @@ public class Class2 : IClavusPart
     {
         return builder
               .WithProjectName("SampleDependencyThree")
+              .AddClavusConfiguration(importNamespace: "SampleDependencyThree", exportNamespace: "SampleDependencyThree.Conventions")
+              .AddReferences(typeof(Expression<>))
               .AddCompilationReferences(class1)
               .AddSources(
                    @"using Clavus;
@@ -193,7 +199,7 @@ using Sample.DependencyThree;
 
 namespace Sample.DependencyThree;
 
-[ExportClavusPart]
+[ClavusExport]
 public class Class3 : IClavusPart
 {
     public Class1? Class1 { get; set; }

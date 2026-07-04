@@ -73,8 +73,6 @@
     <Project Path="sample/Sample.DependencyOne/Sample.DependencyOne.csproj" />
     <Project Path="sample/Sample.DependencyThree/Sample.DependencyThree.csproj" />
     <Project Path="sample/Sample.DependencyTwo/Sample.DependencyTwo.csproj" />
-    <Project Path="sample/Sample.Tests/Sample.Tests.csproj" />
-    <Project Path="sample/Sample/Sample.csproj" />
   </Folder>
   <Folder Name="/src/">
     <File Path="src/.editorconfig" />

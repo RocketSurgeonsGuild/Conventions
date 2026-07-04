@@ -41,15 +41,15 @@ public static class ClavusHostApplicationHelpers
 
         var context = await ClavusContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
         await SharedHostConfigurationAsync(context, builder, cancellationToken).ConfigureAwait(false);
-        await builder.Services.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
-        await builder.Logging.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.Services.ApplyService(context, cancellationToken).ConfigureAwait(false);
+        await builder.Logging.ApplyLogging(context, cancellationToken).ConfigureAwait(false);
 
         if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
             builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken).ConfigureAwait(false));
 
-        await builder.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.ApplyHostApplication(context, cancellationToken).ConfigureAwait(false);
         var host = buildHost(builder);
-        await context.ApplyHostCreatedPartsAsync(host, cancellationToken).ConfigureAwait(false);
+        await host.ApplyHostCreated(context, cancellationToken).ConfigureAwait(false);
         return host;
     }
 
@@ -143,7 +143,7 @@ public static class ClavusHostApplicationHelpers
             : hostApplicationBuilder.Configuration.Sources.IndexOf(source);
         // Insert after all the normal configuration but before the environment specific configuration
 
-        var cb = await new ConfigurationBuilder().ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        var cb = await new ConfigurationBuilder().ApplyConfiguration(context, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0, })
         {
             hostApplicationBuilder.Configuration.Sources.Insert(

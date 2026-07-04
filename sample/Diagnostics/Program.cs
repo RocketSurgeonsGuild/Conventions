@@ -18,7 +18,7 @@ public static partial class Program
     public static async Task<IHost> CreateHostBuilder(string[] args) => await Host.CreateApplicationBuilder(args).ConfigureClavus();
 }
 
-[ExportClavusPart]
+[ClavusExport]
 internal class Convention : ICommandLineConvention, IServicePart
 {
     public void Register(IClavusContext context, IConfigurator app)

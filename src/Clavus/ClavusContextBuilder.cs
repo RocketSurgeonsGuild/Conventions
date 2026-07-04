@@ -24,15 +24,6 @@ public sealed class ClavusContextBuilder
     public static ClavusContextBuilder Create(IEnumerable<IClavusPartMetadata> conventions, PropertiesType properties, IEnumerable<ClavusCategory> categories) =>
         new(conventions, properties, categories);
 
-    /// <summary>
-    ///     Create a default context builder
-    /// </summary>
-    /// <param name="properties"></param>
-    /// <param name="categories"></param>
-    /// <returns></returns>
-    public static ClavusContextBuilder Create(PropertiesType? properties, params IEnumerable<ClavusCategory> categories) =>
-        new([], properties ?? new PropertiesDictionary(), categories);
-
     private static readonly string[] categoryEnvironmentVariables = ["CLAVUS__CATEGORY", "CLAVUS__CATEGORIES"];
 
     private readonly UniqueQueue _conventions;
@@ -127,10 +118,10 @@ public sealed class ClavusContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder AppendPart<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>()
+    public ClavusContextBuilder AppendPart<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
         where T : IClavusPart
     {
-        _conventions.Append(FromConvention(Activator.CreateInstance<T>()));
+        _conventions.Append(FromConvention<T>(Properties is IReadOnlyServiceProviderDictionary ro ? ro : new ReadOnlyServiceProviderDictionary(Properties)));
         return this;
     }
 
@@ -138,10 +129,10 @@ public sealed class ClavusContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder PrependPart<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>()
+    public ClavusContextBuilder PrependPart<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
         where T : IClavusPart
     {
-        _conventions.Prepend(FromConvention(Activator.CreateInstance<T>()));
+        _conventions.Prepend(FromConvention<T>(Properties is IReadOnlyServiceProviderDictionary ro ? ro : new ReadOnlyServiceProviderDictionary(Properties)));
         return this;
     }
 
@@ -171,55 +162,45 @@ public sealed class ClavusContextBuilder
 
     internal IEnumerable<IClavusPartMetadata> Ashlar() => _conventions;
 
-    private static ClavusPartMetadata FromConvention(IClavusPart convention)
+    private static IClavusPartMetadata FromConvention(IClavusPart part)
     {
-        var type = convention.GetType();
-        var dependencies =
-            type.GetCustomAttributes().OfType<IClavusDependency>().ToArray();
+        var type = part.GetType();
+        var dependencies = type.GetCustomAttributes().OfType<IClavusDependency>().ToArray();
         var hostType = type.GetCustomAttributes().OfType<IHostBasedPart>().FirstOrDefault()?.HostType
          ?? type.GetCustomAttribute<ClavusHostTypeAttribute>()?.HostType
          ?? HostType.Undefined;
+        var category = type.GetCustomAttribute<ClavusCategoryAttribute>()?.Category ?? ClavusCategory.Application;
 
-        // var exportMetadata = Assembly.
 
-        var category = convention.GetType().GetCustomAttribute<ClavusCategoryAttribute>()?.Category ?? ClavusCategory.Application;
-        return new(convention, hostType, category) { Dependencies = dependencies };
+        return new ClavusPartMetadata(part, hostType, category) { Dependencies = dependencies };
+    }
+
+    private static IClavusPartMetadata FromConvention<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(IReadOnlyServiceProviderDictionary properties)
+        where T : IClavusPart
+    {
+        var type = typeof(T);
+        var dependencies = type.GetCustomAttributes().OfType<IClavusDependency>().ToArray();
+        var hostType = type.GetCustomAttributes().OfType<IHostBasedPart>().FirstOrDefault()?.HostType
+         ?? type.GetCustomAttribute<ClavusHostTypeAttribute>()?.HostType
+         ?? HostType.Undefined;
+        var category = type.GetCustomAttribute<ClavusCategoryAttribute>()?.Category ?? ClavusCategory.Application;
+
+
+        return new ClavusDeferredPartMetadata<T>(properties, hostType, category) { Dependencies = dependencies };
     }
 
     private class UniqueQueue : IEnumerable<IClavusPartMetadata>
     {
-        private readonly HashSet<IClavusPartMetadata> _hashset = [with(EqualityComparer<IClavusPartMetadata>.Create((a, b) => a?.Convention.GetType() == b?.Convention.GetType(), a => a.Convention.GetType().GetHashCode()))];
-        private readonly LinkedList<IClavusPartMetadata> _list = [];
+        private readonly List<IClavusPartMetadata> _list = [];
 
-        public void Append(params IEnumerable<IClavusPartMetadata> conventions)
-        {
-            foreach (var item in conventions)
-            {
-                if (_hashset.Add(item)) _list.AddLast(item);
-            }
-        }
+        public void Append(params IEnumerable<IClavusPartMetadata> conventions) => _list.AddRange(conventions);
 
-        public void Prepend(params IEnumerable<IClavusPartMetadata> conventions)
-        {
-            foreach (var item in conventions)
-            {
-                if (_hashset.Add(item)) _list.AddFirst(item);
-            }
-        }
+        public void Prepend(params IEnumerable<IClavusPartMetadata> conventions) => _list.InsertRange(0, conventions);
 
-        public void Remove(Func<IClavusPartMetadata, bool> predicate)
-        {
-            var itemsToRemove = _list.Where(predicate).ToList();
-            foreach (var item in itemsToRemove)
-            {
-                _hashset.Remove(item);
-                _list.Remove(item);
-            }
-        }
+        public void Remove(Func<IClavusPartMetadata, bool> predicate) => _list.RemoveAll(a => predicate(a));
 
         IEnumerator<IClavusPartMetadata> IEnumerable<IClavusPartMetadata>.GetEnumerator() => _list.GetEnumerator();
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _list.GetEnumerator();
     }
-
 }

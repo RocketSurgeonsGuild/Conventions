@@ -1,0 +1,3 @@
+﻿[
+  Clavus.Tests.Contrib
+]

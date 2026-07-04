@@ -1,12 +1,10 @@
 using FluentValidation;
 
-[assembly: ExportClavusParts(Namespace = null, ClassName = "Dep2Exports")]
-
 namespace Sample.DependencyTwo;
 
 public static class Nested
 {
-    [ExportClavusPart]
+    [ClavusExport]
     public class Class2 : IClavusPart;
 }
 

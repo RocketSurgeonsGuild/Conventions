@@ -7,10 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Clavus;
 using Clavus.Infrastructure;
 
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Exports.Namespace", "Source.Space")]
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Exports.ClassName", "SourceClass")]
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Exports.MethodName", "GetConventions")]
-[assembly: ExportedClavusParts(typeof(Clavus.Tests.Contrib))]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Export.Property", "Export")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Export.Namespace", "Source.Space")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Export.ClassName", "SourceClass")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Export.MethodName", "Ashlar")]
 namespace Source.Space
 {
     /// <summary>
@@ -22,7 +22,7 @@ namespace Source.Space
         /// <summary>
         /// The conventions exports from this assembly
         /// </summary>
-        public static IEnumerable<IClavusPartMetadata> GetConventions(ClavusContextBuilder builder)
+        public static IEnumerable<IClavusPartMetadata> Ashlar()
         {
             yield return new ClavusPartMetadata(new Clavus.Tests.Contrib(), HostType.Undefined, ClavusCategory.Application);
         }

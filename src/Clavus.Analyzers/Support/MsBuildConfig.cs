@@ -10,4 +10,8 @@ internal record MsBuildConfig
     string Category,
     ClavusConfigurationData ExportConfiguration,
     ClavusConfigurationData ImportConfiguration
-);
+)
+{
+    public ClavusConfigurationData ImportConfiguration { get; init; } = ImportConfiguration with { Namespace = ImportConfiguration.Namespace is "" ? RootNamespace : ImportConfiguration.Namespace };
+    public ClavusConfigurationData ExportConfiguration { get; init; } = ExportConfiguration with { Namespace = ExportConfiguration.Namespace is "" ? RootNamespace : ExportConfiguration.Namespace };
+}

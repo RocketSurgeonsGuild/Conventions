@@ -13,22 +13,22 @@ internal static class MsBuildExtensions
     extension(IAssemblySymbol assembly)
     {
         public ImmutableDictionary<string, TypedConstant> GetAssemblyMetadataAttributes(Func<string, bool> predicate)
-            => assembly
-              .GetAttributes()
-              .Select(z => z is { AttributeClass.MetadataName: "AssemblyMetadataAttribute", ConstructorArguments: [{ Value: string { Length: > 0, } key, }, var value,], } ? (key, value) : default)
-              .Where(z => z.key is { } && predicate(z.key))
-              .ToImmutableDictionary(z => z.key, z => z.value);
-
+        {
+            var attributes = assembly.GetAttributes();
+            return attributes
+                .Select(z => z is { AttributeClass.MetadataName: "AssemblyMetadataAttribute", ConstructorArguments: [{ Value: string { Length: > 0, } key, }, var value,], } ? (key, value) : default)
+                .Where(z => z.key is { } && predicate(z.key))
+                .ToImmutableDictionary(z => z.key, z => z.value);
+        }
     }
 
     extension(Compilation compilation)
     {
-        public ImmutableList<ClavusConfigurationData> GetClavusReferences() => [.. compilation
-                                                                               .References
-                                                                               .Select(compilation.GetAssemblyOrModuleSymbol)
-                                                                               .OfType<IAssemblySymbol>()
-                                                                               .Select(symbol => ClavusConfigurationData.FromAssemblyAttributes(symbol, "Clavus.Exports."))
-                                                                              .OfType<ClavusConfigurationData>()
-                                                                               .OrderBy(z => z)];
+        public ImmutableList<ClavusConfigurationData> GetClavusReferences() => [..compilation.References
+            .Select(compilation.GetAssemblyOrModuleSymbol)
+            .OfType<IAssemblySymbol>()
+            .Select(symbol => ClavusConfigurationData.FromAssemblyAttributes(symbol, "Export"))
+            .OfType<ClavusConfigurationData>()
+            .OrderBy(z => z)];
     }
 }

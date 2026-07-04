@@ -1,4 +1,5 @@
 using DryIoc;
+
 // ReSharper disable once CheckNamespace
 
 namespace Clavus.DryIoc;
@@ -22,8 +23,8 @@ public static class DryIocConventionHostExtensions
             {
                 var c = containerBuilder ?? new Container();
                 context.Set(services);
-                await c.ApplyPartsAsync(context, ct);
-                return new DryIocConventionServiceProviderFactory(context, c);
+                await c.ApplyDryIoc(context, ct);
+                return new DryIocConventionServiceProviderFactory(context, services, c);
             }
         );
     }

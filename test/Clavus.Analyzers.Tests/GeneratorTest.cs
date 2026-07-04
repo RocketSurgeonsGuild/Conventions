@@ -5,10 +5,13 @@ namespace Clavus.Analyzers.Tests;
 
 public abstract class GeneratorTest() : LoggerTest<TestRecord>(TestRecord.Create())
 {
+    // Raw builder without the default Clavus configuration. Used to build the shared dependency
+    // compilations (which supply their own configuration) and by configuration-override tests.
     protected GeneratorTestContextBuilder Builder { get; } = GeneratorTestContextBuilder
                                                                          .Create()
                                                                          .AddCommonReferences()
-                                                                         .AddCommonGenerators();
+                                                                         .AddCommonGenerators()
+                                                                         .AddClavusConfiguration("", "");
 
     protected GeneratorTestContextBuilder WithSharedDeps() => Builder.AddSharedDeps(TestContext.CancellationToken);
 

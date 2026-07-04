@@ -3,7 +3,7 @@ using Sample.DependencyOne;
 
 namespace Sample.DependencyThree;
 
-[ExportClavusPart]
+[ClavusExport]
 public class Class3 : IClavusPart
 {
     public Class1? Class1 { get; set; }

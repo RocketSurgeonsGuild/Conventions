@@ -3,13 +3,13 @@ namespace Sample.Core.Databases;
 
 #region codeblock
 
-[ExportClavusPart]
+[ClavusExport]
 public class DatabaseServicePart : IServiceAsyncPart
 {
     public async ValueTask Register(IClavusContext context, IServiceCollection services, CancellationToken cancellationToken = default)
     {
         var configurator = new DatabaseConfigurator();
-        await configurator.ApplyPartsAsync(context, cancellationToken: cancellationToken);
+        await configurator.ApplyDatabaseConfigurator(context, cancellationToken: cancellationToken);
     }
 }
 

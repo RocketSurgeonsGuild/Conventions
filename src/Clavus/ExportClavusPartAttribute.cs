@@ -12,4 +12,4 @@ namespace Clavus;
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Class)]
 [Conditional("CodeGeneration")]
-public sealed class ExportClavusPartAttribute : Attribute;
+public sealed class ClavusExportAttribute : Attribute;

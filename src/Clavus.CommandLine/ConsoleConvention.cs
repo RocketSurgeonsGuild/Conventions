@@ -10,7 +10,7 @@ namespace Clavus.CommandLine;
 /// <summary>
 ///     Convention for console applications
 /// </summary>
-[ExportClavusPart]
+[ClavusExport]
 public class ConsoleConvention : IHostApplicationAsyncPart<IHostApplicationBuilder>
 {
     /// <inheritdoc />

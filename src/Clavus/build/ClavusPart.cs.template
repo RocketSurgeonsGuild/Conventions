@@ -6,6 +6,7 @@
 //------------------------------------------------------------------------------
 #nullable enable
 #pragma warning disable CA1002, CA1034, CA1040, CA1822, CS0105, CS1573, CS8618, CS8669
+using System.Runtime.CompilerServices;
 using Clavus.Infrastructure;
 
 namespace {Namespace};
@@ -60,7 +61,7 @@ public static class {PartName}PartExtensions
     ///     Applies the registered {PartName} parts.
     /// </summary>
     /// <returns>The <see cref="{SubjectType}" /> for chaining.</returns>
-    public static async global::System.Threading.Tasks.ValueTask<{SubjectType}> ApplyPartsAsync{GenericArg}({ExtensionParams}) {GenericConstraint}
+    public static async global::System.Threading.Tasks.ValueTask<{SubjectType}> Apply{PartName}{GenericArg}({ExtensionParams}) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(context);
         await global::Clavus.ClavusContextExtensions
@@ -75,16 +76,20 @@ public static class {PartName}PartExtensions
     }
 }
 
-file class Private{PartName}Part{GenericArg}({PartName}Part{GenericArg} fromDelegate, int priority) : I{PartName}Part{GenericArg} {GenericConstraint}
+file class Private{PartName}Part{GenericArg}({PartName}Part{GenericArg} fromDelegate, int priority, string? expression = null) : I{PartName}Part{GenericArg}, global::Clavus.Infrastructure.IClavusDelegate {GenericConstraint}
 {
     public void Register({SyncParams}) => fromDelegate({SyncArgs});
     int IClavusPart.Priority => priority;
+    public override string? ToString() => expression;
+    public override int GetHashCode() => fromDelegate.GetHashCode();
 }
 
-file class Private{PartName}AsyncPart{GenericArg}({PartName}AsyncPart{GenericArg} fromDelegate, int priority) : I{PartName}AsyncPart{GenericArg} {GenericConstraint}
+file class Private{PartName}AsyncPart{GenericArg}({PartName}AsyncPart{GenericArg} fromDelegate, int priority, string? expression = null) : I{PartName}AsyncPart{GenericArg}, global::Clavus.Infrastructure.IClavusDelegate {GenericConstraint}
 {
     public ValueTask Register({AsyncParams}) => fromDelegate({AsyncArgs});
     int IClavusPart.Priority => priority;
+    public override string? ToString() => expression;
+    public override int GetHashCode() => fromDelegate.GetHashCode();
 }
 
 /// <summary>
@@ -104,10 +109,10 @@ public static class {PartName}HostBuilderExtensions
         /// <param name="category">The category.</param>
         /// <param name="hostType">The host type.</param>
         /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-        global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}({PartName}Part{GenericArg} @delegate, int priority = 0, ClavusCategory? category = null, HostType hostType = HostType.Undefined)
+        public global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}({PartName}Part{GenericArg} @delegate, int priority = 0, ClavusCategory? category = null, HostType hostType = HostType.Undefined, [CallerArgumentExpression("delegate")] string? expression = null) {GenericConstraint}
         {
             ArgumentNullException.ThrowIfNull(container);
-            container.AppendPart(new ClavusPartMetadata(new Private{PartName}Part{GenericArg}(@delegate, priority), hostType, category ?? ClavusCategory.Core));
+            container.AppendPart(new ClavusPartMetadata(new Private{PartName}Part{GenericArg}(@delegate, priority, expression), hostType, category ?? ClavusCategory.Core));
             return container;
         }
 
@@ -119,10 +124,10 @@ public static class {PartName}HostBuilderExtensions
         /// <param name="category">The category.</param>
         /// <param name="hostType">The host type.</param>
         /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-        global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}({PartName}AsyncPart{GenericArg} @delegate, int priority = 0, ClavusCategory? category = null, HostType hostType = HostType.Undefined)
+        public global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}({PartName}AsyncPart{GenericArg} @delegate, int priority = 0, ClavusCategory? category = null, HostType hostType = HostType.Undefined, [CallerArgumentExpression("delegate")] string? expression = null) {GenericConstraint}
         {
             ArgumentNullException.ThrowIfNull(container);
-            container.AppendPart(new ClavusPartMetadata(new Private{PartName}AsyncPart{GenericArg}(@delegate, priority), hostType, category ?? ClavusCategory.Core));
+            container.AppendPart(new ClavusPartMetadata(new Private{PartName}AsyncPart{GenericArg}(@delegate, priority, expression), hostType, category ?? ClavusCategory.Core));
             return container;
         }
     }

@@ -2,26 +2,21 @@ using System.Collections.Immutable;
 
 namespace Clavus.Infrastructure;
 
-/// <summary>
-///     ClavusProvider.
-///     Implements the <see cref="IClavusProvider" />
-/// </summary>
-/// <seealso cref="IClavusProvider" />
 internal static class ClavusResolver
 {
 
-    public static ImmutableHashSet<IClavusPart> Resolve(HostType hostType, ImmutableHashSet<ClavusCategory> categories, IEnumerable<IClavusPartMetadata> contributions)
+    public static ImmutableList<IClavusPart> Resolve(HostType hostType, ImmutableHashSet<ClavusCategory> categories, IEnumerable<IClavusPartMetadata> contributions)
         => ResolveMetadata(categories, contributions)
           .Where(cod => cod.HostType == HostType.Undefined || cod.HostType == hostType)
           .Select(z => z.Convention)
-          .ToImmutableHashSet(IClavusPart.ValueComparer);
+          .ToImmutableList();
 
-    private static ImmutableHashSet<IClavusPartMetadata> ResolveMetadata(ImmutableHashSet<ClavusCategory> categories, IEnumerable<IClavusPartMetadata> contributions)
+    private static ImmutableList<IClavusPartMetadata> ResolveMetadata(ImmutableHashSet<ClavusCategory> categories, IEnumerable<IClavusPartMetadata> contributions)
     {
         IEnumerable<IClavusPartMetadata> c = contributions.Order(Comparer<IClavusPartMetadata>.Create((x, y) => x.Convention.Priority.CompareTo(y.Convention.Priority))); ;
         if (categories.Any()) c = c.Where(z => !categories.Contains(z.Category));
 
-        var r = c.ToImmutableHashSet(IClavusPartMetadata.ValueComparer);
+        var r = c.ToImmutableList();
         if (!r.Any(z => z.Dependencies.Count > 0)) return r;
 
         var conventions = c
@@ -67,7 +62,7 @@ internal static class ClavusResolver
                         )
                        .ToLookup(x => x.convention.Convention, x => x.dependsOn);
 
-        return TopographicalSort(c, x => dependsOn[x.Convention]).ToImmutableHashSet(IClavusPartMetadata.ValueComparer);
+        return TopographicalSort(c, x => dependsOn[x.Convention]).ToImmutableList();
     }
 
     private static List<T> TopographicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies)

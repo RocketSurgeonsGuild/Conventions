@@ -20,7 +20,7 @@ internal static class ImportConventions
         var referenceMethods = request
                               .Compilation.GetClavusReferences()
                               .Select(refer => refer.ToString())
-                              .Concat(request.ExportedConventions.Length > 0 ? [$"{exportConfig.Namespace}.{exportConfig.ClassName}.{exportConfig.MethodName}"] : [])
+                              .Concat(request.ExportedConventions.Length > 0 ? [$"{( exportConfig.Namespace is { Length: > 0 } ? $"{exportConfig.Namespace}." : "" )}{exportConfig.ClassName}.{exportConfig.MethodName}"] : [])
                               .ToImmutableList();
 
         var functionBody = referenceMethods.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(referenceMethods);
@@ -36,15 +36,57 @@ internal static class ImportConventions
                .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword), Token(SyntaxKind.PartialKeyword)))
                .AddMembers(
                     FieldDeclaration(
-                            VariableDeclaration(IdentifierName("LoadClavusParts"))
+                            VariableDeclaration(IdentifierName("ClavusContextBuilderFactory"))
                                .WithVariables(
                                     SingletonSeparatedList(
                                         VariableDeclarator(Identifier(request.BuildConfig.ImportConfiguration.MethodName))
-                                           .WithInitializer(EqualsValueClause(IdentifierName("LoadClavusPartsMethod")))
+                                           .WithInitializer(EqualsValueClause(IdentifierName("CreateClavusContextBuilder")))
                                     )
                                 )
                         )
                        .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword))),
+                    // The parameterless factory delegate assigned to ImportHelpers.Tectum. It seeds a builder to
+                    // resolve any convention dependencies, then materializes the final builder from the imported parts.
+                    MethodDeclaration(IdentifierName("ClavusContextBuilder"), Identifier("CreateClavusContextBuilder"))
+                       .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)))
+                       .WithParameterList(ParameterList([
+                        // new dictionary<object, object>
+                        Parameter(Identifier("properties"))
+                            .WithType(                            NullableType(GenericName("IDictionary").WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>([PredefinedType(Token(SyntaxKind.ObjectKeyword)), PredefinedType(Token(SyntaxKind.ObjectKeyword))]))))                        )
+                            .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))),
+                        Parameter(Identifier("categories"))
+                            .WithType(                            NullableType(GenericName("IEnumerable").WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>([IdentifierName("ClavusCategory")]))))                        )
+                            .WithDefault(EqualsValueClause(LiteralExpression(SyntaxKind.NullLiteralExpression))),
+                       ]))
+                       .WithExpressionBody(
+            ArrowExpressionClause(
+                                    InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName("ClavusContextBuilder"), IdentifierName("Create")))
+                                       .WithArgumentList(
+                                            ArgumentList(
+                                                SeparatedList(
+                                                    [
+                                                        Argument(InvocationExpression(IdentifierName("LoadClavusPartsMethod")).WithArgumentList(ArgumentList())),
+                                                        Argument(BinaryExpression(
+                        SyntaxKind.CoalesceExpression,
+                        IdentifierName("properties"),
+                        ObjectCreationExpression(
+                            GenericName(Identifier("Dictionary"))
+                                .WithTypeArgumentList(
+                                    TypeArgumentList(
+                                        SeparatedList<TypeSyntax>([PredefinedType(Token(SyntaxKind.ObjectKeyword)), PredefinedType(Token(SyntaxKind.ObjectKeyword))])
+                                    )
+                                )
+                        ).WithArgumentList(ArgumentList())
+                    )),
+                                                        Argument(BinaryExpression(                        SyntaxKind.CoalesceExpression,                        IdentifierName("categories"),                        CollectionExpression()                    ))
+                                                    ]
+                                                )
+                                            )
+                                        )
+                                    )
+                            )
+                       .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                       .WithLeadingTrivia(GetXmlSummary("Creates the context builder populated with the Clavus parts imported into this assembly")),
                     MethodDeclaration(
                             GenericName(Identifier("IEnumerable"))
                                .WithTypeArgumentList(
@@ -55,13 +97,7 @@ internal static class ImportConventions
                             Identifier("LoadClavusPartsMethod")
                         )
                        .WithModifiers(TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.StaticKeyword)))
-                       .WithParameterList(
-                            ParameterList(
-                                SingletonSeparatedList(
-                                    Parameter(Identifier("builder")).WithType(IdentifierName("ClavusContextBuilder"))
-                                )
-                            )
-                        )
+                       .WithParameterList(ParameterList())
                        .WithBody(functionBody)
                        .WithLeadingTrivia(GetXmlSummary("The Clavus parts imported into this assembly"))
                 )
@@ -180,7 +216,7 @@ internal static class ImportConventions
                             IdentifierName("var"),
                             Identifier("part"),
                             InvocationExpression(ParseExpression(reference))
-                               .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("builder"))))),
+                               .WithArgumentList(ArgumentList()),
                             YieldStatement(SyntaxKind.YieldReturnStatement, IdentifierName("part"))
                         )
                        .NormalizeWhitespace()

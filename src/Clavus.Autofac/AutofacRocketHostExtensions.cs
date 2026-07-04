@@ -23,10 +23,9 @@ public static class AutofacConventionHostExtensions
             {
                 var c = containerBuilder ?? new ContainerBuilder();
                 context.Set(services);
-                await c.ApplyPartsAsync(context, ct);
+                await c.ApplyAutofac(context, ct);
                 return new AutofacConventionServiceProviderFactory(c);
             }
         );
     }
-
 }

@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
-using Clavus.Aspire;
 using Clavus.Aspire.Testing;
+using Clavus.Hosting;
 using Microsoft.Extensions.Configuration;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
@@ -38,9 +38,9 @@ public static class ClavusDistributedApplicationTestingHelpers
             new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
         );
 
-        await builder.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        await builder.ApplyDistributedApplicationTesting(context, cancellationToken).ConfigureAwait(false);
         var host = await builder.BuildAsync(cancellationToken).ConfigureAwait(false);
-        await host.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        await host.ApplyHostCreated(context, cancellationToken).ConfigureAwait(false);
         return host;
     }
 }

@@ -18,7 +18,7 @@ public class ClavusContextTests
     [Test]
     public async Task GetAStronglyTypedValue()
     {
-        var builder = ClavusContextBuilder.Create(b => [], new ServiceProviderDictionary());
+        var builder = ClavusContextBuilder.Create([], new ServiceProviderDictionary(), []);
         var container = await ClavusContext.FromAsync(builder);
         container.Set("abc");
         container.Get<string>().ShouldBe("abc");
@@ -27,7 +27,7 @@ public class ClavusContextTests
     [Test]
     public async Task SetAStronglyTypedValue()
     {
-        var builder = ClavusContextBuilder.Create(b => [], new ServiceProviderDictionary());
+        var builder = ClavusContextBuilder.Create([], new ServiceProviderDictionary(), []);
         var container = await ClavusContext.FromAsync(builder);
         container.Set("abc");
         container.Get<string>().ShouldBe("abc");
@@ -36,17 +36,18 @@ public class ClavusContextTests
     [Test]
     public async Task AddConventions()
     {
-        var contextBuilder = ClavusContextBuilder.Create(b => [], new ServiceProviderDictionary());
-        var convention = A.Fake<IServicePart>();
+        var contextBuilder = ClavusContextBuilder.Create([], new ServiceProviderDictionary(), []);
+        var convention = A.Fake<IServicePart>(z => z.Named("Convention"));
         contextBuilder.PrependPart(convention);
         var conventions = await ClavusContext.FromAsync(contextBuilder);
-        conventions.Parts.GetAll().ShouldContain(convention);
+        await new ServiceCollection().ApplyService(conventions);
+        A.CallTo(() => convention.Register(conventions, A<IServiceCollection>._)).MustHaveHappenedOnceExactly();
     }
 
     [Test]
     public async Task Setups()
     {
-        var contextBuilder = ClavusContextBuilder.Create(b => [], new ServiceProviderDictionary());
+        var contextBuilder = ClavusContextBuilder.Create([], new ServiceProviderDictionary(), []);
         var convention = A.Fake<ISetupPart>();
         contextBuilder.PrependPart(convention);
 
@@ -57,7 +58,7 @@ public class ClavusContextTests
     [Test]
     public async Task Setups_With_Delegate()
     {
-        var contextBuilder = ClavusContextBuilder.Create(b => [], new ServiceProviderDictionary());
+        var contextBuilder = ClavusContextBuilder.Create([], new ServiceProviderDictionary(), []);
         var convention = A.Fake<SetupPart>();
         contextBuilder.ConfigureSetup(convention);
 
@@ -69,14 +70,14 @@ public class ClavusContextTests
     public async Task ConstructTheContainerAndRegisterWithCore_ServiceProvider()
     {
         var contextBuilder = ClavusContextBuilder
-                            .Create(b => [], new ServiceProviderDictionary())
+                            .Create([], new ServiceProviderDictionary(), [])
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(contextBuilder);
 
         var servicesCollection = await new ServiceCollection()
                                       .AddSingleton(A.Fake<IAbc>())
                                       .AddSingleton(A.Fake<IAbc2>())
-                                      .ApplyPartsAsync(context);
+                                      .ApplyService(context);
 
         var sp = servicesCollection.BuildServiceProvider();
         sp.GetService<IAbc>().ShouldNotBeNull();
@@ -89,11 +90,11 @@ public class ClavusContextTests
     public async Task ConstructTheContainerAndRegisterWithApplication_ServiceProvider()
     {
         var contextBuilder = ClavusContextBuilder
-                            .Create(b => [], new ServiceProviderDictionary())
+                            .Create([], new ServiceProviderDictionary(), [])
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection().ApplyPartsAsync(context);
+        var servicesCollection = await new ServiceCollection().ApplyService(context);
 
         servicesCollection.AddSingleton(A.Fake<IAbc>());
         servicesCollection.AddSingleton(A.Fake<IAbc2>());
@@ -110,11 +111,11 @@ public class ClavusContextTests
     public async Task ConstructTheContainerAndRegisterWithSystem_ServiceProvider()
     {
         var contextBuilder = ClavusContextBuilder
-                            .Create(b => [], new ServiceProviderDictionary())
+                            .Create([], new ServiceProviderDictionary(), [])
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection().ApplyPartsAsync(context);
+        var servicesCollection = await new ServiceCollection().ApplyService(context);
         servicesCollection.AddSingleton(A.Fake<IAbc3>());
         servicesCollection.AddSingleton(A.Fake<IAbc4>());
 
@@ -129,11 +130,11 @@ public class ClavusContextTests
     public async Task ConstructTheContainerAndRegisterWithSystem_UsingConvention()
     {
         var builder = ClavusContextBuilder
-                     .Create(_ => [])
+                     .Create([], new ServiceProviderDictionary(), [])
                      .AppendPart(new AbcConvention());
         builder.Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(builder);
-        var servicesCollection = await new ServiceCollection().ApplyPartsAsync(context);
+        var servicesCollection = await new ServiceCollection().ApplyService(context);
 
         var items = servicesCollection.BuildServiceProvider();
         items.GetService<IAbc>().ShouldNotBeNull();
@@ -145,15 +146,14 @@ public class ClavusContextTests
     [Test]
     public async Task ShouldConstructTheConventionInjectingTheValues()
     {
-        AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
         var builder = ClavusContextBuilder
-                     .Create(_ => [])
+                     .Create([], new ServiceProviderDictionary(), [])
                      .AppendPart<InjectableConvention>()
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(builder);
-        var collection = await new ServiceCollection().ApplyPartsAsync(context);
+        var collection = await new ServiceCollection().ApplyService(context);
         collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
@@ -163,12 +163,12 @@ public class ClavusContextTests
         AutoFake.Provide<IDictionary<object, object?>>(new ServiceProviderDictionary());
         var data = A.Fake<IInjectData>();
         var builder = ClavusContextBuilder
-                     .Create(_ => [])
+                     .Create([], new ServiceProviderDictionary(), [])
                      .AppendPart<OptionalInjectableConvention>()
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = ( await ClavusContext.FromAsync(builder) ).Set(data);
-        var collection = await new ServiceCollection().ApplyPartsAsync(context);
+        var collection = await new ServiceCollection().ApplyService(context);
         collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
@@ -176,7 +176,7 @@ public class ClavusContextTests
     public async Task ShouldFailToConstructTheConventionInjectingTheValuesIfMissing()
     {
         var builder = ClavusContextBuilder
-                     .Create(_ => [])
+                     .Create([], new ServiceProviderDictionary(), [])
                      .AppendPart<InjectableConvention>()
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var a = () => ClavusContext.FromAsync(builder).AsTask();
@@ -187,11 +187,11 @@ public class ClavusContextTests
     public async Task ShouldNotFailToConstructTheConventionInjectingTheValuesIfOptional()
     {
         var builder = ClavusContextBuilder
-                     .Create(_ => [])
+                     .Create([], new ServiceProviderDictionary(), [])
                      .AppendPart<OptionalInjectableConvention>()
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(builder);
-        var a = () => new ServiceCollection().ApplyPartsAsync(context).AsTask();
+        var a = () => new ServiceCollection().ApplyService(context).AsTask();
         await a.ShouldNotThrowAsync();
     }
 

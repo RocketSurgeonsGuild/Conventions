@@ -151,13 +151,7 @@ internal static class ExportConventions
                                 msBuildConfig.ExportConfiguration.MethodName
                             )
                            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
-                           .WithParameterList(
-                                ParameterList(
-                                    SingletonSeparatedList(
-                                        Parameter(Identifier("builder")).WithType(IdentifierName("ClavusContextBuilder"))
-                                    )
-                                )
-                            )
+                           .WithParameterList(ParameterList())
                            .WithBody(helperClassBody)
                            .WithLeadingTrivia(GetXmlSummary("The conventions exports from this assembly"))
                     )

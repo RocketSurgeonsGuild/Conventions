@@ -4,6 +4,12 @@
     Clavus.ClavusAttributesGenerator: []
   },
   GlobalOptions: {
+    build_property.ClavusExportClassName: Exports,
+    build_property.ClavusExportMethodName: Ashlar,
+    build_property.ClavusExportNamespace: ,
+    build_property.ClavusImportClassName: Imports,
+    build_property.ClavusImportMethodName: Ashlar,
+    build_property.ClavusImportNamespace: ,
     build_property.IsTestProject: true
   },
   References: [

@@ -24,7 +24,7 @@ public interface IClavusContext
     /// <summary>
     ///     Get the conventions from the context
     /// </summary>
-    ImmutableHashSet<IClavusPart> Parts { get; }
+    ImmutableList<IClavusPart> Parts { get; }
 
     /// <summary>
     ///     The underlying host type

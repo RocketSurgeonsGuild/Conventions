@@ -9,7 +9,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_Get_Item_By_Type()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType = A.Fake<IMyType>();
         context.Set(myType);
 
@@ -19,7 +19,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_Get_Item_By_Name()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType = A.Fake<IMyType>();
         context.Set("value", myType);
         context.Get<IMyType>("value").ShouldBeSameAs(myType);
@@ -28,7 +28,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_Require_Item_By_Type()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType = A.Fake<IMyType>();
         context.Set(myType);
 
@@ -38,7 +38,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_Require_Item_By_Name()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType = A.Fake<IMyType>();
         context.Set("value", myType);
         context.Require<IMyType>("value").ShouldBeSameAs(myType);
@@ -47,7 +47,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_Fail_To_Require_Item_By_Type()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType = A.Fake<IMyType>();
         Action a = () => context.Require<IMyType>();
         a.ShouldThrow<KeyNotFoundException>();
@@ -56,7 +56,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_Fail_To_Require_Item_By_Name()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType = A.Fake<IMyType>();
         Action a = () => context.Require<IMyType>("value");
         a.ShouldThrow<KeyNotFoundException>();
@@ -65,7 +65,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_Get_IsUnitTestHost()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         context.Set(HostType.UnitTest);
 
         context.IsUnitTestHost().ShouldBeTrue();
@@ -74,7 +74,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_Not_IsUnitTestHost()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         context.Set(HostType.Live);
 
         context.IsUnitTestHost().ShouldBeFalse();
@@ -83,7 +83,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_GetOrAdd_Item_By_Type_Get()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType1 = A.Fake<IMyType>();
         var myType2 = A.Fake<IMyType>();
         context.Set(myType1);
@@ -93,7 +93,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_GetOrAdd_Item_By_Name_Get()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType1 = A.Fake<IMyType>();
         var myType2 = A.Fake<IMyType>();
         context.Set("value", myType1);
@@ -103,7 +103,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_GetOrAdd_Item_By_Type_Add()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType2 = A.Fake<IMyType>();
         context.GetOrAdd(() => myType2).ShouldBeSameAs(myType2);
     }
@@ -111,7 +111,7 @@ public class ClavusContextExtensionsTests
     [Test]
     public async Task Should_GetOrAdd_Item_By_Name_Add()
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         var myType2 = A.Fake<IMyType>();
         context.GetOrAdd("value", () => myType2).ShouldBeSameAs(myType2);
     }
@@ -122,7 +122,7 @@ public class ClavusContextExtensionsTests
     [Arguments(HostType.UnitTest)]
     public async Task Should_Get_HostType(HostType hostType)
     {
-        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create(_ => []));
+        var context = await ClavusContext.FromAsync(ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []));
         context.Set(hostType);
         context.GetHostType().ShouldBe(hostType);
     }

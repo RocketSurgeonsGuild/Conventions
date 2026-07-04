@@ -8,7 +8,7 @@ namespace Clavus.Configuration.Yaml;
 /// <summary>
 ///     Default yaml convention
 /// </summary>
-[ExportClavusPart]
+[ClavusExport]
 public class YamlConvention : ISetupPart
 {
     /// <inheritdoc />

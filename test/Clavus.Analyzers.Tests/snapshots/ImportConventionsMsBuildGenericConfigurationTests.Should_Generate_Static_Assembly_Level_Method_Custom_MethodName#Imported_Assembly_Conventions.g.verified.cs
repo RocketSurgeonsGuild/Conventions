@@ -8,9 +8,10 @@ using Clavus.Infrastructure;
 
 #nullable enable
 #pragma warning disable CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Imports.Namespace", "Test.My.Namespace")]
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Imports.ClassName", "MyImports")]
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Imports.MethodName", "ImportConventions")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Import.Property", "Import")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Import.Namespace", "Test.My.Namespace")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Import.ClassName", "MyImports")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Import.MethodName", "ImportConventions")]
 namespace Test.My.Namespace
 {
     /// <summary>
@@ -19,17 +20,21 @@ namespace Test.My.Namespace
     [System.CodeDom.Compiler.GeneratedCode("Clavus.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     internal static partial class MyImports
     {
-        internal static LoadClavusParts ImportConventions = LoadClavusPartsMethod;
+        internal static ClavusContextBuilderFactory ImportConventions = CreateClavusContextBuilder;
+        /// <summary>
+        /// Creates the context builder populated with the Clavus parts imported into this assembly
+        /// </summary>
+        private static ClavusContextBuilder CreateClavusContextBuilder(IDictionary<object, object>? properties = null, IEnumerable<ClavusCategory>? categories = null) => ClavusContextBuilder.Create(LoadClavusPartsMethod(), properties ?? new Dictionary<object, object>(), categories ?? []);
         /// <summary>
         /// The Clavus parts imported into this assembly
         /// </summary>
-        private static IEnumerable<IClavusPartMetadata> LoadClavusPartsMethod(ClavusContextBuilder builder)
+        private static IEnumerable<IClavusPartMetadata> LoadClavusPartsMethod()
         {
-            foreach (var part in Dep1.Dep1Exports.GetConventions(builder))
+            foreach (var part in Dep2Exports.Ashlar())
                 yield return part;
-            foreach (var part in Dep2Exports.GetConventions(builder))
+            foreach (var part in Dep1.Dep1Exports.Ashlar())
                 yield return part;
-            foreach (var part in SampleDependencyThree.Conventions.Exports.GetConventions(builder))
+            foreach (var part in SampleDependencyThree.Conventions.Exports.Ashlar())
                 yield return part;
         }
     };

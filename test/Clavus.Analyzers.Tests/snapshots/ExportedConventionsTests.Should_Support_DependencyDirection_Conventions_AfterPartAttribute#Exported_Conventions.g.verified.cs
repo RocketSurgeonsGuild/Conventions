@@ -7,25 +7,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Clavus;
 using Clavus.Infrastructure;
 
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Exports.Namespace", "TestProject.Conventions")]
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Exports.ClassName", "Exports")]
-[assembly: System.Reflection.AssemblyMetadata("ClavusConfigurationData.Exports.MethodName", "GetConventions")]
-[assembly: ExportedClavusParts(typeof(Clavus.Tests.Contrib))]
-namespace TestProject.Conventions
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Export.Property", "Export")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Export.Namespace", "")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Export.ClassName", "Exports")]
+[assembly: System.Reflection.AssemblyMetadata("Clavus.Export.MethodName", "Ashlar")]
+/// <summary>
+/// The class defined for exporting conventions from this assembly
+/// </summary>
+[System.CodeDom.Compiler.GeneratedCode("Clavus.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+public static partial class Exports
 {
     /// <summary>
-    /// The class defined for exporting conventions from this assembly
+    /// The conventions exports from this assembly
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("Clavus.Analyzers", "version"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    public static partial class Exports
+    public static IEnumerable<IClavusPartMetadata> Ashlar()
     {
-        /// <summary>
-        /// The conventions exports from this assembly
-        /// </summary>
-        public static IEnumerable<IClavusPartMetadata> GetConventions(ClavusContextBuilder builder)
-        {
-            yield return new ClavusPartMetadata(new Clavus.Tests.Contrib(), HostType.Live, ClavusCategory.Application).WithDependency(DependencyDirection.DependsOn, typeof(Clavus.Tests.D));
-        }
+        yield return new ClavusPartMetadata(new Clavus.Tests.Contrib(), HostType.Undefined, ClavusCategory.Application).WithDependency(DependencyDirection.DependsOn, typeof(Clavus.Tests.D));
     }
 }
 #pragma warning restore CA1002, CA1034, CA1822, CS0105, CS1573, CS8602, CS8603, CS8618, CS8669

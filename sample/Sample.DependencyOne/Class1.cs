@@ -1,10 +1,8 @@
 using FluentValidation;
 
-[assembly: ExportClavusParts(Namespace = "Dep1", ClassName = "Dep1Exports")]
-
 namespace Sample.DependencyOne;
 
-[ExportClavusPart]
+[ClavusExport]
 public class Class1 : IClavusPart;
 
 public static class Example1

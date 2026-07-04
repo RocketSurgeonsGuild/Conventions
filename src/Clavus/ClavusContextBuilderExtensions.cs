@@ -21,12 +21,12 @@ public static class ClavusContextBuilderExtensions
     public static async ValueTask<IServiceProvider> CreateServiceProvider(this IClavusContext context, CancellationToken cancellationToken = default)
     {
         var cb = new ConfigurationManager();
-        await cb.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        await cb.ApplyConfiguration(context, cancellationToken).ConfigureAwait(false);
         context.Set(cb).Set<IConfigurationRoot>(cb).Set<IConfiguration>(cb);
         var services = new ServiceCollection();
         services.AddSingleton<IConfigurationRoot>(cb).AddSingleton(cb).AddSingleton<IConfiguration>(cb);
-        await services.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
-        await new LoggingBuilder(services).ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
+        await services.ApplyService(context, cancellationToken).ConfigureAwait(false);
+        await new LoggingBuilder(services).ApplyLogging(context, cancellationToken).ConfigureAwait(false);
 
         if (context.Get<ServiceProviderFactoryAdapter>() is not { } factory)
             return services.BuildServiceProvider(context.GetOrAdd(() => new ServiceProviderOptions()));

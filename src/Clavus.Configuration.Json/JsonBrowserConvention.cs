@@ -8,7 +8,7 @@ namespace Clavus.Configuration.Json;
 /// <summary>
 ///     Json configuration conventions
 /// </summary>
-[ExportClavusPart]
+[ClavusExport]
 public class JsonBrowserConvention : ISetupPart
 {
     /// <inheritdoc />

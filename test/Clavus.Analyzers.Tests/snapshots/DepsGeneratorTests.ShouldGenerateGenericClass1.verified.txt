@@ -1,0 +1,28 @@
+﻿{
+  FinalDiagnostics: [],
+  GeneratorDiagnostics: {
+    Clavus.ClavusAttributesGenerator: []
+  },
+  GlobalOptions: {
+    build_property.ClavusExportClassName: Dep1Exports,
+    build_property.ClavusExportMethodName: Ashlar,
+    build_property.ClavusExportNamespace: Dep1,
+    build_property.ClavusImportClassName: Imports,
+    build_property.ClavusImportMethodName: Ashlar,
+    build_property.ClavusImportNamespace: SampleDependencyOne
+  },
+  References: [
+    Clavus.dll,
+    FluentValidation.dll,
+    Microsoft.Extensions.Configuration.Abstractions.dll,
+    Microsoft.Extensions.DependencyInjection.Abstractions.dll,
+    mscorlib.dll,
+    netstandard.dll,
+    System.ComponentModel.dll,
+    System.Core.dll,
+    System.dll,
+    System.Linq.Expressions.dll,
+    System.Private.CoreLib.dll,
+    System.Runtime.dll
+  ]
+}

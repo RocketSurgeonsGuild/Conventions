@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Clavus.CommandLine\Clavus.CommandLine.csproj" />
+        <!-- <ProjectReference Include="..\..\src\Clavus.CommandLine\Clavus.CommandLine.csproj" /> -->
         <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
         <ProjectReference
             Include="..\..\src\Clavus.Analyzers\Clavus.Analyzers.csproj"

@@ -30,43 +30,7 @@ internal static class GeneratedClavusContextBuilderExtensions
     ///     Creates a new <see cref="ClavusContext" /> from the builder.
     /// </summary>
     /// <returns>A new <see cref="ClavusContext" />.</returns>
-    public static ClavusContextBuilder Create() => ClavusContextBuilder.Create({ImportsExpression});
-
-    /// <summary>
-    ///     Create a default context builder
-    /// </summary>
-    /// <param name="properties"></param>
-    /// <param name="categories"></param>
-    /// <returns></returns>
-    [OverloadResolutionPriority(-1)]
-    public static ClavusContextBuilder Create(PropertiesType properties, params ClavusCategory[] categories) =>
-        ClavusContextBuilder.Create({ImportsExpression}, properties, categories);
-
-    /// <summary>
-    ///     Create a default context builder
-    /// </summary>
-    /// <param name="properties"></param>
-    /// <param name="categories"></param>
-    /// <returns></returns>
-    public static ClavusContextBuilder Create(PropertiesType properties, params IEnumerable<ClavusCategory> categories) =>
-        ClavusContextBuilder.Create({ImportsExpression}, properties, categories);
-
-    /// <summary>
-    ///     Create a default context builder
-    /// </summary>
-    /// <param name="categories"></param>
-    /// <returns></returns>
-    [OverloadResolutionPriority(-1)]
-    public static ClavusContextBuilder Create(params ClavusCategory[] categories) =>
-        ClavusContextBuilder.Create({ImportsExpression}, new PropertiesDictionary(), categories);
-
-    /// <summary>
-    ///     Create a default context builder
-    /// </summary>
-    /// <param name="categories"></param>
-    /// <returns></returns>
-    public static ClavusContextBuilder Create(params IEnumerable<ClavusCategory> categories) =>
-        ClavusContextBuilder.Create({ImportsExpression}, new PropertiesDictionary(), categories);
+    public static ClavusContextBuilder Create() => {ImportsExpression}();
   }
 }
 

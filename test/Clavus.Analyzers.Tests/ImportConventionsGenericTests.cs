@@ -23,7 +23,6 @@ public class ImportConventionsGenericTests() : GeneratorTest()
                                @"
 using Clavus;
 
-[assembly: ImportClavusParts]
 "
                            )
                           .Build()
@@ -41,7 +40,6 @@ using Clavus;
 
                                using Clavus;
 
-                               [assembly: ImportClavusParts(Namespace = "Test.My.Namespace", ClassName = "MyImports")]
 
                                """
                            )
@@ -60,7 +58,6 @@ using Clavus;
 
                                using Clavus;
 
-                               [assembly: ImportClavusParts(Namespace = "", ClassName = "MyImports")]
 
                                """
                            )
@@ -79,7 +76,6 @@ using Clavus;
 
                                using Clavus;
 
-                               [assembly: ImportClavusParts(Namespace = "Test.My.Namespace", ClassName = "MyImports", MethodName = "ImportConventions")]
 
                                """
                            )
@@ -97,7 +93,6 @@ using Clavus;
                                @"
 using Clavus;
 
-[assembly: ImportClavusPartsAttribute]
 "
                            )
                           .Build()
@@ -114,7 +109,6 @@ using Clavus;
                                @"
 using Clavus;
 
-[assembly: ImportClavusParts]
 "
                            )
                           .Build()
@@ -132,11 +126,10 @@ using Clavus;
 using Clavus;
 using Clavus.Tests;
 
-[assembly: ImportClavusParts]
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     internal class Contrib : IClavusPart { }
 }
 ",
@@ -165,11 +158,10 @@ namespace TestProject
                                @"
 using Clavus;
 using Clavus.Tests;
-[assembly: ImportClavusParts]
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     internal class Contrib : IClavusPart { }
 }
 ",
@@ -184,7 +176,7 @@ namespace TestProject
 }
 "
                            )
-                          .AddGlobalOption("build_property.ExportClavusAssembly", "false")
+                          .AddGlobalOption("build_property.ClavusExportAssembly", "false")
                           .Build()
                           .GenerateAsync(TestContext.CancellationToken);
 
@@ -201,7 +193,6 @@ namespace TestProject
                                @"
 using Clavus;
 
-[assembly: ImportClavusParts]
 "
                            )
                           .Build()
@@ -220,7 +211,6 @@ using Clavus;
                                @"
 using Clavus;
 
-[assembly: ImportClavusParts]
 "
                            )
                           .AddGlobalOption("build_property.IsTestProject", isTestProject ? "true" : "false")

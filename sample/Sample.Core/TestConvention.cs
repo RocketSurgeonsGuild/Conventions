@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Sample.Core;
 
-[ExportClavusPart]
+[ClavusExport]
 [UnitTestPart]
 [AfterPart(typeof(CoreConvention))]
 public class TestConvention : IServicePart

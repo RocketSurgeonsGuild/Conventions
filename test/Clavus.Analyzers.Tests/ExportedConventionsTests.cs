@@ -15,7 +15,7 @@ using Clavus.Tests;
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     internal class Contrib : IClavusPart { }
 }
 "
@@ -35,11 +35,10 @@ namespace Clavus.Tests
 using Clavus;
 using Clavus.Tests;
 
-[assembly: ExportClavusParts(Namespace = ""Source.Space"", ClassName = ""SourceClass"")]
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     internal class Contrib : IClavusPart { }
 }
 "
@@ -59,11 +58,10 @@ namespace Clavus.Tests
 using Clavus;
 using Clavus.Tests;
 
-[assembly: ExportClavusParts(Namespace = null)]
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     internal class Contrib : IClavusPart { }
 }
 "
@@ -84,11 +82,10 @@ namespace Clavus.Tests
 using Clavus;
 using Clavus.Tests;
 
-[assembly: ExportClavusParts(MethodName = ""SourceMethod"")]
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     internal class Contrib : IClavusPart { }
 }
 "
@@ -109,7 +106,7 @@ using Clavus;
 
 namespace Clavus.Tests
 {
-    [ExportClavusPartAttribute]
+    [ClavusExportAttribute]
     internal class Contrib : IClavusPart { }
 }
 "
@@ -128,23 +125,22 @@ namespace Clavus.Tests
                                @"
 using Clavus;
 
-[assembly: ExportClavusParts(Namespace = ""Source.Space"")]
 
-[ExportClavusPart]
+[ClavusExport]
 internal class Contrib1 : IClavusPart { }
 ",
                                @"
 using Clavus;
 
-[ExportClavusPartAttribute]
+[ClavusExportAttribute]
 internal class Contrib2 : IClavusPart { }
-[ExportClavusPart]
+[ClavusExport]
 internal class Contrib3 : IClavusPart { }
 ",
                                @"
 using Clavus;
 
-[ExportClavusPart]
+[ClavusExport]
 internal class Contrib4 : IClavusPart { }
 "
                            )
@@ -169,7 +165,7 @@ namespace Clavus.Tests
     interface IServiceB {}
     interface IServiceC {}
     internal class ParentContrib {
-        [ExportClavusPart]
+        [ClavusExport]
         internal class Contrib : IClavusPart { public Contrib(IService service, IServiceB serviceB, IServiceC? serviceC = null) {} }
     }
 }
@@ -193,7 +189,7 @@ using Clavus.Tests;
 namespace Clavus.Tests
 {
     internal class ParentContrib {
-        [ExportClavusPart]
+        [ClavusExport]
         internal class Contrib : IClavusPart { }
     }
 }
@@ -217,7 +213,7 @@ using Clavus.Tests;
 namespace Clavus.Tests
 {
     internal static class ParentContrib {
-        [ExportClavusPart]
+        [ClavusExport]
         internal class Contrib : IClavusPart { }
     }
 }
@@ -247,7 +243,7 @@ namespace Rocket.Surgery.LaunchPad.Mapping;
 ///     Implements the <see cref=""IServicePart"" />
 /// </summary>
 /// <seealso cref=""IServicePart"" />
-[ExportClavusPart]
+[ClavusExport]
 public class AutoMapperConvention : IServicePart
 {
     private readonly AutoMapperOptions _options;
@@ -304,7 +300,7 @@ using Clavus.Tests;
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     [{HostType}Convention]
     internal class Contrib : IClavusPart { }
 }
@@ -330,7 +326,7 @@ using Clavus.Tests;
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     [ClavusCategory(""{Category}"")]
     internal class Contrib : IClavusPart { }
 }
@@ -357,7 +353,7 @@ using Clavus.Tests;
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     [{AttributeName}(typeof(D))]
     [LivePart, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     internal class Contrib : IClavusPart { }

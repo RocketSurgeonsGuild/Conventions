@@ -7,7 +7,7 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <ProjectReference Include="..\..\src\Clavus.DryIoc\Clavus.DryIoc.csproj" />
         <ProjectReference Include="..\..\src\Clavus\Clavus.csproj" />
-        <ProjectReference Include="..\..\src\Clavus.CommandLine\Clavus.CommandLine.csproj" />
+        <!-- <ProjectReference Include="..\..\src\Clavus.CommandLine\Clavus.CommandLine.csproj" /> -->
         <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
 
         <ClavusHost

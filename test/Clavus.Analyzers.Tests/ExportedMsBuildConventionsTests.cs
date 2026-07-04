@@ -15,13 +15,12 @@ using Clavus.Tests;
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     internal class Contrib : IClavusPart { }
 }
 "
                            )
-                          .AddGlobalOption("build_property.ExportClavusNamespace", "Source.Space")
-                          .AddGlobalOption("build_property.ExportClavusClassName", "SourceClass")
+                          .AddClavusConfiguration(importNamespace: "ExportedMsBuildConventions", exportNamespace: "Source.Space", exportClassName: "SourceClass")
                           .Build()
                           .GenerateAsync(TestContext.CancellationToken);
 
@@ -43,7 +42,7 @@ namespace Clavus.Tests
 }
 "
                            )
-                          .AddGlobalOption("build_property.ExportClavusNamespace", "")
+                          .AddGlobalOption("build_property.ClavusExportNamespace", "")
                           .Build()
                           .GenerateAsync(TestContext.CancellationToken);
 
@@ -62,12 +61,12 @@ using Clavus.Tests;
 
 namespace Clavus.Tests
 {
-    [ExportClavusPart]
+    [ClavusExport]
     internal class Contrib : IClavusPart { }
 }
 "
                            )
-                          .AddGlobalOption("build_property.ExportClavusMethodName", "SourceMethod")
+                          .AddGlobalOption("build_property.ClavusExportMethodName", "SourceMethod")
                           .Build()
                           .GenerateAsync(TestContext.CancellationToken);
 

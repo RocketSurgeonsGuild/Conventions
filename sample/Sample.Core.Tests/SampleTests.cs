@@ -1,6 +1,3 @@
-[assembly: ImportClavusParts]
-
-#pragma warning disable CA1707
 namespace Sample.Core.Tests;
 
 #region codeblock
@@ -16,7 +13,7 @@ public class SampleTests
         // await Assert.That(services.GetRequiredService<IService>().GetString()).IsEqualTo("TestService");
     }
 
-    public SampleTests() => _builder = ClavusContextBuilder.Create(_ => [], new Dictionary<object, object>(), []).Set(HostType.UnitTest);
+    public SampleTests() => _builder = ClavusContextBuilder.Create([], new Dictionary<object, object>(), []).Set(HostType.UnitTest);
 
     private readonly ClavusContextBuilder _builder;
 }

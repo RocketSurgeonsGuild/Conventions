@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Clavus.Infrastructure;
 
 namespace Clavus;
 
@@ -24,5 +25,5 @@ public static class ImportHelpers
     /// If the `IsTestProject` property is detected, the generator will inject a <see cref="ModuleInitializerAttribute"/> the automatically assigns the external conventions.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static Func<ClavusContextBuilder>? Tectum { get; set; }
+    public static ClavusContextBuilderFactory? Tectum { get; set; }
 }

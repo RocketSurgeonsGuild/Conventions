@@ -12,7 +12,7 @@ public class TestContextTests() : AutoFakeTest<TestRecord>(TestRecord.Create(Log
     [Test]
     public void Builder_Should_Create_Host()
     {
-        var a = () => ClavusContextBuilder.Create(_ => []).Set(Logger);
+        var a = () => ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []).Set(Logger);
         var context = a.ShouldNotThrow();
         context.Get<ILogger>().ShouldBeSameAs(Logger);
     }
@@ -20,14 +20,14 @@ public class TestContextTests() : AutoFakeTest<TestRecord>(TestRecord.Create(Log
     [Test]
     public void Builder_Should_Create_Host_ByType()
     {
-        var a = () => ClavusContextBuilder.Create(_ => []).Set(Logger);
+        var a = () => ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []).Set(Logger);
         a.ShouldNotThrow();
     }
 
     [Test]
     public void Builder_Should_Create_Host_ByAssembly()
     {
-        var a = () => ClavusContextBuilder.Create(_ => []).Set(Logger);
+        var a = () => ClavusContextBuilder.Create([], new Dictionary<object, object?>(), []).Set(Logger);
         a.ShouldNotThrow();
     }
 }

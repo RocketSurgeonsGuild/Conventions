@@ -50,7 +50,7 @@ public partial class RocketHostBuilderTests() : AutoFakeTest<TestRecord>(TestRec
         var convention = A.Fake<HostApplicationPart<IHostApplicationBuilder>>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureClavus(rb => rb.ConfigureApplication(convention));
+                              .ConfigureClavus(rb => rb.ConfigureHostApplication(convention));
 
         A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IHostApplicationBuilder>._)).MustHaveHappened();
     }
@@ -61,7 +61,7 @@ public partial class RocketHostBuilderTests() : AutoFakeTest<TestRecord>(TestRec
         var convention = A.Fake<HostApplicationPart<HostApplicationBuilder>>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureClavus(rb => rb.ConfigureApplication(convention));
+                              .ConfigureClavus(rb => rb.ConfigureHostApplication(convention));
 
         A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<HostApplicationBuilder>._)).MustHaveHappened();
     }
@@ -80,12 +80,12 @@ public partial class RocketHostBuilderTests() : AutoFakeTest<TestRecord>(TestRec
     [Test]
     public async Task Should_Build_The_Host_Correctly()
     {
-        var @delegate = A.Fake<Func<IHost, CancellationToken, ValueTask>>();
+        var @delegate = A.Fake<HostCreatedPart<IHost>>();
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureClavus(z => z.OnHostCreated(@delegate));
+                              .ConfigureClavus(z => z.ConfigureHostCreated(@delegate));
 
-        A.CallTo(() => @delegate.Invoke(A<IHost>._, A<CancellationToken>._)).MustHaveHappened();
+        A.CallTo(() => @delegate.Invoke(A<IClavusContext>._, A<IHost>._)).MustHaveHappened();
         host.Services.ShouldNotBeNull();
     }
 

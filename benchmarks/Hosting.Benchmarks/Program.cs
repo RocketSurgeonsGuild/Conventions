@@ -95,19 +95,19 @@ namespace Hosting.Benchmarks
     }
 }
 
-[ExportClavusPart]
+[ClavusExport]
 internal class Services : IServicePart
 {
     public void Register(IClavusContext context, IServiceCollection services) => services.AddSingleton(new Item("Test", 1));
 }
 
-[ExportClavusPart]
+[ClavusExport]
 internal class Services2 : IServicePart
 {
     public void Register(IClavusContext context, IServiceCollection services) => services.AddSingleton(new Item("Test2", 1));
 }
 
-[ExportClavusPart]
+[ClavusExport]
 internal class Configuration : IConfigurationPart
 {
     public void Register(IClavusContext context, IConfigurationBuilder builder) => builder.AddInMemoryCollection(new Dictionary<string, string?>

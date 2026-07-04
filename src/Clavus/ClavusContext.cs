@@ -20,7 +20,7 @@ public sealed class ClavusContext : IClavusContext
     {
         ArgumentNullException.ThrowIfNull(builder);
         var context = FromInitInternal(builder);
-        await context.ApplyPartsAsync(cancellationToken).ConfigureAwait(false);
+        await context.ApplySetup(cancellationToken).ConfigureAwait(false);
         return context;
     }
 
@@ -32,7 +32,7 @@ public sealed class ClavusContext : IClavusContext
     /// <summary>
     ///     Get the conventions from the context
     /// </summary>
-    public ImmutableHashSet<IClavusPart> Parts { get; }
+    public ImmutableList<IClavusPart> Parts { get; }
 
     /// <summary>
     ///     The host type
