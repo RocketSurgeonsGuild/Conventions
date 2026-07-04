@@ -21,10 +21,10 @@ public partial class RocketDistributedApplicationBuilderTests
     [Test]
     public async Task Should_ConfigureHosting()
     {
-        var convention = A.Fake<DistributedApplicationConvention>();
+        var convention = A.Fake<DistributedApplicationBuilderPart>();
         await using var host = await DistributedApplication
                                     .CreateBuilder()
-                                    .ConfigureClavus(rb => rb.ConfigureDistributedApplication(convention));
+                                    .ConfigureClavus(rb => rb.ConfigureDistributedApplicationBuilder(convention));
 
         A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IDistributedApplicationBuilder>._)).MustHaveHappened();
     }

@@ -8,6 +8,18 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
+        <ClavusPart
+            Include="WebAssemblyHostBuilder"
+            ParameterType="global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder"
+            ParameterName="builder"
+        />
+        <ClavusPart
+            Include="WebAssemblyHost"
+            ParameterType="global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost"
+            ParameterName="host"
+        />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\Clavus\Clavus.csproj" />
         <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting.Tests" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />

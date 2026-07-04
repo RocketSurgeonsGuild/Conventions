@@ -9,9 +9,9 @@ internal partial class ClavusContextState
     private readonly List<Assembly> _exceptAssemblyConventions = [];
     public ServiceProviderFactoryAdapter? ServiceProviderFactory { get; set; }
 
-    public void AppendConventions(params IEnumerable<object> conventions) => _conventions.AddRange(conventions);
+    public void AppendParts(params IEnumerable<object> conventions) => _conventions.AddRange(conventions);
 
-    public void PrependConventions(params IEnumerable<object> conventions) => _conventions.InsertRange(0, conventions);
+    public void PrependParts(params IEnumerable<object> conventions) => _conventions.InsertRange(0, conventions);
 
     public void ExceptConventions(params IEnumerable<Type> types) => _exceptConventions.AddRange(types);
 

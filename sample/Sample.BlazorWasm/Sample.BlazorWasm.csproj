@@ -39,6 +39,12 @@
         <Content Update="wwwroot\appsettings.local.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <ClavusHost
+            Include="WebAssembly"
+            HostBuilderType="global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder"
+            HostBuilderName="builder"
+            HostType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost"
+        />
     </ItemGroup>
     <Import Project="../../src/Clavus.Configuration.Yaml/build/Clavus.Configuration.Yaml.targets" />
     <Import Project="../../src/Clavus.Configuration.Json/build/Clavus.Configuration.Json.targets" />

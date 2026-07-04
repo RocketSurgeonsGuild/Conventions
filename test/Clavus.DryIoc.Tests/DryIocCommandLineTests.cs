@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using DryIoc;
 using FakeItEasy;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 using Serilog.Events;
@@ -19,12 +20,12 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseDryIoc()
                                      .ConfigureDryIoc(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
                                           }
                                       )
+                                     .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
 
         var items = builder.GetLifetimeScope();
@@ -43,13 +44,13 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseDryIoc()
                                      .ConfigureDryIoc(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
                                               container.RegisterInstance(A.Fake<IAbc4>());
                                           }
                                       )
+                                     .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
 
         var items = builder.GetLifetimeScope();
@@ -68,7 +69,7 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseDryIoc()
                                      .ConfigureDryIoc(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc3>());
                                               container.RegisterInstance(A.Fake<IAbc4>());
@@ -90,12 +91,12 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseDryIoc()
                                      .ConfigureDryIoc(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
                                           }
                                       )
+                                     .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
 
         var items = builder.GetLifetimeScope();
@@ -116,13 +117,13 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseDryIoc()
                                      .ConfigureDryIoc(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
                                               container.RegisterInstance(A.Fake<IAbc4>());
                                           }
                                       )
+                                     .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
 
         var items = builder.GetLifetimeScope();
@@ -142,7 +143,7 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseDryIoc()
                                      .ConfigureDryIoc(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc3>());
                                               container.RegisterInstance(A.Fake<IAbc4>());

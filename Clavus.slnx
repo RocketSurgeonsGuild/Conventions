@@ -82,7 +82,6 @@
     <File Path="src/Directory.Build.targets" />
     <Project Path="src/Clavus.Aspire.Testing/Clavus.Aspire.Testing.csproj" />
     <Project Path="src/Clavus.Aspire/Clavus.Aspire.csproj" />
-    <Project Path="src/Clavus.CommandLine/Clavus.CommandLine.csproj" />
     <Project Path="src/Clavus.Analyzers/Clavus.Analyzers.csproj" />
     <Project Path="src/Clavus.Autofac/Clavus.Autofac.csproj" />
     <Project Path="src/Clavus.Configuration.Json/Clavus.Configuration.Json.csproj" />
@@ -106,7 +105,6 @@
     <Project Path="test/Clavus.Analyzers.Tests/Clavus.Analyzers.Tests.csproj" />
     <Project Path="test/Clavus.Aspire.Tests/Clavus.Aspire.Tests.csproj" />
     <Project Path="test/Clavus.Autofac.Tests/Clavus.Autofac.Tests.csproj" />
-    <Project Path="test/Clavus.CommandLine.Tests/Clavus.CommandLine.Tests.csproj" />
     <Project Path="test/Clavus.Tests/Clavus.Tests.csproj" />
     <Project Path="test/Clavus.DryIoc.Tests/Clavus.DryIoc.Tests.csproj" />
     <Project Path="test/Clavus.Hosting.AspNetCore.Tests/Clavus.Hosting.AspNetCore.Tests.csproj" />

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Clavus.Configuration;
+using Clavus.Hosting;
 using Clavus.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
@@ -7,14 +8,13 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 
-#pragma warning disable CA1031, CA2000, CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
-
-namespace Clavus.Hosting;
-
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+namespace Clavus;
+
 [PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class RocketHostApplicationExtensions
+public static class ClavusHostApplicationHelpers
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static async ValueTask<THost> Configure<T, THost>(
@@ -37,9 +37,6 @@ public static class RocketHostApplicationExtensions
            .AddIfMissing<IConfiguration>(builder.Configuration)
            .AddIfMissing(builder.Configuration.GetType(), builder.Configuration)
            .AddIfMissing(builder.Environment)
-           .AddIfMissing(nameof(builder.Environment.ApplicationName), builder.Environment.ApplicationName)
-           .AddIfMissing(nameof(builder.Environment.ContentRootPath), builder.Environment.ContentRootPath)
-           .AddIfMissing(nameof(builder.Environment.EnvironmentName), builder.Environment.EnvironmentName)
            .AddIfMissing(builder.Environment.GetType(), builder.Environment);
 
         var context = await ClavusContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);

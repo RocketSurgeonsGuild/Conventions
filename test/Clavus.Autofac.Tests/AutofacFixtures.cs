@@ -19,13 +19,11 @@ public static class AutofacFixtures
     public interface IOtherAbc4;
 
     [ExportClavusPart]
-    public class AbcConvention : IAutofacPart
+    public class AbcConvention : IAutofacPart, IServicePart
     {
-        public void Register(IClavusContext context, IServiceCollection services, ContainerBuilder container)
-        {
-            container.RegisterInstance(A.Fake<IAbc>());
-            services.AddSingleton(A.Fake<IAbc2>());
-        }
+        public void Register(IClavusContext context, ContainerBuilder builder) => builder.RegisterInstance(A.Fake<IAbc>());
+
+        public void Register(IClavusContext context, IServiceCollection services) => services.AddSingleton(A.Fake<IAbc2>());
     }
 
     [ExportClavusPart]

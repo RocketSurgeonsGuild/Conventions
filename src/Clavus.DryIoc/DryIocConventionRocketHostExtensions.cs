@@ -1,14 +1,13 @@
-using Autofac;
-using Clavus.Autofac;
-
+using DryIoc;
 // ReSharper disable once CheckNamespace
-namespace Clavus;
+
+namespace Clavus.DryIoc;
 
 /// <summary>
 ///     Class AutofacClavusHostHelpers.
 /// </summary>
 [PublicAPI]
-public static class AutofacConventionHostExtensions
+public static class DryIocConventionHostExtensions
 {
     /// <summary>
     ///     Uses Autofac.
@@ -16,15 +15,15 @@ public static class AutofacConventionHostExtensions
     /// <param name="builder">The builder.</param>
     /// <param name="containerBuilder">The container builder.</param>
     /// <returns>IConventionHostBuilder.</returns>
-    public static ClavusContextBuilder UseAutofac(this ClavusContextBuilder builder, ContainerBuilder? containerBuilder = null)
+    public static ClavusContextBuilder UseDryIoc(this ClavusContextBuilder builder, IContainer? containerBuilder = null)
     {
-        return builder.UseServiceProviderFactory<ContainerBuilder>(
+        return builder.UseServiceProviderFactory<IContainer>(
             async (context, services, ct) =>
             {
-                var c = containerBuilder ?? new ContainerBuilder();
+                var c = containerBuilder ?? new Container();
                 context.Set(services);
                 await c.ApplyPartsAsync(context, ct);
-                return new AutofacConventionServiceProviderFactory(c);
+                return new DryIocConventionServiceProviderFactory(context, c);
             }
         );
     }

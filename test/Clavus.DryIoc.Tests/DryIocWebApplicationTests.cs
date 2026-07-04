@@ -2,6 +2,7 @@ using Clavus.Infrastructure;
 using DryIoc;
 using FakeItEasy;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Rocket.Surgery.Extensions.Testing;
 using Serilog.Events;
 
@@ -18,13 +19,12 @@ public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
                                          rb => rb
                                               .UseDryIoc()
                                               .ConfigureDryIoc(
-                                                   (context, configuration, services, container) =>
+                                                   (context, container) =>
                                                    {
                                                        container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
-                                                       services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
-                                                       return container;
                                                    }
                                                )
+                                              .ConfigureServices((context, services) => services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>()))
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
@@ -43,14 +43,13 @@ public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
                                          rb => rb
                                               .UseDryIoc()
                                               .ConfigureDryIoc(
-                                                   (context, configuration, services, container) =>
+                                                   (context, container) =>
                                                    {
                                                        container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
-                                                       services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
                                                        container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
-                                                       return container;
                                                    }
                                                )
+                                              .ConfigureServices((context, services) => services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>()))
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
@@ -69,11 +68,10 @@ public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
                                          rb => rb
                                               .UseDryIoc()
                                               .ConfigureDryIoc(
-                                                   (context, configuration, services, container) =>
+                                                   (context, container) =>
                                                    {
                                                        container.RegisterInstance(A.Fake<DryIocFixtures.IAbc3>());
                                                        container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
-                                                       return container;
                                                    }
                                                )
                                      );
@@ -92,13 +90,12 @@ public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
                                          rb => rb
                                               .UseDryIoc()
                                               .ConfigureDryIoc(
-                                                   (context, configuration, services, container) =>
+                                                   (context, container) =>
                                                    {
                                                        container.RegisterInstance(A.Fake<DryIocFixtures.IAbc>());
-                                                       services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
-                                                       return container;
                                                    }
                                                )
+                                              .ConfigureServices((context, services) => services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>()))
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
@@ -119,14 +116,13 @@ public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
                                          rb => rb
                                               .UseDryIoc()
                                               .ConfigureDryIoc(
-                                                   (context, configuration, services, container) =>
+                                                   (context, container) =>
                                                    {
                                                        container.Use(A.Fake<DryIocFixtures.IAbc>());
-                                                       services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>());
                                                        container.Use(A.Fake<DryIocFixtures.IAbc4>());
-                                                       return container;
                                                    }
                                                )
+                                              .ConfigureServices((context, services) => services.AddSingleton(A.Fake<DryIocFixtures.IAbc2>()))
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
@@ -146,11 +142,10 @@ public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
                                          rb => rb
                                               .UseDryIoc()
                                               .ConfigureDryIoc(
-                                                   (context, configuration, services, container) =>
+                                                   (context, container) =>
                                                    {
                                                        container.RegisterInstance(A.Fake<DryIocFixtures.IAbc3>());
                                                        container.RegisterInstance(A.Fake<DryIocFixtures.IAbc4>());
-                                                       return container;
                                                    }
                                                )
                                      );
@@ -169,9 +164,6 @@ public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
                                     .ConfigureClavus(
                                          rb => rb
                                               .UseDryIoc()
-                                              .ConfigureDryIoc(
-                                                   (context, configuration, services, container) => container
-                                               )
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();
@@ -189,9 +181,6 @@ public class DryIocWebApplicationTests : AutoFakeTest<TestRecord>
                                     .ConfigureClavus(
                                          rb => rb
                                               .UseDryIoc()
-                                              .ConfigureDryIoc(
-                                                   (context, configuration, services, container) => container
-                                               )
                                      );
 
         var items = host.Services.GetRequiredService<IResolverContext>();

@@ -13,6 +13,6 @@
     <ItemGroup>
         <Compile Remove="Sdk/**" />
         <None Include="Sdk/**" Pack="true" PackagePath="Sdk/" />
-        <Using Remove="Clavus" />
+        <Using Remove="**" />
     </ItemGroup>
 </Project>

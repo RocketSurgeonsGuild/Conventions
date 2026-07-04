@@ -16,13 +16,13 @@ using Clavus.Infrastructure;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
 
-namespace {Namespace};
+namespace Clavus;
 
 /// <summary>
 ///  Extension methods for configuring Clavus on the {HostBuilderType} host builder.
 /// </summary>
-[System.CodeDom.Compiler.GeneratedCode("Clavus", "generated"), System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-public static class GeneratedClavusContextBuilderExtensions
+[System.CodeDom.Compiler.GeneratedCode("Clavus", "generated"), Microsoft.CodeAnalysis.EmbeddedAttribute, System.Runtime.CompilerServices.CompilerGenerated, System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+internal static class GeneratedClavusContextBuilderExtensions
 {
   extension(ClavusContextBuilder builder)
   {

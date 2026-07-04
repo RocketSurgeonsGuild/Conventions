@@ -39,6 +39,13 @@
       <_ClavusHostNamespace>%(ClavusHost.Namespace)</_ClavusHostNamespace>
       <_ClavusHostBuilderType>%(ClavusHost.HostBuilderType)</_ClavusHostBuilderType>
       <_ClavusHostBuilderName>%(ClavusHost.HostBuilderName)</_ClavusHostBuilderName>
+      <_ClavusHelperName>%(ClavusHost.HelperName)</_ClavusHelperName>
+      <_ClavusHelperName Condition="'$(_ClavusHelperName)' == ''">Clavus$(_ClavusHostName)Helpers</_ClavusHelperName>
+      <_ClavusBuildExpression>%(ClavusHost.BuildExpression)</_ClavusBuildExpression>
+      <_ClavusBuildExpression Condition="'$(_ClavusBuildExpression)' == ''">, static b => b.Build()</_ClavusBuildExpression>
+      <_ClavusHasBuildExpression>%(ClavusHost.HasBuildExpression)</_ClavusHasBuildExpression>
+      <_ClavusHasBuildExpression Condition="'$(_ClavusHasBuildExpression)' == ''">true</_ClavusHasBuildExpression>
+      <_ClavusBuildExpression Condition="'$(_ClavusHasBuildExpression)' != 'true'"></_ClavusBuildExpression>
       <_ClavusHostType>%(ClavusHost.HostType)</_ClavusHostType>
       <_ClavusHostContent>$([System.IO.File]::ReadAllText('$(_ClavusHostTemplateFile)'))</_ClavusHostContent>
       <_ClavusHostContent>$(_ClavusHostContent.Replace('{HostName}', '$(_ClavusHostName)'))</_ClavusHostContent>
@@ -46,6 +53,8 @@
       <_ClavusHostContent>$(_ClavusHostContent.Replace('{HostBuilderType}', '$(_ClavusHostBuilderType)'))</_ClavusHostContent>
       <_ClavusHostContent>$(_ClavusHostContent.Replace('{HostBuilderName}', '$(_ClavusHostBuilderName)'))</_ClavusHostContent>
       <_ClavusHostContent>$(_ClavusHostContent.Replace('{HostType}', '$(_ClavusHostType)'))</_ClavusHostContent>
+      <_ClavusHostContent>$(_ClavusHostContent.Replace('{HelperName}', '$(_ClavusHelperName)'))</_ClavusHostContent>
+      <_ClavusHostContent>$(_ClavusHostContent.Replace('{BuildExpression}', '$(_ClavusBuildExpression)'))</_ClavusHostContent>
       <_ClavusHostOutputFile>$(IntermediateOutputPath)ClavusHost.$(_ClavusHostName).g.cs</_ClavusHostOutputFile>
     </PropertyGroup>
     <WriteLinesToFile

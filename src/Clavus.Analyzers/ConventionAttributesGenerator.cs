@@ -16,6 +16,7 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        context.RegisterPostInitializationOutput(z => z.AddEmbeddedAttributeDefinition());
         var exportConfiguration = ClavusConfigurationData.Create(context, "ExportClavus", "ExportClavusParts", ClavusConfigurationData.ExportsDefaults);
 
         var exportedConventions = context

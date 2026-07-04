@@ -7,7 +7,7 @@
             <ItemGroup>
                 <ClavusHost
                     Include="WebAssembly"
-                    HostBuilderType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder"
+                    HostBuilderType="global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder"
                     HostBuilderName="builder"
                     HostType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost"
                 />
@@ -28,9 +28,10 @@
             <ItemGroup>
                 <ClavusHost
                     Include="WebApplication"
-                    HostBuilderType="Microsoft.AspNetCore.Builder.WebApplicationBuilder"
+                    HostBuilderType="global::Microsoft.AspNetCore.Builder.WebApplicationBuilder"
                     HostBuilderName="builder"
-                    HostType="Microsoft.AspNetCore.Builder.WebApplication"
+                    HostType="global::Microsoft.AspNetCore.Builder.WebApplication"
+                    HelperName="global::Clavus.ClavusHostApplicationHelpers"
                 />
                 <PackageReference
                     Include="Clavus.Hosting.Web"
@@ -48,10 +49,11 @@
             </PropertyGroup>
             <ItemGroup>
                 <ClavusHost
-                    Include="Application"
-                    HostBuilderType="Microsoft.Extensions.Hosting.HostApplicationBuilder"
+                    Include="HostApplication"
+                    HostBuilderType="global::Microsoft.Extensions.Hosting.HostApplicationBuilder"
                     HostBuilderName="builder"
-                    HostType="Microsoft.Extensions.Hosting.IHost"
+                    HostType="global::Microsoft.Extensions.Hosting.IHost"
+                    HelperName="global::Clavus.ClavusHostApplicationHelpers"
                 />
                 <PackageReference
                     Include="Clavus.Hosting"
@@ -70,9 +72,9 @@
             <ItemGroup>
                 <ClavusHost
                     Include="Maui"
-                    HostBuilderType="Microsoft.Maui.Hosting.MauiAppBuilder"
+                    HostBuilderType="global::Microsoft.Maui.Hosting.MauiAppBuilder"
                     HostBuilderName="builder"
-                    HostType="Microsoft.Maui.Hosting.MauiApp"
+                    HostType="global::Microsoft.Maui.Hosting.MauiApp"
                 />
                 <PackageReference
                     Include="Clavus.Hosting.Maui"
@@ -91,9 +93,9 @@
             <ItemGroup>
                 <ClavusHost
                     Include="Uno"
-                    HostBuilderType="Uno.UI.Hosting.IUnoPlatformHostBuilder"
+                    HostBuilderType="global::Uno.UI.Hosting.IUnoPlatformHostBuilder"
                     HostBuilderName="builder"
-                    HostType="Uno.UI.Hosting.UnoPlatformHost"
+                    HostType="global::Uno.UI.Hosting.UnoPlatformHost"
                 />
                 <PackageReference
                     Include="Clavus.Hosting.Uno"

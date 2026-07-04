@@ -20,7 +20,7 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
     [Test]
     public async Task ShouldBuildAProvider()
     {
-        var builder = ClavusContextBuilder.Create(_ => [], new Dictionary<object, object?>()).AppendConvention(new Contrib());
+        var builder = ClavusContextBuilder.Create(_ => [], new Dictionary<object, object?>()).AppendPart(new Contrib());
         var context = await ClavusContext.FromAsync(builder);
         context
            .Conventions
@@ -36,8 +36,8 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
         var contribution = A.Fake<IServicePart>();
         var contribution2 = A.Fake<IServicePart>();
 
-        scanner.PrependConvention(contribution);
-        scanner.AppendConvention(contribution2);
+        scanner.PrependPart(contribution);
+        scanner.AppendPart(contribution2);
 
         var context = await ClavusContext.FromAsync(scanner);
         context
@@ -72,8 +72,8 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
         var contribution = A.Fake<IServicePart>();
         var contribution2 = A.Fake<IServicePart>();
 
-        scanner.AppendConvention(contribution);
-        scanner.PrependConvention(contribution2);
+        scanner.AppendPart(contribution);
+        scanner.PrependPart(contribution2);
         scanner.ExceptConvention(typeof(Contrib));
 
         var context = await ClavusContext.FromAsync(scanner);
@@ -95,7 +95,7 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
 
         var contribution = A.Fake<IServicePart>();
 
-        scanner.PrependConvention(contribution);
+        scanner.PrependPart(contribution);
         scanner.ExceptConvention(typeof(ConventionScannerTests).GetTypeInfo().Assembly);
 
         var context = await ClavusContext.FromAsync(scanner);

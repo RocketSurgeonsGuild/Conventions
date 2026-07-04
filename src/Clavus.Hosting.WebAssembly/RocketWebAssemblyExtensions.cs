@@ -1,16 +1,18 @@
 using System.ComponentModel;
 using System.Reflection;
 using Clavus.Configuration;
+using Clavus.Hosting.WebAssembly;
 using Clavus.Infrastructure;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-namespace Clavus.Hosting.WebAssembly;
+namespace Clavus;
 
 [PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static class RocketWebAssemblyExtensions
+public static class ClavusWebAssemblyHelpers
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static async ValueTask<WebAssemblyHost> Configure(
@@ -42,9 +44,9 @@ public static class RocketWebAssemblyExtensions
         if (context.Get<ServiceProviderFactoryAdapter>() is { } factory)
             builder.ConfigureContainer(await factory(context, builder.Services, cancellationToken).ConfigureAwait(false));
 
-        await ApplyConventions(context, builder, contextBuilder, cancellationToken).ConfigureAwait(false);
+        await builder.ApplyPartsAsync(context, cancellationToken).ConfigureAwait(false);
         var host = buildHost(builder);
-        await context.ApplyHostCreatedPartsAsync(host, cancellationToken).ConfigureAwait(false);
+        await context.ApplyPartsAsync(cancellationToken).ConfigureAwait(false);
         return host;
     }
 
@@ -139,24 +141,5 @@ public static class RocketWebAssemblyExtensions
 
             return source;
         }
-    }
-
-    private static async Task<IClavusContext> ApplyConventions(
-        IClavusContext context,
-        WebAssemblyHostBuilder builder,
-        ClavusContextBuilder contextBuilder,
-        CancellationToken cancellationToken
-    )
-    {
-        await context
-             .RegisterConventions(
-                  e => e
-                      .AddHandler<IWebAssemblyHostingConvention>(convention => convention.Register(context, builder))
-                      .AddHandler<IWebAssemblyHostingAsyncConvention>(convention => convention.Register(context, builder, cancellationToken))
-                      .AddHandler<WebAssemblyHostingConvention>(convention => convention(context, builder))
-                      .AddHandler<WebAssemblyHostingAsyncConvention>(convention => convention(context, builder, cancellationToken))
-              )
-             .ConfigureAwait(false);
-        return context;
     }
 }

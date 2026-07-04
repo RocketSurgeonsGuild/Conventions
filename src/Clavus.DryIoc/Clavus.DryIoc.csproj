@@ -5,11 +5,7 @@
         <PackageTags>$(PackageTags);DryIoc</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ClavusPart Include="DryIoc"
-            Namespace="Clavus"
-            ProvideConfiguration="true"
-            ParameterType="DryIoc.IContainer"
-            ParameterName="container" />
+        <ClavusPart Include="DryIoc" Namespace="Clavus" ParameterType="global::DryIoc.IContainer" ParameterName="container" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Clavus\Clavus.csproj" />

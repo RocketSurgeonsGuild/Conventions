@@ -16,6 +16,13 @@
             OutputItemType="Analyzer"
             ReferenceOutputAssembly="false"
         />
+        <ClavusHost
+            Include="HostApplication"
+            HostBuilderType="global::Microsoft.Extensions.Hosting.HostApplicationBuilder"
+            HostBuilderName="builder"
+            HostType="global::Microsoft.Extensions.Hosting.IHost"
+            HelperName="global::Clavus.ClavusHostApplicationHelpers"
+        />
     </ItemGroup>
 
     <ItemGroup>

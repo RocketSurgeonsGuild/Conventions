@@ -12,7 +12,7 @@ using AppDelegate =
 
 namespace Clavus.Hosting;
 
-internal static partial class GeneratedRocketWebApplicationBuilderExtensions
+internal static partial class GeneratedClavusWebApplicationBuilderHelpers
 {
     /// <summary>
     ///     Configures the rocket Surgery.

@@ -98,9 +98,9 @@ public sealed class ClavusContextBuilder
     /// <param name="conventions">The conventions.</param>
     /// <returns>IConventionScanner.</returns>
     [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder AppendConvention(params IClavusPart[] conventions)
+    public ClavusContextBuilder AppendPart(params IClavusPart[] conventions)
     {
-        state.AppendConventions(conventions);
+        state.AppendParts(conventions);
         return this;
     }
 
@@ -109,9 +109,9 @@ public sealed class ClavusContextBuilder
     /// </summary>
     /// <param name="conventions">The conventions.</param>
     /// <returns>IConventionScanner.</returns>
-    public ClavusContextBuilder AppendConvention(params IEnumerable<IClavusPart> conventions)
+    public ClavusContextBuilder AppendPart(params IEnumerable<IClavusPart> conventions)
     {
-        state.AppendConventions(conventions);
+        state.AppendParts(conventions);
         return this;
     }
 
@@ -121,9 +121,9 @@ public sealed class ClavusContextBuilder
     /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
     [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder AppendConvention(params Type[] conventions)
+    public ClavusContextBuilder AppendPart(params Type[] conventions)
     {
-        state.AppendConventions(conventions);
+        state.AppendParts(conventions);
         return this;
     }
 
@@ -132,9 +132,9 @@ public sealed class ClavusContextBuilder
     /// </summary>
     /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder AppendConvention(params IEnumerable<Type> conventions)
+    public ClavusContextBuilder AppendPart(params IEnumerable<Type> conventions)
     {
-        state.AppendConventions(conventions);
+        state.AppendParts(conventions);
         return this;
     }
 
@@ -142,10 +142,10 @@ public sealed class ClavusContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder AppendConvention<T>()
+    public ClavusContextBuilder AppendPart<T>()
         where T : IClavusPart
     {
-        state.AppendConventions(typeof(T));
+        state.AppendParts(typeof(T));
         return this;
     }
 
@@ -155,9 +155,9 @@ public sealed class ClavusContextBuilder
     /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
     [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder PrependConvention(params IClavusPart[] conventions)
+    public ClavusContextBuilder PrependPart(params IClavusPart[] conventions)
     {
-        state.PrependConventions(conventions);
+        state.PrependParts(conventions);
         return this;
     }
 
@@ -166,9 +166,9 @@ public sealed class ClavusContextBuilder
     /// </summary>
     /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder PrependConvention(params IEnumerable<IClavusPart> conventions)
+    public ClavusContextBuilder PrependPart(params IEnumerable<IClavusPart> conventions)
     {
-        state.PrependConventions(conventions);
+        state.PrependParts(conventions);
         return this;
     }
 
@@ -178,9 +178,9 @@ public sealed class ClavusContextBuilder
     /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
     [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder PrependConvention(params Type[] conventions)
+    public ClavusContextBuilder PrependPart(params Type[] conventions)
     {
-        state.PrependConventions(conventions);
+        state.PrependParts(conventions);
         return this;
     }
 
@@ -189,9 +189,9 @@ public sealed class ClavusContextBuilder
     /// </summary>
     /// <param name="conventions">The conventions.</param>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder PrependConvention(params IEnumerable<Type> conventions)
+    public ClavusContextBuilder PrependPart(params IEnumerable<Type> conventions)
     {
-        state.PrependConventions(conventions);
+        state.PrependParts(conventions);
         return this;
     }
 
@@ -199,10 +199,10 @@ public sealed class ClavusContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder PrependConvention<T>()
+    public ClavusContextBuilder PrependPart<T>()
         where T : IClavusPart
     {
-        state.PrependConventions(typeof(T));
+        state.PrependParts(typeof(T));
         return this;
     }
 
@@ -215,7 +215,7 @@ public sealed class ClavusContextBuilder
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
     public ClavusContextBuilder AppendDelegate(Delegate @delegate, int? priority, ClavusCategory? category)
     {
-        state.AppendConventions(new ClavusOrDelegate(@delegate, priority ?? 0, category));
+        state.AppendParts(new ClavusOrDelegate(@delegate, priority ?? 0, category));
         return this;
     }
 
@@ -228,7 +228,7 @@ public sealed class ClavusContextBuilder
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
     public ClavusContextBuilder PrependDelegate(Delegate @delegate, int? priority, ClavusCategory? category)
     {
-        state.PrependConventions(new ClavusOrDelegate(@delegate, priority ?? 0, category));
+        state.PrependParts(new ClavusOrDelegate(@delegate, priority ?? 0, category));
         return this;
     }
 

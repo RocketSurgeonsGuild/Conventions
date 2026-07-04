@@ -8,4 +8,20 @@
         <ProjectReference Include="..\..\src\Clavus.Aspire\Clavus.Aspire.csproj" />
         <ProjectReference Include="..\..\src\Clavus.Aspire.Testing\Clavus.Aspire.Testing.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <ClavusHost
+            Include="DistributedApplication"
+            HostBuilderType="global::Aspire.Hosting.IDistributedApplicationBuilder"
+            HostBuilderName="builder"
+            HostType="global::Aspire.Hosting.DistributedApplication"
+            HasBuildExpression="false"
+        />
+        <ClavusHost
+            Include="DistributedApplicationTesting"
+            HostBuilderType="global::Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder"
+            HostBuilderName="builder"
+            HostType="global::Aspire.Hosting.DistributedApplication"
+            HasBuildExpression="false"
+        />
+    </ItemGroup>
 </Project>

@@ -27,9 +27,9 @@ public class CommandLineBuilderTests() : AutoFakeTest<TestRecord>(TestRecord.Cre
     {
         var builder = ClavusContextBuilder.Create(_ => []);
 
-        var a = () => builder.PrependConvention(A.Fake<ICommandLineConvention>());
+        var a = () => builder.PrependPart(A.Fake<ICommandLineConvention>());
         a.ShouldNotThrow();
-        a = () => builder.AppendConvention(A.Fake<ICommandLineConvention>());
+        a = () => builder.AppendPart(A.Fake<ICommandLineConvention>());
         a.ShouldNotThrow();
         a = () => builder.PrependDelegate(new ServicePart((context, services) => { }), null, null);
         a.ShouldNotThrow();

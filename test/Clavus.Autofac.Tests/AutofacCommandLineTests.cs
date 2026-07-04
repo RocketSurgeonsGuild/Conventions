@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Autofac;
 using FakeItEasy;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocket.Surgery.Extensions.Testing;
 using static Clavus.Autofac.Tests.AutofacFixtures;
@@ -17,13 +18,8 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                            .ConfigureClavus(
                                 rb => rb
                                      .UseAutofac()
-                                     .ConfigureAutofac(
-                                          (context, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                          }
-                                      )
+                                     .ConfigureAutofac((context, container) => container.RegisterInstance(A.Fake<IAbc>()))
+                                     .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
 
         var items = builder.GetLifetimeScope();
@@ -41,14 +37,13 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                            .ConfigureClavus(
                                 rb => rb
                                      .UseAutofac()
-                                     .ConfigureAutofac(
-                                          (context, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                              container.RegisterInstance(A.Fake<IAbc4>());
-                                          }
+                                     .ConfigureAutofac((context, container) =>
+                                                       {
+                                                           container.RegisterInstance(A.Fake<IAbc>());
+                                                           container.RegisterInstance(A.Fake<IAbc4>());
+                                                       }
                                       )
+                                     .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
 
         var items = builder.GetLifetimeScope();
@@ -67,7 +62,7 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseAutofac()
                                      .ConfigureAutofac(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc3>());
                                               container.RegisterInstance(A.Fake<IAbc4>());
@@ -89,12 +84,9 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseAutofac()
                                      .ConfigureAutofac(
-                                          (context, configuration, services, container) =>
-                                          {
-                                              container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
-                                          }
+                                          (context, container) => container.RegisterInstance(A.Fake<IAbc>())
                                       )
+                                     .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
 
         var items = builder.GetLifetimeScope();
@@ -115,13 +107,13 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseAutofac()
                                      .ConfigureAutofac(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc>());
-                                              services.AddSingleton(A.Fake<IAbc2>());
                                               container.RegisterInstance(A.Fake<IAbc4>());
                                           }
                                       )
+                                        .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
 
         var items = builder.GetLifetimeScope();
@@ -141,7 +133,7 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                                 rb => rb
                                      .UseAutofac()
                                      .ConfigureAutofac(
-                                          (context, configuration, services, container) =>
+                                          (context, container) =>
                                           {
                                               container.RegisterInstance(A.Fake<IAbc3>());
                                               container.RegisterInstance(A.Fake<IAbc4>());

@@ -6,7 +6,23 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <ProjectReference Include="..\..\src\Clavus.DryIoc\Clavus.DryIoc.csproj" />
+        <ProjectReference Include="..\..\src\Clavus\Clavus.csproj" />
         <ProjectReference Include="..\..\src\Clavus.CommandLine\Clavus.CommandLine.csproj" />
         <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
+
+        <ClavusHost
+            Include="HostApplication"
+            HostBuilderType="global::Microsoft.Extensions.Hosting.HostApplicationBuilder"
+            HostBuilderName="builder"
+            HostType="global::Microsoft.Extensions.Hosting.IHost"
+            HelperName="global::Clavus.ClavusHostApplicationHelpers"
+        />
+        <ClavusHost
+            Include="WebApplication"
+            HostBuilderType="global::Microsoft.AspNetCore.Builder.WebApplicationBuilder"
+            HostBuilderName="builder"
+            HostType="global::Microsoft.AspNetCore.Builder.WebApplication"
+            HelperName="global::Clavus.ClavusHostApplicationHelpers"
+        />
     </ItemGroup>
 </Project>

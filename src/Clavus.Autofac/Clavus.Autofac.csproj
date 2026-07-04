@@ -5,11 +5,7 @@
         <PackageTags>$(PackageTags);autofac</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ClavusPart Include="Autofac"
-            Namespace="Clavus"
-            ProvideServices="true"
-            ParameterType="Autofac.ContainerBuilder"
-            ParameterName="builder" />
+        <ClavusPart Include="Autofac" Namespace="Clavus" ParameterType="global::Autofac.ContainerBuilder" ParameterName="builder" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Clavus\Clavus.csproj" />

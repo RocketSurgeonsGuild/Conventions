@@ -9,6 +9,22 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
+        <ClavusPart
+            Include="HostApplication"
+            GenericParameter="TBuilder"
+            GenericConstraint="global::Microsoft.Extensions.Hosting.IHostApplicationBuilder"
+            ParameterType="TBuilder"
+            ParameterName="builder"
+        />
+        <ClavusPart
+            Include="Host"
+            GenericParameter="THost"
+            GenericConstraint="global::Microsoft.Extensions.Hosting.IHost"
+            ParameterType="THost"
+            ParameterName="host"
+        />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\Clavus\Clavus.csproj" />
     </ItemGroup>
     <ItemGroup>

@@ -5,10 +5,7 @@
         <PackageTags>$(PackageTags);Serilog</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ClavusPart Include="Serilog"
-            Namespace="Clavus"
-            ParameterType="Serilog.LoggerConfiguration"
-            ParameterName="loggerConfiguration" />
+        <ClavusPart Include="Serilog" Namespace="Clavus" ParameterType="global::Serilog.LoggerConfiguration" ParameterName="loggerConfiguration" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Serilog" />

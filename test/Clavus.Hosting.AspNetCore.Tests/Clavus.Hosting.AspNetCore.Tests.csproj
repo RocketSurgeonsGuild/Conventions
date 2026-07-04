@@ -9,5 +9,12 @@
         <ProjectReference Include="..\..\src\Clavus.Configuration.Yaml\Clavus.Configuration.Yaml.csproj" />
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+        <ClavusHost
+            Include="WebApplication"
+            HostBuilderType="global::Microsoft.AspNetCore.Builder.WebApplicationBuilder"
+            HostBuilderName="builder"
+            HostType="global::Microsoft.AspNetCore.Builder.WebApplication"
+            HelperName="global::Clavus.ClavusHostApplicationHelpers"
+        />
     </ItemGroup>
 </Project>

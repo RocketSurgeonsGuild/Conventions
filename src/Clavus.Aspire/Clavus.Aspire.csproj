@@ -9,16 +9,12 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Clavus\Clavus.csproj" />
-    </ItemGroup>
-    <ItemGroup>
         <InternalsVisibleTo Include="Aspire.Hosting.Tests" />
         <PackageReference Include="Aspire.Hosting" />
     </ItemGroup>
-  <ItemGroup>
-    <ClavusPart Include="DistributedApplication"
-                Namespace="Clavus"
-                ParameterType="Aspire.Hosting.IDistributedApplicationBuilder"
-                ParameterName="builder" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Clavus\Clavus.csproj" />
+        <ClavusPart Include="DistributedApplicationBuilder" ParameterType="global::Aspire.Hosting.IDistributedApplicationBuilder" ParameterName="builder" />
+        <ClavusPart Include="DistributedApplication" ParameterType="global::Aspire.Hosting.DistributedApplication" ParameterName="host" />
+    </ItemGroup>
 </Project>

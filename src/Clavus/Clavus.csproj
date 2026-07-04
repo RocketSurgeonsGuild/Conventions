@@ -50,7 +50,7 @@
     <ItemGroup>
         <ClavusPart Include="Setup" />
         <ClavusPart Include="Service" ProvideServices="true" BuilderMethodName="ConfigureServices" />
-        <ClavusPart Include="Configuration" ParameterType="Microsoft.Extensions.Configuration.IConfigurationBuilder" ParameterName="builder" />
-        <ClavusPart Include="Logging" ParameterType="Microsoft.Extensions.Logging.ILoggingBuilder" ParameterName="builder" />
+        <ClavusPart Include="Configuration" ParameterType="global::Microsoft.Extensions.Configuration.IConfigurationBuilder" ParameterName="builder" />
+        <ClavusPart Include="Logging" ParameterType="global::Microsoft.Extensions.Logging.ILoggingBuilder" ParameterName="builder" />
     </ItemGroup>
 </Project>

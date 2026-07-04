@@ -13,5 +13,12 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\src\Clavus.Analyzers\Clavus.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ClavusHost
+            Include="HostApplication"
+            Namespace="Clavus.Hosting"
+            HostBuilderType="Microsoft.Extensions.Hosting.HostApplicationBuilder"
+            HostBuilderName="builder"
+            HostType="Microsoft.Extensions.Hosting.IHost"
+        />
     </ItemGroup>
 </Project>

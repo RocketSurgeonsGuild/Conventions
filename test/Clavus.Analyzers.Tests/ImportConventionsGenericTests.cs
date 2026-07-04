@@ -4,10 +4,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
-using Clavus.Aspire;
-using Clavus.Aspire.Testing;
-using Clavus.Hosting;
-using Clavus.Hosting.WebAssembly;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -236,16 +232,16 @@ using Clavus;
 
     public static IEnumerable<object[]> Should_Generate_Static_Assembly_Methods_For_Runnable_Projects_Data()
     {
-        yield return [ImmutableArray.CreateRange([typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder)])];
-        yield return [ImmutableArray.CreateRange([typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder)])];
-        yield return [ImmutableArray.CreateRange([typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder)])];
-        yield return [ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder)])];
-        yield return [ImmutableArray.CreateRange([typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(ClavusDistributedApplicationHelpers), typeof(IDistributedApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(ClavusDistributedApplicationTestingHelpers), typeof(IDistributedApplicationTestingBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(ClavusWebAssemblyHelpers), typeof(WebAssemblyHostBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(ClavusHostApplicationHelpers), typeof(HostApplicationBuilder)])];
+        yield return [ImmutableArray.CreateRange([typeof(ClavusHostApplicationHelpers), typeof(WebApplicationBuilder)])];
         yield return
         [
             ImmutableArray.CreateRange(
                 [
-                    typeof(RocketDistributedApplicationExtensions), typeof(IDistributedApplicationBuilder),
+                    typeof(ClavusDistributedApplicationHelpers), typeof(IDistributedApplicationBuilder),
                     typeof(ILogger),
                     typeof(ClavusContext),
                 ]
@@ -255,7 +251,7 @@ using Clavus;
         [
             ImmutableArray.CreateRange(
                 [
-                    typeof(RocketDistributedApplicationTestingExtensions), typeof(IDistributedApplicationTestingBuilder),
+                    typeof(ClavusDistributedApplicationTestingHelpers), typeof(IDistributedApplicationTestingBuilder),
                     typeof(ILogger),
                     typeof(ClavusContext),
                 ]
@@ -265,7 +261,7 @@ using Clavus;
         [
             ImmutableArray.CreateRange(
                 [
-                    typeof(RocketWebAssemblyExtensions), typeof(WebAssemblyHostBuilder),
+                    typeof(ClavusWebAssemblyHelpers), typeof(WebAssemblyHostBuilder),
                     typeof(ILogger),
                     typeof(ClavusContext),
                 ]
@@ -275,7 +271,7 @@ using Clavus;
         [
             ImmutableArray.CreateRange(
                 [
-                    typeof(RocketHostApplicationExtensions), typeof(HostApplicationBuilder),
+                    typeof(ClavusHostApplicationHelpers), typeof(HostApplicationBuilder),
                     typeof(ILogger),
                     typeof(ClavusContext),
                 ]
@@ -285,7 +281,7 @@ using Clavus;
         [
             ImmutableArray.CreateRange(
                 [
-                    typeof(RocketHostApplicationExtensions), typeof(WebApplicationBuilder),
+                    typeof(ClavusHostApplicationHelpers), typeof(WebApplicationBuilder),
                     typeof(ILogger),
                     typeof(ClavusContext),
                 ]

@@ -1,6 +1,5 @@
 using DryIoc;
 using FakeItEasy;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Clavus.DryIoc.Tests;
@@ -20,14 +19,11 @@ public static class DryIocFixtures
     public interface IOtherAbc4;
 
     [ExportClavusPart]
-    public class AbcConvention : IDryIocConvention
+    public class AbcConvention : IDryIocPart, IServicePart
     {
-        public IContainer Register(IClavusContext context, IConfiguration configuration, IServiceCollection services, IContainer container)
-        {
-            container.RegisterInstance(A.Fake<IAbc>());
-            services.AddSingleton(A.Fake<IAbc2>());
-            return container;
-        }
+        public void Register(IClavusContext context, IContainer container) => container.RegisterInstance(A.Fake<IAbc>());
+
+        public void Register(IClavusContext context, IServiceCollection services) => services.AddSingleton(A.Fake<IAbc2>());
     }
 
     [ExportClavusPart]

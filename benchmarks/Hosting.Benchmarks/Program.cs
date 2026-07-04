@@ -3,7 +3,9 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
+using Clavus.Hosting;
 using Hosting.Benchmarks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -92,3 +94,26 @@ namespace Hosting.Benchmarks
         }
     }
 }
+
+[ExportClavusPart]
+internal class Services : IServicePart
+{
+    public void Register(IClavusContext context, IServiceCollection services) => services.AddSingleton(new Item("Test", 1));
+}
+
+[ExportClavusPart]
+internal class Services2 : IServicePart
+{
+    public void Register(IClavusContext context, IServiceCollection services) => services.AddSingleton(new Item("Test2", 1));
+}
+
+[ExportClavusPart]
+internal class Configuration : IConfigurationPart
+{
+    public void Register(IClavusContext context, IConfigurationBuilder builder) => builder.AddInMemoryCollection(new Dictionary<string, string?>
+    {
+        ["Test"] = "1"
+    });
+}
+
+internal record Item(string Name, int Value);

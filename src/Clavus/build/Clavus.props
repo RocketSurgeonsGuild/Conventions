@@ -1,2 +1,5 @@
 <Project>
+  <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">
+    <Using Include="Clavus" />
+  </ItemGroup>
 </Project>

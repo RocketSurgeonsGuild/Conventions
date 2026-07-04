@@ -1,5 +1,6 @@
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
+using Clavus.Aspire.Testing;
 using FakeItEasy;
 using Microsoft.Extensions.Hosting;
 using Projects;
@@ -23,10 +24,10 @@ public partial class RocketDistributedApplicationTestingBuilderTests
     [Test]
     public async Task Should_ConfigureHosting()
     {
-        var convention = A.Fake<DistributedApplicationTestingConvention>();
+        var convention = A.Fake<DistributedApplicationTestingPart>();
         await using var host = await DistributedApplicationTestingBuilder
                                     .CreateAsync<AspireSample>()
-                                    .ConfigureClavus(rb => rb.ConfigureDistributedTestingApplication(convention));
+                                    .ConfigureClavus(rb => rb.ConfigureDistributedApplicationTesting(convention));
 
         A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IDistributedApplicationTestingBuilder>._)).MustHaveHappened();
     }

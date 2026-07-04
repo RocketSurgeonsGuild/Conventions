@@ -10,15 +10,17 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Clavus\Clavus.csproj" />
+        <ProjectReference Include="..\Clavus.Aspire\Clavus.Aspire.csproj" />
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="Aspire.Hosting.Tests" />
         <PackageReference Include="Aspire.Hosting.Testing" />
     </ItemGroup>
-  <ItemGroup>
-    <ClavusPart Include="DistributedApplicationTesting"
-                Namespace="Clavus"
-                ParameterType="Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder"
-                ParameterName="builder" />
-  </ItemGroup>
+    <ItemGroup>
+        <ClavusPart
+            Include="DistributedApplicationTesting"
+            ParameterType="global::Aspire.Hosting.Testing.IDistributedApplicationTestingBuilder"
+            ParameterName="builder"
+        />
+    </ItemGroup>
 </Project>

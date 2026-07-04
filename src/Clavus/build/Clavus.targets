@@ -20,8 +20,6 @@
         <CompilerVisibleProperty Include="ExportClavusMethodName" />
 
         <CompilerVisibleProperty Include="IsTestProject" />
-
-        <Using Include="Clavus" />
     </ItemGroup>
 
     <!-- ClavusPart item metadata schema -->
@@ -33,6 +31,9 @@
             <ParameterType></ParameterType>
             <ParameterName></ParameterName>
             <BuilderMethodName></BuilderMethodName>
+            <GenericParameter></GenericParameter>
+            <GenericConstraint></GenericConstraint>
+            <GenericVariance></GenericVariance>
         </ClavusPart>
     </ItemDefinitionGroup>
 
@@ -43,6 +44,9 @@
             <HostBuilderType></HostBuilderType>
             <HostBuilderName></HostBuilderName>
             <HostType></HostType>
+            <HelperName></HelperName>
+            <HasBuildExpression></HasBuildExpression>
+            <BuildExpression></BuildExpression>
         </ClavusHost>
     </ItemDefinitionGroup>
     <Import Project="$(MSBuildThisFileDirectory)Clavus.Parts.targets" Condition="'$(_ClavusPartsTargetsImported)' != 'true'" />

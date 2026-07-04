@@ -11,16 +11,18 @@
         <ProjectReference Include="..\..\src\Clavus.Hosting\Clavus.Hosting.csproj" />
 
         <ClavusHost
-            Include="Application"
-            HostBuilderType="Microsoft.Extensions.Hosting.HostApplicationBuilder"
+            Include="HostApplication"
+            HostBuilderType="global::Microsoft.Extensions.Hosting.HostApplicationBuilder"
             HostBuilderName="builder"
-            HostType="Microsoft.Extensions.Hosting.IHost"
+            HostType="global::Microsoft.Extensions.Hosting.IHost"
+            HelperName="global::Clavus.ClavusHostApplicationHelpers"
         />
         <ClavusHost
             Include="WebApplication"
-            HostBuilderType="Microsoft.AspNetCore.Builder.WebApplicationBuilder"
+            HostBuilderType="global::Microsoft.AspNetCore.Builder.WebApplicationBuilder"
             HostBuilderName="builder"
-            HostType="Microsoft.AspNetCore.Builder.WebApplication"
+            HostType="global::Microsoft.AspNetCore.Builder.WebApplication"
+            HelperName="global::Clavus.ClavusHostApplicationHelpers"
         />
     </ItemGroup>
 </Project>

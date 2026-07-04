@@ -9,6 +9,13 @@
             ReferenceOutputAssembly="false"
         />
         <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
+        <ClavusHost
+            Include="HostApplication"
+            HostBuilderType="global::Microsoft.Extensions.Hosting.HostApplicationBuilder"
+            HostBuilderName="builder"
+            HostType="global::Microsoft.Extensions.Hosting.IHost"
+            HelperName="global::Clavus.ClavusHostApplicationHelpers"
+        />
     </ItemGroup>
 
     <PropertyGroup>

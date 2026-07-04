@@ -4,5 +4,6 @@
     <PropertyGroup>
         <IsPackable>false</IsPackable>
         <NoWarn>$(NoWarn);CA1050</NoWarn>
+        <ImportClavusAssembly>true</ImportClavusAssembly>
     </PropertyGroup>
 </Project>
