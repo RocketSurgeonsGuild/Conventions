@@ -1,0 +1,19 @@
+﻿[
+  {
+    Type: ServicePart,
+    Target: GenericTypedClavusProviderTests.<>c,
+    Method: Void Should_Exclude_Unit_Test_Conventions(Clavus.IClavusContext, Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  },
+  {},
+  {
+    Type: ServicePart,
+    Target: GenericTypedClavusProviderTests.<>c,
+    Method: Void Should_Exclude_Unit_Test_Conventions(Clavus.IClavusContext, Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  },
+  {
+    Type: ServicePart,
+    Target: GenericTypedClavusProviderTests.<>c,
+    Method: Void Should_Exclude_Unit_Test_Conventions(Clavus.IClavusContext, Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  },
+  {}
+]

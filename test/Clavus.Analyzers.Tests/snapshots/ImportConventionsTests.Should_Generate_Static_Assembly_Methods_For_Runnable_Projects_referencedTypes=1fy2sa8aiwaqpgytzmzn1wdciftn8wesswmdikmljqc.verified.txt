@@ -1,0 +1,24 @@
+﻿{
+  FinalDiagnostics: [],
+  GeneratorDiagnostics: {
+    Clavus.ClavusAttributesGenerator: []
+  },
+  References: [
+    <in-memory assembly>,
+    <in-memory assembly>,
+    <in-memory assembly>,
+    Clavus.dll,
+    Clavus.Hosting.WebAssembly.dll,
+    FluentValidation.dll,
+    Microsoft.AspNetCore.Components.WebAssembly.dll,
+    Microsoft.Extensions.Configuration.Abstractions.dll,
+    Microsoft.Extensions.DependencyInjection.Abstractions.dll,
+    mscorlib.dll,
+    netstandard.dll,
+    System.ComponentModel.dll,
+    System.Core.dll,
+    System.dll,
+    System.Private.CoreLib.dll,
+    System.Runtime.dll
+  ]
+}

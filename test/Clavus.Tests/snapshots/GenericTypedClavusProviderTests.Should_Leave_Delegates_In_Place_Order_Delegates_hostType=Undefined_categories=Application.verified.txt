@@ -1,0 +1,8 @@
+﻿[
+  {
+    Type: ServicePart,
+    Target: GenericTypedClavusProviderTests.<>c,
+    Method: Void Should_Leave_Delegates_In_Place_Order_Delegates(Clavus.IClavusContext, Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  },
+  {}
+]
