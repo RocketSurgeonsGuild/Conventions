@@ -17,6 +17,19 @@ public interface IClavusPart
     ///     convention using int.MinValue.
     /// </summary>
     int Priority => 0;
+
+    /// <summary>
+    ///    The value comparer for this category
+    /// </summary>
+    internal static IEqualityComparer<IClavusPart> ValueComparer { get; } = new ValueEqualityComparer();
+
+    private sealed class ValueEqualityComparer : IEqualityComparer<IClavusPart>
+    {
+        public bool Equals(IClavusPart? x, IClavusPart? y) => ReferenceEquals(x, y) || ( x is { } && y is { } && x.GetType() == y.GetType() );
+
+        public int GetHashCode(IClavusPart obj) => obj.GetType().GetHashCode();
+    }
+
 }
 
 #pragma warning restore CA1040

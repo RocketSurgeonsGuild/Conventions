@@ -13,7 +13,7 @@ public interface IClavusPartMetadata
     /// <summary>
     ///     The dependencies
     /// </summary>
-    IEnumerable<IClavusDependency> Dependencies { get; }
+    IReadOnlyCollection<IClavusDependency> Dependencies { get; }
 
     /// <summary>
     ///     The host type of the convention
@@ -24,4 +24,16 @@ public interface IClavusPartMetadata
     ///     The category of the convention
     /// </summary>
     ClavusCategory Category { get; }
+
+    /// <summary>
+    ///    The value comparer for this category
+    /// </summary>
+    internal static IEqualityComparer<IClavusPartMetadata> ValueComparer { get; } = new ValueEqualityComparer();
+
+    private sealed class ValueEqualityComparer : IEqualityComparer<IClavusPartMetadata>
+    {
+        public bool Equals(IClavusPartMetadata? x, IClavusPartMetadata? y) => ReferenceEquals(x?.Convention, y?.Convention) || ( x is { } && y is { } && x.Convention.GetType() == y.Convention.GetType() );
+
+        public int GetHashCode(IClavusPartMetadata obj) => obj.Convention.GetType().GetHashCode();
+    }
 }

@@ -1,0 +1,7 @@
+<Project>
+  <ItemGroup>
+    <Reference Include="Clavus" Condition="'$(TargetFrameworkVersion)' == 'net10.0'">
+      <HintPath>$(MSBuildThisFileDirectory)..\lib\$(ClavusConfiguration)\Clavus.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

@@ -40,7 +40,7 @@ public class ClavusContextTests
         var convention = A.Fake<IServicePart>();
         contextBuilder.PrependPart(convention);
         var conventions = await ClavusContext.FromAsync(contextBuilder);
-        conventions.Conventions.GetAll().ShouldContain(convention);
+        conventions.Parts.GetAll().ShouldContain(convention);
     }
 
     [Test]

@@ -32,6 +32,7 @@
         <NuGetAuditLevel>moderate</NuGetAuditLevel>
         <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <ClavusConfiguration>$(Configuration)</ClavusConfiguration>
     </PropertyGroup>
     <ItemGroup>
         <None

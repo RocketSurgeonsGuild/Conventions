@@ -6,6 +6,7 @@
 //------------------------------------------------------------------------------
 #nullable enable
 #pragma warning disable CA1002, CA1034, CA1040, CA1822, CS0105, CS1573, CS8618, CS8669
+using Clavus.Infrastructure;
 
 namespace {Namespace};
 
@@ -19,7 +20,7 @@ public interface I{PartName}Part{GenericParam} : global::Clavus.IClavusPart {Gen
 {
     /// <summary>
     ///     Register the {PartName} part.
-    /// </summary>
+/// </summary>
     void Register({SyncParams});
 }
 
@@ -37,7 +38,7 @@ public delegate void {PartName}Part{GenericParam}({SyncParams}) {GenericConstrai
 [global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
 public interface I{PartName}AsyncPart{GenericParam} : global::Clavus.IClavusPart {GenericConstraint}
 {
-    /// <summary>
+/// <summary>
     ///     Register the {PartName} part asynchronously.
     /// </summary>
     global::System.Threading.Tasks.ValueTask Register({AsyncParams});
@@ -68,12 +69,22 @@ public static class {PartName}PartExtensions
                   e => e
                       .AddHandler<I{PartName}Part{GenericArg}>(part => part.Register({SyncArgs}))
                       .AddHandler<I{PartName}AsyncPart{GenericArg}>(part => part.Register({AsyncArgs}))
-                      .AddHandler<{PartName}Part{GenericArg}>(part => part({SyncArgs}))
-                      .AddHandler<{PartName}AsyncPart{GenericArg}>(part => part({AsyncArgs}))
               )
              .ConfigureAwait(false);
         return {SubjectName};
     }
+}
+
+file class Private{PartName}Part{GenericArg}({PartName}Part{GenericArg} fromDelegate, int priority) : I{PartName}Part{GenericArg} {GenericConstraint}
+{
+    public void Register({SyncParams}) => fromDelegate({SyncArgs});
+    int IClavusPart.Priority => priority;
+}
+
+file class Private{PartName}AsyncPart{GenericArg}({PartName}AsyncPart{GenericArg} fromDelegate, int priority) : I{PartName}AsyncPart{GenericArg} {GenericConstraint}
+{
+    public ValueTask Register({AsyncParams}) => fromDelegate({AsyncArgs});
+    int IClavusPart.Priority => priority;
 }
 
 /// <summary>
@@ -82,83 +93,37 @@ public static class {PartName}PartExtensions
 [global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
 public static class {PartName}HostBuilderExtensions
 {
-    /// <summary>
-    ///     Configure the {PartName} delegate to the convention scanner.
-    /// </summary>
     /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
-        this global::Clavus.ClavusContextBuilder container,
-        {PartName}Part{GenericArg} @delegate,
-        int priority = 0,
-        global::Clavus.ClavusCategory? category = null
-    ) {GenericConstraint}
+    extension(ClavusContextBuilder container)
     {
-        global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority, category ?? global::Clavus.ClavusCategory.Core);
-        return container;
-    }
+        /// <summary>
+        ///     Configure the {PartName} delegate to the convention scanner.
+        /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <param name="priority">The priority.</param>
+        /// <param name="category">The category.</param>
+        /// <param name="hostType">The host type.</param>
+        /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
+        global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}({PartName}Part{GenericArg} @delegate, int priority = 0, ClavusCategory? category = null, HostType hostType = HostType.Undefined)
+        {
+            ArgumentNullException.ThrowIfNull(container);
+            container.AppendPart(new ClavusPartMetadata(new Private{PartName}Part{GenericArg}(@delegate, priority), hostType, category ?? ClavusCategory.Core));
+            return container;
+        }
 
-    /// <summary>
-    ///     Configure the {PartName} delegate to the convention scanner.
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
-        this global::Clavus.ClavusContextBuilder container,
-        {PartName}AsyncPart{GenericArg} @delegate,
-        int priority = 0,
-        global::Clavus.ClavusCategory? category = null
-    ) {GenericConstraint}
-    {
-        global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(@delegate, priority, category ?? global::Clavus.ClavusCategory.Core);
-        return container;
-    }
-
-    /// <summary>
-    ///     Configure the {PartName} delegate to the convention scanner.
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
-        this global::Clavus.ClavusContextBuilder container,
-        global::System.Action<{SubjectType}> @delegate,
-        int priority = 0,
-        global::Clavus.ClavusCategory? category = null
-    ) {GenericConstraint}
-    {
-        global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new {PartName}Part{GenericArg}(({BuilderPlainParamNames}) => @delegate({SubjectName})), priority, category ?? global::Clavus.ClavusCategory.Core);
-        return container;
-    }
-
-    /// <summary>
-    ///     Configure the {PartName} delegate to the convention scanner.
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-    public static global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}(
-        this global::Clavus.ClavusContextBuilder container,
-        global::System.Func<{SubjectType}, global::System.Threading.CancellationToken, global::System.Threading.Tasks.ValueTask> @delegate,
-        int priority = 0,
-        global::Clavus.ClavusCategory? category = null
-    ) {GenericConstraint}
-    {
-        global::System.ArgumentNullException.ThrowIfNull(container);
-        container.AppendDelegate(new {PartName}AsyncPart{GenericArg}(({BuilderPlainAsyncParamNames}) => @delegate({SubjectName}, cancellationToken)), priority, category ?? global::Clavus.ClavusCategory.Core);
-        return container;
+        /// <summary>
+        ///     Configure the {PartName} delegate to the convention scanner.
+        /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <param name="priority">The priority.</param>
+        /// <param name="category">The category.</param>
+        /// <param name="hostType">The host type.</param>
+        /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
+        global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}({PartName}AsyncPart{GenericArg} @delegate, int priority = 0, ClavusCategory? category = null, HostType hostType = HostType.Undefined)
+        {
+            ArgumentNullException.ThrowIfNull(container);
+            container.AppendPart(new ClavusPartMetadata(new Private{PartName}AsyncPart{GenericArg}(@delegate, priority), hostType, category ?? ClavusCategory.Core));
+            return container;
+        }
     }
 }

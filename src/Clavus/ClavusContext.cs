@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using Clavus.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Clavus;
 
@@ -33,7 +32,7 @@ public sealed class ClavusContext : IClavusContext
     /// <summary>
     ///     Get the conventions from the context
     /// </summary>
-    public IClavusProvider Conventions { get; }
+    public ImmutableHashSet<IClavusPart> Parts { get; }
 
     /// <summary>
     ///     The host type
@@ -50,41 +49,16 @@ public sealed class ClavusContext : IClavusContext
     ///     Creates a base context
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="conventionProvider"></param>
-    private ClavusContext(
-        ClavusContextBuilder builder,
-        IClavusProvider conventionProvider
-    )
+    private ClavusContext(ClavusContextBuilder builder)
     {
-        Conventions = conventionProvider;
+        Parts = ClavusResolver.Resolve(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ClavusCategory.ValueComparer), builder.Ashlar());
         Properties = builder.Properties;
         Categories = builder.Categories.ToImmutableHashSet(ClavusCategory.ValueComparer);
     }
 
-    private static ClavusProvider CreateProvider(ClavusContextBuilder builder, LoadClavusParts loadConventions)
-    {
-        var conventions = builder.state.GetConventions();
-        for (var i = 0; i < conventions.Count; i++)
-        {
-            if (conventions[i] is Type type) conventions[i] = ActivatorUtilities.CreateInstance(builder.Properties, type);
-        }
-
-        conventions.InsertRange(
-            conventions.FindIndex(z => z is null),
-            builder.state.CalculateConventions(builder, loadConventions)
-        );
-
-        return new(builder.GetHostType(), builder.Categories.ToImmutableHashSet(ClavusCategory.ValueComparer), conventions);
-    }
-
     private static ClavusContext FromInitInternal(ClavusContextBuilder builder)
     {
-        var parts = builder.Require<LoadClavusParts>();
         builder.AddIfMissing(ConventionExceptionPolicy.IgnoreNotSupported);
-        var provider = CreateProvider(builder, parts);
-        // ReSharper disable once NullableWarningSuppressionIsUsed
-        if (builder.state.ServiceProviderFactory is { })
-            builder.Properties.Set(builder.state.ServiceProviderFactory);
-        return new(builder, provider);
+        return new(builder);
     }
 }

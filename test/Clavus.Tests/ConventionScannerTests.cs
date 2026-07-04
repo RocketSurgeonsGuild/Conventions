@@ -23,7 +23,7 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
         var builder = ClavusContextBuilder.Create(_ => [], new Dictionary<object, object?>()).AppendPart(new Contrib());
         var context = await ClavusContext.FromAsync(builder);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldContain(x => x is Contrib);
     }
@@ -41,7 +41,7 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
 
         var context = await ClavusContext.FromAsync(scanner);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
@@ -59,7 +59,7 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
         var context = await ClavusContext.FromAsync(scanner);
 
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
@@ -79,11 +79,11 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
         var context = await ClavusContext.FromAsync(scanner);
 
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldNotContain(x => x is Contrib);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
@@ -101,7 +101,7 @@ public class ConventionScannerTests() : AutoFakeTest<TestRecord>(TestRecord.Crea
         var context = await ClavusContext.FromAsync(scanner);
 
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldNotContain(x => x is Contrib);
     }

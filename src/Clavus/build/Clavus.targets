@@ -1,55 +1,66 @@
 <Project>
-    <PropertyGroup>
-        <ImportClavusNamespace Condition="'$(ImportClavusNamespace)' == ''">$(RootNamespace)</ImportClavusNamespace>
-        <ImportClavusClassName Condition="'$(ImportClavusClassName)' == ''">Imports</ImportClavusClassName>
-        <ImportClavusMethodName Condition="'$(ImportClavusMethodName)' == ''">Ashlar</ImportClavusMethodName>
+  <PropertyGroup>
+    <ClavusMetadata Condition="'$(ClavusMetadata)' == ''">false</ClavusMetadata>
+<!--    <ClavusCategory Condition="'$(ClavusCategory)' == ''"></ClavusCategory>-->
+<!--    <ClavusHostType Condition="'$(ClavusHostType)' == ''"></ClavusHostType>-->
+    <ClavusAssignExternal Condition="'$(ClavusAssignExternal)' == ''">false</ClavusAssignExternal>
 
-        <ExportClavusNamespace Condition="'$(ExportClavusNamespace)' == ''">$(RootNamespace).Tectum</ExportClavusNamespace>
-        <ExportClavusClassName Condition="'$(ExportClavusClassName)' == ''">Exports</ExportClavusClassName>
-        <ExportClavusMethodName Condition="'$(ExportClavusMethodName)' == ''">Ashlar</ExportClavusMethodName>
-    </PropertyGroup>
-    <ItemGroup>
-        <CompilerVisibleProperty Include="ImportClavusAssembly" />
-        <CompilerVisibleProperty Include="ImportClavusNamespace" />
-        <CompilerVisibleProperty Include="ImportClavusClassName" />
-        <CompilerVisibleProperty Include="ImportClavusMethodName" />
+    <ClavusImportNamespace Condition="'$(ClavusImportNamespace)' == ''">$(RootNamespace)</ClavusImportNamespace>
+    <ClavusImportClassName Condition="'$(ClavusImportClassName)' == ''">Imports</ClavusImportClassName>
+    <ClavusImportMethodName Condition="'$(ClavusImportMethodName)' == ''">Ashlar</ClavusImportMethodName>
 
-        <CompilerVisibleProperty Include="ExportClavusAssembly" />
-        <CompilerVisibleProperty Include="ExportClavusNamespace" />
-        <CompilerVisibleProperty Include="ExportClavusClassName" />
-        <CompilerVisibleProperty Include="ExportClavusMethodName" />
+    <ClavusExportNamespace Condition="'$(ClavusExportNamespace)' == ''">$(RootNamespace).Tectum</ClavusExportNamespace>
+    <ClavusExportClassName Condition="'$(ClavusExportClassName)' == ''">Exports</ClavusExportClassName>
+    <ClavusExportMethodName Condition="'$(ClavusExportMethodName)' == ''">Ashlar</ClavusExportMethodName>
+  </PropertyGroup>
+  <ItemGroup>
+    <CompilerVisibleProperty Include="RootNamespace"/>
+    <CompilerVisibleProperty Include="IsTestProject"/>
 
-        <CompilerVisibleProperty Include="IsTestProject" />
-    </ItemGroup>
+    <CompilerVisibleProperty Include="ClavusMetadata"/>
+    <CompilerVisibleProperty Include="ClavusCategory"/>
+    <CompilerVisibleProperty Include="ClavusHostType"/>
+    <CompilerVisibleProperty Include="ClavusAssignExternal"/>
 
-    <!-- ClavusPart item metadata schema -->
-    <ItemDefinitionGroup>
-        <ClavusPart>
-            <Namespace></Namespace>
-            <ProvideConfiguration></ProvideConfiguration>
-            <ProvideServices></ProvideServices>
-            <ParameterType></ParameterType>
-            <ParameterName></ParameterName>
-            <BuilderMethodName></BuilderMethodName>
-            <GenericParameter></GenericParameter>
-            <GenericConstraint></GenericConstraint>
-            <GenericVariance></GenericVariance>
-        </ClavusPart>
-    </ItemDefinitionGroup>
+    <CompilerVisibleProperty Include="ClavusImportNamespace"/>
+    <CompilerVisibleProperty Include="ClavusImportClassName"/>
+    <CompilerVisibleProperty Include="ClavusImportMethodName"/>
 
-    <!-- ClavusHost item metadata schema -->
-    <ItemDefinitionGroup>
-        <ClavusHost>
-            <Namespace></Namespace>
-            <HostBuilderType></HostBuilderType>
-            <HostBuilderName></HostBuilderName>
-            <HostType></HostType>
-            <HelperName></HelperName>
-            <HasBuildExpression></HasBuildExpression>
-            <BuildExpression></BuildExpression>
-        </ClavusHost>
-    </ItemDefinitionGroup>
-    <Import Project="$(MSBuildThisFileDirectory)Clavus.Parts.targets" Condition="'$(_ClavusPartsTargetsImported)' != 'true'" />
-    <Import Project="$(MSBuildThisFileDirectory)Clavus.ContextBuilder.targets" Condition="'$(_ClavusContextBuilderTargetsImported)' != 'true'" />
-    <Import Project="$(MSBuildThisFileDirectory)Clavus.Hosts.targets" Condition="'$(_ClavusHostsTargetsImported)' != 'true'" />
+    <CompilerVisibleProperty Include="ClavusExportNamespace"/>
+    <CompilerVisibleProperty Include="ClavusExportClassName"/>
+    <CompilerVisibleProperty Include="ClavusExportMethodName"/>
+  </ItemGroup>
+
+  <!-- ClavusPart item metadata schema -->
+  <ItemDefinitionGroup>
+    <ClavusPart>
+      <Namespace></Namespace>
+      <ProvideConfiguration></ProvideConfiguration>
+      <ProvideServices></ProvideServices>
+      <ParameterType></ParameterType>
+      <ParameterName></ParameterName>
+      <BuilderMethodName></BuilderMethodName>
+      <GenericParameter></GenericParameter>
+      <GenericConstraint></GenericConstraint>
+      <GenericVariance></GenericVariance>
+    </ClavusPart>
+  </ItemDefinitionGroup>
+
+  <!-- ClavusHost item metadata schema -->
+  <ItemDefinitionGroup>
+    <ClavusHost>
+      <Namespace></Namespace>
+      <HostBuilderType></HostBuilderType>
+      <HostBuilderName></HostBuilderName>
+      <HostType></HostType>
+      <HelperName></HelperName>
+      <HasBuildExpression></HasBuildExpression>
+      <BuildExpression></BuildExpression>
+    </ClavusHost>
+  </ItemDefinitionGroup>
+  <Import Project="$(MSBuildThisFileDirectory)Clavus.Parts.targets" Condition="'$(_ClavusPartsTargetsImported)' != 'true'"/>
+  <Import Project="$(MSBuildThisFileDirectory)Clavus.ContextBuilder.targets" Condition="'$(_ClavusContextBuilderTargetsImported)' != 'true'"/>
+  <Import Project="$(MSBuildThisFileDirectory)Clavus.Hosts.targets" Condition="'$(_ClavusHostsTargetsImported)' != 'true'"/>
+  <Import Project="$(MSBuildThisFileDirectory)Clavus.Reference.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)Clavus.Metadata.targets"/>
 </Project>

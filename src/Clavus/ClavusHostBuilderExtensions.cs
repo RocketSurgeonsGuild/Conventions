@@ -1,4 +1,4 @@
-using Clavus.Hosting;
+using Clavus.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -24,7 +24,7 @@ public static class ClavusHostBuilderExtensions
     ) where TContainerBuilder : notnull
     {
         ArgumentNullException.ThrowIfNull(builder);
-        builder.state.ServiceProviderFactory = (_, _, _) => ValueTask.FromResult<IServiceProviderFactory<object>>(new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory));
+        builder.Set<ServiceProviderFactoryAdapter>((_, _, _) => ValueTask.FromResult<IServiceProviderFactory<object>>(new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory)));
         return builder;
     }
 
@@ -41,8 +41,7 @@ public static class ClavusHostBuilderExtensions
     ) where TContainerBuilder : notnull
     {
         ArgumentNullException.ThrowIfNull(builder);
-
-        builder.state.ServiceProviderFactory = async (context, collection, cancellationToken) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection, cancellationToken).ConfigureAwait(false));
+        builder.Set<ServiceProviderFactoryAdapter>(async (context, collection, cancellationToken) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection, cancellationToken).ConfigureAwait(false)));
         return builder;
     }
 
@@ -59,120 +58,9 @@ public static class ClavusHostBuilderExtensions
     ) where TContainerBuilder : notnull
     {
         ArgumentNullException.ThrowIfNull(builder);
-
-        builder.state.ServiceProviderFactory = async (context, collection, _) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection).ConfigureAwait(false));
+        builder.Set<ServiceProviderFactoryAdapter>(async (context, collection, _) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection).ConfigureAwait(false)));
         return builder;
     }
-
-    /// <summary>
-    ///     Configure the host created event for the given host type
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public static ClavusContextBuilder OnHostCreated<THost>(
-        this ClavusContextBuilder container,
-        HostCreatedPart<THost> @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        container.AppendDelegate(@delegate, priority, category);
-        return container;
-    }
-
-    /// <summary>
-    ///     Configure the configuration delegate to the convention scanner
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public static ClavusContextBuilder OnHostCreated<THost>(
-        this ClavusContextBuilder container,
-        HostCreatedAsyncPart<THost> @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        container.AppendDelegate(@delegate, priority, category);
-        return container;
-    }
-
-    /// <summary>
-    ///     Configure the configuration delegate to the convention scanner
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public static ClavusContextBuilder OnHostCreated<THost>(
-        this ClavusContextBuilder container,
-        Action<THost> @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        container.AppendDelegate(new HostCreatedPart<THost>((_, host) => @delegate(host)), priority, category);
-        return container;
-    }
-
-    /// <summary>
-    ///     Configure the configuration delegate to the convention scanner
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public static ClavusContextBuilder OnHostCreated<THost>(
-        this ClavusContextBuilder container,
-        Func<THost, CancellationToken, ValueTask> @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        container.AppendDelegate(
-            new HostCreatedAsyncPart<THost>((_, host, cancellationToken) => @delegate(host, cancellationToken)),
-            priority,
-            category
-        );
-        return container;
-    }
-
-    /// <summary>
-    ///     Configure the configuration delegate to the convention scanner
-    /// </summary>
-    /// <param name="container">The container.</param>
-    /// <param name="delegate">The delegate.</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public static ClavusContextBuilder OnHostCreated<THost>(
-        this ClavusContextBuilder container,
-        Func<THost, ValueTask> @delegate,
-        int priority = 0,
-        ClavusCategory? category = null
-    )
-    {
-        ArgumentNullException.ThrowIfNull(container);
-
-        container.AppendDelegate(new HostCreatedAsyncPart<THost>((_, host, _) => @delegate(host)), priority, category);
-        return container;
-    }
-
     /// <summary>
     ///     Get a value by type from the context
     /// </summary>

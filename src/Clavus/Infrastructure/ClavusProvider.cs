@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Reflection;
 
 namespace Clavus.Infrastructure;
 
@@ -8,126 +7,68 @@ namespace Clavus.Infrastructure;
 ///     Implements the <see cref="IClavusProvider" />
 /// </summary>
 /// <seealso cref="IClavusProvider" />
-[SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-internal class ClavusProvider : IClavusProvider
+internal static class ClavusResolver
 {
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ClavusProvider" /> class.
-    /// </summary>
-    /// <param name="hostType"></param>
-    /// <param name="categories"></param>
-    /// <param name="contributions">The contributions.</param>
-    public ClavusProvider(HostType hostType, ImmutableHashSet<ClavusCategory> categories, List<object?> contributions) : this(
-        hostType,
-        categories,
-        contributions.Where(z => z is { }).Select(FromConvention)
-    )
-    { }
 
-    /// <summary>
-    ///     Gets a all the conventions from the provider
-    /// </summary>
-    public IEnumerable<object> GetAll() => _conventions
-                                          .Value
-                                          .Where(cod => cod.HostType == HostType.Undefined || cod.HostType == _hostType)
-                                          .Select(ToObject)
-                                          .Where(
-                                               // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                               x => x != null!
-                                               // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                           )!;
+    public static ImmutableHashSet<IClavusPart> Resolve(HostType hostType, ImmutableHashSet<ClavusCategory> categories, IEnumerable<IClavusPartMetadata> contributions)
+        => ResolveMetadata(categories, contributions)
+          .Where(cod => cod.HostType == HostType.Undefined || cod.HostType == hostType)
+          .Select(z => z.Convention)
+          .ToImmutableHashSet(IClavusPart.ValueComparer);
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ClavusProvider" /> class.
-    /// </summary>
-    /// <param name="hostType"></param>
-    /// <param name="categories"></param>
-    /// <param name="contributions">The contributions.</param>
-    private ClavusProvider(HostType hostType, ImmutableHashSet<ClavusCategory> categories, IEnumerable<ClavusOrDelegate> contributions)
+    private static ImmutableHashSet<IClavusPartMetadata> ResolveMetadata(ImmutableHashSet<ClavusCategory> categories, IEnumerable<IClavusPartMetadata> contributions)
     {
-        _hostType = hostType;
-        _conventions = new(
-            () =>
-            {
-                var contributionsList = contributions as IReadOnlyCollection<ClavusOrDelegate> ?? contributions.ToArray();
+        IEnumerable<IClavusPartMetadata> c = contributions.Order(Comparer<IClavusPartMetadata>.Create((x, y) => x.Convention.Priority.CompareTo(y.Convention.Priority))); ;
+        if (categories.Any()) c = c.Where(z => !categories.Contains(z.Category));
 
-                var c = contributionsList.AsEnumerable();
-                if (categories.Any()) c = c.Where(z => categories.Contains(z.Category));
+        var r = c.ToImmutableHashSet(IClavusPartMetadata.ValueComparer);
+        if (!r.Any(z => z.Dependencies.Count > 0)) return r;
 
-                if (!c.Any(z => z.Dependencies.Length > 0)) return [.. c.OrderBy(z => z.Priority)];
-                var conventions = c
-                                 .Where(x => x.Convention is { })
-                                 .Select(
-                                      convention =>
-                                      {
-                                          return (
-                                              convention,
-                                              // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                              type: convention.Convention!.GetType(),
-                                              dependsOn: convention
-                                                        .Dependencies.Where(x => x.Direction == DependencyDirection.DependsOn)
-                                                        .Select(z => z.Type),
-                                              dependentFor: convention
-                                                           .Dependencies
-                                                           .Where(x => x.Direction == DependencyDirection.DependentOf)
-                                                           .Select(z => z.Type)
-                                          );
-                                      }
-                                  )
-                                 .ToArray();
+        var conventions = c
+                         .Select(convention =>
+                                 {
+                                     return (
+                                         convention,
+                                         // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
+                                         type: convention.Convention!.GetType(),
+                                         dependsOn: convention
+                                                   .Dependencies.Where(x => x.Direction == DependencyDirection.DependsOn)
+                                                   .Select(z => z.Type),
+                                         dependentFor: convention
+                                                      .Dependencies
+                                                      .Where(x => x.Direction == DependencyDirection.DependentOf)
+                                                      .Select(z => z.Type)
+                                     );
+                                 }
+                          )
+                         .ToArray();
 
-                var lookup = conventions.ToLookup(z => z.type, z => z.convention);
-                var dependentFor = conventions
-                                  .SelectMany(
-                                       data => data
-                                              .dependentFor
-                                              .SelectMany(z => lookup[z])
-                                              .Select(innerDependentFor => (dependentFor: innerDependentFor, data.convention))
-                                   )
-                                  .ToLookup(z => z.dependentFor, z => z.convention);
+        var lookup = conventions.ToLookup(z => z.type, z => z.convention);
+        var dependentFor = conventions
+                          .SelectMany(data => data
+                                             .dependentFor
+                                             .SelectMany(z => lookup[z])
+                                             .Select(innerDependentFor => (dependentFor: innerDependentFor, data.convention))
+                           )
+                          .ToLookup(z => z.dependentFor, z => z.convention);
 
-                var dependsOn = conventions
-                               .SelectMany(
-                                    data => data
-                                           .dependsOn
-                                           .SelectMany(z => lookup[z])
-                                           .Select(innerDependsOn => (data.convention, dependsOn: innerDependsOn))
+        var dependsOn = conventions
+                       .SelectMany(data => data
+                                          .dependsOn
+                                          .SelectMany(z => lookup[z])
+                                          .Select(innerDependsOn => (data.convention, dependsOn: innerDependsOn))
+                        )
+                       .Concat(
+                            conventions
+                               .SelectMany(data =>
+                                               dependentFor[data.convention]
+                                                  .Select(innerDependsOn => (data.convention, dependsOn: innerDependsOn))
                                 )
-                               .Concat(
-                                    conventions
-                                       .SelectMany(
-                                            data =>
-                                                dependentFor[data.convention]
-                                                   .Select(innerDependsOn => (data.convention, dependsOn: innerDependsOn))
-                                        )
-                                )
-                               .ToLookup(x => x.convention.Convention, x => x.dependsOn);
+                        )
+                       .ToLookup(x => x.convention.Convention, x => x.dependsOn);
 
-                return [.. TopographicalSort(c.OrderBy(z => z.Priority), x => dependsOn[x.Convention])];
-            }
-        );
+        return TopographicalSort(c, x => dependsOn[x.Convention]).ToImmutableHashSet(IClavusPartMetadata.ValueComparer);
     }
-
-    private static ClavusOrDelegate FromConvention(object? value) => value switch
-    {
-        IClavusPartMetadata cwd => new(cwd),
-        IClavusPart convention => FromConvention(convention),
-        Delegate d => new(d, 0, default),
-        ClavusOrDelegate d => d,
-        _ => ClavusOrDelegate.None,
-    };
-
-    private static ClavusOrDelegate FromConvention(IClavusPart convention)
-    {
-        var type = convention.GetType();
-        var dependencies =
-            type.GetCustomAttributes().OfType<IClavusDependency>().ToArray();
-        var hostType = convention.GetType().GetCustomAttributes().OfType<IHostBasedPart>().FirstOrDefault()?.HostType ?? HostType.Undefined;
-        var category = convention.GetType().GetCustomAttribute<ClavusCategoryAttribute>()?.Category ?? ClavusCategory.Application;
-        return new(convention, hostType, category, dependencies);
-    }
-
-    private static object? ToObject(ClavusOrDelegate delegateOrConvention) => (object?)delegateOrConvention.Delegate ?? delegateOrConvention.Convention;
 
     private static List<T> TopographicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies)
     {
@@ -158,8 +99,4 @@ internal class ClavusProvider : IClavusProvider
             if (!sorted.Contains(item)) throw new NotSupportedException($"Cyclic dependency found {item}");
         }
     }
-
-    private readonly Lazy<ImmutableArray<ClavusOrDelegate>> _conventions;
-
-    private readonly HostType _hostType;
 }

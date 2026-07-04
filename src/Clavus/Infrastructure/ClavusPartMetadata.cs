@@ -6,7 +6,7 @@ namespace Clavus.Infrastructure;
 [PublicAPI]
 public sealed class ClavusPartMetadata : IClavusPartMetadata
 {
-    private readonly List<ClavusDependency> _dependencies;
+    private readonly List<IClavusDependency> _dependencies = [];
 
     /// <summary>
     ///     The default constructor
@@ -17,7 +17,6 @@ public sealed class ClavusPartMetadata : IClavusPartMetadata
     {
         Convention = convention;
         HostType = hostType;
-        _dependencies = [];
         Category = ClavusCategory.Application;
     }
 
@@ -32,7 +31,6 @@ public sealed class ClavusPartMetadata : IClavusPartMetadata
         Convention = convention;
         HostType = hostType;
         Category = category;
-        _dependencies = [];
     }
 
     /// <summary>
@@ -43,7 +41,7 @@ public sealed class ClavusPartMetadata : IClavusPartMetadata
     /// <returns></returns>
     public ClavusPartMetadata WithDependency(DependencyDirection direction, Type type)
     {
-        _dependencies.Add(new(direction, type));
+        _dependencies.Add(new ClavusDependency(direction, type));
         return this;
     }
 
@@ -53,10 +51,21 @@ public sealed class ClavusPartMetadata : IClavusPartMetadata
     /// <summary>
     ///     The dependencies
     /// </summary>
-    public IEnumerable<IClavusDependency> Dependencies => _dependencies.OfType<IClavusDependency>();
+    public IReadOnlyCollection<IClavusDependency> Dependencies
+    {
+        get => _dependencies;
+        set
+        {
+            _dependencies.Clear();
+            _dependencies.AddRange(value.Select(x => new ClavusDependency(x.Direction, x.Type)).OfType<IClavusDependency>());
+        }
+    }
 
     /// <inheritdoc />
     public HostType HostType { get; }
 
+    /// <summary>
+    ///    The category of the convention
+    /// </summary>
     public ClavusCategory Category { get; }
 }

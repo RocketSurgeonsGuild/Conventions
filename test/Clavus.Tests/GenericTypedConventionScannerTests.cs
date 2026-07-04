@@ -24,7 +24,7 @@ public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(Tes
 
         var context = await ClavusContext.FromAsync(scanner);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldContain(x => x is Contrib);
     }
@@ -42,7 +42,7 @@ public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(Tes
 
         var context = await ClavusContext.FromAsync(scanner);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
@@ -60,7 +60,7 @@ public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(Tes
 
         var context = await ClavusContext.FromAsync(scanner);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(delegate2), z => z.ShouldContain(@delegate));
     }
@@ -77,11 +77,11 @@ public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(Tes
         scanner.ExceptConvention(typeof(Contrib));
         var context = await ClavusContext.FromAsync(scanner);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldNotContain(x => x is Contrib);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldSatisfyAllConditions(z => z.ShouldContain(contribution2), z => z.ShouldContain(contribution));
     }
@@ -98,7 +98,7 @@ public class GenericTypedConventionScannerTests() : AutoFakeTest<TestRecord>(Tes
 
         var context = await ClavusContext.FromAsync(scanner);
         context
-           .Conventions
+           .Parts
            .GetAll()
            .ShouldNotContain(x => x is Contrib);
     }

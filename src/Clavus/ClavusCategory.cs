@@ -34,6 +34,9 @@ public sealed class ClavusCategory(string name)
     /// <returns></returns>
     public static implicit operator ClavusCategory(string category) => new(category);
 
+    /// <summary>
+    ///    The value comparer for this category
+    /// </summary>
     public static IEqualityComparer<ClavusCategory> ValueComparer { get; } = new ValueEqualityComparer();
 
     /// <summary>

@@ -1,6 +1,6 @@
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Clavus.Infrastructure;
 using PropertiesDictionary = System.Collections.Generic.Dictionary<object, object>;
 using PropertiesType = System.Collections.Generic.IDictionary<object, object>;
@@ -14,54 +14,41 @@ namespace Clavus;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public sealed class ClavusContextBuilder
 {
-    internal readonly ClavusContextState state;
-
     /// <summary>
     ///     Create a default context builder
     /// </summary>
-    /// <param name="conventionFactory"></param>
-    /// <returns></returns>
-    public static ClavusContextBuilder Create(LoadClavusParts conventionFactory) =>
-        new(conventionFactory, new PropertiesDictionary(), []);
-
-    /// <summary>
-    ///     Create a default context builder
-    /// </summary>
-    /// <param name="conventionFactory"></param>
+    /// <param name="conventions"></param>
     /// <param name="properties"></param>
     /// <param name="categories"></param>
     /// <returns></returns>
-    [OverloadResolutionPriority(-1)]
-    public static ClavusContextBuilder Create(LoadClavusParts conventionFactory, PropertiesType? properties, params ClavusCategory[] categories) =>
-        new(conventionFactory, properties ?? new PropertiesDictionary(), categories);
+    public static ClavusContextBuilder Create(IEnumerable<IClavusPartMetadata> conventions, PropertiesType properties, IEnumerable<ClavusCategory> categories) =>
+        new(conventions, new PropertiesDictionary(), []);
 
     /// <summary>
     ///     Create a default context builder
     /// </summary>
-    /// <param name="conventionFactory"></param>
     /// <param name="properties"></param>
     /// <param name="categories"></param>
     /// <returns></returns>
-    public static ClavusContextBuilder Create(LoadClavusParts conventionFactory, PropertiesType? properties, params IEnumerable<ClavusCategory> categories) =>
-        new(conventionFactory, properties ?? new PropertiesDictionary(), categories);
+    public static ClavusContextBuilder Create(PropertiesType? properties, params IEnumerable<ClavusCategory> categories) =>
+        new([], properties ?? new PropertiesDictionary(), categories);
 
-    private static readonly string[] categoryEnvironmentVariables =
-        ["ROCKETSURGERYCONVENTIONS__CATEGORY", "ROCKETSURGERYCONVENTIONS__CATEGORIES", "RSG__CATEGORY", "RSG__CATEGORIES"];
+    private static readonly string[] categoryEnvironmentVariables = ["CLAVUS__CATEGORY", "CLAVUS__CATEGORIES"];
 
-    private static readonly string[] hostTypeEnvironmentVariables = ["RSG__HOSTTYPE", "ROCKETSURGERYCONVENTIONS__HOSTTYPE"];
+    private readonly UniqueQueue _conventions;
+    private static readonly string[] hostTypeEnvironmentVariables = ["CLAVUS__HOSTTYPE"];
 
     /// <summary>
     ///     Create a context builder with a set of properties
     /// </summary>
-    /// <param name="conventionFactory"></param>
+    /// <param name="conventions"></param>
     /// <param name="properties"></param>
     /// <param name="categories"></param>
-    private ClavusContextBuilder(LoadClavusParts conventionFactory, PropertiesType? properties, IEnumerable<ClavusCategory> categories)
+    private ClavusContextBuilder(IEnumerable<IClavusPartMetadata> conventions, PropertiesType? properties, IEnumerable<ClavusCategory> categories)
     {
         Properties = new ServiceProviderDictionary(properties ?? new PropertiesDictionary());
-        Properties.Set(conventionFactory);
-        state = new();
-        Properties.Set(state);
+        _conventions = new();
+        _conventions.Append(conventions);
 
         foreach (var variable in hostTypeEnvironmentVariables)
         {
@@ -75,13 +62,13 @@ public sealed class ClavusContextBuilder
             categoriesBuilder.AddRange(category.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(item => new ClavusCategory(item)));
         }
 
-        Categories = new(categoriesBuilder, ClavusCategory.ValueComparer);
+        Categories = ImmutableHashSet.CreateRange(ClavusCategory.ValueComparer, categoriesBuilder);
     }
 
     /// <summary>
     ///     The categories of the convention context
     /// </summary>
-    public HashSet<ClavusCategory> Categories { get; }
+    public ImmutableHashSet<ClavusCategory> Categories { get; }
 
     /// <summary>
     ///     A central location for sharing state between components during the convention building process.
@@ -97,10 +84,20 @@ public sealed class ClavusContextBuilder
     /// </summary>
     /// <param name="conventions">The conventions.</param>
     /// <returns>IConventionScanner.</returns>
-    [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder AppendPart(params IClavusPart[] conventions)
+    public ClavusContextBuilder AppendPart(params IEnumerable<IClavusPartMetadata> conventions)
     {
-        state.AppendParts(conventions);
+        _conventions.Append(conventions);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds a set of conventions to the scanner
+    /// </summary>
+    /// <param name="conventions">The conventions.</param>
+    /// <returns><see cref="ClavusContextBuilder" />.</returns>
+    public ClavusContextBuilder PrependPart(params IEnumerable<IClavusPartMetadata> conventions)
+    {
+        _conventions.Prepend(conventions);
         return this;
     }
 
@@ -111,53 +108,7 @@ public sealed class ClavusContextBuilder
     /// <returns>IConventionScanner.</returns>
     public ClavusContextBuilder AppendPart(params IEnumerable<IClavusPart> conventions)
     {
-        state.AppendParts(conventions);
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds a set of conventions to the scanner
-    /// </summary>
-    /// <param name="conventions">The conventions.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder AppendPart(params Type[] conventions)
-    {
-        state.AppendParts(conventions);
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds a set of conventions to the scanner
-    /// </summary>
-    /// <param name="conventions">The conventions.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder AppendPart(params IEnumerable<Type> conventions)
-    {
-        state.AppendParts(conventions);
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds a set of conventions to the scanner
-    /// </summary>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder AppendPart<T>()
-        where T : IClavusPart
-    {
-        state.AppendParts(typeof(T));
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds a set of conventions to the scanner
-    /// </summary>
-    /// <param name="conventions">The conventions.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder PrependPart(params IClavusPart[] conventions)
-    {
-        state.PrependParts(conventions);
+        _conventions.Append(conventions.Select(FromConvention));
         return this;
     }
 
@@ -168,30 +119,7 @@ public sealed class ClavusContextBuilder
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
     public ClavusContextBuilder PrependPart(params IEnumerable<IClavusPart> conventions)
     {
-        state.PrependParts(conventions);
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds a set of conventions to the scanner
-    /// </summary>
-    /// <param name="conventions">The conventions.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder PrependPart(params Type[] conventions)
-    {
-        state.PrependParts(conventions);
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds a set of conventions to the scanner
-    /// </summary>
-    /// <param name="conventions">The conventions.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder PrependPart(params IEnumerable<Type> conventions)
-    {
-        state.PrependParts(conventions);
+        _conventions.Prepend(conventions.Select(FromConvention));
         return this;
     }
 
@@ -199,48 +127,21 @@ public sealed class ClavusContextBuilder
     ///     Adds a set of conventions to the scanner
     /// </summary>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder PrependPart<T>()
+    public ClavusContextBuilder AppendPart<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>()
         where T : IClavusPart
     {
-        state.PrependParts(typeof(T));
+        _conventions.Append(FromConvention(Activator.CreateInstance<T>()));
         return this;
     }
 
     /// <summary>
-    ///     Adds a set of delegates to the scanner
+    ///     Adds a set of conventions to the scanner
     /// </summary>
-    /// <param name="delegate">The initial delegate</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder AppendDelegate(Delegate @delegate, int? priority, ClavusCategory? category)
+    public ClavusContextBuilder PrependPart<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>()
+        where T : IClavusPart
     {
-        state.AppendParts(new ClavusOrDelegate(@delegate, priority ?? 0, category));
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds a set of delegates to the scanner
-    /// </summary>
-    /// <param name="delegate">The initial delegate</param>
-    /// <param name="priority">The priority.</param>
-    /// <param name="category">The category.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    public ClavusContextBuilder PrependDelegate(Delegate @delegate, int? priority, ClavusCategory? category)
-    {
-        state.PrependParts(new ClavusOrDelegate(@delegate, priority ?? 0, category));
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds an exception to the scanner to exclude a specific convention
-    /// </summary>
-    /// <param name="assemblies">The additional types to exclude.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder ExceptConvention(params Assembly[] assemblies)
-    {
-        state.ExceptConventions(assemblies);
+        _conventions.Prepend(FromConvention(Activator.CreateInstance<T>()));
         return this;
     }
 
@@ -251,19 +152,8 @@ public sealed class ClavusContextBuilder
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
     public ClavusContextBuilder ExceptConvention(params IEnumerable<Assembly> assemblies)
     {
-        state.ExceptConventions(assemblies);
-        return this;
-    }
-
-    /// <summary>
-    ///     Adds an exception to the scanner to exclude a specific convention
-    /// </summary>
-    /// <param name="types">The additional types to exclude.</param>
-    /// <returns><see cref="ClavusContextBuilder" />.</returns>
-    [OverloadResolutionPriority(-1)]
-    public ClavusContextBuilder ExceptConvention(params Type[] types)
-    {
-        state.ExceptConventions(types);
+        var set = assemblies.ToHashSet();
+        _conventions.Remove(a => set.Contains(a.Convention.GetType().Assembly));
         return this;
     }
 
@@ -274,7 +164,62 @@ public sealed class ClavusContextBuilder
     /// <returns><see cref="ClavusContextBuilder" />.</returns>
     public ClavusContextBuilder ExceptConvention(params IEnumerable<Type> types)
     {
-        state.ExceptConventions(types);
+        var set = types.ToHashSet();
+        _conventions.Remove(a => set.Contains(a.Convention.GetType()));
         return this;
     }
+
+    internal IEnumerable<IClavusPartMetadata> Ashlar() => _conventions;
+
+    private static ClavusPartMetadata FromConvention(IClavusPart convention)
+    {
+        var type = convention.GetType();
+        var dependencies =
+            type.GetCustomAttributes().OfType<IClavusDependency>().ToArray();
+        var hostType = type.GetCustomAttributes().OfType<IHostBasedPart>().FirstOrDefault()?.HostType
+         ?? type.GetCustomAttribute<ClavusHostTypeAttribute>()?.HostType
+         ?? HostType.Undefined;
+
+        // var exportMetadata = Assembly.
+
+        var category = convention.GetType().GetCustomAttribute<ClavusCategoryAttribute>()?.Category ?? ClavusCategory.Application;
+        return new(convention, hostType, category) { Dependencies = dependencies };
+    }
+
+    private class UniqueQueue : IEnumerable<IClavusPartMetadata>
+    {
+        private readonly HashSet<IClavusPartMetadata> _hashset = [with(EqualityComparer<IClavusPartMetadata>.Create((a, b) => a?.Convention.GetType() == b?.Convention.GetType(), a => a.Convention.GetType().GetHashCode()))];
+        private readonly LinkedList<IClavusPartMetadata> _list = [];
+
+        public void Append(params IEnumerable<IClavusPartMetadata> conventions)
+        {
+            foreach (var item in conventions)
+            {
+                if (_hashset.Add(item)) _list.AddLast(item);
+            }
+        }
+
+        public void Prepend(params IEnumerable<IClavusPartMetadata> conventions)
+        {
+            foreach (var item in conventions)
+            {
+                if (_hashset.Add(item)) _list.AddFirst(item);
+            }
+        }
+
+        public void Remove(Func<IClavusPartMetadata, bool> predicate)
+        {
+            var itemsToRemove = _list.Where(predicate).ToList();
+            foreach (var item in itemsToRemove)
+            {
+                _hashset.Remove(item);
+                _list.Remove(item);
+            }
+        }
+
+        IEnumerator<IClavusPartMetadata> IEnumerable<IClavusPartMetadata>.GetEnumerator() => _list.GetEnumerator();
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _list.GetEnumerator();
+    }
+
 }

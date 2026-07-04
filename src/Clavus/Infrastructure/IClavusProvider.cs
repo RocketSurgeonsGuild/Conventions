@@ -8,5 +8,5 @@ public interface IClavusProvider
     /// <summary>
     ///     Gets a all the conventions from the provider filtered by host type
     /// </summary>
-    IEnumerable<object> GetAll();
+    IEnumerable<IClavusPart> GetAll();
 }

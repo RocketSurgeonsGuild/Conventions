@@ -12,7 +12,7 @@ internal static class ExportConventions
 {
     public static void HandleConventionExports(SourceProductionContext context, Request request)
     {
-        (var data, var conventions) = request;
+        (var msBuildConfig, var conventions) = request;
         if (!conventions.Any()) return;
 
         var helperClassBody = Block();
@@ -40,7 +40,7 @@ internal static class ExportConventions
                 IdentifierName("ClavusCategory"),
                 IdentifierName("Application")
             );
-            var dependencies = new List<(MemberAccessExpressionSyntax direction, TypeSyntax type)>();
+            var dependencies = new List<(ExpressionSyntax direction, TypeSyntax type)>();
             foreach (var attributeData in attributes)
             {
                 switch (attributeData)
@@ -83,19 +83,9 @@ internal static class ExportConventions
                         break;
                 }
 
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.UnitTestPartAttribute))
+                if (msBuildConfig.IsTestProject)
                 {
                     hostType = _hostTypeUnitTestHost;
-                }
-                else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.LivePartAttribute))
-                {
-                    hostType = _hostTypeLive;
-                }
-
-                if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, data.ClavusCategoryAttribute)
-                 && attributeData.ConstructorArguments is [{ Value: string category }])
-                {
-                    conventionCategory = LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(category));
                 }
             }
 
@@ -143,7 +133,7 @@ internal static class ExportConventions
         }
 
         var helperClass =
-            ClassDeclaration(data.Configuration.ClassName)
+            ClassDeclaration(msBuildConfig.ExportConfiguration.ClassName)
                .WithAttributeLists(
                     SingletonList(
                         CompilerGeneratedAttributes
@@ -158,7 +148,7 @@ internal static class ExportConventions
                                    .WithTypeArgumentList(
                                         TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName("IClavusPartMetadata")))
                                     ),
-                                data.Configuration.MethodName
+                                msBuildConfig.ExportConfiguration.MethodName
                             )
                            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword)))
                            .WithParameterList(
@@ -187,30 +177,29 @@ internal static class ExportConventions
                      )
                  )
                 .AddSharedTrivia()
-                .WithAttributeLists(data.Configuration.ToAttributes("Exports"))
-                .AddAttributeLists(
-                     AttributeList(
-                             SingletonSeparatedList(
-                                 Attribute(IdentifierName("ExportedClavusParts"))
-                                    .WithArgumentList(
-                                         AttributeArgumentList(
-                                             SeparatedList(
-                                                 conventions
-                                                    .Select(symbol => AttributeArgument(TypeOfExpression(ParseName(symbol.ToDisplayString()))))
-                                             )
-                                         )
-                                     )
-                             )
-                         )
-                        .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
-                 );
+                .WithAttributeLists(msBuildConfig.ExportConfiguration.ToAttributes())
+                 //                .AddAttributeLists(
+                 //                     AttributeList(
+                 //                             SingletonSeparatedList(
+                 //                                 Attribute(IdentifierName("ExportedClavusParts"))
+                 //                                    .WithArgumentList(
+                 //                                         AttributeArgumentList(
+                 //                                             SeparatedList(
+                 //                                                 conventions
+                 //                                                    .Select(symbol => AttributeArgument(TypeOfExpression(ParseName(symbol.ToDisplayString()))))
+                 //                                             )
+                 //                                         )
+                 //                                     )
+                 //                             )
+                 //                         )
+                 //                        .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
+                 //                 )
+                 ;
 
-        if (data.Configuration.Assembly)
-        {
-            cu = cu.AddMembers(
-                data is { Namespace.Length: > 0 } ? NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass) : helperClass
-            );
-        }
+        cu = cu.AddMembers(
+            msBuildConfig.ExportConfiguration is { Namespace.Length: > 0 } data
+             ? NamespaceDeclaration(ParseName(data.Namespace)).AddMembers(helperClass) : helperClass
+        );
 
         context.AddSource(
             "Exported_Conventions.g.cs",
@@ -262,35 +251,30 @@ internal static class ExportConventions
            .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(IdentifierName("builder")))));
     }
 
-    private static readonly MemberAccessExpressionSyntax _hostTypeUndefined = MemberAccessExpression(
+    private static readonly ExpressionSyntax _hostTypeUndefined = MemberAccessExpression(
         SyntaxKind.SimpleMemberAccessExpression,
         IdentifierName("HostType"),
         IdentifierName("Undefined")
     );
-
-    private static readonly MemberAccessExpressionSyntax _hostTypeLive = MemberAccessExpression(
-        SyntaxKind.SimpleMemberAccessExpression,
-        IdentifierName("HostType"),
-        IdentifierName("Live")
-    );
-
-    private static readonly MemberAccessExpressionSyntax _hostTypeUnitTestHost = MemberAccessExpression(
+    private static readonly ExpressionSyntax _hostTypeUnitTestHost = MemberAccessExpression(
         SyntaxKind.SimpleMemberAccessExpression,
         IdentifierName("HostType"),
         IdentifierName("UnitTest")
     );
 
-    private static readonly MemberAccessExpressionSyntax _dependencyDirectionDependsOn = MemberAccessExpression(
+    private static readonly ExpressionSyntax _dependencyDirectionDependsOn = MemberAccessExpression(
         SyntaxKind.SimpleMemberAccessExpression,
         IdentifierName("DependencyDirection"),
         IdentifierName("DependsOn")
     );
 
-    private static readonly MemberAccessExpressionSyntax _dependencyDirectionDependentOf = MemberAccessExpression(
+    private static readonly ExpressionSyntax _dependencyDirectionDependentOf = MemberAccessExpression(
         SyntaxKind.SimpleMemberAccessExpression,
         IdentifierName("DependencyDirection"),
         IdentifierName("DependentOf")
     );
 
-    public record Request(ConventionAttributeData Data, ImmutableArray<INamedTypeSymbol> ExportedConventions);
+    public record Request(
+        MsBuildConfig BuildConfig,
+        ImmutableArray<INamedTypeSymbol> ExportedConventions);
 }

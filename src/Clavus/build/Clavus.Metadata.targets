@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup Condition="'$(ClavusMetadata)' == 'true'">
+
+  </ItemGroup>
+</Project>

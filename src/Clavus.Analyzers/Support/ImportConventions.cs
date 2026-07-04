@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,13 +15,18 @@ internal static class ImportConventions
         Request request
     )
     {
-        var references = getReferences(request.Compilation, request is { HasExports: true, ExportConfiguration.Assembly: true }, request.ExportConfiguration);
 
-        var functionBody = references.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(references);
+        var exportConfig = request.BuildConfig.ExportConfiguration;
+        var referenceMethods = request
+                              .Compilation.GetClavusReferences()
+                              .Select(refer => refer.ToString())
+                              .Concat(request.ExportedConventions.Length > 0 ? [$"{exportConfig.Namespace}.{exportConfig.ClassName}.{exportConfig.MethodName}"] : [])
+                              .ToImmutableList();
 
-        var compilation = request.Compilation;
+        var functionBody = referenceMethods.Count == 0 ? Block(YieldStatement(SyntaxKind.YieldBreakStatement)) : addEnumerateExportStatements(referenceMethods);
+
         var importsClass =
-            ClassDeclaration(request.ImportConfiguration.ClassName)
+            ClassDeclaration(request.BuildConfig.ImportConfiguration.ClassName)
                .WithAttributeLists(
                     SingletonList(
                         CompilerGeneratedAttributes
@@ -33,7 +39,7 @@ internal static class ImportConventions
                             VariableDeclaration(IdentifierName("LoadClavusParts"))
                                .WithVariables(
                                     SingletonSeparatedList(
-                                        VariableDeclarator(Identifier(request.ImportConfiguration.MethodName))
+                                        VariableDeclarator(Identifier(request.BuildConfig.ImportConfiguration.MethodName))
                                            .WithInitializer(EqualsValueClause(IdentifierName("LoadClavusPartsMethod")))
                                     )
                                 )
@@ -61,8 +67,79 @@ internal static class ImportConventions
                 )
                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
+        if (request.BuildConfig.IsTestProject || request.BuildConfig.AssignExternal)
+        {
+            importsClass = importsClass.AddMembers(
+                MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier("Init"))
+                   .WithAttributeLists(
+                        SingletonList(
+                            AttributeList(
+                                SeparatedList(
+                                    [
+                                        Attribute(ParseName("System.Runtime.CompilerServices.ModuleInitializer")),
+                                        Attribute(ParseName("System.ComponentModel.EditorBrowsable"))
+                                           .WithArgumentList(
+                                                AttributeArgumentList(
+                                                    SingletonSeparatedList(
+                                                        AttributeArgument(
+                                                            MemberAccessExpression(
+                                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                                ParseName("System.ComponentModel.EditorBrowsableState"),
+                                                                IdentifierName("Never")
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            ),
+                                    ]
+                                )
+                            )
+                        )
+                    )
+                   .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.StaticKeyword)))
+                   .WithBody(
+                        Block(
+                            List<StatementSyntax>(
+                                [
+                                    ExpressionStatement(
+                                        InvocationExpression(
+                                                MemberAccessExpression(
+                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                    IdentifierName("Environment"),
+                                                    IdentifierName("SetEnvironmentVariable")
+                                                )
+                                            )
+                                           .WithArgumentList(
+                                                ArgumentList(
+                                                    SeparatedList(
+                                                        [
+                                                            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("CLAVUS__HOSTTYPE"))),
+                                                            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("UnitTest"))),
+                                                        ]
+                                                    )
+                                                )
+                                            )
+                                    ),
+                                    ExpressionStatement(
+                                        AssignmentExpression(
+                                            SyntaxKind.SimpleAssignmentExpression,
+                                            MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                IdentifierName("ImportHelpers"),
+                                                IdentifierName("Tectum")
+                                            ),
+                                            IdentifierName(request.BuildConfig.ImportConfiguration.MethodName)
+                                        )
+                                    ),
+                                ]
+                            )
+                        )
+                    )
+            );
+        }
+
         var cu = CompilationUnit()
-                .WithAttributeLists(request.ImportConfiguration.ToAttributes("Imports"))
+                .WithAttributeLists(request.BuildConfig.ImportConfiguration.ToAttributes())
                 .AddSharedTrivia()
                 .WithUsings(
                      List(
@@ -83,7 +160,7 @@ internal static class ImportConventions
 
         cu = cu
            .AddMembers(
-                request.ImportConfiguration is { Namespace: { Length: > 0 } relativeNamespace }
+                request.BuildConfig.ImportConfiguration is { Namespace: { Length: > 0 } relativeNamespace }
                     ? [NamespaceDeclaration(ParseName(relativeNamespace)).AddMembers(members.ToArray())]
                     : [.. members]
             );
@@ -92,51 +169,6 @@ internal static class ImportConventions
             "Imported_Assembly_Conventions.g.cs",
             cu.NormalizeWhitespace().SyntaxTree.GetRoot().GetText(Encoding.UTF8)
         );
-
-        static IReadOnlyCollection<string> getReferences(Compilation compilation, bool exports, ClavusConfigurationData configurationData) => [
-            .. compilation
-              .References
-              .Select(compilation.GetAssemblyOrModuleSymbol)
-              .OfType<IAssemblySymbol>()
-              .Select(
-                   symbol =>
-                   {
-                       try
-                       {
-                           var config = ClavusConfigurationData.FromAssemblyAttributes(symbol, ClavusConfigurationData.ExportsDefaults);
-                           if (symbol.GetTypeByMetadataName(
-                                   config switch
-                                   {
-                                       { Namespace.Length: > 0, Postfix: true }  => $"{config.Namespace}.Conventions.{config.ClassName}",
-                                       { Postfix: true }                         => $"Conventions.{config.ClassName}",
-                                       { Namespace.Length: > 0, Postfix: false } => $"{config.Namespace}.{config.ClassName}",
-                                       _                                         => config.ClassName,
-                                   }
-                               ) is { } configuredMetadata) { return configuredMetadata.ToDisplayString() + $".{config.MethodName}";
-                           } }
-                       catch
-                       {
-                           //
-                       }
-
-                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                       return null!;
-                   }
-               )
-              .Where(z => !string.IsNullOrWhiteSpace(z))
-              .Concat(
-                   exports
-                       ?
-                       [
-                           ( string.IsNullOrWhiteSpace(configurationData.Namespace) ? "" : configurationData.Namespace + "." )
-                         + configurationData.ClassName
-                         + "."
-                         + configurationData.MethodName,
-                       ]
-                       : []
-               )
-              .OrderBy(z => z),
-            ];
 
         static BlockSyntax addEnumerateExportStatements(IReadOnlyCollection<string> references)
         {
@@ -162,8 +194,8 @@ internal static class ImportConventions
     public record Request
     (
         Compilation Compilation,
-        bool HasExports,
-        ClavusConfigurationData ImportConfiguration,
-        ClavusConfigurationData ExportConfiguration
+        MsBuildConfig BuildConfig,
+        ImmutableArray<INamedTypeSymbol> ExportedConventions
     );
+
 }

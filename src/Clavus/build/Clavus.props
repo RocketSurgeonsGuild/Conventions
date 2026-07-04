@@ -1,4 +1,19 @@
 <Project>
+
+  <Choose>
+    <When Condition="'$(ClavusConfiguration)'=='Release'" />
+    <When Condition="'$(ClavusConfiguration)'=='Debug'" />
+    <When Condition="$(Configuration.Contains('Release'))">
+      <PropertyGroup>
+        <ClavusConfiguration>Release</ClavusConfiguration>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <ClavusConfiguration>Debug</ClavusConfiguration>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
   <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">
     <Using Include="Clavus" />
   </ItemGroup>

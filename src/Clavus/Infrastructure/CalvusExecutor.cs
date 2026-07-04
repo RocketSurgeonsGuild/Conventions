@@ -15,7 +15,7 @@ public class CalvusExecutor(IClavusContext context)
     /// <param name="action"></param>
     /// <typeparam name="TConvention"></typeparam>
     /// <returns></returns>
-    public CalvusExecutor AddHandler<TConvention>(Action<TConvention> action)
+    public CalvusExecutor AddHandler<TConvention>(Action<TConvention> action) where TConvention : IClavusPart
     {
         _conventionHandlers.Add(
             o =>
@@ -40,7 +40,7 @@ public class CalvusExecutor(IClavusContext context)
     /// <param name="action"></param>
     /// <typeparam name="TConvention"></typeparam>
     /// <returns></returns>
-    public CalvusExecutor AddHandler<TConvention>(Func<TConvention, ValueTask> action)
+    public CalvusExecutor AddHandler<TConvention>(Func<TConvention, ValueTask> action) where TConvention : IClavusPart
     {
         _asyncConventionHandlers.Add(
             async o =>
@@ -64,7 +64,7 @@ public class CalvusExecutor(IClavusContext context)
     /// </summary>
     public async ValueTask ExecuteAsync()
     {
-        foreach (var convention in context.Conventions.GetAll())
+        foreach (var convention in context.Parts)
         {
             foreach (var handler in _conventionHandlers)
             {
@@ -78,6 +78,6 @@ public class CalvusExecutor(IClavusContext context)
         }
     }
 
-    private readonly List<Func<object, ValueTask>> _asyncConventionHandlers = [];
-    private readonly List<Action<object>> _conventionHandlers = [];
+    private readonly List<Func<IClavusPart, ValueTask>> _asyncConventionHandlers = [];
+    private readonly List<Action<IClavusPart>> _conventionHandlers = [];
 }

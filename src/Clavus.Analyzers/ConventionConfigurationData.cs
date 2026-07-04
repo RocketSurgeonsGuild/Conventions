@@ -1,205 +1,47 @@
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Clavus;
 
-internal record ClavusConfigurationData(bool WasConfigured, bool Assembly, string? Namespace, string ClassName, string MethodName)
+internal record ClavusConfigurationData(string Property, string Namespace, string ClassName, string MethodName)
 {
-    public static ClavusConfigurationData ExportsDefaults { get; } = new(false, true, "", "Exports", "GetConventions") { Postfix = true, };
-    public static ClavusConfigurationData ImportsDefaults { get; } = new(false, true, "", "Imports", "Instance") { Postfix = true, };
-
-    public static IncrementalValueProvider<ClavusConfigurationData> Create(
+    public static IncrementalValueProvider<ClavusConfigurationData> Read(
         IncrementalGeneratorInitializationContext context,
-        string propertyPrefix,
-        string attributeName,
-        ClavusConfigurationData defaults
+        string propertyPrefix
     )
     {
-        var msBuildConfiguration =
-            context.AnalyzerConfigOptionsProvider.Select(
-                (config, _) =>
-                {
-                    var data = InnerClavusConfigurationData.FromDefaults(defaults);
-                    if (config.GlobalOptions.TryGetValue($"build_property.{propertyPrefix}{nameof(InnerClavusConfigurationData.Namespace)}", out var value))
-                        data = data with { Namespace = value, DefinedNamespace = true, WasConfigured = true, };
-                    else if (config.GlobalOptions.TryGetValue("build_property.RootNamespace", out value))
-                        data = data with { Namespace = value, DefinedNamespace = true, };
-
-                    if (config.GlobalOptions.TryGetValue($"build_property.{propertyPrefix}{nameof(InnerClavusConfigurationData.ClassName)}", out value))
-                        data = data with { ClassName = value, WasConfigured = true, };
-
-                    if (config.GlobalOptions.TryGetValue($"build_property.{propertyPrefix}{nameof(InnerClavusConfigurationData.MethodName)}", out value))
-                        data = data with { MethodName = value, WasConfigured = true, };
-
-                    if (config.GlobalOptions.TryGetValue($"build_property.{propertyPrefix}{nameof(InnerClavusConfigurationData.Assembly)}", out value))
-                        data = data with { Assembly = bool.TryParse(value, out var b) && b, WasConfigured = true, };
-
-                    return data;
-                }
-            );
-        var assemblyConfiguration =
-            context
-               .SyntaxProvider
-               .CreateSyntaxProvider(
-                    (node, _) => node is AttributeListSyntax attributeListSyntax
-                     && attributeListSyntax.Target?.Identifier.IsKind(SyntaxKind.AssemblyKeyword) == true
-                     && FindAttribute(attributeListSyntax, attributeName) is { },
-                    (syntaxContext, _) =>
-                        syntaxContext.Node is AttributeListSyntax attributeListSyntax
-                            ? FindAttribute(attributeListSyntax, attributeName)
-                            : default
-                )
-               .Where(z => z is { })
-               .Collect()
-               .Select(
-                    (attributes, _) =>
-                    {
-                        var data = InnerClavusConfigurationData.FromDefaults(defaults);
-                        if (!attributes.Any()) return data;
-
-                        data = data with { WasConfigured = true, };
-
-                        var attribute = attributes.First();
-                        if (attribute is null || attribute.ArgumentList is null or { Arguments.Count: 0, }) return data;
-                        foreach (var arg in attribute.ArgumentList.Arguments)
-                        {
-                            if (arg is { NameEquals: null, } or { Expression: null or not LiteralExpressionSyntax, }) continue;
-                            var syntax = (LiteralExpressionSyntax)arg.Expression;
-
-                            data = arg.NameEquals.Name.Identifier.Text switch
-                            {
-                                nameof(InnerClavusConfigurationData.Namespace) => data with
-                                {
-                                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                    Namespace = (string)syntax.Token.Value!,
-                                    DefinedNamespace = true,
-                                },
-                                nameof(InnerClavusConfigurationData.ClassName) => data with
-                                {
-                                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                    ClassName = (string)syntax.Token.Value!,
-                                },
-                                nameof(InnerClavusConfigurationData.MethodName) => data with
-                                {
-                                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                    MethodName = (string)syntax.Token.Value!,
-                                },
-                                nameof(InnerClavusConfigurationData.Assembly) => data with
-                                {
-                                    // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                                    Assembly = (bool)syntax.Token.Value!,
-                                },
-                                _ => data,
-                            };
-                        }
-
-                        return data;
-                    }
-                );
-
-        return assemblyConfiguration
-              .Combine(msBuildConfiguration)
-              .Select((z, _) => z.Left.WasConfigured ? z.Left : z.Right)
-              .Combine(context.CompilationProvider)
-              .Select(
-                   (tuple, _) => new ClavusConfigurationData(
-                       tuple.Left.WasConfigured,
-                       tuple.Left.Assembly,
-                       // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                       tuple.Left.DefinedNamespace ? tuple.Left.Namespace! : GetNamespaceForCompilation(tuple.Right, defaults.Postfix),
-                       tuple.Left.ClassName,
-                       tuple.Left.MethodName
-                   )
-               )
-              .Select((data, _) => data with { Namespace = data.Namespace == "global" ? "" : data.Namespace, });
-    }
-
-    public static ClavusConfigurationData FromAssemblyAttributes(IAssemblySymbol assemblySymbol, ClavusConfigurationData defaults)
-    {
-        var data = InnerClavusConfigurationData.FromDefaults(defaults);
-        var prefix = $"ClavusConfigurationData.{defaults.ClassName}";
-        foreach (var attribute in assemblySymbol.GetAttributes().Where(z => z is { AttributeClass.MetadataName: "AssemblyMetadataAttribute", }))
-        {
-            if (attribute is not
-                {
-                    ConstructorArguments: [{ Value: string { Length: > 0, } key, }, var value,],
-                }
-             || !key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            data = key.Split('.').Last() switch
-            {
-                nameof(Namespace) => data with { Namespace = (string?)value.Value, },
-                nameof(ClassName) => data with { ClassName = (string)value.Value!, },
-                nameof(MethodName) => data with { MethodName = (string)value.Value!, },
-                _ => data,
-            };
-        }
-
-        return new(false, data.Assembly, data.Namespace, data.ClassName, data.MethodName);
-    }
-
-    private static AttributeSyntax? FindAttribute(AttributeListSyntax list, string name)
-    {
-        return list.Attributes.FirstOrDefault(
-            z => z.Name.ToFullString().TrimEnd().EndsWith(name, StringComparison.OrdinalIgnoreCase)
-             || z.Name.ToFullString().TrimEnd().EndsWith($"{name}Attribute", StringComparison.OrdinalIgnoreCase)
+        var prefix = $"Clavus{propertyPrefix}";
+        return context.AnalyzerConfigOptionsProvider.Select((config, _) => new ClavusConfigurationData(
+                                                                propertyPrefix,
+                                                                config.GlobalOptions.GetBuildProperty($"{prefix}{nameof(Namespace)}", s => s) ?? "##??NOT DEFINED??##",
+                                                                config.GlobalOptions.GetBuildProperty($"{prefix}{nameof(ClassName)}", s => s) ?? "##??NOT DEFINED??##",
+                                                                config.GlobalOptions.GetBuildProperty($"{prefix}{nameof(MethodName)}", s => s) ?? "##??NOT DEFINED??##"
+                                                            )
         );
     }
 
-    private static string GetNamespaceForCompilation(Compilation compilation, bool postfix = false)
+    public static ClavusConfigurationData? FromAssemblyAttributes(IAssemblySymbol assemblySymbol, string propertyPrefix)
     {
-        var @namespace = compilation.AssemblyName ?? "";
-        return postfix
-            ? ( @namespace.EndsWith(".Conventions", StringComparison.Ordinal) ? @namespace : @namespace + ".Conventions" ).TrimStart('.')
-            : @namespace;
-    }
-
-    public bool Postfix { get; init; }
-
-    public SyntaxList<AttributeListSyntax> ToAttributes(string type)
-    {
-        var list = List(
-            new[]
-            {
-                Helpers.AddAssemblyAttribute($"ClavusConfigurationData.{type}.{nameof(Namespace)}", Namespace),
-                Helpers.AddAssemblyAttribute($"ClavusConfigurationData.{type}.{nameof(ClassName)}", ClassName),
-                Helpers.AddAssemblyAttribute($"ClavusConfigurationData.{type}.{nameof(MethodName)}", MethodName),
-            }
+        var prefix = $"Clavus.{propertyPrefix}.";
+        var attributes = assemblySymbol.GetAssemblyMetadataAttributes(z => z.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+        return  attributes.Count == 0 
+            ?   null  
+            :   new(
+            propertyPrefix,
+            attributes.TryGetValue($"{prefix}{nameof(Namespace)}", out var ns) && ns is { Value: string namespaceValue } ? namespaceValue : "##??NOT DEFINED??##",
+            attributes.TryGetValue($"{prefix}{nameof(ClassName)}", out var className) && className is { Value: string classValue } ? classValue : "##??NOT DEFINED??##",
+            attributes.TryGetValue($"{prefix}{nameof(MethodName)}", out var methodName) && methodName is { Value: string methodNameValue } ? methodNameValue : "##??NOT DEFINED??##"
         );
-        if (type == "Import")
-        {
-            list = list.Add(
-                AttributeList(
-                        SingletonSeparatedList(
-                            Attribute(ParseName("Clavus.ImportsType"))
-                               .WithArgumentList(
-                                    AttributeArgumentList(
-                                        SingletonSeparatedList(
-                                            AttributeArgument(
-                                                TypeOfExpression(ParseTypeName(( Namespace is { Length: > 0, } ? Namespace + "." : "" ) + ClassName))
-                                            )
-                                        )
-                                    )
-                                )
-                        )
-                    )
-                   .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword)))
-            );
-        }
-
-        return list;
     }
 
-    private record InnerClavusConfigurationData(bool Assembly, string? Namespace, string ClassName, string MethodName)
+    public SyntaxList<AttributeListSyntax> ToAttributes()
     {
-        public static InnerClavusConfigurationData FromDefaults(ClavusConfigurationData configurationData) => new(configurationData.Assembly, null, configurationData.ClassName, configurationData.MethodName);
-
-        public bool DefinedNamespace { get; init; }
-        public bool WasConfigured { get; init; }
+        return [with(
+            GetType()
+               .GetProperties()
+               .Select(z => Helpers.AddAssemblyAttribute($"Clavus.{Property}.{z.Name}", z.GetValue(this) is string ? (string)z.GetValue(this) : null))
+        )];
     }
+
+    public override string ToString() => $"{Namespace}.{ClassName}.{MethodName}";
 }
