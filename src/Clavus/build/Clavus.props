@@ -1,19 +1,10 @@
 <Project>
+  <!--
+  Since this could get loaded transitively, I've split out the configuration and the using so that we're not intrusive to consumers.
 
-  <Choose>
-    <When Condition="'$(ClavusConfiguration)'=='Release'" />
-    <When Condition="'$(ClavusConfiguration)'=='Debug'" />
-    <When Condition="$(Configuration.Contains('Release'))">
-      <PropertyGroup>
-        <ClavusConfiguration>Release</ClavusConfiguration>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <ClavusConfiguration>Debug</ClavusConfiguration>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
+  We're already intrusive enough because we're loaded transitively in the first place... but that's part of the charm?! 🙃
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)Clavus.Configuration.props" />
   <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">
     <Using Include="Clavus" />
   </ItemGroup>
