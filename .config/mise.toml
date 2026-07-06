@@ -6,7 +6,7 @@ hk = "1.48.0"
 pkl = "0.31.1"
 node = "24.16.0"
 actionlint = "1.7.12"
-prettier = "3.8.4"
+biome = "2.5.2"
 
 dotnet = [{ version = "8.0.14", runtime = "dotnet" }, { version = "10.0.301" }]
 "dotnet:gitversion.tool" = "6.6.0"
@@ -22,6 +22,8 @@ dotnet = [{ version = "8.0.14", runtime = "dotnet" }, { version = "10.0.301" }]
 "dotnet:NuGet.Mcp.Server" = "1.4.3"
 "pipx:git+https://github.com/github/spec-kit.git" = "latest"
 "npm:@bradygaster/squad-cli" = "0.10.0"
+tombi = "1.1.7"
+oxfmt = "0.57.0"
 # dotnet
 
 [tasks]
@@ -33,7 +35,6 @@ docs = { run = "npm run dev --workspace docs", description = "Start Astro/Starli
 "pkl-vscode" = { run = "bash build/scripts/install-pkl-vscode.sh", description = "Install the Pkl VS Code extension (not in marketplace; installed from VSIX)" }
 
 [settings]
-lockfile = true
 prereleases = true
 
 [env]

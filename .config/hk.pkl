@@ -74,22 +74,23 @@ local jbCleanupCode: Step = new Step {
 
 local linters = new Mapping<String, Step> {
   ["mise"] = Builtins.mise
+  ["biome"] = Builtins.biome
+  ["tombi"] = Builtins.tombi
+  ["tombi-format"] = Builtins.tombi_format
+  ["xmllint"] = Builtins.xmllint
   ["byte-order-marker"] = Builtins.byte_order_marker
   ["case-conflict"] = Builtins.check_case_conflict
   ["merge-conflict"] = Builtins.check_merge_conflict
   ["symlinks"] = Builtins.check_symlinks
   ["hk-test"] = Builtins.hk_test
   ["pkl-format"] = Builtins.pkl_format
-  ["prettier"] = Builtins.prettier
-  ["prettier-extended"] = (Builtins.prettier) {
-    glob = List("*.*proj", "*.props", "*.targets", "*.xml")
-  }
   // Validate the hand-authored GitHub Actions workflows (.github/workflows/*.yml).
   ["actionlint"] = Builtins.actionlint
   // Safety nets (no external binaries required).
   ["detect-private-key"] = Builtins.detect_private_key
   ["large-files"] = Builtins.check_added_large_files
   ["dotnet-format"] = dotnetFormat
+  ["oxfmt"] = Builtins.oxfmt
   // ["jb-cleanupcode"] = jbCleanupCode
 }
 

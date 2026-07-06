@@ -1,4 +1,12 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)../src/Clavus/build/Clavus.targets" />
-    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
+  <Import Project="$(MSBuildThisFileDirectory)../src/Clavus/build/Clavus.targets" />
+  <ItemGroup>
+    <ProjectReference
+      Include="..\src\Clavus.Analyzers\Clavus.Analyzers.csproj"
+      IncludeAssets="all"
+      OutputItemType="Analyzer"
+      ReferenceOutputAssembly="false"
+    />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 </Project>

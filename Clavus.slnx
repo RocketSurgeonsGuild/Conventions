@@ -20,8 +20,6 @@
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
     <File Path=".gitmodules" />
-    <File Path=".prettierignore" />
-    <File Path=".prettierrc" />
     <File Path="build.cmd" />
     <File Path="build.ps1" />
     <File Path="build.sh" />
