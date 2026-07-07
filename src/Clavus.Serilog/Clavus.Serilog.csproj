@@ -12,4 +12,20 @@
         <PackageReference Include="Serilog.Extensions.Logging" />
         <ProjectReference Include="..\Clavus\Clavus.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <!--
+          Dogfood target for clavus-managed-configuration (task 8.3): ships appsettings.json with the
+          package and copies it next to the consuming host's output, mirroring the packaging shape
+          described in design.md Decision 1 (contentFiles/any/any/clavus/) ahead of Clavus.Sdk's
+          general ClavusConfiguration item (task 1.2/2.1) landing. Once that MSBuild item exists this
+          explicit item group is expected to be replaced by simply letting the default appsettings.*
+          globbing pick the file up.
+        -->
+        <Content
+            Include="appsettings.json"
+            CopyToOutputDirectory="PreserveNewest"
+            Pack="true"
+            PackagePath="contentFiles/any/any/clavus/"
+        />
+    </ItemGroup>
 </Project>

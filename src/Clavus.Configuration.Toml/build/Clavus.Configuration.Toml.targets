@@ -1,0 +1,6 @@
+<Project>
+    <ItemGroup>
+        <_BlazorTomlConfigurationFiles Include="wwwroot\appsettings*.toml" />
+        <AssemblyMetadata Include="BlazorConfigurationFile" Value="@(_BlazorTomlConfigurationFiles -> '%(Filename)%(Extension)')" />
+    </ItemGroup>
+</Project>
