@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "postToolUse": [
+      {
+        "bash": "\"/Users/david/.local/share/mise/installs/github-yvgude-lean-ctx/3.8.8/lean-ctx\" hook observe",
+        "powershell": "& \"/Users/david/.local/share/mise/installs/github-yvgude-lean-ctx/3.8.8/lean-ctx\" hook observe",
+        "timeoutSec": 5,
+        "type": "command"
+      }
+    ],
+    "preToolUse": [
+      {
+        "bash": "\"/Users/david/.local/share/mise/installs/github-yvgude-lean-ctx/3.8.8/lean-ctx\" hook rewrite",
+        "powershell": "& \"/Users/david/.local/share/mise/installs/github-yvgude-lean-ctx/3.8.8/lean-ctx\" hook rewrite",
+        "timeoutSec": 15,
+        "type": "command"
+      },
+      {
+        "bash": "\"/Users/david/.local/share/mise/installs/github-yvgude-lean-ctx/3.8.8/lean-ctx\" hook redirect",
+        "powershell": "& \"/Users/david/.local/share/mise/installs/github-yvgude-lean-ctx/3.8.8/lean-ctx\" hook redirect",
+        "timeoutSec": 5,
+        "type": "command"
+      }
+    ]
+  },
+  "version": 1
+}

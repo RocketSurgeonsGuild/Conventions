@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "lean-ctx": {
+      "args": [],
+      "command": "/Users/david/.local/share/mise/installs/github-yvgude-lean-ctx/3.8.8/lean-ctx",
+      "env": {
+        "LEAN_CTX_DATA_DIR": "/Users/david/.local/share/lean-ctx"
+      }
+    }
+  }
+}

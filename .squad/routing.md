@@ -6,35 +6,22 @@ How to decide who handles what.
 
 | Work Type | Route To | Examples |
 |-----------|----------|----------|
-| Site config, plugins, content pages | docs-engineer | astro.config.mjs, tags.yml, index.mdx, section landing pages, plugin verification |
-| API reference generation, mise tasks | api-docs-engineer | generate-api.sh, docs:api/docs:build tasks, xmldocmd, dotnet build |
-| CI/CD, GitHub Actions, GitHub Pages | devops-engineer | deploy-docs.yml, base path simulation, workflow triggers |
-| Code review | ralph | Review PRs, check quality, suggest improvements |
-| Scope & priorities | ralph | What to build next, trade-offs, decisions |
+| Source generator / analyzer work | Ripley | `Clavus.Analyzers`, `ClavusAttributesGenerator`, `IIncrementalGenerator` changes, `ClavusContextBuilder`/`IClavusPart`, ordering attributes (`Before`/`After`/`DependsOn`) |
+| Build/MSBuild/SDK work | Parker | `Clavus.Sdk` (`Sdk.props`/`Sdk.targets`), `Directory.Build.props`/`.targets`, ModularPipelines build script (`build/Build.cs`), `mise` tasks, NuGet packaging/versioning (GitVersion/GitReleaseManager) |
+| Hosting & DI integrations | Dallas | `Clavus.Hosting*` (Web/Maui/WebAssembly), `Clavus.Aspire(.Testing)`, `Clavus.Autofac`, `Clavus.DryIoc`, `Clavus.CommandLine`, `Clavus.Configuration.Json/Yaml`, `Clavus.Serilog` — routed to Lead until the roster grows a dedicated integrations specialist |
+| Code review | Dallas | Review PRs, architecture calls, scope trade-offs |
+| Testing | Ash | TUnit tests, Verify snapshot regressions (`test/*.Tests`, `snapshots/`), edge cases for generator output |
+| Docs | Lambert | Astro/Starlight site (`docs/`), API reference generation, concept guides |
+| Scope & priorities | Dallas | What to build next, trade-offs, decisions |
 | Session logging | Scribe | Automatic — never needs routing |
 | RAI review | Rai | Content safety, bias checks, credential detection, ethical review |
-
-## Task Routing by Pattern
-
-| Pattern | Route To |
-|---------|----------|
-| `astro.config.mjs`, `content.config.ts`, `tags.yml`, `index.mdx` | docs-engineer |
-| `docs/src/content/docs/` (any content page) | docs-engineer |
-| Plugin verification, representative content for plugins | docs-engineer |
-| `.config/mise.toml` docs task definitions | api-docs-engineer |
-| `docs/scripts/generate-api.sh`, `xmldocmd`, `add-api-frontmatter.mjs` | api-docs-engineer |
-| `dotnet build`, API reference output under `docs/src/content/docs/api/` | api-docs-engineer |
-| `.github/workflows/`, GitHub Pages deployment, CI base path | devops-engineer |
 
 ## Issue Routing
 
 | Label | Action | Who |
 |-------|--------|-----|
-| `squad` | Triage: analyze issue, assign `squad:{member}` label | ralph |
-| `squad:docs-engineer` | Pick up and complete the work | docs-engineer |
-| `squad:api-docs-engineer` | Pick up and complete the work | api-docs-engineer |
-| `squad:devops-engineer` | Pick up and complete the work | devops-engineer |
-| `squad:ralph` | Pick up and complete the work | ralph |
+| `squad` | Triage: analyze issue, assign `squad:{member}` label | Lead |
+| `squad:{name}` | Pick up issue and complete the work | Named member |
 
 ### How Issue Assignment Works
 
