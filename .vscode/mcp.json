@@ -1,38 +1,46 @@
 {
+  "inputs": [
+    {
+      "description": "API key for authentication",
+      "id": "context7-api-key",
+      "password": true,
+      "type": "promptString"
+    }
+  ],
   "servers": {
+    "io.github.github/github-mcp-server": {
+      "headers": {},
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
     "io.github.upstash/context7": {
-      "type": "stdio",
-      "command": "npx",
       "args": [
         "-y",
         "@upstash/context7-mcp"
       ],
+      "command": "npx",
       "env": {
         "CONTEXT7_API_KEY": "${input:context7-api-key}"
-      }
+      },
+      "type": "stdio"
+    },
+    "lean-ctx": {
+      "args": [],
+      "command": "/Users/david/.local/share/mise/installs/github-yvgude-lean-ctx/3.8.8/lean-ctx",
+      "env": {
+        "LEAN_CTX_DATA_DIR": "/Users/david/.local/share/lean-ctx"
+      },
+      "type": "stdio"
     },
     "microsoftdocs/mcp": {
+      "headers": {},
       "type": "http",
-      "url": "https://learn.microsoft.com/api/mcp",
-      "headers": {}
-    },
-    "io.github.github/github-mcp-server": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {}
+      "url": "https://learn.microsoft.com/api/mcp"
     },
     "nuget": {
-      "type": "stdio",
+      "args": [],
       "command": "nuget-mcp-server",
-      "args": []
+      "type": "stdio"
     }
-  },
-  "inputs": [
-    {
-      "type": "promptString",
-      "id": "context7-api-key",
-      "description": "API key for authentication",
-      "password": true
-    }
-  ]
+  }
 }

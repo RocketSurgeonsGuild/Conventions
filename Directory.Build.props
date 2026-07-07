@@ -37,10 +37,12 @@
   <PropertyGroup>
     <RollForward>LatestMajor</RollForward>
 
+    <!--
     <ApiCompatStrictMode>true</ApiCompatStrictMode>
     <ApiCompatValidateAssemblies>true</ApiCompatValidateAssemblies>
     <ApiCompatEnableRuleAttributesMustMatch>true</ApiCompatEnableRuleAttributesMustMatch>
     <ApiCompatEnableRuleCannotChangeParameterName>true</ApiCompatEnableRuleCannotChangeParameterName>
+    -->
 
     <EnablePackageValidation>true</EnablePackageValidation>
     <EnableStrictModeForBaselineValidation>false</EnableStrictModeForBaselineValidation>

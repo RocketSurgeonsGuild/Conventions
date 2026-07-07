@@ -1,0 +1,99 @@
+{
+  "marketplaces": [
+    {
+      "name": "claude-plugins-official",
+      "source": "anthropics/claude-plugins-official",
+      "added_at": "2026-07-06T21:45:15.883Z"
+    },
+    {
+      "name": "awesome-copilot",
+      "source": "github/awesome-copilot",
+      "added_at": "2026-07-06T21:47:08.415Z"
+    },
+    {
+      "name": "azure-skills",
+      "source": "microsoft/azure-skills",
+      "added_at": "2026-07-06T21:47:08.643Z"
+    },
+    {
+      "name": "duende-skills",
+      "source": "DuendeSoftware/duende-skills",
+      "added_at": "2026-07-06T21:47:08.878Z"
+    },
+    {
+      "name": "antigravity-awesome-skills",
+      "source": "sickn33/antigravity-awesome-skills",
+      "added_at": "2026-07-06T21:47:09.112Z"
+    },
+    {
+      "name": "claude-skills",
+      "source": "jeffallan/claude-skills",
+      "added_at": "2026-07-06T21:47:09.337Z"
+    },
+    {
+      "name": "modernize-dotnet",
+      "source": "dotnet/modernize-dotnet",
+      "added_at": "2026-07-06T21:47:09.663Z"
+    },
+    {
+      "name": "skills",
+      "source": "dotnet/skills",
+      "added_at": "2026-07-06T21:47:09.882Z"
+    },
+    {
+      "name": "cc-skills",
+      "source": "terrylica/cc-skills",
+      "added_at": "2026-07-06T21:47:10.117Z"
+    },
+    {
+      "name": "claudex",
+      "source": "cskiro/claudex",
+      "added_at": "2026-07-06T21:47:10.358Z"
+    },
+    {
+      "name": "andrej-karpathy-skills",
+      "source": "forrestchang/andrej-karpathy-skills",
+      "added_at": "2026-07-06T21:47:10.593Z"
+    },
+    {
+      "name": "agent-skills",
+      "source": "addyosmani/agent-skills",
+      "added_at": "2026-07-06T21:47:10.822Z"
+    },
+    {
+      "name": "context7",
+      "source": "upstash/context7",
+      "added_at": "2026-07-06T21:47:11.045Z"
+    },
+    {
+      "name": "Understand-Anything",
+      "source": "Egonex-AI/Understand-Anything",
+      "added_at": "2026-07-06T21:47:11.286Z"
+    },
+    {
+      "name": "obsidian-skills",
+      "source": "kepano/obsidian-skills",
+      "added_at": "2026-07-06T21:47:11.508Z"
+    },
+    {
+      "name": "awesome-claude-code-subagents",
+      "source": "VoltAgent/awesome-claude-code-subagents",
+      "added_at": "2026-07-06T21:47:11.753Z"
+    },
+    {
+      "name": "claude-skills",
+      "source": "alirezarezvani/claude-skills",
+      "added_at": "2026-07-06T21:47:11.983Z"
+    },
+    {
+      "name": "cc-best",
+      "source": "xiaobei930/cc-best",
+      "added_at": "2026-07-06T21:47:12.199Z"
+    },
+    {
+      "name": "csquad",
+      "source": "Piebald-AI/csquad",
+      "added_at": "2026-07-06T21:47:13.522Z"
+    }
+  ]
+}
