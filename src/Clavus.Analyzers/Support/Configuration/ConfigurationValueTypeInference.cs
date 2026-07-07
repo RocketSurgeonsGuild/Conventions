@@ -97,10 +97,11 @@ internal static class ConfigurationValueTypeInference
         }
 
         if (bool.TryParse(rawValue, out _)) return InferredValueKind.Bool;
-        if (int.TryParse(rawValue, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out _)) return InferredValueKind.Int;
-        return  long.TryParse(rawValue, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out _) 
-            ?  InferredValueKind.Long 
-            :  double.TryParse(rawValue, NumberStyles.Float, CultureInfo.InvariantCulture, out _)
+        return  int.TryParse(rawValue, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out _) 
+            ?  InferredValueKind.Int 
+            :  long.TryParse(rawValue, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out _)
+            ? InferredValueKind.Long
+            : double.TryParse(rawValue, NumberStyles.Float, CultureInfo.InvariantCulture, out _)
             ? InferredValueKind.Double
             : InferredValueKind.String;
     }
@@ -121,7 +122,7 @@ internal static class ConfigurationValueTypeInference
             InferredValueKind.Int => "int",
             InferredValueKind.Long => "long",
             InferredValueKind.Double => "double",
-            InferredValueKind.String => throw new NotImplementedException(),
+            InferredValueKind.String => "string",
             _ => "string",
         };
 }
