@@ -120,6 +120,12 @@
         </When> -->
     </Choose>
 
+    <!-- clavus-managed-configuration MSBuild surface (discovery, packing, copy, gitignore scaffold). -->
+    <Import Project="$(MSBuildThisFileDirectory)Sdk.Configuration.targets" Condition="'$(_ClavusSdkConfigurationTargetsImported)' != 'true'" />
+    <PropertyGroup>
+        <_ClavusSdkConfigurationTargetsImported>true</_ClavusSdkConfigurationTargetsImported>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
         <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">true</ImportClavusAssembly>
         <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">false</ExportClavusAssembly>

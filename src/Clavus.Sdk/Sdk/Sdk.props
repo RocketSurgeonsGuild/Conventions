@@ -6,7 +6,49 @@
         <ClavusEnableAutofac Condition="'$(ClavusEnableAutofac)' == ''">false</ClavusEnableAutofac>
         <ClavusEnableDryIoc Condition="'$(ClavusEnableDryIoc)' == ''">false</ClavusEnableDryIoc>
         <ClavusEnableSerilog Condition="'$(ClavusEnableSerilog)' == ''">false</ClavusEnableSerilog>
+
+        <!--
+          Gates the entire managed-configuration pipeline (discovery, packing, copy,
+          typed-class generation, IConfigurationPart wiring). Off by default so existing
+          Clavus consumers see no behavior change until they opt in. See design.md
+          Decision 7 (clavus-managed-configuration).
+        -->
+        <EnableClavusConfiguration Condition="'$(EnableClavusConfiguration)' == ''">false</EnableClavusConfiguration>
+
+        <!--
+          Opt-in switch for NodaTime type substitution in generated configuration classes
+          (LocalDate/LocalTime/OffsetDateTime/Duration instead of BCL DateOnly/TimeOnly/
+          DateTimeOffset/TimeSpan). Requires a NodaTime package reference in the same
+          project; enabling this without one produces diagnostic CLAVUS_CFG002 at the
+          generator level (see design.md Decision 3). No effect unless
+          EnableClavusConfiguration is also true.
+        -->
+        <ClavusConfigurationEnableNodaTime Condition="'$(ClavusConfigurationEnableNodaTime)' == ''">false</ClavusConfigurationEnableNodaTime>
     </PropertyGroup>
+
+    <!--
+      Conventional appsettings-style file discovery. Globbed here (in Sdk.props, before the
+      project body is evaluated) so consumers can override/exclude via
+      `<ClavusConfiguration Remove="..." />` in their own csproj, matching the same
+      pattern the .NET SDK itself uses for implicit Compile globbing. Metadata
+      (Format/Layer/BaseName/EnvironmentName/IsLocal/Precedence) is computed later in
+      Sdk.targets once the full item list (glob + any explicit additions) is known.
+
+      Conventions covered: appsettings.{ext}, appsettings.{Environment}.{ext},
+      appsettings.local.{ext} for ext in json/yaml/yml/toml.
+    -->
+    <ItemGroup Condition="'$(EnableClavusConfiguration)' == 'true'">
+        <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.json" Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json')" />
+        <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.yaml" Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yaml')" />
+        <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.yml" Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yml')" />
+        <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.toml" Condition="Exists('$(MSBuildProjectDirectory)\appsettings.toml')" />
+
+        <!-- Environment-specific and local layers: any `appsettings.<segment>.<ext>` file next to the project. -->
+        <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.*.json" Exclude="$(MSBuildProjectDirectory)\appsettings.json" />
+        <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.*.yaml" Exclude="$(MSBuildProjectDirectory)\appsettings.yaml" />
+        <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.*.yml" Exclude="$(MSBuildProjectDirectory)\appsettings.yml" />
+        <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.*.toml" Exclude="$(MSBuildProjectDirectory)\appsettings.toml" />
+    </ItemGroup>
 
     <!-- Core packages every Clavus consumer gets automatically -->
     <ItemGroup>

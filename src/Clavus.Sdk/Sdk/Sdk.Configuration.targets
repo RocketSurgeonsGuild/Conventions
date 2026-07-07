@@ -1,0 +1,222 @@
+<Project>
+  <!--
+    Clavus.Sdk / Sdk.Configuration.targets
+
+    MSBuild-side surface for the clavus-managed-configuration feature
+    (openspec/changes/clavus-managed-configuration). Everything here is inert unless
+    $(EnableClavusConfiguration) is 'true'.
+
+    Responsibilities:
+      1. Compute item metadata (Format/BaseName/Layer/EnvironmentName/IsLocal/Precedence)
+         for every <ClavusConfiguration> item, whether it came from the conventional glob
+         in Sdk.props or was added explicitly by the consuming project.
+      2. Surface the discovered items to the Roslyn analyzer/generator via
+         <AdditionalFiles>, with the same metadata visible through
+         CompilerVisibleItemMetadata, consistent with how ClavusMetadata/ClavusHostType
+         are already surfaced as CompilerVisibleProperty (see Clavus.targets).
+      3. Route non-local items into Pack with a stable PackagePath, explicitly excluding
+         appsettings.local.{ext} (design.md Decision 1 and Decision 8).
+      4. Copy non-local items into a referencing project's output directory when consumed
+         via same-solution ProjectReference, mirroring the packed layout (debug/package
+         parity).
+      5. Scaffold a .gitignore entry for appsettings.local.{ext}.
+
+    ClavusConfiguration item metadata schema:
+      Format          — Json | Yaml | Toml, inferred from file extension.
+      BaseName        — conventional base name, e.g. "appsettings".
+      Layer           — Base | Environment | Local.
+      EnvironmentName — set only when Layer == Environment (e.g. "Production").
+      IsLocal         — true only for the appsettings.local.{ext} layer.
+      Precedence      — ascending resolution order for same-BaseName files: Base=0,
+                         Environment=1, Local=2 (design.md Decision 1 / task 1.5).
+  -->
+
+  <ItemDefinitionGroup>
+    <ClavusConfiguration>
+      <Format></Format>
+      <BaseName></BaseName>
+      <Layer></Layer>
+      <EnvironmentName></EnvironmentName>
+      <IsLocal>false</IsLocal>
+      <Precedence>0</Precedence>
+    </ClavusConfiguration>
+  </ItemDefinitionGroup>
+
+  <Target Name="_ClavusPrepareConfigurationItems"
+          Condition="'$(EnableClavusConfiguration)' == 'true' and '@(ClavusConfiguration)' != ''">
+    <!--
+      NOTE ON BATCHING: each <ItemGroup> below is a separate sequential step. Conditions
+      within a single <ClavusConfiguration> update element are all evaluated against the
+      metadata state as of the START of that element (siblings never see each other's
+      new values, even though they're written in the same XML block) — only a
+      subsequent, separate <ItemGroup> element sees the previous step's results. Any
+      metadata computation that depends on another metadata value set earlier in this
+      target MUST therefore live in its own <ItemGroup> step, in order.
+    -->
+
+    <!-- Step 1: Format from extension. .yml and .yaml both normalize to the Yaml format. -->
+    <ItemGroup>
+      <ClavusConfiguration>
+        <Format Condition="'%(ClavusConfiguration.Extension)' == '.json'">Json</Format>
+        <Format Condition="'%(ClavusConfiguration.Extension)' == '.yaml' or '%(ClavusConfiguration.Extension)' == '.yml'">Yaml</Format>
+        <Format Condition="'%(ClavusConfiguration.Extension)' == '.toml'">Toml</Format>
+      </ClavusConfiguration>
+    </ItemGroup>
+
+    <!--
+      Step 2: Layer detection. %(Filename) for "appsettings.json" is "appsettings"; for
+      "appsettings.Production.json" it is "appsettings.Production"; for
+      "appsettings.local.json" it is "appsettings.local". Everything here assumes the
+      "appsettings" conventional base name — explicitly declared items with a different
+      base name fall through to the Step 3 fallback (Layer=Base/BaseName=%(Filename))
+      since there is no environment/local convention to infer without a shared base name.
+      All conditions here reference only the immutable %(Filename), so they're safe to
+      combine in one step.
+    -->
+    <ItemGroup>
+      <ClavusConfiguration>
+        <BaseName Condition="'%(ClavusConfiguration.Filename)' == 'appsettings'">appsettings</BaseName>
+        <Layer Condition="'%(ClavusConfiguration.Filename)' == 'appsettings'">Base</Layer>
+
+        <BaseName Condition="'%(ClavusConfiguration.Filename)' != 'appsettings' and $([System.Text.RegularExpressions.Regex]::IsMatch('%(ClavusConfiguration.Filename)', '^appsettings\.'))">appsettings</BaseName>
+        <_ClavusConfigSuffix Condition="'%(ClavusConfiguration.Filename)' != 'appsettings' and $([System.Text.RegularExpressions.Regex]::IsMatch('%(ClavusConfiguration.Filename)', '^appsettings\.'))">$([System.Text.RegularExpressions.Regex]::Match('%(ClavusConfiguration.Filename)', '^appsettings\.(.+)$').Groups[1].Value)</_ClavusConfigSuffix>
+      </ClavusConfiguration>
+    </ItemGroup>
+
+    <!-- Step 3: Local/Environment layer, derived from the Step 2 suffix. -->
+    <ItemGroup>
+      <ClavusConfiguration>
+        <Layer Condition="'%(ClavusConfiguration._ClavusConfigSuffix)' != '' and $([System.String]::new('%(ClavusConfiguration._ClavusConfigSuffix)').ToLowerInvariant()) == 'local'">Local</Layer>
+        <IsLocal Condition="'%(ClavusConfiguration._ClavusConfigSuffix)' != '' and $([System.String]::new('%(ClavusConfiguration._ClavusConfigSuffix)').ToLowerInvariant()) == 'local'">true</IsLocal>
+
+        <Layer Condition="'%(ClavusConfiguration._ClavusConfigSuffix)' != '' and $([System.String]::new('%(ClavusConfiguration._ClavusConfigSuffix)').ToLowerInvariant()) != 'local'">Environment</Layer>
+        <EnvironmentName Condition="'%(ClavusConfiguration._ClavusConfigSuffix)' != '' and $([System.String]::new('%(ClavusConfiguration._ClavusConfigSuffix)').ToLowerInvariant()) != 'local'">%(ClavusConfiguration._ClavusConfigSuffix)</EnvironmentName>
+      </ClavusConfiguration>
+    </ItemGroup>
+
+    <!-- Step 4: Fallback for an explicitly declared file that doesn't match the appsettings.* convention at all. Must run after Steps 2-3 so it only fires when those left BaseName/Layer unset. -->
+    <ItemGroup>
+      <ClavusConfiguration>
+        <BaseName Condition="'%(ClavusConfiguration.BaseName)' == ''">%(ClavusConfiguration.Filename)</BaseName>
+        <Layer Condition="'%(ClavusConfiguration.Layer)' == ''">Base</Layer>
+      </ClavusConfiguration>
+    </ItemGroup>
+
+    <!-- Step 5: Precedence: base -> environment -> local (design.md Decision 1 / task 1.5). Must run after Layer is finalized (Steps 2-4). -->
+    <ItemGroup>
+      <ClavusConfiguration>
+        <Precedence Condition="'%(ClavusConfiguration.Layer)' == 'Base'">0</Precedence>
+        <Precedence Condition="'%(ClavusConfiguration.Layer)' == 'Environment'">1</Precedence>
+        <Precedence Condition="'%(ClavusConfiguration.Layer)' == 'Local'">2</Precedence>
+      </ClavusConfiguration>
+    </ItemGroup>
+  </Target>
+
+  <!-- Surface discovered items + feature-flag properties to the analyzer/generator. -->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="EnableClavusConfiguration" />
+    <CompilerVisibleProperty Include="ClavusConfigurationEnableNodaTime" />
+
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigFormat" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigBaseName" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigLayer" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigEnvironmentName" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigIsLocal" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigPrecedence" />
+  </ItemGroup>
+
+  <Target Name="_ClavusExposeConfigurationToAnalyzer"
+          Condition="'$(EnableClavusConfiguration)' == 'true' and '@(ClavusConfiguration)' != ''"
+          BeforeTargets="CoreCompile"
+          DependsOnTargets="_ClavusPrepareConfigurationItems">
+    <ItemGroup>
+      <AdditionalFiles Include="@(ClavusConfiguration)"
+                        ClavusConfigFormat="%(ClavusConfiguration.Format)"
+                        ClavusConfigBaseName="%(ClavusConfiguration.BaseName)"
+                        ClavusConfigLayer="%(ClavusConfiguration.Layer)"
+                        ClavusConfigEnvironmentName="%(ClavusConfiguration.EnvironmentName)"
+                        ClavusConfigIsLocal="%(ClavusConfiguration.IsLocal)"
+                        ClavusConfigPrecedence="%(ClavusConfiguration.Precedence)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Packaging (task 2.1): non-local ClavusConfiguration items are packed as content files
+    under a stable PackagePath. appsettings.local.{ext} is never packed (design.md
+    Decision 8) — it is filtered out via the IsLocal condition below, computed in
+    _ClavusPrepareConfigurationItems, so it must run first.
+  -->
+  <Target Name="_ClavusPackConfiguration"
+          Condition="'$(EnableClavusConfiguration)' == 'true' and '@(ClavusConfiguration)' != ''"
+          BeforeTargets="_GetPackageFiles;GenerateNuspec"
+          DependsOnTargets="_ClavusPrepareConfigurationItems">
+    <ItemGroup>
+      <None Include="@(ClavusConfiguration)"
+            Condition="'%(ClavusConfiguration.IsLocal)' != 'true'"
+            Pack="true"
+            PackagePath="contentFiles/any/any/clavus/%(ClavusConfiguration.Filename)%(ClavusConfiguration.Extension)"
+            Visible="false" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Same-solution ProjectReference copy (task 2.3/2.4). A library that declares
+    ClavusConfiguration items exposes them to referencing projects through
+    GetClavusConfigurationItems (the same "callback target invoked via the MSBuild task
+    on @(ProjectReference)" pattern the .NET SDK itself uses for e.g.
+    GetCopyToOutputDirectoryItems). The referencing (host) project then copies the
+    non-local files into its own output directory under "clavus/", the same relative
+    layout the packed contentFiles/any/any/clavus/ path produces once restored, so
+    debug-time behavior matches packaged behavior.
+  -->
+  <Target Name="GetClavusConfigurationItems"
+          Condition="'$(EnableClavusConfiguration)' == 'true'"
+          DependsOnTargets="_ClavusPrepareConfigurationItems"
+          Returns="@(ClavusConfiguration)" />
+
+  <Target Name="_ClavusCopyReferencedConfiguration"
+          Condition="'$(EnableClavusConfiguration)' == 'true' and '@(ProjectReference)' != ''"
+          BeforeTargets="AssignTargetPaths">
+    <MSBuild Projects="@(ProjectReference)"
+             Targets="GetClavusConfigurationItems"
+             BuildInParallel="$(BuildInParallel)"
+             ContinueOnError="WarnAndContinue"
+             SkipNonexistentTargets="true">
+      <Output TaskParameter="TargetOutputs" ItemName="_ClavusReferencedConfiguration" />
+    </MSBuild>
+
+    <ItemGroup Condition="'@(_ClavusReferencedConfiguration)' != ''">
+      <None Include="@(_ClavusReferencedConfiguration)"
+            Condition="'%(_ClavusReferencedConfiguration.IsLocal)' != 'true'"
+            CopyToOutputDirectory="PreserveNewest"
+            TargetPath="clavus\%(_ClavusReferencedConfiguration.Filename)%(_ClavusReferencedConfiguration.Extension)"
+            Link="clavus\%(_ClavusReferencedConfiguration.Filename)%(_ClavusReferencedConfiguration.Extension)"
+            Visible="false" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    .gitignore scaffolding (task 1.6): appsettings.local.{ext} is a developer-machine-only
+    override layer (design.md Decision 8) and must never be committed. Append a pattern
+    to the nearest .gitignore next to the project if one doesn't already cover it.
+  -->
+  <Target Name="_ClavusScaffoldLocalConfigurationGitIgnore"
+          Condition="'$(EnableClavusConfiguration)' == 'true'"
+          BeforeTargets="Build;Restore">
+    <PropertyGroup>
+      <_ClavusGitIgnorePath>$(MSBuildProjectDirectory)\.gitignore</_ClavusGitIgnorePath>
+      <_ClavusGitIgnoreExistingContent Condition="Exists('$(_ClavusGitIgnorePath)')">$([System.IO.File]::ReadAllText('$(_ClavusGitIgnorePath)'))</_ClavusGitIgnoreExistingContent>
+      <_ClavusGitIgnoreNeedsEntry Condition="'$(_ClavusGitIgnoreExistingContent)' == '' or !$(_ClavusGitIgnoreExistingContent.Contains('appsettings.local.'))">true</_ClavusGitIgnoreNeedsEntry>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(_ClavusGitIgnoreNeedsEntry)' == 'true'">
+      <_ClavusGitIgnoreLines Include="appsettings.local.json" />
+      <_ClavusGitIgnoreLines Include="appsettings.local.yaml" />
+      <_ClavusGitIgnoreLines Include="appsettings.local.yml" />
+      <_ClavusGitIgnoreLines Include="appsettings.local.toml" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_ClavusGitIgnorePath)"
+                       Lines="@(_ClavusGitIgnoreLines)"
+                       Condition="'$(_ClavusGitIgnoreNeedsEntry)' == 'true'"
+                       Overwrite="false" />
+  </Target>
+</Project>
