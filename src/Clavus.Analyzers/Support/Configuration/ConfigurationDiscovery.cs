@@ -27,18 +27,22 @@ internal static class ConfigurationDiscovery
     private static ConfigurationSourceFile? TryRead(AdditionalText text, AnalyzerConfigOptionsProvider optionsProvider, CancellationToken cancellationToken)
     {
         var options = optionsProvider.GetOptions(text);
-        if (!options.TryGetValue("build_metadata.AdditionalFiles.ClavusConfiguration", out var flag)
-         || !bool.TryParse(flag, out var isConfigurationFile)
-         || !isConfigurationFile)
+        if (!options.TryGetValue("build_metadata.AdditionalFiles.ClavusConfigFormat", out var formatMetadata) || formatMetadata is not { Length: > 0, })
         {
             return null;
         }
 
-        var format = InferFormat(text.Path);
+        var format = formatMetadata.ToUpperInvariant() switch
+        {
+            "JSON" => ConfigurationFileFormat.Json,
+            "YAML" => ConfigurationFileFormat.Yaml,
+            "TOML" => ConfigurationFileFormat.Toml,
+            _ => InferFormat(text.Path),
+        };
         if (format is null) return null;
 
-        options.TryGetValue("build_metadata.AdditionalFiles.ClavusConfigurationBaseName", out var baseName);
-        options.TryGetValue("build_metadata.AdditionalFiles.ClavusConfigurationLayer", out var layer);
+        options.TryGetValue("build_metadata.AdditionalFiles.ClavusConfigBaseName", out var baseName);
+        options.TryGetValue("build_metadata.AdditionalFiles.ClavusConfigLayer", out var layer);
 
         var resolvedBaseName = baseName is { Length: > 0, } ? baseName : DefaultBaseName(text.Path);
         var content = text.GetText(cancellationToken)?.ToString() ?? "";

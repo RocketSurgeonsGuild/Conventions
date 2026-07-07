@@ -41,7 +41,7 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
                                        provider.Left.Right,
                                        provider.Right,
                                        provider.Left.Left.GlobalOptions.GetBuildProperty("EnableClavusConfiguration", x => bool.TryParse(x, out var v) && v),
-                                       provider.Left.Left.GlobalOptions.GetBuildProperty("ClavusConfigurationNodaTime", x => bool.TryParse(x, out var v) && v)
+                                       provider.Left.Left.GlobalOptions.GetBuildProperty("ClavusConfigurationEnableNodaTime", x => bool.TryParse(x, out var v) && v)
                                    )
                             )
                            .WithTrackingName("clavus:msbuild");
