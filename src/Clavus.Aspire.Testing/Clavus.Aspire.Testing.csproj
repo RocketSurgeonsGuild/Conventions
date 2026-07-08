@@ -9,8 +9,8 @@
         <PackageTags>$(PackageTags);hosting;generic host</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Clavus\Clavus.csproj" />
-        <ProjectReference Include="..\Clavus.Aspire\Clavus.Aspire.csproj" />
+        <ProjectReference Include="../../src/Clavus/Clavus.csproj" />
+        <ProjectReference Include="../../src/Clavus.Aspire/Clavus.Aspire.csproj" />
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="Aspire.Hosting.Tests" />
