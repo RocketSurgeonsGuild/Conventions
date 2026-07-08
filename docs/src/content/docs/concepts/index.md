@@ -13,4 +13,5 @@ Conventions replaces runtime reflection-based application wiring with compile-ti
   <LinkCard title="Convention Context" href="/concepts/convention-context/" description="The context object passed to every convention." />
   <LinkCard title="Source Generation" href="/concepts/source-generation/" description="How the Roslyn generator resolves conventions at build time." />
   <LinkCard title="Unit Tests" href="/concepts/unit-tests/" description="Testing conventions in isolation." />
+  <LinkCard title="Managed Configuration" href="/concepts/managed-configuration/" description="Author library configuration once and have it packaged, typed, and wired into any host application." />
 </CardGrid>

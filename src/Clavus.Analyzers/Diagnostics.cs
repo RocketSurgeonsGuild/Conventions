@@ -57,4 +57,19 @@ internal static class Diagnostics
         DiagnosticSeverity.Warning,
         true
     );
+
+    /// <summary>
+    ///     Reported when the NodaTime configuration type-mode MSBuild property is enabled for a project that does
+    ///     not reference the <c>NodaTime</c> assembly. Silent fallback to BCL types would make the generated
+    ///     public API shape depend on an easily-missed reference, so this is an error rather than a warning.
+    /// </summary>
+    public static DiagnosticDescriptor NodaTimeEnabledWithoutReference { get; } = new(
+        "CLAVUS_CFG002",
+        "NodaTime configuration type-mode enabled without a NodaTime reference",
+        "The NodaTime configuration type-mode property is enabled, but this project does not reference the "
+      + "NodaTime assembly. Add a reference to NodaTime, or disable the property, to continue",
+        "Clavus.Configuration",
+        DiagnosticSeverity.Error,
+        true
+    );
 }

@@ -12,8 +12,8 @@ internal static class ExportConventions
 {
     public static void HandleConventionExports(SourceProductionContext context, Request request)
     {
-        (var msBuildConfig, var conventions) = request;
-        if (!conventions.Any()) return;
+        (var msBuildConfig, var conventions, var additionalPartTypeNames) = request;
+        if (!conventions.Any() && additionalPartTypeNames.IsDefaultOrEmpty) return;
 
         var helperClassBody = Block();
 
@@ -128,6 +128,38 @@ internal static class ExportConventions
                 YieldStatement(
                     SyntaxKind.YieldReturnStatement,
                     withDependencies
+                )
+            );
+        }
+
+        // Generator-authored IConfigurationPart types are always included in the export set (task 4.3) -
+        // they're never [ClavusExport]-decorated since they aren't hand-authored, and they ride the same
+        // export/import reference-graph walk as any other exported part (design.md Decision 5 / task 4.5),
+        // so no separate transitive-flow mechanism is needed here.
+        foreach (var partTypeName in additionalPartTypeNames)
+        {
+            helperClassBody = helperClassBody.AddStatements(
+                YieldStatement(
+                    SyntaxKind.YieldReturnStatement,
+                    ObjectCreationExpression(IdentifierName("ClavusPartMetadata"))
+                       .WithArgumentList(
+                            ArgumentList(
+                                SeparatedList(
+                                    new[]
+                                    {
+                                        Argument(ObjectCreationExpression(ParseName(partTypeName)).WithArgumentList(ArgumentList())),
+                                        Argument(_hostTypeUndefined),
+                                        Argument(
+                                            MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                IdentifierName("ClavusCategory"),
+                                                IdentifierName("Application")
+                                            )
+                                        ),
+                                    }
+                                )
+                            )
+                        )
                 )
             );
         }
@@ -253,5 +285,6 @@ internal static class ExportConventions
 
     public record Request(
         MsBuildConfig BuildConfig,
-        ImmutableArray<INamedTypeSymbol> ExportedConventions);
+        ImmutableArray<INamedTypeSymbol> ExportedConventions,
+        ImmutableArray<string> AdditionalPartTypeNames);
 }

@@ -3,5 +3,7 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="5.0.0" PrivateAssets="all" />
         <PackageReference Include="System.Collections.Immutable" VersionOverride="9.0.0" />
         <PackageReference Include="System.Text.Json" VersionOverride="9.0.9" PrivateAssets="all" GeneratePathProperty="true" />
+        <PackageReference Include="YamlDotNet" PrivateAssets="all" GeneratePathProperty="true" />
+        <PackageReference Include="Tomlyn" PrivateAssets="all" GeneratePathProperty="true" />
     </ItemGroup>
 </Project>

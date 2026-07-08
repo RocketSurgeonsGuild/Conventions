@@ -30,5 +30,34 @@ internal static class MsBuildExtensions
             .Select(symbol => ClavusConfigurationData.FromAssemblyAttributes(symbol, "Export"))
             .OfType<ClavusConfigurationData>()
             .OrderBy(z => z)];
+
+        /// <summary>
+        ///     Reads <c>[assembly: Clavus.ConfigurationAssembly(...)]</c> markers off every referenced assembly,
+        ///     reusing the same reference-walk mechanism as <see cref="GetClavusReferences" /> (task 2.7). The
+        ///     assembly's simple name is paired with each of its declared configuration entries so the manifest can
+        ///     report which assembly contributed which file.
+        /// </summary>
+        public ImmutableArray<(string AssemblyName, string Name, string RelativePath)> GetClavusConfigurationReferences() => [
+            ..compilation
+               .References
+               .Select(compilation.GetAssemblyOrModuleSymbol)
+               .OfType<IAssemblySymbol>()
+               .SelectMany(
+                    symbol => symbol
+                             .GetAttributes()
+                             .Where(a => a.AttributeClass?.ToDisplayString() == "Clavus.ConfigurationAssemblyAttribute")
+                             .Select(a => (symbol.Name, a))
+                )
+               .Select(
+                    pair => (
+                        AssemblyName: pair.Name,
+                        Name: pair.a.ConstructorArguments is [{ Value: string n, }, ..] ? n : "",
+                        RelativePath: pair.a.ConstructorArguments is [_, { Value: string p, },] ? p : ""
+                    )
+                )
+               .Where(z => z.Name.Length > 0)
+               .OrderBy(z => z.AssemblyName, StringComparer.Ordinal)
+               .ThenBy(z => z.Name, StringComparer.Ordinal),
+        ];
     }
 }

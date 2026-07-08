@@ -4,7 +4,6 @@ using Clavus.Aspire.Testing;
 using Clavus.Hosting;
 using FakeItEasy;
 using Microsoft.Extensions.Hosting;
-using Projects;
 using Rocket.Surgery.Extensions.Testing;
 
 namespace Clavus.Aspire.Tests;
@@ -16,7 +15,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests
     public async Task Should_UseRocketBooster()
     {
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<AspireSample>()
+                                    .CreateAsync<Anchor>()
                                     .ConfigureClavus();
 
         host.Services.ShouldNotBeNull();
@@ -27,7 +26,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests
     {
         var convention = A.Fake<DistributedApplicationTestingPart>();
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<AspireSample>()
+                                    .CreateAsync<Anchor>()
                                     .ConfigureClavus(rb => rb.ConfigureDistributedApplicationTesting(convention));
 
         A.CallTo(() => convention.Invoke(A<IClavusContext>._, A<IDistributedApplicationTestingBuilder>._)).MustHaveHappened();
@@ -39,7 +38,7 @@ public partial class RocketDistributedApplicationTestingBuilderTests
         var @delegate = A.Fake<HostCreatedAsyncPart<IHost>>();
         var delegate2 = A.Fake<HostCreatedPart<DistributedApplication>>();
         await using var host = await DistributedApplicationTestingBuilder
-                                    .CreateAsync<AspireSample>()
+                                    .CreateAsync<Anchor>()
                                     .ConfigureClavus(z => z.ConfigureHostCreated(@delegate).ConfigureHostCreated(delegate2));
 
         A.CallTo(() => @delegate.Invoke(A<IClavusContext>._, A<IHost>._, A<CancellationToken>._)).MustHaveHappened();

@@ -2,7 +2,7 @@
   <Import Project="$(MSBuildThisFileDirectory)../src/Clavus/build/Clavus.targets" />
   <ItemGroup>
     <ProjectReference
-      Include="..\src\Clavus.Analyzers\Clavus.Analyzers.csproj"
+      Include="$(MSBuildThisFileDirectory)../src/Clavus.Analyzers/Clavus.Analyzers.csproj"
       IncludeAssets="all"
       OutputItemType="Analyzer"
       ReferenceOutputAssembly="false"
