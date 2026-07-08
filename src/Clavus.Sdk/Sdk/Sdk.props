@@ -2,13 +2,13 @@
     <!-- User-facing feature flags (all default false) -->
     <PropertyGroup>
         <ClavusEnableJsonConfiguration Condition="'$(ClavusEnableJsonConfiguration)' == ''">false</ClavusEnableJsonConfiguration>
-        <ClavusEnableYamlConfiguration Condition="'$(ClavusEnableYamlConfiguration)' == ''">false</ClavusEnableYamlConfiguration>
+    <ClavusEnableYamlConfiguration Condition="'$(ClavusEnableYamlConfiguration)' == ''">true</ClavusEnableYamlConfiguration>
         <ClavusEnableTomlConfiguration Condition="'$(ClavusEnableTomlConfiguration)' == ''">false</ClavusEnableTomlConfiguration>
         <ClavusEnableAutofac Condition="'$(ClavusEnableAutofac)' == ''">false</ClavusEnableAutofac>
         <ClavusEnableDryIoc Condition="'$(ClavusEnableDryIoc)' == ''">false</ClavusEnableDryIoc>
         <ClavusEnableSerilog Condition="'$(ClavusEnableSerilog)' == ''">false</ClavusEnableSerilog>
 
-        <!--
+    <!--
           Gates the entire managed-configuration pipeline (discovery, packing, copy,
           typed-class generation, IConfigurationPart wiring). Off by default so existing
           Clavus consumers see no behavior change until they opt in. See design.md
@@ -16,7 +16,7 @@
         -->
         <EnableClavusConfiguration Condition="'$(EnableClavusConfiguration)' == ''">false</EnableClavusConfiguration>
 
-        <!--
+    <!--
           Opt-in switch for NodaTime type substitution in generated configuration classes
           (LocalDate/LocalTime/OffsetDateTime/Duration instead of BCL DateOnly/TimeOnly/
           DateTimeOffset/TimeSpan). Requires a NodaTime package reference in the same
@@ -27,7 +27,7 @@
         <ClavusConfigurationEnableNodaTime Condition="'$(ClavusConfigurationEnableNodaTime)' == ''">false</ClavusConfigurationEnableNodaTime>
     </PropertyGroup>
 
-    <!--
+  <!--
       Conventional appsettings-style file discovery. Globbed here (in Sdk.props, before the
       project body is evaluated) so consumers can override/exclude via
       `<ClavusConfiguration Remove="..." />` in their own csproj, matching the same
@@ -44,14 +44,14 @@
         <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.yml" Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yml')" />
         <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.toml" Condition="Exists('$(MSBuildProjectDirectory)\appsettings.toml')" />
 
-        <!-- Environment-specific and local layers: any `appsettings.<segment>.<ext>` file next to the project. -->
+    <!-- Environment-specific and local layers: any `appsettings.<segment>.<ext>` file next to the project. -->
         <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.*.json" Exclude="$(MSBuildProjectDirectory)\appsettings.json" />
         <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.*.yaml" Exclude="$(MSBuildProjectDirectory)\appsettings.yaml" />
         <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.*.yml" Exclude="$(MSBuildProjectDirectory)\appsettings.yml" />
         <ClavusConfiguration Include="$(MSBuildProjectDirectory)\appsettings.*.toml" Exclude="$(MSBuildProjectDirectory)\appsettings.toml" />
     </ItemGroup>
 
-    <!-- Core packages every Clavus consumer gets automatically -->
+  <!-- Core packages every Clavus consumer gets automatically -->
     <ItemGroup>
         <PackageReference Include="Clavus" />
     </ItemGroup>

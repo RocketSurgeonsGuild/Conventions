@@ -24,14 +24,10 @@ public class TomlConvention : ISetupPart
                     new("appsettings.toml", LoadTomlFile(configurationBuilder, "appsettings.toml")),
                 ];
 
-#if  NET10_0_OR_GREATER
                 return applicationName is { Length: > 0 } ? [
                     ..results,
                     new($"{applicationName}.toml", LoadTomlFile(configurationBuilder, $"{applicationName}.toml")),
                 ] : results;
-#else
-                return results;
-#endif
             }
         );
         context.AppendEnvironmentConfiguration(
@@ -42,14 +38,10 @@ public class TomlConvention : ISetupPart
                     new($"appsettings.{environment}.toml", LoadTomlFile(configurationBuilder, $"appsettings.{environment}.toml")),
                 ];
 
-#if  NET10_0_OR_GREATER
                 return applicationName is { Length: > 0 } ? [
                     ..results,
                     new($"{applicationName}.{environment}.toml", LoadTomlFile(configurationBuilder, $"{applicationName}.{environment}.toml")),
                 ] : results;
-#else
-                return results;
-#endif
             }
         );
     }
