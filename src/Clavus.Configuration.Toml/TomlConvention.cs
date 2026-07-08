@@ -9,48 +9,36 @@ namespace Clavus.Configuration.Toml;
 ///     Default toml convention
 /// </summary>
 [ClavusExport]
-public class TomlConvention : ISetupPart
+public class TomlConvention : IConfigurationPart
 {
     /// <inheritdoc />
-    public void Register(IClavusContext context)
+    public void Register(IClavusContext context, IConfigurationBuilder builder)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
         var applicationName = context.Get<string>("ApplicationName");
-        context.AppendApplicationConfiguration(
-            configurationBuilder =>
-            {
-                ConfigurationBuilderDelegateResult[] results =
-                [
-                    new("appsettings.toml", LoadTomlFile(configurationBuilder, "appsettings.toml")),
-                ];
+        var environmentName = context.Get<string>("EnvironmentName");
 
-                return applicationName is { Length: > 0 } ? [
-                    ..results,
-                    new($"{applicationName}.toml", LoadTomlFile(configurationBuilder, $"{applicationName}.toml")),
-                ] : results;
-            }
-        );
-        context.AppendEnvironmentConfiguration(
-            (configurationBuilder, environment) =>
-            {
-                ConfigurationBuilderDelegateResult[] results =
-                [
-                    new($"appsettings.{environment}.toml", LoadTomlFile(configurationBuilder, $"appsettings.{environment}.toml")),
-                ];
+        AddTomlFile(builder, "appsettings.toml");
+        if (applicationName is { Length: > 0 }) AddTomlFile(builder, $"{applicationName}.toml");
 
-                return applicationName is { Length: > 0 } ? [
-                    ..results,
-                    new($"{applicationName}.{environment}.toml", LoadTomlFile(configurationBuilder, $"{applicationName}.{environment}.toml")),
-                ] : results;
-            }
-        );
+        if (environmentName is { Length: > 0 })
+        {
+            AddTomlFile(builder, $"appsettings.{environmentName}.toml");
+            if (applicationName is { Length: > 0 }) AddTomlFile(builder, $"{applicationName}.{environmentName}.toml");
+        }
+
+        AddTomlFile(builder, "appsettings.local.toml");
+        if (applicationName is { Length: > 0 }) AddTomlFile(builder, $"{applicationName}.local.toml");
     }
 
-    private static Func<Stream?, IConfigurationSource> LoadTomlFile(IConfigurationBuilder configurationBuilder, string path) => _ => new TomlConfigurationSource
-    {
-        Path = path,
-        FileProvider = configurationBuilder.GetFileProvider(),
-        ReloadOnChange = true,
-        Optional = true,
-    };
+    private static void AddTomlFile(IConfigurationBuilder builder, string path) =>
+        builder.Add(
+            new TomlConfigurationSource
+            {
+                Path = path,
+                FileProvider = builder.GetFileProvider(),
+                ReloadOnChange = true,
+                Optional = true,
+            }
+        );
 }

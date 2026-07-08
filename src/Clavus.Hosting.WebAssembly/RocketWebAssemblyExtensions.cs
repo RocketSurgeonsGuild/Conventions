@@ -1,11 +1,10 @@
 using System.ComponentModel;
-using System.Reflection;
-using Clavus.Configuration;
 using Clavus.Hosting;
 using Clavus.Hosting.WebAssembly;
 using Clavus.Infrastructure;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -33,7 +32,9 @@ public static class ClavusWebAssemblyHelpers
            .AddIfMissing(builder.GetType(), builder)
            .AddIfMissing<IConfiguration>(builder.Configuration)
            .AddIfMissing(builder.HostEnvironment)
-           .AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment);
+           .AddIfMissing(builder.HostEnvironment.GetType(), builder.HostEnvironment)
+           .AddIfMissing("BaseAddress", builder.HostEnvironment.BaseAddress)
+           .AddIfMissing("EnvironmentName", builder.HostEnvironment.Environment);
         contextBuilder.Properties.Add("BlazorWasm", true);
 
         var context = await ClavusContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
@@ -57,64 +58,22 @@ public static class ClavusWebAssemblyHelpers
         CancellationToken cancellationToken
     )
     {
-        var foundConfigurationFiles = Assembly
-                                     .GetEntryAssembly()
-                                    ?.GetCustomAttributes<AssemblyMetadataAttribute>()
-                                     .Where(z => z.Key == "BlazorConfigurationFile")
-                                     // ReSharper disable once NullableWarningSuppressionIsUsed
-                                     .Select(z => z.Value!)
-                                     .SelectMany(z => z.Split(';', StringSplitOptions.RemoveEmptyEntries))
-                                     .ToHashSet(StringComparer.OrdinalIgnoreCase)
-         ?? [];
-
 #pragma warning disable CA1859
         var configurationBuilder = (IConfigurationBuilder)builder.Configuration;
 #pragma warning restore CA1859
-        using var http = new HttpClient
+
+        // Clavus's own IConfigurationAsyncPart conventions (JsonBrowserConvention/YamlBrowserConvention/
+        // TomlBrowserConvention, etc.) now own configuration loading end to end - including the HTTP fetch
+        // that used to be Blazor's own default behavior for appsettings.json/appsettings.{Environment}.json -
+        // so strip whatever the default WebAssembly host already loaded to avoid double-loading/precedence
+        // conflicts, then insert a freshly-built ConfigurationBuilder in its place.
+        foreach (var existing in configurationBuilder.Sources.OfType<JsonStreamConfigurationSource>().ToArray())
         {
-            BaseAddress = new(builder.HostEnvironment.BaseAddress),
-        };
-
-        // notes to the next person that sees this.
-        // if blazor does not find it's own configuration files (appsettings, appsettings.{environment}) they never get added to the configuration collection
-        // in that case they never exist.  So unlike the other defaults where we have to replace the items.
-        // If they exist then we just append.  If they don't we're adding anyway.
-        // One place this might be an issue is if you have both appsettings.Development.json and appsettings.Development.yaml (or whatever)
-        //   In this case the load order will be appsettings.json, appsettings.Development.json, appsettings.yaml, appsettings.Development.yaml
-        //   Instead of the more desired order appsettings.json, appsettings.yaml, appsettings.Development.json, appsettings.Development.yaml
-        // However this case is fairly rare as I would not expect an application to maintain both kinds of configuration files.
-
-        var appTasks = context
-                      .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => [])
-                      .SelectMany(z => z.Invoke(configurationBuilder));
-
-        var envTasks = context
-                      .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => [])
-                      .SelectMany(z => z.Invoke(configurationBuilder, builder.HostEnvironment.Environment));
-
-        var localTasks = context
-                        .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => [])
-                        .SelectMany(z => z.Invoke(configurationBuilder, "local"))
-                        .ToArray();
-
-        var tasks = appTasks
-                   .Concat(envTasks)
-                   .Concat(localTasks)
-                   .Where(z => foundConfigurationFiles.Contains(z.Path))
-                   .Select(z => getConfigurationSource(http, z, cancellationToken))
-                   // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-                   .Where(z => z is { })
-                   // ReSharper disable once NullableWarningSuppressionIsUsed RedundantSuppressNullableWarningExpression
-                   .Select(z => z!);
-
-        foreach (var task in await Task.WhenAll(tasks).ConfigureAwait(false))
-        {
-            if (task is null) continue;
-            configurationBuilder.Add(task);
+            configurationBuilder.Sources.Remove(existing);
         }
 
         var cb = await new ConfigurationBuilder().ApplyConfiguration(context, cancellationToken).ConfigureAwait(false);
-        if (cb.Sources is { Count: > 0 })
+        if (cb.Sources is { Count: > 0, })
         {
             configurationBuilder.Add(
                 new ChainedConfigurationSource
@@ -123,24 +82,6 @@ public static class ClavusWebAssemblyHelpers
                     ShouldDisposeConfiguration = true,
                 }
             );
-        }
-
-        static async Task<IConfigurationSource?> getConfigurationSource(
-            HttpClient httpClient,
-            ConfigurationBuilderDelegateResult factory,
-            CancellationToken cancellationToken
-        )
-        {
-            IConfigurationSource? source = null;
-            try
-            {
-#pragma warning disable CA2234
-                source = factory.Factory.Invoke(await httpClient.GetStreamAsync(factory.Path, cancellationToken).ConfigureAwait(false));
-#pragma warning restore CA2234
-            }
-            catch (HttpRequestException) { }
-
-            return source;
         }
     }
 }

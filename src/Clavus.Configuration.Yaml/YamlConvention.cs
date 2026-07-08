@@ -9,52 +9,51 @@ namespace Clavus.Configuration.Yaml;
 ///     Default yaml convention
 /// </summary>
 [ClavusExport]
-public class YamlConvention : ISetupPart
+public class YamlConvention : IConfigurationPart
 {
     /// <inheritdoc />
-    public void Register(IClavusContext context)
+    public void Register(IClavusContext context, IConfigurationBuilder builder)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
         var applicationName = context.Get<string>("ApplicationName");
-        context.AppendApplicationConfiguration(
-            configurationBuilder =>
-            {
-                ConfigurationBuilderDelegateResult[] results =
-                [
-                    new ("appsettings.yaml", LoadYamlFile(configurationBuilder, "appsettings.yaml")),
-                    new ("appsettings.yml", LoadYamlFile(configurationBuilder, "appsettings.yml"))
-                ];
+        var environmentName = context.Get<string>("EnvironmentName");
 
-                return applicationName is { Length: > 0 } ? [
-                    ..results,
-                    new($"{applicationName}.yaml", LoadYamlFile(configurationBuilder, $"{applicationName}.yaml")),
-                    new($"{applicationName}.yml", LoadYamlFile(configurationBuilder, $"{applicationName}.yml")),
-                ] : results;
-            }
-        );
-        context.AppendEnvironmentConfiguration(
-            (configurationBuilder, environment) =>
-            {
-                ConfigurationBuilderDelegateResult[] results =
-                [
-                    new($"appsettings.{environment}.yaml", LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yaml")),
-                    new($"appsettings.{environment}.yml", LoadYamlFile(configurationBuilder, $"appsettings.{environment}.yml")),
-                ];
+        AddYamlFile(builder, "appsettings.yaml");
+        AddYamlFile(builder, "appsettings.yml");
+        if (applicationName is { Length: > 0 })
+        {
+            AddYamlFile(builder, $"{applicationName}.yaml");
+            AddYamlFile(builder, $"{applicationName}.yml");
+        }
 
-                return applicationName is { Length: > 0 } ? [
-                    ..results,
-                    new($"{applicationName}.{environment}.yaml", LoadYamlFile(configurationBuilder, $"{applicationName}.{environment}.yaml")),
-                    new($"{applicationName}.{environment}.yml", LoadYamlFile(configurationBuilder, $"{applicationName}.{environment}.yml")),
-                ] : results;
+        if (environmentName is { Length: > 0 })
+        {
+            AddYamlFile(builder, $"appsettings.{environmentName}.yaml");
+            AddYamlFile(builder, $"appsettings.{environmentName}.yml");
+            if (applicationName is { Length: > 0 })
+            {
+                AddYamlFile(builder, $"{applicationName}.{environmentName}.yaml");
+                AddYamlFile(builder, $"{applicationName}.{environmentName}.yml");
             }
-        );
+        }
+
+        AddYamlFile(builder, "appsettings.local.yaml");
+        AddYamlFile(builder, "appsettings.local.yml");
+        if (applicationName is { Length: > 0 })
+        {
+            AddYamlFile(builder, $"{applicationName}.local.yaml");
+            AddYamlFile(builder, $"{applicationName}.local.yml");
+        }
     }
 
-    private static Func<Stream?, IConfigurationSource> LoadYamlFile(IConfigurationBuilder configurationBuilder, string path) => _ => new YamlConfigurationSource
-    {
-        Path = path,
-        FileProvider = configurationBuilder.GetFileProvider(),
-        ReloadOnChange = true,
-        Optional = true,
-    };
+    private static void AddYamlFile(IConfigurationBuilder builder, string path) =>
+        builder.Add(
+            new YamlConfigurationSource
+            {
+                Path = path,
+                FileProvider = builder.GetFileProvider(),
+                ReloadOnChange = true,
+                Optional = true,
+            }
+        );
 }

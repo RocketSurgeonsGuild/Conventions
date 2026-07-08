@@ -27,17 +27,14 @@ internal enum ConfigurationFileFormat
 ///             <c>build_metadata.AdditionalFiles.ClavusConfigurationBaseName</c> = the layering group key (e.g.
 ///             <c>appsettings</c>); falls back to the file name without extension/environment segment when absent
 ///         </item>
-///         <item>
-///             <c>build_metadata.AdditionalFiles.ClavusConfigurationLayer</c> = <c>Base</c> | <c>Environment</c> |
-///             <c>Local</c>; falls back to <c>Base</c> when absent
-///         </item>
 ///     </list>
-///     Format is derived from the file extension rather than a separate metadata key. If Parker's actual
-///     plumbing differs, only <see cref="ConfigurationDiscovery" /> needs to change.
+///     Format is derived from the file extension rather than a separate metadata key. The base/environment/local
+///     layer isn't tracked as metadata at all — <see cref="ConfigurationDiscovery" /> derives it on demand from
+///     the file name, so there's nothing extra to keep in sync on the MSBuild side. If Parker's actual plumbing
+///     differs, only <see cref="ConfigurationDiscovery" /> needs to change.
 /// </remarks>
 internal readonly record struct ConfigurationSourceFile(
     string BaseName,
-    string Layer,
     ConfigurationFileFormat Format,
     string FilePath,
     string Content);

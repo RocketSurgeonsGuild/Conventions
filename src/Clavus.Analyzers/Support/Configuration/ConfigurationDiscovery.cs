@@ -42,12 +42,11 @@ internal static class ConfigurationDiscovery
         if (format is null) return null;
 
         options.TryGetValue("build_metadata.AdditionalFiles.ClavusConfigBaseName", out var baseName);
-        options.TryGetValue("build_metadata.AdditionalFiles.ClavusConfigLayer", out var layer);
 
         var resolvedBaseName = baseName is { Length: > 0, } ? baseName : DefaultBaseName(text.Path);
         var content = text.GetText(cancellationToken)?.ToString() ?? "";
 
-        return new ConfigurationSourceFile(resolvedBaseName, layer is { Length: > 0, } ? layer : "Base", format.Value, text.Path, content);
+        return new ConfigurationSourceFile(resolvedBaseName, format.Value, text.Path, content);
     }
 
     /// <summary>
@@ -72,7 +71,7 @@ internal static class ConfigurationDiscovery
                 flatValues.AddRange(values);
             }
 
-            var relativePath = ordered.FirstOrDefault(f => string.Equals(f.Layer, "Base", StringComparison.OrdinalIgnoreCase)).FilePath is { Length: > 0, } basePath
+            var relativePath = ordered.FirstOrDefault(f => LayerOrder(f) == 0).FilePath is { Length: > 0, } basePath
                 ? Path.GetFileName(basePath)
                 : Path.GetFileName(ordered[0].FilePath);
 
@@ -89,7 +88,7 @@ internal static class ConfigurationDiscovery
         foreach (var byName in files.GroupBy(f => f.BaseName, StringComparer.OrdinalIgnoreCase).OrderBy(g => g.Key, StringComparer.Ordinal))
         {
             var ordered = byName.OrderBy(LayerOrder).ToImmutableArray();
-            var relativePath = ordered.FirstOrDefault(f => string.Equals(f.Layer, "Base", StringComparison.OrdinalIgnoreCase)).FilePath is { Length: > 0, } basePath
+            var relativePath = ordered.FirstOrDefault(f => LayerOrder(f) == 0).FilePath is { Length: > 0, } basePath
                 ? Path.GetFileName(basePath)
                 : Path.GetFileName(ordered[0].FilePath);
 
@@ -99,14 +98,19 @@ internal static class ConfigurationDiscovery
         return groups.ToImmutable();
     }
 
-    private static int LayerOrder(ConfigurationSourceFile file) =>
-        file.Layer.ToUpperInvariant() switch
-        {
-            "BASE" => 0,
-            "ENVIRONMENT" => 1,
-            "LOCAL" => 2,
-            _ => 3,
-        };
+    /// <summary>
+    ///     Derives the base (0) / environment (1) / local (2) resolution order for a file from its name rather
+    ///     than a tracked "Layer" value — e.g. for BaseName "appsettings": "appsettings.json" is Base,
+    ///     "appsettings.local.json" is Local, and anything else matching "appsettings.*" is Environment.
+    /// </summary>
+    private static int LayerOrder(ConfigurationSourceFile file)
+    {
+        var name = Path.GetFileNameWithoutExtension(file.FilePath);
+        if (!name.StartsWith(file.BaseName, StringComparison.OrdinalIgnoreCase) || name.Length == file.BaseName.Length) return 0;
+
+        var suffix = name[( file.BaseName.Length + 1 )..];
+        return string.Equals(suffix, "local", StringComparison.OrdinalIgnoreCase) ? 2 : 1;
+    }
 
     private static ConfigurationFileFormat? InferFormat(string path) =>
         Path.GetExtension(path).ToUpperInvariant() switch

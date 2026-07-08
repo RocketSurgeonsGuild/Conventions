@@ -9,35 +9,55 @@ namespace Clavus.Configuration.Yaml;
 ///     Default yaml convention
 /// </summary>
 [ClavusExport]
-public class YamlBrowserConvention : ISetupPart
+public class YamlBrowserConvention : IConfigurationAsyncPart
 {
     /// <inheritdoc />
-    public void Register(IClavusContext context)
+    public async ValueTask Register(IClavusContext context, IConfigurationBuilder builder, CancellationToken cancellationToken = default)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
-        context.AppendApplicationConfiguration(
-            configurationBuilder =>
+        var baseAddress = context.Get<string>("BaseAddress");
+        if (baseAddress is not { Length: > 0, }) return;
+
+        var applicationName = context.Get<string>("ApplicationName");
+        var environmentName = context.Get<string>("EnvironmentName");
+
+        using var http = new HttpClient { BaseAddress = new(baseAddress), };
+
+        await AddYamlFile(http, builder, "appsettings.yaml", cancellationToken).ConfigureAwait(false);
+        await AddYamlFile(http, builder, "appsettings.yml", cancellationToken).ConfigureAwait(false);
+        if (applicationName is { Length: > 0, })
+        {
+            await AddYamlFile(http, builder, $"{applicationName}.yaml", cancellationToken).ConfigureAwait(false);
+            await AddYamlFile(http, builder, $"{applicationName}.yml", cancellationToken).ConfigureAwait(false);
+        }
+
+        if (environmentName is { Length: > 0, })
+        {
+            await AddYamlFile(http, builder, $"appsettings.{environmentName}.yaml", cancellationToken).ConfigureAwait(false);
+            await AddYamlFile(http, builder, $"appsettings.{environmentName}.yml", cancellationToken).ConfigureAwait(false);
+            if (applicationName is { Length: > 0, })
             {
-                return new ConfigurationBuilderDelegateResult[]
-                {
-                    new("appsettings.yaml", LoadBlazorWasmYamlFile),
-                    new("appsettings.yml", LoadBlazorWasmYamlFile),
-                };
+                await AddYamlFile(http, builder, $"{applicationName}.{environmentName}.yaml", cancellationToken).ConfigureAwait(false);
+                await AddYamlFile(http, builder, $"{applicationName}.{environmentName}.yml", cancellationToken).ConfigureAwait(false);
             }
-        );
-        context.AppendEnvironmentConfiguration(
-            (configurationBuilder, environment) =>
-            {
-                return new ConfigurationBuilderDelegateResult[]
-                {
-                    new($"appsettings.{environment}.yaml", LoadBlazorWasmYamlFile),
-                    new($"appsettings.{environment}.yml", LoadBlazorWasmYamlFile),
-                };
-            }
-        );
+        }
+
+        await AddYamlFile(http, builder, "appsettings.local.yaml", cancellationToken).ConfigureAwait(false);
+        await AddYamlFile(http, builder, "appsettings.local.yml", cancellationToken).ConfigureAwait(false);
+        if (applicationName is { Length: > 0, })
+        {
+            await AddYamlFile(http, builder, $"{applicationName}.local.yaml", cancellationToken).ConfigureAwait(false);
+            await AddYamlFile(http, builder, $"{applicationName}.local.yml", cancellationToken).ConfigureAwait(false);
+        }
     }
 
-    private static IConfigurationSource LoadBlazorWasmYamlFile(Stream? stream) => stream is null
-        ? throw new NotSupportedException("Yaml is not supported without a stream")
-        : YamlConfigurationExtensions.CreateYamlConfigurationSource(stream);
+    private static async ValueTask AddYamlFile(HttpClient http, IConfigurationBuilder builder, string path, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var stream = await http.GetStreamAsync(path, cancellationToken).ConfigureAwait(false);
+            builder.AddYamlStream(stream);
+        }
+        catch (HttpRequestException) { }
+    }
 }

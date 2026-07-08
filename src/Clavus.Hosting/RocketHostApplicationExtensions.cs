@@ -1,11 +1,9 @@
 using System.ComponentModel;
-using Clavus.Configuration;
 using Clavus.Hosting;
 using Clavus.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
@@ -37,7 +35,9 @@ public static class ClavusHostApplicationHelpers
            .AddIfMissing<IConfiguration>(builder.Configuration)
            .AddIfMissing(builder.Configuration.GetType(), builder.Configuration)
            .AddIfMissing(builder.Environment)
-           .AddIfMissing(builder.Environment.GetType(), builder.Environment);
+           .AddIfMissing(builder.Environment.GetType(), builder.Environment)
+           .AddIfMissing("ApplicationName", builder.Environment.ApplicationName)
+           .AddIfMissing("EnvironmentName", builder.Environment.EnvironmentName);
 
         var context = await ClavusContext.FromAsync(contextBuilder, cancellationToken).ConfigureAwait(false);
         await SharedHostConfigurationAsync(context, builder, cancellationToken).ConfigureAwait(false);
@@ -59,97 +59,35 @@ public static class ClavusHostApplicationHelpers
         CancellationToken cancellationToken
     )
     {
-        // This code is duplicated per host (web host, generic host, and wasm host)
-        void insertNamedSource(string name)
+        // Clavus's own IConfigurationPart conventions (JsonConvention/YamlConvention/TomlConvention, etc.) now
+        // own file-based configuration loading end to end, so the host's own default file providers
+        // (appsettings.json, appsettings.{Environment}.json, secrets.json, ...) would just be redundant/
+        // conflicting - strip them before inserting Clavus's own configuration.
+        foreach (var fileSource in hostApplicationBuilder.Configuration.Sources.OfType<FileConfigurationSource>().ToArray())
         {
-            hostApplicationBuilder.Configuration.InsertConfigurationSourceAfter(
-                sources => sources
-                          .OfType<FileConfigurationSource>()
-                          .FirstOrDefault(x => string.Equals(
-                                              x.Path,
-                                              $"{name}.{hostApplicationBuilder.Environment.EnvironmentName}.json",
-                                              StringComparison.OrdinalIgnoreCase
-                                          )
-                           ),
-                new IConfigurationSource[]
-                {
-                    new JsonConfigurationSource
-                    {
-                        FileProvider = hostApplicationBuilder.Configuration.GetFileProvider(),
-                        Path = $"{name}.local.json",
-                        Optional = true,
-                        ReloadOnChange = true,
-                    },
-                }
-            );
-
-            hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
-                sources => sources
-                          .OfType<FileConfigurationSource>()
-                          .FirstOrDefault(x => string.Equals(x.Path, $"{name}.json", StringComparison.OrdinalIgnoreCase)
-                           ),
-                context
-                   .GetOrAdd<List<ConfigurationBuilderApplicationDelegate>>(() => [])
-                   .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration))
-                   .Select(z => z.Factory(null))
-            );
-
-            hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
-                sources => sources
-                          .OfType<FileConfigurationSource>()
-                          .FirstOrDefault(x => string.Equals(
-                                              x.Path,
-                                              $"{name}.{hostApplicationBuilder.Environment.EnvironmentName}.json",
-                                              StringComparison.OrdinalIgnoreCase
-                                          )
-                           ),
-                context
-                   .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => [])
-                   .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, hostApplicationBuilder.Environment.EnvironmentName))
-                   .Select(z => z.Factory(null))
-            );
-
-            hostApplicationBuilder.Configuration.ReplaceConfigurationSourceAt(
-                sources => sources
-                          .OfType<FileConfigurationSource>()
-                          .FirstOrDefault(x => string.Equals(x.Path, $"{name}.local.json", StringComparison.OrdinalIgnoreCase)),
-                context
-                   .GetOrAdd<List<ConfigurationBuilderEnvironmentDelegate>>(() => [])
-                   .SelectMany(z => z.Invoke(hostApplicationBuilder.Configuration, "local"))
-                   .Select(z => z.Factory(null))
-            );
+            hostApplicationBuilder.Configuration.Sources.Remove(fileSource);
         }
 
-
-
-        insertNamedSource("appsettings");
-        insertNamedSource(hostApplicationBuilder.Environment.ApplicationName);
-
-        IConfigurationSource? source = null;
-        foreach (var item in hostApplicationBuilder.Configuration.Sources.Reverse())
+        // Insert after everything that's left (e.g. anything the consumer added before calling into Clavus)
+        // but before command line/environment variable configuration, so those retain the highest precedence.
+        var insertIndex = hostApplicationBuilder.Configuration.Sources.Count;
+        for (var i = 0; i < hostApplicationBuilder.Configuration.Sources.Count; i++)
         {
-            if (item is CommandLineConfigurationSource
-             || ( item is EnvironmentVariablesConfigurationSource env
-                 && ( string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) )
-             || ( item is FileConfigurationSource a && string.Equals(a.Path, "secrets.json", StringComparison.OrdinalIgnoreCase) ))
+            var candidate = hostApplicationBuilder.Configuration.Sources[i];
+            if (candidate is CommandLineConfigurationSource
+             || ( candidate is EnvironmentVariablesConfigurationSource env
+                 && ( string.IsNullOrWhiteSpace(env.Prefix) || string.Equals(env.Prefix, "RSG_", StringComparison.OrdinalIgnoreCase) ) ))
             {
-                continue;
+                insertIndex = i;
+                break;
             }
-
-            source = item;
-            break;
         }
-
-        var index = source is null
-            ? hostApplicationBuilder.Configuration.Sources.Count - 1
-            : hostApplicationBuilder.Configuration.Sources.IndexOf(source);
-        // Insert after all the normal configuration but before the environment specific configuration
 
         var cb = await new ConfigurationBuilder().ApplyConfiguration(context, cancellationToken).ConfigureAwait(false);
         if (cb.Sources is { Count: > 0, })
         {
             hostApplicationBuilder.Configuration.Sources.Insert(
-                index + 1,
+                insertIndex,
                 new ChainedConfigurationSource
                 {
                     Configuration = cb.Build(),

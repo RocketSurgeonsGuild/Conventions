@@ -9,33 +9,41 @@ namespace Clavus.Configuration.Toml;
 ///     Default toml convention
 /// </summary>
 [ClavusExport]
-public class TomlBrowserConvention : ISetupPart
+public class TomlBrowserConvention : IConfigurationAsyncPart
 {
     /// <inheritdoc />
-    public void Register(IClavusContext context)
+    public async ValueTask Register(IClavusContext context, IConfigurationBuilder builder, CancellationToken cancellationToken = default)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Create("Browser"))) return;
-        context.AppendApplicationConfiguration(
-            configurationBuilder =>
-            {
-                return new ConfigurationBuilderDelegateResult[]
-                {
-                    new("appsettings.toml", LoadBlazorWasmTomlFile),
-                };
-            }
-        );
-        context.AppendEnvironmentConfiguration(
-            (configurationBuilder, environment) =>
-            {
-                return new ConfigurationBuilderDelegateResult[]
-                {
-                    new($"appsettings.{environment}.toml", LoadBlazorWasmTomlFile),
-                };
-            }
-        );
+        var baseAddress = context.Get<string>("BaseAddress");
+        if (baseAddress is not { Length: > 0, }) return;
+
+        var applicationName = context.Get<string>("ApplicationName");
+        var environmentName = context.Get<string>("EnvironmentName");
+
+        using var http = new HttpClient { BaseAddress = new(baseAddress), };
+
+        await AddTomlFile(http, builder, "appsettings.toml", cancellationToken).ConfigureAwait(false);
+        if (applicationName is { Length: > 0, }) await AddTomlFile(http, builder, $"{applicationName}.toml", cancellationToken).ConfigureAwait(false);
+
+        if (environmentName is { Length: > 0, })
+        {
+            await AddTomlFile(http, builder, $"appsettings.{environmentName}.toml", cancellationToken).ConfigureAwait(false);
+            if (applicationName is { Length: > 0, })
+                await AddTomlFile(http, builder, $"{applicationName}.{environmentName}.toml", cancellationToken).ConfigureAwait(false);
+        }
+
+        await AddTomlFile(http, builder, "appsettings.local.toml", cancellationToken).ConfigureAwait(false);
+        if (applicationName is { Length: > 0, }) await AddTomlFile(http, builder, $"{applicationName}.local.toml", cancellationToken).ConfigureAwait(false);
     }
 
-    private static IConfigurationSource LoadBlazorWasmTomlFile(Stream? stream) => stream is null
-        ? throw new NotSupportedException("Toml is not supported without a stream")
-        : TomlConfigurationExtensions.CreateTomlConfigurationSource(stream);
+    private static async ValueTask AddTomlFile(HttpClient http, IConfigurationBuilder builder, string path, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var stream = await http.GetStreamAsync(path, cancellationToken).ConfigureAwait(false);
+            builder.AddTomlStream(stream);
+        }
+        catch (HttpRequestException) { }
+    }
 }

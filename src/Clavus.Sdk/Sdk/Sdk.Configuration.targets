@@ -7,9 +7,9 @@
     $(EnableClavusConfiguration) is 'true'.
 
     Responsibilities:
-      1. Compute item metadata (Format/BaseName/Layer/EnvironmentName/IsLocal/Precedence)
-         for every <ClavusConfiguration> item, whether it came from the conventional glob
-         in Sdk.props or was added explicitly by the consuming project.
+      1. Compute item metadata (Format/BaseName/IsLocal) for every <ClavusConfiguration>
+         item, whether it came from the conventional glob in Sdk.props or was added
+         explicitly by the consuming project.
       2. Surface the discovered items to the Roslyn analyzer/generator via
          <AdditionalFiles>, with the same metadata visible through
          CompilerVisibleItemMetadata, consistent with how ClavusMetadata/ClavusHostType
@@ -19,26 +19,22 @@
       4. Copy non-local items into a referencing project's output directory when consumed
          via same-solution ProjectReference, mirroring the packed layout (debug/package
          parity).
-      5. Scaffold a .gitignore entry for appsettings.local.{ext}.
+      5. Warn when a project is missing a .gitignore entry for appsettings.local.{ext}.
 
     ClavusConfiguration item metadata schema:
       Format          — Json | Yaml | Toml, inferred from file extension.
       BaseName        — conventional base name, e.g. "appsettings".
-      Layer           — Base | Environment | Local.
-      EnvironmentName — set only when Layer == Environment (e.g. "Production").
       IsLocal         — true only for the appsettings.local.{ext} layer.
-      Precedence      — ascending resolution order for same-BaseName files: Base=0,
-                         Environment=1, Local=2 (design.md Decision 1 / task 1.5).
+
+    Base/environment/local ordering is not tracked as item metadata — consumers (e.g. the
+    analyzer) derive it on demand from the file name instead (design.md Decision 1).
   -->
 
   <ItemDefinitionGroup>
     <ClavusConfiguration>
       <Format></Format>
       <BaseName></BaseName>
-      <Layer></Layer>
-      <EnvironmentName></EnvironmentName>
       <IsLocal>false</IsLocal>
-      <Precedence>0</Precedence>
     </ClavusConfiguration>
   </ItemDefinitionGroup>
 
@@ -64,50 +60,34 @@
     </ItemGroup>
 
     <!--
-      Step 2: Layer detection. %(Filename) for "appsettings.json" is "appsettings"; for
+      Step 2: BaseName detection. %(Filename) for "appsettings.json" is "appsettings"; for
       "appsettings.Production.json" it is "appsettings.Production"; for
       "appsettings.local.json" it is "appsettings.local". Everything here assumes the
       "appsettings" conventional base name — explicitly declared items with a different
-      base name fall through to the Step 3 fallback (Layer=Base/BaseName=%(Filename))
-      since there is no environment/local convention to infer without a shared base name.
-      All conditions here reference only the immutable %(Filename), so they're safe to
-      combine in one step.
+      base name fall through to the Step 3 fallback (BaseName=%(Filename)) since there is
+      no environment/local convention to infer without a shared base name. All conditions
+      here reference only the immutable %(Filename), so they're safe to combine in one step.
     -->
     <ItemGroup>
       <ClavusConfiguration>
         <BaseName Condition="'%(ClavusConfiguration.Filename)' == 'appsettings'">appsettings</BaseName>
-        <Layer Condition="'%(ClavusConfiguration.Filename)' == 'appsettings'">Base</Layer>
 
         <BaseName Condition="'%(ClavusConfiguration.Filename)' != 'appsettings' and $([System.Text.RegularExpressions.Regex]::IsMatch('%(ClavusConfiguration.Filename)', '^appsettings\.'))">appsettings</BaseName>
         <_ClavusConfigSuffix Condition="'%(ClavusConfiguration.Filename)' != 'appsettings' and $([System.Text.RegularExpressions.Regex]::IsMatch('%(ClavusConfiguration.Filename)', '^appsettings\.'))">$([System.Text.RegularExpressions.Regex]::Match('%(ClavusConfiguration.Filename)', '^appsettings\.(.+)$').Groups[1].Value)</_ClavusConfigSuffix>
       </ClavusConfiguration>
     </ItemGroup>
 
-    <!-- Step 3: Local/Environment layer, derived from the Step 2 suffix. -->
+    <!-- Step 3: IsLocal, derived from the Step 2 suffix. -->
     <ItemGroup>
       <ClavusConfiguration>
-        <Layer Condition="'%(ClavusConfiguration._ClavusConfigSuffix)' != '' and $([System.String]::new('%(ClavusConfiguration._ClavusConfigSuffix)').ToLowerInvariant()) == 'local'">Local</Layer>
         <IsLocal Condition="'%(ClavusConfiguration._ClavusConfigSuffix)' != '' and $([System.String]::new('%(ClavusConfiguration._ClavusConfigSuffix)').ToLowerInvariant()) == 'local'">true</IsLocal>
-
-        <Layer Condition="'%(ClavusConfiguration._ClavusConfigSuffix)' != '' and $([System.String]::new('%(ClavusConfiguration._ClavusConfigSuffix)').ToLowerInvariant()) != 'local'">Environment</Layer>
-        <EnvironmentName Condition="'%(ClavusConfiguration._ClavusConfigSuffix)' != '' and $([System.String]::new('%(ClavusConfiguration._ClavusConfigSuffix)').ToLowerInvariant()) != 'local'">%(ClavusConfiguration._ClavusConfigSuffix)</EnvironmentName>
       </ClavusConfiguration>
     </ItemGroup>
 
-    <!-- Step 4: Fallback for an explicitly declared file that doesn't match the appsettings.* convention at all. Must run after Steps 2-3 so it only fires when those left BaseName/Layer unset. -->
+    <!-- Step 4: Fallback for an explicitly declared file that doesn't match the appsettings.* convention at all. Must run after Steps 2-3 so it only fires when those left BaseName unset. -->
     <ItemGroup>
       <ClavusConfiguration>
         <BaseName Condition="'%(ClavusConfiguration.BaseName)' == ''">%(ClavusConfiguration.Filename)</BaseName>
-        <Layer Condition="'%(ClavusConfiguration.Layer)' == ''">Base</Layer>
-      </ClavusConfiguration>
-    </ItemGroup>
-
-    <!-- Step 5: Precedence: base -> environment -> local (design.md Decision 1 / task 1.5). Must run after Layer is finalized (Steps 2-4). -->
-    <ItemGroup>
-      <ClavusConfiguration>
-        <Precedence Condition="'%(ClavusConfiguration.Layer)' == 'Base'">0</Precedence>
-        <Precedence Condition="'%(ClavusConfiguration.Layer)' == 'Environment'">1</Precedence>
-        <Precedence Condition="'%(ClavusConfiguration.Layer)' == 'Local'">2</Precedence>
       </ClavusConfiguration>
     </ItemGroup>
   </Target>
@@ -119,10 +99,7 @@
 
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigFormat" />
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigBaseName" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigLayer" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigEnvironmentName" />
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigIsLocal" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClavusConfigPrecedence" />
   </ItemGroup>
 
   <Target Name="_ClavusExposeConfigurationToAnalyzer"
@@ -133,10 +110,7 @@
       <AdditionalFiles Include="@(ClavusConfiguration)"
                         ClavusConfigFormat="%(ClavusConfiguration.Format)"
                         ClavusConfigBaseName="%(ClavusConfiguration.BaseName)"
-                        ClavusConfigLayer="%(ClavusConfiguration.Layer)"
-                        ClavusConfigEnvironmentName="%(ClavusConfiguration.EnvironmentName)"
-                        ClavusConfigIsLocal="%(ClavusConfiguration.IsLocal)"
-                        ClavusConfigPrecedence="%(ClavusConfiguration.Precedence)" />
+                        ClavusConfigIsLocal="%(ClavusConfiguration.IsLocal)" />
     </ItemGroup>
   </Target>
 
@@ -196,9 +170,9 @@
   </Target>
 
   <!--
-    .gitignore scaffolding (task 1.6): appsettings.local.{ext} is a developer-machine-only
-    override layer (design.md Decision 8) and must never be committed. Append a pattern
-    to the nearest .gitignore next to the project if one doesn't already cover it.
+    .gitignore warning (task 1.6): appsettings.local.{ext} is a developer-machine-only
+    override layer (design.md Decision 8) and must never be committed. Warn instead of
+    writing to the project's .gitignore, so the developer stays in control of that file.
   -->
   <Target Name="_ClavusScaffoldLocalConfigurationGitIgnore"
           Condition="'$(EnableClavusConfiguration)' == 'true'"
@@ -208,15 +182,8 @@
       <_ClavusGitIgnoreExistingContent Condition="Exists('$(_ClavusGitIgnorePath)')">$([System.IO.File]::ReadAllText('$(_ClavusGitIgnorePath)'))</_ClavusGitIgnoreExistingContent>
       <_ClavusGitIgnoreNeedsEntry Condition="'$(_ClavusGitIgnoreExistingContent)' == '' or !$(_ClavusGitIgnoreExistingContent.Contains('appsettings.local.'))">true</_ClavusGitIgnoreNeedsEntry>
     </PropertyGroup>
-    <ItemGroup Condition="'$(_ClavusGitIgnoreNeedsEntry)' == 'true'">
-      <_ClavusGitIgnoreLines Include="appsettings.local.json" />
-      <_ClavusGitIgnoreLines Include="appsettings.local.yaml" />
-      <_ClavusGitIgnoreLines Include="appsettings.local.yml" />
-      <_ClavusGitIgnoreLines Include="appsettings.local.toml" />
-    </ItemGroup>
-    <WriteLinesToFile File="$(_ClavusGitIgnorePath)"
-                       Lines="@(_ClavusGitIgnoreLines)"
-                       Condition="'$(_ClavusGitIgnoreNeedsEntry)' == 'true'"
-                       Overwrite="false" />
+    <Warning
+        Text="ClavusConfiguration: '$(_ClavusGitIgnorePath)' does not appear to ignore appsettings.local.{json,yaml,yml,toml}. Add those patterns to your .gitignore so local-only configuration overrides are never committed."
+        Condition="'$(_ClavusGitIgnoreNeedsEntry)' == 'true'" />
   </Target>
 </Project>
