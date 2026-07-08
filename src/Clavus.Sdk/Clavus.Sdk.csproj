@@ -1,18 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <IncludeBuildOutput>false</IncludeBuildOutput>
-        <NoDefaultExcludes>true</NoDefaultExcludes>
-        <GenerateDocumentationFile>false</GenerateDocumentationFile>
-        <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-        <Nullable>disable</Nullable>
-        <PackageDescription>MSBuild SDK for Clavus — auto-selects packages and emits bootstrapping based on host SDK</PackageDescription>
-        <PackageTags>$(PackageTags);sdk;msbuild</PackageTags>
-        <ImplicitUsings>false</ImplicitUsings>
-    </PropertyGroup>
-    <ItemGroup>
-        <Compile Remove="Sdk/**" />
-        <None Include="Sdk/**" Pack="true" PackagePath="Sdk/" />
-        <Using Remove="**" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageType>MSBuildSdk</PackageType>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeSymbols>false</IncludeSymbols>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <PackageDescription>MSBuild SDK for Clavus — auto-selects packages and emits bootstrapping based on host SDK</PackageDescription>
+    <PackageTags>$(PackageTags);sdk;msbuild</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Sdk/**" />
+    <None Include="Sdk/**" Pack="true" PackagePath="Sdk/" />
+    <Using Remove="**" />
+  </ItemGroup>
 </Project>
