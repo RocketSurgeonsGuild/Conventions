@@ -36,7 +36,7 @@
         <PackageVersion Include="MediatR" Version="14.1.0" />
         <PackageVersion Include="Polyfill" Version="10.11.0" />
         <PackageVersion Include="Indago" Version="0.0.2" />
-        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="11.0.1" />
+        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="11.0.2" />
         <PackageVersion Include="BenchMarkDotNet" Version="0.15.8" />
         <PackageVersion Include="bunit.web" Version="1.40.0" />
         <PackageVersion Include="DryIoc.Microsoft.DependencyInjection" Version="8.0.0-preview-04" />
