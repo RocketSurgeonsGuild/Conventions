@@ -18,7 +18,6 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
                            .CreateBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac((context, container) => container.RegisterInstance(A.Fake<IAbc>()))
                                      .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
@@ -37,7 +36,6 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
                            .CreateBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac((context, container) =>
                                                        {
                                                            container.RegisterInstance(A.Fake<IAbc>());
@@ -61,7 +59,6 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
                            .CreateBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac(
                                           (context, container) =>
                                           {
@@ -83,7 +80,6 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
                            .CreateBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac(
                                           (context, container) =>
                                           {
@@ -109,7 +105,6 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
                            .CreateBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac(
                                           (context, container) =>
                                           {
@@ -135,7 +130,6 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
                            .CreateBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac(
                                           (context, container) =>
                                           {
@@ -156,10 +150,7 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
     {
         var builder = await WebApplication
                            .CreateBuilder()
-                           .ConfigureClavus(
-                                rb => rb
-                                   .UseAutofac()
-                            );
+                           .ConfigureClavus();
 
         var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().ShouldNotBeNull();
@@ -173,7 +164,7 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
     {
         var builder = await WebApplication
                            .CreateBuilder()
-                           .ConfigureClavus(rb => rb.UseAutofac());
+                           .ConfigureClavus();
 
         var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().ShouldNotBeNull();
@@ -189,7 +180,7 @@ public class AutofacWebApplicationTests : AutoFakeTest<TestRecord>
     {
         var builder = await Host
                            .CreateApplicationBuilder([])
-                           .ConfigureClavus(rb => rb.UseAutofac());
+                           .ConfigureClavus();
 
         builder.GetLifetimeScope().ShouldNotBeNull();
     }

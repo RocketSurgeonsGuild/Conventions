@@ -134,14 +134,30 @@ public static class ClavusContextExtensions
     /// </summary>
     /// <param name="context"></param>
     /// <param name="configure"></param>
-    /// <returns></returns>
-    public static ValueTask RegisterConventions(this IClavusContext context, Action<CalvusExecutor> configure)
+    /// <returns>The return value after executing the conventions</returns>
+    public static void RegisterConventions(this IClavusContext context, Action<CalvusExecutor> configure)
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(configure);
         var executor = new CalvusExecutor(context);
         configure(executor);
-        return executor.ExecuteAsync();
+        executor.Execute();
+    }
+
+    /// <summary>
+    ///     Register a set of conventions
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="configure"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>The return value after executing the conventions</returns>
+    public static ValueTask RegisterConventionsAsync(this IClavusContext context, Action<CalvusExecutor> configure, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(configure);
+        var executor = new CalvusExecutor(context);
+        configure(executor);
+        return executor.ExecuteAsync(cancellationToken);
     }
 
     /// <summary>

@@ -61,6 +61,58 @@ public static class ClavusHostBuilderExtensions
         builder.Set<ServiceProviderFactoryAdapter>(async (context, collection, _) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection).ConfigureAwait(false)));
         return builder;
     }
+
+    /// <summary>
+    ///     Set the service provider factory to be used for hosting or other systems.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="serviceProviderFactory"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static IClavusContext UseServiceProviderFactory<TContainerBuilder>(
+        this IClavusContext builder,
+        IServiceProviderFactory<TContainerBuilder> serviceProviderFactory
+    ) where TContainerBuilder : notnull
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        builder.Set<ServiceProviderFactoryAdapter>((_, _, _) => ValueTask.FromResult<IServiceProviderFactory<object>>(new ServiceProviderWrapper<TContainerBuilder>(serviceProviderFactory)));
+        return builder;
+    }
+
+    /// <summary>
+    ///     Set the service provider factory to be used for hosting or other systems.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="serviceProviderFactory"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static IClavusContext UseServiceProviderFactory<TContainerBuilder>(
+        this IClavusContext builder,
+        Func<IClavusContext, IServiceCollection, CancellationToken, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
+    ) where TContainerBuilder : notnull
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        builder.Set<ServiceProviderFactoryAdapter>(async (context, collection, cancellationToken) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection, cancellationToken).ConfigureAwait(false)));
+        return builder;
+    }
+
+    /// <summary>
+    ///     Set the service provider factory to be used for hosting or other systems.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="serviceProviderFactory"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static IClavusContext UseServiceProviderFactory<TContainerBuilder>(
+        this IClavusContext builder,
+        Func<IClavusContext, IServiceCollection, ValueTask<IServiceProviderFactory<TContainerBuilder>>> serviceProviderFactory
+    ) where TContainerBuilder : notnull
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        builder.Set<ServiceProviderFactoryAdapter>(async (context, collection, _) => new ServiceProviderWrapper<TContainerBuilder>(await serviceProviderFactory(context, collection).ConfigureAwait(false)));
+        return builder;
+    }
+
     /// <summary>
     ///     Get a value by type from the context
     /// </summary>

@@ -25,11 +25,22 @@
         />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\Clavus.OpenTelemetry\Clavus.OpenTelemetry.csproj" />
         <ProjectReference Include="..\Clavus\Clavus.csproj" />
+
+      <ProjectReference
+        Include="..\Clavus.Analyzers\Clavus.Analyzers.csproj"
+        IncludeAssets="analyzers;build;buildMultitargeting;buildTransitive"
+        ExcludeAssets="compile;runtime;native"
+        PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
+        OutputItemType="Analyzer"
+        ReferenceOutputAssembly="false"
+      />
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="Clavus.Hosting.AspNetCore.Tests" />
         <InternalsVisibleTo Include="Clavus.Hosting.Tests" />
+      <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
     </ItemGroup>
     <ItemGroup>

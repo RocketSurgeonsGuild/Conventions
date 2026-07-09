@@ -52,15 +52,13 @@ public static class ClavusWebAssemblyHelpers
         return host;
     }
 
-    internal static async ValueTask SharedHostConfigurationAsync(
+    internal static ValueTask SharedHostConfigurationAsync(
         IClavusContext context,
         WebAssemblyHostBuilder builder,
         CancellationToken cancellationToken
     )
     {
-#pragma warning disable CA1859
         var configurationBuilder = (IConfigurationBuilder)builder.Configuration;
-#pragma warning restore CA1859
 
         // Clavus's own IConfigurationAsyncPart conventions (JsonBrowserConvention/YamlBrowserConvention/
         // TomlBrowserConvention, etc.) now own configuration loading end to end - including the HTTP fetch
@@ -72,7 +70,7 @@ public static class ClavusWebAssemblyHelpers
             configurationBuilder.Sources.Remove(existing);
         }
 
-        var cb = await new ConfigurationBuilder().ApplyConfiguration(context, cancellationToken).ConfigureAwait(false);
+        var cb = new ConfigurationBuilder();
         if (cb.Sources is { Count: > 0, })
         {
             configurationBuilder.Add(
@@ -83,5 +81,6 @@ public static class ClavusWebAssemblyHelpers
                 }
             );
         }
+        return cb.ApplyConfiguration(context, cancellationToken);
     }
 }

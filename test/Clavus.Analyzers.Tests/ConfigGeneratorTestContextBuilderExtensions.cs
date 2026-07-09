@@ -1,3 +1,5 @@
+using Clavus.Configuration.Toml;
+using Clavus.Configuration.Yaml;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,15 +21,16 @@ internal static class ConfigGeneratorTestContextBuilderExtensions
         builder.AddCompilationReferences(ConfigGenerationHelpers.CreateManifestDeps(builder, cancellationToken).GetAwaiter().GetResult());
 
     public static GeneratorTestContextBuilder AddConfigCommonReferences(this GeneratorTestContextBuilder builder) => builder.AddReferences(
-        typeof(IConfigurationPart),
-        typeof(IClavusPart),
-        typeof(ConfigurationAssemblyAttribute),
-        typeof(IServiceCollection),
-        typeof(IConfigurationBuilder),
-        typeof(OptionsServiceCollectionExtensions),
-        typeof(OptionsBuilderConfigurationExtensions),
-        typeof(JsonConfigurationExtensions)
-        );
+        typeof(IConfigurationPart).Assembly,
+        typeof(IClavusPart).Assembly,
+        typeof(IServiceCollection).Assembly,
+        typeof(IConfigurationBuilder).Assembly,
+        typeof(OptionsServiceCollectionExtensions).Assembly,
+        typeof(JsonConfigurationExtensions).Assembly,
+        typeof(YamlConfigurationExtensions).Assembly,
+        typeof(TomlConfigurationExtensions).Assembly,
+        typeof(BinderOptions).Assembly
+    );
 
     public static GeneratorTestContextBuilder AddConfigCommonGenerators(this GeneratorTestContextBuilder builder)
     {

@@ -17,7 +17,6 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac((context, container) => container.RegisterInstance(A.Fake<IAbc>()))
                                      .ConfigureServices((context, services) => services.AddSingleton(A.Fake<IAbc2>()))
                             );
@@ -36,7 +35,6 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac((context, container) =>
                                                        {
                                                            container.RegisterInstance(A.Fake<IAbc>());
@@ -60,7 +58,6 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac(
                                           (context, container) =>
                                           {
@@ -82,7 +79,6 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac(
                                           (context, container) => container.RegisterInstance(A.Fake<IAbc>())
                                       )
@@ -105,7 +101,6 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac(
                                           (context, container) =>
                                           {
@@ -131,7 +126,6 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseAutofac()
                                      .ConfigureAutofac(
                                           (context, container) =>
                                           {
@@ -152,7 +146,7 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
     {
         var builder = await Host
                            .CreateApplicationBuilder()
-                           .ConfigureClavus(rb => rb.UseAutofac());
+                           .ConfigureClavus();
 
         var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().ShouldNotBeNull();
@@ -166,7 +160,7 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
     {
         var builder = await Host
                            .CreateApplicationBuilder()
-                           .ConfigureClavus(rb => rb.UseAutofac());
+                           .ConfigureClavus();
 
         var items = builder.GetLifetimeScope();
         items.ResolveOptional<IAbc>().ShouldNotBeNull();
@@ -182,7 +176,7 @@ public class AutofacCommandLineTests : AutoFakeTest<TestRecord>
     {
         using var host = await Host
                               .CreateApplicationBuilder([])
-                              .ConfigureClavus(rb => rb.UseAutofac());
+                              .ConfigureClavus();
 
         host.Services.GetRequiredService<ILifetimeScope>().ShouldNotBeNull();
     }

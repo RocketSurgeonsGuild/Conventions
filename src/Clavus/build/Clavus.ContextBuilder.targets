@@ -11,7 +11,7 @@
     Condition="'@(ClavusHost)' != ''"
     Outputs="$(_ClavusContextBuilderOutputFile)">
     <PropertyGroup>
-      <_ClavusContextBuilderImportExpression>global::$(ClavusImportNamespace).$(ClavusImportClassName).$(ClavusImportMethodName)</_ClavusContextBuilderImportExpression>
+      <_ClavusContextBuilderImportExpression>(ImportHelpers.Tectum ?? global::$(ClavusImportNamespace).$(ClavusImportClassName).$(ClavusImportMethodName))</_ClavusContextBuilderImportExpression>
       <_ClavusContextBuilderContent>$([System.IO.File]::ReadAllText('$(_ClavusContextBuilderTemplateFile)'))</_ClavusContextBuilderContent>
       <_ClavusContextBuilderContent>$(_ClavusContextBuilderContent.Replace('{ImportsExpression}', '$(_ClavusContextBuilderImportExpression)'))</_ClavusContextBuilderContent>
       <_ClavusContextBuilderOutputFile>$(IntermediateOutputPath)ClavusContextBuilder.g.cs</_ClavusContextBuilderOutputFile>

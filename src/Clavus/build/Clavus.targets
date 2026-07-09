@@ -43,6 +43,7 @@
       <GenericParameter></GenericParameter>
       <GenericConstraint></GenericConstraint>
       <GenericVariance></GenericVariance>
+      <IsAsync></IsAsync>
     </ClavusPart>
   </ItemDefinitionGroup>
 

@@ -84,6 +84,7 @@
     <Project Path="src/Clavus.Configuration.Yaml/Clavus.Configuration.Yaml.csproj" />
     <Project Path="src/Clavus.Configuration.Toml/Clavus.Configuration.Toml.csproj" />
     <Project Path="src/Clavus.DryIoc/Clavus.DryIoc.csproj" />
+    <Project Path="src/Clavus.OpenTelemetry/Clavus.OpenTelemetry.csproj" />
     <Project Path="src/Clavus.Serilog/Clavus.Serilog.csproj" />
     <Project Path="src/Clavus/Clavus.csproj" />
     <Project Path="src/Clavus.Hosting.Web/Clavus.Hosting.Web.csproj" />
@@ -92,7 +93,6 @@
     <Project Path="src/Clavus.Sdk/Clavus.Sdk.csproj" />
   </Folder>
   <Folder Name="/src/Clavus.Analyzers.supports/">
-    <Project Path="src/Clavus.Analyzers.supports/Clavus.Analyzers.roslyn4.14.csproj" />
     <Project Path="src/Clavus.Analyzers.supports/Clavus.Analyzers.roslyn5.0.csproj" />
   </Folder>
   <Folder Name="/test/">
@@ -106,6 +106,7 @@
     <Project Path="test/Clavus.Tests/Clavus.Tests.csproj" />
     <Project Path="test/Clavus.DryIoc.Tests/Clavus.DryIoc.Tests.csproj" />
     <Project Path="test/Clavus.Hosting.AspNetCore.Tests/Clavus.Hosting.AspNetCore.Tests.csproj" />
+    <Project Path="test/Clavus.OpenTelemetry.Tests/Clavus.OpenTelemetry.Tests.csproj" />
     <Project Path="test/Clavus.Hosting.Tests/Clavus.Hosting.Tests.csproj" />
     <Project Path="test/Clavus.WebAssembly.Hosting.Tests/Clavus.WebAssembly.Hosting.Tests.csproj" />
   </Folder>

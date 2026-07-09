@@ -53,7 +53,7 @@ public static class ClavusHostApplicationHelpers
         return host;
     }
 
-    internal static async ValueTask SharedHostConfigurationAsync(
+    internal static ValueTask SharedHostConfigurationAsync(
         IClavusContext context,
         IHostApplicationBuilder hostApplicationBuilder,
         CancellationToken cancellationToken
@@ -82,8 +82,7 @@ public static class ClavusHostApplicationHelpers
                 break;
             }
         }
-
-        var cb = await new ConfigurationBuilder().ApplyConfiguration(context, cancellationToken).ConfigureAwait(false);
+        var cb = new ConfigurationBuilder();
         if (cb.Sources is { Count: > 0, })
         {
             hostApplicationBuilder.Configuration.Sources.Insert(
@@ -99,5 +98,6 @@ public static class ClavusHostApplicationHelpers
         hostApplicationBuilder.Configuration.AddInMemoryCollection(
             new Dictionary<string, string?> { ["RocketSurgeryConventions:HostType"] = context.GetHostType().ToString(), }
         );
+        return cb.ApplyConfiguration(context, cancellationToken);
     }
 }

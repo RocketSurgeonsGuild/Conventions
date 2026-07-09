@@ -21,7 +21,7 @@ public interface I{PartName}Part{GenericParam} : global::Clavus.IClavusPart {Gen
 {
     /// <summary>
     ///     Register the {PartName} part.
-/// </summary>
+    /// </summary>
     void Register({SyncParams});
 }
 
@@ -32,47 +32,19 @@ public interface I{PartName}Part{GenericParam} : global::Clavus.IClavusPart {Gen
 public delegate void {PartName}Part{GenericParam}({SyncParams}) {GenericConstraint};
 
 /// <summary>
-///     Async part interface for {PartName}.
-///     Implements the <see cref="global::Clavus.IClavusPart" />
-/// </summary>
-/// <seealso cref="global::Clavus.IClavusPart" />
-[global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
-public interface I{PartName}AsyncPart{GenericParam} : global::Clavus.IClavusPart {GenericConstraint}
-{
-/// <summary>
-    ///     Register the {PartName} part asynchronously.
-    /// </summary>
-    global::System.Threading.Tasks.ValueTask Register({AsyncParams});
-}
-
-/// <summary>
-///     Async delegate for the {PartName} part.
-/// </summary>
-[global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
-public delegate global::System.Threading.Tasks.ValueTask {PartName}AsyncPart{GenericParam}({AsyncParams}) {GenericConstraint};
-
-/// <summary>
 ///     Extension methods for applying {PartName} parts.
 /// </summary>
 [global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
-public static class {PartName}PartExtensions
+public static partial class {PartName}PartExtensions
 {
     /// <summary>
     ///     Applies the registered {PartName} parts.
     /// </summary>
     /// <returns>The <see cref="{SubjectType}" /> for chaining.</returns>
-    public static async global::System.Threading.Tasks.ValueTask<{SubjectType}> Apply{PartName}{GenericArg}({ExtensionParams}) {GenericConstraint}
+    public static global::System.Threading.Tasks.ValueTask Apply{PartName}{GenericArg}({ExtensionParams}) {GenericConstraint}
     {
         global::System.ArgumentNullException.ThrowIfNull(context);
-        await global::Clavus.ClavusContextExtensions
-             .RegisterConventions(
-                  context,
-                  e => e
-                      .AddHandler<I{PartName}Part{GenericArg}>(part => part.Register({SyncArgs}))
-                      .AddHandler<I{PartName}AsyncPart{GenericArg}>(part => part.Register({AsyncArgs}))
-              )
-             .ConfigureAwait(false);
-        return {SubjectName};
+        {HandlerMethods};
     }
 }
 
@@ -84,19 +56,11 @@ file class Private{PartName}Part{GenericArg}({PartName}Part{GenericArg} fromDele
     public override int GetHashCode() => fromDelegate.GetHashCode();
 }
 
-file class Private{PartName}AsyncPart{GenericArg}({PartName}AsyncPart{GenericArg} fromDelegate, int priority, string? expression = null) : I{PartName}AsyncPart{GenericArg}, global::Clavus.Infrastructure.IClavusDelegate {GenericConstraint}
-{
-    public ValueTask Register({AsyncParams}) => fromDelegate({AsyncArgs});
-    int IClavusPart.Priority => priority;
-    public override string? ToString() => expression;
-    public override int GetHashCode() => fromDelegate.GetHashCode();
-}
-
 /// <summary>
 ///     Builder-method extensions for applying {PartName} parts to a <see cref="global::Clavus.ClavusContextBuilder" />.
 /// </summary>
 [global::System.CodeDom.Compiler.GeneratedCode("Clavus", "generated")]
-public static class {PartName}HostBuilderExtensions
+public static partial class {PartName}HostBuilderExtensions
 {
     /// <param name="container">The container.</param>
     extension(ClavusContextBuilder container)
@@ -113,21 +77,6 @@ public static class {PartName}HostBuilderExtensions
         {
             ArgumentNullException.ThrowIfNull(container);
             container.AppendPart(new ClavusPartMetadata(new Private{PartName}Part{GenericArg}(@delegate, priority, expression), hostType, category ?? ClavusCategory.Core));
-            return container;
-        }
-
-        /// <summary>
-        ///     Configure the {PartName} delegate to the convention scanner.
-        /// </summary>
-        /// <param name="delegate">The delegate.</param>
-        /// <param name="priority">The priority.</param>
-        /// <param name="category">The category.</param>
-        /// <param name="hostType">The host type.</param>
-        /// <returns><see cref="global::Clavus.ClavusContextBuilder" />.</returns>
-        public global::Clavus.ClavusContextBuilder {BuilderMethodName}{GenericArg}({PartName}AsyncPart{GenericArg} @delegate, int priority = 0, ClavusCategory? category = null, HostType hostType = HostType.Undefined, [CallerArgumentExpression("delegate")] string? expression = null) {GenericConstraint}
-        {
-            ArgumentNullException.ThrowIfNull(container);
-            container.AppendPart(new ClavusPartMetadata(new Private{PartName}AsyncPart{GenericArg}(@delegate, priority, expression), hostType, category ?? ClavusCategory.Core));
             return container;
         }
     }

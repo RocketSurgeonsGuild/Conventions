@@ -73,11 +73,11 @@ public class ClavusContextTests
                             .Create([], new ServiceProviderDictionary(), [])
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(contextBuilder);
-
-        var servicesCollection = await new ServiceCollection()
+        var servicesCollection = new ServiceCollection()
                                       .AddSingleton(A.Fake<IAbc>())
-                                      .AddSingleton(A.Fake<IAbc2>())
-                                      .ApplyService(context);
+                                      .AddSingleton(A.Fake<IAbc2>());
+
+        await servicesCollection.ApplyService(context);
 
         var sp = servicesCollection.BuildServiceProvider();
         sp.GetService<IAbc>().ShouldNotBeNull();
@@ -94,13 +94,14 @@ public class ClavusContextTests
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection().ApplyService(context);
+        var collection = new ServiceCollection();
+        await collection.ApplyService(context);
 
-        servicesCollection.AddSingleton(A.Fake<IAbc>());
-        servicesCollection.AddSingleton(A.Fake<IAbc2>());
-        servicesCollection.AddSingleton(A.Fake<IAbc4>());
+        collection.AddSingleton(A.Fake<IAbc>());
+        collection.AddSingleton(A.Fake<IAbc2>());
+        collection.AddSingleton(A.Fake<IAbc4>());
 
-        var sp = servicesCollection.BuildServiceProvider();
+        var sp = collection.BuildServiceProvider();
         sp.GetService<IAbc>().ShouldNotBeNull();
         sp.GetService<IAbc2>().ShouldNotBeNull();
         sp.GetService<IAbc3>().ShouldBeNull();
@@ -115,11 +116,12 @@ public class ClavusContextTests
                             .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(contextBuilder);
 
-        var servicesCollection = await new ServiceCollection().ApplyService(context);
-        servicesCollection.AddSingleton(A.Fake<IAbc3>());
-        servicesCollection.AddSingleton(A.Fake<IAbc4>());
+        var collection = new ServiceCollection();
+        await collection.ApplyService(context);
+        collection.AddSingleton(A.Fake<IAbc3>());
+        collection.AddSingleton(A.Fake<IAbc4>());
 
-        var sp = servicesCollection.BuildServiceProvider();
+        var sp = collection.BuildServiceProvider();
         sp.GetService<IAbc>().ShouldBeNull();
         sp.GetService<IAbc2>().ShouldBeNull();
         sp.GetService<IAbc3>().ShouldNotBeNull();
@@ -134,7 +136,9 @@ public class ClavusContextTests
                      .AppendPart(new AbcConvention());
         builder.Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(builder);
-        var servicesCollection = await new ServiceCollection().ApplyService(context);
+
+        var servicesCollection = new ServiceCollection();
+        await servicesCollection.ApplyService(context);
 
         var items = servicesCollection.BuildServiceProvider();
         items.GetService<IAbc>().ShouldNotBeNull();
@@ -153,7 +157,8 @@ public class ClavusContextTests
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = await ClavusContext.FromAsync(builder);
-        var collection = await new ServiceCollection().ApplyService(context);
+        var collection = new ServiceCollection();
+        await collection.ApplyService(context);
         collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 
@@ -168,7 +173,8 @@ public class ClavusContextTests
                      .Set(data)
                      .Set<IConfiguration>(new ConfigurationBuilder().Build());
         var context = ( await ClavusContext.FromAsync(builder) ).Set(data);
-        var collection = await new ServiceCollection().ApplyService(context);
+        var collection = new ServiceCollection();
+        await collection.ApplyService(context);
         collection.ShouldContain(z => z.ServiceType == typeof(IInjectData));
     }
 

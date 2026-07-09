@@ -43,7 +43,7 @@ public class CalvusExecutor(IClavusContext context)
     public CalvusExecutor AddHandler<TConvention>(Func<TConvention, ValueTask> action) where TConvention : IClavusPart
     {
         _asyncConventionHandlers.Add(
-            async o =>
+            async (o, _) =>
             {
                 if (o is not TConvention convention) return;
                 try
@@ -60,9 +60,34 @@ public class CalvusExecutor(IClavusContext context)
     }
 
     /// <summary>
+    ///     Add an asynchronous convention
+    /// </summary>
+    /// <param name="action"></param>
+    /// <typeparam name="TConvention"></typeparam>
+    /// <returns></returns>
+    public CalvusExecutor AddHandler<TConvention>(Func<TConvention, CancellationToken, ValueTask> action) where TConvention : IClavusPart
+    {
+        _asyncConventionHandlers.Add(
+            async (o, ct) =>
+            {
+                if (o is not TConvention convention) return;
+                try
+                {
+                    await action(convention, ct).ConfigureAwait(false);
+                }
+                catch (Exception ex) when (!context.ExceptionPolicy(ex))
+                {
+                    throw;
+                }
+            }
+        );
+        return this;
+    }
+
+    /// <summary>
     ///     Run all the conventions
     /// </summary>
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(CancellationToken cancellationToken)
     {
         foreach (var convention in context.Parts)
         {
@@ -73,11 +98,25 @@ public class CalvusExecutor(IClavusContext context)
 
             foreach (var handler in _asyncConventionHandlers)
             {
-                await handler(convention).ConfigureAwait(false);
+                await handler(convention, cancellationToken).ConfigureAwait(false);
             }
         }
     }
 
-    private readonly List<Func<IClavusPart, ValueTask>> _asyncConventionHandlers = [];
+    /// <summary>
+    ///     Run all the conventions
+    /// </summary>
+    public void Execute()
+    {
+        foreach (var convention in context.Parts)
+        {
+            foreach (var handler in _conventionHandlers)
+            {
+                handler(convention);
+            }
+        }
+    }
+
+    private readonly List<Func<IClavusPart, CancellationToken, ValueTask>> _asyncConventionHandlers = [];
     private readonly List<Action<IClavusPart>> _conventionHandlers = [];
 }

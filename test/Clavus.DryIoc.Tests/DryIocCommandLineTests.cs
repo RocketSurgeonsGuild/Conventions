@@ -18,7 +18,6 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseDryIoc()
                                      .ConfigureDryIoc(
                                           (context, container) =>
                                           {
@@ -42,7 +41,6 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseDryIoc()
                                      .ConfigureDryIoc(
                                           (context, container) =>
                                           {
@@ -67,7 +65,6 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseDryIoc()
                                      .ConfigureDryIoc(
                                           (context, container) =>
                                           {
@@ -89,7 +86,6 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseDryIoc()
                                      .ConfigureDryIoc(
                                           (context, container) =>
                                           {
@@ -115,7 +111,6 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseDryIoc()
                                      .ConfigureDryIoc(
                                           (context, container) =>
                                           {
@@ -141,7 +136,6 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
                            .CreateApplicationBuilder()
                            .ConfigureClavus(
                                 rb => rb
-                                     .UseDryIoc()
                                      .ConfigureDryIoc(
                                           (context, container) =>
                                           {
@@ -162,7 +156,7 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
     {
         var builder = await Host
                            .CreateApplicationBuilder()
-                           .ConfigureClavus(rb => rb.UseDryIoc());
+                           .ConfigureClavus();
 
         var items = builder.GetLifetimeScope();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
@@ -176,7 +170,7 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
     {
         var builder = await Host
                            .CreateApplicationBuilder()
-                           .ConfigureClavus(rb => rb.UseDryIoc());
+                           .ConfigureClavus();
 
         var items = builder.GetLifetimeScope();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
@@ -192,7 +186,7 @@ public class DryIocCommandLineTests : AutoFakeTest<TestRecord>
     {
         using var host = await Host
                               .CreateApplicationBuilder([])
-                              .ConfigureClavus(rb => rb.UseDryIoc());
+                              .ConfigureClavus();
 
         host.Services.GetRequiredService<IContainer>().ShouldNotBeNull();
     }

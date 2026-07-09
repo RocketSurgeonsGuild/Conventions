@@ -36,23 +36,25 @@
     <PropertyGroup>
         <_ClavusPartsTargetsImported>true</_ClavusPartsTargetsImported>
         <_ClavusPartTemplateFile>$(MSBuildThisFileDirectory)ClavusPart.cs.template</_ClavusPartTemplateFile>
-    </PropertyGroup>
+    <_ClavusPartAsyncTemplateFile>$(MSBuildThisFileDirectory)ClavusPartAsync.cs.template</_ClavusPartAsyncTemplateFile>
+  </PropertyGroup>
 
-    <Target Name="_ClavusPreparePartItems" Condition="'@(ClavusPart)' != ''">
-        <ItemGroup>
-            <ClavusPart>
-                <Visible>false</Visible>
-                <Namespace Condition="'%(ClavusPart.Namespace)' == ''">$(RootNamespace)</Namespace>
+  <Target Name="_ClavusPreparePartItems" Condition="'@(ClavusPart)' != ''">
+    <ItemGroup>
+      <ClavusPart>
+        <Visible>false</Visible>
+        <Namespace Condition="'%(ClavusPart.Namespace)' == ''">$(RootNamespace)</Namespace>
+        <IsAsync Condition="'%(ClavusPart.IsAsync)' == ''">true</IsAsync>
                 <ParameterName Condition="'%(ClavusPart.ParameterType)' != '' and '%(ClavusPart.ParameterName)' == ''">parameter</ParameterName>
                 <GenericVariance Condition="'%(ClavusPart.GenericParameter)' != '' and '%(ClavusPart.GenericVariance)' == ''">in</GenericVariance>
             </ClavusPart>
-            <!-- Generic expansion: {GenericParam} for declarations, {GenericArg} for usages, {GenericConstraint} for where clauses -->
+      <!-- Generic expansion: {GenericParam} for declarations, {GenericArg} for usages, {GenericConstraint} for where clauses -->
             <ClavusPart>
                 <_GenericParam Condition="'%(ClavusPart.GenericParameter)' != ''">&lt;%(ClavusPart.GenericVariance) %(ClavusPart.GenericParameter)&gt;</_GenericParam>
                 <_GenericArg Condition="'%(ClavusPart.GenericParameter)' != ''">&lt;%(ClavusPart.GenericParameter)&gt;</_GenericArg>
                 <_GenericConstraint Condition="'%(ClavusPart.GenericParameter)' != '' and '%(ClavusPart.GenericConstraint)' != ''">where %(ClavusPart.GenericParameter) : %(ClavusPart.GenericConstraint)</_GenericConstraint>
             </ClavusPart>
-            <!-- When ParameterType is the generic parameter itself it must not be global::-prefixed -->
+      <!-- When ParameterType is the generic parameter itself it must not be global::-prefixed -->
             <ClavusPart>
                 <_ConfigParam Condition="'%(ClavusPart.ProvideConfiguration)' == 'true'">, global::Microsoft.Extensions.Configuration.IConfiguration configuration</_ConfigParam>
                 <_ServicesParam Condition="'%(ClavusPart.ProvideServices)' == 'true'">, global::Microsoft.Extensions.DependencyInjection.IServiceCollection services</_ServicesParam>
@@ -61,7 +63,7 @@
                 <_ServicesArg Condition="'%(ClavusPart.ProvideServices)' == 'true'">, services</_ServicesArg>
                 <_CustomArg Condition="'%(ClavusPart.ParameterType)' != ''">, %(ClavusPart.ParameterName)</_CustomArg>
             </ClavusPart>
-            <!-- Extension subject: custom parameter > service collection > context -->
+      <!-- Extension subject: custom parameter > service collection > context -->
             <ClavusPart>
                 <_SubjectType Condition="'%(ClavusPart.ParameterType)' != ''">%(ClavusPart._CustomParamPrefix)%(ClavusPart.ParameterType)</_SubjectType>
                 <_SubjectName Condition="'%(ClavusPart.ParameterType)' != ''">%(ClavusPart.ParameterName)</_SubjectName>
@@ -73,8 +75,8 @@
             <ClavusPart>
                 <_ExtContextParam Condition="'%(ClavusPart._SubjectName)' != 'context'">, global::Clavus.IClavusContext context</_ExtContextParam>
                 <_ExtServicesParam Condition="'%(ClavusPart.ProvideServices)' == 'true' and '%(ClavusPart.ParameterType)' != ''">, global::Microsoft.Extensions.DependencyInjection.IServiceCollection services</_ExtServicesParam>
-                <!-- Builder methods are generated for every part except the bare-context one -->
-                <!-- <_HasBuilderMethods Condition="'%(ClavusPart._SubjectName)' == 'context'">false</_HasBuilderMethods>
+        <!-- Builder methods are generated for every part except the bare-context one -->
+        <!-- <_HasBuilderMethods Condition="'%(ClavusPart._SubjectName)' == 'context'">false</_HasBuilderMethods>
         <_HasBuilderMethods Condition="'%(ClavusPart._SubjectName)' != 'context'">true</_HasBuilderMethods> -->
                 <_BuilderMethodName Condition="'%(ClavusPart.BuilderMethodName)' == ''">Configure%(ClavusPart.Identity)</_BuilderMethodName>
                 <_BuilderMethodName Condition="'%(ClavusPart.BuilderMethodName)' != ''">%(ClavusPart.BuilderMethodName)</_BuilderMethodName>
@@ -83,7 +85,7 @@
                 <_SyncParams>global::Clavus.IClavusContext context%(ClavusPart._ConfigParam)%(ClavusPart._ServicesParam)%(ClavusPart._CustomParam)</_SyncParams>
                 <_ExtensionParams>this %(ClavusPart._SubjectType) %(ClavusPart._SubjectName)%(ClavusPart._ExtContextParam)%(ClavusPart._ExtServicesParam), global::System.Threading.CancellationToken cancellationToken = default</_ExtensionParams>
                 <_SyncArgs>context%(ClavusPart._ConfigArg)%(ClavusPart._ServicesArg)%(ClavusPart._CustomArg)</_SyncArgs>
-                <!-- Builder-method lambda parameter names (as opposed to _SyncArgs/_AsyncArgs, which are call-forwarding expressions) -->
+        <!-- Builder-method lambda parameter names (as opposed to _SyncArgs/_AsyncArgs, which are call-forwarding expressions) -->
                 <_ParamNameConfig Condition="'%(ClavusPart.ProvideConfiguration)' == 'true'">, configuration</_ParamNameConfig>
                 <_ParamNameServices Condition="'%(ClavusPart.ProvideServices)' == 'true'">, services</_ParamNameServices>
                 <_ParamNameCustom Condition="'%(ClavusPart.ParameterType)' != ''">, %(ClavusPart.ParameterName)</_ParamNameCustom>
@@ -104,7 +106,7 @@
         </ItemGroup>
     </Target>
 
-    <!-- Batched once per ClavusPart item via Outputs -->
+  <!-- Batched once per ClavusPart item via Outputs -->
     <Target Name="_ClavusGeneratePartSources"
         BeforeTargets="CoreCompile"
         DependsOnTargets="_ClavusPreparePartItems"
@@ -120,7 +122,7 @@
             <_ClavusPartExtensionParams>%(ClavusPart._ExtensionParams)</_ClavusPartExtensionParams>
             <_ClavusPartSyncArgs>%(ClavusPart._SyncArgs)</_ClavusPartSyncArgs>
             <_ClavusPartAsyncArgs>%(ClavusPart._AsyncArgs)</_ClavusPartAsyncArgs>
-            <!-- <_ClavusPartHasBuilderMethods>%(ClavusPart._HasBuilderMethods)</_ClavusPartHasBuilderMethods> -->
+      <!-- <_ClavusPartHasBuilderMethods>%(ClavusPart._HasBuilderMethods)</_ClavusPartHasBuilderMethods> -->
             <_ClavusPartBuilderMethodName>%(ClavusPart._BuilderMethodName)</_ClavusPartBuilderMethodName>
             <_ClavusPartSyncParamNames>%(ClavusPart._SyncParamNames)</_ClavusPartSyncParamNames>
             <_ClavusPartAsyncParamNames>%(ClavusPart._AsyncParamNames)</_ClavusPartAsyncParamNames>
@@ -130,7 +132,11 @@
             <_ClavusPartGenericParam>%(ClavusPart._GenericParam)</_ClavusPartGenericParam>
             <_ClavusPartGenericArg>%(ClavusPart._GenericArg)</_ClavusPartGenericArg>
             <_ClavusPartGenericConstraint>%(ClavusPart._GenericConstraint)</_ClavusPartGenericConstraint>
+      <_ClavusHandlerMethods><![CDATA[global::Clavus.ClavusContextExtensions.RegisterConventions(context, e => e.AddHandler<I{PartName}Part{GenericArg}>(part => part.Register({SyncArgs})))]]></_ClavusHandlerMethods>
+      <_ClavusHandlerMethods Condition="'%(ClavusPart.IsAsync)' == 'true'"><![CDATA[return global::Clavus.ClavusContextExtensions.RegisterConventionsAsync(context, e => e.AddHandler<I{PartName}Part{GenericArg}>(part => part.Register({SyncArgs})).AddHandler<I{PartName}AsyncPart{GenericArg}>(part => part.Register({AsyncArgs})), cancellationToken)]]></_ClavusHandlerMethods>
             <_ClavusPartContent>$([System.IO.File]::ReadAllText('$(_ClavusPartTemplateFile)'))</_ClavusPartContent>
+      <_ClavusPartContent Condition="'%(ClavusPart.IsAsync)' != 'true'">$(_ClavusPartContent.Replace('static global::System.Threading.Tasks.ValueTask Apply', 'static void Apply'))</_ClavusPartContent>
+      <_ClavusPartContent>$(_ClavusPartContent.Replace('{HandlerMethods}', '$(_ClavusHandlerMethods)'))</_ClavusPartContent>
             <_ClavusPartContent>$(_ClavusPartContent.Replace('{PartName}', '$(_ClavusPartName)'))</_ClavusPartContent>
             <_ClavusPartContent>$(_ClavusPartContent.Replace('{Namespace}', '$(_ClavusPartNamespace)'))</_ClavusPartContent>
             <_ClavusPartContent>$(_ClavusPartContent.Replace('{SyncParams}', '$(_ClavusPartSyncParams)'))</_ClavusPartContent>
@@ -149,17 +155,43 @@
             <_ClavusPartContent>$(_ClavusPartContent.Replace('{GenericParam}', '$(_ClavusPartGenericParam)'))</_ClavusPartContent>
             <_ClavusPartContent>$(_ClavusPartContent.Replace('{GenericArg}', '$(_ClavusPartGenericArg)'))</_ClavusPartContent>
             <_ClavusPartContent>$(_ClavusPartContent.Replace('{GenericConstraint}', '$(_ClavusPartGenericConstraint)'))</_ClavusPartContent>
-            <!-- Strip the builder-methods block entirely for parts that don't support it (the bare-context part) -->
+      <_ClavusPartContent>$(_ClavusPartContent.Replace('{HandlerMethods}', '$(_ClavusHandlerMethods)'))</_ClavusPartContent>
+      <_ClavusPartAsyncContent>$([System.IO.File]::ReadAllText('$(_ClavusPartAsyncTemplateFile)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{PartName}', '$(_ClavusPartName)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{Namespace}', '$(_ClavusPartNamespace)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{SyncParams}', '$(_ClavusPartSyncParams)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{AsyncParams}', '$(_ClavusPartAsyncParams)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{SubjectType}', '$(_ClavusPartSubjectType)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{SubjectName}', '$(_ClavusPartSubjectName)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{ExtensionParams}', '$(_ClavusPartExtensionParams)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{SyncArgs}', '$(_ClavusPartSyncArgs)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{AsyncArgs}', '$(_ClavusPartAsyncArgs)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{BuilderMethodName}', '$(_ClavusPartBuilderMethodName)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{SyncParamNames}', '$(_ClavusPartSyncParamNames)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{AsyncParamNames}', '$(_ClavusPartAsyncParamNames)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{ConfigExpr}', '$(_ClavusPartConfigExpr)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{BuilderPlainParamNames}', '$(_ClavusPartBuilderPlainParamNames)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{BuilderPlainAsyncParamNames}', '$(_ClavusPartBuilderPlainAsyncParamNames)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{GenericParam}', '$(_ClavusPartGenericParam)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{GenericArg}', '$(_ClavusPartGenericArg)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{GenericConstraint}', '$(_ClavusPartGenericConstraint)'))</_ClavusPartAsyncContent>
+      <_ClavusPartAsyncContent>$(_ClavusPartAsyncContent.Replace('{HandlerMethods}', '$(_ClavusHandlerMethods)'))</_ClavusPartAsyncContent>
             <_ClavusPartOutputFile>$(IntermediateOutputPath)ClavusPart.$(_ClavusPartName).g.cs</_ClavusPartOutputFile>
+      <_ClavusPartAsyncOutputFile>$(IntermediateOutputPath)ClavusPartAsync.$(_ClavusPartName).g.cs</_ClavusPartAsyncOutputFile>
         </PropertyGroup>
         <WriteLinesToFile
             File="$(_ClavusPartOutputFile)"
             Lines="$([MSBuild]::Escape($(_ClavusPartContent)))"
             Overwrite="true"
             WriteOnlyWhenDifferent="true" />
+    <WriteLinesToFile
+      File="$(_ClavusPartAsyncOutputFile)"
+      Lines="$([MSBuild]::Escape($(_ClavusPartAsyncContent)))"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
         <ItemGroup>
-            <Compile Include="$(_ClavusPartOutputFile)" />
-            <FileWrites Include="$(_ClavusPartOutputFile)" />
+      <Compile Include="$(_ClavusPartOutputFile);$(_ClavusPartAsyncOutputFile)" />
+      <FileWrites Include="$(_ClavusPartOutputFile);$(_ClavusPartAsyncOutputFile)" />
         </ItemGroup>
     </Target>
 </Project>

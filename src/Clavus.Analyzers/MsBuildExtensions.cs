@@ -24,12 +24,12 @@ internal static class MsBuildExtensions
 
     extension(Compilation compilation)
     {
-        public ImmutableList<ClavusConfigurationData> GetClavusReferences() => [..compilation.References
+        public IEnumerable<ClavusConfigurationData> GetClavusReferences() => compilation.References
             .Select(compilation.GetAssemblyOrModuleSymbol)
             .OfType<IAssemblySymbol>()
             .Select(symbol => ClavusConfigurationData.FromAssemblyAttributes(symbol, "Export"))
             .OfType<ClavusConfigurationData>()
-            .OrderBy(z => z)];
+            .OrderBy(z => z);
 
         /// <summary>
         ///     Reads <c>[assembly: Clavus.ConfigurationAssembly(...)]</c> markers off every referenced assembly,

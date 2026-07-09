@@ -19,11 +19,6 @@
         <PackageReference Include="YamlDotNet" PrivateAssets="all" GeneratePathProperty="true" />
         <PackageReference Include="Tomlyn" PrivateAssets="all" GeneratePathProperty="true" />
         <ProjectReference
-            Include="../Clavus.Analyzers.supports/Clavus.Analyzers.roslyn4.14.csproj"
-            PrivateAssets="all"
-            ReferenceOutputAssembly="false"
-        />
-        <ProjectReference
             Include="../Clavus.Analyzers.supports/Clavus.Analyzers.roslyn5.0.csproj"
             PrivateAssets="all"
             ReferenceOutputAssembly="false"
@@ -47,18 +42,6 @@
             Include="$(_AnalyzersLocation)roslyn5.0/$(Configuration)/netstandard2.0/System.Text.Json.dll"
             Pack="true"
             PackagePath="analyzers/dotnet/roslyn5.0/cs"
-            Visible="false"
-        />
-        <None
-            Include="$(_AnalyzersLocation)roslyn4.14/$(Configuration)/netstandard2.0/$(AssemblyName).dll"
-            Pack="true"
-            PackagePath="analyzers/dotnet/roslyn4.14/cs"
-            Visible="false"
-        />
-        <None
-            Include="$(_AnalyzersLocation)roslyn4.14/$(Configuration)/netstandard2.0/System.Text.Json.dll"
-            Pack="true"
-            PackagePath="analyzers/dotnet/roslyn4.14/cs"
             Visible="false"
         />
         <None Include="$(PkgYamlDotNet)\lib\netstandard2.0\YamlDotNet.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn5.3/cs" Visible="false" />

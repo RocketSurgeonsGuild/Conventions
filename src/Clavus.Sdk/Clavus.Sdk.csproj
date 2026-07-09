@@ -13,4 +13,31 @@
     <None Include="Sdk/**" Pack="true" PackagePath="Sdk/" />
     <Using Remove="**" />
   </ItemGroup>
+  <!--
+    Rocket.Surgery.ModularPipelines.Extensions' PackSolution module packs the whole solution with a
+    single "dotnet pack, include symbols" invocation, which sets IncludeSymbols=true as an MSBuild
+    global property. Global properties cannot be overridden by IncludeSymbols=false above, so a
+    .snupkg is always attempted for this project. Because IncludeBuildOutput=false, the main
+    package's lib/ output group is empty (by design — this is a content-only MSBuild SDK package,
+    not a referenceable library), and NuGet's default debug-symbols output group is gated behind
+    that same IncludeBuildOutput condition, so the .snupkg ends up with zero files and pack fails
+    with NU5017 ("Cannot create a package that has no dependencies nor content").
+
+    Fix: NuGet.Build.Tasks.Pack.targets' _GetDebugSymbolsWithTfm target adds an unconditional
+    ItemGroup for TfmSpecificDebugSymbolsFile items, independent of IncludeBuildOutput, populated
+    via the TargetsForTfmSpecificDebugSymbolsInPackage extension point. We use it to point the
+    symbols package at the .pdb this project already produces during a normal build (it still
+    compiles a trivial assembly even with no non-Sdk source files), giving the .snupkg legitimate
+    content without adding a lib/ folder to the main package.
+  -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificDebugSymbolsInPackage>$(TargetsForTfmSpecificDebugSymbolsInPackage);_ClavusSdkAddDebugSymbolsToPackage</TargetsForTfmSpecificDebugSymbolsInPackage>
+  </PropertyGroup>
+  <Target Name="_ClavusSdkAddDebugSymbolsToPackage" DependsOnTargets="Build">
+    <ItemGroup>
+      <TfmSpecificDebugSymbolsFile Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')">
+        <TargetFramework>$(TargetFramework)</TargetFramework>
+      </TfmSpecificDebugSymbolsFile>
+    </ItemGroup>
+  </Target>
 </Project>

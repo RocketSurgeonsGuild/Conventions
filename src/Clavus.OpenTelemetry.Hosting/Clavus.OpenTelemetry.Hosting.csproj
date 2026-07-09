@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>Provides OpenTelemetry support for a Rocket Surgery Application</PackageDescription>
+        <PackageTags>$(PackageTags);OpenTelemetry</PackageTags>
+        <RootNamespace>Clavus</RootNamespace>
+        <IsTrimmable>true</IsTrimmable>
+    </PropertyGroup>
+    <ItemGroup>
+        <ClavusPart Include="OpenTelemetry" Namespace="Clavus" ParameterType="global::OpenTelemetry.IOpenTelemetryBuilder" ParameterName="builder" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+        <ProjectReference Include="..\Clavus.OpenTelemetry\Clavus.OpenTelemetry.csproj" />
+
+      <ProjectReference
+        Include="..\Clavus.Analyzers\Clavus.Analyzers.csproj"
+        IncludeAssets="analyzers;build;buildMultitargeting;buildTransitive"
+        ExcludeAssets="compile;runtime;native"
+        PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
+        OutputItemType="Analyzer"
+        ReferenceOutputAssembly="false"
+      />
+    </ItemGroup>
+</Project>

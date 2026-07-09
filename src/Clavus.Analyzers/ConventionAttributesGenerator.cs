@@ -137,16 +137,6 @@ public class ClavusAttributesGenerator : IIncrementalGenerator
                     var output = ConfigurationClassEmitter.Emit(group, config.RootNamespace, useNodaTime);
                     productionContext.AddSource(output.HintName, output.SourceText);
                 }
-
-                if (!allGroups.IsDefaultOrEmpty)
-                {
-                    productionContext.AddSource(ConfigurationAssemblyMarkerEmitter.HintName, ConfigurationAssemblyMarkerEmitter.Emit(allGroups));
-                }
-
-                productionContext.AddSource(
-                    ConfigurationManifestEmitter.HintName,
-                    ConfigurationManifestEmitter.Emit(compilation, config.RootNamespace, allGroups, compilation.AssemblyName ?? "")
-                );
             }
         );
     }

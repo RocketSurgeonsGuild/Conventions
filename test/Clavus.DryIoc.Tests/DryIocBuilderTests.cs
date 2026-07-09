@@ -20,7 +20,6 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
                               .CreateApplicationBuilder()
                               .ConfigureClavus(
                                    rb => rb
-                                        .UseDryIoc()
                                         .ConfigureDryIoc(
                                              (context, container) =>
                                              {
@@ -44,7 +43,6 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
                               .CreateApplicationBuilder()
                               .ConfigureClavus(
                                    rb => rb
-                                        .UseDryIoc()
                                         .ConfigureDryIoc(
                                              (context, container) =>
                                              {
@@ -69,7 +67,6 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
                               .CreateApplicationBuilder()
                               .ConfigureClavus(
                                    rb => rb
-                                        .UseDryIoc()
                                         .ConfigureDryIoc(
                                              (context, container) =>
                                              {
@@ -91,7 +88,6 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
                               .CreateApplicationBuilder()
                               .ConfigureClavus(
                                    rb => rb
-                                        .UseDryIoc()
                                         .ConfigureDryIoc(
                                              (context, container) =>
                                              {
@@ -117,7 +113,6 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
                               .CreateApplicationBuilder()
                               .ConfigureClavus(
                                    rb => rb
-                                        .UseDryIoc()
                                         .ConfigureDryIoc(
                                              (context, container) =>
                                              {
@@ -143,7 +138,6 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
                               .CreateApplicationBuilder()
                               .ConfigureClavus(
                                    rb => rb
-                                        .UseDryIoc()
                                         .ConfigureDryIoc(
                                              (context, container) =>
                                              {
@@ -164,10 +158,7 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
     {
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureClavus(
-                                   rb => rb
-                                        .UseDryIoc()
-                               );
+                              .ConfigureClavus();
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
@@ -181,10 +172,7 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
     {
         using var host = await Host
                               .CreateApplicationBuilder()
-                              .ConfigureClavus(
-                                   rb => rb
-                                        .UseDryIoc()
-                               );
+                              .ConfigureClavus();
 
         var items = host.Services.GetRequiredService<IResolverContext>();
         items.Resolve<IAbc>(IfUnresolved.ReturnDefaultIfNotRegistered).ShouldNotBeNull();
@@ -200,7 +188,7 @@ public class DryIocBuilderTests : AutoFakeTest<TestRecord>
     {
         using var host = await Host
                               .CreateApplicationBuilder([])
-                              .ConfigureClavus(rb => rb.UseDryIoc());
+                              .ConfigureClavus();
 
         var container = host.Services.GetRequiredService<IContainer>();
         container.ShouldNotBeNull();

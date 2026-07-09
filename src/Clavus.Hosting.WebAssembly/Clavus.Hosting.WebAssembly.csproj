@@ -20,9 +20,10 @@
         />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Clavus\Clavus.csproj" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+        <ProjectReference Include="../Clavus/Clavus.csproj" />
+        <ProjectReference Include="../Clavus.OpenTelemetry/Clavus.OpenTelemetry.csproj" />
         <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting.Tests" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     </ItemGroup>
     <ItemGroup />
 </Project>

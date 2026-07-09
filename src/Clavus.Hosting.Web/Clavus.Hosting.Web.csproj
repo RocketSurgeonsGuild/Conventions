@@ -10,7 +10,9 @@
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
         <ProjectReference Include="../Clavus/Clavus.csproj" />
+        <ProjectReference Include="../Clavus.OpenTelemetry/Clavus.OpenTelemetry.csproj" />
         <ProjectReference Include="../Clavus.Hosting/Clavus.Hosting.csproj" />
     </ItemGroup>
 </Project>
