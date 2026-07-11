@@ -12,6 +12,14 @@
     <Compile Remove="Sdk/**" />
     <None Include="Sdk/**" Pack="true" PackagePath="Sdk/" />
     <Using Remove="**" />
+    <None Update="Sdk\Clavus.Configuration.props">
+      <Pack>true</Pack>
+      <PackagePath>Sdk/</PackagePath>
+    </None>
+    <None Update="Sdk\Clavus.Configuration.targets">
+      <Pack>true</Pack>
+      <PackagePath>Sdk/</PackagePath>
+    </None>
   </ItemGroup>
   <!--
     Rocket.Surgery.ModularPipelines.Extensions' PackSolution module packs the whole solution with a

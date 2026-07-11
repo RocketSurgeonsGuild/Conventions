@@ -1,0 +1,39 @@
+<Project>
+<ItemGroup>
+  <PackageReference
+    Include="Clavus.Configuration.Json"
+    Version="TODO"
+    Condition="'$(ClavusEnableJsonConfiguration)' == 'true' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Configuration.Json')) != 'true'"
+    IsImplicitlyDefined="true"
+  />
+  <PackageReference
+    Include="Clavus.Configuration.Yaml"
+    Version="TODO"
+    Condition="'$(ClavusEnableYamlConfiguration)' == 'true' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Configuration.Yaml')) != 'true'"
+    IsImplicitlyDefined="true"
+  />
+  <PackageReference
+    Include="Clavus.Configuration.Toml"
+    Version="TODO"
+    Condition="'$(ClavusEnableTomlConfiguration)' == 'true' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Configuration.Toml')) != 'true'"
+    IsImplicitlyDefined="true"
+  />
+</ItemGroup>
+  <!--
+    .gitignore warning (task 1.6): appsettings.local.{ext} is a developer-machine-only
+    override layer (design.md Decision 8) and must never be committed. Warn instead of
+    writing to the project's .gitignore, so the developer stays in control of that file.
+  -->
+  <Target Name="_ClavusScaffoldLocalConfigurationGitIgnore"
+          Condition="'$(EnableClavusConfiguration)' == 'true'"
+          BeforeTargets="Build;Restore">
+    <PropertyGroup>
+      <_ClavusGitIgnorePath>$(MSBuildProjectDirectory)\.gitignore</_ClavusGitIgnorePath>
+      <_ClavusGitIgnoreExistingContent Condition="Exists('$(_ClavusGitIgnorePath)')">$([System.IO.File]::ReadAllText('$(_ClavusGitIgnorePath)'))</_ClavusGitIgnoreExistingContent>
+      <_ClavusGitIgnoreNeedsEntry Condition="'$(_ClavusGitIgnoreExistingContent)' == '' or !$(_ClavusGitIgnoreExistingContent.Contains('appsettings.local.'))">true</_ClavusGitIgnoreNeedsEntry>
+    </PropertyGroup>
+    <Warning
+        Text="ClavusConfiguration: '$(_ClavusGitIgnorePath)' does not appear to ignore appsettings.local.{json,yaml,yml,toml}. Add those patterns to your .gitignore so local-only configuration overrides are never committed."
+        Condition="'$(_ClavusGitIgnoreNeedsEntry)' == 'true'" />
+  </Target>
+</Project>

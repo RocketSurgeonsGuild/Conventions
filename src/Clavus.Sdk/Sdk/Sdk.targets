@@ -121,10 +121,7 @@
     </Choose>
 
     <!-- clavus-managed-configuration MSBuild surface (discovery, packing, copy, gitignore scaffold). -->
-    <Import Project="$(MSBuildThisFileDirectory)Sdk.Configuration.targets" Condition="'$(_ClavusSdkConfigurationTargetsImported)' != 'true'" />
-    <PropertyGroup>
-        <_ClavusSdkConfigurationTargetsImported>true</_ClavusSdkConfigurationTargetsImported>
-    </PropertyGroup>
+    <Import Project="$(MSBuildThisFileDirectory)Clavus.Configuration.targets" Condition="'$(ClavusEnableConfiguration)' == 'true'" />
 
     <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
         <ImportClavusAssembly Condition="'$(ImportClavusAssembly)' == ''">true</ImportClavusAssembly>
@@ -141,40 +138,8 @@
         <ExportClavusAssembly Condition="'$(ExportClavusAssembly)' == ''">true</ExportClavusAssembly>
     </PropertyGroup>
 
-    <!--
-      Auto-detection of declared configuration file formats.
-      `ClavusConfiguration` is the MSBuild item (populated by the config-packaging pipeline,
-      see openspec/changes/clavus-managed-configuration) that lists each discovered
-      appsettings.{ext} file for the project. It is empty/undefined until that pipeline
-      is wired up, in which case these all evaluate to 'false' and only the manual
-      ClavusEnableXConfiguration flags below take effect.
-    -->
-    <PropertyGroup>
-        <_ClavusHasYamlConfigurationFile Condition="'@(ClavusConfiguration)' != '' and ( @(ClavusConfiguration->AnyHaveMetadataValue('Extension', '.yaml')) == 'true' or @(ClavusConfiguration->AnyHaveMetadataValue('Extension', '.yml')) == 'true' )">true</_ClavusHasYamlConfigurationFile>
-        <_ClavusHasTomlConfigurationFile Condition="'@(ClavusConfiguration)' != '' and @(ClavusConfiguration->AnyHaveMetadataValue('Extension', '.toml')) == 'true'">true</_ClavusHasTomlConfigurationFile>
-        <_ClavusHasJsonConfigurationFile Condition="'@(ClavusConfiguration)' != '' and @(ClavusConfiguration->AnyHaveMetadataValue('Extension', '.json')) == 'true'">true</_ClavusHasJsonConfigurationFile>
-    </PropertyGroup>
-
     <!-- Flag-gated optional package references -->
     <ItemGroup>
-        <PackageReference
-            Include="Clavus.Configuration.Json"
-            Version="TODO"
-            Condition="('$(ClavusEnableJsonConfiguration)' == 'true' or '$(_ClavusHasJsonConfigurationFile)' == 'true') and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Configuration.Json')) != 'true'"
-            IsImplicitlyDefined="true"
-        />
-        <PackageReference
-            Include="Clavus.Configuration.Yaml"
-            Version="TODO"
-            Condition="('$(ClavusEnableYamlConfiguration)' == 'true' or '$(_ClavusHasYamlConfigurationFile)' == 'true') and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Configuration.Yaml')) != 'true'"
-            IsImplicitlyDefined="true"
-        />
-        <PackageReference
-            Include="Clavus.Configuration.Toml"
-            Version="TODO"
-            Condition="('$(ClavusEnableTomlConfiguration)' == 'true' or '$(_ClavusHasTomlConfigurationFile)' == 'true') and @(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Configuration.Toml')) != 'true'"
-            IsImplicitlyDefined="true"
-        />
         <PackageReference
             Include="Clavus.Autofac"
             Version="TODO"
