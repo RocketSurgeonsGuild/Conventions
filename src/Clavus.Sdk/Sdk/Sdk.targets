@@ -5,20 +5,8 @@
         <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
       </PropertyGroup>
       <ItemGroup>
-        <ClavusHost
-          Include="WebAssembly"
-          HostBuilderType="global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder"
-          HostBuilderName="builder"
-          HostType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost"
-        />
-        <PackageReference
-          Include="Clavus.Hosting.WebAssembly"
-          Version="TODO"
-          Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.WebAssembly')) != 'true'"
-          IsImplicitlyDefined="true"
-          PrivateAssets="all"
-          IncludeAssets="runtime; build; native; contentfiles; analyzers"
-        />
+        <ClavusHost Include="WebAssembly" HostBuilderType="global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder" HostBuilderName="builder" HostType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost"/>
+        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting.WebAssembly" Version="$(ClavusHostingWebAssemblyVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>
       </ItemGroup>
     </When>
     <When Condition=" '$(UsingMicrosoftNETSdkRazor)'=='true' or '$(UsingMicrosoftNETSdkWeb)'=='true' ">
@@ -26,21 +14,8 @@
         <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
       </PropertyGroup>
       <ItemGroup>
-        <ClavusHost
-          Include="WebApplication"
-          HostBuilderType="global::Microsoft.AspNetCore.Builder.WebApplicationBuilder"
-          HostBuilderName="builder"
-          HostType="global::Microsoft.AspNetCore.Builder.WebApplication"
-          HelperName="global::Clavus.ClavusHostApplicationHelpers"
-        />
-        <PackageReference
-          Include="Clavus.Hosting.Web"
-          Version="TODO"
-          Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.Web')) != 'true'"
-          IsImplicitlyDefined="true"
-          PrivateAssets="all"
-          IncludeAssets="runtime; build; native; contentfiles; analyzers"
-        />
+        <ClavusHost Include="WebApplication" HostBuilderType="global::Microsoft.AspNetCore.Builder.WebApplicationBuilder" HostBuilderName="builder" HostType="global::Microsoft.AspNetCore.Builder.WebApplication" HelperName="global::Clavus.ClavusHostApplicationHelpers"/>
+        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting.Web" Version="$(ClavusHostingWebVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>
       </ItemGroup>
     </When>
     <When Condition=" '$(UsingMicrosoftNETSdkWorker)'=='true' or ('$(OutputType)' == 'Exe' or '$(OutputType)' == 'exe') ">
@@ -48,65 +23,51 @@
         <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
       </PropertyGroup>
       <ItemGroup>
-        <ClavusHost
-          Include="HostApplication"
-          HostBuilderType="global::Microsoft.Extensions.Hosting.HostApplicationBuilder"
-          HostBuilderName="builder"
-          HostType="global::Microsoft.Extensions.Hosting.IHost"
-          HelperName="global::Clavus.ClavusHostApplicationHelpers"
-        />
-        <PackageReference
-          Include="Clavus.Hosting"
-          Version="TODO"
-          Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting')) != 'true'"
-          IsImplicitlyDefined="true"
-          PrivateAssets="all"
-          IncludeAssets="runtime; build; native; contentfiles; analyzers"
-        />
+        <ClavusHost Include="HostApplication" HostBuilderType="global::Microsoft.Extensions.Hosting.HostApplicationBuilder" HostBuilderName="builder" HostType="global::Microsoft.Extensions.Hosting.IHost" HelperName="global::Clavus.ClavusHostApplicationHelpers"/>
+        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting" Version="$(ClavusHostingVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>
       </ItemGroup>
     </When>
-    <When Condition=" '$(UsingMicrosoftMauiSdk)'=='true' ">
-      <PropertyGroup>
-        <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
-      </PropertyGroup>
-      <ItemGroup>
-        <ClavusHost
-          Include="Maui"
-          HostBuilderType="global::Microsoft.Maui.Hosting.MauiAppBuilder"
-          HostBuilderName="builder"
-          HostType="global::Microsoft.Maui.Hosting.MauiApp"
-        />
-        <PackageReference
-          Include="Clavus.Hosting.Maui"
-          Version="TODO"
-          Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.Maui')) != 'true'"
-          IsImplicitlyDefined="true"
-          PrivateAssets="all"
-          IncludeAssets="runtime; build; native; contentfiles; analyzers"
-        />
-      </ItemGroup>
-    </When>
-    <When Condition=" '$(UsingUnoSdk)'=='true' ">
-      <PropertyGroup>
-        <_ClavusApplicationDetected>true</_ClavusApplicationDetected>
-      </PropertyGroup>
-      <ItemGroup>
-        <ClavusHost
-          Include="Uno"
-          HostBuilderType="global::Uno.UI.Hosting.IUnoPlatformHostBuilder"
-          HostBuilderName="builder"
-          HostType="global::Uno.UI.Hosting.UnoPlatformHost"
-        />
-        <PackageReference
-          Include="Clavus.Hosting.Uno"
-          Version="TODO"
-          Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.Uno')) != 'true'"
-          IsImplicitlyDefined="true"
-          PrivateAssets="all"
-          IncludeAssets="runtime; build; native; contentfiles; analyzers"
-        />
-      </ItemGroup>
-    </When>
+    <!--    <When Condition=" '$(UsingMicrosoftMauiSdk)'=='true' ">-->
+    <!--      <PropertyGroup>-->
+    <!--        <_ClavusApplicationDetected>true</_ClavusApplicationDetected>-->
+    <!--      </PropertyGroup>-->
+    <!--      <ItemGroup>-->
+    <!--        <ClavusHost-->
+    <!--          Include="Maui"-->
+    <!--          HostBuilderType="global::Microsoft.Maui.Hosting.MauiAppBuilder"-->
+    <!--          HostBuilderName="builder"-->
+    <!--          HostType="global::Microsoft.Maui.Hosting.MauiApp"-->
+    <!--        />-->
+    <!--        <PackageReference-->
+    <!--          Include="Clavus.Hosting.Maui"-->
+    <!--          Version="TODO"-->
+    <!--          Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.Maui')) != 'true'"-->
+    <!--          IsImplicitlyDefined="true"-->
+    <!--          PrivateAssets="all"-->
+    <!--          IncludeAssets="runtime; build; native; contentfiles; analyzers"-->
+    <!--        />-->
+    <!--      </ItemGroup>-->
+    <!--    </When>-->
+    <!--    <When Condition=" '$(UsingUnoSdk)'=='true' ">-->
+    <!--      <PropertyGroup>-->
+    <!--        <_ClavusApplicationDetected>true</_ClavusApplicationDetected>-->
+    <!--      </PropertyGroup>-->
+    <!--      <ItemGroup>-->
+    <!--        <ClavusHost-->
+    <!--          Include="Uno"-->
+    <!--          HostBuilderType="global::Uno.UI.Hosting.IUnoPlatformHostBuilder"-->
+    <!--          HostBuilderName="builder"-->
+    <!--          HostType="global::Uno.UI.Hosting.UnoPlatformHost"-->
+    <!--        />-->
+    <!--        <ClavusSdkImplicitPackageReference-->
+    <!--          Include="Clavus.Hosting.Uno"-->
+    <!--          Version="TODO"-->
+    <!--          Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'Clavus.Hosting.Uno')) != 'true'"-->
+    <!--          PrivateAssets="all"-->
+    <!--          IncludeAssets="runtime; build; native; contentfiles; analyzers"-->
+    <!--        />-->
+    <!--      </ItemGroup>-->
+    <!--    </When>-->
     <Otherwise>
       <PropertyGroup>
         <_ClavusApplicationDetected>false</_ClavusApplicationDetected>
@@ -171,12 +132,6 @@
     <ClavusSdkImplicitPackageReference Include="Clavus.DryIoc" Version="$(ClavusDryIocVersion)" Condition="'$(ClavusEnableDryIoc)' != 'false' and @(PackageReference->AnyHaveMetadataValue('Identity', 'DryIoc')) == 'true'"/>
     <ClavusSdkImplicitPackageReference Include="Clavus.Serilog" Version="$(ClavusSerilogVersion)" Condition="'$(ClavusEnableSerilog)' != 'false' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Serilog')) == 'true'"/>
     <ClavusSdkImplicitPackageReference Include="Clavus.OpenTelemetry" Version="$(ClavusOpenTelemetryVersion)" Condition="'$(ClavusEnableOpenTelemetry)' != 'false' and @(PackageReference->AnyHaveMetadataValue('Identity', 'OpenTelemetry')) == 'true'"/>
-
-    <ClavusSdkImplicitPackageReference Include="Clavus.Hosting" Version="$(ClavusHostingVersion)"  Condition="'$(ClavusEnableHosting)' != 'false' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Microsoft.Extensions.Hosting')) == 'true'"/>
-    <ClavusSdkImplicitPackageReference Include="Clavus.Hosting.Web" Version="$(ClavusHostingWebVersion)" Condition="'$(ClavusEnableHostingWeb)' != 'false' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Microsoft.AspNetCore.App')) == 'true'"/>
-    <ClavusSdkImplicitPackageReference Include="Clavus.Aspire" Version="$(ClavusAspireVersion)" Condition="'$(ClavusEnableAspire)' != 'false' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Aspire.Hosting')) == 'true'"/>
-    <ClavusSdkImplicitPackageReference Include="Clavus.Aspire.Testing" Version="$(ClavusAspireTestingVersion)" Condition="'$(ClavusEnableAspireTesting)' != 'false' and @(PackageReference->AnyHaveMetadataValue('Identity', 'Aspire.Hosting.Testing')) == 'true'"/>
-
   </ItemGroup>
   <!-- Imported last: expands every RsgSdkImplicitPackageReference declared above (and in this
          file's own SBOM ItemGroup) into a real PackageReference. -->
