@@ -15,7 +15,7 @@
       </PropertyGroup>
       <ItemGroup>
         <ClavusHost Include="WebAssembly" HostBuilderType="global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder" HostBuilderName="builder" HostType="Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHost"/>
-        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting.WebAssembly" Version="$(ClavusHostingWebAssemblyVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>
+        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting.WebAssembly" Version="$(ClavusHostingWebAssemblyVersion)" />
       </ItemGroup>
     </When>
     <When Condition=" '$(UsingMicrosoftNETSdkRazor)'=='true' or '$(UsingMicrosoftNETSdkWeb)'=='true' ">
@@ -24,7 +24,7 @@
       </PropertyGroup>
       <ItemGroup>
         <ClavusHost Include="WebApplication" HostBuilderType="global::Microsoft.AspNetCore.Builder.WebApplicationBuilder" HostBuilderName="builder" HostType="global::Microsoft.AspNetCore.Builder.WebApplication" HelperName="global::Clavus.ClavusHostApplicationHelpers"/>
-        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting.Web" Version="$(ClavusHostingWebVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>
+        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting.Web" Version="$(ClavusHostingWebVersion)" />
       </ItemGroup>
     </When>
     <When Condition=" '$(UsingMicrosoftNETSdkWorker)'=='true' or ('$(OutputType)' == 'Exe' or '$(OutputType)' == 'exe') ">
@@ -33,7 +33,7 @@
       </PropertyGroup>
       <ItemGroup>
         <ClavusHost Include="HostApplication" HostBuilderType="global::Microsoft.Extensions.Hosting.HostApplicationBuilder" HostBuilderName="builder" HostType="global::Microsoft.Extensions.Hosting.IHost" HelperName="global::Clavus.ClavusHostApplicationHelpers"/>
-        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting" Version="$(ClavusHostingVersion)" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>
+        <ClavusSdkImplicitPackageReference Include="Clavus.Hosting" Version="$(ClavusHostingVersion)" />
       </ItemGroup>
     </When>
     <!--    <When Condition=" '$(UsingMicrosoftMauiSdk)'=='true' ">-->
@@ -89,23 +89,6 @@
             </ItemGroup>
         </When> -->
   </Choose>
-
-  <PropertyGroup>
-    <ClavusPackConfiguration Condition="'$(ClavusPackConfiguration)' == ''">$(IsPackable)</ClavusPackConfiguration>
-  </PropertyGroup>
-
-  <!--
-      Import order matters here:
-      1. Clavus.PackConfiguration.targets defaults the per-format ClavusEnable{Format}Configuration
-         flags from appsettings.{ext} file presence (explicit project values win) and defines the
-         rename/pack/copy + gated code-emission surface.
-      2. ClavusEnableConfiguration aggregates those flags — computed AFTER the import so
-         file-presence defaults are reflected. An explicit consumer value always wins.
-      3. Clavus.Configuration.targets (gated on the aggregate) adds the provider PackageReferences
-         and the gitignore warning.
-    -->
-  <Import Project="$(MSBuildThisFileDirectory)Clavus.PackConfiguration.targets" Condition="'$(ClavusPackConfiguration)' == 'true'"/>
-
   <PropertyGroup>
     <ClavusEnableAutofac Condition="'$(ClavusEnableAutofac)' == ''">false</ClavusEnableAutofac>
     <ClavusEnableDryIoc Condition="'$(ClavusEnableDryIoc)' == ''">false</ClavusEnableDryIoc>

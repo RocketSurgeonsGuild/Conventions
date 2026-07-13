@@ -1,12 +1,12 @@
 ﻿[
   {
-    Name: lib.csproj,
+    Name: worker.csproj,
     Configuration: Debug,
     Platform: AnyCPU,
     TargetFramework: net10.0,
     Properties: {
-      _ClavusApplicationDetected: false,
-      AssemblyName: lib,
+      _ClavusApplicationDetected: true,
+      AssemblyName: worker,
       BaseIntermediateOutputPath: obj\,
       BaseOutputPath: bin\,
       ClavusAspireTestingVersion: {sdk-version},
@@ -38,16 +38,20 @@
       EnableDefaultCompileItems: false,
       ExportClavusAssembly: true,
       GenerateDocumentationFile: false,
-      ImportClavusAssembly: false,
+      ImportClavusAssembly: true,
       IsPackable: true,
       NoWarn: 1701;1702,
       PackageOutputPath: bin\Debug/,
-      RootNamespace: lib,
+      RootNamespace: worker,
       TargetFramework: net10.0
     },
     AdditionalFiles: [],
     PackageReference: {
       Clavus: {
+        IsImplicitlyDefined: true,
+        Version: Version_0
+      },
+      Clavus.Hosting: {
         IsImplicitlyDefined: true,
         Version: Version_0
       },
@@ -61,10 +65,17 @@
         ParameterType: global::Microsoft.Extensions.Logging.ILoggingBuilder
       }
     },
-    ClavusHost: {},
+    ClavusHost: {
+      HostApplication: {
+        HelperName: global::Clavus.ClavusHostApplicationHelpers,
+        HostBuilderName: builder,
+        HostBuilderType: global::Microsoft.Extensions.Hosting.HostApplicationBuilder,
+        HostType: global::Microsoft.Extensions.Hosting.IHost
+      }
+    },
     Using: [],
     Imports: [
-      {TempPath}sdk-tests/{id}/lib/lib.csproj,
+      {TempPath}sdk-tests/{id}/worker/worker.csproj,
       {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Clavus.HostDetection.targets,
       {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Sdk.props,
       {TempPath}sdk-tests/{id}/Directory.Build.props
@@ -81,8 +92,11 @@
       }
     ],
     GeneratedFiles: [
+      ClavusContextBuilder.g.cs,
+      ClavusHost.HostApplication.g.cs,
       ClavusPart.Logging.g.cs,
-      ClavusPartAsync.Logging.g.cs
+      ClavusPartAsync.Logging.g.cs,
+      worker.GlobalUsings.g.cs
     ],
     OutputFiles: []
   }

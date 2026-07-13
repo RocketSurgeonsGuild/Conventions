@@ -1,13 +1,13 @@
 ﻿[
   {
-    Name: lib.csproj,
+    Name: web.csproj,
     Configuration: Debug,
     Platform: AnyCPU,
     TargetFramework: net10.0,
     Properties: {
-      _ClavusApplicationDetected: false,
-      AssemblyName: lib,
-      BaseIntermediateOutputPath: obj\,
+      _ClavusApplicationDetected: true,
+      AssemblyName: web,
+      BaseIntermediateOutputPath: {TempPath}sdk-tests/{id}/web/obj/,
       BaseOutputPath: bin\,
       ClavusAspireTestingVersion: {sdk-version},
       ClavusAspireVersion: {sdk-version},
@@ -38,11 +38,11 @@
       EnableDefaultCompileItems: false,
       ExportClavusAssembly: true,
       GenerateDocumentationFile: false,
-      ImportClavusAssembly: false,
-      IsPackable: true,
+      ImportClavusAssembly: true,
+      IsPackable: false,
       NoWarn: 1701;1702,
       PackageOutputPath: bin\Debug/,
-      RootNamespace: lib,
+      RootNamespace: web,
       TargetFramework: net10.0
     },
     AdditionalFiles: [],
@@ -51,20 +51,23 @@
         IsImplicitlyDefined: true,
         Version: Version_0
       },
-      Microsoft.Extensions.Logging: {
-        Version: Version_1
+      Clavus.Hosting.Web: {
+        IsImplicitlyDefined: true,
+        Version: Version_0
       }
     },
-    ClavusPart: {
-      Logging: {
-        ParameterName: builder,
-        ParameterType: global::Microsoft.Extensions.Logging.ILoggingBuilder
+    ClavusPart: {},
+    ClavusHost: {
+      WebApplication: {
+        HelperName: global::Clavus.ClavusHostApplicationHelpers,
+        HostBuilderName: builder,
+        HostBuilderType: global::Microsoft.AspNetCore.Builder.WebApplicationBuilder,
+        HostType: global::Microsoft.AspNetCore.Builder.WebApplication
       }
     },
-    ClavusHost: {},
     Using: [],
     Imports: [
-      {TempPath}sdk-tests/{id}/lib/lib.csproj,
+      {TempPath}sdk-tests/{id}/web/web.csproj,
       {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Clavus.HostDetection.targets,
       {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Sdk.props,
       {TempPath}sdk-tests/{id}/Directory.Build.props
@@ -81,8 +84,9 @@
       }
     ],
     GeneratedFiles: [
-      ClavusPart.Logging.g.cs,
-      ClavusPartAsync.Logging.g.cs
+      ClavusContextBuilder.g.cs,
+      ClavusHost.WebApplication.g.cs,
+      web.GlobalUsings.g.cs
     ],
     OutputFiles: []
   }

@@ -30,15 +30,14 @@
       ClavusHostingWebVersion: {sdk-version},
       ClavusOpenTelemetryHostingVersion: {sdk-version},
       ClavusOpenTelemetryVersion: {sdk-version},
-      ClavusPackConfiguration: ,
       ClavusSdkVersion: {sdk-version},
       ClavusSerilogVersion: {sdk-version},
       ClavusVersion: {sdk-version},
+      CustomAfterMicrosoftCommonTargets: {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Clavus.HostDetection.targets;,
       DefineConstants: TRACE;DEBUG,
       EnableDefaultCompileItems: false,
       ExportClavusAssembly: true,
       GenerateDocumentationFile: false,
-      GeneratePackageOnBuild: false,
       ImportClavusAssembly: false,
       IsPackable: true,
       NoWarn: 1701;1702,
@@ -58,20 +57,22 @@
     Using: [],
     Imports: [
       {TempPath}sdk-tests/{id}/lib/lib.csproj,
-      {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Sdk.targets,
+      {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Clavus.HostDetection.targets,
       {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Sdk.props,
       {TempPath}sdk-tests/{id}/Directory.Build.props
     ],
     NoImports: [
       {
-        ProjectFilePath: {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Sdk.targets,
+        ProjectFilePath: {TempPath}sdk-tests/{id}/.nuget/packages/clavus.sdk/{sdk-version}/Sdk/Clavus.HostDetection.targets,
         Imports: [
           {
-            Path: $(MSBuildThisFileDirectory)Clavus.PackConfiguration.targets,
-            Reason: false condition; ('$(ClavusPackConfiguration)' == 'true' was evaluated as '' == 'true').
+            Path: $(MSBuildThisFileDirectory)Clavus.Configuration.targets,
+            Reason: false condition; ('$(ClavusEnableConfiguration)' == 'true' was evaluated as '' == 'true').
           }
         ]
       }
-    ]
+    ],
+    GeneratedFiles: [],
+    OutputFiles: []
   }
 ]

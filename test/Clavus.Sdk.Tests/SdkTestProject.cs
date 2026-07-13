@@ -35,6 +35,21 @@ public sealed class SdkTestProject : IDisposable
         {
             repository.Package(new(package), out _);
         }
+
+        // PackageRepository.Package() above eagerly extracts each nupkg into this project's
+        // isolated global-packages-folder by re-serializing its own copy of the nuspec - and that
+        // re-serialization drops the <dependencies> group entirely (confirmed by diffing against
+        // the source nupkg's nuspec). NuGet trusts an already-extracted package folder and won't
+        // re-read the real one from the Local1 feed, so every Clavus package with NuGet
+        // dependencies (e.g. Clavus.Hosting -> Microsoft.Extensions.Hosting) would silently lose
+        // them for the rest of this test. Evict the pre-seeded copies so the real restore that
+        // runs during VerifyProjects()/Dotnet is forced to extract fresh, correct ones.
+        var globalPackagesFolder = Path.Combine(Directory, ".nuget", "packages");
+        if (System.IO.Directory.Exists(globalPackagesFolder))
+        {
+            System.IO.Directory.Delete(globalPackagesFolder, recursive: true);
+        }
+
         _settings = new VerifySettings();
         // MSBuild resolves the entry project's own full path via the process's current directory,
         // which macOS reports through the /var,/tmp -> /private/var,/private/tmp symlink. Verify's
@@ -82,7 +97,7 @@ public sealed class SdkTestProject : IDisposable
 
     public async Task VerifyProjects()
     {
-        var results = new List<ProjectEvaluation>();
+        var results = new List<ProjectEvaluationResult>();
         foreach (var project in _projects)
         {
             var relativePath = Path.GetDirectoryName(project.FullPath)!;
@@ -102,7 +117,36 @@ public sealed class SdkTestProject : IDisposable
             var build = BinaryLog.ReadBuild(binlog);
             BuildAnalyzer.AnalyzeBuild(build);
             var projectEvaluation = build.FindChildrenRecursive<ProjectEvaluation>()[0];
-            results.Add(projectEvaluation);
+
+            // The generated-source Compile items (ClavusPart*.g.cs, ClavusHost.*.g.cs,
+            // ClavusContextBuilder.g.cs, Clavus.*Configuration.g.cs, ...) are added by
+            // BeforeTargets="CoreCompile" targets at execution time, so they never show up in the
+            // evaluation snapshot above - read them straight off disk instead.
+            var objDirectory = Path.Combine(relativePath, "obj");
+            var generatedFiles = System.IO.Directory.Exists(objDirectory)
+                ? System.IO.Directory.EnumerateFiles(objDirectory, "*.g.cs", SearchOption.AllDirectories).Select(Path.GetFileName).ToArray()
+                : [];
+
+            // Clavus.PackConfiguration.targets renames/copies appsettings.{ext} to
+            // $(MSBuildProjectName).{ext} in bin/ via <None Update> metadata against an item the
+            // .NET SDK's own default globs add (evaluated before this project's own body) - that
+            // never shows up in the evaluation snapshot's Items either, so verify it landed by
+            // reading the actual build output instead.
+            var binDirectory = Path.Combine(relativePath, "bin");
+            var outputFiles = System.IO.Directory.Exists(binDirectory)
+                ? System.IO.Directory.EnumerateFiles(binDirectory, "*", SearchOption.AllDirectories)
+                     .Select(Path.GetFileName)
+                     .Where(z => z!.EndsWith(".json", StringComparison.OrdinalIgnoreCase)
+                          || z.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
+                          || z.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+                          || z.EndsWith(".toml", StringComparison.OrdinalIgnoreCase))
+                     .Where(z => !z!.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase)
+                          && !z.EndsWith(".runtimeconfig.json", StringComparison.OrdinalIgnoreCase)
+                          && !z.EndsWith(".staticwebassets.endpoints.json", StringComparison.OrdinalIgnoreCase))
+                     .ToArray()
+                : [];
+
+            results.Add(new(projectEvaluation, generatedFiles!, outputFiles!));
         }
 
         await Verify(results, settings: _settings);

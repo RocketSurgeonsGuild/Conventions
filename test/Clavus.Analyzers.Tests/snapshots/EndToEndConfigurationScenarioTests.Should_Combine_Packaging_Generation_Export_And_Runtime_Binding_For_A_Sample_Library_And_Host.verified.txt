@@ -1,0 +1,34 @@
+﻿{
+  FinalDiagnostics: [],
+  GeneratorDiagnostics: {
+    Clavus.ClavusAttributesGenerator: []
+  },
+  GlobalOptions: {
+    build_property.ClavusExportClassName: Exports,
+    build_property.ClavusExportMethodName: Ashlar,
+    build_property.ClavusExportNamespace: Sample,
+    build_property.ClavusImportClassName: Imports,
+    build_property.ClavusImportMethodName: Ashlar,
+    build_property.ClavusImportNamespace: Sample,
+    build_property.EnableClavusConfiguration: true,
+    build_property.RootNamespace: Sample
+  },
+  References: [
+    <in-memory assembly>,
+    Clavus.Configuration.Toml.dll,
+    Clavus.Configuration.Yaml.dll,
+    Clavus.dll,
+    Clavus.dll,
+    Microsoft.Extensions.Configuration.Abstractions.dll,
+    Microsoft.Extensions.Configuration.Binder.dll,
+    Microsoft.Extensions.Configuration.Json.dll,
+    Microsoft.Extensions.DependencyInjection.Abstractions.dll,
+    Microsoft.Extensions.Options.dll,
+    mscorlib.dll,
+    netstandard.dll,
+    System.Core.dll,
+    System.dll,
+    System.Private.CoreLib.dll,
+    System.Runtime.dll
+  ]
+}

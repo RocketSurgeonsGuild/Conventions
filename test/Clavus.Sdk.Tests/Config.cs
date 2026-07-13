@@ -12,6 +12,25 @@ using Microsoft.Build.Utilities.ProjectCreation;
 
 namespace Clavus.Sdk.Tests;
 
+/// <summary>
+/// Pairs a build's <see cref="ProjectEvaluation"/> (evaluation-time snapshot: properties, static
+/// items, imports) with two sets of filenames <see cref="SdkTestProject"/> reads straight off disk
+/// after a successful build, because neither is visible in the evaluation snapshot itself:
+/// <list type="bullet">
+/// <item><see cref="GeneratedFiles"/> - the <c>*.g.cs</c> Compile items the SDK's targets wrote to
+/// <c>obj/</c>, added by <c>BeforeTargets="CoreCompile"</c> targets at execution time.</item>
+/// <item><see cref="OutputFiles"/> - the renamed/copied config files (e.g. <c>appsettings.yaml</c>
+/// -&gt; <c>{ProjectName}.yaml</c>) that <c>Clavus.PackConfiguration.targets</c> copies to
+/// <c>bin/</c>. That rename is driven by <c>&lt;None Update="..."&gt;</c> metadata against items the
+/// .NET SDK's own default item globs (evaluated in <c>Microsoft.NET.Sdk.DefaultItems.props</c>,
+/// before this project's own evaluation) add - MSBuild.StructuredLogger's evaluation-time Items
+/// snapshot only records items added by the project's own body/imports, so those never show up
+/// there even though the rename/copy genuinely happens (verified independently via
+/// <c>dotnet build -getItem:None</c>).</item>
+/// </list>
+/// </summary>
+internal sealed record ProjectEvaluationResult(ProjectEvaluation Evaluation, IReadOnlyList<string> GeneratedFiles, IReadOnlyList<string> OutputFiles);
+
 internal static class Config
 {
     [Before(HookType.Assembly)]
@@ -28,7 +47,7 @@ internal static class Config
 
     private static readonly OrderedDictionary<string, string> _namedVersions = [];
 
-    private class ProjectEvaluationSerializer : WriteOnlyJsonConverter<ProjectEvaluation>
+    private class ProjectEvaluationSerializer : WriteOnlyJsonConverter<ProjectEvaluationResult>
     {
         private static readonly IReadOnlyCollection<string> PropertiesToWrite =
         [
@@ -37,8 +56,9 @@ internal static class Config
             nameof(ProjectEvaluation.TargetFramework),
         ];
 
-        public override void Write(VerifyJsonWriter writer, ProjectEvaluation value)
+        public override void Write(VerifyJsonWriter writer, ProjectEvaluationResult result)
         {
+            var value = result.Evaluation;
             writer.WriteStartObject();
             writer.WritePropertyName("Name");
             writer.WriteValue(value.ShortenedName);
@@ -80,6 +100,22 @@ internal static class Config
             WriteItems(writer, value, "ClavusHost");
             WriteUsings(writer, value, "Using");
             WriteImports(writer, value, "Imports");
+
+            writer.WritePropertyName("GeneratedFiles");
+            writer.WriteStartArray();
+            foreach (var fileName in result.GeneratedFiles.OrderBy(z => z, StringComparer.Ordinal))
+            {
+                writer.WriteValue(fileName);
+            }
+            writer.WriteEndArray();
+
+            writer.WritePropertyName("OutputFiles");
+            writer.WriteStartArray();
+            foreach (var fileName in result.OutputFiles.OrderBy(z => z, StringComparer.Ordinal))
+            {
+                writer.WriteValue(fileName);
+            }
+            writer.WriteEndArray();
 
             writer.WriteEndObject();
         }
@@ -251,6 +287,26 @@ internal static class Config
 
     public static string RootDirectory => field ??= FindRootDirectory();
     public static string NugetArtifactsDirectory => field ??= Path.Combine(FindRootDirectory(), "artifacts", "nuget-local");
+
+    /// <summary>
+    /// Resolves the version a Clavus package was just packed with (see
+    /// <c>PackClavusSourcePackages</c> in Clavus.Sdk.Tests.csproj, which repacks every src/*.csproj
+    /// before each build), for use as an explicit <c>Version</c> on a <see cref="ProjectCreator"/>
+    /// PackageReference item - scaffolded consumer projects have no central package management, so
+    /// NuGet needs one.
+    /// </summary>
+    public static string ClavusPackageVersion(string packageId)
+    {
+        var prefix = packageId + ".";
+        var match = Directory.EnumerateFiles(NugetArtifactsDirectory, $"{packageId}.*.nupkg")
+            .Select(Path.GetFileName)
+            .Where(f => f!.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && char.IsDigit(f[prefix.Length]))
+            .OrderByDescending(f => f, StringComparer.Ordinal)
+            .FirstOrDefault();
+        return match is null
+            ? throw new InvalidOperationException($"No packed nupkg found for '{packageId}' in {NugetArtifactsDirectory}.")
+            : match[prefix.Length..^".nupkg".Length];
+    }
 
     private static string FindRootDirectory()
     {

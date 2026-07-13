@@ -1,5 +1,19 @@
 <Project>
   <!--
+      Deliberately NOT "= $(IsPackable)": this file runs via CustomAfterMicrosoftCommonTargets,
+      which fires before the .NET SDK's own NuGet pack targets apply IsPackable's SDK-wide default
+      (true) for an ordinary library - so IsPackable is still empty here for the common case,
+      and a plain "= $(IsPackable)" would latch ClavusPackConfiguration to empty (falsy) for every
+      consumer that doesn't explicitly set either property. Web/WebAssembly SDKs are unaffected
+      either way since they set IsPackable=false in their own (earlier-running) props, so that
+      explicit false is still honored below.
+    -->
+  <PropertyGroup>
+    <ClavusPackConfiguration Condition="'$(ClavusPackConfiguration)' == '' and '$(IsPackable)' == 'false'">false</ClavusPackConfiguration>
+    <ClavusPackConfiguration Condition="'$(ClavusPackConfiguration)' == ''">true</ClavusPackConfiguration>
+  </PropertyGroup>
+
+  <!--
     Packed / copied-to-output configuration files are renamed from the generic
     "appsettings.*" convention to "$(MSBuildProjectName).*" (preserving any middle
     qualifier, e.g. appsettings.Production.json -> Foo.Production.json) so that:

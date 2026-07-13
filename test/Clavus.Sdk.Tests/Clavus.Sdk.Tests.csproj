@@ -29,6 +29,18 @@
   </ItemGroup>
 
   <Target Name="PackClavusSourcePackages" BeforeTargets="Build">
+    <!--
+        artifacts/nuget-local also accumulates packages from other pack invocations (e.g. a
+        Release/CI-style GitVersion-numbered pack run locally). SdkTestProject picks up every
+        Clavus.* nupkg it finds there and hands the highest version to the scaffolded consumer's
+        global.json, so a stale higher-SemVer leftover silently wins over the package this target
+        is about to rebuild from current source - masking real fixes/regressions. Clear old ones
+        first so only this run's fresh packages are ever visible to the tests.
+    -->
+    <ItemGroup>
+      <_StaleClavusPackage Include="$(MSBuildThisFileDirectory)..\..\artifacts\nuget-local\Clavus*.nupkg;$(MSBuildThisFileDirectory)..\..\artifacts\nuget-local\Clavus*.snupkg" />
+    </ItemGroup>
+    <Delete Files="@(_StaleClavusPackage)" />
     <MSBuild
       Projects="@(_ClavusSrcProject)"
       Targets="Restore;Pack"

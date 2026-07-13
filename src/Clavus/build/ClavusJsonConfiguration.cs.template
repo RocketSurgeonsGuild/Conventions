@@ -2,7 +2,7 @@ using Clavus;
 using Microsoft.Extensions.Configuration;
 
 [ClavusExport]
-file class Configuration : IConfigurationPart
+class JsonAppSettingsConfiguration : IConfigurationPart
 {
     public void Register(IClavusContext context, IConfigurationBuilder builder)
     {

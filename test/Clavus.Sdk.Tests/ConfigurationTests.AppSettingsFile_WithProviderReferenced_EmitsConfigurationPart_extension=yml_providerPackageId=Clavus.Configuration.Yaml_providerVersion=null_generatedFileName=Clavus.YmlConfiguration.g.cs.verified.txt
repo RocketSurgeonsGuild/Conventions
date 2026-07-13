@@ -51,16 +51,11 @@
         IsImplicitlyDefined: true,
         Version: Version_0
       },
-      Microsoft.Extensions.Logging: {
-        Version: Version_1
+      Clavus.Configuration.Yaml: {
+        Version: Version_0
       }
     },
-    ClavusPart: {
-      Logging: {
-        ParameterName: builder,
-        ParameterType: global::Microsoft.Extensions.Logging.ILoggingBuilder
-      }
-    },
+    ClavusPart: {},
     ClavusHost: {},
     Using: [],
     Imports: [
@@ -81,9 +76,10 @@
       }
     ],
     GeneratedFiles: [
-      ClavusPart.Logging.g.cs,
-      ClavusPartAsync.Logging.g.cs
+      Clavus.YmlConfiguration.g.cs
     ],
-    OutputFiles: []
+    OutputFiles: [
+      lib.yml
+    ]
   }
 ]

@@ -4,7 +4,7 @@ namespace Clavus.Sdk.Tests;
 
 public class SdkTests
 {
-    // [Test]
+    [Test]
     public async Task BaseSdk_AppliesSharedDefaults_AndInjectsAnalyzers()
     {
         using var project = new SdkTestProject();
