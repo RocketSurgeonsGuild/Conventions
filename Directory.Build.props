@@ -31,8 +31,7 @@
         <NuGetAuditMode>all</NuGetAuditMode>
         <NuGetAuditLevel>moderate</NuGetAuditLevel>
         <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
-        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-        <ClavusConfiguration>$(Configuration)</ClavusConfiguration>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
   <PropertyGroup>
     <RollForward>LatestMajor</RollForward>

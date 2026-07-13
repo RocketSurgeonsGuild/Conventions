@@ -6,7 +6,9 @@
 //------------------------------------------------------------------------------
 #nullable enable
 #pragma warning disable CA1002, CA1034, CA1040, CA1822, CS0105, CS1573, CS8618, CS8669
+using System;
 using System.Runtime.CompilerServices;
+using Clavus;
 using Clavus.Infrastructure;
 
 namespace {Namespace};
@@ -31,7 +33,7 @@ public delegate global::System.Threading.Tasks.ValueTask {PartName}AsyncPart{Gen
 
 file class Private{PartName}AsyncPart{GenericArg}({PartName}AsyncPart{GenericArg} fromDelegate, int priority, string? expression = null) : I{PartName}AsyncPart{GenericArg}, global::Clavus.Infrastructure.IClavusDelegate {GenericConstraint}
 {
-    public ValueTask Register({AsyncParams}) => fromDelegate({AsyncArgs});
+    public global::System.Threading.Tasks.ValueTask Register({AsyncParams}) => fromDelegate({AsyncArgs});
     int IClavusPart.Priority => priority;
     public override string? ToString() => expression;
     public override int GetHashCode() => fromDelegate.GetHashCode();

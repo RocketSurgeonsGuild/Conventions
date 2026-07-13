@@ -1,4 +1,16 @@
 <Project>
   <!-- Core packages every Clavus consumer gets automatically -->
   <Import Project="$(MSBuildThisFileDirectory)Packages.props" />
+
+  <!--
+      Register host detection to run via MSBuild's CustomAfterMicrosoftCommonTargets extensibility
+      point instead of inline in Sdk.targets. This SDK is normally applied through a consumer's
+      Directory.Build.props (Sdk="Clavus.Sdk"), which is imported (along with this file and
+      Sdk.targets) before the consuming project's own body - so host-detection logic that reads
+      project-set properties like $(OutputType) needs to run later, after the whole project has
+      been evaluated. See Clavus.HostDetection.targets for the logic itself.
+  -->
+  <PropertyGroup>
+    <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)Clavus.HostDetection.targets;$(CustomAfterMicrosoftCommonTargets)</CustomAfterMicrosoftCommonTargets>
+  </PropertyGroup>
 </Project>

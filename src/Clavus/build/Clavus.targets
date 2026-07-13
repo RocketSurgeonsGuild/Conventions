@@ -62,7 +62,6 @@
   </ItemDefinitionGroup>
   <Import Project="$(MSBuildThisFileDirectory)Clavus.Parts.targets" Condition="'$(_ClavusPartsTargetsImported)' != 'true'"/>
   <Import Project="$(MSBuildThisFileDirectory)Clavus.ContextBuilder.targets" Condition="'$(_ClavusContextBuilderTargetsImported)' != 'true'"/>
-  <Import Project="$(MSBuildThisFileDirectory)Clavus.Hosts.targets" Condition="'$(_ClavusHostsTargetsImported)' != 'true'"/>
-  <Import Project="$(MSBuildThisFileDirectory)Clavus.Reference.targets"/>
-  <Import Project="$(MSBuildThisFileDirectory)Clavus.Metadata.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)Clavus.Hosts.targets" Condition="'$(_ClavusHostsTargetsImported)' != 'true'" />
+  <Import Project="$(MSBuildThisFileDirectory)Clavus.Metadata.targets" />
 </Project>

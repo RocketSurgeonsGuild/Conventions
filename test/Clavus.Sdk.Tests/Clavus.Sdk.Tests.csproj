@@ -15,4 +15,25 @@
     <PackageReference Include="System.Interactive" />
     <PackageReference Include="Verify.DiffPlex" />
   </ItemGroup>
+
+  <!--
+      These tests scaffold throwaway consumer projects that restore Clavus packages from
+      artifacts/nuget(-local) (see SdkTestProject.cs / Config.NugetArtifactsDirectory), so the
+      packages need to exist and be current before the tests run. Repack every src/*.csproj
+      (recursively) on every build of this test project rather than requiring a separate manual
+      pack step; projects with IsPackable=false (e.g. the Clavus.Analyzers.supports roslynX.Y
+      helper projects) simply no-op since NuGet's own Pack target is gated on that flag.
+  -->
+  <ItemGroup>
+    <_ClavusSrcProject Include="$(MSBuildThisFileDirectory)..\..\src\**\*.csproj" />
+  </ItemGroup>
+
+  <Target Name="PackClavusSourcePackages" BeforeTargets="Build">
+    <MSBuild
+      Projects="@(_ClavusSrcProject)"
+      Targets="Restore;Pack"
+      Properties="Configuration=$(Configuration)"
+      BuildInParallel="true"
+    />
+  </Target>
 </Project>

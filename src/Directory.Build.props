@@ -5,7 +5,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
     <RootNamespace>$(MSBuildProjectName.Replace('.Abstractions', '').Replace('.Attributes', '').Replace('.Analyzers', '').Replace('.Generators', ''))</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageOutputPath Condition="'$(Configuration)' == 'Debug'">$(SolutionDir)artifacts/nuget-local</PackageOutputPath>
+    <!-- Default local/dev/test packs to the local feed; CI's build pipeline passes its own
+         PackageOutputPath (artifacts/nuget, GitVersion-numbered) as a global property, which
+         always wins over this plain assignment regardless of the condition below. -->
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(SolutionDir)artifacts/nuget-local</PackageOutputPath>
   </PropertyGroup>
 </Project>

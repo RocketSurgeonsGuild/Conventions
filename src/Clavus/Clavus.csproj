@@ -1,56 +1,53 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <PackageDescription>
-            Adds support for loading configuration, services, logging, command line
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageDescription>
+      Adds support for loading configuration, services, logging, command line
       and more via simple and easy to setup assembly attributes
-        </PackageDescription>
-        <PackageTags>$(PackageTags);reflection</PackageTags>
-        <IncludeBuildOutput>false</IncludeBuildOutput>
-        <IsTrimmable>true</IsTrimmable>
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <RootNamespace>Clavus</RootNamespace>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" />
-        <PackageReference Include="Microsoft.Extensions.Options" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-        <PackageReference Include="Microsoft.Extensions.Logging" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
-    </ItemGroup>
-    <ItemGroup>
-        <InternalsVisibleTo Include="Clavus" />
-        <InternalsVisibleTo Include="Clavus.CommandLine" />
-        <InternalsVisibleTo Include="Clavus.Hosting" />
-        <InternalsVisibleTo Include="Clavus.Hosting.Abstractions" />
-        <InternalsVisibleTo Include="Clavus.Web.Hosting" />
-        <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting" />
-        <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting.Abstractions" />
-        <InternalsVisibleTo Include="Clavus.Tests" />
-        <InternalsVisibleTo Include="Clavus.Hosting.Tests" />
-        <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting.Tests" />
+    </PackageDescription>
+    <PackageTags>$(PackageTags);reflection</PackageTags>
+    <IsTrimmable>true</IsTrimmable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <RootNamespace>Clavus</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Clavus" />
+    <InternalsVisibleTo Include="Clavus.CommandLine" />
+    <InternalsVisibleTo Include="Clavus.Hosting" />
+    <InternalsVisibleTo Include="Clavus.Hosting.Abstractions" />
+    <InternalsVisibleTo Include="Clavus.Web.Hosting" />
+    <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting" />
+    <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting.Abstractions" />
+    <InternalsVisibleTo Include="Clavus.Tests" />
+    <InternalsVisibleTo Include="Clavus.Hosting.Tests" />
+    <InternalsVisibleTo Include="Clavus.WebAssembly.Hosting.Tests" />
 
-        <ProjectReference
-            Include="..\Clavus.Analyzers\Clavus.Analyzers.csproj"
-            IncludeAssets="analyzers;build;buildMultitargeting;buildTransitive"
-            ExcludeAssets="compile;runtime;native"
-            PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
-            OutputItemType="Analyzer"
-            ReferenceOutputAssembly="false"
-        />
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="build/*.*" Pack="true" PackagePath="build" />
-        <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
-        <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
-        <Content Include="bin\**\*" Pack="true" PackagePath="lib" Visible="false" />
-    </ItemGroup>
-    <ItemGroup>
-        <ClavusPart Include="Setup" />
-        <ClavusPart Include="Service" ProvideServices="true" BuilderMethodName="ConfigureServices" />
-        <ClavusPart Include="Configuration" ParameterType="global::Microsoft.Extensions.Configuration.IConfigurationBuilder" ParameterName="builder" />
-        <ClavusPart Include="Logging" ParameterType="global::Microsoft.Extensions.Logging.ILoggingBuilder" ParameterName="builder" />
-        <ClavusPart Include="HostCreated" Namespace="Clavus.Hosting" GenericParameter="THost" ParameterType="THost" ParameterName="host" />
-    </ItemGroup>
+    <ProjectReference
+      Include="..\Clavus.Analyzers\Clavus.Analyzers.csproj"
+      IncludeAssets="analyzers"
+      ExcludeAssets="compile;runtime;native"
+      PrivateAssets="contentfiles;build;buildMultitargeting;buildTransitive"
+      OutputItemType="Analyzer"
+    />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build/*.*" Pack="true" PackagePath="build" />
+    <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
+    <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClavusPart Include="Setup" />
+    <ClavusPart Include="Service" ProvideServices="true" BuilderMethodName="ConfigureServices" />
+    <ClavusPart Include="Configuration" ParameterType="global::Microsoft.Extensions.Configuration.IConfigurationBuilder" ParameterName="builder" />
+    <ClavusPart Include="Logging" ParameterType="global::Microsoft.Extensions.Logging.ILoggingBuilder" ParameterName="builder" />
+    <ClavusPart Include="HostCreated" Namespace="Clavus.Hosting" GenericParameter="THost" ParameterType="THost" ParameterName="host" />
+  </ItemGroup>
 </Project>

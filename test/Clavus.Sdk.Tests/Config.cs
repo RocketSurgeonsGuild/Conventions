@@ -5,6 +5,11 @@ using DiffEngine;
 using Microsoft.Build.Logging.StructuredLogger;
 using Microsoft.Build.Utilities.ProjectCreation;
 
+// MSBuild.ProjectCreation shares a global ProjectRootElementCache; concurrent tests that create
+// projects with the same relative file name (e.g. "Directory.Build.props") race on that cache and
+// throw KeyNotFoundException. Serialize the whole assembly.
+[assembly: NotInParallel]
+
 namespace Clavus.Sdk.Tests;
 
 internal static class Config
@@ -245,9 +250,7 @@ internal static class Config
         .ToFrozenSet();
 
     public static string RootDirectory => field ??= FindRootDirectory();
-    public static string NugetArtifactsDirectory => field ??= Path.Exists(Path.Combine(FindRootDirectory(), "artifacts", "nuget-local"))
-    ? Path.Combine(FindRootDirectory(), "artifacts", "nuget-local")
-     : Path.Combine(FindRootDirectory(), "artifacts", "nuget");
+    public static string NugetArtifactsDirectory => field ??= Path.Combine(FindRootDirectory(), "artifacts", "nuget-local");
 
     private static string FindRootDirectory()
     {

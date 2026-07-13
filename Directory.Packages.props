@@ -24,8 +24,8 @@
     <GlobalPackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.169" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
-    <PackageVersion Include="Microsoft.Build.Runtime" Version="18.7.1" />
+    
+    
     <PackageVersion Include="MSBuild.ProjectCreation" Version="19.1.4" />
     <PackageVersion Include="MSBuild.StructuredLogger.Utils" Version="2.3.204" />
     <PackageVersion Include="Rocket.Surgery.ModularPipelines.Extensions" Version="0.1.12" />
@@ -76,8 +76,8 @@
     <PackageVersion Include="NodaTime" Version="3.2.2" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.9" />
-    <PackageVersion Include="Spectre.Console" Version="0.57.1" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
+    
+    
     <PackageVersion Include="Bogus" Version="35.6.5" />
     <PackageVersion Include="FakeItEasy" Version="9.0.1" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
