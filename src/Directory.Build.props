@@ -1,9 +1,11 @@
 <Project>
-    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
-    <Import Project="$(MSBuildThisFileDirectory)Clavus/build/Clavus.props" />
-    <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <IsPackable>true</IsPackable>
-        <RootNamespace>$(MSBuildProjectName.Replace('.Abstractions', '').Replace('.Attributes', '').Replace('.Analyzers', '').Replace('.Generators', ''))</RootNamespace>
-    </PropertyGroup>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <Import Project="$(MSBuildThisFileDirectory)Clavus/build/Clavus.props" />
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
+    <RootNamespace>$(MSBuildProjectName.Replace('.Abstractions', '').Replace('.Attributes', '').Replace('.Analyzers', '').Replace('.Generators', ''))</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath Condition="'$(Configuration)' == 'Debug'">$(SolutionDir)artifacts/nuget-local</PackageOutputPath>
+  </PropertyGroup>
 </Project>

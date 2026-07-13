@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
     <PackageType>MSBuildSdk</PackageType>
+    <NoBuildOutput>true</NoBuildOutput>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <IncludeSymbols>false</IncludeSymbols>
     <ImplicitUsings>disable</ImplicitUsings>
@@ -12,40 +14,67 @@
     <Compile Remove="Sdk/**" />
     <None Include="Sdk/**" Pack="true" PackagePath="Sdk/" />
     <Using Remove="**" />
-    <None Update="Sdk\Clavus.Configuration.props">
-      <Pack>true</Pack>
-      <PackagePath>Sdk/</PackagePath>
-    </None>
-    <None Update="Sdk\Clavus.Configuration.targets">
-      <Pack>true</Pack>
-      <PackagePath>Sdk/</PackagePath>
-    </None>
   </ItemGroup>
-  <!--
-    Rocket.Surgery.ModularPipelines.Extensions' PackSolution module packs the whole solution with a
-    single "dotnet pack, include symbols" invocation, which sets IncludeSymbols=true as an MSBuild
-    global property. Global properties cannot be overridden by IncludeSymbols=false above, so a
-    .snupkg is always attempted for this project. Because IncludeBuildOutput=false, the main
-    package's lib/ output group is empty (by design — this is a content-only MSBuild SDK package,
-    not a referenceable library), and NuGet's default debug-symbols output group is gated behind
-    that same IncludeBuildOutput condition, so the .snupkg ends up with zero files and pack fails
-    with NU5017 ("Cannot create a package that has no dependencies nor content").
 
-    Fix: NuGet.Build.Tasks.Pack.targets' _GetDebugSymbolsWithTfm target adds an unconditional
-    ItemGroup for TfmSpecificDebugSymbolsFile items, independent of IncludeBuildOutput, populated
-    via the TargetsForTfmSpecificDebugSymbolsInPackage extension point. We use it to point the
-    symbols package at the .pdb this project already produces during a normal build (it still
-    compiles a trivial assembly even with no non-Sdk source files), giving the .snupkg legitimate
-    content without adding a lib/ folder to the main package.
-  -->
-  <PropertyGroup>
-    <TargetsForTfmSpecificDebugSymbolsInPackage>$(TargetsForTfmSpecificDebugSymbolsInPackage);_ClavusSdkAddDebugSymbolsToPackage</TargetsForTfmSpecificDebugSymbolsInPackage>
-  </PropertyGroup>
-  <Target Name="_ClavusSdkAddDebugSymbolsToPackage" DependsOnTargets="Build">
+  <UsingTask
+    TaskName="GenerateClavusPackagesProps"
+    TaskFactory="RoslynCodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll"
+  >
+    <ParameterGroup>
+      <DestinationFile ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.Collections.Generic" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Linq" />
+      <Using Namespace="System.Text" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        var versionsById = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var packages = Directory.EnumerateDirectories("$(MSBuildThisFileDirectory)../");
+        foreach (var package in packages.Where(z => !z.Contains("Analyzers")))
+        {
+          versionsById[Path.GetFileName(package)] = "$(Version)";
+        }
+
+        // Built via concatenation (not a literal "$(" substring) so MSBuild's own property
+        // expansion doesn't try to evaluate it while parsing this inline task's source text.
+        var dollar = "$";
+
+        var content = new StringBuilder();
+        content.AppendLine("<Project>");
+        content.AppendLine("    <!--");
+        content.AppendLine("        Generated from Directory.Packages.props at pack time — do not edit directly.");
+        content.AppendLine("        Each property is only set when the consumer has not already defined it, so any");
+        content.AppendLine("        of these can be overridden from Directory.Build.props, the project file, or the");
+        content.AppendLine("        command line.");
+        content.AppendLine("    -->");
+        content.AppendLine("    <PropertyGroup>");
+        foreach (var kv in versionsById)
+        {
+            var propertyName = kv.Key.Replace(".", "") + "Version";
+            var reference = dollar + "(" + propertyName + ")";
+            content.AppendLine($"        <{propertyName} Condition=\"'{reference}' == ''\">{kv.Value}</{propertyName}>");
+        }
+        content.AppendLine("    </PropertyGroup>");
+        content.AppendLine("</Project>");
+
+        Directory.CreateDirectory(Path.GetDirectoryName(DestinationFile));
+        File.WriteAllText(DestinationFile, content.ToString());
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="_ClavusGeneratePackagesProps" BeforeTargets="_GetPackageFiles;Pack">
     <ItemGroup>
-      <TfmSpecificDebugSymbolsFile Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')">
-        <TargetFramework>$(TargetFramework)</TargetFramework>
-      </TfmSpecificDebugSymbolsFile>
+      <_ClavusPackagesPropsPrefix Include="Clavus" />
+    </ItemGroup>
+
+    <GenerateClavusPackagesProps       DestinationFile="$(IntermediateOutputPath)Packages.props"    />
+
+    <ItemGroup>
+      <None Include="$(IntermediateOutputPath)Packages.props" Pack="true" PackagePath="Sdk" />
     </ItemGroup>
   </Target>
+
 </Project>

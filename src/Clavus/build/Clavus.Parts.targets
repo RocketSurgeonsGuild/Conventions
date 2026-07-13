@@ -136,6 +136,7 @@
       <_ClavusHandlerMethods Condition="'%(ClavusPart.IsAsync)' == 'true'"><![CDATA[return global::Clavus.ClavusContextExtensions.RegisterConventionsAsync(context, e => e.AddHandler<I{PartName}Part{GenericArg}>(part => part.Register({SyncArgs})).AddHandler<I{PartName}AsyncPart{GenericArg}>(part => part.Register({AsyncArgs})), cancellationToken)]]></_ClavusHandlerMethods>
       <_ClavusPartContent>$([System.IO.File]::ReadAllText('$(_ClavusPartTemplateFile)'))</_ClavusPartContent>
       <_ClavusPartContent Condition="'%(ClavusPart.IsAsync)' != 'true'">$(_ClavusPartContent.Replace('static global::System.Threading.Tasks.ValueTask Apply', 'static void Apply'))</_ClavusPartContent>
+      <_ClavusPartContent Condition="'%(ClavusPart.IsAsync)' != 'true'">$(_ClavusPartContent.Replace(', global::System.Threading.CancellationToken cancellationToken = default', ''))</_ClavusPartContent>
       <_ClavusPartContent>$(_ClavusPartContent.Replace('{HandlerMethods}', '$(_ClavusHandlerMethods)'))</_ClavusPartContent>
       <_ClavusPartContent>$(_ClavusPartContent.Replace('{PartName}', '$(_ClavusPartName)'))</_ClavusPartContent>
       <_ClavusPartContent>$(_ClavusPartContent.Replace('{Namespace}', '$(_ClavusPartNamespace)'))</_ClavusPartContent>
@@ -188,10 +189,13 @@
       File="$(_ClavusPartAsyncOutputFile)"
       Lines="$([MSBuild]::Escape($(_ClavusPartAsyncContent)))"
       Overwrite="true"
+      Condition="'%(ClavusPart.IsAsync)' == 'true'"
       WriteOnlyWhenDifferent="true"/>
     <ItemGroup>
-      <Compile Include="$(_ClavusPartOutputFile);$(_ClavusPartAsyncOutputFile)"/>
-      <FileWrites Include="$(_ClavusPartOutputFile);$(_ClavusPartAsyncOutputFile)"/>
+      <Compile Include="$(_ClavusPartOutputFile)"/>
+      <Compile Condition="'%(ClavusPart.IsAsync)' == 'true'" Include="$(_ClavusPartAsyncOutputFile)"/>
+      <FileWrites Include="$(_ClavusPartOutputFile)"/>
+      <FileWrites Condition="'%(ClavusPart.IsAsync)' == 'true'" Include="$(_ClavusPartAsyncOutputFile)"/>
     </ItemGroup>
   </Target>
 </Project>

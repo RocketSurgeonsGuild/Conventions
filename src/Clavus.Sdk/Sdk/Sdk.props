@@ -1,7 +1,4 @@
 <Project>
   <!-- Core packages every Clavus consumer gets automatically -->
-  <ItemGroup>
-    <PackageReference Include="Clavus"/>
-  </ItemGroup>
-  <Import Project="$(MSBuildThisFileDirectory)Clavus.Configuration.props"/>
+  <Import Project="$(MSBuildThisFileDirectory)Packages.props" />
 </Project>

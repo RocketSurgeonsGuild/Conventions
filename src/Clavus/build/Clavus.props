@@ -5,9 +5,6 @@
   We're already intrusive enough because we're loaded transitively in the first place... but that's part of the charm?! 🙃
   -->
   <Import Project="$(MSBuildThisFileDirectory)Clavus.ProjectConfiguration.props" />
-  <PropertyGroup>
-    <ClavusPackConfiguration Condition="'$(ClavusPackConfiguration)' == ''">true</ClavusPackConfiguration>
-  </PropertyGroup>
   <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">
     <Using Include="Clavus" />
   </ItemGroup>

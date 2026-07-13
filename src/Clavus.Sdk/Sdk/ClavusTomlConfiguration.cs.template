@@ -1,0 +1,14 @@
+using Clavus;
+using Clavus.Configuration.Toml;
+using Microsoft.Extensions.Configuration;
+
+[ClavusExport]
+file class Configuration : IConfigurationPart
+{
+    public void Register(IClavusContext context, IConfigurationBuilder builder)
+    {
+        builder.AddTomlFile("{{ProjectName}}.toml", optional: false, reloadOnChange: false);
+        builder.AddTomlFile($"{{ProjectName}}.{context.Get<string>("EnvironmentName") ?? "Production"}.toml", optional: true, reloadOnChange: false);
+        builder.AddTomlFile("{{ProjectName}}.local.toml", optional: true, reloadOnChange: false);
+    }
+}

@@ -9,17 +9,16 @@ using Rocket.Surgery.Extensions.Testing.SourceGenerators;
 namespace Clavus.Analyzers.Tests;
 
 /// <summary>
-///     Mirrors `Rocket.Surgery.Conventions.Analyzers.Tests.GeneratorTestContextBuilderExtensions`
-///     for the configuration pipeline. Adds references to `Clavus` core (for `IConfigurationPart`,
-///     `IClavusPart`, and the `Clavus.ConfigurationAssembly` marker attribute per design.md
-///     Decision 2/4) and picks up every `IIncrementalGenerator` in `Clavus.Analyzers`, which per
-///     the design is where the config-discovery, type-inference, and manifest-emission stages live.
+///     Mirrors `Rocket.Surgery.Conventions.Analyzers.Tests.GeneratorTestContextBuilderExtensions`.
+///     Adds references to `Clavus` core (for `IConfigurationPart` — now the interface implemented by
+///     the hand-authored `JsonConvention`/`YamlConvention`/`TomlConvention` runtime conventions,
+///     not a generator-emitted type — and `IClavusPart`) and picks up every `IIncrementalGenerator`
+///     in `Clavus.Analyzers` for the surviving generator tests in this project (convention
+///     export/import; the `clavus-managed-configuration` config-discovery/type-inference/manifest
+///     generator stages this class previously also wired up were removed in `1bd74928`).
 /// </summary>
 internal static class ConfigGeneratorTestContextBuilderExtensions
 {
-    public static GeneratorTestContextBuilder AddConfigSharedDeps(this GeneratorTestContextBuilder builder, CancellationToken cancellationToken) =>
-        builder.AddCompilationReferences(ConfigGenerationHelpers.CreateManifestDeps(builder, cancellationToken).GetAwaiter().GetResult());
-
     public static GeneratorTestContextBuilder AddConfigCommonReferences(this GeneratorTestContextBuilder builder) => builder.AddReferences(
         typeof(IConfigurationPart).Assembly,
         typeof(IClavusPart).Assembly,

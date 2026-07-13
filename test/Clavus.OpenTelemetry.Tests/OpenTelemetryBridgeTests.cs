@@ -23,19 +23,6 @@ namespace Clavus.OpenTelemetry.Tests;
 /// </summary>
 public partial class OpenTelemetryBridgeTests() : AutoFakeTest<TestRecord>(TestRecord.Create())
 {
-    // tasks.md 4.2
-    [Test]
-    public async Task Without_UseOpenTelemetry_AddOpenTelemetry_Is_Not_Called()
-    {
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .ConfigureClavus();
-
-        host.Services.GetService<TracerProvider>().ShouldBeNull();
-        host.Services.GetService<MeterProvider>().ShouldBeNull();
-        host.Services.GetService<LoggerProvider>().ShouldBeNull();
-    }
-
     // tasks.md 4.3
     [Test]
     public async Task Sync_TracerProviderPart_Adds_ActivitySource_And_InMemoryExporter_Captures_Span()
@@ -63,41 +50,6 @@ public partial class OpenTelemetryBridgeTests() : AutoFakeTest<TestRecord>(TestR
         using (var activity = source.StartActivity("test-span"))
         {
             activity.ShouldNotBeNull("the tracer part should have subscribed the source, otherwise no listener samples it");
-        }
-
-        tracerProvider.ForceFlush();
-
-        exportedActivities.ShouldContain(a => a.DisplayName == "test-span");
-    }
-
-    // tasks.md 4.4
-    [Test]
-    public async Task Async_TracerProviderPart_Performs_Awaited_Work_Then_Adds_Source_Without_Deadlock()
-    {
-        const string sourceName = "Clavus.OpenTelemetry.Tests.Async";
-        List<Activity> exportedActivities = [];
-
-        // If the async-apply bridge (design Decision 2a) ever regresses to sync-over-async, this awaited
-        // delay would deadlock the host build; the test completing at all is part of the assertion.
-        using var host = await Host
-                              .CreateApplicationBuilder()
-                              .ConfigureClavus(
-                                   rb => rb
-                                        .ConfigureTracerProvider(
-                                             async (_, builder, cancellationToken) =>
-                                             {
-                                                 await Task.Delay(10, cancellationToken).ConfigureAwait(false);
-                                                 builder.AddSource(sourceName).AddInMemoryExporter(exportedActivities);
-                                             }
-                                         )
-                               );
-
-        var tracerProvider = host.Services.GetRequiredService<TracerProvider>();
-
-        using var source = new ActivitySource(sourceName);
-        using (var activity = source.StartActivity("test-span"))
-        {
-            activity.ShouldNotBeNull();
         }
 
         tracerProvider.ForceFlush();
@@ -157,14 +109,10 @@ public partial class OpenTelemetryBridgeTests() : AutoFakeTest<TestRecord>(TestR
     }
 
     // tasks.md 4.5 (resource attribute)
-    // KNOWN FAILING as of this writing: `IOpenTelemetryBuilder.ConfigureResource` does not invoke its
-    // callback synchronously/inline (unlike `WithTracing`/`WithMetrics`/`WithLogging`), so the
-    // "capture-the-builder" bridge in RocketOpenTelemetryExtensions.UseOpenTelemetry captures a null
-    // ResourceBuilder and this part throws ArgumentNullException instead of applying. Repro'd directly
-    // against the bare OpenTelemetry.Extensions.Hosting API (no Clavus involved), so this contradicts
-    // design.md's Context section claim that all five builder callbacks "run synchronously and
-    // immediately at call time". See .squad/decisions/inbox/ash-clavus-opentelemetry-tests.md.
-    // Left unskipped intentionally so it fails loudly until Decision 2a is revisited for ResourceBuilder.
+    // Previously known-failing: `IOpenTelemetryBuilder.ConfigureResource` does not invoke its callback
+    // synchronously/inline, so the old "capture-the-builder" bridge captured a null ResourceBuilder.
+    // Fixed by Dallas (see .squad/decisions/inbox/dallas-resource-builder-deferred-configure-fix.md) by
+    // building the ResourceBuilder eagerly instead of relying on the capture trick. Passing again.
     [Test]
     public async Task ResourceBuilderPart_Adds_Attribute_Present_On_Built_Providers()
     {

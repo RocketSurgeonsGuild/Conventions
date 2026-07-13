@@ -1,0 +1,13 @@
+using Clavus;
+using Microsoft.Extensions.Configuration;
+
+[ClavusExport]
+file class Configuration : IConfigurationPart
+{
+    public void Register(IClavusContext context, IConfigurationBuilder builder)
+    {
+        builder.AddJsonFile("{{ProjectName}}.json", optional: false, reloadOnChange: false);
+        builder.AddJsonFile($"{{ProjectName}}.{context.Get<string>("EnvironmentName") ?? "Production"}.json", optional: true, reloadOnChange: false);
+        builder.AddJsonFile("{{ProjectName}}.local.json", optional: true, reloadOnChange: false);
+    }
+}

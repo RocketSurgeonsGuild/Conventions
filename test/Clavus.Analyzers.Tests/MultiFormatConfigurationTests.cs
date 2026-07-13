@@ -6,22 +6,17 @@ using Microsoft.Extensions.Configuration;
 namespace Clavus.Analyzers.Tests;
 
 /// <summary>
-///     Task 5.6: Verify/integration tests confirming JSON, YAML, and TOML configuration files
-///     produce equivalent generated classes and bind equivalent values, per design.md Decision 6 -
-///     the generator-side parser only needs a flat key -> raw-string-value view (same shape it
-///     already needs from JSON) to run type inference, decoupled from the runtime provider.
+///     Runtime-level equivalence test confirming JSON, YAML, and TOML configuration files with the
+///     same logical shape bind to identical values through their respective
+///     `IConfigurationSource`s (`AddJsonFile`/`AddYamlFile`/`AddTomlFile`).
 ///
-///     Two layers of equivalence are asserted:
-///     1. Generator-level: three otherwise-identical config files (one per format, same logical
-///        key/value shape) must produce byte-identical generated configuration classes modulo the
-///        source file name/extension - asserted via Verify snapshot comparison.
-///     2. Runtime-level: binding each format's file through its `IConfigurationSource`
-///        (`AddJsonFile`/`AddYamlFile`/`AddTomlFile`) into `IConfiguration` must yield identical
-///        bound values.
-///
-///     ASSUMPTION: a `AddTomlFile` extension exists on `IConfigurationBuilder` in
-///     `Clavus.Configuration.Toml`, mirroring `Clavus.Configuration.Yaml`'s `AddYamlFile` shape
-///     (task 5.4). This does not exist in this worktree yet - Dallas owns runtime providers.
+///     NOTE: this previously also contained a generator-level equivalence test
+///     (`Should_Generate_Equivalent_Classes_For_Json_Yaml_And_Toml_With_The_Same_Shape`) covering
+///     task 5.6 / design.md Decision 6 of the `clavus-managed-configuration` change. That test
+///     exercised the generator-side config-class-emission pipeline
+///     (`ConfigurationClassEmitter`/`ConfigurationDiscovery`/etc.), which was removed wholesale in
+///     `1bd74928` ("simplify configuration"). Deleted rather than resurrected — see
+///     `.squad/decisions/inbox/ash-analyzers-managed-configuration-tests-removed.md`.
 /// </summary>
 public class MultiFormatConfigurationTests() : ConfigGeneratorTest()
 {
@@ -52,39 +47,6 @@ public class MultiFormatConfigurationTests() : ConfigGeneratorTest()
         Timeout = "00:00:30"
         StartDate = "2024-01-01"
         """;
-
-    [Test]
-    public async Task Should_Generate_Equivalent_Classes_For_Json_Yaml_And_Toml_With_The_Same_Shape()
-    {
-        var jsonResult = await WithSharedDeps()
-                              .WithProjectName("Sample.JsonFormat")
-                              .AddGlobalOption("build_property.EnableClavusConfiguration", "true")
-                              .AddAdditionalText("appsettings.json", JsonBody)
-                              .AddOption("appsettings.json", "build_metadata.AdditionalFiles.ClavusConfigFormat", "Json")
-                              .Build()
-                              .GenerateAsync(TestContext.CancellationToken);
-
-        var yamlResult = await WithSharedDeps()
-                              .WithProjectName("Sample.YamlFormat")
-                              .AddGlobalOption("build_property.EnableClavusConfiguration", "true")
-                              .AddAdditionalText("appsettings.yaml", YamlBody)
-                              .AddOption("appsettings.yaml", "build_metadata.AdditionalFiles.ClavusConfigFormat", "Yaml")
-                              .Build()
-                              .GenerateAsync(TestContext.CancellationToken);
-
-        var tomlResult = await WithSharedDeps()
-                              .WithProjectName("Sample.TomlFormat")
-                              .AddGlobalOption("build_property.EnableClavusConfiguration", "true")
-                              .AddAdditionalText("appsettings.toml", TomlBody)
-                              .AddOption("appsettings.toml", "build_metadata.AdditionalFiles.ClavusConfigFormat", "Toml")
-                              .Build()
-                              .GenerateAsync(TestContext.CancellationToken);
-
-        // A single combined snapshot makes format-drift visible at a glance: the generated
-        // `SampleConfiguration`-shaped class body should be identical across all three (modulo
-        // the IConfigurationSource registration line, which is naturally format-specific).
-        await Verify(new { Json = jsonResult, Yaml = yamlResult, Toml = tomlResult, });
-    }
 
     [Test]
     public void Should_Bind_Equivalent_Values_From_Json_Yaml_And_Toml_At_Runtime()

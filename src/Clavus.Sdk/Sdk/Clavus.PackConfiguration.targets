@@ -1,0 +1,231 @@
+<Project>
+  <!--
+    Packed / copied-to-output configuration files are renamed from the generic
+    "appsettings.*" convention to "$(MSBuildProjectName).*" (preserving any middle
+    qualifier, e.g. appsettings.Production.json -> Foo.Production.json) so that:
+      - multiple Clavus-enabled dependencies can each ship their own default
+        configuration file into a consumer's output directory without colliding
+        on the literal name "appsettings.json", and
+      - the generated per-project IConfigurationPart (see the _ClavusGenerate*Configuration
+        targets below) can load the file it knows it shipped by a deterministic name.
+
+    appsettings.local.{ext} remains excluded from the NuGet package (developer-machine-only
+    override, see Clavus.Configuration.targets' gitignore warning target) but IS still
+    renamed and copied to the output directory like its siblings.
+  -->
+
+  <!--
+    Deliberately NO file-presence auto-default of the ClavusEnable{Format}Configuration flags
+    here (an earlier draft had one): defaulting a flag to true flows into the
+    ClavusEnableConfiguration aggregate in Sdk.targets, which imports Clavus.Configuration.targets,
+    which adds provider PackageReferences that currently carry Version="TODO" — an invalid version
+    that fails RESTORE for any Sdk consumer that merely has an appsettings file on disk. Until the
+    version-substitution question is resolved, the flags are explicit opt-in/veto only, and code
+    emission is driven by provider-reference detection below.
+  -->
+  <PropertyGroup>
+    <_ClavusJsonConfigurationTemplateFile>$(MSBuildThisFileDirectory)ClavusJsonConfiguration.cs.template</_ClavusJsonConfigurationTemplateFile>
+    <_ClavusJsonConfigurationOutputFile>$(IntermediateOutputPath)Clavus.JsonConfiguration.g.cs</_ClavusJsonConfigurationOutputFile>
+    <_ClavusYamlConfigurationTemplateFile>$(MSBuildThisFileDirectory)ClavusYamlConfiguration.cs.template</_ClavusYamlConfigurationTemplateFile>
+    <_ClavusYamlConfigurationOutputFile>$(IntermediateOutputPath)Clavus.YamlConfiguration.g.cs</_ClavusYamlConfigurationOutputFile>
+    <_ClavusYmlConfigurationTemplateFile>$(MSBuildThisFileDirectory)ClavusYmlConfiguration.cs.template</_ClavusYmlConfigurationTemplateFile>
+    <_ClavusYmlConfigurationOutputFile>$(IntermediateOutputPath)Clavus.YmlConfiguration.g.cs</_ClavusYmlConfigurationOutputFile>
+    <_ClavusTomlConfigurationTemplateFile>$(MSBuildThisFileDirectory)ClavusTomlConfiguration.cs.template</_ClavusTomlConfigurationTemplateFile>
+    <_ClavusTomlConfigurationOutputFile>$(IntermediateOutputPath)Clavus.TomlConfiguration.g.cs</_ClavusTomlConfigurationOutputFile>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json')">
+    <None Update="$(MSBuildProjectDirectory)\appsettings*.json"
+      Pack="true"
+      PackagePath="contentFiles/configuration/$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      PackageCopyToOutput="true"
+      CopyToOutputDirectory="PreserveNewest"
+      Link="$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      TargetPath="$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      Visible="false" />
+    <None Update="$(MSBuildProjectDirectory)\appsettings.local.json" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yaml')">
+    <None Update="$(MSBuildProjectDirectory)\appsettings*.yaml"
+      Pack="true"
+      PackagePath="contentFiles/configuration/$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      PackageCopyToOutput="true"
+      CopyToOutputDirectory="PreserveNewest"
+      Link="$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      TargetPath="$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      Visible="false" />
+    <None Update="$(MSBuildProjectDirectory)\appsettings.local.yaml" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yml')">
+    <None Update="$(MSBuildProjectDirectory)\appsettings*.yml"
+      Pack="true"
+      PackagePath="contentFiles/configuration/$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      PackageCopyToOutput="true"
+      CopyToOutputDirectory="PreserveNewest"
+      Link="$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      TargetPath="$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      Visible="false" />
+    <None Update="$(MSBuildProjectDirectory)\appsettings.local.yml" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\appsettings.toml')">
+    <None Update="$(MSBuildProjectDirectory)\appsettings*.toml"
+      Pack="true"
+      PackagePath="contentFiles/configuration/$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      PackageCopyToOutput="true"
+      CopyToOutputDirectory="PreserveNewest"
+      Link="$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      TargetPath="$([System.String]::Copy('%(Filename)').Replace('appsettings', '$(MSBuildProjectName)'))%(Extension)"
+      Visible="false" />
+    <None Update="$(MSBuildProjectDirectory)\appsettings.local.toml" Pack="false" />
+  </ItemGroup>
+
+  <!--
+    Emission gate for the generated IConfigurationPart sources below.
+
+    A project may legitimately carry an appsettings.{ext} (it still gets renamed, packed, and
+    copied to output by the ItemGroups above — that behavior is NOT gated) without referencing
+    the configuration provider the generated code would need to compile against. Emitting the
+    template there is a guaranteed CS1061.
+
+    Rule: emit only when ALL hold —
+      1. appsettings.{ext} exists;
+      2. the provider assembly required by the template is present in the resolved references
+         (@(ReferencePath): PackageReference, ProjectReference, and transitive all count):
+           json      -> Microsoft.Extensions.Configuration.Json (AddJsonFile lives there)
+           yaml/yml  -> Clavus.Configuration.Yaml               (AddYamlFile lives there)
+           toml      -> Clavus.Configuration.Toml               (AddTomlFile lives there)
+      3. ClavusEnable{Format}Configuration is not 'false' (explicit veto).
+    A flag EXPLICITLY set to 'true' with the provider missing degrades to a warning, never a
+    compile error.
+
+    Structure note: a target's Condition is evaluated BEFORE its DependsOnTargets run, so the
+    _ClavusGenerate* targets below must NOT reference the _ClavusEmit* properties in their
+    Condition (they'd always see them empty, and a false condition also skips the dependency).
+    Instead: this compute target owns the gate AND registers the Compile/FileWrites items (so an
+    up-to-date skip of a generate target cannot drop the item from an incremental compile), while
+    the generate targets keep only the static Exists() condition and gate their tasks individually.
+  -->
+  <Target Name="_ClavusComputeConfigurationEmission"
+    DependsOnTargets="ResolveReferences"
+    Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json') or Exists('$(MSBuildProjectDirectory)\appsettings.yaml') or Exists('$(MSBuildProjectDirectory)\appsettings.yml') or Exists('$(MSBuildProjectDirectory)\appsettings.toml')">
+    <PropertyGroup>
+      <_ClavusResolvedReferenceNames>@(ReferencePath->'%(Filename)')</_ClavusResolvedReferenceNames>
+
+      <_ClavusJsonProviderReferenced>false</_ClavusJsonProviderReferenced>
+      <_ClavusJsonProviderReferenced Condition="$(_ClavusResolvedReferenceNames.Contains('Microsoft.Extensions.Configuration.Json'))">true</_ClavusJsonProviderReferenced>
+      <_ClavusYamlProviderReferenced>false</_ClavusYamlProviderReferenced>
+      <_ClavusYamlProviderReferenced Condition="$(_ClavusResolvedReferenceNames.Contains('Clavus.Configuration.Yaml'))">true</_ClavusYamlProviderReferenced>
+      <_ClavusTomlProviderReferenced>false</_ClavusTomlProviderReferenced>
+      <_ClavusTomlProviderReferenced Condition="$(_ClavusResolvedReferenceNames.Contains('Clavus.Configuration.Toml'))">true</_ClavusTomlProviderReferenced>
+
+      <_ClavusEmitJsonConfiguration>false</_ClavusEmitJsonConfiguration>
+      <_ClavusEmitJsonConfiguration Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json') and '$(_ClavusJsonProviderReferenced)' == 'true' and '$(ClavusEnableJsonConfiguration)' != 'false'">true</_ClavusEmitJsonConfiguration>
+      <_ClavusEmitYamlConfiguration>false</_ClavusEmitYamlConfiguration>
+      <_ClavusEmitYamlConfiguration Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yaml') and '$(_ClavusYamlProviderReferenced)' == 'true' and '$(ClavusEnableYamlConfiguration)' != 'false'">true</_ClavusEmitYamlConfiguration>
+      <_ClavusEmitYmlConfiguration>false</_ClavusEmitYmlConfiguration>
+      <_ClavusEmitYmlConfiguration Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yml') and '$(_ClavusYamlProviderReferenced)' == 'true' and '$(ClavusEnableYamlConfiguration)' != 'false'">true</_ClavusEmitYmlConfiguration>
+      <_ClavusEmitTomlConfiguration>false</_ClavusEmitTomlConfiguration>
+      <_ClavusEmitTomlConfiguration Condition="Exists('$(MSBuildProjectDirectory)\appsettings.toml') and '$(_ClavusTomlProviderReferenced)' == 'true' and '$(ClavusEnableTomlConfiguration)' != 'false'">true</_ClavusEmitTomlConfiguration>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(_ClavusEmitJsonConfiguration)' == 'true'">
+      <Compile Include="$(_ClavusJsonConfigurationOutputFile)" />
+      <FileWrites Include="$(_ClavusJsonConfigurationOutputFile)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(_ClavusEmitYamlConfiguration)' == 'true'">
+      <Compile Include="$(_ClavusYamlConfigurationOutputFile)" />
+      <FileWrites Include="$(_ClavusYamlConfigurationOutputFile)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(_ClavusEmitYmlConfiguration)' == 'true'">
+      <Compile Include="$(_ClavusYmlConfigurationOutputFile)" />
+      <FileWrites Include="$(_ClavusYmlConfigurationOutputFile)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(_ClavusEmitTomlConfiguration)' == 'true'">
+      <Compile Include="$(_ClavusTomlConfigurationOutputFile)" />
+      <FileWrites Include="$(_ClavusTomlConfigurationOutputFile)" />
+    </ItemGroup>
+    <Warning
+      Text="ClavusConfiguration: ClavusEnableJsonConfiguration is 'true' and appsettings.json exists, but Microsoft.Extensions.Configuration.Json is not referenced — the generated JSON configuration part is skipped. Add the Microsoft.Extensions.Configuration.Json (or Clavus.Configuration.Json) package."
+      Condition="'$(ClavusEnableJsonConfiguration)' == 'true' and '$(_ClavusJsonProviderReferenced)' != 'true' and Exists('$(MSBuildProjectDirectory)\appsettings.json')" />
+    <Warning
+      Text="ClavusConfiguration: ClavusEnableYamlConfiguration is 'true' and appsettings.yaml/.yml exists, but Clavus.Configuration.Yaml is not referenced — the generated YAML configuration part is skipped. Add the Clavus.Configuration.Yaml package."
+      Condition="'$(ClavusEnableYamlConfiguration)' == 'true' and '$(_ClavusYamlProviderReferenced)' != 'true' and (Exists('$(MSBuildProjectDirectory)\appsettings.yaml') or Exists('$(MSBuildProjectDirectory)\appsettings.yml'))" />
+    <Warning
+      Text="ClavusConfiguration: ClavusEnableTomlConfiguration is 'true' and appsettings.toml exists, but Clavus.Configuration.Toml is not referenced — the generated TOML configuration part is skipped. Add the Clavus.Configuration.Toml package."
+      Condition="'$(ClavusEnableTomlConfiguration)' == 'true' and '$(_ClavusTomlProviderReferenced)' != 'true' and Exists('$(MSBuildProjectDirectory)\appsettings.toml')" />
+  </Target>
+
+  <Target Name="_ClavusGenerateJsonConfiguration"
+    BeforeTargets="CoreCompile"
+    DependsOnTargets="_ClavusComputeConfigurationEmission"
+    Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json')"
+    Inputs="$(MSBuildProjectDirectory)\appsettings.json;$(_ClavusJsonConfigurationTemplateFile)"
+    Outputs="$(_ClavusJsonConfigurationOutputFile)">
+    <PropertyGroup Condition="'$(_ClavusEmitJsonConfiguration)' == 'true'">
+      <_ClavusJsonConfigurationContent>$([System.IO.File]::ReadAllText('$(_ClavusJsonConfigurationTemplateFile)'))</_ClavusJsonConfigurationContent>
+      <_ClavusJsonConfigurationContent>$(_ClavusJsonConfigurationContent.Replace('{{ProjectName}}', '$(MSBuildProjectName)'))</_ClavusJsonConfigurationContent>
+    </PropertyGroup>
+    <WriteLinesToFile
+      Condition="'$(_ClavusEmitJsonConfiguration)' == 'true'"
+      File="$(_ClavusJsonConfigurationOutputFile)"
+      Lines="$([MSBuild]::Escape($(_ClavusJsonConfigurationContent)))"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
+  </Target>
+
+  <Target Name="_ClavusGenerateYamlConfiguration"
+    BeforeTargets="CoreCompile"
+    DependsOnTargets="_ClavusComputeConfigurationEmission"
+    Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yaml')"
+    Inputs="$(MSBuildProjectDirectory)\appsettings.yaml;$(_ClavusYamlConfigurationTemplateFile)"
+    Outputs="$(_ClavusYamlConfigurationOutputFile)">
+    <PropertyGroup Condition="'$(_ClavusEmitYamlConfiguration)' == 'true'">
+      <_ClavusYamlConfigurationContent>$([System.IO.File]::ReadAllText('$(_ClavusYamlConfigurationTemplateFile)'))</_ClavusYamlConfigurationContent>
+      <_ClavusYamlConfigurationContent>$(_ClavusYamlConfigurationContent.Replace('{{ProjectName}}', '$(MSBuildProjectName)'))</_ClavusYamlConfigurationContent>
+    </PropertyGroup>
+    <WriteLinesToFile
+      Condition="'$(_ClavusEmitYamlConfiguration)' == 'true'"
+      File="$(_ClavusYamlConfigurationOutputFile)"
+      Lines="$([MSBuild]::Escape($(_ClavusYamlConfigurationContent)))"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
+  </Target>
+
+  <Target Name="_ClavusGenerateYmlConfiguration"
+    BeforeTargets="CoreCompile"
+    DependsOnTargets="_ClavusComputeConfigurationEmission"
+    Condition="Exists('$(MSBuildProjectDirectory)\appsettings.yml')"
+    Inputs="$(MSBuildProjectDirectory)\appsettings.yml;$(_ClavusYmlConfigurationTemplateFile)"
+    Outputs="$(_ClavusYmlConfigurationOutputFile)">
+    <PropertyGroup Condition="'$(_ClavusEmitYmlConfiguration)' == 'true'">
+      <_ClavusYmlConfigurationContent>$([System.IO.File]::ReadAllText('$(_ClavusYmlConfigurationTemplateFile)'))</_ClavusYmlConfigurationContent>
+      <_ClavusYmlConfigurationContent>$(_ClavusYmlConfigurationContent.Replace('{{ProjectName}}', '$(MSBuildProjectName)'))</_ClavusYmlConfigurationContent>
+    </PropertyGroup>
+    <WriteLinesToFile
+      Condition="'$(_ClavusEmitYmlConfiguration)' == 'true'"
+      File="$(_ClavusYmlConfigurationOutputFile)"
+      Lines="$([MSBuild]::Escape($(_ClavusYmlConfigurationContent)))"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
+  </Target>
+
+  <Target Name="_ClavusGenerateTomlConfiguration"
+    BeforeTargets="CoreCompile"
+    DependsOnTargets="_ClavusComputeConfigurationEmission"
+    Condition="Exists('$(MSBuildProjectDirectory)\appsettings.toml')"
+    Inputs="$(MSBuildProjectDirectory)\appsettings.toml;$(_ClavusTomlConfigurationTemplateFile)"
+    Outputs="$(_ClavusTomlConfigurationOutputFile)">
+    <PropertyGroup Condition="'$(_ClavusEmitTomlConfiguration)' == 'true'">
+      <_ClavusTomlConfigurationContent>$([System.IO.File]::ReadAllText('$(_ClavusTomlConfigurationTemplateFile)'))</_ClavusTomlConfigurationContent>
+      <_ClavusTomlConfigurationContent>$(_ClavusTomlConfigurationContent.Replace('{{ProjectName}}', '$(MSBuildProjectName)'))</_ClavusTomlConfigurationContent>
+    </PropertyGroup>
+    <WriteLinesToFile
+      Condition="'$(_ClavusEmitTomlConfiguration)' == 'true'"
+      File="$(_ClavusTomlConfigurationOutputFile)"
+      Lines="$([MSBuild]::Escape($(_ClavusTomlConfigurationContent)))"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
+  </Target>
+</Project>

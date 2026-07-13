@@ -45,14 +45,6 @@
         <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
         <None Include="buildTransitive/*.*" Pack="true" PackagePath="buildTransitive" />
         <Content Include="bin\**\*" Pack="true" PackagePath="lib" Visible="false" />
-        <None Update="build\Clavus.Configuration.targets">
-          <Pack>true</Pack>
-          <PackagePath>Sdk/</PackagePath>
-        </None>
-        <None Update="build\Clavus.Configuration.props">
-          <Pack>true</Pack>
-          <PackagePath>Sdk/</PackagePath>
-        </None>
     </ItemGroup>
     <ItemGroup>
         <ClavusPart Include="Setup" />

@@ -1,0 +1,14 @@
+using Clavus;
+using Clavus.Configuration.Yaml;
+using Microsoft.Extensions.Configuration;
+
+[ClavusExport]
+file class Configuration : IConfigurationPart
+{
+    public void Register(IClavusContext context, IConfigurationBuilder builder)
+    {
+        builder.AddYamlFile("{{ProjectName}}.yaml", optional: false, reloadOnChange: false);
+        builder.AddYamlFile($"{{ProjectName}}.{context.Get<string>("EnvironmentName") ?? "Production"}.yaml", optional: true, reloadOnChange: false);
+        builder.AddYamlFile("{{ProjectName}}.local.yaml", optional: true, reloadOnChange: false);
+    }
+}

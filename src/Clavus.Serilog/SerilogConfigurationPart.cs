@@ -11,7 +11,7 @@ namespace Clavus.Serilog;
 ///     <see cref="SerilogRuntimeConfiguration" /> through the same hook
 ///     (<see cref="ClavusConfigurationOptionsExtensions.AddClavusConfigurationOptions{TOptions}" />)
 ///     the generator is expected to call, so this dogfood composes without changes once the
-///     generator lands and this hand-written registration is retired.
+///     generator lands and this handwritten registration is retired.
 /// </summary>
 [ClavusExport]
 public sealed class SerilogConfigurationPart : IServicePart

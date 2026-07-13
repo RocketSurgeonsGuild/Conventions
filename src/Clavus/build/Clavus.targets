@@ -31,14 +31,6 @@
     <CompilerVisibleProperty Include="ClavusExportMethodName"/>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(ClavusPackConfiguration)' == 'true'">
-    <None Include="$(MSBuildProjectDirectory)\appsettings.*"
-          Exclude="$(MSBuildProjectDirectory)\appsettings.local.*"
-          Pack="true"
-          PackagePath="contentFiles/configuration"
-          PackageCopyToOutput="true"
-          Visible="false"/>
-  </ItemGroup>
 
   <!-- ClavusPart item metadata schema -->
   <ItemDefinitionGroup>

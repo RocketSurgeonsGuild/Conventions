@@ -7,9 +7,6 @@
         <IsTrimmable>true</IsTrimmable>
     </PropertyGroup>
     <ItemGroup>
-        <ClavusPart Include="OpenTelemetry" Namespace="Clavus" ParameterType="global::OpenTelemetry.IOpenTelemetryBuilder" ParameterName="builder" />
-    </ItemGroup>
-    <ItemGroup>
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
         <ProjectReference Include="..\Clavus.OpenTelemetry\Clavus.OpenTelemetry.csproj" />
 

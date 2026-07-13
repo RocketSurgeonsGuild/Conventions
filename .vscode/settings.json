@@ -1,48 +1,26 @@
 {
-    "coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
-    "coverage-gutters.coverageFileNames": [
-        "coverage/coverage.info"
-    ],
-    "coverage-gutters.showGutterCoverage": true,
-    "coverage-gutters.showRulerCoverage": true,
-    "powermode.enabled": false,
+    "xml.format.maxLineWidth": 0,
     "workbench.colorCustomizations": {
-        "activityBar.activeBackground": "#4de2bd",
-        "activityBar.background": "#4de2bd",
+        "activityBar.activeBackground": "#8989e0",
+        "activityBar.background": "#8989e0",
         "activityBar.foreground": "#15202b",
         "activityBar.inactiveForeground": "#15202b99",
-        "activityBarBadge.background": "#c25be4",
-        "activityBarBadge.foreground": "#15202b",
-        "editorGroup.border": "#4de2bd",
-        "panel.border": "#4de2bd",
-        "sash.hoverBorder": "#4de2bd",
-        "sideBar.border": "#4de2bd",
-        "statusBar.background": "#1cad89",
-        "statusBar.debuggingBackground": "#ad1c40",
-        "statusBar.debuggingForeground": "#e7e7e7",
+        "activityBarBadge.background": "#b12e2e",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "editorGroup.border": "#8989e0",
+        "panel.border": "#8989e0",
+        "sash.hoverBorder": "#8989e0",
+        "sideBar.border": "#8989e0",
+        "statusBar.background": "#3737cc",
+        "statusBar.border": "#3737cc",
+        "statusBar.debuggingBackground": "#cccc37",
+        "statusBar.debuggingBorder": "#cccc37",
+        "statusBar.debuggingForeground": "#15202b",
         "statusBar.foreground": "#e7e7e7",
-        "statusBarItem.hoverBackground": "#23d9ac",
-        "statusBarItem.remoteBackground": "#1cad89",
+        "statusBarItem.hoverBackground": "#6060d6",
+        "statusBarItem.remoteBackground": "#3737cc",
         "statusBarItem.remoteForeground": "#e7e7e7",
-        "tab.activeBorder": "#4de2bd",
-        "statusBar.border": "#1cad89",
-        "statusBar.debuggingBorder": "#ad1c40"
+        "tab.activeBorder": "#8989e0"
     },
-    "peacock.color": "#23d9ac",
-    "chat.promptFilesRecommendations": {
-        "speckit.constitution": true,
-        "speckit.specify": true,
-        "speckit.plan": true,
-        "speckit.tasks": true,
-        "speckit.implement": true
-    },
-    "chat.tools.terminal.autoApprove": {
-        ".specify/scripts/bash/": true,
-        ".specify/scripts/powershell/": true,
-        "dotnet build": true,
-        "awk": true,
-        "uniq": true,
-        "dotnet run": true
-    },
-    "xml.format.maxLineWidth": 0
+    "peacock.color": "#6060d6"
 }

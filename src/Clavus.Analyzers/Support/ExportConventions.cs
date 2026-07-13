@@ -13,6 +13,7 @@ internal static class ExportConventions
     public static void HandleConventionExports(SourceProductionContext context, Request request)
     {
         (var msBuildConfig, var conventions) = request;
+        if (!conventions.Any()) return;
 
         var helperClassBody = Block();
 

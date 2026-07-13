@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 // ReSharper disable once CheckNamespace
@@ -10,7 +9,7 @@ using OpenTelemetry.Trace;
 namespace Clavus.OpenTelemetry;
 
 [ClavusExport]
-internal class OpenTelemetryPart : IServiceAsyncPart, IOpenTelemetryAsyncPart
+internal class OpenTelemetryPart : IServiceAsyncPart, IOpenTelemetryPart
 {
     public ValueTask Register(IClavusContext context, IServiceCollection services, CancellationToken cancellationToken = default)
     {
@@ -18,12 +17,11 @@ internal class OpenTelemetryPart : IServiceAsyncPart, IOpenTelemetryAsyncPart
         return otelBuilder.ApplyOpenTelemetry(context, cancellationToken);
     }
 
-    public ValueTask Register(IClavusContext context, IOpenTelemetryBuilder builder, CancellationToken cancellationToken = default)
+    public void Register(IClavusContext context, IOpenTelemetryBuilder builder)
     {
-        builder.ConfigureResource(rb => rb.ApplyResourceBuilder(context, cancellationToken));
-        builder.WithTracing(tp => tp.ApplyTracerProvider(context, cancellationToken));
-        builder.WithMetrics(mp => mp.ApplyMeterProvider(context, cancellationToken));
-        builder.WithLogging(lp => lp.ApplyLoggerProvider(context, cancellationToken));
-        return ValueTask.CompletedTask;
+        builder.ConfigureResource(rb => rb.ApplyResourceBuilder(context));
+        builder.WithTracing(tp => tp.ApplyTracerProvider(context));
+        builder.WithMetrics(mp => mp.ApplyMeterProvider(context));
+        builder.WithLogging(lp => lp.ApplyLoggerProvider(context));
     }
 }
