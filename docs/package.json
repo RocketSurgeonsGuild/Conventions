@@ -29,6 +29,6 @@
         "starlight-tags": "^1.0.0"
     },
     "devDependencies": {
-        "@types/node": "^20.0.0"
+        "@types/node": "^24.0.0"
     }
 }
